@@ -3,393 +3,456 @@
         id="user-groups"
         class="cass-users-and-groups">
         <div class="section">
-            <div class="columns">
-                <div class="column is-narrow">
-                    <div class="columns">
-                        <!-- group nav tree -->
-                        <div class="column is-narrow">
-                            <h3 class="title is-size-1">
-                                User Groups
-                            </h3>
-                            <div class="buttons">
-                                <div
-                                    class="button is-outlined is-primary"
-                                    @click="createNewUserGroup(null)"
-                                    :disabled="!amLoggedIn"
-                                    :title="getCreateUserGroupButtonTitle">
-                                    <span class="icon">
-                                        <i class="fa fa-plus" />
-                                    </span>
-                                    <span>
-                                        create new group
-                                    </span>
-                                </div>
-                            </div>
-                            <cass-panel>
-                                <cass-panel-item
-                                    :depth="0"
-                                    label="Member List"
-                                    :nodes="[]"
-                                    id="all-members"
-                                    @showDetails="showMemberListView"
-                                    key="all-members" />
-                                <cass-panel-item
-                                    :depth="0"
-                                    :label="group.name"
-                                    :nodes="group.subGroups"
-                                    :id="group.id"
-                                    v-for="group in userGroupDisplayList"
-                                    @showDetails="showGroupDetailsById"
-                                    :key="group" />
-                            </cass-panel>
-                        </div>
-                    </div>
-                </div>
-                <div class="column">
-                    <!-- main content section -->
-                    <!-- member list section -->
-                    <div v-if="viewMode === 'memberList'">
-                        <h3 class="title is-size-1">
-                            Membership List
-                        </h3>
-                        <p>
-                            A view of all members within your groups and sub-groups.  Click a group name to view the group details.
-                        </p>
-                        <div v-if="allGroupMembersList.length === 0">
-                            <h3 class="title is-size-5">
-                                <i class="fa fa-info-circle" /> No user groups available
-                            </h3>
-                        </div>
-                        <div
-                            v-if="allGroupMembersList.length > 0"
-                            class="">
-                            <div class="table-container">
-                                <table class="table is-hoverable is-fullwidth">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                name
-                                            </th>
-                                            <th>
-                                                email
-                                            </th>
-                                            <th>
-                                                membership
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr
-                                            v-for="(member, memberIdx) in allGroupMembersList"
-                                            :key="memberIdx">
-                                            <th>
-                                                {{ member.name }}
-                                            </th>
-                                            <td>
-                                                {{ member.email }}
-                                            </td>
-                                            <td>
-                                                <div v-if="member.managerOf.length > 0">
-                                                    <b>Manager of</b>
-                                                    <br>
-                                                    <span v-for="(memMgrOf, memMgrOfIdx) in member.managerOf">
-                                                        <span v-if="memMgrOfIdx > 0">, </span>
-                                                        <a @click="showGroupDetailsById(memMgrOf.id)">
-                                                            {{ memMgrOf.name }}
-                                                        </a>
-                                                    </span>
-                                                </div>
-                                                <div v-if="member.memberOf.length > 0">
-                                                    <b>Member of</b>
-                                                    <br>
-                                                    <span v-for="(memMemOf, memMemOfIdx) in member.memberOf">
-                                                        <span v-if="memMemOfIdx > 0">, </span>
-                                                        <a @click="showGroupDetailsById(memMemOf.id)">
-                                                            {{ memMemOf.name }}
-                                                        </a>
-                                                    </span>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- group detail section -->
-                    <div v-if="viewMode === 'groupDetail'">
-                        <!-- group name -->
-                        <span>
-                            <h3
-                                class="title is-size-1"
-                                v-if="!isEditingCurrentGroupName">
-                                {{ currentUserGroupName }}
-                            </h3>
-                            <span
-                                class="icon is-size-7"
-                                v-if="currentUserGroupIsManager"
-                                @click="isEditingCurrentGroupName = true">
-                                <i class="fa fa-pencil-alt has-text-dark" />
-                            </span>
-                        </span>
-                        <div
-                            class=""
-                            v-if="isEditingCurrentGroupName">
-                            <label>Group Name</label>
-                            <input
-                                @change="setCurrentUserGroupAsChanged"
-                                type="text"
-                                class="input"
-                                v-model="currentUserGroupName">
-                        </div>
-                        <div
-                            class="field has-text-danger"
-                            v-if="currentUserGroupNameInvalid">
-                            <div class="label has-text-danger">
-                                Group name is required
-                            </div>
-                        </div>
-                        <!-- group breadcrumbs -->
-                        <nav
-                            class="breadcrumb"
-                            aria-label="breadcrumbs"
-                            v-if="currentUserGroupLineage && currentUserGroupLineage.length > 1">
-                            <ul>
-                                <li
-                                    v-for="lineageObj in currentUserGroupLineage"
-                                    :key="lineageObj.id">
-                                    <a @click="showGroupDetailsById(lineageObj.id)">
-                                        {{ lineageObj.name }}
-                                    </a>
-                                </li>
-                            </ul>
-                        </nav>
-                        <!-- group description -->
-                        <div class="description">
-                            <div v-if="!isEditingCurrentGroupDescription">
-                                <span v-if="currentUserGroupDescription && currentUserGroupDescription.trim().length > 0">
-                                    {{ currentUserGroupDescription }}
-                                </span>
-                                <span v-else>
-                                    <i>Group Description</i>
-                                </span>
-                                <span
-                                    class="icon"
-                                    v-if="currentUserGroupIsManager"
-                                    @click="isEditingCurrentGroupDescription = true">
-                                    <i class="fa fa-edit has-text-dark" />
-                                </span>
-                            </div>
-                            <div
-                                class=""
-                                v-if="isEditingCurrentGroupDescription">
-                                <label>Group Description</label>
-                                <input
-                                    @change="setCurrentUserGroupAsChanged"
-                                    type="text"
-                                    class="input"
-                                    v-model="currentUserGroupDescription">
-                            </div>
-                            <div
-                                class="field has-text-danger"
-                                v-if="currentUserGroupDescriptionInvalid">
-                                <div class="label has-text-danger">
-                                    Group description is required
-                                </div>
-                            </div>
-                        </div>
-                        <!-- group members -->
-                        <div class="pt-3">
-                            <div class="columns">
-                                <div class="column">
-                                    <span class="subtitle is-size-4">
-                                        Group Members
-                                    </span>
-                                </div>
-                                <div class="column is-narrow">
+            <div class="container">
+                <div class="columns">
+                    <div class="column width-300 is-narrow">
+                        <div class="cass-left-panel">
+                            <!-- group nav tree -->
+                            <div class="cass-left-panel---container">
+                                <h3 class="title is-size-4 is-family-primary">
+                                    My User Groups
+                                </h3>
+                                <div class="buttons">
                                     <div
-                                        v-if="currentUserGroupIsManager"
-                                        class="buttons is-right">
-                                        <div
-                                            class="button is-small is-outlined is-primary"
-                                            @click="showAddGroupMembersModal"
-                                            title="Add group members">
-                                            <span class="icon">
-                                                <i class="fa fa-plus" />
-                                            </span>
-                                            <span>
-                                                add group members
-                                            </span>
-                                        </div>
+                                        class="button is-rounded is-primary is-small"
+                                        @click="createNewUserGroup(null)"
+                                        :disabled="!amLoggedIn"
+                                        :title="getCreateUserGroupButtonTitle">
+                                        <span class="icon">
+                                            <i class="fa fa-plus" />
+                                        </span>
+                                        <span>
+                                            create new group
+                                        </span>
+                                    </div>
+                                </div>
+                                <cass-panel>
+                                    <cass-panel-item
+                                        :depth="0"
+                                        label="Member List"
+                                        :nodes="[]"
+                                        id="all-members"
+                                        @showDetails="showMemberListView"
+                                        key="all-members" />
+                                    <cass-panel-item
+                                        :depth="0"
+                                        :label="group.name"
+                                        :nodes="group.subGroups"
+                                        :id="group.id"
+                                        v-for="group in userGroupDisplayList"
+                                        @showDetails="showGroupDetailsById"
+                                        :key="group" />
+                                </cass-panel>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <!-- main content section -->
+                        <!-- member list section -->
+                        <div class="px-2">
+                            <div v-if="viewMode === 'memberList'">
+                                <h3 class="title is-size-1 is-family-secondary">
+                                    All Group Members
+                                </h3>
+                                <p>
+                                    A view of all members within your groups and sub-groups.  Click a group name to view the group details.
+                                </p>
+                                <div v-if="allGroupMembersList.length === 0">
+                                    <h3 class="title is-size-5">
+                                        <i class="fa fa-info-circle" /> No user groups available
+                                    </h3>
+                                </div>
+                                <div
+                                    v-if="allGroupMembersList.length > 0"
+                                    class="">
+                                    <div class="table-container">
+                                        <table class="table is-hoverable is-fullwidth">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        name
+                                                    </th>
+                                                    <th>
+                                                        email
+                                                    </th>
+                                                    <th>
+                                                        membership
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr
+                                                    v-for="(member, memberIdx) in allGroupMembersList"
+                                                    :key="memberIdx">
+                                                    <th>
+                                                        {{ member.name }}
+                                                    </th>
+                                                    <td>
+                                                        {{ member.email }}
+                                                    </td>
+                                                    <td>
+                                                        <div v-if="member.managerOf.length > 0">
+                                                            <b>Manager of</b>
+                                                            <br>
+                                                            <span v-for="(memMgrOf, memMgrOfIdx) in member.managerOf">
+                                                                <span v-if="memMgrOfIdx > 0">, </span>
+                                                                <a @click="showGroupDetailsById(memMgrOf.id)">
+                                                                    {{ memMgrOf.name }}
+                                                                </a>
+                                                            </span>
+                                                        </div>
+                                                        <div v-if="member.memberOf.length > 0">
+                                                            <b>Member of</b>
+                                                            <br>
+                                                            <span v-for="(memMemOf, memMemOfIdx) in member.memberOf">
+                                                                <span v-if="memMemOfIdx > 0">, </span>
+                                                                <a @click="showGroupDetailsById(memMemOf.id)">
+                                                                    {{ memMemOf.name }}
+                                                                </a>
+                                                            </span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
-                            <div class="table-container">
-                                <table class="table is-hoverable is-fullwidth">
-                                    <thead>
-                                        <tr>
-                                            <th>
-                                                name
-                                            </th>
-                                            <th>
-                                                email
-                                            </th>
-                                            <th>
-                                                role
-                                            </th>
-                                            <th v-if="currentUserGroupIsManager" />
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- group managers -->
-                                        <tr
-                                            v-for="(manager, managerIdx) in currentUserGroupManagers"
-                                            :key="managerIdx + '_mgr'">
-                                            <th>
-                                                {{ manager.name }}
-                                            </th>
-                                            <td>
-                                                {{ manager.email }}
-                                            </td>
-                                            <td>
-                                                <b>manager</b>
-                                            </td>
-                                            <td v-if="currentUserGroupIsManager">
+                            <!-- group detail section -->
+                            <div v-if="viewMode === 'groupDetail'">
+                                <!-- group breadcrumbs -->
+                                <nav
+                                    class="breadcrumb pb-2"
+                                    aria-label="breadcrumbs"
+                                    v-if="currentUserGroupLineage && currentUserGroupLineage.length > 1">
+                                    <ul>
+                                        <li
+                                            v-for="lineageObj in currentUserGroupLineage"
+                                            :key="lineageObj.id">
+                                            <a @click="showGroupDetailsById(lineageObj.id)">
+                                                {{ lineageObj.name }}
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </nav>
+                                <!-- group name and description -->
+                                <div class="columns">
+                                    <div class="column is-8">
+                                        <!-- name of grou -->
+                                        <h2 class="is-size-1 is-family-secondary">
+                                            Group Details
+                                        </h2>
+                                        <div
+                                            class="columns is-multiline"
+                                            v-if="!isEditingCurrentGroupName">
+                                            <div class="column is-12 pb-0">
+                                                <label class="label">Group name</label>
+                                            </div>
+                                            <div class="column pt-0">
+                                                <h3
+                                                    class="subtitle is-size-3">
+                                                    {{ currentUserGroupName }}
+                                                </h3>
+                                            </div>
+                                            <div class="column is-narrow">
+                                                <span
+                                                    class="icon is-size-7 users-edit-icon"
+                                                    v-if="currentUserGroupIsManager"
+                                                    @click="isEditingCurrentGroupName = true">
+                                                    <i class="fa fa-pencil-alt has-text-dark" />
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <!-- group name input -->
+                                        <div
+                                            v-if="isEditingCurrentGroupName"
+                                            class="pb-2">
+                                            <div
+                                                class="field">
+                                                <label class="label">Group Name</label>
+                                                <p class="control is-expanded">
+                                                    <input
+                                                        @keypress="setCurrentUserGroupAsChanged"
+                                                        type="text"
+                                                        class="input"
+                                                        v-model="currentUserGroupName">
+                                                </p>
+                                            </div>
+                                            <span
+                                                @click="isEditingCurrentGroupName = false"
+                                                class="button is-primary is-rounded is-small is-outlined">
+                                                done editing
+                                            </span>
+                                        </div>
+                                        <div
+                                            class="field has-text-danger"
+                                            v-if="currentUserGroupNameInvalid">
+                                            <div class="label has-text-danger">
+                                                Group name is required
+                                            </div>
+                                        </div>
+                                        <!-- group description -->
+                                        <div class="description pb-2">
+                                            <div v-if="!isEditingCurrentGroupDescription">
+                                                <div class="columns is-multiline">
+                                                    <div class="column is-12 pb-0">
+                                                        <label class="label">Group Description</label>
+                                                    </div>
+                                                    <div class="column">
+                                                        <span v-if="currentUserGroupDescription && currentUserGroupDescription.trim().length > 0">
+                                                            {{ currentUserGroupDescription }}
+                                                        </span>
+                                                        <span v-else>
+                                                            <i>Group Description</i>
+                                                        </span>
+                                                    </div>
+                                                    <div class="column is-narrow">
+                                                        <span
+                                                            class="icon"
+                                                            v-if="currentUserGroupIsManager"
+                                                            @click="isEditingCurrentGroupDescription = true">
+                                                            <i class="fa fa-pencil-alt is-size-7 has-text-dark" />
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                v-if="isEditingCurrentGroupDescription"
+                                                class="pt-2">
+                                                <label class="label">Group Description</label>
                                                 <div
-                                                    v-if="!areAnyIdentitiesThisPerson(manager)"
-                                                    class="buttons is-right">
-                                                    <div
-                                                        class="button is-small is-outlined is-primary"
-                                                        @click="changeManagerToMember(manager.shortId())"
-                                                        title="Change role to member">
-                                                        <span class="icon">
-                                                            <i class="fa fa-arrow-down" />
-                                                        </span>
-                                                        <span>
-                                                            change role
-                                                        </span>
-                                                    </div>
-                                                    <div
-                                                        v-if="isPersonRemovableFromCurrentUserGroup(manager.shortId())"
-                                                        class="button is-small is-outlined is-warning"
-                                                        @click="removeMemberFromCurrentUserGroup(manager.shortId())"
-                                                        title="Remove manager">
-                                                        <span class="icon">
-                                                            <i class="fa fa-trash" />
-                                                        </span>
-                                                    </div>
-                                                    <button
-                                                        v-else
-                                                        class="button is-small is-outlined is-disabled"
-                                                        disabled
-                                                        title="Cannot remove: member of sub-group you do not manage.">
-                                                        <span class="icon">
-                                                            <i class="fa fa-trash" />
-                                                        </span>
-                                                    </button>
+                                                    class="field">
+                                                    <p class="control is-expanded">
+                                                        <textarea
+                                                            @keyup="setCurrentUserGroupAsChanged"
+                                                            type="text"
+                                                            :rows="3"
+                                                            class="textarea"
+                                                            v-model="currentUserGroupDescription" />
+                                                    </p>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                        <!-- group members/non-managers -->
-                                        <tr
-                                            v-for="(member, memberIdx) in currentUserGroupMembers"
-                                            :key="memberIdx + '_mem'">
-                                            <th>
-                                                {{ member.name }}
-                                            </th>
-                                            <td>
-                                                {{ member.email }}
-                                            </td>
-                                            <td>
-                                                member
-                                            </td>
-                                            <td v-if="currentUserGroupIsManager">
-                                                <div class="buttons is-right">
-                                                    <div
-                                                        class="button is-small is-outlined is-primary"
-                                                        @click="changeMemberToManager(member.shortId())"
-                                                        title="Change role to manager">
-                                                        <span class="icon">
-                                                            <i class="fa fa-arrow-up" />
-                                                        </span>
-                                                        <span>
-                                                            change role
-                                                        </span>
-                                                    </div>
-                                                    <div
-                                                        v-if="isPersonRemovableFromCurrentUserGroup(member.shortId())"
-                                                        class="button is-small is-outlined is-warning"
-                                                        @click="removeMemberFromCurrentUserGroup(member.shortId())"
-                                                        title="Remove member">
-                                                        <span class="icon">
-                                                            <i class="fa fa-trash" />
-                                                        </span>
-                                                    </div>
-                                                    <button
-                                                        v-else
-                                                        class="button is-small is-outlined is-disabled"
-                                                        disabled
-                                                        title="Cannot remove: member of sub-group you do not manage.">
-                                                        <span class="icon">
-                                                            <i class="fa fa-trash" />
-                                                        </span>
-                                                    </button>
+                                                <div class="buttons">
+                                                    <span
+                                                        @click="isEditingCurrentGroupDescription = false"
+                                                        class="button is-rounded is-primary is-small is-outlined"
+                                                        :class="currentUserGroupChanged ? '' : 'is-disabled'"
+                                                        :disabled="!currentUserGroupChanged">
+                                                        done editing
+                                                    </span>
                                                 </div>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <!-- group action buttons -->
-                        <div class="buttons is-right">
-                            <div
-                                v-if="currentUserGroupIsManager && currentUserGroupChanged"
-                                class="button is-outlined is-primary"
-                                @click="saveCurrentUserGroup"
-                                title="Save group">
-                                <span class="icon">
-                                    <i class="fa fa-save" />
-                                </span>
-                                <span>
-                                    save
-                                </span>
-                            </div>
-                            <div
-                                v-if="currentUserGroupIsManager && currentUserGroupChanged"
-                                class="button is-outlined"
-                                @click="cancelCurrentUserGroupChanges"
-                                title="Cancel group changes">
-                                <span class="icon">
-                                    <i class="fa fa-undo" />
-                                </span>
-                                <span>
-                                    cancel
-                                </span>
-                            </div>
-                            <div
-                                v-if="currentUserGroupIsManager && !currentUserGroupIsNewGroup"
-                                class="button is-outlined is-primary"
-                                @click="createSubGroupForCurrentUserGroup"
-                                title="Create sub-group">
-                                <span class="icon">
-                                    <i class="fa fa-level-down-alt" />
-                                </span>
-                                <span>
-                                    create sub-group
-                                </span>
-                            </div>
-                            <div
-                                v-if="currentUserGroupIsManager && !currentUserGroupIsNewGroup"
-                                class="button is-outlined is-warning"
-                                @click="showDeleteCurrentUserGroupConfirmModal"
-                                title="Delete group and sub-groups">
-                                <span class="icon">
-                                    <i class="fa fa-trash" />
-                                </span>
-                                <span>
-                                    delete
-                                </span>
+                                            </div>
+                                            <div
+                                                class="field has-text-danger"
+                                                v-if="currentUserGroupDescriptionInvalid">
+                                                <div class="label has-text-danger">
+                                                    Group description is required
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="column is-1" />
+                                    <div class="column is-3 pt-3 pr-3">
+                                        <div class="columns is-multiline px-2">
+                                            <div class="cass-group--actions">
+                                                <h5 class="title is-size-5">
+                                                    Group actions
+                                                </h5>
+                                                <!-- group action buttons -->
+                                                <div
+                                                    v-if="currentUserGroupIsManager"
+                                                    class="button my-1 is-small is-rounded is-small  is-fullwidth is-primary"
+                                                    @click="showAddGroupMembersModal"
+                                                    title="Add group members">
+                                                    <span class="icon">
+                                                        <i class="fa fa-plus" />
+                                                    </span>
+                                                    <span>
+                                                        add group members
+                                                    </span>
+                                                </div>
+                                                <div
+                                                    v-if="currentUserGroupIsManager && currentUserGroupChanged"
+                                                    :disabled="!currentUserGroupChanged"
+                                                    :class=" currentUserGroupIsManager && currentUserGroupChanged ? '' : 'is-disabled'"
+                                                    class="button is-rounded my-1 is-fullwidth is-primary is-small"
+                                                    @click="saveCurrentUserGroup"
+                                                    title="Save group">
+                                                    <span class="icon">
+                                                        <i class="fa fa-save" />
+                                                    </span>
+                                                    <span>
+                                                        save
+                                                    </span>
+                                                </div>
+                                                <div
+                                                    v-if="currentUserGroupIsManager && currentUserGroupChanged"
+                                                    :disabled="!currentUserGroupChanged"
+                                                    class="button is-fullwidth my-1 is-outlined is-rounded is-small"
+                                                    :class="currentUserGroupIsManager && currentUserGroupChanged ? '' : 'is-disbaled'"
+                                                    @click="cancelCurrentUserGroupChanges"
+                                                    title="Cancel group changes">
+                                                    <span class="icon">
+                                                        <i class="fa fa-undo" />
+                                                    </span>
+                                                    <span>
+                                                        Discard changes
+                                                    </span>
+                                                </div>
+                                                <div
+                                                    v-if="currentUserGroupIsManager"
+                                                    :class="currentUserGroupIsManager && !currentUserGroupIsNewGroup ? '' : 'is-disabled'"
+                                                    class="button my-1 is-fullwidth is-rounded is-primary is-small"
+                                                    @click="createSubGroupForCurrentUserGroup"
+                                                    title="Create sub-group">
+                                                    <span class="icon">
+                                                        <i class="fa fa-plus" />
+                                                    </span>
+                                                    <span>
+                                                        Add sub-group
+                                                    </span>
+                                                </div>
+                                                <div
+                                                    v-if="currentUserGroupIsManager && !currentUserGroupIsNewGroup"
+                                                    class="button my-1 is-outlined is-fullwidth is-rounded is-small is-danger"
+                                                    @click="showDeleteCurrentUserGroupConfirmModal"
+                                                    title="Delete group and sub-groups">
+                                                    <span class="icon">
+                                                        <i class="fa fa-trash" />
+                                                    </span>
+                                                    <span>
+                                                        Delete Group
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- group members table -->
+                                <div class="pt-3">
+                                    <div class="columns">
+                                        <div class="column">
+                                            <span class="subtitle is-size-4">
+                                                {{ currentUserGroupName }} Members
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <div class="table-container">
+                                        <table class="table is-hoverable is-fullwidth">
+                                            <thead>
+                                                <tr>
+                                                    <th>
+                                                        name
+                                                    </th>
+                                                    <th>
+                                                        email
+                                                    </th>
+                                                    <th>
+                                                        role
+                                                    </th>
+                                                    <th v-if="currentUserGroupIsManager" />
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <!-- group managers -->
+                                                <tr
+                                                    v-for="(manager, managerIdx) in currentUserGroupManagers"
+                                                    :key="managerIdx + '_mgr'">
+                                                    <th>
+                                                        {{ manager.name }}
+                                                    </th>
+                                                    <td>
+                                                        {{ manager.email }}
+                                                    </td>
+                                                    <td>
+                                                        <b>manager</b>
+                                                    </td>
+                                                    <td v-if="currentUserGroupIsManager">
+                                                        <div
+                                                            v-if="!areAnyIdentitiesThisPerson(manager)"
+                                                            class="buttons is-right">
+                                                            <div
+                                                                class="button is-small is-outlined is-primary"
+                                                                @click="changeManagerToMember(manager.shortId())"
+                                                                title="Change role to member">
+                                                                <span class="icon">
+                                                                    <i class="fa fa-arrow-down" />
+                                                                </span>
+                                                                <span>
+                                                                    change role
+                                                                </span>
+                                                            </div>
+                                                            <div
+                                                                v-if="isPersonRemovableFromCurrentUserGroup(manager.shortId())"
+                                                                class="button is-small is-outlined is-warning"
+                                                                @click="removeMemberFromCurrentUserGroup(manager.shortId())"
+                                                                title="Remove manager">
+                                                                <span class="icon">
+                                                                    <i class="fa fa-trash" />
+                                                                </span>
+                                                            </div>
+                                                            <button
+                                                                v-else
+                                                                class="button is-small is-outlined is-disabled"
+                                                                disabled
+                                                                title="Cannot remove: member of sub-group you do not manage.">
+                                                                <span class="icon">
+                                                                    <i class="fa fa-trash" />
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                <!-- group members/non-managers -->
+                                                <tr
+                                                    v-for="(member, memberIdx) in currentUserGroupMembers"
+                                                    :key="memberIdx + '_mem'">
+                                                    <th>
+                                                        {{ member.name }}
+                                                    </th>
+                                                    <td>
+                                                        {{ member.email }}
+                                                    </td>
+                                                    <td>
+                                                        member
+                                                    </td>
+                                                    <td v-if="currentUserGroupIsManager">
+                                                        <div class="buttons is-right">
+                                                            <div
+                                                                class="button is-small is-outlined is-primary"
+                                                                @click="changeMemberToManager(member.shortId())"
+                                                                title="Change role to manager">
+                                                                <span class="icon">
+                                                                    <i class="fa fa-arrow-up" />
+                                                                </span>
+                                                                <span>
+                                                                    change role
+                                                                </span>
+                                                            </div>
+                                                            <div
+                                                                v-if="isPersonRemovableFromCurrentUserGroup(member.shortId())"
+                                                                class="button is-small is-outlined is-warning"
+                                                                @click="removeMemberFromCurrentUserGroup(member.shortId())"
+                                                                title="Remove member">
+                                                                <span class="icon">
+                                                                    <i class="fa fa-trash" />
+                                                                </span>
+                                                            </div>
+                                                            <button
+                                                                v-else
+                                                                class="button is-small is-outlined is-disabled"
+                                                                disabled
+                                                                title="Cannot remove: member of sub-group you do not manage.">
+                                                                <span class="icon">
+                                                                    <i class="fa fa-trash" />
+                                                                </span>
+                                                            </button>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1018,11 +1081,34 @@ export default {
             }
         },
         showGroupDetailsById(id) {
+            if (this.currentUserGroupChanged) {
+                return this.showModal(id);
+            } else {
+                return this.switchUserGroupDetailsById(id);
+            }
+        },
+        switchUserGroupDetailsById(id) {
             let userGroup = this.userGroupMap[id];
             if (userGroup) {
                 this.currentUserGroupIsNewGroup = false;
                 this.showGroupDetails(userGroup, null);
             } else appLog('Cannot find user group: ' + id);
+        },
+        showModal(val) {
+            let params = {};
+            var me = this;
+            appLog("modal");
+            params = {
+                type: 'removeObject',
+                selectedExportOption: '',
+                title: "Discard unsaved changes?",
+                text: "You have unsaved changes.  Cancel to return to group and save changes, or confirm to discard changes.",
+                onConfirm: () => {
+                    return this.switchUserGroupDetailsById(val);
+                }
+            };
+            // reveal modal
+            this.$modal.show(params);
         },
         sortUserGroupList(userGroupList) {
             let me = this;
