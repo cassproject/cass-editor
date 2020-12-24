@@ -5,7 +5,8 @@
         <div class="section">
             <div class="container">
                 <div class="columns">
-                    <div class="column width-300 is-narrow">
+                    <!-- desktop vs of navigation -->
+                    <div class="column width-300 is-narrow is-hidden-touch">
                         <div class="cass-left-panel">
                             <!-- group nav tree -->
                             <div class="cass-left-panel---container">
@@ -45,6 +46,31 @@
                                 </cass-panel>
                             </div>
                         </div>
+                    </div>
+                    <!-- mobile vs of navigation -->
+                    <div class="column is-hidden-desktop">
+                        <cass-dropdown
+                            @closeDropdown="groupsDropdownActive=false"
+                            :label="currentUserGroupName"
+                            :active="groupsDropdownActive"
+                            @click="groupsDropdownActive = true"
+                            @showDropdown="groupsDropdownActive = true">
+                            <cass-dropdown-item
+                                :depth="0"
+                                label="Member List"
+                                :nodes="[]"
+                                id="all-members"
+                                @showDetails="showMemberListView"
+                                key="all-members" />
+                            <cass-dropdown-item
+                                :depth="0"
+                                :label="group.name"
+                                :nodes="group.subGroups"
+                                :id="group.id"
+                                v-for="group in userGroupDisplayList"
+                                @showDetails="showGroupDetailsById"
+                                :key="group" />
+                        </cass-dropdown>
                     </div>
                     <div class="column">
                         <!-- main content section -->
@@ -143,7 +169,7 @@
                                             Group Details
                                         </h2>
                                         <div
-                                            class="columns is-multiline"
+                                            class="columns is-multiline is-mobile"
                                             v-if="!isEditingCurrentGroupName">
                                             <div class="column is-12 pb-0">
                                                 <label class="label">Group name</label>
@@ -194,7 +220,7 @@
                                         <!-- group description -->
                                         <div class="description pb-2">
                                             <div v-if="!isEditingCurrentGroupDescription">
-                                                <div class="columns is-multiline">
+                                                <div class="columns is-multiline is-mobile">
                                                     <div class="column is-12 pb-0">
                                                         <label class="label">Group Description</label>
                                                     </div>
@@ -642,12 +668,15 @@
 <script>
 import CassPanel from '../../components/Panel';
 import CassPanelItem from '../../components/PanelItem';
+import CassDropdown from '../../components/Dropdown';
+import CassDropdownItem from '../../components/DropdownItem';
 import {cassUtil} from '../../mixins/cassUtil';
 
 export default {
     name: 'UserGroupEditor',
     mixins: [cassUtil],
     data: () => ({
+        groupsDropdownActive: false,
         GROUP_SEARCH_SIZE: 10000,
         PERSON_SEARCH_SIZE: 10000,
         userGroupBusy: false,
@@ -692,7 +721,9 @@ export default {
     }),
     components: {
         CassPanel,
-        CassPanelItem
+        CassPanelItem,
+        CassDropdown,
+        CassDropdownItem
     },
     computed: {
         getCreateUserGroupButtonTitle: function() {
@@ -1082,9 +1113,10 @@ export default {
         },
         showGroupDetailsById(id) {
             if (this.currentUserGroupChanged) {
-                return this.showModal(id);
+                this.showModal(id);
             } else {
-                return this.switchUserGroupDetailsById(id);
+                this.switchUserGroupDetailsById(id);
+                this.groupsDropdownActive = false;
             }
         },
         switchUserGroupDetailsById(id) {
@@ -1092,7 +1124,10 @@ export default {
             if (userGroup) {
                 this.currentUserGroupIsNewGroup = false;
                 this.showGroupDetails(userGroup, null);
-            } else appLog('Cannot find user group: ' + id);
+                this.groupsDropdownActive = false;
+            } else {
+                appLog('Cannot find user group: ' + id);
+            }
         },
         showModal(val) {
             let params = {};
