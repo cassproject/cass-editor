@@ -57,7 +57,7 @@
                         </p>
                         <div v-if="allGroupMembersList.length === 0">
                             <h3 class="title is-size-5">
-                                <i class="fa fa-info-circle" /> No user groups are available to you
+                                <i class="fa fa-info-circle" /> No user groups available
                             </h3>
                         </div>
                         <div
@@ -1002,6 +1002,7 @@ export default {
                 this.membersToRemove = [];
                 this.userGroupsToSave = [];
                 this.userGroupsToDelete = [];
+                this.setCurrentUserGroupValidationsChecksToValid();
                 this.currentUserGroupChanged = this.currentUserGroupIsNewGroup;
                 this.currentUserGroup = userGroup;
                 this.currentUserGroupId = userGroup.shortId();
