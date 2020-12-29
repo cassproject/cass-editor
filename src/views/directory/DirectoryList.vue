@@ -16,6 +16,10 @@
                         v-for="(item) in directory"
                         :key="item.id"
                         @click="click(item)">
+                        <Breadcrumbs
+                            v-if="searchTerm"
+                            :competency="item"
+                            :ref="item.id" />
                         <Thing
                             :obj="item"
                             :view="view"
@@ -33,6 +37,10 @@
                         v-for="(item) in framework"
                         :key="item.id"
                         @click="click(item)">
+                        <Breadcrumbs
+                            v-if="searchTerm"
+                            :competency="item"
+                            :ref="item.id" />
                         <Thing
                             :obj="item"
                             :view="view"
