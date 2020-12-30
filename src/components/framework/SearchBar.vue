@@ -12,7 +12,7 @@
                             Sort by last date modified
 -->
 <template>
-    <div class="">
+    <div class="cass--search-bar">
         <div
             class="field is-grouped">
             <p
@@ -259,5 +259,8 @@ export default {
 </script>
 
 <style lang="scss">
+.cass--search-bar {
+    width: 100%;
+}
 </style>
 
