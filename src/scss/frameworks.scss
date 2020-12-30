@@ -24,6 +24,7 @@
                     align-items: center;
                     .list-thing {
                         width: calc(100% - 56px);
+                        display: flex;
                     }
                     .lode__type {
                         display: none;
