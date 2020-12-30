@@ -354,12 +354,15 @@ export default {
             EcRepository.repos.pop();
             remoteRepo.selectedServer = remoteServer;
             this.remoteRepo = remoteRepo;
+            let paramObj = {};
+            paramObj.size = 50;
+            paramObj.sort = '[ { "name.keyword": {"order" : "asc"}} ]';
             EcDirectory.search(remoteRepo, null, function(success) {
                 me.cassSearchSuccess(success, "directory");
-            }, appError, {size: 20});
+            }, appError, paramObj);
             EcFramework.search(remoteRepo, null, function(success) {
                 me.cassSearchSuccess(success, "framework");
-            }, appError, {size: 50});
+            }, appError, paramObj);
         },
         cassSearchSuccess: function(success, objectType) {
             if (objectType === "framework") {
