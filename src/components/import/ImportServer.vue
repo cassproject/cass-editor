@@ -359,7 +359,7 @@ export default {
             }, appError, {size: 20});
             EcFramework.search(remoteRepo, null, function(success) {
                 me.cassSearchSuccess(success, "framework");
-            }, appError, {size: 20});
+            }, appError, {size: 50});
         },
         cassSearchSuccess: function(success, objectType) {
             if (objectType === "framework") {
