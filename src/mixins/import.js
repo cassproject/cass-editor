@@ -79,14 +79,20 @@ export default {
                         text: (data[0].name ? ("The framework " + data[0].name) : "This framework") + " has already been imported. Only a framework admin can log in and overwrite it.",
                         onConfirm: () => {
                             if (data[0][1]) {
-                                // more CASE imports in the queue
+                                // more imports in the queue
+                                if (this.serverType === "cass") {
+                                    return this.importCassFrameworks(data[0]);
+                                }
                                 return this.importCase(data[0]);
                             }
                             return this.clearImport();
                         },
                         onCancel: () => {
                             if (data[0][1]) {
-                                // more CASE imports in the queue
+                                // more imports in the queue
+                                if (this.serverType === "cass") {
+                                    return this.importCassFrameworks(data[0]);
+                                }
                                 return this.importCase(data[0]);
                             }
                             return this.clearImport();
@@ -100,12 +106,17 @@ export default {
                         onConfirm: () => {
                             if (this.importType === "url") {
                                 return this.importJsonLd(data[0]);
+                            } else if (this.serverType === "cass") {
+                                return this.continueCassImport(data[0]);
                             }
                             return this.continueCaseImport(data[0]);
                         },
                         onCancel: () => {
                             if (this.importType === "url") {
                                 return this.clearImport();
+                            }
+                            if (this.serverType === "cass") {
+                                return this.importCassFrameworks(data[0]);
                             }
                             return this.importCase(data[0]);
                         }

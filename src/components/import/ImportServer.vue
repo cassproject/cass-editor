@@ -38,12 +38,27 @@
                                             <div
                                                 class="button is-large is-outlined is-primary"
                                                 :disabled="importServerUrl === ''"
-                                                @click="$store.commit('app/importTransition', 'connectToServer')">
+                                                @click="$store.commit('app/importTransition', 'connectToServer'); serverType='case';">
                                                 <span class="icon">
                                                     <i class="fas fa-network-wired" />
                                                 </span>
                                                 <span>
-                                                    connect to endpoint
+                                                    connect to CASE endpoint
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div class="buttons is-right">
+                                            <div
+                                                class="button is-large is-outlined is-primary"
+                                                :disabled="importServerUrl === ''"
+                                                @click="$store.commit('app/importTransition', 'connectToServer'); serverType='cass';">
+                                                <span class="icon">
+                                                    <i class="fas fa-network-wired" />
+                                                </span>
+                                                <span>
+                                                    connect to CaSS endpoint
                                                 </span>
                                             </div>
                                         </div>
@@ -168,6 +183,58 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- HANDLE CASS DOCS -->
+                            <div
+                                class=""
+                                v-if="cassDirectories.length || cassFrameworks.length">
+                                <h3 class="subtitle has-text-weight-bold is-size-4">
+                                    Found Frameworks
+                                </h3>
+                                <p>
+                                    Select the framework you would like to import.
+                                </p>
+                                <div
+                                    class="field is-grouped"
+                                    v-for="doc in cassFrameworks"
+                                    :key="doc.id">
+                                    <input
+                                        class="is-checkradio is-small"
+                                        type="checkbox"
+                                        :checked="doc.checked"
+                                        :id="'check' + doc.id"
+                                        :name="'check' + doc.id"
+                                        v-model="doc.checked"
+                                        v-if="!doc.loading && !doc.success && !doc.error">
+
+                                    <label
+                                        class="label"
+                                        :for="'check' + doc.id">{{ doc.getName() }}</label>
+                                    <span class="icon is-pulled-right">
+                                        <i
+                                            class="fa fa-spinner fa-pulse"
+                                            v-if="doc.loading" />
+                                        <i
+                                            class="fa fa-exclamation-triangle"
+                                            v-else-if="doc.error" />
+                                        <i
+                                            class="fa fa-check"
+                                            v-else-if="doc.success" />
+                                    </span>
+                                </div>
+                                <div class="buttons is-right">
+                                    <div
+                                        class="button is-outlined is-dark"
+                                        @click="cancelImport">
+                                        Cancel
+                                    </div>
+                                    <div
+                                        v-if="importTransition !== 'importingCassFrameworks'"
+                                        class="button is-outlined is-primary"
+                                        @click="importCassFrameworks()">
+                                        Import
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="column is-12">
@@ -230,7 +297,11 @@ export default {
                 {
                     label: 'Paste URL endpoint of server'
                 }
-            ]
+            ],
+            serverType: '',
+            cassDirectories: [],
+            cassFrameworks: [],
+            remoteRepo: null
         };
     },
     computed: {
@@ -261,8 +332,149 @@ export default {
         connectToServer: function() {
             appLog("connecting to server 1");
             this.caseDocs.splice(0, this.caseDocs.length);
-            // To do: add import from CaSS Server
-            this.caseDetectEndpoint();
+            this.cassDirectories.splice(0, this.cassDirectories.length);
+            this.cassFrameworks.splice(0, this.cassFrameworks.length);
+            if (this.serverType === 'cass') {
+                this.cassDetectEndpoint();
+            } else if (this.serverType === 'case') {
+                this.caseDetectEndpoint();
+            }
+        },
+        cassDetectEndpoint: function() {
+            let me = this;
+            let remoteServer = this.importServerUrl;
+            if (!remoteServer.endsWith("/")) {
+                remoteServer += "/";
+            }
+            if (!remoteServer.endsWith("api/")) {
+                remoteServer += "api/";
+            }
+            let remoteRepo = new EcRepository();
+            // Constructor adds repo to our repository list but we don't want it there in this case
+            EcRepository.repos.pop();
+            remoteRepo.selectedServer = remoteServer;
+            this.remoteRepo = remoteRepo;
+            EcDirectory.search(remoteRepo, null, function(success) {
+                me.cassSearchSuccess(success, "directory");
+            }, appError, {size: 20});
+            EcFramework.search(remoteRepo, null, function(success) {
+                me.cassSearchSuccess(success, "framework");
+            }, appError, {size: 20});
+        },
+        cassSearchSuccess: function(success, objectType) {
+            if (objectType === "framework") {
+                let message = success.length + " frameworks detected.";
+                this.$store.commit('app/importStatus', message);
+                this.$store.commit('app/importTransition', 'serverFrameworksDetected');
+            }
+            for (let each in success) {
+                success[each].loading = false;
+                success[each].success = false;
+                success[each].error = false;
+                success[each].checked = false;
+                if (objectType === "directory") {
+                    this.cassDirectories.push(success[each]);
+                } else if (objectType === "framework") {
+                    this.cassFrameworks.push(success[each]);
+                }
+            }
+        },
+        importCassFrameworks: function(dataArray) {
+            this.$store.commit('app/importTransition', 'importingCassFrameworks');
+            if (dataArray) {
+                // User has clicked cancel on this import item
+                var localFirstIndex = dataArray[1];
+                this.cassFrameworks[localFirstIndex].loading = false;
+                this.cassFrameworks[localFirstIndex].error = true;
+            }
+            for (var i = this.cassFrameworks.length - 1; i >= 0; i--) {
+                if (!this.cassFrameworks[i].checked) {
+                    this.cassFrameworks.splice(i, 1);
+                } else if (this.cassFrameworks[i].success === false && this.cassFrameworks[i].error === false) {
+                    this.cassFrameworks[i].loading = true;
+                }
+            }
+            let lis = 0;
+            let firstIndex = null;
+            for (var i = 0; i < this.cassFrameworks.length; i++) {
+                if (this.cassFrameworks[i].loading === true) {
+                    lis++;
+                    if (firstIndex == null) {
+                        firstIndex = i;
+                    }
+                }
+            }
+            if (lis === 0) {
+                this.$store.commit('app/importFramework', this.$store.getters['editor/framework']);
+                this.importSuccess();
+                this.$store.commit('app/importStatus', "Import finished.");
+            } else {
+                var me = this;
+                EcRepository.cache = {};
+                EcFramework.get(this.cassFrameworks[firstIndex].shortId(), function(found) {
+                    me.$store.commit('app/importStatus', 'framework found...');
+                    me.showModal('duplicateOverwriteOnly', [[me.cassFrameworks[firstIndex], firstIndex], found]);
+                }, function(notFound) {
+                    me.$store.commit('app/importStatus', 'no match, saving new framework...');
+                    me.continueCassImport([me.cassFrameworks[firstIndex], firstIndex]);
+                });
+            }
+        },
+        continueCassImport(dataArray) {
+            var data = dataArray[0];
+            var firstIndex = dataArray[1];
+            var me = this;
+            let framework = new EcFramework();
+            framework.copyFrom(data);
+            if (EcIdentityManager.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            delete framework.loading;
+            delete framework.success;
+            delete framework.error;
+            delete framework.checked;
+            // To do: address directory
+            let toSave = [];
+            toSave.push(framework);
+            let subObjects = [];
+            if (framework.competency && framework.competency.length) {
+                subObjects = framework.competency;
+            }
+            if (framework.relation && framework.relation.length) {
+                subObjects = subObjects.concat(framework.relation);
+            }
+            if (framework.level && framework.level.length) {
+                subObjects = subObjects.concat(framework.level);
+            }
+            EcRepository.alwaysTryUrl = true;
+            new EcAsyncHelper().each(subObjects, function(id, done) {
+                EcRepository.get(id, function(result) {
+                    let type = "Ec" + result.type;
+                    if (type === "EcRelation") {
+                        type = "EcAlignment";
+                    }
+                    let newObj = new window[type]();
+                    newObj.copyFrom(result);
+                    if (EcIdentityManager.ids.length > 0) {
+                        newObj.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    }
+                    toSave.push(newObj);
+                    done();
+                }, done);
+            }, function(allDone) {
+                EcRepository.alwaysTryUrl = false;
+                me.repo.multiput(toSave, function() {
+                    me.cassFrameworks[firstIndex].loading = false;
+                    me.cassFrameworks[firstIndex].success = true;
+                    me.$store.commit('editor/framework', framework);
+                    me.spitEvent("importFinished", framework.shortId(), "importPage");
+                    me.importCassFrameworks();
+                }, function() {
+                    me.caseDocs[firstIndex].loading = false;
+                    me.caseDocs[firstIndex].error = true;
+                    me.importCase();
+                });
+            });
         },
         caseDetectEndpoint: function() {
             var me = this;
