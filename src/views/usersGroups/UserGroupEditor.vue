@@ -327,8 +327,7 @@
                                                     </span>
                                                 </div>
                                                 <div
-                                                    v-if="currentUserGroupIsManager"
-                                                    :class="currentUserGroupIsManager && !currentUserGroupIsNewGroup ? '' : 'is-disabled'"
+                                                    v-if="currentUserGroupIsManager && !currentUserGroupIsNewGroup"
                                                     class="button my-1 is-fullwidth is-rounded is-primary is-small"
                                                     @click="createSubGroupForCurrentUserGroup"
                                                     title="Create sub-group">
