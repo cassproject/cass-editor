@@ -279,7 +279,9 @@
                                     <div class="column is-1" />
                                     <div class="column is-3 pt-3 pr-3">
                                         <div class="columns is-multiline px-2">
-                                            <div class="cass-group--actions">
+                                            <div
+                                                class="cass-group--actions"
+                                                v-if="currentUserGroupIsManager">
                                                 <h5 class="title is-size-5">
                                                     Group actions
                                                 </h5>
@@ -921,6 +923,7 @@ export default {
         },
         checkUserGroupSaveStatus() {
             if (this.numberOfUserGroupsSaved >= this.numberOfUserGroupsToSave) {
+                this.currentUserGroupChanged = false;
                 this.buildUserGroupData();
             } else {
                 this.saveUserGroup(this.numberOfUserGroupsSaved);
@@ -1006,6 +1009,7 @@ export default {
             }
         },
         cancelCurrentUserGroupChanges() {
+            this.currentUserGroupChanged = false;
             if (this.currentUserGroupIsNewGroup) {
                 if (this.currentUserGroup.memberOf && this.currentUserGroup.memberOf !== '') {
                     this.showGroupDetailsById(this.currentUserGroup.memberOf);
