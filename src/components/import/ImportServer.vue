@@ -187,6 +187,20 @@
                             <div
                                 class=""
                                 v-if="cassDirectories.length || cassFrameworks.length">
+                                <div v-if="cassDirectories.length">
+                                    <h3 class="subtitle has-text-weight-bold is-size-4">
+                                        Found Directories
+                                    </h3>
+                                    <p>
+                                        Select a directory with frameworks you would like to import.
+                                    </p>
+                                    <div
+                                        v-for="directory in cassDirectories"
+                                        :key="directory.id"
+                                        @click="openDirectory(directory)">
+                                        {{ directory.getName() }}
+                                    </div>
+                                </div>
                                 <h3 class="subtitle has-text-weight-bold is-size-4">
                                     Found Frameworks
                                 </h3>
@@ -478,6 +492,20 @@ export default {
                     me.importCase();
                 });
             });
+        },
+        openDirectory: function(directory) {
+            let me = this;
+            let paramObj = {};
+            paramObj.size = 50;
+            paramObj.sort = '[ { "name.keyword": {"order" : "asc"}} ]';
+            EcDirectory.search(this.remoteRepo, "parentDirectory:\"" + directory.shortId() + "\"", function(success) {
+                me.cassDirectories.splice(0, me.cassDirectories.length);
+                me.cassSearchSuccess(success, "directory");
+            }, appError, paramObj);
+            EcFramework.search(this.remoteRepo, "directory:\"" + directory.shortId() + "\"", function(success) {
+                me.cassFrameworks.splice(0, me.cassFrameworks.length);
+                me.cassSearchSuccess(success, "framework");
+            }, appError, paramObj);
         },
         caseDetectEndpoint: function() {
             var me = this;
