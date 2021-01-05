@@ -941,6 +941,7 @@ export default {
         saveUserGroup(ugIdx) {
             let grp = this.userGroupsToSave[ugIdx];
             if (this.currentUserGroupNeedsRekey) {
+                appLog('Calling group save with rekey: ' + grp.shortId());
                 grp.rekeyAndSave(this.handleSaveUserGroupSuccess, this.handleSaveUserGroupFailure, window.repo);
             } else {
                 grp.save(this.handleSaveUserGroupSuccess, this.handleSaveUserGroupFailure, window.repo);
@@ -1001,7 +1002,7 @@ export default {
                 this.numberOfUserGroupsSaved = 0;
                 this.pushRemovedMembersToSubGroupsForSave();
                 this.currentUserGroupNeedsRekey = false;
-                // this.currentUserGroupNeedsRekey = this.membersToRemove.length > 0; // TODO uncomment this when feeling brave!!!!
+                // this.currentUserGroupNeedsRekey = this.membersToRemove.length > 0; // TODO uncomment this when new EC is deployed (after 1/5/2021)
                 this.userGroupsToSave.push(this.currentUserGroup);
                 this.numberOfUserGroupsToSave = this.userGroupsToSave.length;
                 this.saveUserGroup(0);
