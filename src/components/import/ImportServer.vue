@@ -235,6 +235,9 @@
                                             v-else-if="doc.success" />
                                     </span>
                                 </div>
+                                <div @click="selectAllFrameworks">
+                                    Select All
+                                </div>
                                 <div class="buttons is-right">
                                     <div
                                         class="button is-outlined is-dark"
@@ -450,6 +453,7 @@ export default {
             delete framework.success;
             delete framework.error;
             delete framework.checked;
+            delete framework.directory;
             // To do: address directory
             let toSave = [];
             toSave.push(framework);
@@ -506,6 +510,11 @@ export default {
                 me.cassFrameworks.splice(0, me.cassFrameworks.length);
                 me.cassSearchSuccess(success, "framework");
             }, appError, paramObj);
+        },
+        selectAllFrameworks: function() {
+            for (let each in this.cassFrameworks) {
+                this.cassFrameworks[each].checked = true;
+            }
         },
         caseDetectEndpoint: function() {
             var me = this;
