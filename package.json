@@ -49,7 +49,7 @@
     "sass-loader": "^10.1.0",
     "eslint-plugin-vue": "^7.2.0",
     "file-loader": "^6.2.0",
-    "sass": "^1.30.0",
+    "sass": "^1.32.4",
     "vue-template-compiler": "^2.6.12",
     "vuepress": "^1.7.1"
   },
