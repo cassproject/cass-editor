@@ -118,6 +118,7 @@
                         :type="type"
                         :repo="repo"
                         :click="frameworkClick"
+                        @dblclick="openItem"
                         :searchOptions="searchOptions"
                         :paramObj="paramObj"
                         view="frameworks"
@@ -365,6 +366,27 @@ export default {
         canEditItem: function(item) {
             return item.canEditAny(EcIdentityManager.getMyPks());
         },
+        openItem: function(framework) {
+            var me = this;
+            if (this.conceptMode) {
+                EcConceptScheme.get(framework.id, function(success) {
+                    me.$store.commit('editor/framework', success);
+                    me.$store.commit('editor/clearFrameworkCommentData');
+                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    me.$router.push({name: "conceptScheme", params: {frameworkId: framework.id}});
+                }, appError);
+            } else {
+                EcFramework.get(framework.id, function(success) {
+                    me.$store.commit('editor/framework', success);
+                    me.$store.commit('editor/clearFrameworkCommentData');
+                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    me.$router.push({name: "framework", params: {frameworkId: framework.id}});
+                }, appError);
+            }
+        },
+
         frameworkClick: function(framework) {
             this.$store.commit('app/rightAsideObject', framework);
             this.$store.commit('app/showRightAside', 'ListItemInfo');

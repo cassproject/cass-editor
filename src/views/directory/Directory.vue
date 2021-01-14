@@ -1,116 +1,125 @@
 <template>
     <div id="directory">
-        <RightAside v-if="showRightAside" />
-        <div :class="parentObjectClass">
+        <main-layout>
+            <template slot="top">
+                <div class="container is-fullhd">
+                    <div class="columns is-spaced">
+                        <!-- search bar -->
+                        <div class="column is-6">
+                            <SearchBar
+                                filterSet="all"
+                                searchType="framework" />
+                        </div>
+                        <!-- top bar icons, add framework, resource, new directory, copy share link -->
+                        <div class="column is-6">
+                            <div class="buttons is-right">
+                                <div
+                                    @click="$emit('create-new-framework', directory)"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-plus" />
+                                    </span>
+                                </div>
+                                <div
+                                    @click="createSubdirectory"
+                                    class="button is-outlined is-primary"
+                                    title="Add a new sub-directory to this directory.">
+                                    <span class="icon">
+                                        <i class="fa fa-folder-plus" />
+                                    </span>
+                                </div>
+                                <div
+                                    @click="addResource"
+                                    class="button is-outlined is-primary"
+                                    title="Add a resource to this directory.">
+                                    <span class="icon">
+                                        <i class="fa fa-paperclip" />
+                                    </span>
+                                </div>
+                                <div
+                                    v-if="directory.parentDirectory"
+                                    @click="goToParentDirectory"
+                                    class="button is-outlined is-primary"
+                                    title="Navigate to parent.">
+                                    <span class="icon">
+                                        <i class="fa fa-back" />
+                                    </span><span>go to parent</span>
+                                </div>
+                                <div
+                                    v-clipboard="shareLink"
+                                    v-clipboard:success="successfulClip"
+                                    v-clipboard:error="errorClip"
+                                    class="button is-outlined is-primary"
+                                    title="Copy URL to the clipboard.">
+                                    <i
+                                        v-if="clipStatus === 'ready'"
+                                        class="fa fa-share-alt" />
+                                    <i
+                                        v-if="clipStatus === 'success'"
+                                        class="fa fa-check" />
+                                    <i
+                                        v-if="clipStatus === 'error'"
+                                        class="fa fa-times" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template slot="secondary-top">
+                <div class="container is-fullhd">
+                    <!-- to do account for -->
+                    <h1 class="title is-size-3 has-text-dark">
+                        {{ directory.name }}
+                    </h1>
+                </div>
+            </template>
+            <template slot="body">
+                <div class="container is-fluid">
+                    <DirectoryList
+                        type="Framework"
+                        :repo="repo"
+                        :click="frameworkClick"
+                        :searchOptions="searchOptions"
+                        :paramObj="paramObj"
+                        :directoryId="directory.shortId()"
+                        view="directory"
+                        :disallowEdits="true" />
+                </div>
+            </template>
+            <template slot="right">
+                <RightAside v-if="showRightAside" />
+            </template>
             <div class="section">
-                <div class="container">
-                    <div class="columns is-gapless is-paddingless">
-                        <div class="column is-narrow">
-                            <h1 class="title">
-                                {{ directory.name }}
-                            </h1>
-                        </div>
-                        <div class="column">
-                            <div
-                                @click="$emit('create-new-framework', directory)"
-                                class="button is-outlined is-primary">
-                                <span class="icon">
-                                    <i class="fa fa-plus" />
-                                </span><span>create new framework</span>
-                            </div>
-                            <div
-                                @click="createSubdirectory"
-                                class="button is-outlined is-primary">
-                                <span class="icon">
-                                    <i class="fa fa-plus" />
-                                </span><span>create subdirectory</span>
-                            </div>
-                            <div
-                                @click="addResource"
-                                class="button is-outlined is-primary">
-                                <span class="icon">
-                                    <i class="fa fa-plus" />
-                                </span><span>add a resource</span>
-                            </div>
-                            <div
-                                v-if="directory.parentDirectory"
-                                @click="goToParentDirectory"
-                                class="button is-outlined is-primary">
-                                <span class="icon">
-                                    <i class="fa fa-back" />
-                                </span><span>go to parent</span>
-                            </div>
-                        </div>
-                        <div class="column">
-                            <p class="share-url has-text-weight-light">
-                                {{ shareLink }}
-                            </p>
-                        </div>
-                        <div class="column is-narrow">
-                            <div
-                                class="button is-outlined is-large is-primary"
-                                title="Copy URL to the clipboard."
-                                v-clipboard="shareLink"
-                                v-clipboard:success="successfulClip"
-                                v-clipboard:error="errorClip">
-                                <i
-                                    v-if="clipStatus === 'ready'"
-                                    class="fa fa-copy" />
-                                <i
-                                    v-if="clipStatus === 'success'"
-                                    class="fa fa-check" />
-                                <i
-                                    v-if="clipStatus === 'error'"
-                                    class="fa fa-times" />
-                            </div>
+                <div class="container is-fluid show-only-mine">
+                    <!-- show my frameworks radio -->
+                    <div class="control">
+                        <div v-if="queryParams.show !== 'mine' && numIdentities">
+                            <label
+                                class="checkbox"
+                                for="showMine">
+                                <input
+                                    type="checkbox"
+                                    value="true"
+                                    id="showMine"
+                                    v-model="showMine">
+                                Show only mine</label>
                         </div>
                     </div>
-                    <SearchBar
-                        filterSet="all"
-                        searchType="framework" />
+                </div>
+                <div>
+                    <label
+                        class="checkbox"
+                        for="searchingInDirectory">
+                        <input
+                            type="checkbox"
+                            value="true"
+                            id="searchingInDirectory"
+                            v-model="searchingInDirectory">
+                        Search within Directory</label>
                 </div>
             </div>
-        </div>
-        <div class="section">
-            <div class="container is-fluid show-only-mine">
-                <!-- show my frameworks radio -->
-                <div class="control">
-                    <div v-if="queryParams.show !== 'mine' && numIdentities">
-                        <label
-                            class="checkbox"
-                            for="showMine">
-                            <input
-                                type="checkbox"
-                                value="true"
-                                id="showMine"
-                                v-model="showMine">
-                            Show only mine</label>
-                    </div>
-                </div>
-            </div>
-            <div>
-                <label
-                    class="checkbox"
-                    for="searchingInDirectory">
-                    <input
-                        type="checkbox"
-                        value="true"
-                        id="searchingInDirectory"
-                        v-model="searchingInDirectory">
-                    Search within Directory</label>
-            </div>
-            <div class="container is-fluid">
-                <DirectoryList
-                    type="Framework"
-                    :repo="repo"
-                    :click="frameworkClick"
-                    :searchOptions="searchOptions"
-                    :paramObj="paramObj"
-                    :directoryId="directory.shortId()"
-                    view="directory"
-                    :disallowEdits="true" />
-            </div>
-        </div>
+        </main-layout>
     </div>
 </template>
 <script>
@@ -118,9 +127,17 @@ import debounce from 'lodash/debounce';
 import DirectoryList from './DirectoryList.vue';
 import common from '@/mixins/common.js';
 import SearchBar from '@/components/framework/SearchBar.vue';
+import MainLayout from '@/layouts/MainLayout.vue';
+
 export default {
     name: "Directory",
     mixins: [common],
+    components: {
+        MainLayout,
+        DirectoryList,
+        SearchBar,
+        RightAside: () => import('@/components/framework/RightAside.vue')
+    },
     data: function() {
         return {
             repo: window.repo,
@@ -224,11 +241,6 @@ export default {
         shareLink: function() {
             return window.location.href.replace('/directory', "?directoryId=" + this.directory.shortId());
         }
-    },
-    components: {
-        DirectoryList,
-        SearchBar,
-        RightAside: () => import('@/components/framework/RightAside.vue')
     },
     methods: {
         canEditItem: function(item) {
@@ -447,5 +459,18 @@ export default {
         border-right: 0px solid rgba($dark, .3);
         padding: 0rem .25rem 0rem .25rem;
     }
+}
+.share-url {
+    text-align: left;
+    padding-right: 1rem;
+    max-width: 300px;
+    width: 600px;
+    cursor: pointer;
+    display: inline-block;
+    direction: rtl;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+    color: $dark;
 }
 </style>

@@ -29,7 +29,7 @@
             </div>
         </div>
 
-        <!-- nav bar tablet and mobile drop down side navigation -->
+    <!-- nav bar tablet and mobile drop down side navigation -->
     </nav>
 </template>
 

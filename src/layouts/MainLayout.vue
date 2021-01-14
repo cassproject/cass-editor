@@ -28,6 +28,8 @@ export default {
 <style lang="scss">
 .cass--main-layout {
     width:calc(100% - 64px);
+    height: 100vh;
+    overflow-y: scroll;
 }
 .cass--main-layout--primary-top {
     position: absolute;
@@ -59,6 +61,7 @@ export default {
 }
 .cass--main-layout--body {
     min-height: 100vh;
+    max-height: 100vh;
     width: 100%;
     margin-top: 100px;
 

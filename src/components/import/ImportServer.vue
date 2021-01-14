@@ -69,7 +69,7 @@
                                         Looking for an example? Try out an example from the <a @click="importServerUrl='https://opensalt.net'">OpenSalt.net endpoint</a> to test the workflow.
                                     </h3>
                                 </div>
-                                <!--<div class="column is-12">
+                            <!--<div class="column is-12">
                                     <div
                                         class="button is-dark is-small"
                                         @click="importServerUrl='https://opensalt.net'">
