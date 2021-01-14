@@ -871,7 +871,6 @@ export default {
             // Make sure new owner gets into store
             this.$store.commit('editor/framework', f);
             f["schema:dateModified"] = new Date().toISOString();
-            f = EcEncryptedValue.toEncryptedValue(f);
             EcEncryptedValue.toEncryptedValueAsync(f, false, function(ef) {
                 me.toSave.push(ef);
                 me.repo.multiput(me.toSave, function() {
@@ -1085,13 +1084,13 @@ export default {
 }
 
 .control.auto-complete__control {
-    input {
-        height: 37px;
-        transform: translateX(0);
-        outline: 0;
-        box-shadow: none;
-    }
-    .auto {
+  input {
+    height: 37px;
+    transform: translateX(0);
+    outline: 0;
+    box-shadow: none;
+  }
+  .auto {
     position: absolute;
     min-height: 0px;
     max-height: 120px;
@@ -1111,6 +1110,6 @@ export default {
         background-color: $light;
       }
     }
-    }
+  }
 }
 </style>
