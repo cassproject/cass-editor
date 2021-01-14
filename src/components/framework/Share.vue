@@ -755,9 +755,10 @@ export default {
                             if (c.canEditAny(EcIdentityManager.getMyPks())) {
                                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                                 c["schema:dateModified"] = new Date().toISOString();
-                                c = EcEncryptedValue.toEncryptedValue(c);
-                                me.toSave.push(c);
-                                done();
+                                EcEncryptedValue.toEncryptedValueAsync(c, false, function(ec) {
+                                    me.toSave.push(ec);
+                                    done();
+                                }, done);
                             } else {
                                 done();
                             }
@@ -767,9 +768,10 @@ export default {
                             new EcAsyncHelper().each(framework.relation, function(relationId, done) {
                                 EcAlignment.get(relationId, function(r) {
                                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                                    r = EcEncryptedValue.toEncryptedValue(r);
-                                    me.toSave.push(r);
-                                    done();
+                                    EcEncryptedValue.toEncryptedValueAsync(r, false, function(er) {
+                                        me.toSave.push(er);
+                                        done();
+                                    }, done);
                                 }, done);
                             }, function(relationIds) {
                                 me.encryptFramework(framework);
@@ -870,12 +872,14 @@ export default {
             this.$store.commit('editor/framework', f);
             f["schema:dateModified"] = new Date().toISOString();
             f = EcEncryptedValue.toEncryptedValue(f);
-            this.toSave.push(f);
-            this.repo.multiput(this.toSave, function() {
-                me.confirmMakePrivate = false;
-                me.cantRemoveCurrentUserAsOwner = true;
-                me.isProcessing = false;
-                me.toSave.splice(0, me.toSave.length);
+            EcEncryptedValue.toEncryptedValueAsync(f, false, function(ef) {
+                me.toSave.push(ef);
+                me.repo.multiput(me.toSave, function() {
+                    me.confirmMakePrivate = false;
+                    me.cantRemoveCurrentUserAsOwner = true;
+                    me.isProcessing = false;
+                    me.toSave.splice(0, me.toSave.length);
+                }, appError);
             }, appError);
         },
         handleMakePrivateConceptScheme: function() {
@@ -1088,25 +1092,25 @@ export default {
         box-shadow: none;
     }
     .auto {
-        position: absolute;
-        min-height: 0px;
-        max-height: 120px;
-        border-radius: 0rem 0rem .5rem .5rem;
-        border-right: solid 1px rgba($primary, .5);
-        border-bottom: solid 1px rgba($primary, .5);
-        border-left: solid 1px rgba($primary, .5);
-        width: 100%;
-        background-color: white;
-        overflow: scroll;
-        ul {
-            li {
-                padding: .25rem;
-            }
-            li:hover {
-                padding: .25rem;
-                background-color: $light;
-            }
-        }
+    position: absolute;
+    min-height: 0px;
+    max-height: 120px;
+    border-radius: 0rem 0rem 0.5rem 0.5rem;
+    border-right: solid 1px rgba($primary, 0.5);
+    border-bottom: solid 1px rgba($primary, 0.5);
+    border-left: solid 1px rgba($primary, 0.5);
+    width: 100%;
+    background-color: white;
+    overflow: scroll;
+    ul {
+      li {
+        padding: 0.25rem;
+      }
+      li:hover {
+        padding: 0.25rem;
+        background-color: $light;
+      }
+    }
     }
 }
 </style>
