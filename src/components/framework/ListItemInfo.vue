@@ -3,90 +3,210 @@
         id="right-side-bar__comments"
         class="menu has-background-lightest">
         <div class="right-aside-bar__title">
-            <h3 class="title is-size-3">
+            <h3 class="is-size-3 is-family-secondary">
                 {{ objectName }}
             </h3>
+            <span class="tag is-info">{{ objectType }}</span>
         </div>
-        <div v-if="objectType === 'Directory' || objectType === 'Framework'">
-            <div>
-                Details
-                <div>Last Modified: {{ lastModified }}</div>
-                <div>Date Created: {{ dateCreated }}</div>
-                <div v-if="objectType === 'Directory'">
-                    Subdirectories: {{ numSubdirectories }}
+        <div class="buttons">
+            <div
+                class="button is-primary"
+                @click="openObject">
+                <span>Open {{ objectType }}</span>
+                <span class="icon">
+                    <i class="fa fa-folder-open" />
+                </span>
+            </div>
+        </div>
+        <div
+            class="cass__right-side--details"
+            v-if="objectType === 'Directory' || objectType === 'Framework'">
+            <div class="cass__right-side--details-wrapper">
+                <h3
+                    class="is-family-secondary is-size-5">
+                    Details
+                </h3>
+                <div class="cass__right-side--details-list-item">
+                    <b>Last Modified:</b> {{ lastModified }}
                 </div>
-                <div v-if="objectType === 'Directory'">
-                    Objects: {{ numObjects }}
+                <!-- open -->
+                <span
+                    class="cass__right-side--details-list-section"
+                    v-if="object.directory">
+                    <b>Directory:</b> {{ getName(object.directory) }}
+                    <span
+                        class="button is-primary is-outlined is-small"
+                        @click="goToParentDirectory">
+                        Open
+                    </span>
+                </span>
+                <!-- open parent directoriy -->
+                <span
+                    class="cass__right-side--details-list-item"
+                    v-else-if="object.parentDirectory">
+                    <b>Parent Directory:</b> {{ getName(object.parentDirectory) }}
+                    <span
+                        title="Navigate to parent directory"
+                        class="inline-link is-small"
+                        @click="goToParentDirectory">
+                        <span>Go to parent</span>
+                        <span class="icon">
+                            <i class="fa fa-folder-open" />
+                        </span>
+                    </span>
+                </span>
+                <!-- date created -->
+                <div
+                    class="cass__right-side--details-list-item">
+                    <b>
+                        Date Created:
+                    </b>
+                    {{ dateCreated }}
                 </div>
-                <div v-if="objectType === 'Framework'">
-                    Item Count: {{ object.competency ? object.competency.length : 0 }}
+                <!-- number of directories -->
+                <div
+                    class="cass__right-side--details-list-item"
+                    v-if="objectType === 'Directory'">
+                    <b>Subdirectories:</b>
+                    {{ numSubdirectories }}
                 </div>
-                <div v-if="objectType === 'Framework' && object.Published">
-                    Published Date: {{ object.Published }}
+                <!-- object count -->
+                <div
+                    class="cass__right-side--details-list-item"
+                    v-if="objectType === 'Directory'">
+                    <b>Objects:</b>
+                    {{ numObjects }}
                 </div>
-                <div v-if="objectType === 'Framework' && object.Approved">
-                    Approved Date: {{ object.Approved }}
+                <!-- item count -->
+                <div
+                    class="cass__right-side--details-list-item"
+                    v-if="objectType === 'Framework'">
+                    <b>Item Count:</b>
+                    {{ object.competency ? object.competency.length : 0 }}
                 </div>
-                <div v-if="objectType === 'Framework' && publisherName">
-                    Publisher: {{ publisherName }}
+                <!-- published date -->
+                <div
+                    class="cass__right-side--details-list-item"
+                    v-if="objectType === 'Framework' && object.Published">
+                    <b>Published Date:</b>
+                    {{ object.Published }}
                 </div>
-                <div v-else-if="objectType === 'Framework' && creatorName">
-                    Creator: {{ creatorName }}
+                <!-- approved -->
+                <div
+                    class="cass__right-side--details-list-item"
+                    v-if="objectType === 'Framework' && object.Approved">
+                    <b>Approved Date:</b>
+                    {{ object.Approved }}
                 </div>
-                <div v-if="objectDescription">
-                    Description
+                <!-- publisher name -->
+                <div
+                    class="cass__right-side--details-list-item"
+                    v-if="objectType === 'Framework' && publisherName">
+                    <b>Publisher:</b>
+                    {{ publisherName }}
+                </div>
+                <!-- creator -->
+                <div
+                    class="cass__right-side--details-list-item"
+                    v-else-if="objectType === 'Framework' && creatorName">
+                    <b>Creator:</b>
+                    {{ creatorName }}
+                </div>
+                <!-- description -->
+                <div
+                    class="cass__right-side--details-list-section"
+                    v-if="objectDescription">
+                    <b>Description</b>
                     <div>{{ objectDescription }}</div>
                 </div>
-                <div v-if="object.directory">
-                    Directory: {{ getName(object.directory) }}
-                    <button @click="goToParentDirectory">
-                        Open
-                    </button>
+                <span
+                    class="cass__right-side--details-section">
+                    <span>
+                        <b>Share:</b>
+                    </span>
+                    <span
+                        class="inline-link"
+                        title="Copy URL to the clipboard."
+                        v-clipboard="shareLink"
+                        v-clipboard:success="successfulClip"
+                        v-clipboard:error="errorClip">
+                        <span
+                            :title="shareLink">copy share link</span>
+                        <span class="icon">
+                            <i
+                                v-if="clipStatus === 'success'"
+                                class="fa fa-check" />
+                            <i
+                                v-else-if="clipStatus === 'error'"
+                                class="fa fa-times" />
+                            <i
+                                v-else
+                                class="fa fa-link"
+                                name="copyURL" />
+                        </span>
+                    </span>
+                </span>
+            </div>
+            <div
+                v-if="canEditObject && canEditDirectory"
+                class="cass__right-side--details-wrapper">
+                <h3
+                    class="is-family-secondary is-size-5">
+                    Actions
+                </h3>
+                <div
+                    class="cass__right-side--details-list-item"
+                    v-if="objectType === 'CreativeWork'">
+                    {{ object.url }}
                 </div>
-                <div v-else-if="object.parentDirectory">
-                    Parent Directory: {{ getName(object.parentDirectory) }}
-                    <button @click="goToParentDirectory">
-                        Open
-                    </button>
-                </div>
-                <div>
-                    Share: {{ shareLink }}
+                <div
+                    class="cass__right-side--details-list-section">
+                    <div
+                        class="cass__right-side--details-list-section">
+                        <b>Copy/Move</b>
+                    </div>
+                    <div
+                        class="cass__right-side--details-list-section">
+                        <div
+                            class="button is-small is-outlined is-primary"
+                            v-if="objectType === 'Framework' || objectType === 'CreativeWork' || (objectType === 'Directory' && object.parentDirectory)"
+                            @click="copyingToDirectory=true"
+                            :disabled="movingToDirectory">
+                            <span>copy to directory</span>
+                            <span class="icon">
+                                <i class="fa fa-copy" />
+                            </span>
+                        </div>
+                    </div>
+                    <div
+                        class="cass__right-side--details-list-section">
+                        <div
+                            class="button is-outlined is-small is-primary"
+                            v-if="objectType === 'Framework' || objectType === 'CreativeWork' || (objectType === 'Directory' && object.parentDirectory)"
+                            @click="movingToDirectory=true"
+                            :disabled="copyingToDirectory">
+                            <span>Move to directory</span>
+                            <span class="icon">
+                                <i class="fa fa-exchange-alt" />
+                            </span>
+                        </div>
+                    </div>
+                    <ul v-if="copyingToDirectory || movingToDirectory">
+                        Choose a directory
+                        <li
+                            v-for="directory in directoryOptions"
+                            :key="directory"
+                            @click="copyOrMove(directory)">
+                            {{ directory.name }}
+                        </li>
+                        <li
+                            @click="removeFromDirectory"
+                            v-if="movingToDirectory">
+                            Remove from directory
+                        </li>
+                    </ul>
                 </div>
             </div>
-            <button @click="openObject">
-                Open
-            </button>
-        </div>
-        <div v-if="objectType === 'CreativeWork'">
-            {{ object.url }}
-        </div>
-        <div v-if="canEditObject && canEditDirectory">
-            <button
-                v-if="objectType === 'Framework' || objectType === 'CreativeWork' || (objectType === 'Directory' && object.parentDirectory)"
-                @click="copyingToDirectory=true"
-                :disabled="movingToDirectory">
-                Copy to Directory
-            </button>
-            <button
-                v-if="objectType === 'Framework' || objectType === 'CreativeWork' || (objectType === 'Directory' && object.parentDirectory)"
-                @click="movingToDirectory=true"
-                :disabled="copyingToDirectory">
-                Move to Directory
-            </button>
-            <ul v-if="copyingToDirectory || movingToDirectory">
-                Choose a directory
-                <li
-                    v-for="directory in directoryOptions"
-                    :key="directory"
-                    @click="copyOrMove(directory)">
-                    {{ directory.name }}
-                </li>
-                <li
-                    @click="removeFromDirectory"
-                    v-if="movingToDirectory">
-                    Remove from directory
-                </li>
-            </ul>
         </div>
     </aside>
 </template>
@@ -103,10 +223,25 @@ export default {
             copyingToDirectory: false,
             movingToDirectory: false,
             repo: window.repo,
-            frameworksToProcess: 0
+            frameworksToProcess: 0,
+            clipStatus: 'ready'
         };
     },
     methods: {
+        successfulClip({value, event}) {
+            appLog('success', value);
+            this.clipStatus = 'success';
+            setTimeout(() => {
+                this.clipStatus = 'ready';
+            }, 1000);
+        },
+        errorClip({value, event}) {
+            appLog('error', value);
+            this.clipStatus = 'error';
+            setTimeout(() => {
+                this.clipStatus = 'ready';
+            }, 1000);
+        },
         setNumSubdirectoriesAndObjects: function() {
             let me = this;
             if (this.objectType === "Directory") {
@@ -760,6 +895,5 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './../../scss/variables.scss';
+    @import './../../scss/list-item-info.scss';
 </style>
-
