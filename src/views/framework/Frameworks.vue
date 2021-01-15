@@ -366,27 +366,55 @@ export default {
         canEditItem: function(item) {
             return item.canEditAny(EcIdentityManager.getMyPks());
         },
-        openItem: function(framework) {
+        openItem: function(object) {
             var me = this;
-            if (this.conceptMode) {
-                EcConceptScheme.get(framework.id, function(success) {
+            if (object.type === "Directory") {
+                this.$store.commit('app/selectDirectory', object);
+                if (this.$route.name !== "directory") {
+                    this.$router.push({name: "directory"});
+                }
+                this.$store.commit('app/closeRightAside');
+            } else if (object.type === "Competency") {
+                EcFramework.search(this.repo, "competency:\"" + object.shortId() + "\"", function(success) {
+                    if (success && success[0]) {
+                        me.openItem(success[0]);
+                    }
+                }, appError, null);
+            } else if (object.type === "Concept") {
+                this.findConceptTrail(object);
+            } else if (this.conceptMode) {
+                EcConceptScheme.get(object.id, function(success) {
                     me.$store.commit('editor/framework', success);
                     me.$store.commit('editor/clearFrameworkCommentData');
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
-                    me.$router.push({name: "conceptScheme", params: {frameworkId: framework.id}});
+                    me.$router.push({name: "conceptScheme", params: {frameworkId: object.id}});
                 }, appError);
             } else {
-                EcFramework.get(framework.id, function(success) {
+                EcFramework.get(object.id, function(success) {
                     me.$store.commit('editor/framework', success);
                     me.$store.commit('editor/clearFrameworkCommentData');
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
-                    me.$router.push({name: "framework", params: {frameworkId: framework.id}});
+                    me.$router.push({name: "framework", params: {frameworkId: object.id}});
                 }, appError);
             }
         },
-
+        findConceptTrail: function(concept) {
+            let me = this;
+            if (concept["skos:topConceptOf"]) {
+                EcConceptScheme.get(concept["skos:topConceptOf"], function(scheme) {
+                    me.openItem(scheme);
+                }, appError);
+            } else if (concept["skos:broader"]) {
+                if (!EcArray.isArray(concept["skos:broader"])) {
+                    concept["skos:broader"] = [concept["skos:broader"]];
+                }
+                EcConcept.get(concept["skos:broader"][0], function(parent) {
+                    me.findConceptTrail(parent);
+                }, appError);
+            }
+        },
         frameworkClick: function(framework) {
             this.$store.commit('app/rightAsideObject', framework);
             this.$store.commit('app/showRightAside', 'ListItemInfo');

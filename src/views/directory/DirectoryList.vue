@@ -22,6 +22,7 @@
                             :ref="item.id" />
                         <Thing
                             :obj="item"
+                            @dblclick.native="$emit('dblclick', item)"
                             :view="view"
                             class="list-thing"
                             :parentNotEditable="true" />
@@ -43,6 +44,7 @@
                             :ref="item.id" />
                         <Thing
                             :obj="item"
+                            @dblclick.native="$emit('dblclick', item)"
                             :view="view"
                             class="list-thing"
                             :parentNotEditable="true" />
@@ -63,6 +65,7 @@
                             :ref="item.id" />
                         <Thing
                             :obj="item"
+                            @dblclick.native="$emit('dblclick', item)"
                             :view="view"
                             class="list-thing"
                             :parentNotEditable="true" />

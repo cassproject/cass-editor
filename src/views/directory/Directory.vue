@@ -84,7 +84,8 @@
                         :paramObj="paramObj"
                         :directoryId="directory.shortId()"
                         view="directory"
-                        :disallowEdits="true" />
+                        :disallowEdits="true"
+                        @dblclick="openObject" />
                 </div>
             </template>
             <template slot="right">
@@ -249,6 +250,32 @@ export default {
         frameworkClick: function(framework) {
             this.$store.commit('app/rightAsideObject', framework);
             this.$store.commit('app/showRightAside', 'ListItemInfo');
+        },
+        openObject: function(object) {
+            let me = this;
+            if (object.type === "Directory") {
+                this.$store.commit('app/selectDirectory', object);
+                if (this.$route.name !== "directory") {
+                    this.$router.push({name: "directory"});
+                }
+                this.$store.commit('app/closeRightAside');
+            } else if (this.$store.getters['editor/conceptMode']) {
+                EcConceptScheme.get(object.id, function(success) {
+                    me.$store.commit('editor/framework', success);
+                    me.$store.commit('editor/clearFrameworkCommentData');
+                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    me.$router.push({name: "conceptScheme", params: {frameworkId: object.id}});
+                }, appError);
+            } else {
+                EcFramework.get(object.id, function(success) {
+                    me.$store.commit('editor/framework', success);
+                    me.$store.commit('editor/clearFrameworkCommentData');
+                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    me.$router.push({name: "framework", params: {frameworkId: object.id}});
+                }, appError);
+            }
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];
