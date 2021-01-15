@@ -6,17 +6,21 @@
             <h3 class="is-size-3 is-family-secondary">
                 {{ objectName }}
             </h3>
-            <span class="tag is-info">{{ objectType }}</span>
+            <span class="tag is-info">{{ objectType === "CreativeWork" ? "Resource" : objectType }}</span>
         </div>
         <div class="buttons">
             <div
                 class="button is-primary"
-                @click="openObject">
+                @click="openObject"
+                v-if="objectType !== 'CreativeWork'">
                 <span>Open {{ objectType }}</span>
                 <span class="icon">
                     <i class="fa fa-folder-open" />
                 </span>
             </div>
+        </div>
+        <div v-if="objectType === 'CreativeWork'">
+            {{ object.url }}
         </div>
         <div
             class="cass__right-side--details"
