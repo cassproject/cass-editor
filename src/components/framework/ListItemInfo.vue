@@ -6,14 +6,14 @@
             <h3 class="is-size-3 is-family-secondary">
                 {{ objectName }}
             </h3>
-            <span class="tag is-info">{{ objectType === "CreativeWork" ? "Resource" : objectType }}</span>
+            <span class="tag is-info">{{ objectTypeForDisplay }}</span>
         </div>
         <div class="buttons">
             <div
                 class="button is-primary"
                 @click="openObject"
                 v-if="objectType !== 'CreativeWork'">
-                <span>Open {{ objectType }}</span>
+                <span>Open {{ objectTypeForDisplay }}</span>
                 <span class="icon">
                     <i class="fa fa-folder-open" />
                 </span>
@@ -24,7 +24,7 @@
         </div>
         <div
             class="cass__right-side--details"
-            v-if="objectType === 'Directory' || objectType === 'Framework'">
+            v-if="objectType === 'Directory' || objectType === 'Framework' || objectType === 'ConceptScheme'">
             <div class="cass__right-side--details-wrapper">
                 <h3
                     class="is-family-secondary is-size-5">
@@ -91,28 +91,28 @@
                 <!-- published date -->
                 <div
                     class="cass__right-side--details-list-item"
-                    v-if="objectType === 'Framework' && object.Published">
+                    v-if="object.Published">
                     <b>Published Date:</b>
                     {{ object.Published }}
                 </div>
                 <!-- approved -->
                 <div
                     class="cass__right-side--details-list-item"
-                    v-if="objectType === 'Framework' && object.Approved">
+                    v-if="object.Approved">
                     <b>Approved Date:</b>
                     {{ object.Approved }}
                 </div>
                 <!-- publisher name -->
                 <div
                     class="cass__right-side--details-list-item"
-                    v-if="objectType === 'Framework' && publisherName">
+                    v-if="publisherName">
                     <b>Publisher:</b>
                     {{ publisherName }}
                 </div>
                 <!-- creator -->
                 <div
                     class="cass__right-side--details-list-item"
-                    v-else-if="objectType === 'Framework' && creatorName">
+                    v-else-if="creatorName">
                     <b>Creator:</b>
                     {{ creatorName }}
                 </div>
@@ -806,10 +806,22 @@ export default {
     },
     computed: {
         objectName: function() {
-            return Thing.getDisplayStringFrom(this.object.name);
+            let name = this.object.name;
+            if (!name && this.object["dcterms:title"]) {
+                name = this.object["dcterms:title"];
+            } else if (!name && this.object["skos:prefLabel"]) {
+                name = this.object["skos:prefLabel"];
+            }
+            return Thing.getDisplayStringFrom(name);
         },
         objectDescription: function() {
-            return Thing.getDisplayStringFrom(this.object.description);
+            let description = this.object.description;
+            if (!description && this.object["dcterms:description"]) {
+                description = this.object["dcterms:description"];
+            } else if (!description && this.object["skos:definition"]) {
+                description = this.object["skos:definition"];
+            }
+            return Thing.getDisplayStringFrom(description);
         },
         objectShortId: function() {
             return this.object.shortId();
@@ -819,6 +831,19 @@ export default {
         },
         objectType: function() {
             return this.object.type;
+        },
+        objectTypeForDisplay: function() {
+            if (this.objectType === 'CreativeWork') {
+                return "Resource";
+            }
+            if (this.objectType === "ConceptScheme") {
+                if (this.queryParams.ceasnDataFields === 'true') {
+                    return "Concept Scheme";
+                } else {
+                    return "Taxonomy";
+                }
+            }
+            return this.objecttype;
         },
         lastModified: function() {
             if (this.object.getTimestamp()) {
@@ -884,6 +909,9 @@ export default {
                 return EcDirectory.getBlocking(this.object.parentDirectory).canEditAny(EcIdentityManager.getMyPks());
             }
             // Object is not in a directory
+            if (this.objectType === 'ConceptScheme') {
+                return false;
+            }
             return true;
         },
         queryParams: function() {
