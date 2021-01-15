@@ -77,7 +77,7 @@
                         <div
                             v-for="item in creativework"
                             :key="item.id"
-                            @click="frameworkClick(item)">
+                            @click="click(item)">
                             {{ item.name }}
                         </div>
                         <div
