@@ -183,6 +183,7 @@
                             :defaultBrowserConfigId="localDefaultBrowserConfigId"
                             :defaultFrameworkConfigId="frameworkConfigId"
                             @set-browser-default="setConfigAsBrowserDefault"
+                            @remove-browser-default-config="removeConfigAsBrowserDefault"
                             @set-framework-default="setConfigAsFrameworkDefault"
                             @show-details="showConfigDetails"
                             @show-delete="showDeleteConfirm" />
@@ -208,7 +209,7 @@
                     :defaultConfigId="defaultConfigId"
                     :defaultBrowserConfig="localDefaultBrowserConfigId"
                     @set-browser-default="setConfigAsBrowserDefault"
-                    @remove-browser-default-config="removeBrowserDefaultConfig"
+                    @remove-browser-default-config="removeConfigAsBrowserDefault"
                     @save="saveCurrentConfig"
                     @cancel="cancelEditCurrentConfig"
                     @back="backFromEditCurrentConfig" />
@@ -1146,6 +1147,12 @@ export default {
             this.defaultBrowserConfigName = bdc.name;
             this.localDefaultBrowserConfigId = configId;
             this.showBrowserConfigSetModal = true;
+        },
+        removeConfigAsBrowserDefault(configId) {
+            this.removeDefaultBrowserConfig();
+            this.defaultBrowserConfigName = '';
+            this.localDefaultBrowserConfigId = '';
+            this.showBrowserConfigSetModal = false;
         },
         setConfigAsFrameworkDefault(configId) {
             let me = this;
