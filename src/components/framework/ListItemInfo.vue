@@ -843,7 +843,7 @@ export default {
                     return "Taxonomy";
                 }
             }
-            return this.objecttype;
+            return this.objectType;
         },
         lastModified: function() {
             if (this.object.getTimestamp()) {
