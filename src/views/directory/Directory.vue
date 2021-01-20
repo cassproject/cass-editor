@@ -385,7 +385,7 @@ export default {
             }
             this.repo.saveTo(c, function() {
                 appLog("Resource saved: " + c.id);
-                me.$store.commit('app/refreshSearch');
+                me.$store.commit('app/refreshSearch', true);
             }, appError);
         }
     },

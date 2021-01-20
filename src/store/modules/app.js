@@ -29,7 +29,7 @@ const state = {
         quickFilters: [],
         applySearchTo: [],
         sortResults: [],
-        refreshSearch: []
+        refreshSearch: false
     },
     modal: {
         framework: '',
