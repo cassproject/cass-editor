@@ -11,8 +11,7 @@
         <div class="buttons">
             <div
                 class="button is-primary"
-                @click="openObject"
-                v-if="objectType !== 'CreativeWork'">
+                @click="openObject">
                 <span>Open {{ objectTypeForDisplay }}</span>
                 <span class="icon">
                     <i class="fa fa-folder-open" />
@@ -278,6 +277,8 @@ export default {
                     this.$router.push({name: "directory"});
                 }
                 this.$store.commit('app/closeRightAside');
+            } else if (this.object.type === "CreativeWork") {
+                window.open(this.object.url, '_blank');
             } else if (this.$store.getters['editor/conceptMode']) {
                 EcConceptScheme.get(this.object.id, function(success) {
                     me.$store.commit('editor/framework', success);
