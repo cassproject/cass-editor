@@ -1,5 +1,13 @@
 <template>
     <div id="directory">
+        <thing-editing
+            v-if="editDirectory"
+            :obj="directory"
+            :repo="repo"
+            :parentNotEditable="queryParams.view==='true'"
+            :profile="directoryProfile"
+            @delete-object="deleteObject"
+            @done-editing-node-event="onDoneEditingNode()" />
         <main-layout>
             <template slot="top">
                 <div class="container is-fullhd">
@@ -72,6 +80,14 @@
                     <h1 class="title is-size-3 has-text-dark">
                         {{ directory.name }}
                     </h1>
+                    <h2>
+                        {{ directory.description }}
+                    </h2>
+                    <div
+                        class="icon is-small"
+                        @click="editDirectory=true">
+                        <i class="fa fa-edit is-size-5" />
+                    </div>
                 </div>
             </template>
             <template slot="body">
@@ -137,7 +153,8 @@ export default {
         MainLayout,
         DirectoryList,
         SearchBar,
-        RightAside: () => import('@/components/framework/RightAside.vue')
+        RightAside: () => import('@/components/framework/RightAside.vue'),
+        ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue')
     },
     data: function() {
         return {
@@ -149,7 +166,8 @@ export default {
             parentObjectClass: 'frameworks-sticky',
             sortBy: null,
             defaultConfig: "",
-            clipStatus: 'ready'
+            clipStatus: 'ready',
+            editDirectory: false
         };
     },
     created: function() {
@@ -241,6 +259,53 @@ export default {
         },
         shareLink: function() {
             return window.location.href.replace('/directory', "?directoryId=" + this.directory.shortId());
+        },
+        directoryProfile: function() {
+            return {
+                "http://schema.org/name": {
+                    "@id": "http://schema.org/name",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Directory"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The name of the directory."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
+                    "isRequired": "true"
+                },
+                "http://schema.org/description": {
+                    "@id": "http://schema.org/description",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Directory"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The description of the directory."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
+                },
+                "@id": {
+                    "@id": "https://schema.cassproject.org/0.4/Framework/id",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The URL of the framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework URL"}],
+                    "readOnly": "true",
+                    "max": 1,
+                    "heading": "Keys"
+                },
+                "primaryProperties": [
+                    "http://schema.org/name",
+                    "http://schema.org/description"
+                ],
+                "secondaryProperties": ["@id"],
+                "tertiaryProperties": []
+            };
+        },
+        changedObject: function() {
+            return this.$store.getters['editor/changedObject'];
         }
     },
     methods: {
@@ -389,7 +454,11 @@ export default {
                 appLog("Resource saved: " + c.id);
                 me.$store.commit('app/refreshSearch', true);
             }, appError);
-        }
+        },
+        onDoneEditingNode: function() {
+            this.editDirectory = false;
+        },
+        deleteObject: function() {}
     },
     mounted: function() {
         if (!this.directory || this.directory === '') {
@@ -442,6 +511,15 @@ export default {
                 if (this.filteredQuickFilters[i].id === "configMatchDefault") {
                     this.filterByConfig = true;
                 }
+            }
+        },
+        changedObject: function() {
+            if (this.changedObject && this.changedObject === this.directory.shortId()) {
+                let me = this;
+                EcRepository.get(this.directory.shortId(), function(dir) {
+                    me.$store.commit('app/selectDirectory', dir);
+                }, appError);
+                this.$store.commit('editor/changedObject', null);
             }
         }
     }
