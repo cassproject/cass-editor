@@ -29,12 +29,42 @@
                                     </span>
                                 </div>
                                 <div
-                                    @click="createSubdirectory"
+                                    @click="createSubdirectory = true"
                                     class="button is-outlined is-primary"
                                     title="Add a new sub-directory to this directory.">
                                     <span class="icon">
                                         <i class="fa fa-folder-plus" />
                                     </span>
+                                </div>
+                                <div
+                                    class="field"
+                                    v-if="createSubdirectory">
+                                    <div class="control">
+                                        <div class="control">
+                                            <input
+                                                class="input"
+                                                placeholder="Name of new directory"
+                                                v-model="subdirectoryName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="field"
+                                    v-if="createSubdirectory">
+                                    <div class="buttons">
+                                        <div
+                                            class="button is-dark is-outlined is-small"
+                                            @click="createSubdirectory = false">
+                                            Cancel
+                                        </div>
+                                        <div
+                                            class="button is-primary is-small"
+                                            :class="subdirectoryName.length === 0 ? 'is-disabled' : ''"
+                                            :disabled="subdirectoryName.length === 0"
+                                            @click="saveNewSubdirectory">
+                                            Create
+                                        </div>
+                                    </div>
                                 </div>
                                 <div
                                     @click="addResource"
@@ -167,7 +197,9 @@ export default {
             sortBy: null,
             defaultConfig: "",
             clipStatus: 'ready',
-            editDirectory: false
+            editDirectory: false,
+            createSubdirectory: false,
+            subdirectoryName: ''
         };
     },
     created: function() {
@@ -389,11 +421,10 @@ export default {
                 this.parentObjectClass = 'frameworks-sticky';
             }
         },
-        createSubdirectory: function() {
+        saveNewSubdirectory: function() {
             let me = this;
             let dir = new EcDirectory();
-            dir.name = "Test Subdirectory Name";
-            dir.description = "Test Subdirectory Description";
+            dir.name = this.subdirectoryName;
             dir.generateId(this.repo.selectedServer);
             dir.parentDirectory = this.directory.shortId();
             if (this.directory.owner) {
@@ -411,6 +442,8 @@ export default {
             // To do: add parentDirectory if button is being used to add a subdirectory
             dir.save(function(success) {
                 appLog("Directory saved: " + dir.id);
+                me.createSubdirectory = false;
+                me.subdirectoryName = '';
                 me.$store.commit('app/selectDirectory', dir);
             }, console.error, this.repo);
         },
