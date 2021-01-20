@@ -27,7 +27,6 @@ export default {
 
 <style lang="scss">
 .cass--main-layout {
-    width:calc(100% - 64px);
     height: 100vh;
     overflow-y: scroll;
 }

@@ -1,9 +1,13 @@
 @import './variables.scss';
-#framework, #concept {
+#framework, #directory, #directoryList, #concept {
     margin-top: 2.6rem !important;
     height: calc(100% - 2.6rem);
 }
-#framework, #concept, #import {
+#framework,
+#concept,
+#directory,
+#directoryList,
+#import {
 .framework-wrapper {
     max-width: 1400px;
     width: 100%;

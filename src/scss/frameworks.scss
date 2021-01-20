@@ -1,5 +1,7 @@
 @import './variables.scss';
 
+#directory,
+#directoryList,
 .framework-list-page {
     .lode__Property {
         padding: .125rem 0rem;
@@ -81,6 +83,8 @@
         }
     }
      .lode__Framework,
+     #directory,
+     #directoryList,
      .framework-list-page,
      .lode__ConceptScheme,
      .lode__Concept {

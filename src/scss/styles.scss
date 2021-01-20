@@ -5,10 +5,12 @@
 html {
     overflow-x: auto;
 }
+
 html {
     font-family: $family-primary;
     max-width: 100vw !important;
     overflow-y: hidden;
+    overflow-x:hidden;
     padding:0;
     margin:0;
     margin: 0px;
@@ -52,6 +54,7 @@ body{
 }
 #frameworks,
 #framework,
+#directory,
 #import,
 #concept,
 #concepts,

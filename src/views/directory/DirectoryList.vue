@@ -1,5 +1,7 @@
 <template>
-    <div class="List">
+    <div
+        id="directoryList"
+        class="List">
         <div
             class="section has-text-centered"
             v-if="firstSearchProcessing">
@@ -12,7 +14,7 @@
                 <ul class="list-ul">
                     <!-- directories -->
                     <li
-                        class="list-ul__item"
+                        class="list-ul__item "
                         v-for="(item) in directory"
                         :key="item.id"
                         @click="click(item)">
@@ -24,8 +26,15 @@
                             :obj="item"
                             @dblclick.native="$emit('dblclick', item)"
                             :view="view"
-                            class="list-thing"
-                            :parentNotEditable="true" />
+                            class="list-thing list-ul__item--directory"
+                            :parentNotEditable="true">
+                            <template #thingIcon>
+                                <span class="icon">
+                                    <i
+                                        class="fa fa-folder" />
+                                </span>
+                            </template>
+                        </Thing>
                         <div
                             v-if="view !== 'search'"
                             class="icon has-text-primary arrow-icon">
@@ -34,7 +43,7 @@
                     </li>
                     <!-- frameworks -->
                     <li
-                        class="list-ul__item"
+                        class="list-ul__item "
                         v-for="(item) in framework"
                         :key="item.id"
                         @click="click(item)">
@@ -46,8 +55,16 @@
                             :obj="item"
                             @dblclick.native="$emit('dblclick', item)"
                             :view="view"
-                            class="list-thing"
-                            :parentNotEditable="true" />
+                            class="list-thing list-ul__item--framework"
+                            :parentNotEditable="true">
+                            <template #thingIcon>
+                                <span class="icon">
+                                    <i
+                                        title="Framework"
+                                        class="fa fa-file-alt" />
+                                </span>
+                            </template>
+                        </Thing>
                         <div
                             v-if="view !== 'search'"
                             class="icon has-text-primary arrow-icon">
@@ -56,7 +73,7 @@
                     </li>
                     <!-- After the framework/concept scheme search results, show competencies/concepts -->
                     <li
-                        class="list-ul__item"
+                        class="list-ul__item "
                         v-for="(item) in competency"
                         :key="item.id"
                         @click="competencyClick(item)">
@@ -67,8 +84,25 @@
                             :obj="item"
                             @dblclick.native="$emit('dblclick', item)"
                             :view="view"
-                            class="list-thing"
-                            :parentNotEditable="true" />
+                            class="list-thing list-ul__item--object"
+                            :parentNotEditable="true">
+                            <template #thingIcon>
+                                <span class="icon">
+                                    <i
+                                        title="Cocepts"
+                                        v-if="item.type === 'Concepts'"
+                                        class="fa fa-book" />
+                                    <i
+                                        title="Framework"
+                                        v-else-if="item.type === 'Framework'"
+                                        class="fa fa-file-alt" />
+                                    <i
+                                        title="Competency"
+                                        v-else-if="item.type === 'Competency'"
+                                        class="fa fa-list-alt" />
+                                </span>
+                            </template>
+                        </Thing>
                         <div
                             v-if="view !== 'search'"
                             class="icon has-text-primary arrow-icon">
@@ -76,11 +110,13 @@
                         </div>
                     </li>
                     <!-- Resources -->
-                    <li>
+                    <li
+                        v-for="item in creativework"
+                        :key="item.id"
+                        @click="click(item)"
+                        class="list-ul__item">
                         <div
-                            v-for="item in creativework"
-                            :key="item.id"
-                            @click="click(item)">
+                            class="list-ul__item--resource">
                             {{ item.name }}
                         </div>
                         <div
@@ -519,3 +555,37 @@ export default {
     }
 };
 </script>
+
+
+<style lang="scss">
+    @import './../../scss/frameworks.scss';
+#directoryList {
+    .list-ul__item {
+        display: flex !important;
+        width: 100%;
+        padding: .25rem;
+        .lode__thing {
+            display: flex;
+            width: 100%;
+            .lode__Framework {
+                .lode__type {
+                    display: none !important;
+                }
+            }
+            .headings-group {
+                .language {
+                    display: none !important;
+                }
+            }
+        }
+    }
+    .list-ul__item--directory {
+    }
+    .list-ul__item--resource {
+        display: flex;
+        width: 100%;
+        padding: .0rem;
+        width: 100%;
+    }
+}
+</style>
