@@ -2,9 +2,9 @@
     <div class="modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title">
-                <span class="title has-text-white">Share {{ conceptOrFramework }}</span>
+                <span class="title has-text-white">Share {{ objectType }}</span>
                 <br><span class="subtitle has-text-white has-text-weight-medium">
-                    Sharing settings for {{ frameworkName }} {{ conceptOrFramework }}
+                    Sharing settings for {{ frameworkName }} {{ objectType }}
                 </span>
             </p>
             <button
@@ -32,8 +32,8 @@
                 Confirm make private
             </h2>
             <p>
-                Making this {{ conceptOrFramework }} private means only those users/groups in
-                your access list will have the ability to read, write, or edit this {{ conceptOrFramework }}.
+                Making this {{ objectType }} private means only those users/groups in
+                your access list will have the ability to read, write, or edit this {{ objectType }}.
             </p>
         </section>
         <!-- confirm make public -->
@@ -44,8 +44,8 @@
                 Confirm make public
             </h2>
             <p>
-                Making this {{ conceptOrFramework }} public means anyone with a link can access and read this {{ conceptOrFramework }}.
-                Only those with admin access will be able to edit or delete the {{ conceptOrFramework }}.
+                Making this {{ objectType }} public means anyone with a link can access and read this {{ objectType }}.
+                Only those with admin access will be able to edit or delete the {{ objectType }}.
             </p>
         </section>
         <section
@@ -89,7 +89,7 @@
                 v-if="canEditFramework && userManagementEnabled">
                 <!-- end share link -->
                 <div v-if="ownerCount === 0">
-                    To add users or groups or to make your {{ conceptOrFramework }} private, first add yourself as an owner.
+                    To add users or groups or to make your {{ objectType }} private, first add yourself as an owner.
                     <button @click="makeCurrentUserAnOwner">
                         Make me an owner
                     </button>
@@ -340,7 +340,6 @@ export default {
             confirmMakePrivate: false,
             confirmMakePublic: false,
             clipStatus: 'ready',
-            frameworkId: this.$store.state.editor.framework.shortId(),
             viewOptions: [
                 {
                     label: 'Admin',
@@ -384,6 +383,9 @@ export default {
             return false;
         },
         shareableFrameworkInEditor: function() {
+            if (this.directory) {
+                return window.location.href.replace('/directory', "?directoryId=" + this.directory.shortId());
+            }
             if (this.$store.getters['editor/conceptMode'] === true) {
                 return window.location.href.replace('/conceptScheme', "?concepts=true&frameworkId=" + this.frameworkId);
             }
@@ -392,7 +394,19 @@ export default {
         framework: function() {
             return this.$store.state.editor.framework;
         },
+        frameworkId: function() {
+            if (this.framework) {
+                return this.framework.shortId();
+            }
+            return null;
+        },
+        directory: function() {
+            return this.$store.getters['app/selectedDirectory'];
+        },
         frameworkName: function() {
+            if (this.directory) {
+                return this.directory.name;
+            }
             if (this.framework.name) {
                 return this.framework.getName();
             } else {
@@ -408,7 +422,9 @@ export default {
             }
             if (this.queryParams && this.queryParams.view === 'true') {
                 return false;
-            } else if (!this.framework.canEditAny(EcIdentityManager.getMyPks())) {
+            } else if (this.framework && !this.framework.canEditAny(EcIdentityManager.getMyPks())) {
+                return false;
+            } else if (this.directory && !this.directory.canEditAny(EcIdentityManager.getMyPks())) {
                 return false;
             }
             return true;
@@ -416,7 +432,10 @@ export default {
         loggedOnPerson: function() {
             return this.$store.getters['user/loggedOnPerson'];
         },
-        conceptOrFramework: function() {
+        objectType: function() {
+            if (this.$route.name === 'directory') {
+                return 'directory';
+            }
             return this.$store.getters['editor/conceptMode'] ? 'concept scheme' : 'framework';
         },
         shareEnabled: function() {
@@ -443,9 +462,10 @@ export default {
             }
         },
         checkIsPrivate: function() {
-            delete EcRepository.cache[this.framework.shortId()];
-            if (EcRepository.getBlocking(this.framework.shortId())) {
-                if (EcRepository.getBlocking(this.framework.shortId()).type === "EncryptedValue") {
+            let obj = this.directory ? this.directory : this.framework;
+            delete EcRepository.cache[obj.shortId()];
+            if (EcRepository.getBlocking(obj.shortId())) {
+                if (EcRepository.getBlocking(obj.shortId()).type === "EncryptedValue") {
                     this.privateFramework = true;
                     this.viewOptions[1].disabled = false;
                     this.viewOptions[1].title = null;
@@ -453,7 +473,7 @@ export default {
                 } else {
                     this.privateFramework = false;
                     this.viewOptions[1].disabled = true;
-                    this.viewOptions[1].title = 'Make the ' + this.conceptOrFramework + ' private to add users/groups with view access';
+                    this.viewOptions[1].title = 'Make the ' + this.objectType + ' private to add users/groups with view access';
                     if (this.ownerCount < 2) {
                         this.cantRemoveCurrentUserAsOwner = false;
                     }
@@ -479,9 +499,10 @@ export default {
         },
         getCurrentOwnersAndReaders: function() {
             var me = this;
-            if (this.framework.owner) {
-                for (var i = 0; i < this.framework.owner.length; i++) {
-                    var pk = EcPk.fromPem(this.framework.owner[i]);
+            let obj = this.directory ? this.directory : this.framework;
+            if (obj.owner) {
+                for (var i = 0; i < obj.owner.length; i++) {
+                    var pk = EcPk.fromPem(obj.owner[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         appLog(success);
                         if (success) {
@@ -508,10 +529,10 @@ export default {
                     });
                 }
             }
-            if (this.framework.reader) {
+            if (obj.reader) {
                 this.cantRemoveCurrentUserAsOwner = true;
-                for (var i = 0; i < this.framework.reader.length; i++) {
-                    var pk = EcPk.fromPem(this.framework.reader[i]);
+                for (var i = 0; i < obj.reader.length; i++) {
+                    var pk = EcPk.fromPem(obj.reader[i]);
                     EcPerson.getByPk(window.repo, pk, function(success) {
                         appLog(success);
                         if (success) {
@@ -607,6 +628,9 @@ export default {
         },
         addAndRemoveFromAllObjects: function() {
             let me = this;
+            if (this.directory) {
+                return; // to do
+            }
             if (this.$store.getters['editor/conceptMode'] === true) {
                 return this.addAndRemoveFromAllConceptObjects();
             }
@@ -738,6 +762,9 @@ export default {
             var me = this;
             this.isProcessing = true;
             var framework = this.framework;
+            if (this.directory) {
+                return; // to do
+            }
             if (this.$store.getters['editor/conceptMode'] === true) {
                 this.handleMakePrivateConceptScheme();
             } else {
@@ -778,6 +805,9 @@ export default {
             var me = this;
             this.isProcessing = true;
             var framework = this.framework;
+            if (this.directory) {
+                return; // to do
+            }
             if (this.$store.getters['editor/conceptMode'] === true) {
                 this.handleMakePublicConceptScheme();
             } else {
@@ -963,6 +993,9 @@ export default {
         makeCurrentUserAnOwner: function() {
             let me = this;
             this.isProcessing = true;
+            if (this.directory) {
+                return; // to do
+            }
             if (this.$store.getters['editor/conceptMode'] === true) {
                 return this.makeCurrentUserAnOwnerForConceptObjects();
             }

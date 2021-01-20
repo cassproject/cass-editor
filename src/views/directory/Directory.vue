@@ -1,7 +1,7 @@
 <template>
     <div id="directory">
         <thing-editing
-            v-if="editDirectory"
+            v-if="editDirectory && canEditDirectory"
             :obj="directory"
             :repo="repo"
             :parentNotEditable="queryParams.view==='true'"
@@ -23,6 +23,7 @@
                             <div class="buttons is-right">
                                 <div
                                     @click="$emit('create-new-framework', directory)"
+                                    v-if="canEditDirectory"
                                     class="button is-outlined is-primary">
                                     <span class="icon">
                                         <i class="fa fa-plus" />
@@ -30,6 +31,7 @@
                                 </div>
                                 <div
                                     @click="createSubdirectory = true"
+                                    v-if="canEditDirectory"
                                     class="button is-outlined is-primary"
                                     title="Add a new sub-directory to this directory.">
                                     <span class="icon">
@@ -68,6 +70,7 @@
                                 </div>
                                 <div
                                     @click="addResource"
+                                    v-if="canEditDirectory"
                                     class="button is-outlined is-primary"
                                     title="Add a resource to this directory.">
                                     <span class="icon">
@@ -98,6 +101,19 @@
                                     <i
                                         v-if="clipStatus === 'error'"
                                         class="fa fa-times" />
+                                </div>
+                                <div
+                                    class="column is-narrow"
+                                    v-if="showUserManagementIcon">
+                                    <div
+                                        v-if="loggedIn"
+                                        title="Manage users"
+                                        @click="showManageUsersModal"
+                                        class="button is-text has-text-dark ">
+                                        <span class="icon">
+                                            <i class="fas fa-users" />
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -215,6 +231,20 @@ export default {
         },
         directory: function() {
             return this.$store.getters['app/selectedDirectory'];
+        },
+        canEditDirectory: function() {
+            if (this.queryParams && this.queryParams.view === 'true') {
+                return false;
+            } else if (!this.directory.canEditAny(EcIdentityManager.getMyPks())) {
+                return false;
+            }
+            return true;
+        },
+        loggedIn: function() {
+            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return true;
+            }
+            return false;
         },
         searchingInDirectory: {
             get() {
@@ -338,6 +368,21 @@ export default {
         },
         changedObject: function() {
             return this.$store.getters['editor/changedObject'];
+        },
+        shareEnabled: function() {
+            return this.$store.state.featuresEnabled.shareEnabled;
+        },
+        userManagementEnabled: function() {
+            return this.$store.state.featuresEnabled.userManagementEnabled;
+        },
+        showUserManagementIcon: function() {
+            if (!this.shareEnabled && !this.canEditDirectory) {
+                return false;
+            }
+            if (!this.shareEnabled && !this.userManagementEnabled) {
+                return false;
+            }
+            return true;
         }
     },
     methods: {
@@ -533,6 +578,9 @@ export default {
                     }
                 }
             }, appLog);
+        },
+        showManageUsersModal() {
+            this.$store.commit('app/showModal', {component: 'Share'});
         }
     },
     mounted: function() {
