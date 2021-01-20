@@ -458,7 +458,49 @@ export default {
         onDoneEditingNode: function() {
             this.editDirectory = false;
         },
-        deleteObject: function() {}
+        deleteObject: function(obj) {
+            appLog("deleting " + obj.id);
+            var me = this;
+            this.repo.search("(directory:\"" + obj.shortId() + "\" OR parentDirectory:\"" + obj.shortId() + "\")", function() {}, function(success) {
+                new EcAsyncHelper().each(success, function(obj, done) {
+                    if (obj.type === 'Framework') {
+                        me.deleteFramework(obj);
+                    } else if (obj.type === 'CreativeWork') {
+                        me.repo.deleteRegistered(obj, appLog, appError);
+                    } else if (obj.type === "Directory") {
+                        me.deleteObject(obj);
+                    }
+                    done();
+                }, function(objs) {
+                    me.repo.deleteRegistered(obj, appLog, appError);
+                    if (obj.shortId() === me.directory.shortId()) {
+                        me.$router.push({name: "frameworks"});
+                    }
+                });
+            }, appError);
+        },
+        deleteFramework: function(framework) {
+            let me = this;
+            this.repo.deleteRegistered(framework, function(success) {
+                me.spitEvent("frameworkDeleted", framework.shortId(), "directoryPage");
+                // Delete the framework, delete all non-used stuff.
+                if (framework.competency != null) {
+                    for (var i = 0; i < framework.competency.length; i++) {
+                        me.conditionalDelete(framework.competency[i]);
+                    }
+                }
+                if (framework.relation != null) {
+                    for (var i = 0; i < framework.relation.length; i++) {
+                        me.conditionalDelete(framework.relation[i]);
+                    }
+                }
+                if (framework.level != null) {
+                    for (var i = 0; i < framework.level.length; i++) {
+                        me.conditionalDelete(framework.level[i]);
+                    }
+                }
+            }, appLog);
+        }
     },
     mounted: function() {
         if (!this.directory || this.directory === '') {
