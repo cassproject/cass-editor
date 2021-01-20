@@ -170,6 +170,9 @@ export default {
                 this.updateSearchTerm(val);
             }
         },
+        storeSearchTerm: function() {
+            this.searchTerm = this.storeSearchTerm;
+        },
         basicSort: function(val) {
             appLog(val);
             this.$store.commit("app/sortResults", {id: val});
@@ -253,6 +256,9 @@ export default {
                 return true;
             }
             return false;
+        },
+        storeSearchTerm: function() {
+            return this.$store.getters['app/searchTerm'];
         }
     }
 };

@@ -506,6 +506,7 @@ export default {
         if (!this.directory || this.directory === '') {
             this.$router.push({name: "frameworks"});
         }
+        this.$store.commit('app/searchTerm', '');
         // Keep sorting/filtering in sync with the store on back button
         if (this.sortResults.id === "lastEdited") {
             this.sortBy = "schema:dateModified";
