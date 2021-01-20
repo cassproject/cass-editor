@@ -373,7 +373,8 @@ export default {
             cantRemoveCurrentUserAsOwner: false,
             ownerCount: 0,
             decryptingConcepts: false,
-            toSave: []
+            toSave: [],
+            frameworksToProcess: 0
         };
     },
     computed: {
@@ -627,16 +628,82 @@ export default {
                 this.addOwner.push(EcIdentityManager.ids[0].ppk.toPk());
             }
         },
-        addAndRemoveFromAllObjects: function() {
+        multiput: function(toSave, callback) {
             let me = this;
+            this.frameworksToProcess--;
+            if (this.frameworksToProcess <= 0) {
+                this.repo.multiput(toSave, function(success) {
+                    me.resetVariables();
+                    me.getCurrentOwnersAndReaders();
+                    if (callback) {
+                        callback();
+                    }
+                }, appError);
+            }
+        },
+        addAndRemoveFromAllObjects: function() {
             if (this.directory) {
-                return; // to do
+                return this.addAndRemoveFromAllDirectoryObjects(this.directory);
             }
             if (this.$store.getters['editor/conceptMode'] === true) {
                 return this.addAndRemoveFromAllConceptObjects();
             }
-            if (this.framework.competency && this.framework.competency.length > 0) {
-                new EcAsyncHelper().each(this.framework.competency, function(competencyId, done) {
+            return this.addAndRemoveFromAllFrameworkObjects(this.framework);
+        },
+        addAndRemoveFromAllDirectoryObjects: function(directory) {
+            let me = this;
+            for (let i = 0; i < me.removeReader.length; i++) {
+                directory.removeReader(me.removeReader[i]);
+            }
+            for (let i = 0; i < me.removeOwner.length; i++) {
+                directory.removeOwner(me.removeOwner[i]);
+            }
+            for (let i = 0; i < me.addReader.length; i++) {
+                directory.addReader(me.addReader[i]);
+            }
+            for (let i = 0; i < me.addOwner.length; i++) {
+                directory.addOwner(me.addOwner[i]);
+            }
+            me.toSave.push(directory);
+            this.repo.search("(directory:\"" + directory.shortId() + "\" OR parentDirectory:\"" + directory.shortId() + "\")", function() {}, function(success) {
+                me.frameworksToProcess += success.length;
+                new EcAsyncHelper().each(success, function(obj, done) {
+                    if (obj.type === 'Framework') {
+                        me.addAndRemoveFromAllFrameworkObjects(obj);
+                    } else if (obj.type === 'CreativeWork') {
+                        me.addAndRemoveFromResource(obj);
+                    } else if (obj.type === 'Directory') {
+                        me.frameworksToProcess--;
+                        me.addAndRemoveFromAllDirectoryObjects(obj);
+                    }
+                    done();
+                }, function(ids) {
+                    if (ids.length === 0) {
+                        me.multiput(me.toSave);
+                    }
+                });
+            }, appError);
+        },
+        addAndRemoveFromResource: function(resource) {
+            for (let i = 0; i < me.removeReader.length; i++) {
+                resource.removeReader(me.removeReader[i]);
+            }
+            for (let i = 0; i < me.removeOwner.length; i++) {
+                resource.removeOwner(me.removeOwner[i]);
+            }
+            for (let i = 0; i < me.addReader.length; i++) {
+                resource.addReader(me.addReader[i]);
+            }
+            for (let i = 0; i < me.addOwner.length; i++) {
+                resource.addOwner(me.addOwner[i]);
+            }
+            this.toSave.push(resource);
+            this.multiput(this.toSave);
+        },
+        addAndRemoveFromAllFrameworkObjects: function(framework, passedInToSave) {
+            let me = this;
+            if (framework.competency && framework.competency.length > 0) {
+                new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
                     EcCompetency.get(competencyId, function(c) {
                         for (let i = 0; i < me.removeReader.length; i++) {
                             c.removeReader(me.removeReader[i]);
@@ -654,8 +721,8 @@ export default {
                         done();
                     }, done);
                 }, function(competencyIds) {
-                    if (me.framework.relation && me.framework.relation.length > 0) {
-                        new EcAsyncHelper().each(me.framework.relation, function(relationId, done) {
+                    if (framework.relation && framework.relation.length > 0) {
+                        new EcAsyncHelper().each(framework.relation, function(relationId, done) {
                             EcAlignment.get(relationId, function(r) {
                                 for (let i = 0; i < me.removeReader.length; i++) {
                                     r.removeReader(me.removeReader[i]);
@@ -673,18 +740,17 @@ export default {
                                 done();
                             }, done);
                         }, function(relationIds) {
-                            me.addAndRemoveFromFrameworkObject();
+                            me.addAndRemoveFromFrameworkObject(framework);
                         });
                     } else {
-                        me.addAndRemoveFromFrameworkObject();
+                        me.addAndRemoveFromFrameworkObject(framework);
                     }
                 });
             } else {
-                me.addAndRemoveFromFrameworkObject();
+                me.addAndRemoveFromFrameworkObject(framework);
             }
         },
-        addAndRemoveFromFrameworkObject: function() {
-            let f = this.framework;
+        addAndRemoveFromFrameworkObject: function(f) {
             let me = this;
             for (let i = 0; i < me.removeReader.length; i++) {
                 f.removeReader(me.removeReader[i]);
@@ -699,10 +765,10 @@ export default {
                 f.addOwner(me.addOwner[i]);
             }
             me.toSave.push(f);
-            me.repo.multiput(me.toSave, function() {
-                me.resetVariables();
-                me.$store.commit('editor/framework', f);
-                me.getCurrentOwnersAndReaders();
+            me.multiput(me.toSave, function() {
+                if (me.framework) {
+                    me.$store.commit('editor/framework', f);
+                }
             }, function() {});
         },
         addAndRemoveFromAllConceptObjects: function() {
