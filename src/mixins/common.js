@@ -208,6 +208,8 @@ export default {
                     data = JSON.parse(data);
                     if (data['ceterms:name']) {
                         name = data['ceterms:name'];
+                    } else if (data['ceasn:competencyText']) {
+                        name = data['ceasn:competencyText'];
                     } else if (data['name']) {
                         name = data['name'];
                     } else if (data['schema:name']) {

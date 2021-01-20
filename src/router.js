@@ -18,9 +18,9 @@ export default new Router({
             path: '/',
             name: 'welcome',
             components: {
-                default: () => import('./views/Welcome.vue'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "welcome" */ './views/Welcome.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             },
             alias: '/cass-editor/'
         },
@@ -28,158 +28,158 @@ export default new Router({
             path: '/frameworks',
             name: 'frameworks',
             components: {
-                default: () => import('./views/framework/Frameworks.vue'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "frameworks" */ './views/framework/Frameworks.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/concepts',
             name: 'concepts',
             components: {
-                default: () => import('./views/framework/Frameworks.vue'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "frameworks" */ './views/framework/Frameworks.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/login',
             name: 'login',
-            component: () => import('./views/login/Login.vue')
+            component: () => import(/* webpackChunkName: "login" */ './views/login/Login.vue')
         },
         {
             path: '/configuration',
             name: 'configuration',
             components: {
-                default: () => import('./views/configuration/ConfigurationEditor'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "configurationEditor" */ './views/configuration/ConfigurationEditor'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/users',
             name: 'users',
             components: {
-                default: () => import('./views/usersGroups/UserGroupEditor'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "userGroupEditor" */ './views/usersGroups/UserGroupEditor'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/pluginManager',
             name: 'pluginManager',
             components: {
-                default: () => import('./views/plugins/PluginManager'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "pluginManager" */ './views/plugins/PluginManager'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/crosswalk',
             name: 'crosswalk',
             components: {
-                default: () => import('./views/framework/Crosswalk'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "crosswalk" */ './views/framework/Crosswalk'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/about',
             name: 'about',
             components: {
-                default: () => import('./views/About.vue'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "about" */ './views/About.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/framework',
             name: 'framework',
             components: {
-                default: () => import('./views/framework/Framework.vue'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "framework" */ './views/framework/Framework.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/import',
             name: 'import',
             components: {
-                default: () => import('./views/framework/Import.vue'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "import" */ './views/framework/Import.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/organizations',
             name: 'organizations',
             components: {
-                default: () => import('./views/organization/Organizations.vue'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "organizations" */ './views/organization/Organizations.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/organization',
             name: 'organization',
             components: {
-                default: () => import('./views/organization/Organization.vue'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "organization" */ './views/organization/Organization.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/test',
             name: 'test',
-            component: () => import('./lode/views/Test.vue')
+            component: () => import(/* webpackChunkName: "test" */ './lode/views/Test.vue')
         },
         {
             path: '/pluginContainer',
             name: 'pluginContainer',
             components: {
-                default: () => import('./views/plugins/PluginContainer.vue'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "pluginContainer" */ './views/plugins/PluginContainer.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/conceptScheme',
             name: 'conceptScheme',
             components: {
-                default: () => import('./views/conceptScheme/ConceptScheme.vue'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "conceptScheme" */ './views/conceptScheme/ConceptScheme.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         },
         {
             path: '/403',
             name: 'Forbidden',
-            component: () => import('./views/Forbidden.vue')
+            component: () => import(/* webpackChunkName: "forbidden" */ './views/Forbidden.vue')
         },
         {
             path: '/500',
             name: 'InternalError',
-            component: () => import('./views/InternalError.vue')
+            component: () => import(/* webpackChunkName: "internalError" */ './views/InternalError.vue')
         },
         {
             path: '/vlrc',
             name: 'vlrc',
-            component: () => import('./legacy/VlrcIframe.vue')
+            component: () => import(/* webpackChunkName: "vlrc" */ './legacy/VlrcIframe.vue')
         },
         {
             path: '/gap-analysis',
             name: 'gap-analysis',
-            component: () => import('./legacy/GapAnalysisIframe.vue')
+            component: () => import(/* webpackChunkName: "gapAnalysis" */ './legacy/GapAnalysisIframe.vue')
         },
         {
             path: '/profile',
             name: 'profile',
-            component: () => import('./legacy/ProfileIframe.vue')
+            component: () => import(/* webpackChunkName: "profile" */ './legacy/ProfileIframe.vue')
         },
         {
             path: '/viewer',
             name: 'viewer',
-            component: () => import('./legacy/ViewerIframe.vue')
+            component: () => import(/* webpackChunkName: "viewer" */ './legacy/ViewerIframe.vue')
         },
         {
             path: '/directory',

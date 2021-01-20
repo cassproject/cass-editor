@@ -225,7 +225,7 @@
                 class="has-text-white"
                 v-if="showSideNav">
                 <a
-                    href="/docs/competency-and-framework-management/"
+                    href="docs/competency-and-framework-management/"
                     target="_blank">
                     <span class="icon">
                         <i class="fas fa-book" />
@@ -312,7 +312,7 @@
                 class="has-text-white"
                 v-if="showSideNav">
                 <a
-                    href="/docs/taxonomies/"
+                    href="docs/taxonomies/"
                     target="_blank">
                     <span class="icon">
                         <i class="fas fa-book" />

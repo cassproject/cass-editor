@@ -372,7 +372,8 @@ export default {
             conceptsToProcess: 0,
             cantRemoveCurrentUserAsOwner: false,
             ownerCount: 0,
-            decryptingConcepts: false
+            decryptingConcepts: false,
+            toSave: []
         };
     },
     computed: {
@@ -649,7 +650,8 @@ export default {
                         for (let i = 0; i < me.addOwner.length; i++) {
                             c.addOwner(me.addOwner[i]);
                         }
-                        me.repo.saveTo(c, done, done);
+                        me.toSave.push(c);
+                        done();
                     }, done);
                 }, function(competencyIds) {
                     if (me.framework.relation && me.framework.relation.length > 0) {
@@ -667,7 +669,8 @@ export default {
                                 for (let i = 0; i < me.addOwner.length; i++) {
                                     r.addOwner(me.addOwner[i]);
                                 }
-                                me.repo.saveTo(r, done, done);
+                                me.toSave.push(r);
+                                done();
                             }, done);
                         }, function(relationIds) {
                             me.addAndRemoveFromFrameworkObject();
@@ -695,7 +698,8 @@ export default {
             for (let i = 0; i < me.addOwner.length; i++) {
                 f.addOwner(me.addOwner[i]);
             }
-            me.repo.saveTo(f, function() {
+            me.toSave.push(f);
+            me.repo.multiput(me.toSave, function() {
                 me.resetVariables();
                 me.$store.commit('editor/framework', f);
                 me.getCurrentOwnersAndReaders();
@@ -727,7 +731,8 @@ export default {
                         me.addAndRemoveFromConceptArray(c["skos:narrower"]);
                     }
                     me.conceptsProcessed++;
-                    me.repo.saveTo(c, done, done);
+                    me.toSave.push(c);
+                    done();
                 }, done);
             }, function() {});
         },
@@ -757,6 +762,8 @@ export default {
             }
             me.ownerCount = 0;
             me.selectViewOrAdmin = 'admin';
+            me.toSave.splice(0, me.toSave.length);
+            me.decryptingConcepts = false;
         },
         makePrivate: function() {
             var me = this;
@@ -775,8 +782,10 @@ export default {
                             if (c.canEditAny(EcIdentityManager.getMyPks())) {
                                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                                 c["schema:dateModified"] = new Date().toISOString();
-                                c = EcEncryptedValue.toEncryptedValue(c);
-                                me.repo.saveTo(c, done, done);
+                                EcEncryptedValue.toEncryptedValueAsync(c, false, function(ec) {
+                                    me.toSave.push(ec);
+                                    done();
+                                }, done);
                             } else {
                                 done();
                             }
@@ -786,8 +795,10 @@ export default {
                             new EcAsyncHelper().each(framework.relation, function(relationId, done) {
                                 EcAlignment.get(relationId, function(r) {
                                     r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                                    r = EcEncryptedValue.toEncryptedValue(r);
-                                    me.repo.saveTo(r, done, done);
+                                    EcEncryptedValue.toEncryptedValueAsync(r, false, function(er) {
+                                        me.toSave.push(er);
+                                        done();
+                                    }, done);
                                 }, done);
                             }, function(relationIds) {
                                 me.encryptFramework(framework);
@@ -818,9 +829,8 @@ export default {
                 f["schema:dateModified"] = new Date().toISOString();
                 delete f.reader;
                 EcEncryptedValue.encryptOnSave(f.id, false);
-                me.repo.saveTo(f, function() {
-                    me.$store.commit('editor/framework', f);
-                }, appError);
+                me.toSave.push(f);
+                me.$store.commit('editor/framework', f);
                 framework = f;
                 if (framework.competency && framework.competency.length > 0) {
                     new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
@@ -838,7 +848,8 @@ export default {
                                 c["schema:dateModified"] = new Date().toISOString();
                                 delete c.reader;
                                 EcEncryptedValue.encryptOnSave(c.id, false);
-                                me.repo.saveTo(c, done, done);
+                                me.toSave.push(c);
+                                done();
                             } else {
                                 done();
                             }
@@ -858,7 +869,8 @@ export default {
                                     r.copyFrom(v.decryptIntoObject());
                                     delete r.reader;
                                     EcEncryptedValue.encryptOnSave(r.id, false);
-                                    me.repo.saveTo(r, done, done);
+                                    me.toSave.push(r);
+                                    done();
                                 }, done);
                             }, function(relationIds) {
                                 me.finishedMakingPublic();
@@ -873,10 +885,13 @@ export default {
             }
         },
         finishedMakingPublic: function() {
-            this.confirmMakePublic = false;
-            this.isProcessing = false;
-            this.resetVariables();
-            this.getCurrentOwnersAndReaders();
+            let me = this;
+            this.repo.multiput(this.toSave, function() {
+                me.confirmMakePublic = false;
+                me.isProcessing = false;
+                me.resetVariables();
+                me.getCurrentOwnersAndReaders();
+            }, appError);
         },
         encryptFramework: function(framework) {
             var me = this;
@@ -886,11 +901,14 @@ export default {
             // Make sure new owner gets into store
             this.$store.commit('editor/framework', f);
             f["schema:dateModified"] = new Date().toISOString();
-            f = EcEncryptedValue.toEncryptedValue(f);
-            this.repo.saveTo(f, function() {
-                me.confirmMakePrivate = false;
-                me.cantRemoveCurrentUserAsOwner = true;
-                me.isProcessing = false;
+            EcEncryptedValue.toEncryptedValueAsync(f, false, function(ef) {
+                me.toSave.push(ef);
+                me.repo.multiput(me.toSave, function() {
+                    me.confirmMakePrivate = false;
+                    me.cantRemoveCurrentUserAsOwner = true;
+                    me.isProcessing = false;
+                    me.toSave.splice(0, me.toSave.length);
+                }, appError);
             }, appError);
         },
         handleMakePrivateConceptScheme: function() {
@@ -905,14 +923,16 @@ export default {
             cs["schema:dateModified"] = new Date().toISOString();
             cs = EcEncryptedValue.toEncryptedValue(cs);
             cs["dcterms:title"] = name;
-            me.repo.saveTo(cs, function() {
-                if (framework["skos:hasTopConcept"]) {
-                    me.encryptConcepts(framework);
-                } else {
+            this.toSave.push(cs);
+            if (framework["skos:hasTopConcept"]) {
+                this.encryptConcepts(framework);
+            } else {
+                this.repo.multiput(this.toSave, function() {
                     me.confirmMakePrivate = false;
                     me.isProcessing = false;
-                }
-            }, appError);
+                    me.toSave.splice(0, me.toSave.length);
+                }, appError);
+            }
         },
         handleMakePublicConceptScheme: function() {
             var me = this;
@@ -929,17 +949,15 @@ export default {
             EcEncryptedValue.encryptOnSave(cs.id, false);
             cs["schema:dateModified"] = new Date().toISOString();
             me.decryptingConcepts = true;
-            me.repo.saveTo(cs, function() {
-                me.$store.commit('editor/framework', cs);
-                if (cs["skos:hasTopConcept"]) {
-                    me.decryptConcepts(cs);
-                } else {
-                    me.finishedMakingPublic();
-                }
-            }, appError);
+            me.toSave.push(cs);
+            me.$store.commit('editor/framework', cs);
+            if (cs["skos:hasTopConcept"]) {
+                me.decryptConcepts(cs);
+            } else {
+                me.finishedMakingPublic();
+            }
         },
         encryptConcepts: function(c) {
-            var toSave = [];
             var me = this;
             var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
@@ -952,15 +970,15 @@ export default {
                     if (EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
                         concept = EcEncryptedValue.toEncryptedValue(concept);
                     }
-                    toSave.push(concept);
+                    me.toSave.push(concept);
                     done();
                 }, done);
             }, function(conceptIds) {
-                for (var i = 0; i < toSave.length; i++) {
-                    me.repo.saveTo(toSave[i], function() {}, appError);
-                }
-                me.confirmMakePrivate = false;
-                me.isProcessing = false;
+                me.repo.multiput(me.toSave, function() {
+                    me.confirmMakePrivate = false;
+                    me.isProcessing = false;
+                    me.toSave.splice(0, me.toSave.length);
+                }, appError);
             });
         },
         decryptConcepts: function(c) {
@@ -985,7 +1003,8 @@ export default {
                     }
                     concept["schema:dateModified"] = new Date().toISOString();
                     me.conceptsProcessed++;
-                    me.repo.saveTo(concept, done, done);
+                    me.toSave.push(concept);
+                    done();
                 }, done);
             }, function(conceptIds) {
             });
@@ -1003,14 +1022,16 @@ export default {
                 new EcAsyncHelper().each(this.framework.competency, function(competencyId, done) {
                     EcCompetency.get(competencyId, function(c) {
                         c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                        me.repo.saveTo(c, done, done);
+                        me.toSave.push(c);
+                        done();
                     }, done);
                 }, function(competencyIds) {
                     if (me.framework.relation && me.framework.relation.length > 0) {
                         new EcAsyncHelper().each(me.framework.relation, function(relationId, done) {
                             EcAlignment.get(relationId, function(r) {
                                 r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                                me.repo.saveTo(r, done, done);
+                                me.toSave.push(r);
+                                done();
                             }, done);
                         }, function(relationIds) {
                             me.makeCurrentUserFrameworkOwner();
@@ -1027,7 +1048,8 @@ export default {
             let f = this.framework;
             let me = this;
             f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-            me.repo.saveTo(f, function() {
+            me.toSave.push(f);
+            me.repo.multiput(me.toSave, function() {
                 me.resetVariables();
                 me.$store.commit('editor/framework', f);
                 me.getCurrentOwnersAndReaders();
@@ -1045,10 +1067,11 @@ export default {
                 EcConcept.get(conceptId, function(c) {
                     c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                     if (c["skos:narrower"]) {
-                        me.addAndRemoveFromConceptArray(c["skos:narrower"]);
+                        me.makeCurrentUserAnOwnerForConcepts(c["skos:narrower"]);
                     }
                     me.conceptsProcessed++;
-                    me.repo.saveTo(c, done, done);
+                    me.toSave.push(c);
+                    done();
                 }, done);
             }, function() {});
         }
@@ -1094,32 +1117,32 @@ export default {
 }
 
 .control.auto-complete__control {
-    input {
-        height: 37px;
-        transform: translateX(0);
-        outline: 0;
-        box-shadow: none;
+  input {
+    height: 37px;
+    transform: translateX(0);
+    outline: 0;
+    box-shadow: none;
+  }
+  .auto {
+    position: absolute;
+    min-height: 0px;
+    max-height: 120px;
+    border-radius: 0rem 0rem 0.5rem 0.5rem;
+    border-right: solid 1px rgba($primary, 0.5);
+    border-bottom: solid 1px rgba($primary, 0.5);
+    border-left: solid 1px rgba($primary, 0.5);
+    width: 100%;
+    background-color: white;
+    overflow: scroll;
+    ul {
+      li {
+        padding: 0.25rem;
+      }
+      li:hover {
+        padding: 0.25rem;
+        background-color: $light;
+      }
     }
-    .auto {
-        position: absolute;
-        min-height: 0px;
-        max-height: 120px;
-        border-radius: 0rem 0rem .5rem .5rem;
-        border-right: solid 1px rgba($primary, .5);
-        border-bottom: solid 1px rgba($primary, .5);
-        border-left: solid 1px rgba($primary, .5);
-        width: 100%;
-        background-color: white;
-        overflow: scroll;
-        ul {
-            li {
-                padding: .25rem;
-            }
-            li:hover {
-                padding: .25rem;
-                background-color: $light;
-            }
-        }
-    }
+  }
 }
 </style>
