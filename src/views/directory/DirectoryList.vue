@@ -112,6 +112,7 @@
                     <!-- Resources -->
                     <li
                         v-for="item in creativework"
+                        @dblclick="$emit('dblclick', item)"
                         :key="item.id"
                         @click="click(item)"
                         class="list-ul__item">

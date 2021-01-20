@@ -259,6 +259,8 @@ export default {
                     this.$router.push({name: "directory"});
                 }
                 this.$store.commit('app/closeRightAside');
+            } else if (object.type === "CreativeWork") {
+                window.open(object.url, '_blank');
             } else if (this.$store.getters['editor/conceptMode']) {
                 EcConceptScheme.get(object.id, function(success) {
                     me.$store.commit('editor/framework', success);
