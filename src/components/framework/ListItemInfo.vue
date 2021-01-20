@@ -173,7 +173,7 @@
                         class="cass__right-side--details-list-section">
                         <div
                             class="button is-small is-outlined is-primary"
-                            v-if="objectType === 'Framework' || objectType === 'CreativeWork' || (objectType === 'Directory' && object.parentDirectory)"
+                            v-if="objectType === 'Framework' || objectType === 'CreativeWork' || objectType === 'Directory'"
                             @click="copyingToDirectory=true"
                             :disabled="movingToDirectory">
                             <span>copy to directory</span>
@@ -186,7 +186,7 @@
                         class="cass__right-side--details-list-section">
                         <div
                             class="button is-outlined is-small is-primary"
-                            v-if="objectType === 'Framework' || objectType === 'CreativeWork' || (objectType === 'Directory' && object.parentDirectory)"
+                            v-if="objectType === 'Framework' || objectType === 'CreativeWork' || objectType === 'Directory'"
                             @click="movingToDirectory=true"
                             :disabled="copyingToDirectory">
                             <span>Move to directory</span>
@@ -322,13 +322,13 @@ export default {
             } else if (this.copyingToDirectory && this.objectType === 'CreativeWork') {
                 this.copyResourceToDirectory(directory, this.object);
             } else if (this.copyingToDirectory && this.objectType === 'Directory') {
-                this.copySubdirectoryToDirectory(directory);
+                this.copySubdirectoryToDirectory(directory, this.object);
             } else if (this.movingToDirectory && this.objectType === 'Framework') {
                 this.moveFrameworkToDirectory(directory, this.object);
             } else if (this.movingToDirectory && this.objectType === 'CreativeWork') {
                 this.moveResourceToDirectory(directory, this.object);
             } else if (this.movingToDirectory && this.objectType === 'Directory') {
-                this.moveSubdirectoryToDirectory(directory);
+                this.moveSubdirectoryToDirectory(directory, this.object);
             }
         },
         removeFromDirectory: function() {
@@ -551,11 +551,14 @@ export default {
                 }, appError);
             }
         },
-        copySubdirectoryToDirectory: function(directory) {
+        copySubdirectoryToDirectory: function(directory, oldSubdirectory, passedInToSave) {
             let me = this;
             let toSave = [];
+            if (passedInToSave) {
+                toSave = passedInToSave;
+            }
             let subdirectory = new EcDirectory();
-            subdirectory.copyFrom(this.object);
+            subdirectory.copyFrom(oldSubdirectory);
             if (this.queryParams.newObjectEndpoint != null) {
                 subdirectory.generateShortId(this.queryParams.newObjectEndpoint);
             } else {
@@ -575,15 +578,19 @@ export default {
             if (EcIdentityManager.ids.length > 0) {
                 subdirectory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
-            subdirectory['ceasn:derivedFrom'] = this.object.id;
+            subdirectory['ceasn:derivedFrom'] = oldSubdirectory.id;
             toSave.push(subdirectory);
-            this.repo.search("directory:\"" + this.object.shortId() + "\"", function() {}, function(success) {
-                me.frameworksToProcess = success.length;
+            // to do: search for parentDirectory - allow nested copies
+            this.repo.search("(directory:\"" + oldSubdirectory.shortId() + "\" OR parentDirectory:\"" + oldSubdirectory.shortId() + "\")", function() {}, function(success) {
+                me.frameworksToProcess += success.length;
                 new EcAsyncHelper().each(success, function(obj, done) {
                     if (obj.type === 'Framework') {
                         me.copyFrameworkToDirectory(subdirectory, obj, toSave);
                     } else if (obj.type === 'CreativeWork') {
                         me.copyResourceToDirectory(subdirectory, obj, toSave);
+                    } else if (obj.type === 'Directory') {
+                        me.frameworksToProcess--;
+                        me.copySubdirectoryToDirectory(subdirectory, obj, toSave);
                     }
                     done();
                 }, function(ids) {
@@ -649,22 +656,28 @@ export default {
                 }, appError);
             }
         },
-        moveSubdirectoryToDirectory: function(directory) {
+        moveSubdirectoryToDirectory: function(directory, subdirectory, passedInToSave) {
+            // to do: make sure there are no circular dependencies
             let me = this;
             let toSave = [];
-            let subdirectory = this.object;
+            if (passedInToSave) {
+                toSave = passedInToSave;
+            }
             subdirectory.parentDirectory = directory.shortId();
             subdirectory["schema:dateModified"] = new Date().toISOString();
             subdirectory.owner = directory.owner;
             subdirectory.reader = directory.reader;
             toSave.push(subdirectory);
-            this.repo.search("directory:\"" + this.object.shortId() + "\"", function() {}, function(success) {
-                me.frameworksToProcess = success.length;
+            this.repo.search("(directory:\"" + subdirectory.shortId() + "\" OR parentDirectory:\"" + subdirectory.shortId() + "\")", function() {}, function(success) {
+                me.frameworksToProcess += success.length;
                 new EcAsyncHelper().each(success, function(obj, done) {
                     if (obj.type === 'Framework') {
                         me.moveFrameworkToDirectory(subdirectory, obj, toSave);
                     } else if (obj.type === 'CreativeWork') {
                         me.moveResourceToDirectory(subdirectory, obj, toSave);
+                    } else if (obj.type === "Directory") {
+                        me.frameworksToProcess--;
+                        me.moveSubdirectoryToDirectory(subdirectory, obj, toSave);
                     }
                     done();
                 }, function(ids) {
@@ -843,7 +856,7 @@ export default {
                     return "Taxonomy";
                 }
             }
-            return this.object.type;
+            return this.objectType;
         },
         lastModified: function() {
             if (this.object.getTimestamp()) {
