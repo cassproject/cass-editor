@@ -228,7 +228,8 @@ export default {
             movingToDirectory: false,
             repo: window.repo,
             frameworksToProcess: 0,
-            clipStatus: 'ready'
+            clipStatus: 'ready',
+            ineligibleDirectoriesForMove: []
         };
     },
     methods: {
@@ -580,7 +581,6 @@ export default {
             }
             subdirectory['ceasn:derivedFrom'] = oldSubdirectory.id;
             toSave.push(subdirectory);
-            // to do: search for parentDirectory - allow nested copies
             this.repo.search("(directory:\"" + oldSubdirectory.shortId() + "\" OR parentDirectory:\"" + oldSubdirectory.shortId() + "\")", function() {}, function(success) {
                 me.frameworksToProcess += success.length;
                 new EcAsyncHelper().each(success, function(obj, done) {
@@ -657,7 +657,6 @@ export default {
             }
         },
         moveSubdirectoryToDirectory: function(directory, subdirectory, passedInToSave) {
-            // to do: make sure there are no circular dependencies
             let me = this;
             let toSave = [];
             if (passedInToSave) {
@@ -812,10 +811,21 @@ export default {
                     });
                 }, appError);
             }, appError);
+        },
+        // Make sure user can't move directory into its child/grandchild/etc
+        setIneligibleDirectoriesForMove: function(obj) {
+            let me = this;
+            this.repo.search("parentDirectory:\"" + obj.shortId() + "\"", function(each) {
+                me.ineligibleDirectoriesForMove.push(each.shortId());
+                me.setIneligibleDirectoriesForMove(each);
+            }, function() {}, appError);
         }
     },
     mounted: function() {
         this.setNumSubdirectoriesAndObjects();
+        if (this.object.type === "Directory") {
+            this.setIneligibleDirectoriesForMove(this.object);
+        }
     },
     computed: {
         objectName: function() {
@@ -906,11 +916,20 @@ export default {
         },
         directoryOptions: function() {
             let me = this;
-            return this.$store.getters['app/directoryList'].filter(directory => {
-                return (directory.shortId() !== me.object.shortId() &&
-                    (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
-                    (me.object.directory ? (directory.shortId() !== me.object.directory) : true));
-            });
+            if (this.movingToDirectory && this.objectType === "Directory") {
+                return this.$store.getters['app/directoryList'].filter(directory => {
+                    return (directory.shortId() !== me.object.shortId() &&
+                        (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
+                        (me.object.directory ? (directory.shortId() !== me.object.directory) : true) &&
+                        !EcArray.has(me.ineligibleDirectoriesForMove, directory.shortId()));
+                });
+            } else {
+                return this.$store.getters['app/directoryList'].filter(directory => {
+                    return (directory.shortId() !== me.object.shortId() &&
+                        (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
+                        (me.object.directory ? (directory.shortId() !== me.object.directory) : true));
+                });
+            }
         },
         canEditObject: function() {
             return this.object.canEditAny(EcIdentityManager.getMyPks());
@@ -933,7 +952,13 @@ export default {
     },
     watch: {
         objectShortId: function() {
+            this.copyingToDirectory = false;
+            this.movingToDirectory = false;
+            this.ineligibleDirectoriesForMove = [];
             this.setNumSubdirectoriesAndObjects();
+            if (this.object.type === "Directory") {
+                this.setIneligibleDirectoriesForMove(this.object);
+            }
         }
     }
 };
