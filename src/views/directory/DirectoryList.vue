@@ -485,6 +485,13 @@ export default {
             me.buildSearch(type, function(search) {
                 me.repo.searchWithParams(search, localParamObj, function(result) {
                     if (!EcArray.has(me.resultIds, result.id)) {
+                        if (result.isAny(new EcEncryptedValue().getTypes())) {
+                            let v = new EcEncryptedValue();
+                            v.copyFrom(result);
+                            let unencrypted = new window["Ec" + type]();
+                            unencrypted.copyFrom(v.decryptIntoObject());
+                            result = unencrypted;
+                        }
                         me[arrayType].push(result);
                         me.resultIds.push(result.id);
                     }
