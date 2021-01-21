@@ -98,28 +98,28 @@
                         <li>
                             <a
                                 class="custom-link external"
-                                href="/docs/framework-properties/"
+                                href="docs/framework-properties/"
                                 target="_blank">Framework properties
                             </a>
                         </li>
                         <li>
                             <a
                                 class="custom-link external"
-                                href="/docs/competency-properties/"
+                                href="docs/competency-properties/"
                                 target="_blank">
                                 Competency properties</a>
                         </li>
                         <li>
                             <a
                                 class="custom-link external"
-                                href="/docs/configuration/"
+                                href="docs/configuration/"
                                 target="_blank">
                                 Configuration</a>
                         </li>
                         <li>
                             <a
                                 class="custom-link external"
-                                href="/docs/users-and-groups/"
+                                href="docs/users-and-groups/"
                                 target="_blank">
                                 User groups</a>
                         </li>

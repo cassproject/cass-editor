@@ -66,7 +66,7 @@ export const cassUtil = {
         setDefaultBrowserConfigId(configId) {
             localStorage.setItem("cassAuthoringToolDefaultBrowserConfigId", configId);
         },
-        removeBrowserDefaultConfig() {
+        removeDefaultBrowserConfig() {
             localStorage.removeItem("cassAuthoringToolDefaultBrowserConfigId");
         },
         getDefaultBrowserConfigId() {
