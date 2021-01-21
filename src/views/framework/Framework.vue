@@ -639,6 +639,7 @@ export default {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
         }
+        this.$store.commit('app/objForShareModal', this.object);
         let documentBody = document.getElementById('framework');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
         if (!this.framework.competency || this.framework.competency.length === 0) {

@@ -149,6 +149,17 @@
                         </span>
                     </span>
                 </span>
+                <!-- manage users -->
+                <div
+                    class="cass__right-side--details-list-section"
+                    v-if="loggedIn && canEditObject">
+                    <b>Manage Users and Privacy:</b>
+                    <span
+                        class="icon"
+                        @click="manageUsers">
+                        <i class="fas fa-users" />
+                    </span>
+                </div>
             </div>
             <div
                 v-if="canEditObject && canEditDirectory"
@@ -820,6 +831,10 @@ export default {
                 me.ineligibleDirectoriesForMove.push(each.shortId());
                 me.setIneligibleDirectoriesForMove(each);
             }, function() {}, appError);
+        },
+        manageUsers: function() {
+            this.$store.commit('app/objForShareModal', this.object);
+            this.$store.commit('app/showModal', {component: 'Share'});
         }
     },
     mounted: function() {
@@ -949,6 +964,12 @@ export default {
         },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
+        },
+        loggedIn: function() {
+            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return true;
+            }
+            return false;
         }
     },
     watch: {

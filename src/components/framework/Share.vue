@@ -386,7 +386,10 @@ export default {
         },
         shareableFrameworkInEditor: function() {
             if (this.directory) {
-                return window.location.href.replace('/directory', "?directoryId=" + this.directory.shortId());
+                if (window.location.href.indexOf('directory') !== -1) {
+                    return window.location.href.replace('/directory', "?directoryId=" + this.directory.shortId());
+                }
+                return window.location.href.replace('frameworks', "?directoryId=" + this.directory.shortId());
             }
             if (this.$store.getters['editor/conceptMode'] === true) {
                 return window.location.href.replace('/conceptScheme', "?concepts=true&frameworkId=" + this.frameworkId);
@@ -394,6 +397,9 @@ export default {
             return window.location.href.replace('/framework', "?frameworkId=" + this.frameworkId);
         },
         framework: function() {
+            if (this.objFromListItemInfo && this.objFromListItemInfo.type === "Framework") {
+                return this.objFromListItemInfo;
+            }
             return this.$store.state.editor.framework;
         },
         frameworkId: function() {
@@ -403,6 +409,9 @@ export default {
             return null;
         },
         directory: function() {
+            if (this.objFromListItemInfo && this.objFromListItemInfo.type === "Directory") {
+                return this.objFromListItemInfo;
+            }
             return this.$store.getters['app/selectedDirectory'];
         },
         frameworkName: function() {
@@ -445,6 +454,9 @@ export default {
         },
         userManagementEnabled: function() {
             return this.$store.state.featuresEnabled.userManagementEnabled;
+        },
+        objFromListItemInfo: function() {
+            return this.$store.getters['app/objForShareModal'];
         }
     },
     mounted: function() {

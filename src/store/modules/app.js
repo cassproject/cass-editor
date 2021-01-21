@@ -34,7 +34,8 @@ const state = {
     modal: {
         framework: '',
         showModal: false,
-        dynamicModalContent: {}
+        dynamicModalContent: {},
+        objForShareModal: null
     },
     directories: {
         directoryList: [],
@@ -98,6 +99,9 @@ const mutations = {
     closeModal: function(state) {
         state.modal.showModal = false;
         state.modal.dynamicModalContent = {};
+    },
+    objForShareModal: function(state, payload) {
+        state.modal.objForShareModal = payload;
     },
     draggingEnabled: function(state, value) {
         state.framework.draggingEnabled = value;
@@ -335,6 +339,9 @@ const getters = {
     },
     dynamicModalContent: state => {
         return state.modal.dynamicModalContent;
+    },
+    objForShareModal: state => {
+        return state.modal.objForShareModal;
     },
     draggingEnabled: state => {
         return state.modal.draggingEnabled;
