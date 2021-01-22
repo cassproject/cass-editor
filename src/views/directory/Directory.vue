@@ -168,6 +168,7 @@
                         {{ directory.description }}
                     </h2>
                     <div
+                        v-if="canEditDirectory"
                         class="icon is-small"
                         @click="editDirectory=true">
                         <i class="fa fa-edit is-size-5" />
