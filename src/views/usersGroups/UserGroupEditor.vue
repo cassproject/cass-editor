@@ -6,7 +6,7 @@
             <div class="container">
                 <div class="columns is-mobile is-multiline">
                     <!-- desktop vs of navigation -->
-                    <div class="column width-300 is-narrow is-hidden-touch">
+                    <div class="column is-narrow is-hidden-touch">
                         <div class="cass-left-panel">
                             <!-- group nav tree -->
                             <div class="cass-left-panel---container">
@@ -222,15 +222,38 @@
                                             <div v-if="!isEditingCurrentGroupDescription">
                                                 <div class="columns is-multiline is-mobile">
                                                     <div class="column is-12 pb-0">
-                                                        <label class="label">Group Description</label>
+                                                        <label class="label">
+                                                            Group Description
+                                                        </label>
                                                     </div>
                                                     <div class="column">
-                                                        <span v-if="currentUserGroupDescription && currentUserGroupDescription.trim().length > 0">
-                                                            {{ currentUserGroupDescription }}
-                                                        </span>
-                                                        <span v-else>
-                                                            <i>Group Description</i>
-                                                        </span>
+                                                        <div
+                                                            :class="showMore && currentUserGroupDescription.trim().length > 300 ? 'cass__user-groups--description' : 'cass__user-groups--description-overflow'"
+                                                            v-if="currentUserGroupDescription && currentUserGroupDescription.trim().length > 0">
+                                                            <span v-if="showMore">
+                                                                {{ currentUserGroupDescription }}
+                                                            </span>
+                                                            <span v-else>
+                                                                {{ currentUserGroupDescription.trim(0, 300) }}
+                                                            </span>
+                                                            <span
+                                                                v-if="showMore && currentUserGroupDescription.trim().length > 300"
+                                                                title="Show more"
+                                                                @click="showMore = false"
+                                                                class="button is-small is-text has-text-primary">
+                                                                <b>hide</b>
+                                                            </span>
+                                                            <span
+                                                                v-else-if="currentUserGroupDescription.trim().length > 300"
+                                                                title="Show more"
+                                                                @click="showMore = true"
+                                                                class="button is-small is-text has-text-primary">
+                                                                <b>...</b>
+                                                            </span>
+                                                        </div>
+                                                        <div v-else>
+                                                            <i>No description</i>
+                                                        </div>
                                                     </div>
                                                     <div class="column is-narrow">
                                                         <span
@@ -295,7 +318,7 @@
                                                         <i class="fa fa-plus" />
                                                     </span>
                                                     <span>
-                                                        add group members
+                                                        member
                                                     </span>
                                                 </div>
                                                 <div
@@ -323,7 +346,7 @@
                                                         <i class="fa fa-undo" />
                                                     </span>
                                                     <span>
-                                                        Discard changes
+                                                        Discard
                                                     </span>
                                                 </div>
                                                 <div
@@ -335,7 +358,7 @@
                                                         <i class="fa fa-plus" />
                                                     </span>
                                                     <span>
-                                                        Add sub-group
+                                                        sub-group
                                                     </span>
                                                 </div>
                                                 <div
@@ -347,7 +370,7 @@
                                                         <i class="fa fa-trash" />
                                                     </span>
                                                     <span>
-                                                        Delete Group
+                                                        Delete
                                                     </span>
                                                 </div>
                                             </div>
@@ -677,6 +700,8 @@ export default {
     name: 'UserGroupEditor',
     mixins: [cassUtil],
     data: () => ({
+        displayLength: 300,
+        showMore: false,
         groupsDropdownActive: false,
         GROUP_SEARCH_SIZE: 10000,
         PERSON_SEARCH_SIZE: 10000,
@@ -1327,8 +1352,38 @@ export default {
     }
 };
 </script>
-<style>
+<style lang="scss">
 .cass-users-and-groups {
     width: calc(100vw - 72px);
 }
+.cass__user-groups--description {
+    height: fit-content;
+    position: relative;
+    padding-right: 1.25rem;
+    .button {
+        position: absolute;
+        right: 0;
+        bottom: 0rem;
+    }
+}
+.cass__user-groups--description-overflow {
+    height: 4.75rem;
+    position: relative;
+    max-width: 100%;
+    white-space: wrap;
+    display: inline-block;
+    overflow: hidden;
+    padding-right: 1.5rem;
+    .button {
+        position: absolute;
+        right: 0;
+        top: 3rem;
+    }
+}
+.cass__user-groups--description-overflow::after {
+    content: "";
+    width: 1rem;
+    height: 1rem;
+}
+
 </style>

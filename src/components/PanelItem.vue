@@ -67,6 +67,9 @@ export default {
 
 <style>
 .panel-block {
-    display: block;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: flex-start;
 }
 </style>

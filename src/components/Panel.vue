@@ -13,7 +13,7 @@ export default {
 
 <style lang="scss">
 .cass-users-and-groups__panel {
-    width: calc(300px - 2rem);
+    width: calc(280px - 2rem);
     .panel-block {
         max-width: 100%;
         right: 0;
