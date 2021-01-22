@@ -299,10 +299,12 @@ const actions = {
     },
     refreshDirectories: function({commit}) {
         let directories = [];
+        let directoryIds = [];
         EcDirectory.search(window.repo, "", function(dirs) {
             for (let i = 0; i < dirs.length; i++) {
-                if (dirs[i].canEditAny(EcIdentityManager.getMyPks())) {
+                if (dirs[i].canEditAny(EcIdentityManager.getMyPks()) && !EcArray.has(directoryIds, dirs[i].id)) {
                     directories.push(dirs[i]);
+                    directoryIds.push(dirs[i].id);
                 }
             }
             commit('directoryList', directories);

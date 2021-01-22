@@ -1,5 +1,5 @@
 <template>
-    <main-layout :class=" showRightside ? 'right-side-open' : ''">
+    <main-layout :class=" showRightAside ? 'right-side-open' : ''">
         <!-- should be used for search bar -->
         <template #top>
             <SearchBar
