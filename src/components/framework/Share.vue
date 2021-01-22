@@ -411,12 +411,23 @@ export default {
         directory: function() {
             if (this.objFromListItemInfo && this.objFromListItemInfo.type === "Directory") {
                 return this.objFromListItemInfo;
+            } else if (this.objFromListItemInfo) {
+                return null;
             }
             return this.$store.getters['app/selectedDirectory'];
+        },
+        resource: function() {
+            if (this.objFromListItemInfo && this.objFromListItemInfo.type === "CreativeWork") {
+                return this.objFromListItemInfo;
+            }
+            return null;
         },
         frameworkName: function() {
             if (this.directory) {
                 return this.directory.name;
+            }
+            if (this.resource) {
+                return this.resource.name;
             }
             if (this.framework.name) {
                 return this.framework.getName();
@@ -437,6 +448,8 @@ export default {
                 return false;
             } else if (this.directory && !this.directory.canEditAny(EcIdentityManager.getMyPks())) {
                 return false;
+            } else if (this.resource && !this.resource.canEditAny(EcIdentityManager.getMyPks())) {
+                return false;
             }
             return true;
         },
@@ -444,12 +457,18 @@ export default {
             return this.$store.getters['user/loggedOnPerson'];
         },
         objectType: function() {
-            if (this.$route.name === 'directory') {
+            if (this.resource) {
+                return 'resource';
+            }
+            if (this.directory) {
                 return 'directory';
             }
             return this.$store.getters['editor/conceptMode'] ? 'concept scheme' : 'framework';
         },
         shareEnabled: function() {
+            if (this.resource) {
+                return false;
+            }
             return this.$store.state.featuresEnabled.shareEnabled;
         },
         userManagementEnabled: function() {
@@ -476,7 +495,7 @@ export default {
             }
         },
         checkIsPrivate: function() {
-            let obj = this.directory ? this.directory : this.framework;
+            let obj = this.directory ? this.directory : (this.resource ? this.resource : this.framework);
             delete EcRepository.cache[obj.shortId()];
             if (EcRepository.getBlocking(obj.shortId())) {
                 if (EcRepository.getBlocking(obj.shortId()).type === "EncryptedValue") {
@@ -513,7 +532,7 @@ export default {
         },
         getCurrentOwnersAndReaders: function() {
             var me = this;
-            let obj = this.directory ? this.directory : this.framework;
+            let obj = this.directory ? this.directory : (this.resource ? this.resource : this.framework);
             if (obj.owner) {
                 for (var i = 0; i < obj.owner.length; i++) {
                     var pk = EcPk.fromPem(obj.owner[i]);
@@ -658,6 +677,9 @@ export default {
             }
         },
         addAndRemoveFromAllObjects: function() {
+            if (this.resource) {
+                return this.addAndRemoveFromResource(this.resource);
+            }
             if (this.directory) {
                 return this.addAndRemoveFromAllDirectoryObjects(this.directory);
             }
@@ -851,6 +873,9 @@ export default {
             this.isProcessing = true;
             var framework = this.framework;
             this.$store.commit('editor/private', true);
+            if (this.resource) {
+                return this.handleMakePrivateResource(this.resource);
+            }
             if (this.directory) {
                 return this.handleMakePrivateDirectory(this.directory);
             }
@@ -896,6 +921,9 @@ export default {
             let me = this;
             if (resource.canEditAny(EcIdentityManager.getMyPks())) {
                 resource.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                if (this.resource) {
+                    this.$store.commit('app/objForShareModal', resource);
+                }
                 resource["schema:dateModified"] = new Date().toISOString();
                 EcEncryptedValue.toEncryptedValueAsync(resource, false, function(eresource) {
                     me.toSave.push(eresource);
@@ -944,6 +972,9 @@ export default {
             this.isProcessing = true;
             var framework = this.framework;
             this.$store.commit('editor/private', false);
+            if (this.resource) {
+                return this.handleMakePublicResource(this.resource);
+            }
             if (this.directory) {
                 return this.handleMakePublicDirectory(this.directory);
             }
@@ -993,7 +1024,7 @@ export default {
         handleMakePublicResource: function(resource) {
             let cw = new CreativeWork();
             let v;
-            if (resource.type === "Directory") {
+            if (resource.type === "CreativeWork") {
                 v = EcEncryptedValue.toEncryptedValue(resource);
             } else {
                 v = new EcEncryptedValue();
@@ -1004,6 +1035,9 @@ export default {
             delete cw.reader;
             EcEncryptedValue.encryptOnSave(cw.id, false);
             this.toSave.push(cw);
+            if (this.resource) {
+                this.$store.commit('app/objForShareModal', cw);
+            }
             this.multiput(this.toSave);
         },
         handleMakePublicFramework: function(framework) {
@@ -1207,6 +1241,9 @@ export default {
         },
         makeCurrentUserAnOwner: function() {
             this.isProcessing = true;
+            if (this.resource) {
+                return this.makeCurrentUserResourceOwner(this.resource);
+            }
             if (this.directory) {
                 return this.makeCurrentUserDirectoryOwner(this.directory);
             }
