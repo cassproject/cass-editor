@@ -3,9 +3,26 @@
         id="right-side-bar__comments"
         class="menu has-background-lightest">
         <div class="right-aside-bar__title">
-            <h3 class="is-size-3 is-family-secondary">
+            <h3
+                class="is-size-3 is-family-secondary"
+                v-if="!editingResource">
                 {{ objectName }}
             </h3>
+            <span
+                class="icon"
+                v-if="objectType === 'CreativeWork' && !editingResource && canEditObject"
+                @click="editResource">
+                <i class="fa fa-edit" />
+            </span>
+            <div
+                class="control"
+                v-if="editingResource">
+                <div class="control">
+                    <input
+                        class="input"
+                        v-model="resourceName">
+                </div>
+            </div>
             <span class="tag is-info">{{ objectTypeForDisplay }}</span>
         </div>
         <div class="buttons">
@@ -18,9 +35,33 @@
                 </span>
             </div>
         </div>
-        <div v-if="objectType === 'CreativeWork'">
+        <div v-if="objectType === 'CreativeWork' && !editingResource">
             {{ object.url }}
         </div>
+        <div
+            class="control"
+            v-if="editingResource">
+            <div class="control">
+                <input
+                    class="input"
+                    v-model="resourceUrl">
+            </div>
+        </div>
+        <span
+            class="icon"
+            v-if="editingResource"
+            @click="editingResource=false">
+            <i class="fa fa-times" />
+        </span>
+        <span
+            class="icon"
+            v-if="editingResource"
+            @click="saveResource">
+            <i class="fa fa-save" />
+        </span>
+        <span v-if="errorEditing">
+            {{ errorEditing }}
+        </span>
         <div
             class="cass__right-side--details"
             v-if="objectType === 'Directory' || objectType === 'Framework' || objectType === 'ConceptScheme'">
@@ -43,7 +84,7 @@
                         Open
                     </span>
                 </span>
-                <!-- open parent directoriy -->
+                <!-- open parent directory -->
                 <span
                     class="cass__right-side--details-list-item"
                     v-else-if="object.parentDirectory">
@@ -149,17 +190,6 @@
                         </span>
                     </span>
                 </span>
-                <!-- manage users -->
-                <div
-                    class="cass__right-side--details-list-section"
-                    v-if="loggedIn && canEditObject">
-                    <b>Manage Users and Privacy:</b>
-                    <span
-                        class="icon"
-                        @click="manageUsers">
-                        <i class="fas fa-users" />
-                    </span>
-                </div>
             </div>
             <div
                 v-if="canEditObject && canEditDirectory"
@@ -222,6 +252,17 @@
                 </div>
             </div>
         </div>
+        <!-- manage users -->
+        <div
+            class="cass__right-side--details-list-section"
+            v-if="loggedIn && canEditObject">
+            <b>Manage Users and Privacy:</b>
+            <span
+                class="icon"
+                @click="manageUsers">
+                <i class="fas fa-users" />
+            </span>
+        </div>
     </aside>
 </template>
 <script>
@@ -239,7 +280,11 @@ export default {
             repo: window.repo,
             frameworksToProcess: 0,
             clipStatus: 'ready',
-            ineligibleDirectoriesForMove: []
+            ineligibleDirectoriesForMove: [],
+            editingResource: false,
+            resourceName: '',
+            resourceUrl: '',
+            errorEditing: null
         };
     },
     methods: {
@@ -835,6 +880,30 @@ export default {
         manageUsers: function() {
             this.$store.commit('app/objForShareModal', this.object);
             this.$store.commit('app/showModal', {component: 'Share'});
+        },
+        editResource: function() {
+            this.editingResource = true;
+            this.resourceName = this.objectName;
+            this.resourceUrl = this.object.url;
+        },
+        saveResource: function() {
+            if (this.resourceName.length === 0) {
+                this.errorEditing = "Resource must have a name.";
+                return;
+            }
+            if (this.resourceUrl.length === 0 || !this.resourceUrl.startsWith("http")) {
+                this.errorEditing = "Resource must have a URL starting with http.";
+                return;
+            }
+            this.errorEditing = null;
+            let me = this;
+            let resource = this.object;
+            resource.name = this.resourceName;
+            resource.url = this.resourceUrl;
+            repo.saveTo(resource, function() {
+                me.$store.commit('app/rightAsideObject', resource);
+                me.editingResource = false;
+            }, appError);
         }
     },
     mounted: function() {
