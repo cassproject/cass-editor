@@ -69,13 +69,51 @@
                                     </div>
                                 </div>
                                 <div
-                                    @click="addResource"
+                                    @click="createResource = true"
                                     v-if="canEditDirectory"
                                     class="button is-outlined is-primary"
                                     title="Add a resource to this directory.">
                                     <span class="icon">
                                         <i class="fa fa-paperclip" />
                                     </span>
+                                </div>
+                                <div
+                                    class="field"
+                                    v-if="createResource">
+                                    <div class="control">
+                                        <div class="control">
+                                            <input
+                                                class="input"
+                                                placeholder="Name of new resource"
+                                                v-model="resourceName">
+                                        </div>
+                                    </div>
+                                    <div class="control">
+                                        <div class="control">
+                                            <input
+                                                class="input"
+                                                placeholder="Url of new resource"
+                                                v-model="resourceUrl">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="field"
+                                    v-if="createResource">
+                                    <div class="buttons">
+                                        <div
+                                            class="button is-dark is-outlined is-small"
+                                            @click="createResource = false">
+                                            Cancel
+                                        </div>
+                                        <div
+                                            class="button is-primary is-small"
+                                            :class="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http')) ? 'is-disabled' : ''"
+                                            :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http'))"
+                                            @click="saveNewResource">
+                                            Create
+                                        </div>
+                                    </div>
                                 </div>
                                 <div
                                     v-if="directory.parentDirectory"
@@ -215,7 +253,10 @@ export default {
             clipStatus: 'ready',
             editDirectory: false,
             createSubdirectory: false,
-            subdirectoryName: ''
+            subdirectoryName: '',
+            createResource: false,
+            resourceName: '',
+            resourceUrl: ''
         };
     },
     created: function() {
@@ -512,12 +553,12 @@ export default {
                 me.$store.commit('app/selectDirectory', success);
             }, appError);
         },
-        addResource: function() {
+        saveNewResource: function() {
             let me = this;
             let c = new CreativeWork();
             c.generateId(this.repo.selectedServer);
-            c.name = "New Resource";
-            c.url = "http://myresource.com";
+            c.name = this.resourceName;
+            c.url = this.resourceUrl;
             c.directory = this.directory.shortId();
             if (this.directory.owner) {
                 c.owner = this.directory.owner;
@@ -530,6 +571,9 @@ export default {
             }
             this.repo.saveTo(c, function() {
                 appLog("Resource saved: " + c.id);
+                me.resourceName = '';
+                me.resourceUrl = '';
+                me.createResource = false;
                 me.$store.commit('app/refreshSearch', true);
             }, appError);
         },
