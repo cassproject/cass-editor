@@ -449,6 +449,7 @@ export default {
             if (EcIdentityManager.ids.length > 0) {
                 framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
+            framework.id = framework.shortId();
             delete framework.loading;
             delete framework.success;
             delete framework.error;
@@ -479,6 +480,7 @@ export default {
                     if (EcIdentityManager.ids.length > 0) {
                         newObj.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                     }
+                    newObj.id = newObj.shortId();
                     toSave.push(newObj);
                     done();
                 }, done);
