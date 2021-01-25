@@ -1111,7 +1111,7 @@ export default {
             }
         },
         importFramework: function() {
-            if (this.importFramework && !this.conceptMode && this.frameworkSize === 0) {
+            if (this.importFramework && !this.conceptMode && (!this.importFramework.competency || this.importFramework.competency === 0)) {
                 this.hierarchyIsdoneLoading = true;
             }
         }
