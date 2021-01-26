@@ -25,7 +25,9 @@
             </div>
             <span class="tag is-info">{{ objectTypeForDisplay }}</span>
         </div>
-        <div class="buttons pt-2">
+        <div
+            class="buttons pt-2"
+            v-if="objectShortId !== selectedDirectoryId">
             <div
                 class="button is-small is-primary"
                 @click="openObject">
@@ -295,6 +297,12 @@
                 @click="manageUsers">
                 <i class="fas fa-users" />
             </span>
+        </div>
+        <div
+            v-if="canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId"
+            class="icon is-small"
+            @click="editDirectory">
+            <i class="fa fa-edit is-size-5" />
         </div>
     </aside>
 </template>
@@ -937,6 +945,9 @@ export default {
                 me.$store.commit('app/rightAsideObject', resource);
                 me.editingResource = false;
             }, appError);
+        },
+        editDirectory: function() {
+            this.$store.commit('app/editDirectory', true);
         }
     },
     mounted: function() {
@@ -1072,6 +1083,12 @@ export default {
                 return true;
             }
             return false;
+        },
+        selectedDirectoryId: function() {
+            if (this.$store.getters['app/selectedDirectory']) {
+                return this.$store.getters['app/selectedDirectory'].shortId();
+            }
+            return null;
         }
     },
     watch: {

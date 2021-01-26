@@ -159,20 +159,13 @@
                 </div>
             </template>
             <template slot="secondary-top">
-                <div class="container is-fullhd">
+                <div
+                    class="container is-fullhd"
+                    @click="showDirectoryInRightAside">
                     <!-- to do account for -->
                     <h1 class="is-size-4 has-text-dark">
                         {{ directory.name }}
                     </h1>
-                    <h2>
-                        {{ directory.description }}
-                    </h2>
-                    <div
-                        v-if="canEditDirectory"
-                        class="icon is-small"
-                        @click="editDirectory=true">
-                        <i class="fa fa-edit is-size-5" />
-                    </div>
                 </div>
             </template>
             <template slot="body">
@@ -252,7 +245,6 @@ export default {
             sortBy: null,
             defaultConfig: "",
             clipStatus: 'ready',
-            editDirectory: false,
             createSubdirectory: false,
             subdirectoryName: '',
             createResource: false,
@@ -273,6 +265,9 @@ export default {
         },
         directory: function() {
             return this.$store.getters['app/selectedDirectory'];
+        },
+        editDirectory: function() {
+            return this.$store.getters['app/editDirectory'];
         },
         canEditDirectory: function() {
             if (this.queryParams && this.queryParams.view === 'true') {
@@ -579,7 +574,7 @@ export default {
             }, appError);
         },
         onDoneEditingNode: function() {
-            this.editDirectory = false;
+            this.$store.commit('app/editDirectory', false);
         },
         deleteObject: function(obj) {
             appLog("deleting " + obj.id);
@@ -626,6 +621,10 @@ export default {
         },
         showManageUsersModal() {
             this.$store.commit('app/showModal', {component: 'Share'});
+        },
+        showDirectoryInRightAside() {
+            this.$store.commit('app/rightAsideObject', this.directory);
+            this.$store.commit('app/showRightAside', 'ListItemInfo');
         }
     },
     mounted: function() {
@@ -633,6 +632,7 @@ export default {
             this.$router.push({name: "frameworks"});
         }
         this.$store.commit('app/objForShareModal', null);
+        this.showDirectoryInRightAside();
         this.$store.commit('app/searchTerm', '');
         // Keep sorting/filtering in sync with the store on back button
         if (this.sortResults.id === "lastEdited") {
@@ -688,6 +688,9 @@ export default {
                 let me = this;
                 EcRepository.get(this.directory.shortId(), function(dir) {
                     me.$store.commit('app/selectDirectory', dir);
+                    if (me.showRightAside && dir.shortId() === me.$store.getters['app/rightAsideObject'].shortId()) {
+                        me.$store.commit('app/rightAsideObject', dir);
+                    }
                 }, appError);
                 this.$store.commit('editor/changedObject', null);
             }
