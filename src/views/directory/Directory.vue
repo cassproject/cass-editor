@@ -121,7 +121,7 @@
                                     class="button is-outlined is-primary"
                                     title="Navigate to parent.">
                                     <span class="icon">
-                                        <i class="fa fa-back" />
+                                        <i class="fa fa-level-up-alt" />
                                     </span><span>go to parent</span>
                                 </div>
                                 <div
@@ -147,7 +147,7 @@
                                         v-if="loggedIn"
                                         title="Manage users"
                                         @click="showManageUsersModal"
-                                        class="button is-text has-text-dark ">
+                                        class="button is-outlined is-primary">
                                         <span class="icon">
                                             <i class="fas fa-users" />
                                         </span>
@@ -161,7 +161,7 @@
             <template slot="secondary-top">
                 <div class="container is-fullhd">
                     <!-- to do account for -->
-                    <h1 class="title is-size-3 has-text-dark">
+                    <h1 class="is-size-4 has-text-dark">
                         {{ directory.name }}
                     </h1>
                     <h2>
