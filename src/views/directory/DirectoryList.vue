@@ -130,7 +130,7 @@
                 <infinite-loading
                     @infinite="loadResults"
                     spinner="circles"
-                    v-if="(directory + framework + competency + creativework > 10)"
+                    v-if="(directory.length + framework.length + competency.length + creativework.length > 10)"
                     :distance="10">
                     <div slot="no-more">
                         All results loaded
