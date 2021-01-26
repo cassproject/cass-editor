@@ -1,15 +1,25 @@
 <template>
-    <div class="cass--main-layout">
-        <div class="cass--main-layout--primary-top">
+    <div
+        :class="!simple ? 'has-secondary' : ''"
+        class="cass--main-layout">
+        <div
+            :class="simpleClass"
+            class="cass--main-layout--primary-top">
             <slot name="top" />
         </div>
-        <div class="cass--main-layout--secondary-top">
+        <div
+            v-if="!simple"
+            class="cass--main-layout--secondary-top">
             <slot name="secondary-top" />
         </div>
-        <div class="cass--main-layout--body">
+        <div
+            class="cass--main-layout--body"
+            :class="hasSimpleTopBar">
             <slot name="body" />
         </div>
-        <div class="cass--main-layout--right">
+        <div
+            class="cass--main-layout--right"
+            :class="simpleClass">
             <slot name="right" />
         </div>
     </div>
@@ -19,8 +29,26 @@ export default {
     name: 'MainLayout',
     data() {
         return {
-
         };
+    },
+    props: {
+        simple: {
+            type: Boolean,
+            default: false
+        }
+    },
+    computed: {
+        simpleClass() {
+            return {
+                'is-simple-top-bar': this.simple
+            };
+        },
+        hasSimpleTopBar() {
+            return {
+                'has-simple-top-bar': this.simple,
+                'regular-top-bar': !this.simple
+            };
+        }
     }
 };
 </script>
@@ -28,7 +56,6 @@ export default {
 <style lang="scss">
 .cass--main-layout {
     height: 100vh;
-    overflow-y: scroll;
 }
 .cass--main-layout--primary-top {
     position: absolute;
@@ -37,11 +64,12 @@ export default {
     padding: .25rem 1rem;
     height: 60px;
     display: flex;
-    align-items: center;
-    justify-content: center;
     background-color: white;
     z-index:1000;
     border-bottom: solid 1px black;
+}
+.cass--main-layout--primary-top.is-simple-top-bar {
+    height: 48px;
 }
 .cass--main-layout--secondary-top {
     position: absolute;
@@ -62,14 +90,15 @@ export default {
     min-height: 100vh;
     max-height: 100vh;
     width: 100%;
-    margin-top: 100px;
-
 }
 .cass--main-layout--right {
     position: absolute;
     right: 0;
     width: 300px;
     top: 100px;
-
 }
+.cass--main-layout--right {
+    top: 48px;
+}
+
 </style>

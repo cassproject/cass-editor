@@ -25,9 +25,9 @@
             </div>
             <span class="tag is-info">{{ objectTypeForDisplay }}</span>
         </div>
-        <div class="buttons">
+        <div class="buttons pt-2">
             <div
-                class="button is-primary"
+                class="button is-small is-primary"
                 @click="openObject">
                 <span>Open {{ objectTypeForDisplay }}</span>
                 <span class="icon">
@@ -66,130 +66,163 @@
             class="cass__right-side--details"
             v-if="objectType === 'Directory' || objectType === 'Framework' || objectType === 'ConceptScheme'">
             <div class="cass__right-side--details-wrapper">
-                <h3
-                    class="is-family-secondary is-size-5">
-                    Details
-                </h3>
-                <div class="cass__right-side--details-list-item">
-                    <b>Last Modified:</b> {{ lastModified }}
+                <div class="cass__right-aside--full-item">
+                    <h3
+                        class="is-family-secondary is-size-4">
+                        Details
+                    </h3>
+                </div>
+                <div class="cass__right-aside--half-item">
+                    <b>Last Modified:</b>
+                </div>
+                <div class="cass__right-aside--half-item">
+                    {{ lastModified }}
                 </div>
                 <!-- open -->
-                <span
-                    class="cass__right-side--details-list-section"
-                    v-if="object.directory">
-                    <b>Directory:</b> {{ getName(object.directory) }}
-                    <span
-                        class="button is-primary is-outlined is-small"
-                        @click="goToParentDirectory">
-                        Open
-                    </span>
-                </span>
-                <!-- open parent directory -->
-                <span
-                    class="cass__right-side--details-list-item"
-                    v-else-if="object.parentDirectory">
-                    <b>Parent Directory:</b> {{ getName(object.parentDirectory) }}
-                    <span
-                        title="Navigate to parent directory"
-                        class="inline-link is-small"
-                        @click="goToParentDirectory">
-                        <span>Go to parent</span>
-                        <span class="icon">
-                            <i class="fa fa-folder-open" />
+                <template v-if="object.directory">
+                    <div class="cass__right-aside--half-item">
+                        <b>Directory:</b>
+                    </div>
+                    <div class="cass__right-aside--half-item">
+                        {{ getName(object.directory) }}
+                        <span
+                            class="button is-primary is-outlined is-small"
+                            @click="goToParentDirectory">
+                            Open
                         </span>
-                    </span>
-                </span>
+                    </div>
+                </template>
+                <template v-else-if="object.parentDirectory">
+                    <!-- open parent directory -->
+                    <div class="cass__right-aside--half-item">
+                        <b>Parent Directory:</b>
+                    </div>
+                    <div class="cass__right-aside--half-item">
+                        {{ getName(object.parentDirectory) }}
+                        <span
+                            title="Navigate to parent directory"
+                            class="inline-link is-small"
+                            @click="goToParentDirectory">
+                            <span>Go to parent</span>
+                            <span class="icon">
+                                <i class="fa fa-folder-open" />
+                            </span>
+                        </span>
+                    </div>
+                </template>
                 <!-- date created -->
-                <div
-                    class="cass__right-side--details-list-item">
+                <div class="cass__right-aside--half-item">
                     <b>
                         Date Created:
                     </b>
+                </div>
+                <div class="cass__right-aside--half-item">
                     {{ dateCreated }}
                 </div>
                 <!-- number of directories -->
                 <div
-                    class="cass__right-side--details-list-item"
+                    class="cass__right-aside--half-item"
                     v-if="objectType === 'Directory'">
                     <b>Subdirectories:</b>
+                </div>
+                <div
+                    v-if="objectType === 'Directory'"
+                    class="cass__right-aside--half-item">
                     {{ numSubdirectories }}
                 </div>
                 <!-- object count -->
-                <div
-                    class="cass__right-side--details-list-item"
-                    v-if="objectType === 'Directory'">
-                    <b>Objects:</b>
-                    {{ numObjects }}
-                </div>
+                <template v-if="objectType === 'Directory'">
+                    <div class="cass__right-aside--half-item">
+                        <b>Objects:</b>
+                    </div>
+                    <div class="cass__right-aside--half-item">
+                        {{ numObjects }}
+                    </div>
+                </template>
                 <!-- item count -->
-                <div
-                    class="cass__right-side--details-list-item"
-                    v-if="objectType === 'Framework'">
-                    <b>Item Count:</b>
-                    {{ object.competency ? object.competency.length : 0 }}
-                </div>
+                <template v-else-if="objectType === 'Framework'">
+                    <div class="cass__right-aside--half-item">
+                        <b>Item Count:</b>
+                    </div>
+                    <div class="cass__right-aside--half-item">
+                        {{ object.competency ? object.competency.length : 0 }}
+                    </div>
+                </template>
                 <!-- published date -->
-                <div
-                    class="cass__right-side--details-list-item"
-                    v-if="object.Published">
-                    <b>Published Date:</b>
-                    {{ object.Published }}
-                </div>
+                <template v-if="object.Published">
+                    <div class="cass__right-aside--half-item">
+                        <b>Published Date:</b>
+                    </div>
+                    <div class="cass__right-aside--half-item">
+                        {{ object.Published }}
+                    </div>
+                </template>
                 <!-- approved -->
-                <div
-                    class="cass__right-side--details-list-item"
-                    v-if="object.Approved">
-                    <b>Approved Date:</b>
-                    {{ object.Approved }}
-                </div>
+                <template v-if="object.Approved">
+                    <div class="cass__right-aside--half-item">
+                        <b>Approved Date:</b>
+                    </div>
+                    <div class="cass__right-aside--half-item">
+                        {{ object.Approved }}
+                    </div>
+                </template>
                 <!-- publisher name -->
-                <div
-                    class="cass__right-side--details-list-item"
-                    v-if="publisherName">
-                    <b>Publisher:</b>
-                    {{ publisherName }}
-                </div>
+                <template v-if="publisherName">
+                    <div class="cass__right-aside--half-item">
+                        <b>Publisher:</b>
+                    </div>
+                    <div class="cass__right-aside--half-item">
+                        {{ publisherName }}
+                    </div>
+                </template>
                 <!-- creator -->
-                <div
-                    class="cass__right-side--details-list-item"
-                    v-else-if="creatorName">
-                    <b>Creator:</b>
-                    {{ creatorName }}
-                </div>
+                <template v-if="creatorName">
+                    <div class="cass__right-aside--half-item">
+                        <b>Creator:</b>
+                    </div>
+                    <div class="cass__right-aside--half-item">
+                        {{ creatorName }}
+                    </div>
+                </template>
+                <!-- share link -->
+                <template>
+                    <div class="cass__right-aside--half-item">
+                        <span>
+                            <b>Share:</b>
+                        </span>
+                    </div>
+                    <div class="cass__right-aside--half-item">
+                        <span
+                            class="inline-link"
+                            title="Copy URL to the clipboard."
+                            v-clipboard="shareLink"
+                            v-clipboard:success="successfulClip"
+                            v-clipboard:error="errorClip">
+                            <span
+                                :title="shareLink">copy link</span>
+                            <span class="icon">
+                                <i
+                                    v-if="clipStatus === 'success'"
+                                    class="fa fa-check" />
+                                <i
+                                    v-else-if="clipStatus === 'error'"
+                                    class="fa fa-times" />
+                                <i
+                                    v-else
+                                    class="fa fa-link"
+                                    name="copyURL" />
+                            </span>
+                        </span>
+                    </div>
+                </template>
                 <!-- description -->
                 <div
-                    class="cass__right-side--details-list-section"
+                    class="cass__right-aside--full-item"
                     v-if="objectDescription">
                     <b>Description</b>
-                    <div>{{ objectDescription }}</div>
+                    <br>
+                    <p>{{ objectDescription }}</p>
                 </div>
-                <span
-                    class="cass__right-side--details-section">
-                    <span>
-                        <b>Share:</b>
-                    </span>
-                    <span
-                        class="inline-link"
-                        title="Copy URL to the clipboard."
-                        v-clipboard="shareLink"
-                        v-clipboard:success="successfulClip"
-                        v-clipboard:error="errorClip">
-                        <span
-                            :title="shareLink">copy share link</span>
-                        <span class="icon">
-                            <i
-                                v-if="clipStatus === 'success'"
-                                class="fa fa-check" />
-                            <i
-                                v-else-if="clipStatus === 'error'"
-                                class="fa fa-times" />
-                            <i
-                                v-else
-                                class="fa fa-link"
-                                name="copyURL" />
-                        </span>
-                    </span>
-                </span>
             </div>
             <div
                 v-if="canEditObject && canEditDirectory"

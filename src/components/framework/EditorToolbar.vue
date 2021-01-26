@@ -3,7 +3,7 @@
         id="framework-editor-toolbar">
         <!-- property view -->
         <div class="container">
-            <div class="columns is-mobile is-spaced">
+            <div class="columns is-mobile">
                 <!-- view options -->
                 <!-- primary -->
                 <div class="column is-narrow">
@@ -527,13 +527,8 @@ export default {
 <style lang="scss">
     @import './../../scss/variables.scss';
 #framework-editor-toolbar {
-    border-bottom: solid 1px rgba($dark, .5);
-    top: 0rem;
     width: calc(100% - 4rem);
     z-index: 10;
-    height: 2.6rem;
-    position: fixed;
-    padding: 4px;
     background-color: white;
     .fet__wrapper {
         max-width: 1400px;

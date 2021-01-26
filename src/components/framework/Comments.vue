@@ -7,11 +7,6 @@
     <aside
         id="right-side-bar__comments"
         class="menu has-background-lightest">
-        <div class="right-aside-bar__title">
-            <h3 class="title is-size-3">
-                Comments
-            </h3>
-        </div>
         <!-- for each comment in time sequence
             click to scroll to position in framework eventually -->
         <!-- for each response -->
@@ -295,6 +290,9 @@ export default {
 <style lang="scss">
     @import './../../scss/variables.scss';
 
+#right-side-bar__comments {
+    width: 100%
+}
     /** Commented this out for now...it was confusing me with respect to the style in RightAside.vue**/
     /**
 #right-side-bar__comments {

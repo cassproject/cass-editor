@@ -10,7 +10,7 @@
         id="right-side-bar"
         class="menu has-background-light">
         <button
-            class="delete is-dark has-text-dark is-pulled-right"
+            class="delete ml-2 mt-4"
             @click="$store.commit('app/closeRightAside')"
             aria-label="close" />
         <slot name="right-aside-content">
@@ -53,20 +53,29 @@ export default {
 
 <style lang="scss">
     @import './../../scss/variables.scss';
-
+    .close-right-aside-button {
+        position: absolute;
+        left: 0rem;
+        padding-left: -1rem;
+        z-index: 100;
+        top: 1rem;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 1rem;
+    }
     #right-side-bar {
         position: fixed;
         border-left: solid 1px rgba($dark, .2);
         z-index: 11;
-        height: calc(100vh - 0px);
+        height: calc(100vh - 100px);
         overflow: auto;
         right: 0;
-        padding: 1.5rem 1rem .5rem 1rem;
-        width: 340px;
+        padding: 0rem;
+        width: 360px;
         transform: translateX(0);
         .right-aside-bar__title {
             direction: ltr;
-            padding-bottom: 1rem;
+            padding: 0rem 0rem;
         }
         .right-aside__filter-and-sort {
             direction: ltr;
