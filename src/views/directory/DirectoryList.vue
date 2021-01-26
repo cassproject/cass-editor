@@ -366,8 +366,8 @@ export default {
                     if (each.competency) {
                         competencies = competencies.concat(each.competency);
                     }
-                    done();
                 }, function(all) {
+                    done();
                 }, function(error) {
                     appError(error);
                     done();
