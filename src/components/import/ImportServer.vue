@@ -187,6 +187,8 @@
                             <div
                                 class=""
                                 v-if="cassDirectories.length || cassFrameworks.length">
+                                <SearchBar
+                                    searchType="framework" />
                                 <div v-if="cassDirectories.length">
                                     <h3 class="subtitle has-text-weight-bold is-size-4">
                                         Found Directories
@@ -294,11 +296,13 @@ import ImportTabs from '@/components/import/ImportTabs';
 import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
 import RightAside from '@/components/framework/RightAside';
+import SearchBar from '../framework/SearchBar.vue';
 export default {
     name: 'ImportServer',
     components: {
         ImportTabs,
-        RightAside
+        RightAside,
+        SearchBar
     },
     mixins: [ imports, common ],
     props: {
@@ -335,7 +339,13 @@ export default {
             set(url) {
                 this.$store.commit('app/importServerUrl', url);
             }
+        },
+        searchTerm: function() {
+            return this.$store.getters['app/searchTerm'];
         }
+    },
+    mounted: function() {
+        this.$store.commit('app/searchTerm', '');
     },
     methods: {
         importCaseDocs: function() {
@@ -358,7 +368,6 @@ export default {
             }
         },
         cassDetectEndpoint: function() {
-            let me = this;
             let remoteServer = this.importServerUrl;
             if (!remoteServer.endsWith("/")) {
                 remoteServer += "/";
@@ -371,13 +380,23 @@ export default {
             EcRepository.repos.pop();
             remoteRepo.selectedServer = remoteServer;
             this.remoteRepo = remoteRepo;
+            this.cassSearchEndpoint();
+        },
+        cassSearchEndpoint: function() {
+            this.cassDirectories.splice(0, this.cassDirectories.length);
+            this.cassFrameworks.splice(0, this.cassFrameworks.length);
+            let me = this;
             let paramObj = {};
             paramObj.size = 50;
             paramObj.sort = '[ { "name.keyword": {"order" : "asc"}} ]';
-            EcDirectory.search(remoteRepo, null, function(success) {
+            let search = "(*)";
+            if (this.searchTerm) {
+                search = this.searchTerm;
+            }
+            EcDirectory.search(this.remoteRepo, search, function(success) {
                 me.cassSearchSuccess(success, "directory");
             }, appError, paramObj);
-            EcFramework.search(remoteRepo, null, function(success) {
+            EcFramework.search(this.remoteRepo, search, function(success) {
                 me.cassSearchSuccess(success, "framework");
             }, appError, paramObj);
         },
@@ -664,6 +683,9 @@ export default {
     watch: {
         importServerUrl: function(val) {
             this.caseDocs = [];
+        },
+        searchTerm: function(val) {
+            this.cassSearchEndpoint();
         }
     }
 };
