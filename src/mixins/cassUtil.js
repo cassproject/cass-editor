@@ -21,7 +21,7 @@ export const cassUtil = {
                         } catch (e) {
                             // TODO Problem with EcOrganization update and creating encrypted value when only a reader...
                             // Anticipated workaround....login as group owner and save it.
-                            console.error("TODO...fix this...needs FRITZ input!!!!: " + e.toString());
+                            // console.error("TODO...fix this...needs FRITZ input!!!!: " + e.toString());
                             failureCallback(e.toString());
                         }
                     }
