@@ -6,6 +6,24 @@
 .cass__right-aside--share {
 
 }
+.cass--list-item-info--search-result {
+    margin-top: 1rem;
+}
+.cass--list-item-info--search-result--li {
+    cursor: pointer;
+    display: block;
+    width: 100%;
+    font-weight: 600;
+    padding: .25rem .5rem;
+    border-radius: 5px;
+    height: 36px;
+    font-size: 1rem;
+}
+.cass--list-item-info--search-result--li:hover {
+    background-color: $primary;
+    box-shadow: $two-dp;
+    color: white;
+}
 .cass__right-side--details-list-section {
     height: fit-content;
     display: block;

@@ -7,6 +7,12 @@
                 class="is-size-3 is-family-secondary"
                 v-if="!editingResource">
                 {{ objectName }}
+                <div
+                    v-if="canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId"
+                    class="icon is-small"
+                    @click="editDirectory">
+                    <i class="fa fa-edit is-size-5" />
+                </div>
             </h3>
             <span
                 class="icon"
@@ -217,6 +223,22 @@
                         </span>
                     </div>
                 </template>
+                <!-- manage users -->
+                <div
+                    class="cass__right-aside--whole-item"
+                    v-if="loggedIn && canEditObject">
+                    <b>Manage Users and Privacy:</b>
+                    <span
+                        class="icon"
+                        @click="manageUsers">
+                        <i class="fas fa-users" />
+                    </span>
+                </div>
+                <div
+                    class="cass__right-side--details-list-item"
+                    v-if="objectType === 'CreativeWork'">
+                    {{ object.url }}
+                </div>
                 <!-- description -->
                 <div
                     class="cass__right-aside--full-item"
@@ -234,16 +256,7 @@
                     Actions
                 </h3>
                 <div
-                    class="cass__right-side--details-list-item"
-                    v-if="objectType === 'CreativeWork'">
-                    {{ object.url }}
-                </div>
-                <div
                     class="cass__right-side--details-list-section">
-                    <div
-                        class="cass__right-side--details-list-section">
-                        <b>Copy/Move</b>
-                    </div>
                     <div
                         class="cass__right-side--details-list-section">
                         <div
@@ -270,15 +283,21 @@
                             </span>
                         </div>
                     </div>
-                    <ul v-if="copyingToDirectory || movingToDirectory">
-                        Choose a directory
+                    <ul
+                        class="cass--list-item-info--search-result"
+                        v-if="copyingToDirectory || movingToDirectory">
+                        <div class="title is-size-4">
+                            Choose a directory
+                        </div>
                         <li
+                            class="cass--list-item-info--search-result--li"
                             v-for="directory in directoryOptions"
                             :key="directory"
                             @click="copyOrMove(directory)">
                             {{ directory.name }}
                         </li>
                         <li
+                            class="cass--list-item-info--search-result--li"
                             @click="removeFromDirectory"
                             v-if="movingToDirectory">
                             Remove from directory
@@ -286,23 +305,6 @@
                     </ul>
                 </div>
             </div>
-        </div>
-        <!-- manage users -->
-        <div
-            class="cass__right-side--details-list-section"
-            v-if="loggedIn && canEditObject">
-            <b>Manage Users and Privacy:</b>
-            <span
-                class="icon"
-                @click="manageUsers">
-                <i class="fas fa-users" />
-            </span>
-        </div>
-        <div
-            v-if="canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId"
-            class="icon is-small"
-            @click="editDirectory">
-            <i class="fa fa-edit is-size-5" />
         </div>
     </aside>
 </template>

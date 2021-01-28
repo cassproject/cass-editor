@@ -70,6 +70,7 @@ export default {
         height: calc(100vh - 100px);
         overflow: auto;
         right: 0;
+        top:100px;
         padding: 0rem;
         width: 360px;
         transform: translateX(0);
