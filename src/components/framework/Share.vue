@@ -392,12 +392,18 @@ export default {
                 return window.location.href.replace('frameworks', "?directoryId=" + this.directory.shortId());
             }
             if (this.$store.getters['editor/conceptMode'] === true) {
+                if (window.location.href.indexOf('concepts') !== -1) {
+                    return window.location.href.replace('/concepts', "?concepts=true&frameworkId=" + this.frameworkId);
+                }
                 return window.location.href.replace('/conceptScheme', "?concepts=true&frameworkId=" + this.frameworkId);
+            }
+            if (window.location.href.indexOf('frameworks') !== -1) {
+                return window.location.href.replace('/frameworks', "?frameworkId=" + this.frameworkId);
             }
             return window.location.href.replace('/framework', "?frameworkId=" + this.frameworkId);
         },
         framework: function() {
-            if (this.objFromListItemInfo && this.objFromListItemInfo.type === "Framework") {
+            if (this.objFromListItemInfo && (this.objFromListItemInfo.type === "Framework" || this.objFromListItemInfo.type === "ConceptScheme")) {
                 return this.objFromListItemInfo;
             }
             return this.$store.state.editor.framework;
@@ -430,7 +436,7 @@ export default {
                 return this.resource.name;
             }
             if (this.framework.name) {
-                return this.framework.getName();
+                return Thing.getDisplayStringFrom(this.framework.name);
             } else {
                 return Thing.getDisplayStringFrom(this.framework["dcterms:title"]);
             }
