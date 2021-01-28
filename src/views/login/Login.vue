@@ -241,7 +241,6 @@ export default {
     data: () => ({
         GROUP_SEARCH_SIZE: 10000,
         PERSON_SEARCH_SIZE: 10000,
-        GROUP_PPK_KEY: 'https://schema.cassproject.org/0.3/ppk',
         username: '',
         password: '',
         createAccountUsername: '',
@@ -276,14 +275,22 @@ export default {
             this.$router.push({path: '/frameworks'});
         },
         addGroupIdentity(group) {
-            appLog("Adding group identity: " + "(" + group.shortId() + ") - " + group.getName());
-            let ecevGroupPpk = new EcEncryptedValue();
-            ecevGroupPpk.copyFrom(group[this.GROUP_PPK_KEY]);
-            let currentGroupPpkPem = ecevGroupPpk.decryptIntoString();
-            let grpIdent = new EcIdentity();
-            grpIdent.displayName = group.getName();
-            grpIdent.ppk = EcPpk.fromPem(currentGroupPpkPem);
-            EcIdentityManager.addIdentityQuietly(grpIdent);
+            try {
+                // add all available group keys to identity manager
+                let groupPpkSet = group.getOrgKeys();
+                appLog("Adding group identities: " + "(" + group.shortId() + ") - " + group.getName() + " - (" + groupPpkSet.length + ") keys");
+                for (let i = 0; i < groupPpkSet.length; i++) {
+                    let gPpk = groupPpkSet[i];
+                    let grpIdent = new EcIdentity();
+                    grpIdent.displayName = group.getName() + " - key[" + i + "]";
+                    grpIdent.ppk = gPpk;
+                    EcIdentityManager.addIdentityQuietly(grpIdent);
+                }
+            } catch (e) {
+                // TODO Problem with EcOrganization update and creating encrypted value when only a reader...
+                // Anticipated workaround....login as group owner and save it.
+                // console.error("TODO...fix this...needs FRITZ input!!!!: " + e.toString());
+            }
         },
         searchRepositoryForGroupsSuccess(ecoa) {
             let linkedPersonShortId = this.linkedPerson.shortId();

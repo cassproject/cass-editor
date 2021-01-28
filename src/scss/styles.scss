@@ -318,3 +318,31 @@ iframe {
     }
   } 
   
+  .width-300 {
+      width: 320px;
+  }
+  .cass-left-panel {
+      width: 280px;
+      border: solid 1px rgba($primary, .5);
+      background-color: rgba($primary, .025);
+      border-radius: 10px;
+      padding: 1rem;
+      max-height: 95vh;
+      overflow-y: scroll;
+      top: 0;
+      margin: .125rem;
+  }
+  .cass-left-panel--container {
+  }
+  .users-edit-icon {
+      vertical-align: top;
+  }
+
+  .cass-group--actions {
+    border: solid 1px rgba($primary, .5);
+    padding: 1rem;
+    border-radius: 10px;
+    background-color: rgba($primary, .025);
+    
+  }
+

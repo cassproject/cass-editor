@@ -1,21 +1,28 @@
 export const cassUtil = {
     name: 'cassUtil',
     data: () => ({
-        GROUP_PPK_KEY: 'https://schema.cassproject.org/0.3/ppk'
     }),
     methods: {
         getOrganizationByEcPk(ecPk, successCallback, failureCallback) {
             let ecPkPem = ecPk.toPem();
             let paramObj = {};
             paramObj.size = 10000;
-            let me = this;
             EcOrganization.search(window.repo, '',
                 function(ecoa) {
                     for (let o of ecoa) {
-                        let oPk = me.getOrganizationEcPk(o);
-                        if (oPk && oPk.toPem().equals(ecPkPem)) {
-                            successCallback(o);
-                            return;
+                        try {
+                            let groupPpkSet = o.getOrgKeys();
+                            for (let gPpk of groupPpkSet) {
+                                if (gPpk && gPpk.toPk().toPem().equals(ecPkPem)) {
+                                    successCallback(o);
+                                    return;
+                                }
+                            }
+                        } catch (e) {
+                            // TODO Problem with EcOrganization update and creating encrypted value when only a reader...
+                            // Anticipated workaround....login as group owner and save it.
+                            // console.error("TODO...fix this...needs FRITZ input!!!!: " + e.toString());
+                            failureCallback(e.toString());
                         }
                     }
                     successCallback(null);
@@ -27,11 +34,14 @@ export const cassUtil = {
         },
         getOrganizationEcPk(orgObj) {
             try {
-                let orgEvPpk = new EcEncryptedValue();
-                orgEvPpk.copyFrom(orgObj[this.GROUP_PPK_KEY]);
-                let orgPpk = EcPpk.fromPem(orgEvPpk.decryptIntoString());
-                return orgPpk.toPk();
+                return orgObj.getCurrentOrgKey().toPk();
+                // let orgEvPpk = new EcEncryptedValue();
+                // orgEvPpk.copyFrom(orgObj[this.GROUP_PPK_KEY]);
+                // let orgPpk = EcPpk.fromPem(orgEvPpk.decryptIntoString());
+                // return orgPpk.toPk();
             } catch (e) {
+                // TODO Problem with EcOrganization update and creating encrypted value when only a reader...
+                // Anticipated workaround....login as group owner and save it.
                 return null;
             }
         },
@@ -120,6 +130,17 @@ export const cassUtil = {
                 }
             }
             return false;
+        },
+        isPersonalIdentityAnObjectOwner(obj) {
+            if (!obj.owner || obj.owner.length === 0) return false;
+            let personalIdentPkPem = this.getPersonalIdentityPk().toPem();
+            return obj.owner.includes(personalIdentPkPem);
+        },
+        getPersonalIdentityPk() {
+            // assuming that the first identity is the user's personal identity
+            if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+                return EcIdentityManager.ids[0].ppk.toPk();
+            } else return null;
         },
         buildEcAlignmentsFromRemoteLinkedData(ecrlda) {
             let ecaa = [];
