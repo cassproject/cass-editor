@@ -309,6 +309,7 @@ Validation can be accomplished through the configuration manager. Here you can s
 ## Prerequisites
 
 * [git](https://git-scm.com/)
+* [Node.js](https://nodejs.org/en/download/)
 
 # Setting up
 * Clone cass-editor to local repository.
