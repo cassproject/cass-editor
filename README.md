@@ -311,7 +311,7 @@ Validation can be accomplished through the configuration manager. Here you can s
 * [git](https://git-scm.com/)
 * [Node.js](https://nodejs.org/en/download/)
 
-# Setting up
+## Setting up
 * Clone cass-editor to local repository.
 
 ```bash
