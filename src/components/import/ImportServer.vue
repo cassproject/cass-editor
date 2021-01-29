@@ -270,7 +270,7 @@
                         Remote Server Import
                     </h2>
                     <!--v-else-if="importType=='server' && !conceptMode"-->
-                    <p class="is-size-5">
+                    <p class="has-text-weight-bold">
                         If you know the URL of a IMS CASE Repository, such as OpenSalt, you can import published frameworks from that repository.
                     </p>
                     <br>
@@ -286,6 +286,25 @@
                         </li>
                         <li class="is-size-6">
                             If you wish to edit the frameworks after importing, please be sure you are signed in.
+                        </li>
+                    </ul>
+                    <br>
+                    <p class="has-text-weight-bold">
+                        If you know the URL of another CaSS Repository, you can import frameworks from that repository.
+                    </p>
+                    <br>
+                    <ul class="cat__bullet-list">
+                        <li class="is-size-6">
+                            This import maintains the URLs of the CaSS frameworks but does not change any of the data besides the owner. If you are logged in, you will have ownership of the newly imported framework and be able to edit it.
+                        </li>
+                        <li class="is-size-6">
+                            After entering the endpoint below, you can select which frameworks you would like to import.
+                        </li>
+                        <li class="is-size-6">
+                            If the other repository has directories, these will appear at the top of the list. You can click on a directory to view and select frameworks within it.
+                        </li>
+                        <li class="is-size-6">
+                            Use the search bar to find particular frameworks or directories.
                         </li>
                     </ul>
                 </div>
