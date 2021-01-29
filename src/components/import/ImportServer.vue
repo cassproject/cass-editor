@@ -276,6 +276,9 @@
                     <br>
                     <ul class="cat__bullet-list">
                         <li class="is-size-6">
+                            A CASE framework cannot be imported if it uses API Key authentication.
+                        </li>
+                        <li class="is-size-6">
                             This import maintains the URLs of the CASE frameworks and changes both the format and schema used to store the CASE frameworks in CaSS, but does not change any of the data.
                         </li>
                         <li class="is-size-6">
