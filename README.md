@@ -304,3 +304,34 @@ Validation can be accomplished through the configuration manager. Here you can s
 * Shift + U - Unlink competency  (1.2 and earlier)
 * Shift + &uarr; & Shift + &darr; - Move competency up and down in the list.
 * Shift + &larr; & Shift + &rarr; - Move competency indent and outdent in the list (1.3)
+
+# Development Environment Setup
+## Prerequisites
+
+* [git](https://git-scm.com/)
+
+# Setting up
+* Clone cass-editor to local repository.
+
+```bash
+git clone https://[username]@git.eduworks.us/cass/cass-editor.git
+```
+
+* Install dependencies and submodule.
+
+```bash
+cd cass-editor
+git submodule init
+git submodule update
+npm install
+```
+
+* Start cass-editor.
+
+```bash
+npm run serve
+```
+
+* Connect.
+
+    http://localhost:8080/cass-editor#/
