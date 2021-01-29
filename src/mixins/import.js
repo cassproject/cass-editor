@@ -1054,14 +1054,13 @@ export default {
                 }
             });
         },
-        isValidUrl(str) {
-            var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
-            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
-            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
-            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
-            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
-            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
-            return pattern.test(str);
+        isValidUrl(s) {
+            try {
+                let u = new URL(s);
+            } catch (e) {
+                return false;
+            }
+            return true;
         },
         scrollFunction(e) {
             let documentObject = document.getElementsByClassName('parent-object');
