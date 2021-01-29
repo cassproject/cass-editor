@@ -397,6 +397,9 @@ export default {
                 }
                 return window.location.href.replace('/conceptScheme', "?concepts=true&frameworkId=" + this.frameworkId);
             }
+            if (window.location.href.indexOf('directory') !== -1) {
+                return window.location.href.replace('/directory', "?frameworkId=" + this.frameworkId);
+            }
             if (window.location.href.indexOf('frameworks') !== -1) {
                 return window.location.href.replace('/frameworks', "?frameworkId=" + this.frameworkId);
             }
