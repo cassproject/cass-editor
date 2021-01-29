@@ -458,7 +458,12 @@ export default {
             if (this.frameworksToProcess <= 0) {
                 this.repo.multiput(toSave, function(success) {
                     me.copyingToDirectory = false;
-                    me.movingToDirectory = false;
+                    if (me.movingToDirectory) {
+                        // Remove the moved item from the right panel
+                        me.$store.commit('app/rightAsideObject', null);
+                        me.$store.commit('app/closeRightAside');
+                        me.movingToDirectory = false;
+                    }
                     if (shouldRefresh) {
                         // If removing or moving, need to refresh search results
                         me.$store.commit('app/refreshSearch', true);
@@ -763,6 +768,8 @@ export default {
                 me.repo.saveTo(resource, function() {
                     appLog("resource moved");
                     me.$store.commit('app/refreshSearch', true);
+                    me.$store.commit('app/rightAsideObject', null);
+                    me.$store.commit('app/closeRightAside');
                     me.movingToDirectory = false;
                 }, appError);
             }
