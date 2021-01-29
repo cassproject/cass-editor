@@ -111,6 +111,13 @@ export default {
                         }
                     };
                 }
+            } else if (val === 'error') {
+                params = {
+                    type: val,
+                    title: "Error",
+                    text: data.message,
+                    details: data.details
+                };
             }
             // reveal modal
             this.$modal.show(params);
@@ -969,9 +976,28 @@ export default {
         },
         importFromUrl: function() {
             let me = this;
-            let error;
+            let error = {
+                message: "Unable to import from the URL source provided.",
+                details: ""
+            };
+            if (!this.isValidUrl(this.importUrl)) {
+                error.details = "The URL provided is not valid.";
+                me.$store.commit('app/addImportError', error.details);
+                me.$store.commit('app/importTransition', 'upload');
+                me.showModal('error', error);
+                return;
+            }
             EcRemote.getExpectingString(this.importUrl, null, function(result) {
-                result = JSON.parse(result);
+                try {
+                    result = JSON.parse(result);
+                } catch (ex) {
+                    error.details = ex.message;
+                    me.$store.commit('app/importStatus', ex.message);
+                    me.$store.commit('app/importTransition', 'upload');
+                    me.$store.commit('app/addImportError', ex.message);
+                    me.showModal('error', error);
+                    return;
+                }
                 var graph = result["@graph"];
                 if (graph != null) {
                     var id = graph[0]["@id"];
@@ -987,39 +1013,55 @@ export default {
                                 me.$store.commit('app/importStatus', 'no match, saving new framework...');
                                 me.importJsonLd(result);
                             } /* TO DO - ERROR HANDLING HERE */
-                        }, function(error) {
-                            me.$store.commit('app/importStatus', error);
+                        }, function(failure) {
+                            error.details = failure;
+                            me.$store.commit('app/importStatus', failure);
                             me.$store.commit('app/importTransition', 'process');
-                            me.$store.commit('app/addImportError', error);
+                            me.$store.commit('app/addImportError', failure);
+                            me.showModal('error', error);
                         });
                     } else {
                         me.importJsonLd(result);
                     }
                 } else {
-                    error = "URL must have an '@graph' field at the top level.";
-                    me.$store.commit('app/addImportError', error);
+                    error.details = "URL must have an '@graph' field at the top level.";
+                    me.$store.commit('app/addImportError', error.details);
                     me.$store.commit('app/importTransition', 'process');
+                    me.showModal('error', error);
                     return;
                 }
                 if (graph[0]["@type"].indexOf("Concept") !== -1) {
                     if (me.ceasnDataFields === 'true') {
-                        error = "Competency Editor cannot be used to import concept schemes.";
+                        error.details = "Competency Editor cannot be used to import concept schemes.";
                     } else {
-                        error = "Competency Editor cannot be used to import taxonomies.";
+                        error.details = "Competency Editor cannot be used to import taxonomies.";
                     }
-                    me.$store.commit('app/addImportError', error);
+                    me.$store.commit('app/addImportError', error.details);
                     me.$store.commit('app/importTransition', 'process');
+                    me.showModal('error', error);
                 }
             }, function(failure) {
                 if (!failure) {
-                    error = "Import Error";
-                    me.$store.commit('app/addImportError', error);
-                    me.$store.commit('app/importTransition', 'process');
+                    error.details = "Please make sure you are entering the endpoint of a repository rather than a specific framework and that the repository does not require API key authentication.";
+                    me.$store.commit('app/addImportError', error.message);
+                    me.$store.commit('app/importTransition', 'upload');
+                    me.showModal('error', error);
                 } else {
+                    error.details = failure;
                     me.$store.commit('app/addImportError', failure);
-                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/importTransition', 'upload');
+                    me.showModal('error', error);
                 }
             });
+        },
+        isValidUrl(str) {
+            var pattern = new RegExp('^(https?:\\/\\/)?' + // protocol
+            '((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.?)+[a-z]{2,}|' + // domain name
+            '((\\d{1,3}\\.){3}\\d{1,3}))' + // OR ip (v4) address
+            '(\\:\\d+)?(\\/[-a-z\\d%_.~+]*)*' + // port and path
+            '(\\?[;&a-z\\d%_.~+=-]*)?' + // query string
+            '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
+            return pattern.test(str);
         },
         scrollFunction(e) {
             let documentObject = document.getElementsByClassName('parent-object');
