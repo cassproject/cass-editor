@@ -70,10 +70,21 @@
         <span v-if="errorEditing">
             {{ errorEditing }}
         </span>
+        <!-- manage users for resources -->
         <div
-            class="cass__right-side--details"
-            v-if="objectType === 'Directory' || objectType === 'Framework' || objectType === 'ConceptScheme'">
-            <div class="cass__right-side--details-wrapper">
+            class="cass__right-aside--whole-item"
+            v-if="loggedIn && canEditObject && objectType === 'CreativeWork'">
+            <b>Manage Users and Privacy:</b>
+            <span
+                class="icon"
+                @click="manageUsers">
+                <i class="fas fa-users" />
+            </span>
+        </div>
+        <div class="cass__right-side--details">
+            <div
+                class="cass__right-side--details-wrapper"
+                v-if="objectType === 'Directory' || objectType === 'Framework' || objectType === 'ConceptScheme'">
                 <div class="cass__right-aside--full-item">
                     <h3
                         class="is-family-secondary is-size-4">
