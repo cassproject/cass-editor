@@ -2,6 +2,16 @@
 module.exports = {
     base: '/docs/',
     dest: 'public/docs',
+    head: [ ['script', {}, `
+        window.onload = function() {
+            var container = document.getElementsByClassName('theme-container');
+            if(window.location.href.includes('credential')) {
+                container[0].classList.add('credential-editor');
+            } else {
+                container[0].classList.add('cass-editor')
+            }
+        }; 
+    `]],
     themeConfig: {
       logo: '/cass-logo.png',
       nav: [
