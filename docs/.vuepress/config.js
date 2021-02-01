@@ -10,7 +10,6 @@ module.exports = {
             } else {
                 container[0].classList.add('cass-editor')
             }
-            console.log("hell");
         }; 
     `]],
     themeConfig: {
