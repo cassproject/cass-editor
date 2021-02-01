@@ -5,11 +5,20 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <title>Importing a Competency Framework</title>
     <meta name="generator" content="VuePress 1.7.1">
-    
+    <script>
+        window.onload = function() {
+            var container = document.getElementsByClassName('theme-container');
+            if(window.location.href.includes('credential')) {
+                container[0].classList.add('credential-editor');
+            } else {
+                container[0].classList.add('cass-editor')
+            }
+        }; 
+    </script>
     <meta name="description" content="">
     
-    <link rel="preload" href="/cass-editor/docs/assets/css/0.styles.2936ef63.css" as="style"><link rel="preload" href="/cass-editor/docs/assets/js/app.4796e7ef.js" as="script"><link rel="preload" href="/cass-editor/docs/assets/js/2.7762138b.js" as="script"><link rel="preload" href="/cass-editor/docs/assets/js/17.1fd5d2d9.js" as="script"><link rel="prefetch" href="/cass-editor/docs/assets/js/10.5459cdaf.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/11.d538ddd8.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/12.e8cd66f3.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/13.ee3c7563.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/14.94813001.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/15.75ea83aa.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/16.fb131a8b.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/18.dac2e860.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/19.45729553.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/20.540dd330.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/21.ab8a20f1.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/3.65060374.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/4.8745f050.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/5.d6357327.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/6.2df1337a.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/7.3e05b751.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/8.c197ab9d.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/9.fbcf9049.js">
-    <link rel="stylesheet" href="/cass-editor/docs/assets/css/0.styles.2936ef63.css">
+    <link rel="preload" href="/cass-editor/docs/assets/css/0.styles.09e2d1d2.css" as="style"><link rel="preload" href="/cass-editor/docs/assets/js/app.361d6c72.js" as="script"><link rel="preload" href="/cass-editor/docs/assets/js/2.7762138b.js" as="script"><link rel="preload" href="/cass-editor/docs/assets/js/17.1fd5d2d9.js" as="script"><link rel="prefetch" href="/cass-editor/docs/assets/js/10.5459cdaf.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/11.d538ddd8.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/12.e8cd66f3.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/13.ee3c7563.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/14.94813001.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/15.75ea83aa.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/16.fb131a8b.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/18.dac2e860.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/19.45729553.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/20.540dd330.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/21.ab8a20f1.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/3.65060374.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/4.8745f050.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/5.d6357327.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/6.2df1337a.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/7.3e05b751.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/8.c197ab9d.js"><link rel="prefetch" href="/cass-editor/docs/assets/js/9.fbcf9049.js">
+    <link rel="stylesheet" href="/cass-editor/docs/assets/css/0.styles.09e2d1d2.css">
   </head>
   <body>
     <div id="app" data-server-rendered="true"><div class="theme-container"><header class="navbar"><div class="sidebar-button"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" viewBox="0 0 448 512" class="icon"><path fill="currentColor" d="M436 124H12c-6.627 0-12-5.373-12-12V80c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12zm0 160H12c-6.627 0-12-5.373-12-12v-32c0-6.627 5.373-12 12-12h424c6.627 0 12 5.373 12 12v32c0 6.627-5.373 12-12 12z"></path></svg></div> <a href="/cass-editor/docs/" class="home-link router-link-active"><img src="/cass-editor/docs/cass-logo.png" alt="" class="logo"> <!----></a> <div class="links"><div class="search-box"><input aria-label="Search" autocomplete="off" spellcheck="false" value=""> <!----></div> <nav class="nav-links can-hide"><div class="nav-item"><a href="/cass-editor/docs/" class="nav-link">
@@ -45,6 +54,6 @@ have instructions in the panel on the right side of the screen.</p></div> <foote
       </a>
       →
     </span></p></div> </main></div><div class="global-ui"></div></div>
-    <script src="/cass-editor/docs/assets/js/app.4796e7ef.js" defer></script><script src="/cass-editor/docs/assets/js/2.7762138b.js" defer></script><script src="/cass-editor/docs/assets/js/17.1fd5d2d9.js" defer></script>
+    <script src="/cass-editor/docs/assets/js/app.361d6c72.js" defer></script><script src="/cass-editor/docs/assets/js/2.7762138b.js" defer></script><script src="/cass-editor/docs/assets/js/17.1fd5d2d9.js" defer></script>
   </body>
 </html>
