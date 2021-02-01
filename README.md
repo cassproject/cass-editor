@@ -314,10 +314,6 @@ Validation can be accomplished through the configuration manager. Here you can s
 ## Setting up
 * Clone cass-editor to local repository.
 
-```bash
-git clone https://[username]@git.eduworks.us/cass/cass-editor.git
-```
-
 * Install dependencies and submodule.
 
 ```bash
