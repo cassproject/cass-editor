@@ -3,6 +3,12 @@
 #right-side-bar {
     overflow-y: hidden;
 }
+.right-aside-bar--title-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+}
 #cass__right-aside {
     position: fixed;
     height: 100%;
