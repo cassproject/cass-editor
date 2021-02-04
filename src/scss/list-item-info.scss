@@ -1,11 +1,49 @@
 @import './variables.scss';
 
-.cass__right-side--details {
+#right-side-bar {
+    overflow-y: hidden;
+}
+#cass__right-aside {
+    position: fixed;
+    height: 100%;
+    top: 0;
+    overflow: hidden;
+
+    width: 100%;
+    transform: translateX(0);
+}
+.cass__right-aside--contianer {
+    display: flex;
+    position: relative;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    flex-direction: column;
+}
+.cass__right-aside--header {
+    padding: .5rem .5rem;
+    z-index: 100;
+    position: absolute;
+    top: 0;
+    background-color: $light;
+    border-bottom: solid 1px black;
+    width: 100%;
+    right: 0;
+    left: 0;
+    height: 160px;
+}
+.cass__right-aside--body {
+    margin-top: 160px;
+    height: calc(100% - 160px);
+    overflow-y: scroll;;
+    background-color: light;
+}
+.right-aside-bar__title {
 
 }
-.cass__right-aside--share {
 
-}
 .cass--list-item-info--search-result {
     margin-top: 1rem;
 }
@@ -14,8 +52,10 @@
     display: block;
     width: 100%;
     font-weight: 600;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: .25rem .5rem;
-    border-radius: 5px;
     height: 36px;
     font-size: 1rem;
 }
@@ -33,7 +73,7 @@
 .cass__right-side--details-wrapper {
     display: flex;
     flex-wrap: wrap;
-    padding: .5rem 0rem .5rem;
+    padding: 0rem 0rem .5rem;
 }
 .cass__right-side--details-list-item {
     height: 1.5rem;
@@ -42,9 +82,76 @@
 
 .cass__right-aside--full-item {
     width: 100%;
-    padding: .5rem 0rem;
+    padding: .5rem;
 }
 .cass__right-aside--half-item {
     width: 50%;
     height: 32px;
+}
+
+.cass__right-side--accordion {
+    background-color: #eee;
+    color: #444;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: .5rem;
+    border-bottom: solid 1px rgba($cass-black, .7);
+    width: 100%;
+    text-align: left;
+    border: none;
+    outline: none;
+    transition: 0.4s;
+}
+.cass__right-side--accordion.active,
+.cass__right-side--accordion:hover {
+    background-color: $cass-secondary;
+    color: white;
+}
+
+.cass__right-side--accordion-panel {
+    padding: 0 0;
+    display: flex;
+    justify-content: flex-start;
+    align-content: flex-start;
+    flex-wrap: wrap;
+    background-color: white;
+    width: 100%;
+    height: 0px;
+    transition: height .2s ease-in;
+    visibility: hidden;
+    overflow: scroll;
+}
+.cass__right-side--accordion-panel.details.active {
+    padding: .5rem;
+}
+.cass__right-side--accordion-panel.active {
+    height: 200px;
+    visibility: visible;
+}
+
+.cass__right-aside--property {
+    display: flex;
+    margin: .25rem .5rem;
+    flex-direction: row;
+    width: 100%;
+    flex-wrap: wrap;
+    height: fit-content;
+}
+.cass__right-aside--property-text {
+    font-size: 1rem;
+    width: calc(100% - 3rem);
+    padding: .125rem 0rem;
+    height: 2rem;
+}
+.cass__right-aside--property-edit {
+    height: 1.5rem;
+}
+.cass__right-aside--property-label {
+    padding: .125rem 0rem;
+    font-size: .85rem;
+    font-weight: 600;
+}
+.cass__right-aside--property-icons {
+    width: 3rem;
 }

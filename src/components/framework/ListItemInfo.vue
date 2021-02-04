@@ -1,305 +1,380 @@
 <template>
-    <aside
-        id="right-side-bar__comments"
-        class="menu has-background-lightest">
-        <div class="right-aside-bar__title">
-            <h3
-                class="is-size-3 is-family-secondary"
-                v-if="!editingResource">
-                {{ objectName }}
+    <div
+        id="cass__right-aside"
+        class="has-background-lightest">
+        <div class="cass__right-aside--header">
+            <div class="right-aside-bar__title">
+                <h3
+                    class="is-size-4 is-family-secondary">
+                    {{ objectName }}
+                </h3>
+                <span class="tag is-info">{{ objectTypeForDisplay }}</span>
                 <div
-                    v-if="canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId"
-                    class="icon is-small"
-                    @click="editDirectory">
-                    <i class="fa fa-edit is-size-5" />
-                </div>
-            </h3>
-            <span
-                class="icon"
-                v-if="objectType === 'CreativeWork' && !editingResource && canEditObject"
-                @click="editResource">
-                <i class="fa fa-edit" />
-            </span>
-            <div
-                class="control"
-                v-if="editingResource">
-                <div class="control">
-                    <input
-                        class="input"
-                        v-model="resourceName">
-                </div>
-            </div>
-            <span class="tag is-info">{{ objectTypeForDisplay }}</span>
-        </div>
-        <div
-            class="buttons pt-2"
-            v-if="objectShortId !== selectedDirectoryId">
-            <div
-                class="button is-small is-primary"
-                @click="openObject">
-                <span>Open {{ objectTypeForDisplay }}</span>
-                <span class="icon">
-                    <i class="fa fa-folder-open" />
-                </span>
-            </div>
-        </div>
-        <div v-if="objectType === 'CreativeWork' && !editingResource">
-            {{ object.url }}
-        </div>
-        <div
-            class="control"
-            v-if="editingResource">
-            <div class="control">
-                <input
-                    class="input"
-                    v-model="resourceUrl">
-            </div>
-        </div>
-        <span
-            class="icon"
-            v-if="editingResource"
-            @click="editingResource=false">
-            <i class="fa fa-times" />
-        </span>
-        <span
-            class="icon"
-            v-if="editingResource"
-            @click="saveResource">
-            <i class="fa fa-save" />
-        </span>
-        <span v-if="errorEditing">
-            {{ errorEditing }}
-        </span>
-        <!-- manage users for resources -->
-        <div
-            class="cass__right-aside--whole-item"
-            v-if="loggedIn && canEditObject && objectType === 'CreativeWork'">
-            <b>Manage Users and Privacy:</b>
-            <span
-                class="icon"
-                @click="manageUsers">
-                <i class="fas fa-users" />
-            </span>
-        </div>
-        <div class="cass__right-side--details">
-            <div
-                class="cass__right-side--details-wrapper"
-                v-if="objectType === 'Directory' || objectType === 'Framework' || objectType === 'ConceptScheme'">
-                <div class="cass__right-aside--full-item">
-                    <h3
-                        class="is-family-secondary is-size-4">
-                        Details
-                    </h3>
-                </div>
-                <div class="cass__right-aside--half-item">
-                    <b>Last Modified:</b>
-                </div>
-                <div class="cass__right-aside--half-item">
-                    {{ lastModified }}
-                </div>
-                <!-- open -->
-                <template v-if="object.directory">
-                    <div class="cass__right-aside--half-item">
-                        <b>Directory:</b>
-                    </div>
-                    <div class="cass__right-aside--half-item">
-                        {{ getName(object.directory) }}
-                        <span
-                            class="button is-primary is-outlined is-small"
-                            @click="goToParentDirectory">
-                            Open
+                    class="buttons pt-2"
+                    v-if="objectShortId !== selectedDirectoryId">
+                    <div
+                        class="button is-small is-primary"
+                        @click="openObject">
+                        <span>Open {{ objectTypeForDisplay }}</span>
+                        <span class="icon">
+                            <i class="fa fa-folder-open" />
                         </span>
                     </div>
-                </template>
-                <template v-else-if="object.parentDirectory">
-                    <!-- open parent directory -->
-                    <div class="cass__right-aside--half-item">
-                        <b>Parent Directory:</b>
-                    </div>
-                    <div class="cass__right-aside--half-item">
-                        {{ getName(object.parentDirectory) }}
-                        <span
-                            title="Navigate to parent directory"
-                            class="inline-link is-small"
-                            @click="goToParentDirectory">
-                            <span>Go to parent</span>
-                            <span class="icon">
-                                <i class="fa fa-folder-open" />
-                            </span>
-                        </span>
-                    </div>
-                </template>
-                <!-- date created -->
-                <div class="cass__right-aside--half-item">
-                    <b>
-                        Date Created:
-                    </b>
                 </div>
-                <div class="cass__right-aside--half-item">
-                    {{ dateCreated }}
-                </div>
-                <!-- number of directories -->
+            </div>
+        </div>
+        <div class="cass__right-aside--body">
+            <div class="cass__right-side--details">
+                <!-- begin accordion elements here -->
                 <div
-                    class="cass__right-aside--half-item"
-                    v-if="objectType === 'Directory'">
-                    <b>Subdirectories:</b>
-                </div>
-                <div
-                    v-if="objectType === 'Directory'"
-                    class="cass__right-aside--half-item">
-                    {{ numSubdirectories }}
-                </div>
-                <!-- object count -->
-                <template v-if="objectType === 'Directory'">
-                    <div class="cass__right-aside--half-item">
-                        <b>Objects:</b>
-                    </div>
-                    <div class="cass__right-aside--half-item">
-                        {{ numObjects }}
-                    </div>
-                </template>
-                <!-- item count -->
-                <template v-else-if="objectType === 'Framework'">
-                    <div class="cass__right-aside--half-item">
-                        <b>Item Count:</b>
-                    </div>
-                    <div class="cass__right-aside--half-item">
-                        {{ object.competency ? object.competency.length : 0 }}
-                    </div>
-                </template>
-                <!-- published date -->
-                <template v-if="object.Published">
-                    <div class="cass__right-aside--half-item">
-                        <b>Published Date:</b>
-                    </div>
-                    <div class="cass__right-aside--half-item">
-                        {{ object.Published }}
-                    </div>
-                </template>
-                <!-- approved -->
-                <template v-if="object.Approved">
-                    <div class="cass__right-aside--half-item">
-                        <b>Approved Date:</b>
-                    </div>
-                    <div class="cass__right-aside--half-item">
-                        {{ object.Approved }}
-                    </div>
-                </template>
-                <!-- publisher name -->
-                <template v-if="publisherName">
-                    <div class="cass__right-aside--half-item">
-                        <b>Publisher:</b>
-                    </div>
-                    <div class="cass__right-aside--half-item">
-                        {{ publisherName }}
-                    </div>
-                </template>
-                <!-- creator -->
-                <template v-if="creatorName">
-                    <div class="cass__right-aside--half-item">
-                        <b>Creator:</b>
-                    </div>
-                    <div class="cass__right-aside--half-item">
-                        {{ creatorName }}
-                    </div>
-                </template>
-                <!-- share link -->
-                <template>
-                    <div class="cass__right-aside--half-item">
-                        <span>
-                            <b>Share:</b>
-                        </span>
-                    </div>
-                    <div class="cass__right-aside--half-item">
-                        <span
-                            class="inline-link"
-                            title="Copy URL to the clipboard."
-                            v-clipboard="shareLink"
-                            v-clipboard:success="successfulClip"
-                            v-clipboard:error="errorClip">
-                            <span
-                                :title="shareLink">copy link</span>
-                            <span class="icon">
+                    class="cass__right-side--details-wrapper">
+                    <!-- details -->
+                    <template v-if="objectType === 'Directory' || objectType === 'Framework' || objectType === 'ConceptScheme'">
+                        <button
+                            @click="clickAccordion('details')"
+                            class="cass__right-side--accordion details">
+                            Details
+                            <span class="icon is-pulled-right">
                                 <i
-                                    v-if="clipStatus === 'success'"
-                                    class="fa fa-check" />
-                                <i
-                                    v-else-if="clipStatus === 'error'"
-                                    class="fa fa-times" />
+                                    v-if="accordion === 'details'"
+                                    class="fa fa-minus" />
                                 <i
                                     v-else
-                                    class="fa fa-link"
-                                    name="copyURL" />
+                                    class="fa fa-plus" />
                             </span>
-                        </span>
-                    </div>
-                </template>
-                <!-- manage users -->
-                <div
-                    class="cass__right-aside--whole-item"
-                    v-if="loggedIn && canEditObject">
-                    <b>Manage Users and Privacy:</b>
-                    <span
-                        class="icon"
-                        @click="manageUsers">
-                        <i class="fas fa-users" />
-                    </span>
-                </div>
-                <div
-                    class="cass__right-side--details-list-item"
-                    v-if="objectType === 'CreativeWork'">
-                    {{ object.url }}
-                </div>
-                <!-- description -->
-                <div
-                    class="cass__right-aside--full-item"
-                    v-if="objectDescription">
-                    <b>Description</b>
-                    <br>
-                    <p>{{ objectDescription }}</p>
-                </div>
-            </div>
-            <div
-                v-if="canEditObject && canEditDirectory"
-                class="cass__right-side--details-wrapper">
-                <h3
-                    class="is-family-secondary is-size-5">
-                    Actions
-                </h3>
-                <div
-                    class="cass__right-side--details-list-section">
-                    <div
-                        class="cass__right-side--details-list-section">
+                        </button>
                         <div
-                            class="button is-small is-outlined is-primary"
-                            v-if="objectType === 'Framework' || objectType === 'CreativeWork' || objectType === 'Directory'"
-                            @click="copyingToDirectory=true"
-                            :disabled="movingToDirectory">
-                            <span>copy to directory</span>
-                            <span class="icon">
-                                <i class="fa fa-copy" />
-                            </span>
+                            :class=" accordion === 'details' ? 'active' : ''"
+                            class="cass__right-side--accordion-panel details">
+                            <div class="cass__right-aside--half-item">
+                                <b>Last Modified:</b>
+                            </div>
+                            <div class="cass__right-aside--half-item">
+                                {{ lastModified }}
+                            </div>
+                            <!-- open -->
+                            <template v-if="object.directory">
+                                <div class="cass__right-aside--half-item">
+                                    <b>Directory:</b>
+                                </div>
+                                <div class="cass__right-aside--half-item">
+                                    {{ getName(object.directory) }}
+                                    <span
+                                        class="button is-primary is-outlined is-small"
+                                        @click="goToParentDirectory">
+                                        Open
+                                    </span>
+                                </div>
+                            </template>
+                            <template v-else-if="object.parentDirectory">
+                                <!-- open parent directory -->
+                                <div class="cass__right-aside--half-item">
+                                    <b>Parent Directory:</b>
+                                </div>
+                                <div class="cass__right-aside--half-item">
+                                    {{ getName(object.parentDirectory) }}
+                                    <span
+                                        title="Navigate to parent directory"
+                                        class="inline-link is-small"
+                                        @click="goToParentDirectory">
+                                        <span>Go to parent</span>
+                                        <span class="icon">
+                                            <i class="fa fa-folder-open" />
+                                        </span>
+                                    </span>
+                                </div>
+                            </template>
+                            <!-- date created -->
+                            <div class="cass__right-aside--half-item">
+                                <b>
+                                    Date Created:
+                                </b>
+                            </div>
+                            <div class="cass__right-aside--half-item">
+                                {{ dateCreated }}
+                            </div>
+                            <!-- number of directories -->
+                            <div
+                                class="cass__right-aside--half-item"
+                                v-if="objectType === 'Directory'">
+                                <b>Subdirectories:</b>
+                            </div>
+                            <div
+                                v-if="objectType === 'Directory'"
+                                class="cass__right-aside--half-item">
+                                {{ numSubdirectories }}
+                            </div>
+                            <!-- object count -->
+                            <template v-if="objectType === 'Directory'">
+                                <div class="cass__right-aside--half-item">
+                                    <b>Objects:</b>
+                                </div>
+                                <div class="cass__right-aside--half-item">
+                                    {{ numObjects }}
+                                </div>
+                            </template>
+                            <!-- item count -->
+                            <template v-else-if="objectType === 'Framework'">
+                                <div class="cass__right-aside--half-item">
+                                    <b>Item Count:</b>
+                                </div>
+                                <div class="cass__right-aside--half-item">
+                                    {{ object.competency ? object.competency.length : 0 }}
+                                </div>
+                            </template>
+                            <!-- published date -->
+                            <template v-if="object.Published">
+                                <div class="cass__right-aside--half-item">
+                                    <b>Published Date:</b>
+                                </div>
+                                <div class="cass__right-aside--half-item">
+                                    {{ object.Published }}
+                                </div>
+                            </template>
+                            <!-- approved -->
+                            <template v-if="object.Approved">
+                                <div class="cass__right-aside--half-item">
+                                    <b>Approved Date:</b>
+                                </div>
+                                <div class="cass__right-aside--half-item">
+                                    {{ object.Approved }}
+                                </div>
+                            </template>
+                            <!-- publisher name -->
+                            <template v-if="publisherName">
+                                <div class="cass__right-aside--half-item">
+                                    <b>Publisher:</b>
+                                </div>
+                                <div class="cass__right-aside--half-item">
+                                    {{ publisherName }}
+                                </div>
+                            </template>
+                            <!-- creator -->
+                            <template v-if="creatorName">
+                                <div class="cass__right-aside--half-item">
+                                    <b>Creator:</b>
+                                </div>
+                                <div class="cass__right-aside--half-item">
+                                    {{ creatorName }}
+                                </div>
+                            </template>
+                            <!-- share link -->
+                            <template>
+                                <div class="cass__right-aside--half-item">
+                                    <span>
+                                        <b>Share:</b>
+                                    </span>
+                                </div>
+                                <div class="cass__right-aside--half-item">
+                                    <span
+                                        class="inline-link"
+                                        title="Copy URL to the clipboard."
+                                        v-clipboard="shareLink"
+                                        v-clipboard:success="successfulClip"
+                                        v-clipboard:error="errorClip">
+                                        <span
+                                            :title="shareLink">copy link</span>
+                                        <span class="icon">
+                                            <i
+                                                v-if="clipStatus === 'success'"
+                                                class="fa fa-check" />
+                                            <i
+                                                v-else-if="clipStatus === 'error'"
+                                                class="fa fa-times" />
+                                            <i
+                                                v-else
+                                                class="fa fa-link"
+                                                name="copyURL" />
+                                        </span>
+                                    </span>
+                                </div>
+                            </template>
                         </div>
-                    </div>
-                    <div
-                        class="cass__right-side--details-list-section">
+                    </template>
+                    <!-- properties -->
+                    <template>
+                        <button
+                            @click="clickAccordion('properties')"
+                            class="cass__right-side--accordion details">
+                            Properties
+                            <span class="icon is-pulled-right">
+                                <i
+                                    v-if="accordion === 'properties'"
+                                    class="fa fa-minus" />
+                                <i
+                                    v-else
+                                    class="fa fa-plus" />
+                            </span>
+                        </button>
                         <div
-                            class="button is-outlined is-small is-primary"
-                            v-if="objectType === 'Framework' || objectType === 'CreativeWork' || objectType === 'Directory'"
-                            @click="movingToDirectory=true"
-                            :disabled="copyingToDirectory">
-                            <span>Move to directory</span>
-                            <span class="icon">
-                                <i class="fa fa-exchange-alt" />
+                            :class=" accordion === 'properties' ? 'active' : ''"
+                            class="cass__right-side--accordion-panel">
+                            <template v-if="objectType === 'CreativeWork'">
+                                <!-- resource link -->
+                                <div class="cass__right-aside--property">
+                                    <div class="cass__right-aside--property-text">
+                                        <div v-if="!editingResource">
+                                            {{ object.url }}
+                                        </div>
+                                        <div
+                                            v-else-if="editingResource">
+                                            <input
+                                                class="input"
+                                                v-model="resourceUrl">
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="cass__right-aside--property-icons"
+                                        v-if="objectType === 'CreativeWork' && !editingResource && canEditObject">
+                                        <span
+                                            class="icon"
+                                            v-if="editingResource"
+                                            @click="saveResource">
+                                            <i class="fa fa-save" />
+                                        </span>
+                                        <span
+                                            class="icon"
+                                            v-if="!editingResource && canEditObject"
+                                            @click="editResource">
+                                            <i class="fa fa-edit" />
+                                        </span>
+                                    </div>
+                                    <div class="cass__right-aside--property-label">
+                                        Url
+                                    </div>
+                                </div>
+                                <!-- resource name -->
+                                <div class="cass__right-aside--property">
+                                    <div class="cass__right-aside--property-text">
+                                        <div v-if="!editingResource">
+                                            {{ objectName }}
+                                        </div>
+                                        <div
+                                            v-else-if="editingResource">
+                                            <input
+                                                class="input"
+                                                v-model="resourceName">
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="cass__right-aside--property-icons"
+                                        v-if="objectType === 'CreativeWork' && !editingResource && canEditObject">
+                                        <span
+                                            class="icon"
+                                            v-if="editingResource"
+                                            @click="saveResource">
+                                            <i class="fa fa-save" />
+                                        </span>
+                                        <span
+                                            class="icon"
+                                            v-if="!editingResource && canEditObject"
+                                            @click="editResource">
+                                            <i class="fa fa-edit" />
+                                        </span>
+                                    </div>
+                                    <div class="cass__right-aside--property-label">
+                                        Name
+                                    </div>
+                                </div>
+                            </template>
+                            <!-- directory name -->
+                            <template v-if="objectType === 'Directory'">
+                                <div class="cass__right-aside--property">
+                                    <div class="cass__right-aside--property-text">
+                                        <div v-if="!editingResource">
+                                            {{ objectName }}
+                                        </div>
+                                        <div
+                                            class="control"
+                                            v-else-if="editingResource">
+                                            <div class="control">
+                                                <input
+                                                    class="input"
+                                                    v-model="resourceName">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div
+                                        class="cass__right-aside--property-icons"
+                                        v-if="canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId">
+                                        <div
+                                            @click="editDirectory"
+                                            class="icon is-small">
+                                            <i class="fa fa-edit is-size-5" />
+                                        </div>
+                                    </div>
+                                    <div class="cass__right-aside--property-label">
+                                        Directory Name
+                                    </div>
+                                </div>
+                            </template>
+                            <span v-if="errorEditing">
+                                {{ errorEditing }}
                             </span>
                         </div>
-                    </div>
-                    <ul
-                        class="cass--list-item-info--search-result"
-                        v-if="copyingToDirectory || movingToDirectory">
-                        <div class="title is-size-4">
-                            Choose a directory
+                    </template>
+                    <!-- users -->
+                    <template v-if="loggedIn && canEditObject">
+                        <button
+                            :class="accordion === 'users' ? 'active' : ''"
+                            @click="clickAccordion('users')"
+                            class="cass__right-side--accordion">
+                            Users
+                            <span class="icon is-pulled-right">
+                                <i
+                                    v-if="accordion === 'users'"
+                                    class="fa fa-minus" />
+                                <i
+                                    v-else
+                                    class="fa fa-plus" />
+                            </span>
+                        </button>
+                        <div
+                            :class=" accordion === 'users' ? 'active' : ''"
+                            class="cass__right-side--accordion-panel">
+                            <div
+                                class="cass__right-aside--whole-item">
+                                <b>Manage Users and Privacy:</b>
+                                <span
+                                    class="icon"
+                                    @click="manageUsers">
+                                    <i class="fas fa-users" />
+                                </span>
+                            </div>
                         </div>
+                        <!-- manage users for resources -->
+                    </template>
+                    <!-- description -->
+                    <template>
+                        <button
+                            :class="accordion === 'description' ? 'active' : ''"
+                            @click="clickAccordion('description')"
+                            class="cass__right-side--accordion">
+                            Description
+                            <span class="icon is-pulled-right">
+                                <i
+                                    v-if="accordion === 'description'"
+                                    class="fa fa-minus" />
+                                <i
+                                    v-else
+                                    class="fa fa-plus" />
+                            </span>
+                        </button>
+                        <div
+                            :class=" accordion === 'description' ? 'active' : ''"
+                            class="cass__right-side--accordion-panel">
+                            {{ objectDescription }}
+                        </div>
+                    </template>
+                    <!-- copy to directory -->
+                    <button
+                        @click="clickAccordion('copy')"
+                        class="cass__right-side--accordion">
+                        Copy to Directory
+                    </button>
+                    <div
+                        :class=" accordion === 'copy' ? 'active' : ''"
+                        class="cass__right-side--accordion-panel">
                         <li
                             class="cass--list-item-info--search-result--li"
                             v-for="directory in directoryOptions"
@@ -307,17 +382,55 @@
                             @click="copyOrMove(directory)">
                             {{ directory.name }}
                         </li>
+                    </div>
+                    <!-- move to directory -->
+                    <button
+                        @click="clickAccordion('move')"
+                        class="cass__right-side--accordion">
+                        Move to Directory
+                        <span class="icon is-pulled-right">
+                            <i
+                                v-if="accordion === 'move'"
+                                class="fa fa-minus" />
+                            <i
+                                v-else
+                                class="fa fa-plus" />
+                        </span>
+                    </button>
+                    <div
+                        :class=" accordion === 'move' ? 'active' : ''"
+                        class="cass__right-side--accordion-panel">
+                        <li
+                            class="cass--list-item-info--search-result--li"
+                            v-for="directory in directoryOptions"
+                            :key="directory"
+                            @click="copyOrMove(directory)">
+                            {{ directory.name }}
+                        </li>
+                        <!--<li
+                            class="cass--list-item-info--search-result--li"
+                            @click="removeFromDirectory"
+                            v-if="movingToDirectory">
+                            Remove from directory
+                        </li>-->
+                    </div>
+                    <!--<ul
+                        class="cass--list-item-info--search-result"
+                        v-if="copyingToDirectory || movingToDirectory">
+                        <div class="title is-size-4">
+                            Choose a directory
+                        </div>
                         <li
                             class="cass--list-item-info--search-result--li"
                             @click="removeFromDirectory"
                             v-if="movingToDirectory">
                             Remove from directory
                         </li>
-                    </ul>
+                    </ul>-->
                 </div>
             </div>
         </div>
-    </aside>
+    </div>
 </template>
 <script>
 import common from '@/mixins/common.js';
@@ -327,6 +440,7 @@ export default {
     mixins: [common],
     data() {
         return {
+            accordion: 'details',
             numSubdirectories: "unknown",
             numObjects: "unknown",
             copyingToDirectory: false,
@@ -342,6 +456,13 @@ export default {
         };
     },
     methods: {
+        clickAccordion(item) {
+            if (this.accordion === item) {
+                this.accordion = '';
+            } else {
+                this.accordion = item;
+            }
+        },
         successfulClip({value, event}) {
             appLog('success', value);
             this.clipStatus = 'success';
