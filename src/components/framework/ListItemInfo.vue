@@ -192,7 +192,7 @@
                         </div>
                     </template>
                     <!-- properties -->
-                    <template>
+                    <template v-if="objectType === 'CreativeWork' || canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId">
                         <button
                             @click="clickAccordion('properties')"
                             class="cass__right-side--accordion details">
@@ -225,7 +225,7 @@
                                     </div>
                                     <div
                                         class="cass__right-aside--property-icons"
-                                        v-if="objectType === 'CreativeWork' && !editingResource && canEditObject">
+                                        v-if="objectType === 'CreativeWork' && canEditObject">
                                         <span
                                             class="icon"
                                             v-if="editingResource"
@@ -258,7 +258,7 @@
                                     </div>
                                     <div
                                         class="cass__right-aside--property-icons"
-                                        v-if="objectType === 'CreativeWork' && !editingResource && canEditObject">
+                                        v-if="objectType === 'CreativeWork' && canEditObject">
                                         <span
                                             class="icon"
                                             v-if="editingResource"
