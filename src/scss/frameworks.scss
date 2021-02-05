@@ -2,6 +2,7 @@
 
 #directory,
 #directoryList,
+#frameworks,
 .framework-list-page {
     .lode__Property {
         padding: .125rem 0rem;
@@ -43,8 +44,12 @@
                         }
                     }
                     .cass--list--thing {
-                        .lode__Directory, .lode__Competency, .lode__Concept {
-                            
+                        .lode__Directory,
+                        .lode__Competency,
+                        .lode__Concept,
+                        .lode__ConceptScheme,
+                        .lode__Definition,
+                        .lode__prefLabel {
                             .lode__thing-heading {
                                 line-height: 1rem;
                                 .framework-details {
@@ -57,6 +62,9 @@
                                 max-width: 400px;
                                 line-height: 1rem;
                                 padding: 0 0 .25rem 0;
+                                .tag {
+                                    display: none;
+                                }
                             }
                         }
                     }
