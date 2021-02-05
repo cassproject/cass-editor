@@ -87,7 +87,7 @@ export default {
     align-items: center;
     justify-content: flex-start;
     background-color: white;
-    z-index:30;
+    z-index:13;
     border-bottom: solid 1px black;
     color: black;
 }

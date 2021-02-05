@@ -69,49 +69,66 @@
                                     </div>
                                 </div>
                                 <div
-                                    @click="createResource = true"
-                                    v-if="canEditDirectory"
-                                    class="button is-outlined is-primary"
-                                    title="Add a resource to this directory.">
-                                    <span class="icon">
-                                        <i class="fa fa-paperclip" />
-                                    </span>
-                                </div>
-                                <div
-                                    class="field"
-                                    v-if="createResource">
-                                    <div class="control">
-                                        <div class="control">
-                                            <input
-                                                class="input"
-                                                placeholder="Name of new resource"
-                                                v-model="resourceName">
+                                    class="dropdown"
+                                    :class="createResource ? 'is-active' : ''">
+                                    <div class="dropdown-trigger">
+                                        <div
+                                            @click="createResource = true"
+                                            v-if="canEditDirectory"
+                                            aria-haspopup="true"
+                                            aria-controls="create-resource-dropdown"
+                                            class="button is-outlined is-primary"
+                                            title="Add a resource to this directory.">
+                                            <span class="icon">
+                                                <i class="fa fa-paperclip" />
+                                            </span>
                                         </div>
                                     </div>
-                                    <div class="control">
-                                        <div class="control">
-                                            <input
-                                                class="input"
-                                                placeholder="Url of new resource"
-                                                v-model="resourceUrl">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="field"
-                                    v-if="createResource">
-                                    <div class="buttons">
-                                        <div
-                                            class="button is-dark is-outlined is-small"
-                                            @click="createResource = false">
-                                            Cancel
-                                        </div>
-                                        <div
-                                            class="button is-primary is-small"
-                                            :class="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http')) ? 'is-disabled' : ''"
-                                            :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http'))"
-                                            @click="saveNewResource">
-                                            Create
+                                    <div
+                                        class="dropdown-menu"
+                                        role="menu"
+                                        id="create-resource-dropdown">
+                                        <div class="dropdown-content p-2">
+                                            <div
+                                                class="field">
+                                                <div class="control">
+                                                    <div class="control">
+                                                        <input
+                                                            class="input"
+                                                            placeholder="Name of new resource"
+                                                            v-model="resourceName">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="field">
+                                                <div class="control">
+                                                    <div class="control">
+                                                        <input
+                                                            class="input"
+                                                            placeholder="Url of new resource"
+                                                            v-model="resourceUrl">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div
+                                                class="field"
+                                                v-if="createResource">
+                                                <div class="buttons">
+                                                    <div
+                                                        class="button is-dark is-outlined is-small"
+                                                        @click="createResource = false">
+                                                        Cancel
+                                                    </div>
+                                                    <div
+                                                        class="button is-primary is-small"
+                                                        :class="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http')) ? 'is-disabled' : ''"
+                                                        :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http'))"
+                                                        @click="saveNewResource">
+                                                        Create
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -637,6 +654,8 @@ export default {
             this.sortBy = "schema:dateModified";
         } else if (this.sortResults.id === "dateCreated") {
             this.sortBy = "schema:dateCreated";
+        } else {
+            this.sortBy = "name.keyword";
         }
         this.showMine = false;
         this.showNotMine = false;

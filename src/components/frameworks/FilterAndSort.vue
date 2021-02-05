@@ -87,6 +87,11 @@ export default {
         return {
             sortResults: [
                 {
+                    id: 'alphabetical',
+                    label: 'alphabetical',
+                    enabled: true
+                },
+                {
                     id: 'dateCreated',
                     label: 'created date',
                     enabled: true
