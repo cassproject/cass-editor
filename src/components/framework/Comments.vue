@@ -4,14 +4,9 @@
     which triggers Framework.vue to open this component.
 -->
 <template>
-    <aside
+    <div
         id="right-side-bar__comments"
-        class="menu has-background-lightest">
-        <div class="right-aside-bar__title">
-            <h3 class="title is-size-3">
-                Comments
-            </h3>
-        </div>
+        class="has-background-lightest">
         <!-- for each comment in time sequence
             click to scroll to position in framework eventually -->
         <!-- for each response -->
@@ -58,7 +53,7 @@
                 </div>
             </template>
         </div>
-    </aside>
+    </div>
 </template>
 <script>
 import Comment from './Comment.vue';
@@ -293,47 +288,7 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './../../scss/variables.scss';
-
-    /** Commented this out for now...it was confusing me with respect to the style in RightAside.vue**/
-    /**
-#right-side-bar__comments {
-    position: fixed;
-    border-left: solid 1px rgba($dark, .4);
-    z-index: 10;
-    height: calc(100vh - 48px);
-    overflow: scroll;
-    right: 0;
-    padding: 2.5rem 1.5rem;
-    width: 340px;
-    transform: translateX(0);
-    .comment-list {
-        .comment-list__user {
-            font-weight: 700;
-        }
-        .comment-list__email {
-            font-size: .7rem;
-            font-weight: 500;
-            font-style: italic;
-            margin-left: .5rem;
-        }
-        .comment-list__user {
-            font-weight: 700;
-        }
-        .comment-list__message {
-            font-size: .7rem;
-        }
-        .comment-list__about, .comment-list__timestamp {
-            font-size: .7rem;
-            font-weight: 600;
-        }
-        .comment-list__nested {
-            padding-left: .5rem;
-        }
-    }
-
-}
-**/
+    @import './../../scss/comments-side-bar.scss';
 
 </style>
 

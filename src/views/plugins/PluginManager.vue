@@ -113,7 +113,7 @@
                             add new plugin
                         </span>
                     </div>
-                    <!--
+                <!--
                     <div
                         class="button is-outlined"
                         @click="disableAllPlugins"

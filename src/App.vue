@@ -125,6 +125,12 @@ export default {
                             }, appError);
                         }
                     }
+                    if (me.queryParams.directoryId) {
+                        EcDirectory.get(me.queryParams.directoryId, function(success) {
+                            me.$store.commit('app/selectDirectory', success);
+                            me.$router.push({name: "directory"});
+                        }, appError);
+                    }
                     if (me.queryParams.action === "import") {
                         me.$router.push({name: "import"});
                     }
@@ -169,8 +175,8 @@ export default {
             }
             // Preload schema so large frameworks are faster
             let types = [
-                "https://schema.cassproject.org/0.4/skos/ConceptScheme/", "https://schema.cassproject.org/0.4/skos/Concept/", "https://schema.cassproject.org/0.4/skos/", "https://schema.cassproject.org/0.4/Framework/", "https://schema.cassproject.org/0.4/Competency/", "https://schema.cassproject.org/0.4/",
-                "https://schema.cassproject.org/0.4/skos/ConceptScheme", "https://schema.cassproject.org/0.4/skos/Concept", "https://schema.cassproject.org/0.4/skos", "https://schema.cassproject.org/0.4/Framework", "https://schema.cassproject.org/0.4/Competency", "https://schema.cassproject.org/0.4"
+                "https://schema.cassproject.org/0.4/skos/ConceptScheme/", "https://schema.cassproject.org/0.4/skos/Concept/", "https://schema.cassproject.org/0.4/skos/", "https://schema.cassproject.org/0.4/Framework/", "https://schema.cassproject.org/0.4/Competency/", "https://schema.cassproject.org/0.4/", "https://schema.cassproject.org/0.4/Directory/",
+                "https://schema.cassproject.org/0.4/skos/ConceptScheme", "https://schema.cassproject.org/0.4/skos/Concept", "https://schema.cassproject.org/0.4/skos", "https://schema.cassproject.org/0.4/Framework", "https://schema.cassproject.org/0.4/Competency", "https://schema.cassproject.org/0.4", "https://schema.cassproject.org/0.4/Directory"
             ];
             for (let type of types) {
                 if (this.$store.state.lode.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
@@ -399,7 +405,7 @@ export default {
             returnObject.copyFrom(v.decryptIntoObject());
             return returnObject;
         },
-        createNewFramework: function() {
+        createNewFramework: function(optionalDirectory) {
             let me = this;
             this.$store.commit('editor/t3Profile', false);
             this.setDefaultLanguage();
@@ -411,6 +417,15 @@ export default {
             }
             framework["schema:dateCreated"] = new Date().toISOString();
             framework["schema:dateModified"] = new Date().toISOString();
+            if (optionalDirectory) {
+                framework.directory = optionalDirectory.shortId();
+                if (optionalDirectory.owner) {
+                    framework.owner = optionalDirectory.owner;
+                }
+                if (optionalDirectory.reader) {
+                    framework.reader = optionalDirectory.reader;
+                }
+            }
             if (EcIdentityManager.ids.length > 0) {
                 framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }

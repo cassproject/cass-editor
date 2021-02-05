@@ -85,8 +85,8 @@
                 :comment="reply"
                 :canReply="false" />
         </li>
-        <!-- moved to comments.vue leaving for a commit to make sure everything is here -->
-        <!--<li><ul>
+    <!-- moved to comments.vue leaving for a commit to make sure everything is here -->
+    <!--<li><ul>
                     <div v-for="(reply, replyIdx) in comment.replies" :key="reply.commentId">
                         <li class="comment-list__reply_hr">
                             <hr>

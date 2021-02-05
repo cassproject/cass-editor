@@ -17,9 +17,17 @@ module.exports = {
                 'attribute': 1,
                 'baseIndent': 1,
                 'closeBracket': 0,
-                'alignAttributesVertically': true,
+                'alignAttributesVertically': false,
                 'ignores': []
             }
+        ],
+        'vue/max-attributes-per-line': [ 'error', {
+            "singleline": 1,
+            "multiline": {
+              "max": 1,
+              "allowFirstLine": false
+            }
+          }
         ],
         'vue/no-mutating-props': 1,
         // These rules assume eslint recommended, if the rules is accepted from

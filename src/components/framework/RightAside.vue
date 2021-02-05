@@ -8,11 +8,13 @@
 <template>
     <aside
         id="right-side-bar"
-        class="menu has-background-light">
-        <button
-            class="delete is-dark has-text-dark is-pulled-right"
-            @click="$store.commit('app/closeRightAside')"
-            aria-label="close" />
+        class="has-background-light">
+        <div class="cass--right-aside--top-bar">
+            <button
+                class="delete is-pulled-left ml-2 mt-4"
+                @click="$store.commit('app/closeRightAside')"
+                aria-label="close" />
+        </div>
         <slot name="right-aside-content">
             <Component :is="rightAsideContent" />
         </slot>
@@ -21,6 +23,7 @@
 <script>
 import Comments from './Comments.vue';
 import Versions from './Versions.vue';
+import ListItemInfo from './ListItemInfo.vue';
 import FilterAndSort from './../frameworks/FilterAndSort.vue';
 
 export default {
@@ -36,7 +39,8 @@ export default {
     components: {
         Comments,
         Versions,
-        FilterAndSort
+        FilterAndSort,
+        ListItemInfo
     },
     computed: {
         showRightAside: function() {
@@ -49,95 +53,42 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
     @import './../../scss/variables.scss';
-
+    .close-right-aside-button {
+        position: absolute;
+        left: 0rem;
+        padding-left: -1rem;
+        z-index: 100;
+        top: 1rem;
+        width: 1rem;
+        height: 1rem;
+        border-radius: 1rem;
+    }
     #right-side-bar {
-        position: fixed;
         border-left: solid 1px rgba($dark, .2);
         z-index: 11;
-        height: calc(100vh - 0px);
-        overflow: auto;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
         right: 0;
-        padding: 1.5rem 1rem .5rem 1rem;
-        width: 340px;
+        background-color: $light;
+        padding: 0rem;
         transform: translateX(0);
         .right-aside-bar__title {
             direction: ltr;
-            padding-bottom: 1rem;
+            padding: 0rem 0rem;
         }
         .right-aside__filter-and-sort {
             direction: ltr;
         }
-        .comment-list {
-            direction: ltr;
-            background-color: white;
-            padding: .5rem;
-            border-radius: 4px;
-            border: solid 1px rgba($dark, .2);
-            margin-bottom: 1rem;
-        }
-        .comment-list__about {
-            padding: .125rem 0rem .125rem .25rem;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-        }
-        .comment-list-item {
-            .comment-list__user {
-                padding: .125rem 0rem 0rem .25rem;
-                font-weight: 600;
-                font-size: .9rem;
-            }
-
-            .comment-list__message-container {
-                .dropdown {
-                    float: right;
-                    padding-top: 0rem;
-                    .dropdown-menu {
-                        min-width: 3rem;
-                        left: -60px;
-                    }
-                }
-                .comment-list__message-container__message {
-                    padding: .125rem 1.25rem .5rem .25rem;
-                    font-size: .9rem;
-                    max-height: 5rem;
-                    overflow: hidden;
-                    line-height: 1.3rem;
-                    margin-left: 0rem;
-                    font-weight: 400;
-                }
-                .comment-list__message-container__message.show-more {
-                    max-height: 100%;
-                }
-            }
-            .comment-list__message_edit {
-                font-size: .7rem;
-                font-weight: 500;
-                padding: .125rem 0rem .125rem .5rem;
-            }
-            .comment-list__email {
-                font-size: .6rem;
-                padding: .125rem 0rem .125rem .75rem;
-                font-weight: 500;
-                color: #4F99A8;
-            }
-            .comment-list__timestamp {
-                font-size: .7rem;
-                padding: .125rem 0rem .125rem .25rem;
-                font-weight: 500;
-            }
-            .comment-list__reply_hr {
-                margin-top: 1rem;
-                margin-bottom: 1rem;
-            }
-            .comment-list__nested {
-                padding-left: .5rem;
-            }
-
-        }
-
+    }
+    .cass--right-aside--top-bar {
+        width: 100%;
+        position: fixed;
+        height: 44px;
+        top:0;
+        border-bottom: solid 1px rgba($dark, .3);
     }
 
 
