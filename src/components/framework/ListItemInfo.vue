@@ -54,7 +54,7 @@
                                 {{ lastModified }}
                             </div>
                             <!-- open -->
-                            <template v-if="object.directory">
+                            <template v-if="object.directory && object.directory !== selectedDirectoryId">
                                 <div class="cass__right-aside--half-item">
                                     <b>Directory:</b>
                                 </div>
@@ -67,7 +67,7 @@
                                     </span>
                                 </div>
                             </template>
-                            <template v-else-if="object.parentDirectory">
+                            <template v-else-if="object.parentDirectory && object.parentDirectory !== selectedDirectoryId">
                                 <!-- open parent directory -->
                                 <div class="cass__right-aside--half-item">
                                     <b>Parent Directory:</b>
