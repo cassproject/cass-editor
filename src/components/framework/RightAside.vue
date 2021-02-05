@@ -11,9 +11,24 @@
         class="has-background-light">
         <div class="cass--right-aside--top-bar">
             <button
-                class="delete is-pulled-left ml-2 mt-4"
+                class="delete has-text-white"
                 @click="$store.commit('app/closeRightAside')"
-                aria-label="close" />
+                aria-label="close">
+                <span class="icon">
+                    <i class="fa fa-times"/>
+                </span>
+            </button>
+            <div class="cass--right-aside--title">
+                <span v-if="rightAsideContent === 'FilterAndSort'">
+                    Filter & sort
+                </span>
+                <span v-else-if="rightAsideContent === 'ListItemInfo'">
+                    Information
+                </span>
+                <span v-else-if="rightAsideContent === 'Comments'">
+                    Comments
+                </span>
+            </div>
         </div>
         <slot name="right-aside-content">
             <Component :is="rightAsideContent" />
@@ -28,6 +43,8 @@ import FilterAndSort from './../frameworks/FilterAndSort.vue';
 
 export default {
     name: 'RightAside',
+    props: {
+    },
     data() {
         return {
             isCommenter: true,
@@ -86,11 +103,22 @@ export default {
     .cass--right-aside--top-bar {
         width: 100%;
         position: fixed;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        padding: .25rem .5rem;
         height: 44px;
         top:0;
         border-bottom: solid 1px rgba($dark, .3);
     }
-
+    .cass--right-aside--content {
+        height: 100%;
+        overflow-y: scroll;
+        margin-top: 44px;
+    }
+    .cass--right-aside--title {
+        padding-left: .5rem;
+    }
 
 </style>
 
