@@ -4,10 +4,11 @@
         class="has-background-lightest">
         <div class="cass__right-aside--header">
             <div class="right-aside-bar__title">
-                <h3
-                    class="is-size-4 is-family-secondary">
+                <div
+                    :title="objectName"
+                    class="right-aside-bar--title-text is-size-4 is-family-secondary">
                     {{ objectName }}
-                </h3>
+                </div>
                 <span class="tag is-info">{{ objectTypeForDisplay }}</span>
                 <div
                     class="buttons pt-2"
@@ -345,7 +346,7 @@
                         <!-- manage users for resources -->
                     </template>
                     <!-- description -->
-                    <template>
+                    <template v-if="objectType === 'Directory'">
                         <button
                             :class="accordion === 'description' ? 'active' : ''"
                             @click="clickAccordion('description')"
@@ -368,9 +369,18 @@
                     </template>
                     <!-- copy to directory -->
                     <button
+                        :class=" accordion === 'copy' ? 'active' : ''"
                         @click="clickAccordion('copy'); copyingToDirectory = true;"
                         class="cass__right-side--accordion">
                         Copy to Directory
+                        <span class="icon is-pulled-right">
+                            <i
+                                v-if="accordion === 'copy'"
+                                class="fa fa-minus" />
+                            <i
+                                v-else
+                                class="fa fa-plus" />
+                        </span>
                     </button>
                     <div
                         :class=" accordion === 'copy' ? 'active' : ''"
@@ -385,7 +395,7 @@
                     </div>
                     <!-- move to directory -->
                     <button
-                        @click="clickAccordion('move'); movingToDirectory = true;"
+                        @click="clickAccordion('move'); copyingToDirectory = true;"
                         class="cass__right-side--accordion">
                         Move to Directory
                         <span class="icon is-pulled-right">

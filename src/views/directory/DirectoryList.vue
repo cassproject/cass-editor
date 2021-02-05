@@ -29,10 +29,12 @@
                             class="list-thing list-ul__item--directory"
                             :parentNotEditable="true">
                             <template #thingIcon>
-                                <span class="icon">
-                                    <i
-                                        class="fa fa-folder" />
-                                </span>
+                                <div class="cass--list-item--icon">
+                                    <span class="icon">
+                                        <i
+                                            class="fa fa-folder" />
+                                    </span>
+                                </div>
                             </template>
                         </Thing>
                         <div
@@ -595,5 +597,10 @@ export default {
         padding: .0rem;
         width: 100%;
     }
+}
+.cass--list-item--icon {
+    height: 44px;
+    width: 44px;
+    background-color: $dark;
 }
 </style>

@@ -2,15 +2,70 @@
     <main-layout :class=" showRightAside ? 'right-side-open' : ''">
         <!-- should be used for search bar -->
         <template #top>
-            <SearchBar
-                filterSet="all"
-                :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
+            <div class="container">
+                <div class='columns'>
+                    <div class='column is-6'>
+                        <SearchBar
+                            filterSet="all"
+                            :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
+                    </div>
+                    <div class="column is-6">
+                        <div
+                            v-if="conceptMode"
+                            class="buttons is-right concept-buttons">
+                            <div
+                                @click="$emit('create-new-concept-scheme')"
+                                class="button is-outlined is-primary">
+                                <span class="icon">
+                                    <i class="fa fa-plus" />
+                                </span><span>new {{ conceptSchemeStringForButton }}</span>
+                            </div>
+                            <router-link
+                                to="/import"
+                                @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
+                                class="button is-outlined is-primary">
+                                <span class="icon">
+                                    <i class="fa fa-upload" />
+                                </span><span>import {{ conceptSchemeStringForButton }}</span>
+                            </router-link>
+                        </div>
+                        <div
+                            v-else
+                            class="buttons is-right frameworks-buttons">
+                            <div
+                                @click="$emit('create-new-framework')"
+                                class="button is-outlined is-primary">
+                                <span class="icon">
+                                    <i class="fa fa-plus" />
+                                </span><span>create</span>
+                            </div>
+                            <router-link
+                                to="/import"
+                                @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
+                                class="button is-outlined is-primary">
+                                <span class="icon">
+                                    <i class="fa fa-upload" />
+                                </span><span>import framework</span>
+                            </router-link>
+                            <router-link
+                                to="/crosswalk"
+                                class="button is-outlined is-primary">
+                                <span class="icon">
+                                    <i class="fa fa-network-wired" />
+                                </span><span>crosswalk</span>
+                            </router-link>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </template>
         <!-- should be used for title / breadcrumbs -->
         <template #secondary-top>
-            <h2 class="has-text-dark title is-size-5 text-align-left">
-                Available items
-            </h2>
+            <div class="container">
+                <h2 class="has-text-dark is-size-5 text-align-left pl-0 ml-0">
+                    Available items
+                </h2>
+            </div>
         </template>
         <!-- should be used for body i.e. framework itself -->
         <template #body>

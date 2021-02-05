@@ -1,8 +1,9 @@
 @import './variables.scss';
-#framework, #directory, #directoryList, #concept {
+#directory, #directoryList, #concept {
     margin-top: 2.6rem !important;
     height: calc(100% - 2.6rem);
 }
+
 #framework,
 #concept,
 #directory,

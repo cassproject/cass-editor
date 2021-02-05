@@ -651,7 +651,7 @@ export default {
             this.$router.push({name: "frameworks"});
         }
         this.$store.commit('app/objForShareModal', this.object);
-        let documentBody = document.getElementById('framework');
+        let documentBody = document.getElementsByClassName('cass--main-layout--body')[0];
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
         if (!this.framework.competency || this.framework.competency.length === 0) {
             this.hierarchyIsdoneLoading = true;
