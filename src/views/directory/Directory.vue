@@ -8,7 +8,7 @@
             :profile="directoryProfile"
             @delete-object="deleteObject"
             @done-editing-node-event="onDoneEditingNode()" />
-        <main-layout>
+        <main-layout :rightActive="showRightAside">
             <template slot="top">
                 <div class="container is-fullhd">
                     <div class="columns is-spaced">

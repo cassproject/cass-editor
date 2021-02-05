@@ -18,6 +18,7 @@
             <slot name="body" />
         </div>
         <div
+            v-if="rightActive"
             class="cass--main-layout--right"
             :class="hasSimpleTopBar">
             <slot name="right" />
@@ -32,6 +33,10 @@ export default {
         };
     },
     props: {
+        rightActive: {
+            type: Boolean,
+            default: false
+        },
         simple: {
             type: Boolean,
             default: false

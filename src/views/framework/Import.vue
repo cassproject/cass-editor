@@ -21,10 +21,10 @@
 -->
 <template>
     <main-layout
+        :rightActive="showRightAside"
         :simple="true"
         :class=" showRightAside ? 'right-side-open' : ''">
-        <template #top>
-        </template>
+        <template #top />
         <template #body>
             <div
                 id="import">
@@ -592,7 +592,7 @@
             </div>
         </template>
         <template slot="right">
-            <RightAside v-if="showRightAside  && importType === 'file'">
+            <RightAside v-if="showRightAside && importType === 'file'">
                 <template slot="right-aside-content">
                     <div class="section">
                         <h2 class="title is-size-4">

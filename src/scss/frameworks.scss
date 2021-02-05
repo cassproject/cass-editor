@@ -37,6 +37,29 @@
                     .arrow-icon {
                         visibility: hidden;
                     }
+                    .cass--list-item--content {
+                        .breadcrumb {
+                            padding-bottom: .25rem;
+                        }
+                    }
+                    .cass--list--thing {
+                        .lode__Directory, .lode__Competency, .lode__Concept {
+                            
+                            .lode__thing-heading {
+                                line-height: 1rem;
+                                .framework-details {
+                                }
+                            }
+                            .lode__Property {
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
+                                max-width: 400px;
+                                line-height: 1rem;
+                                padding: 0 0 .25rem 0;
+                            }
+                        }
+                    }
             }
             li.cass--list--item:hover {
                 background-color: $cass-lightest;

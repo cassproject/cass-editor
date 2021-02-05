@@ -1,6 +1,7 @@
 <template>
     <div id="framework">
         <main-layout
+            :rightActive="showRightAside"
             :simple="true">
             <!-- begin framework -->
             <template slot="top">
