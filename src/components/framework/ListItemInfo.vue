@@ -214,9 +214,9 @@
                                 <!-- resource link -->
                                 <div class="cass__right-aside--property">
                                     <div class="cass__right-aside--property-text">
-                                        <div v-if="!editingResource">
+                                        <span v-if="!editingResource">
                                             {{ object.url }}
-                                        </div>
+                                        </span>
                                         <div
                                             v-else-if="editingResource">
                                             <input
@@ -247,11 +247,11 @@
                                 <!-- resource name -->
                                 <div class="cass__right-aside--property">
                                     <div class="cass__right-aside--property-text">
-                                        <div v-if="!editingResource">
+                                        <span v-if="!editingResource">
                                             {{ objectName }}
-                                        </div>
+                                        </span>
                                         <div
-                                            v-else-if="editingResource">
+                                            v-if="editingResource">
                                             <input
                                                 class="input"
                                                 v-model="resourceName">
@@ -282,12 +282,12 @@
                             <template v-if="objectType === 'Directory'">
                                 <div class="cass__right-aside--property">
                                     <div class="cass__right-aside--property-text">
-                                        <div v-if="!editingResource">
+                                        <span v-if="!editingResource">
                                             {{ objectName }}
-                                        </div>
+                                        </span>
                                         <div
                                             class="control"
-                                            v-else-if="editingResource">
+                                            v-if="editingResource">
                                             <div class="control">
                                                 <input
                                                     class="input"
@@ -364,7 +364,9 @@
                         <div
                             :class=" accordion === 'description' ? 'active' : ''"
                             class="cass__right-side--accordion-panel">
-                            {{ objectDescription }}
+                            <div class="p-2">
+                                {{ objectDescription }}
+                            </div>
                         </div>
                     </template>
                     <!-- copy to directory -->
