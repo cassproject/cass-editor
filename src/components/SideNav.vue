@@ -255,7 +255,7 @@
         <ul
             class="menu-list">
             <li
-                class="has-text-white"
+                class="has-text-white cass--main-nav--list-item "
                 v-for="directory in myTopLevelDirectories"
                 :key="directory.id"
                 @click="selectDirectory(directory)">
@@ -270,7 +270,9 @@
                         v-else>
                         <i class="fa fa-folder" />
                     </span>
-                    <span v-if="showSideNav"> {{ directory.name }}</span>
+                    <span
+                        v-if="showSideNav"
+                        class="cass--main-nav--item"> {{ directory.name }}</span>
                 </router-link>
             </li>
         </ul>
@@ -577,4 +579,12 @@ export default {
  @import '../scss/variables.scss';
  @import '../scss/side-nav.scss';
 
+.cass--main-nav--list-item a {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    max-width: 240px;
+    display: inline-block;
+}
 </style>
