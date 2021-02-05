@@ -293,7 +293,9 @@
             </div>
         </template>
         <template #right>
-            <RightAside v-if="showRightAside" />
+            <RightAside
+                title="Filter \& sort"
+                v-if="showRightAside" />
         </template>
     </main-layout>
 </template>
