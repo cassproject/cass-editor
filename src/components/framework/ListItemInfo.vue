@@ -395,7 +395,7 @@
                     </div>
                     <!-- move to directory -->
                     <button
-                        @click="clickAccordion('move'); copyingToDirectory = true;"
+                        @click="clickAccordion('move'); movingToDirectory = true;"
                         class="cass__right-side--accordion">
                         Move to Directory
                         <span class="icon is-pulled-right">
