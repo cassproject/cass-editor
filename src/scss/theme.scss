@@ -122,6 +122,10 @@ $divider-background-color: $dark;
     .clear-side-bar #framework-editor-toolbar {
         width: calc(100% - 360px);
     }
+    .clear-side-bar .cass--main-layout--primary-top {
+        width: calc(100% - 300px);
+        left: 300px;
+    }
      .clear-side-bar {
         margin-left: 300px;
     }

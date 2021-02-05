@@ -47,7 +47,7 @@
                                 class="button is-outlined is-primary">
                                 <span class="icon">
                                     <i class="fa fa-upload" />
-                                </span><span>import framework</span>
+                                </span><span>import</span>
                             </router-link>
                             <router-link
                                 to="/crosswalk"
