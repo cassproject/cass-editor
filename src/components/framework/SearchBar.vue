@@ -58,7 +58,7 @@
                 </div>
             </div>
         </div>
-        <!-- info tags to remove filters -->
+        <!-- info tags to remove filters
         <div
             v-if="filterSet === 'all' &&
                 (filteredQuickFilters.length > 0 || filteredSearchTo.length>0 || sortResults.label)"
@@ -89,7 +89,7 @@
                     @click="removeFilter('applySearchTo', filter)"
                     class="delete is-small" />
             </span>
-        </div>
+        </div> -->
         <!-- to do connect basic filters to list results -->
         <div v-if="filterSet === 'basic'">
             <div class="field is-grouped">
