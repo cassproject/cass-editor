@@ -1,7 +1,7 @@
 <template>
     <div
         id="app"
-        class="">
+        :class="editorClass">
         <!-- nav bar navigation -->
         <cass-modal class="cass-modal" />
         <DynamicModal />
@@ -1131,6 +1131,13 @@ export default {
         }
     },
     computed: {
+        editorClass: function() {
+            if (this.queryParams.ceasnDataFields === 'true') {
+                return 'ceasn-editor';
+            } else {
+                return '';
+            }
+        },
         showRightAside: function() {
             return this.$store.getters['app/showRightAside'];
         },
