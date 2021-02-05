@@ -65,7 +65,7 @@ export default {
     height: 60px;
     display: flex;
     background-color: white;
-    z-index:1000;
+    z-index:30;
     border-bottom: solid 1px black;
 }
 .cass--main-layout--primary-top.is-simple-top-bar {
@@ -82,7 +82,7 @@ export default {
     align-items: center;
     justify-content: flex-start;
     background-color: white;
-    z-index:1000;
+    z-index:30;
     border-bottom: solid 1px black;
     color: black;
 }

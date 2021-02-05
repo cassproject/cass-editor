@@ -262,54 +262,6 @@
                 </div>
             </div>
         </div>
-        <!-- list description for right panel -->
-        <RightAside v-if="importInfoVisible">
-            <template slot="right-aside-content">
-                <div class="section">
-                    <h2 class="title is-size-4">
-                        Remote Server Import
-                    </h2>
-                    <!--v-else-if="importType=='server' && !conceptMode"-->
-                    <p class="has-text-weight-bold">
-                        If you know the URL of a IMS CASE Repository, such as OpenSalt, you can import published frameworks from that repository.
-                    </p>
-                    <br>
-                    <ul class="cat__bullet-list">
-                        <li class="is-size-6">
-                            A CASE framework cannot be imported if it uses API Key authentication.
-                        </li>
-                        <li class="is-size-6">
-                            This import maintains the URLs of the CASE frameworks and changes both the format and schema used to store the CASE frameworks in CaSS, but does not change any of the data.
-                        </li>
-                        <li class="is-size-6">
-                            After entering the endpoint below, you can select which frameworks you would like to import.
-                        </li>
-                        <li class="is-size-6">
-                            If you wish to edit the frameworks after importing, please be sure you are signed in.
-                        </li>
-                    </ul>
-                    <br>
-                    <p class="has-text-weight-bold">
-                        If you know the URL of another CaSS Repository, you can import frameworks from that repository.
-                    </p>
-                    <br>
-                    <ul class="cat__bullet-list">
-                        <li class="is-size-6">
-                            This import maintains the URLs of the CaSS frameworks but does not change any of the data besides the owner. If you are logged in, you will have ownership of the newly imported framework and be able to edit it.
-                        </li>
-                        <li class="is-size-6">
-                            After entering the endpoint below, you can select which frameworks you would like to import.
-                        </li>
-                        <li class="is-size-6">
-                            If the other repository has directories, these will appear at the top of the list. You can click on a directory to view and select frameworks within it.
-                        </li>
-                        <li class="is-size-6">
-                            Use the search bar to find particular frameworks or directories.
-                        </li>
-                    </ul>
-                </div>
-            </template>
-        </RightAside>
     </div>
 </template>
 
@@ -317,13 +269,11 @@
 import ImportTabs from '@/components/import/ImportTabs';
 import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
-import RightAside from '@/components/framework/RightAside';
 import SearchBar from '../framework/SearchBar.vue';
 export default {
     name: 'ImportServer',
     components: {
         ImportTabs,
-        RightAside,
         SearchBar
     },
     mixins: [ imports, common ],
