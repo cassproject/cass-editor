@@ -230,6 +230,11 @@ export default {
                         CSVImport.analyzeFile(file, function(data) {
                             me.$store.commit('app/importFileType', 'csv');
                             me.importFrameworkName = file.name.replace(".csv", "");
+                            for (let i = 0; i < data.length; i++) {
+                                if (data[i][0] === "") {
+                                    data.splice(i, 1);
+                                }
+                            }
                             for (var i = 0; i < data[0].length; i++) {
                                 let column = {};
                                 column.name = data[0][i];
@@ -398,13 +403,30 @@ export default {
             appLog(e);
             var files = e.target.files || e.dataTransfer.files;
             var relationFile;
+            let me = this;
             if (!files.length) {
                 relationFile = null;
             } else {
                 relationFile = files[0];
+                var reader = new FileReader();
+                reader.onload = function(event) {
+                    try {
+                        let bytes = new Uint8Array(reader.result);
+                        let relationFileOriginal = new Blob([reader.result], {type: 'text/csv'});
+                        // Strip out carriage return if it exists at end of file
+                        if ((bytes[bytes.length - 1] === 10) && (bytes[bytes.length - 2] === 13)) {
+                            let relationFileProcessed = relationFileOriginal.slice(0, -2, relationFileOriginal.type);
+                            me.$store.commit('app/csvRelationFile', relationFileProcessed);
+                        } else {
+                            me.$store.commit('app/csvRelationFile', relationFileOriginal);
+                        }
+                    } catch {
+                        appLog("Unable to check csv file for extra blank input.");
+                        me.$store.commit('app/csvRelationFile', relationFile);
+                    }
+                };
+                reader.readAsArrayBuffer(relationFile);
             }
-            this.$store.commit('app/csvRelationFile', relationFile);
-            let me = this;
             CSVImport.analyzeFile(relationFile, function(data) {
                 for (var i = 0; i < data[0].length; i++) {
                     let column = {};
