@@ -12,7 +12,7 @@
 #cass__right-aside {
     position: fixed;
     height: 100%;
-    top: 0;
+    top: 44px;
     overflow: hidden;
 
     width: 100%;
@@ -38,10 +38,10 @@
     width: 100%;
     right: 0;
     left: 0;
-    height: 160px;
+    height: 120px;
 }
 .cass__right-aside--body {
-    margin-top: 160px;
+    margin-top: 120px;
     height: calc(100% - 160px);
     overflow-y: scroll;;
     background-color: light;

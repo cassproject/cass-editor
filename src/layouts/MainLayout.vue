@@ -88,7 +88,7 @@ export default {
 }
 .cass--main-layout--body {
     height: calc(100vh - 100px);
-    overflow: scroll;
+    overflow: hidden;
     margin-top: 100px;
     width: 100%;
 }
@@ -107,10 +107,12 @@ export default {
     right: 0;
     width: 360px;
     top: 100px;
-    height: 100%;
+    height: calc(100vh - 100px);
+
 }
 .cass--main-layout--right.has-simple-top-bar {
     top: 48px;
+    height: calc(100vh - 48px);
 }
 
 </style>

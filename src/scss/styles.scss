@@ -60,9 +60,9 @@ body{
 #configuration,
 #user-groups,
 #welcome {
-    height: 100vh;
+    height: 100%;
     overflow-x: hidden;
-    overflow-y: scroll;
+    overflow-y: auto;
     background-color: $white;
 }
 #framework {

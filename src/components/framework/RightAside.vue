@@ -9,10 +9,12 @@
     <aside
         id="right-side-bar"
         class="has-background-light">
-        <button
-            class="delete is-pulled-left ml-2 mt-4"
-            @click="$store.commit('app/closeRightAside')"
-            aria-label="close" />
+        <div class="cass--right-aside--top-bar">
+            <button
+                class="delete is-pulled-left ml-2 mt-4"
+                @click="$store.commit('app/closeRightAside')"
+                aria-label="close" />
+        </div>
         <slot name="right-aside-content">
             <Component :is="rightAsideContent" />
         </slot>
@@ -80,6 +82,13 @@ export default {
         .right-aside__filter-and-sort {
             direction: ltr;
         }
+    }
+    .cass--right-aside--top-bar {
+        width: 100%;
+        position: fixed;
+        height: 44px;
+        top:0;
+        border-bottom: solid 1px rgba($dark, .3);
     }
 
 

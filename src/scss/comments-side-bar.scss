@@ -1,5 +1,8 @@
 #right-side-bar__comments {
-    width: 100%
+    width: auto;
+    height: calc(100% - 44px);
+    overflow-y: auto;
+    margin-top: 44px;
 }
 .comment-list {
     direction: ltr;

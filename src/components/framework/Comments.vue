@@ -4,7 +4,7 @@
     which triggers Framework.vue to open this component.
 -->
 <template>
-    <aside
+    <div
         id="right-side-bar__comments"
         class="has-background-lightest">
         <!-- for each comment in time sequence
@@ -53,7 +53,7 @@
                 </div>
             </template>
         </div>
-    </aside>
+    </div>
 </template>
 <script>
 import Comment from './Comment.vue';

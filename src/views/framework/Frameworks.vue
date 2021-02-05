@@ -3,8 +3,8 @@
         <!-- should be used for search bar -->
         <template #top>
             <div class="container">
-                <div class='columns'>
-                    <div class='column is-6'>
+                <div class="columns">
+                    <div class="column is-6">
                         <SearchBar
                             filterSet="all"
                             :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
@@ -23,7 +23,7 @@
                             <router-link
                                 to="/import"
                                 @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
-                                class="button is-outlined is-primary">
+                                class="button is-hidden-mobile is-outlined is-primary">
                                 <span class="icon">
                                     <i class="fa fa-upload" />
                                 </span><span>import {{ conceptSchemeStringForButton }}</span>
@@ -31,7 +31,7 @@
                         </div>
                         <div
                             v-else
-                            class="buttons is-right frameworks-buttons">
+                            class="buttons  is-hidden-mobile is-right frameworks-buttons">
                             <div
                                 @click="$emit('create-new-framework')"
                                 class="button is-outlined is-primary">
