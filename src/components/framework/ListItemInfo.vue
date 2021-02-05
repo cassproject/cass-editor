@@ -368,7 +368,7 @@
                     </template>
                     <!-- copy to directory -->
                     <button
-                        @click="clickAccordion('copy')"
+                        @click="clickAccordion('copy'); copyingToDirectory = true;"
                         class="cass__right-side--accordion">
                         Copy to Directory
                     </button>
@@ -385,7 +385,7 @@
                     </div>
                     <!-- move to directory -->
                     <button
-                        @click="clickAccordion('move')"
+                        @click="clickAccordion('move'); movingToDirectory = true;"
                         class="cass__right-side--accordion">
                         Move to Directory
                         <span class="icon is-pulled-right">
