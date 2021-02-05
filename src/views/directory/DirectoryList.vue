@@ -1,7 +1,6 @@
 <template>
     <div
-        id="directoryList"
-        class="List">
+        id="directoryList">
         <div
             class="section has-text-centered"
             v-if="firstSearchProcessing">
@@ -11,136 +10,151 @@
         </div>
         <template>
             <div class="container">
-                <ul class="list-ul">
-                    <!-- directories -->
-                    <li
-                        class="list-ul__item "
-                        v-for="(item) in directory"
-                        :key="item.id"
-                        @click="click(item)">
-                        <Breadcrumbs
-                            v-if="searchTerm"
-                            :competency="item"
-                            :ref="item.id" />
-                        <Thing
-                            :obj="item"
-                            @dblclick.native="$emit('dblclick', item)"
-                            :view="view"
-                            class="list-thing list-ul__item--directory"
-                            :parentNotEditable="true">
-                            <template #thingIcon>
-                                <div class="cass--list-item--icon">
+                <div class="cass--list--container">
+                    <ul class="cass--list">
+                        <!-- directories -->
+                        <li
+                            class="cass--list--item "
+                            v-for="(item) in directory"
+                            :key="item.id"
+                            @click="click(item)">
+                            <div class="cass--list-item--icon">
+                                <div class="cass--list-item--icon-wrap has-background-dark">
                                     <span class="icon">
                                         <i
                                             class="fa fa-folder" />
                                     </span>
                                 </div>
-                            </template>
-                        </Thing>
-                        <div
-                            v-if="view !== 'search'"
-                            class="icon has-text-primary arrow-icon">
-                            <i class="fa fa-arrow-right" />
+                            </div>
+                            <div class="cass--list-item--content">
+                                <Breadcrumbs
+                                    v-if="searchTerm"
+                                    :competency="item"
+                                    :ref="item.id" />
+                                <Thing
+                                    :obj="item"
+                                    @dblclick.native="$emit('dblclick', item)"
+                                    :view="view"
+                                    class="list-thing list-ul__item--directory"
+                                    :parentNotEditable="true" />
+                            </div>
+                            <div class="cass--list-item--hover">
+                                <div
+                                    v-if="view !== 'search'"
+                                    class="icon has-text-primary arrow-icon">
+                                    <i class="fa fa-arrow-right" />
+                                </div>
+                            </div>
+                        </li>
+                        <!-- frameworks -->
+                        <li
+                            class="cass--list--item "
+                            v-for="(item) in framework"
+                            :key="item.id"
+                            @click="click(item)">
+                            <div class="cass--list-item--icon">
+                                <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
+                                    <span class="icon">
+                                        <i
+                                            title="Framework"
+                                            class="fa fa-file-alt" />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="cass--list-item--content">
+                                <Breadcrumbs
+                                    v-if="searchTerm"
+                                    :competency="item"
+                                    :ref="item.id" />
+                                <Thing
+                                    :obj="item"
+                                    @dblclick.native="$emit('dblclick', item)"
+                                    :view="view"
+                                    class="list-thing list-ul__item--framework"
+                                    :parentNotEditable="true" />
+                            </div>
+                            <div class="cass--list-item--hover">
+                                <div
+                                    v-if="view !== 'search'"
+                                    class="icon has-text-primary arrow-icon">
+                                    <i class="fa fa-arrow-right" />
+                                </div>
+                            </div>
+                        </li>
+                        <!-- After the framework/concept scheme search results, show competencies/concepts -->
+                        <li
+                            class="cass--list--item "
+                            v-for="(item) in competency"
+                            :key="item.id"
+                            @click="competencyClick(item)">
+                            <div class="cass--list-item--icon">
+                                <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
+                                    <span class="icon">
+                                        <i
+                                            title="Competency"
+                                            class="fa fa-list-alt" />
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="cass--list-item--content">
+                                <Breadcrumbs
+                                    :competency="item"
+                                    :ref="item.id" />
+                                <Thing
+                                    :obj="item"
+                                    @dblclick.native="$emit('dblclick', item)"
+                                    :view="view"
+                                    class="list-thing list-ul__item--object"
+                                    :parentNotEditable="true" />
+                            </div>
+                            <div class="cass--list-item--hover">
+                                <div
+                                    v-if="view !== 'search'"
+                                    class="icon has-text-primary arrow-icon">
+                                    <i class="fa fa-arrow-right" />
+                                </div>
+                            </div>
+                        </li>
+                        <!-- Resources -->
+                        <li
+                            v-for="item in creativework"
+                            @dblclick="$emit('dblclick', item)"
+                            :key="item.id"
+                            @click="click(item)"
+                            class="cass--list--item">
+                            <div class="cass--list-item--icon">
+                                <div class="cass--list-item--icon-wrap has-background-dark">
+                                    <i class="fa fa-paperclip" />
+                                </div>
+                            </div>
+                            <div class="cass--list-item--content">
+                                <div
+                                    class="list-ul__item--resource">
+                                    {{ item.name }}
+                                </div>
+                            </div>
+                            <div class="cass--list-item--hover">
+                                <div
+                                    v-if="view !== 'search'"
+                                    class="icon has-text-primary arrow-icon">
+                                    <i class="fa fa-arrow-right" />
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <infinite-loading
+                        @infinite="loadResults"
+                        spinner="circles"
+                        v-if="(directory.length + framework.length + competency.length + creativework.length > 10)"
+                        :distance="10">
+                        <div slot="no-more">
+                            All results loaded
                         </div>
-                    </li>
-                    <!-- frameworks -->
-                    <li
-                        class="list-ul__item "
-                        v-for="(item) in framework"
-                        :key="item.id"
-                        @click="click(item)">
-                        <Breadcrumbs
-                            v-if="searchTerm"
-                            :competency="item"
-                            :ref="item.id" />
-                        <Thing
-                            :obj="item"
-                            @dblclick.native="$emit('dblclick', item)"
-                            :view="view"
-                            class="list-thing list-ul__item--framework"
-                            :parentNotEditable="true">
-                            <template #thingIcon>
-                                <span class="icon">
-                                    <i
-                                        title="Framework"
-                                        class="fa fa-file-alt" />
-                                </span>
-                            </template>
-                        </Thing>
-                        <div
-                            v-if="view !== 'search'"
-                            class="icon has-text-primary arrow-icon">
-                            <i class="fa fa-arrow-right" />
+                        <div slot="no-results">
+                            All results loaded
                         </div>
-                    </li>
-                    <!-- After the framework/concept scheme search results, show competencies/concepts -->
-                    <li
-                        class="list-ul__item "
-                        v-for="(item) in competency"
-                        :key="item.id"
-                        @click="competencyClick(item)">
-                        <Breadcrumbs
-                            :competency="item"
-                            :ref="item.id" />
-                        <Thing
-                            :obj="item"
-                            @dblclick.native="$emit('dblclick', item)"
-                            :view="view"
-                            class="list-thing list-ul__item--object"
-                            :parentNotEditable="true">
-                            <template #thingIcon>
-                                <span class="icon">
-                                    <i
-                                        title="Cocepts"
-                                        v-if="item.type === 'Concepts'"
-                                        class="fa fa-book" />
-                                    <i
-                                        title="Framework"
-                                        v-else-if="item.type === 'Framework'"
-                                        class="fa fa-file-alt" />
-                                    <i
-                                        title="Competency"
-                                        v-else-if="item.type === 'Competency'"
-                                        class="fa fa-list-alt" />
-                                </span>
-                            </template>
-                        </Thing>
-                        <div
-                            v-if="view !== 'search'"
-                            class="icon has-text-primary arrow-icon">
-                            <i class="fa fa-arrow-right" />
-                        </div>
-                    </li>
-                    <!-- Resources -->
-                    <li
-                        v-for="item in creativework"
-                        @dblclick="$emit('dblclick', item)"
-                        :key="item.id"
-                        @click="click(item)"
-                        class="list-ul__item">
-                        <div
-                            class="list-ul__item--resource">
-                            {{ item.name }}
-                        </div>
-                        <div
-                            v-if="view !== 'search'"
-                            class="icon has-text-primary arrow-icon">
-                            <i class="fa fa-arrow-right" />
-                        </div>
-                    </li>
-                </ul>
-                <infinite-loading
-                    @infinite="loadResults"
-                    spinner="circles"
-                    v-if="(directory.length + framework.length + competency.length + creativework.length > 10)"
-                    :distance="10">
-                    <div slot="no-more">
-                        All results loaded
-                    </div>
-                    <div slot="no-results">
-                        All results loaded
-                    </div>
-                </infinite-loading>
+                    </infinite-loading>
+                </div>
             </div>
         </template>
     </div>
@@ -597,10 +611,5 @@ export default {
         padding: .0rem;
         width: 100%;
     }
-}
-.cass--list-item--icon {
-    height: 44px;
-    width: 44px;
-    background-color: $dark;
 }
 </style>

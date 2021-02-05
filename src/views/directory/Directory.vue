@@ -19,7 +19,7 @@
                                 searchType="framework" />
                         </div>
                         <!-- top bar icons, add framework, resource, new directory, copy share link -->
-                        <div class="column is-6">
+                        <div class="column is-6 is-hidden-mobile">
                             <div class="buttons is-right">
                                 <div
                                     @click="$emit('create-new-framework', directory)"
@@ -169,18 +169,16 @@
                 </div>
             </template>
             <template slot="body">
-                <div class="container is-fluid">
-                    <DirectoryList
-                        type="Framework"
-                        :repo="repo"
-                        :click="frameworkClick"
-                        :searchOptions="searchOptions"
-                        :paramObj="paramObj"
-                        :directoryId="directory.shortId()"
-                        view="directory"
-                        :disallowEdits="true"
-                        @dblclick="openObject" />
-                </div>
+                <DirectoryList
+                    type="Framework"
+                    :repo="repo"
+                    :click="frameworkClick"
+                    :searchOptions="searchOptions"
+                    :paramObj="paramObj"
+                    :directoryId="directory.shortId()"
+                    view="directory"
+                    :disallowEdits="true"
+                    @dblclick="openObject" />
             </template>
             <template slot="right">
                 <RightAside v-if="showRightAside" />
