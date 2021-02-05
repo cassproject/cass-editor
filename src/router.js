@@ -189,6 +189,15 @@ export default new Router({
             path: '/viewer',
             name: 'viewer',
             component: () => import(/* webpackChunkName: "viewer" */ './legacy/ViewerIframe.vue')
+        },
+        {
+            path: '/directory',
+            name: 'directory',
+            components: {
+                default: () => import('./views/directory/Directory.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
+            }
         }
     ]
 });

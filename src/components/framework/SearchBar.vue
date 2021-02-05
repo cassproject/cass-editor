@@ -12,7 +12,7 @@
                             Sort by last date modified
 -->
 <template>
-    <div class="">
+    <div class="cass--search-bar">
         <div
             class="field is-grouped">
             <p
@@ -58,7 +58,7 @@
                 </div>
             </div>
         </div>
-        <!-- info tags to remove filters -->
+        <!-- info tags to remove filters
         <div
             v-if="filterSet === 'all' &&
                 (filteredQuickFilters.length > 0 || filteredSearchTo.length>0 || sortResults.label)"
@@ -89,7 +89,7 @@
                     @click="removeFilter('applySearchTo', filter)"
                     class="delete is-small" />
             </span>
-        </div>
+        </div> -->
         <!-- to do connect basic filters to list results -->
         <div v-if="filterSet === 'basic'">
             <div class="field is-grouped">
@@ -169,6 +169,9 @@ export default {
             if (val.length === 0) {
                 this.updateSearchTerm(val);
             }
+        },
+        storeSearchTerm: function() {
+            this.searchTerm = this.storeSearchTerm;
         },
         basicSort: function(val) {
             appLog(val);
@@ -253,11 +256,17 @@ export default {
                 return true;
             }
             return false;
+        },
+        storeSearchTerm: function() {
+            return this.$store.getters['app/searchTerm'];
         }
     }
 };
 </script>
 
 <style lang="scss">
+.cass--search-bar {
+    width: 100%;
+}
 </style>
 

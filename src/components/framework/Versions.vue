@@ -17,9 +17,9 @@
             </span>
             Version History
         </p>
-        <!-- for each comment in time sequence
+    <!-- for each comment in time sequence
             click to scroll to position in framework eventually -->
-        <!-- for each response -->
+    <!-- for each response -->
     </aside>
 </template>
 <script>

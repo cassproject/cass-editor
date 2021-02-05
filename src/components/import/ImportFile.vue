@@ -209,146 +209,6 @@
                 </div>
             </div>
         </div>
-        <RightAside v-if="importInfoVisible">
-            <template slot="right-aside-content">
-                <div class="section">
-                    <h2 class="title is-size-4">
-                        Import From a File
-                    </h2>
-                    <p class="has-text-weight-bold">
-                        Supported File Types
-                    </p>
-                    <!-- IMPORT SUPPORT -->
-                    <div
-                        class="columns pt-4 is-multiline">
-                        <div class="column is-narrow">
-                            <div
-                                @click="showImportModal('pdf')"
-                                class="button is-outlined is-warning is-small"
-                                v-if="!conceptMode">
-                                <span
-                                    title="PDF files are experimentally supported. Click to learn more."
-                                    class="icon">
-                                    <i class="fa fa-exclamation" />
-                                </span>
-                                <span>PDF</span>
-                            </div>
-                        </div>
-                        <div class="column is-narrow">
-                            <div
-                                @click="showImportModal('docx')"
-                                class="button is-outlined is-warning is-small"
-                                v-if="!conceptMode">
-                                <span
-                                    title="Word documents and Docx files are experimental. Click to learn more."
-                                    class="icon">
-                                    <i class="fa fa-exclamation" />
-                                </span>
-                                <span>DOCX/WORD</span>
-                            </div>
-                        </div>
-                        <div class="column is-narrow">
-                            <div
-                                @click="showImportModal('csv')"
-                                class="button is-outlined is-success is-small">
-                                <span
-                                    title="CSV files are supported, click to learn more."
-                                    class="icon is-pulled-right">
-                                    <i class="fa fa-check" />
-                                </span>
-                                <span>CSV</span>
-                            </div>
-                        </div>
-                        <div class="column is-narrow">
-                            <div
-                                @click="showImportModal('xml')"
-                                class="button is-outlined is-success is-small"
-                                v-if="!conceptMode">
-                                <span
-                                    title="XML files are supported, click to learn more."
-                                    class="icon is-pulled-right">
-                                    <i class="fa fa-check" />
-                                </span>
-                                <span>XML</span>
-                            </div>
-                        </div>
-                        <div class="column is-narrow">
-                            <div
-                                @click="showImportModal('json')"
-                                class="button is-outlined is-success is-small">
-                                <span
-                                    title="JSON files are supported, click to learn more."
-                                    class="icon is-pulled-right">
-                                    <i class="fa fa-check" />
-                                </span>
-                                <span>JSON</span>
-                            </div>
-                        </div>
-                        <div class="column is-narrow">
-                            <div
-                                @click="showImportModal('html')"
-                                class="button is-outlined is-success is-small"
-                                v-if="!conceptMode">
-                                <span
-                                    title="html files are fully supported at this time"
-                                    class="icon is-pulled-right">
-                                    <i class="fa fa-check" />
-                                </span>
-                                <span>HTML</span>
-                            </div>
-                        </div>
-                    </div>
-                    <br>
-                    <p class="has-text-weight-bold">
-                        Steps to import from file
-                    </p>
-                    <ul
-                        class="cat__bullet-list is-size-6"
-                        v-if="!conceptMode">
-                        <li>
-                            Click inside the “Files to Upload” box or drag and drop a file inside the dashed box.
-                        </li>
-                        <li>
-                            Once your file has been uploaded, CaSS will detect a competency framework from the file and display details about your framework.
-                        </li>
-                        <li>
-                            If the details are correct, click “Accept and Review” to review and edit your framework.
-                        </li>
-                        <li>
-                            An editable preview of your framework will be available. When you are done making changes, click “Done Editing”.
-                        </li>
-                        <li>
-                            An uneditable preview of your framework will display, your framework is now in CaSS!
-                        </li>
-                        <li>
-                            click "done" to navigate to the framework in the editor where you can continue editing as well as export to a variety of formats.
-                        </li>
-                        <li>
-                            If your framework is not detected by CaSS or not imported properly, let us know at <a href="mailto:cass@eduworks.com?subject=File+to+Improve+CaSS+Importer">cass@eduworks.com</a> and we will look into the inquiry and provide a response.
-                        </li>
-                    </ul>
-                    <ul
-                        class="cat__bullet-list is-size-6"
-                        v-else>
-                        <li>
-                            Click inside the “Files to Upload” box or drag and drop a file inside the dashed box.
-                        </li>
-                        <li>
-                            Once your file has been uploaded, CaSS will detect a {{ taxonomyTerminology }} from the file and display details about your {{ taxonomyTerminology }}.
-                        </li>
-                        <li>
-                            If the details are correct, click “Import” to review and edit your {{ taxonomyTerminology }}.
-                        </li>
-                        <li>
-                            A preview of your {{ taxonomyTerminology }} will display, your {{ taxonomyTerminology }} is now in CaSS!
-                        </li>
-                        <li>
-                            click "done" to navigate to the {{ taxonomyTerminology }} in the editor where you can continue editing as well as export to a variety of formats.
-                        </li>
-                    </ul>
-                </div>
-            </template>
-        </RightAside>
     </div>
 </template>
 
@@ -356,14 +216,12 @@
 import ImportTabs from '@/components/import/ImportTabs';
 import DragAndDrop from '@/components/import/DragAndDrop';
 import imports from '@/mixins/import';
-import RightAside from '@/components/framework/RightAside';
 
 export default {
     name: 'ImportFile',
     components: {
         ImportTabs,
-        DragAndDrop,
-        RightAside
+        DragAndDrop
     },
     mixins: [ imports ],
     props: {
