@@ -654,6 +654,8 @@ export default {
             this.sortBy = "schema:dateModified";
         } else if (this.sortResults.id === "dateCreated") {
             this.sortBy = "schema:dateCreated";
+        } else {
+            this.sortBy = "name.keyword";
         }
         this.showMine = false;
         this.showNotMine = false;
