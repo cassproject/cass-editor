@@ -241,6 +241,11 @@ export default {
                         CSVImport.analyzeFile(file, function(data) {
                             me.$store.commit('app/importFileType', 'csv');
                             me.importFrameworkName = file.name.replace(".csv", "");
+                            for (let i = 0; i < data.length; i++) {
+                                if (data[i][0] === "") {
+                                    data.splice(i, 1);
+                                }
+                            }
                             for (var i = 0; i < data[0].length; i++) {
                                 let column = {};
                                 column.name = data[0][i];
