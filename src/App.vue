@@ -565,6 +565,9 @@ export default {
                     if (data.concept != null) {
                         EcConcept.template = this.removeNewlines(data.concept);
                     }
+                    if (data.directory != null) {
+                        EcDirectory.template = this.removeNewlines(data.directory);
+                    }
                     var message = {
                         action: "response",
                         message: "templateOk"
