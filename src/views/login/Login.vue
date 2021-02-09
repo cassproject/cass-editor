@@ -72,6 +72,11 @@
                                 <a @click="goToLegacyLogin">Legacy Login</a>
                             </div>
                         </div>
+                        <div class="column is-12">
+                            <div class="has-text-centered">
+                                <a @click="forceLogout">Force Logout (remove this at some point)</a>
+                            </div>
+                        </div>
                     </div>
                 </section>
             </div>
@@ -94,6 +99,9 @@ export default {
         amCreatingLinkedPerson: false
     }),
     methods: {
+        forceLogout() {
+            this.redirectToExternalLogout();
+        },
         goToLegacyLogin() {
             this.loginBusy = false;
             this.$router.push({path: '/legacyLogin'});
