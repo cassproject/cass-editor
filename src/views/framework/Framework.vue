@@ -659,6 +659,9 @@ export default {
         }
     },
     beforeDestroy() {
+        if (this.queryParams && this.queryParams.private !== 'true') {
+            this.$store.commit('editor/private', false);
+        }
     },
     watch: {
         shortId: function() {

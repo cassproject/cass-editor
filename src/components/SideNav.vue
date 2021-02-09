@@ -197,17 +197,6 @@
                     <span v-if="showSideNav"> Frameworks</span>
                 </router-link>
             </li>
-            <!-- hidding this for now -->
-            <li
-                class="has-text-white"
-                v-if="crosswalkEnabled">
-                <router-link to="/crosswalk">
-                    <span class="icon">
-                        <i class="fa fa-network-wired" />
-                    </span>
-                    <span v-if="showSideNav"> Crosswalk Frameworks</span>
-                </router-link>
-            </li>
             <li
                 class="has-text-white"
                 v-if="showSideNav">
@@ -219,6 +208,16 @@
                     </span><span v-if="showSideNav">
                         Import
                     </span>
+                </router-link>
+            </li>
+            <li
+                class="has-text-white"
+                v-if="crosswalkEnabled">
+                <router-link to="/crosswalk">
+                    <span class="icon">
+                        <i class="fa fa-network-wired" />
+                    </span>
+                    <span v-if="showSideNav"> Crosswalk Frameworks</span>
                 </router-link>
             </li>
             <li
