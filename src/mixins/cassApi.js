@@ -12,6 +12,12 @@ export const cassApi = {
             let credentials = {};
             credentials.username = pro["preferred_username"];
             credentials.password = pro["cass_password"];
+            credentials.email = pro["email"];
+            if (pro["name"]) {
+                credentials.name = pro["name"];
+            } else if (pro["given_name"] && pro["family_name"]) {
+                credentials.name = pro["given_name"] + " " + pro["family_name"];
+            }
             return credentials;
         },
         getUserProfile(responseCallback) {
