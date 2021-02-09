@@ -7,9 +7,17 @@ export const cassApi = {
         LOGOUT_REDIRECT_URL: window.location.origin + "/cass-editor/#/login"
     }),
     methods: {
+        parseCredentialsFromProfileResponse(profileResponse) {
+            let pro = JSON.parse(profileResponse.responseText);
+            let credentials = {};
+            credentials.username = pro["preferred_username"];
+            credentials.password = pro["cass_password"];
+            return credentials;
+        },
         getUserProfile(responseCallback) {
             let oReq = new XMLHttpRequest();
             oReq.addEventListener("load", (x) => responseCallback(x.currentTarget));
+            oReq.withCredentials = true;
             let serviceEndpoint = this.cassApiLocation + this.USER_PROFILE_SERVCE;
             oReq.open("GET", serviceEndpoint);
             oReq.send();

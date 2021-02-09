@@ -92,11 +92,12 @@ export default {
     name: 'Login',
     mixins: [cassApi],
     data: () => ({
-        USER_PROFILE_SERVICE: "",
         loginBusy: false,
         amJustLoggingIn: true,
         amCreatingAccount: false,
-        amCreatingLinkedPerson: false
+        amCreatingLinkedPerson: false,
+        username: '',
+        password: ''
     }),
     methods: {
         forceLogout() {
@@ -112,10 +113,19 @@ export default {
         attemptExternalCassLogin() {
             this.redirectToExternalLoginPage();
         },
+        determineUserCredentials(profileResponse) {
+            let co = this.parseCredentialsFromProfileResponse(profileResponse);
+            this.username = co.username;
+            this.password = co.password;
+        },
         handleUserProfileAlreadyLoaded(profileResponse) {
-            // TODO implement
-            console.log('TODO handleUserProfileAlreadyLoaded');
-            console.log(profileResponse);
+            this.determineUserCredentials(profileResponse);
+            if (this.username && this.username.trim().length > 0 && this.password && this.password.trim().length > 0) {
+                console.log('YAY');
+                this.loginBusy = false;
+            } else {
+                appLog("Unable to parse credentials from user profile response");
+            }
         },
         checkUserProfileRequestStatus(profileResponse) {
             console.log('HELLO FROM checkUserProfileRequestStatus: ' + profileResponse.status);
