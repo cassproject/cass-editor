@@ -46,7 +46,7 @@
                                 <div class="modal-card-body has-text-centered">
                                     <div
                                         class="button is-outlined is-primary"
-                                        @click="attemptCassLogin">
+                                        @click="attemptExternalCassLogin">
                                         <span class="icon">
                                             <i class="fa fa-sign-in-alt" />
                                         </span><span>login</span>
@@ -69,7 +69,7 @@
                         </div>
                         <div class="column is-12">
                             <div class="has-text-centered">
-                                Insert legacy login link
+                                <a @click="goToLegacyLogin">Legacy Login</a>
                             </div>
                         </div>
                     </div>
@@ -94,15 +94,32 @@ export default {
         amCreatingLinkedPerson: false
     }),
     methods: {
+        goToLegacyLogin() {
+            this.loginBusy = false;
+            this.$router.push({path: '/legacyLogin'});
+        },
         showCreateAccount() {
             // TODO implement
         },
-        attemptCassLogin() {
-            // TODO implement
+        attemptExternalCassLogin() {
+            this.redirectToExternalLoginPage();
         },
-        checkUserProfileRequestStatus(req) {
-            console.log('HELLO FROM checkUserProfileRequestStatus: ' + req.status);
-            this.loginBusy = false;
+        handleUserProfileAlreadyLoaded(profileResponse) {
+            // TODO implement
+            console.log('TODO handleUserProfileAlreadyLoaded');
+            console.log(profileResponse);
+        },
+        checkUserProfileRequestStatus(profileResponse) {
+            console.log('HELLO FROM checkUserProfileRequestStatus: ' + profileResponse.status);
+            if (profileResponse.status === 401) {
+                this.amJustLoggingIn = true;
+                this.loginBusy = false;
+            } else if (profileResponse.status === 200) {
+                this.handleUserProfileAlreadyLoaded(profileResponse);
+            } else {
+                appLog('Unexpected response status: ' + profileResponse.status);
+                this.loginBusy = false;
+            }
         },
         checkLoginStatus() {
             this.loginBusy = true;
