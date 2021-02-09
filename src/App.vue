@@ -56,6 +56,8 @@ export default {
     methods: {
         initializeApp: function() {
             var server = "https://dev.api.cassproject.org/api/";
+            var cassApiLocation = "https://dev.rest.api.cassproject.org/";
+            this.$store.commit('environment/cassApiLocation', cassApiLocation);
             var me = this;
             if (this.$route.query) {
                 let queryParams = JSON.parse(JSON.stringify(this.$route.query));
