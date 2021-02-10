@@ -278,7 +278,7 @@
                                         v-if="canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId"
                                         class="cass__right-aside--property flex-end">
                                         <div
-                                            @click="$emit('editDirectory')"
+                                            @click="editDirectory"
                                             class="button is-pulled-right is-primary is-outlined">
                                             <span>Edit</span>
                                             <span class="icon">
