@@ -328,8 +328,27 @@ export default {
             this.caseDocs = e;
             this.importCase();
         },
+        isValidUrl(s) {
+            try {
+                let u = new URL(s);
+            } catch (e) {
+                return false;
+            }
+            return true;
+        },
         connectToServer: function() {
             appLog("connecting to server 1");
+            let error = {
+                message: "Unable to import from the URL Endpoint provided.",
+                details: ""
+            };
+            if (!this.isValidUrl(this.importServerUrl)) {
+                error.details = "The endpoint provided is not a valid URL.";
+                this.$store.commit('app/addImportError', error.details);
+                this.$store.commit('app/importTransition', 'upload');
+                this.showModal('error', error);
+                return;
+            }
             this.caseDocs.splice(0, this.caseDocs.length);
             this.cassDirectories.splice(0, this.cassDirectories.length);
             this.cassFrameworks.splice(0, this.cassFrameworks.length);
@@ -511,6 +530,10 @@ export default {
         },
         caseDetectEndpoint: function() {
             var me = this;
+            let error = {
+                message: "Unable to import from the URL Endpoint provided.",
+                details: ""
+            };
             let serverUrl = this.importServerUrl;
             if (!serverUrl.endsWith("/")) {
                 serverUrl += "/";
@@ -518,7 +541,17 @@ export default {
             this.get(serverUrl, "ims/case/v1p0/CFDocuments", {"Accept": "application/json"}, function(success) {
                 me.caseGetDocsSuccess(success);
             }, function(failure) {
-                me.caseGetServerSide();
+                if (failure) {
+                    error.details = "Error: " + failure;
+                    if (failure === 401) {
+                        error.details += " A CASE framework cannot be imported if it uses API Key authentication.";
+                    }
+                    me.$store.commit('app/importTransition', 'upload');
+                    me.$store.commit('app/addImportError', error.details);
+                    me.showModal('error', error);
+                } else {
+                    me.caseGetServerSide();
+                }
             });
         },
         caseGetDocsSuccess: function(result) {

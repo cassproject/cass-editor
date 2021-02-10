@@ -184,6 +184,14 @@ export default {
                         }
                     }
                 };
+                xhr.onload = function() {
+                    if (xhr.status !== 200) {
+                        failure(xhr.status);
+                    }
+                };
+                xhr.onerror = function() {
+                    failure("Failed while sending request.");
+                };
             }
             if (xhr != null) {
                 if (EcRemote.async) {
