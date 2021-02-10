@@ -1042,7 +1042,6 @@ export default {
                 }
             }, function(failure) {
                 if (!failure) {
-                    error.details = "Please make sure you are entering the endpoint of a repository rather than a specific framework and that the repository does not require API key authentication.";
                     me.$store.commit('app/addImportError', error.message);
                     me.$store.commit('app/importTransition', 'upload');
                     me.showModal('error', error);
