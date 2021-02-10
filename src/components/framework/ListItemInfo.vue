@@ -249,10 +249,10 @@
                             <template v-if="objectType === 'Directory'">
                                 <div class="cass__right-aside--property">
                                     <div class="cass__right-aside--property-text">
-                                        <span v-if="!editingResource">
+                                        <span>
                                             {{ objectName }}
                                         </span>
-                                        <div
+                                        <!--<div
                                             class="control"
                                             v-if="editingResource">
                                             <div class="control">
@@ -260,9 +260,9 @@
                                                     class="input"
                                                     v-model="resourceName">
                                             </div>
-                                        </div>
+                                        </div>-->
                                     </div>
-                                    <div
+                                    <!--<div
                                         class="cass__right-aside--property-icons"
                                         v-if="canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId">
                                         <div
@@ -270,9 +270,21 @@
                                             class="icon is-small">
                                             <i class="fa fa-edit is-size-5" />
                                         </div>
-                                    </div>
+                                    </div>-->
                                     <div class="cass__right-aside--property-label">
                                         Directory Name
+                                    </div>
+                                    <div
+                                        v-if="canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId"
+                                        class="cass__right-aside--property flex-end">
+                                        <div
+                                            @click="$emit('editDirectory')"
+                                            class="button is-pulled-right is-primary is-outlined">
+                                            <span>Edit</span>
+                                            <span class="icon">
+                                                <i class="fa fa-edit" />
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </template>
