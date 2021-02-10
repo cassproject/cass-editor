@@ -7,7 +7,7 @@ export const cassApi = {
         LOGOUT_REDIRECT_URL: window.location.origin + "/cass-editor/#/login"
     }),
     methods: {
-        parseCredentialsFromProfileResponse(profileResponse) {
+        parseCredentialsFromProfileResponse: function(profileResponse) {
             let pro = JSON.parse(profileResponse.responseText);
             let credentials = {};
             credentials.username = pro["preferred_username"];
@@ -26,7 +26,7 @@ export const cassApi = {
             }
             return credentials;
         },
-        getUserProfile(responseCallback) {
+        getUserProfile: function(responseCallback) {
             let oReq = new XMLHttpRequest();
             oReq.addEventListener("load", (x) => responseCallback(x.currentTarget));
             oReq.withCredentials = true;
@@ -34,15 +34,22 @@ export const cassApi = {
             oReq.open("GET", serviceEndpoint);
             oReq.send();
         },
-        redirectToExternalLoginPage() {
+        redirectToExternalLoginPage: function() {
             appLog("Redirecting to external login...");
-            let loginEndpoint = this.cassApiLocation + this.USER_LOGIN_SERVICE + "?redirectUrl=" + encodeURIComponent(window.location);
-            window.location = loginEndpoint;
+            window.location = this.cassApiLocation + this.USER_LOGIN_SERVICE + "?redirectUrl=" + encodeURIComponent(window.location);
         },
-        redirectToExternalLogout() {
+        redirectToExternalLogout: function() {
             appLog("Redirecting to external logout...");
-            let logoutEndpoint = this.cassApiLocation + this.USER_LOGOUT_SERVICE + "?redirectUrl=" + encodeURIComponent(this.LOGOUT_REDIRECT_URL);
-            window.location = logoutEndpoint;
+            window.location = this.cassApiLocation + this.USER_LOGOUT_SERVICE + "?redirectUrl=" + encodeURIComponent(this.LOGOUT_REDIRECT_URL);
+        },
+        performApplicationLogout: function() {
+            // TODO implement and tie to SideNav.vue
+            appLog("Performing application logout...");
+            EcIdentityManager.clearContacts();
+            EcIdentityManager.clearIdentities();
+            let clearPerson = {};
+            this.$store.commit('user/loggedOnPerson', clearPerson);
+            this.redirectToExternalLogout();
         }
     },
     computed: {

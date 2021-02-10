@@ -79,10 +79,10 @@
                             </div>
                         </div>
                         <div
-                            class="column is-12"
+                            class="column is-12 pt-4"
                             v-if="legacyLoginEnabled">
-                            <div class="has-text-centered">
-                                <a @click="goToLegacyLogin">Legacy Login (for pre 1.4 accounts)</a>
+                            <div class="section box p-2 has-text-centered">
+                                <i class="fas fa-exclamation-circle" /> For accounts created in CaSS <b>1.3 and earlier</b>: <a @click="goToLegacyLogin">Legacy Login</a>
                             </div>
                         </div>
                     </div>
@@ -100,6 +100,8 @@ export default {
     name: 'Login',
     mixins: [cassApi],
     data: () => ({
+        GROUP_SEARCH_SIZE: 10000,
+        PERSON_SEARCH_SIZE: 10000,
         loginBusy: false,
         ecRemoteIdentMgr: null,
         identityFetchFailed: false,
@@ -107,30 +109,125 @@ export default {
         loginParamsInvalid: false,
         identityFailMsg: '',
         configFailMsg: '',
-        loginCredentials: null
+        loginCredentials: null,
+        identityToLinkToPerson: null,
+        linkedPerson: null
     }),
     methods: {
+        forceLogout: function() {
+            this.redirectToExternalLogout();
+        },
+        goToAppHome: function() {
+            this.loginBusy = false;
+            this.$router.push({path: '/frameworks'});
+        },
         goToLegacyLogin: function() {
             this.loginBusy = false;
             this.loginCredentials = null;
+            this.identityToLinkToPerson = null;
             this.$router.push({path: '/legacyLogin'});
         },
         goToCreateAccount: function() {
             this.loginBusy = false;
             this.loginCredentials = null;
+            this.identityToLinkToPerson = null;
             this.$router.push({path: '/createAccount'});
         },
-        createPersonObjectToLinkToIdentity: function() {
-            // TODO implement
+        addGroupIdentity: function(group) {
+            try {
+                // add all available group keys to identity manager
+                let groupPpkSet = group.getOrgKeys();
+                appLog("Adding group identities: " + "(" + group.shortId() + ") - " + group.getName() + " - (" + groupPpkSet.length + ") keys");
+                for (let i = 0; i < groupPpkSet.length; i++) {
+                    let gPpk = groupPpkSet[i];
+                    let grpIdent = new EcIdentity();
+                    grpIdent.displayName = group.getName() + " - key[" + i + "]";
+                    grpIdent.ppk = gPpk;
+                    EcIdentityManager.addIdentityQuietly(grpIdent);
+                }
+            } catch (e) {
+                // TODO Problem with EcOrganization update and creating encrypted value when only a reader...
+                // Anticipated workaround....login as group owner and save it.
+                // console.error("TODO...fix this...needs FRITZ input!!!!: " + e.toString());
+            }
+        },
+        searchRepositoryForGroupsSuccess: function(ecoa) {
+            let linkedPersonShortId = this.linkedPerson.shortId();
+            if (ecoa && ecoa.length > 0) {
+                for (let eco of ecoa) {
+                    if (eco.employee && eco.employee.length > 0) {
+                        for (let e of eco.employee) {
+                            if (e.equals(linkedPersonShortId)) {
+                                this.addGroupIdentity(eco);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+            this.goToAppHome();
+        },
+        searchRepositoryForGroupsFailure: function(msg) {
+            appLog("Group search failure: " + msg);
+            this.goToAppHome();
+        },
+        addGroupIdentities: function() {
+            appLog("Finding assigned groups...");
+            let paramObj = {};
+            paramObj.size = this.GROUP_SEARCH_SIZE;
+            EcOrganization.search(window.repo, '', this.searchRepositoryForGroupsSuccess, this.searchRepositoryForGroupsFailure, paramObj);
+            // this.goToAppHome();
+        },
+        handleCreatePersonSuccess: function() {
+            appLog("Person created.");
+            this.addGroupIdentities();
+        },
+        createPersonObjectForIdentity: function() {
+            appLog("Creating person object for identity...");
+            let p = new Person();
+            p.assignId(window.repo.selectedServer, this.identityToLinkToPerson.ppk.toPk().fingerprint());
+            p.addOwner(this.identityToLinkToPerson.ppk.toPk());
+            p.name = this.loginCredentials.name;
+            p.email = this.loginCredentials.email;
+            this.$store.commit('user/loggedOnPerson', p);
+            this.linkedPerson = p;
+            EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
+        },
+        findLinkedPersonPersonSearchSuccess: function(ecRemoteLda) {
+            appLog("Linked person person search success: ");
+            appLog(ecRemoteLda);
+            this.identityToLinkToPerson = EcIdentityManager.ids[0];
+            let matchingPersonRecordFound = false;
+            for (let ecrld of ecRemoteLda) {
+                let ep = new EcPerson();
+                ep.copyFrom(ecrld);
+                if (ep.getGuid().equals(this.identityToLinkToPerson.ppk.toPk().fingerprint())) {
+                    matchingPersonRecordFound = true;
+                    this.$store.commit('user/loggedOnPerson', ep);
+                    this.linkedPerson = ep;
+                    appLog('Matching person record found: ');
+                    appLog(ep);
+                    EcIdentityManager.saveContacts();
+                    EcIdentityManager.saveIdentities();
+                }
+            }
+            if (matchingPersonRecordFound) this.addGroupIdentities();
+            else {
+                appLog('Matching person record NOT found');
+                this.createPersonObjectForIdentity();
+            }
+        },
+        findLinkedPersonPersonSearchFailure: function(msg) {
+            this.loginBusy = false;
+            appLog('Linked person person search failure: ' + msg);
         },
         findLinkedPersonForIdentity: function() {
-            // TODO implement
-            // appLog("Finding linked person for identity...");
-            // let identFingerprint = EcIdentityManager.ids[0].ppk.toPk().fingerprint();
-            // let paramObj = {};
-            // paramObj.size = this.PERSON_SEARCH_SIZE;
-            // window.repo.searchWithParams("@type:Person AND @id:\"" + identFingerprint + "\"", paramObj, null,
-            //     this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
+            appLog("Finding linked person for identity...");
+            let identFingerprint = EcIdentityManager.ids[0].ppk.toPk().fingerprint();
+            let paramObj = {};
+            paramObj.size = this.PERSON_SEARCH_SIZE;
+            window.repo.searchWithParams("@type:Person AND @id:\"" + identFingerprint + "\"", paramObj, null,
+                this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
         },
         handleCreateAccountFetchIdentitySuccess: function() {
             appLog("Creating new account identity object...");
@@ -140,8 +237,8 @@ export default {
             EcIdentityManager.addIdentity(ident);
             EcIdentityManager.saveContacts();
             EcIdentityManager.saveIdentities();
-            // this.identityToLinkToPerson = ident;
-            this.ecRemoteIdentMgr.commit(this.createPersonObjectToLinkToIdentity, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
+            this.identityToLinkToPerson = ident;
+            this.ecRemoteIdentMgr.commit(this.createPersonObjectForIdentity, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
         },
         handleCreateAccountRemoteIdentityMgrCreateSuccess: function() {
             appLog("Creating new account manager fetch...");
@@ -153,11 +250,12 @@ export default {
             this.ecRemoteIdentMgr.create(this.handleCreateAccountRemoteIdentityMgrCreateSuccess, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
         },
         createNewAccountIdentity: function() {
-            appLog("Creating new account...");
-            appLog("EcRemoteIdentityManager Configuring from server...");
-            this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
-            this.ecRemoteIdentMgr.server = window.repo.selectedServer;
-            this.ecRemoteIdentMgr.configureFromServer(this.handleCreateAccountConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
+            appLog(" WOULD HAVE createNewAccountIdentity");
+            // appLog("Creating new account...");
+            // appLog("EcRemoteIdentityManager Configuring from server...");
+            // this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
+            // this.ecRemoteIdentMgr.server = window.repo.selectedServer;
+            // this.ecRemoteIdentMgr.configureFromServer(this.handleCreateAccountConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
         },
         handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck: function(failMsg) {
             // this shouldn't happen, but don't want to cause an unexpected create loop
@@ -194,6 +292,7 @@ export default {
         performInternalCassLogin: function() {
             appLog("Attempting CaSS login....");
             this.loginBusy = true;
+            this.identityToLinkToPerson = null;
             EcIdentityManager.clearContacts();
             EcIdentityManager.clearIdentities();
             this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
@@ -208,7 +307,7 @@ export default {
             let co = this.parseCredentialsFromProfileResponse(profileResponse);
             if (co.username && co.username.trim().length > 0 && co.password && co.password.trim().length > 0) {
                 this.loginCredentials = co;
-                // this.performInternalCassLogin();
+                this.performInternalCassLogin();
             } else {
                 appLog("Unable to parse credentials from user profile response");
             }
