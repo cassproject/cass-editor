@@ -21,7 +21,7 @@ Upon entering the user group manager, a list of all existing user groups in the 
 
 User groups can be created by clicking the _create new group_ button at the bottom right corner of the configuration management list screen.
 
-![Craete new group](/docs/create-new-group.png)
+![Create new group](/docs/create-new-group.png)
 
 ::: tip
 There may be noticeable processing time when creating a new group. CAT user groups are assigned identity keys that must be generated at creation time. This process may take several seconds.
