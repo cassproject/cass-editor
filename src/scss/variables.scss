@@ -6,6 +6,7 @@
     @return mix(black, $color, $percentage);
   }
 
+
 // generic variables need to update before import 
 $cass-secondary:#68C8DB;
 $cass-secondary-up: tint($cass-secondary, 50%);

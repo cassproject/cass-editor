@@ -1222,7 +1222,7 @@
                                         class="switch is-outlined">
                                     <label for="browserDefaultSwitch">Browser default</label>
                                 </div>
-                                <!--<div
+                            <!--<div
                                     class="button is-outlined is-primary"
                                     @click="$emit('setBrowserDefault', config.id)">
                                     <span class="icon">

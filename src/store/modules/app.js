@@ -7,6 +7,7 @@ const state = {
     showSideNav: false,
     showRightAside: false,
     rightAsideContent: '',
+    rightAsideObject: null,
     canViewComments: false,
     canAddComments: false,
     pluginLastUpdate: null,
@@ -27,12 +28,20 @@ const state = {
         searchTerm: '',
         quickFilters: [],
         applySearchTo: [],
-        sortResults: []
+        sortResults: [],
+        refreshSearch: false
     },
     modal: {
         framework: '',
         showModal: false,
-        dynamicModalContent: {}
+        dynamicModalContent: {},
+        objForShareModal: null
+    },
+    directories: {
+        directoryList: [],
+        selectedDirectory: null,
+        searchingInDirectory: true,
+        editDirectory: false
     },
     import: {
         files: [],
@@ -79,6 +88,10 @@ const mutations = {
     closeRightAside: function(state) {
         state.showRightAside = false;
         state.rightAsideContent = '';
+        state.rightAsideObject = null;
+    },
+    rightAsideObject: function(state, payload) {
+        state.rightAsideObject = payload;
     },
     showModal: function(state, payload) {
         state.modal.showModal = true;
@@ -87,6 +100,9 @@ const mutations = {
     closeModal: function(state) {
         state.modal.showModal = false;
         state.modal.dynamicModalContent = {};
+    },
+    objForShareModal: function(state, payload) {
+        state.modal.objForShareModal = payload;
     },
     draggingEnabled: function(state, value) {
         state.framework.draggingEnabled = value;
@@ -235,6 +251,9 @@ const mutations = {
     applySearchTo: function(state, value) {
         state.frameworks.applySearchTo = value;
     },
+    refreshSearch: function(state, value) {
+        state.frameworks.refreshSearch = value;
+    },
     sortResults: function(state, value) {
         state.frameworks.sortResults = value;
     },
@@ -258,6 +277,18 @@ const mutations = {
         state.frameworks.quickFilters = quickFilters;
         state.frameworks.sortResults = sortResults;
         state.frameworks.applySearchTo = applySearchTo;
+    },
+    selectDirectory: function(state, value) {
+        state.directories.selectedDirectory = value;
+    },
+    directoryList: function(state, list) {
+        state.directories.directoryList = list;
+    },
+    searchingInDirectory: function(state, bool) {
+        state.directories.searchingInDirectory = bool;
+    },
+    editDirectory: function(state, bool) {
+        state.directories.editDirectory = bool;
     }
 };
 const actions = {
@@ -269,6 +300,20 @@ const actions = {
         commit('importStatus', '');
         commit('importFeedback', '');
         commit('importFileType', '');
+    },
+    refreshDirectories: function({commit}) {
+        let directories = [];
+        let directoryIds = [];
+        let paramObj = {size: 10000};
+        EcDirectory.search(window.repo, "", function(dirs) {
+            for (let i = 0; i < dirs.length; i++) {
+                if (dirs[i].canEditAny(EcIdentityManager.getMyPks()) && !EcArray.has(directoryIds, dirs[i].id)) {
+                    directories.push(dirs[i]);
+                    directoryIds.push(dirs[i].id);
+                }
+            }
+            commit('directoryList', directories);
+        }, appError, paramObj);
     }
 };
 const getters = {
@@ -290,6 +335,9 @@ const getters = {
     rightAsideContent: state => {
         return state.rightAsideContent;
     },
+    rightAsideObject: state => {
+        return state.rightAsideObject;
+    },
     framework: state => {
         return state.framework;
     },
@@ -298,6 +346,9 @@ const getters = {
     },
     dynamicModalContent: state => {
         return state.modal.dynamicModalContent;
+    },
+    objForShareModal: state => {
+        return state.modal.objForShareModal;
     },
     draggingEnabled: state => {
         return state.modal.draggingEnabled;
@@ -392,6 +443,9 @@ const getters = {
     applySearchTo: state => {
         return state.frameworks.applySearchTo;
     },
+    refreshSearch: state => {
+        return state.frameworks.refreshSearch;
+    },
     csvColumns: state => {
         return state.import.csvColumns;
     },
@@ -409,6 +463,18 @@ const getters = {
     },
     pluginToLaunchLastUpdate: state => {
         return state.pluginToLaunchLastUpdate;
+    },
+    selectedDirectory: state => {
+        return state.directories.selectedDirectory;
+    },
+    directoryList: state => {
+        return state.directories.directoryList;
+    },
+    searchingInDirectory: state => {
+        return state.directories.searchingInDirectory;
+    },
+    editDirectory: state => {
+        return state.directories.editDirectory;
     }
 };
 

@@ -675,7 +675,7 @@ export default {
         padding-bottom: 0rem !important;
     }
 
-    .List {
+    .cass--list {
         .list-ul {
             .list-ul__item {
                 padding: .5rem .25rem;

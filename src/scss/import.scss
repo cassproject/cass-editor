@@ -8,6 +8,11 @@ textarea {
     max-height: 75vh !important; 
     resize: vertical !important;
 } 
+.cass--right-aside--content {
+    height: calc(100% - 44px);
+    overflow-y: scroll;
+    margin-top: 44px;
+}
 #import {
     #import-from-url,
     #import-from-server,

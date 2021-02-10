@@ -82,11 +82,17 @@ export default {
                             if (this.importType === "url") {
                                 return this.importJsonLd(data[0]);
                             }
+                            if (this.serverType === "cass") {
+                                return this.importCassFrameworks(data[0]);
+                            }
                             return this.continueCaseImport(data[0]);
                         },
                         onCancel: () => {
                             if (data[0][1]) {
-                                // more CASE imports in the queue
+                                // more imports in the queue
+                                if (this.serverType === "cass") {
+                                    return this.importCassFrameworks(data[0]);
+                                }
                                 return this.importCase(data[0]);
                             }
                             return this.clearImport();
@@ -100,12 +106,17 @@ export default {
                         onConfirm: () => {
                             if (this.importType === "url") {
                                 return this.importJsonLd(data[0]);
+                            } else if (this.serverType === "cass") {
+                                return this.continueCassImport(data[0]);
                             }
                             return this.continueCaseImport(data[0]);
                         },
                         onCancel: () => {
                             if (this.importType === "url") {
                                 return this.clearImport();
+                            }
+                            if (this.serverType === "cass") {
+                                return this.importCassFrameworks(data[0]);
                             }
                             return this.importCase(data[0]);
                         }
@@ -230,6 +241,11 @@ export default {
                         CSVImport.analyzeFile(file, function(data) {
                             me.$store.commit('app/importFileType', 'csv');
                             me.importFrameworkName = file.name.replace(".csv", "");
+                            for (let i = 0; i < data.length; i++) {
+                                if (data[i][0] === "") {
+                                    data.splice(i, 1);
+                                }
+                            }
                             for (var i = 0; i < data[0].length; i++) {
                                 let column = {};
                                 column.name = data[0][i];
@@ -1100,7 +1116,7 @@ export default {
             }
         },
         importFramework: function() {
-            if (this.importFramework && !this.conceptMode && this.frameworkSize === 0) {
+            if (this.importFramework && !this.conceptMode && (!this.importFramework.competency || this.importFramework.competency === 0)) {
                 this.hierarchyIsdoneLoading = true;
             }
         }
