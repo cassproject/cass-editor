@@ -483,7 +483,8 @@ export default {
             editingResource: false,
             resourceName: '',
             resourceUrl: '',
-            errorEditing: null
+            errorEditing: null,
+            processingCopyOrMove: false
         };
     },
     methods: {
@@ -580,6 +581,7 @@ export default {
         },
         copyOrMove: function(directory) {
             this.frameworksToProcess = 0;
+            this.processingCopyOrMove = true;
             // To do: add confirmation step once we have this in the right spot
             if (this.copyingToDirectory && this.objectType === 'Framework') {
                 this.copyFrameworkToDirectory(directory, this.object);
@@ -609,6 +611,7 @@ export default {
             this.frameworksToProcess--;
             if (this.frameworksToProcess <= 0) {
                 this.repo.multiput(toSave, function(success) {
+                    me.processingCopyOrMove = false;
                     me.copyingToDirectory = false;
                     if (me.movingToDirectory) {
                         // Remove the moved item from the right panel
