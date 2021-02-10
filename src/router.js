@@ -53,6 +53,11 @@ export default new Router({
             component: () => import(/* webpackChunkName: "login" */ './views/login/LegacyLogin.vue')
         },
         {
+            path: '/createAccount',
+            name: 'createAccount',
+            component: () => import(/* webpackChunkName: "login" */ './views/login/CreateAccount.vue')
+        },
+        {
             path: '/configuration',
             name: 'configuration',
             components: {

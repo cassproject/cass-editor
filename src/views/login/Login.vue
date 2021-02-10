@@ -21,28 +21,14 @@
                 <header
                     class="modal-card-head has-text-centered has-background-primary"
                     v-if="!loginBusy">
-                    <h3
-                        v-if="amJustLoggingIn"
-                        class="modal-card-title is-size-2 has-text-centered has-text-white">
-                        Login to CaSS Authoring Tool
+                    <h3 class="modal-card-title is-size-2 has-text-centered has-text-white">
+                        Login to CaSS
                     </h3>
-                    <h3
-                        v-if="amCreatingAccount"
-                        class="modal-card-title is-size-2 has-text-centered has-text-white">
-                        Create CaSS Authoring Tool User
-                    </h3>
-                    <h4
-                        class="title is-size-2 has-text-centered has-text-white"
-                        v-if="amCreatingLinkedPerson">
-                        Link User Information
-                    </h4>
                 </header>
-                <section
-                    class="modal-card-body"
-                    v-if="amJustLoggingIn">
+                <section class="modal-card-body">
                     <div class="columns is-mobile is-multiline">
                         <div class="column is-6">
-                            <div class="modal-card">
+                            <div class="section box py-2 px-2">
                                 <div class="modal-card-body has-text-centered">
                                     <div
                                         class="button is-outlined is-primary"
@@ -55,11 +41,11 @@
                             </div>
                         </div>
                         <div class="column is-6">
-                            <div class="modal-card">
+                            <div class="section box py-2 px-2">
                                 <div class="modal-card-body has-text-centered">
                                     <div
                                         class="button is-outlined is-dark"
-                                        @click="showCreateAccount">
+                                        @click="goToCreateAccount">
                                         <span class="icon">
                                             <i class="fa fa-plus" />
                                         </span><span>create account</span>
@@ -67,19 +53,36 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="column is-12">
-                            <div class="has-text-centered">
-                                <a @click="goToLegacyLogin">Legacy Login</a>
+                        <!-- error messages -->
+                        <div
+                            v-if="identityFetchFailed || configRetrieveFailed || loginParamsInvalid"
+                            class="column is-12">
+                            <div class="panel is-warning py-2 px-2">
+                                <p class="panel-heading">
+                                    Login failed
+                                </p>
+                                <div
+                                    class="panel-block"
+                                    v-if="identityFetchFailed">
+                                    <p>Could not fetch identity: {{ identityFailMsg }}</p>
+                                </div>
+                                <div
+                                    class="panel-block"
+                                    v-if="configRetrieveFailed">
+                                    <p>Could not retrieve configuration from selected server: {{ configFailMsg }}</p>
+                                </div>
+                                <div
+                                    class="panel-block"
+                                    v-if="loginParamsInvalid">
+                                    <p>Login failed: Invalid Username/Password</p>
+                                </div>
                             </div>
                         </div>
-                        <div class="column is-12">
+                        <div
+                            class="column is-12"
+                            v-if="legacyLoginEnabled">
                             <div class="has-text-centered">
-                                <a @click="forceLogout">Force Logout (remove this at some point)</a>
-                            </div>
-                        </div>
-                        <div class="column is-12">
-                            <div class="has-text-centered">
-                                <a @click="testCreateUser">Test Create</a>
+                                <a @click="goToLegacyLogin">Legacy Login (for pre 1.4 accounts)</a>
                             </div>
                         </div>
                     </div>
@@ -98,54 +101,121 @@ export default {
     mixins: [cassApi],
     data: () => ({
         loginBusy: false,
-        amJustLoggingIn: true,
-        amCreatingAccount: false,
-        amCreatingLinkedPerson: false
+        ecRemoteIdentMgr: null,
+        identityFetchFailed: false,
+        configRetrieveFailed: false,
+        loginParamsInvalid: false,
+        identityFailMsg: '',
+        configFailMsg: '',
+        loginCredentials: null
     }),
     methods: {
-        testCreateUser() {
-            let oReq = new XMLHttpRequest();
-            oReq.addEventListener("load", (x) => this.checkLoginStatus());
-            oReq.withCredentials = true;
-            let serviceEndpoint = this.cassApiLocation + this.USER_PROFILE_SERVCE;
-            oReq.open("POST", "https://dev.rest.api.cassproject.org/user");
-            oReq.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            oReq.send(JSON.stringify({
-                username: "tomTest1",
-                password: "tomTest1",
-                email: "someemail@email.com",
-                firstName: "TomTestFirst",
-                lastName: "TomTestLast"
-            }));
-        },
-        forceLogout() {
-            this.redirectToExternalLogout();
-        },
-        goToLegacyLogin() {
+        goToLegacyLogin: function() {
             this.loginBusy = false;
+            this.loginCredentials = null;
             this.$router.push({path: '/legacyLogin'});
         },
-        showCreateAccount() {
+        goToCreateAccount: function() {
+            this.loginBusy = false;
+            this.loginCredentials = null;
+            this.$router.push({path: '/createAccount'});
+        },
+        createPersonObjectToLinkToIdentity: function() {
             // TODO implement
         },
-        attemptExternalCassLogin() {
+        findLinkedPersonForIdentity: function() {
+            // TODO implement
+            // appLog("Finding linked person for identity...");
+            // let identFingerprint = EcIdentityManager.ids[0].ppk.toPk().fingerprint();
+            // let paramObj = {};
+            // paramObj.size = this.PERSON_SEARCH_SIZE;
+            // window.repo.searchWithParams("@type:Person AND @id:\"" + identFingerprint + "\"", paramObj, null,
+            //     this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
+        },
+        handleCreateAccountFetchIdentitySuccess: function() {
+            appLog("Creating new account identity object...");
+            let ident = new EcIdentity();
+            ident.displayName = this.loginCredentials.name;
+            ident.ppk = EcPpk.generateKey();
+            EcIdentityManager.addIdentity(ident);
+            EcIdentityManager.saveContacts();
+            EcIdentityManager.saveIdentities();
+            // this.identityToLinkToPerson = ident;
+            this.ecRemoteIdentMgr.commit(this.createPersonObjectToLinkToIdentity, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
+        },
+        handleCreateAccountRemoteIdentityMgrCreateSuccess: function() {
+            appLog("Creating new account manager fetch...");
+            this.ecRemoteIdentMgr.fetch(this.handleCreateAccountFetchIdentitySuccess, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
+        },
+        handleCreateAccountConfigureFromServerSuccess: function(obj) {
+            appLog("Creating new account identity...");
+            this.ecRemoteIdentMgr.startLogin(this.loginCredentials.username, this.loginCredentials.password);
+            this.ecRemoteIdentMgr.create(this.handleCreateAccountRemoteIdentityMgrCreateSuccess, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
+        },
+        createNewAccountIdentity: function() {
+            appLog("Creating new account...");
+            appLog("EcRemoteIdentityManager Configuring from server...");
+            this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
+            this.ecRemoteIdentMgr.server = window.repo.selectedServer;
+            this.ecRemoteIdentMgr.configureFromServer(this.handleCreateAccountConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
+        },
+        handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck: function(failMsg) {
+            // this shouldn't happen, but don't want to cause an unexpected create loop
+            this.identityFailMsg = failMsg;
+            this.identityFetchFailed = true;
+            this.loginBusy = false;
+        },
+        handleAttemptLoginFetchIdentitySuccess: function(obj) {
+            if (!EcIdentityManager.ids || EcIdentityManager.ids.length <= 0) {
+                this.handleAttemptLoginFetchIdentityFailure('Login credentials valid but no identity could be found.');
+            } else this.findLinkedPersonForIdentity();
+        },
+        handleAttemptLoginFetchIdentityFailure: function(failMsg) {
+            if (failMsg && failMsg.toLowerCase().trim().equals('user does not exist.')) {
+                this.createNewAccountIdentity();
+            } else {
+                this.identityFailMsg = failMsg;
+                this.identityFetchFailed = true;
+                this.loginBusy = false;
+            }
+        },
+        handleAttemptLoginConfigureFromServerSuccess: function(obj) {
+            appLog("Fetching identity...");
+            // Creates the hashes for storage and retrieval of keys.
+            this.ecRemoteIdentMgr.startLogin(this.loginCredentials.username, this.loginCredentials.password);
+            // Retrieves the identities and encryption keys from the server.
+            this.ecRemoteIdentMgr.fetch(this.handleAttemptLoginFetchIdentitySuccess, this.handleAttemptLoginFetchIdentityFailure);
+        },
+        handleAttemptLoginConfigureFromServerFail: function(failMsg) {
+            this.configFailMsg = failMsg;
+            this.configRetrieveFailed = true;
+            this.loginBusy = false;
+        },
+        performInternalCassLogin: function() {
+            appLog("Attempting CaSS login....");
+            this.loginBusy = true;
+            EcIdentityManager.clearContacts();
+            EcIdentityManager.clearIdentities();
+            this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
+            this.ecRemoteIdentMgr.server = window.repo.selectedServer;
+            // Retrieve username and password salts from the server
+            this.ecRemoteIdentMgr.configureFromServer(this.handleAttemptLoginConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
+        },
+        attemptExternalCassLogin: function() {
             this.redirectToExternalLoginPage();
         },
-        handleUserProfileAlreadyLoaded(profileResponse) {
+        handleUserProfileAlreadyLoaded: function(profileResponse) {
             let co = this.parseCredentialsFromProfileResponse(profileResponse);
-            console.log(co);
             if (co.username && co.username.trim().length > 0 && co.password && co.password.trim().length > 0) {
-                // TODO left off here...do cass login
-                console.log('YAY');
-                this.loginBusy = false;
+                this.loginCredentials = co;
+                // this.performInternalCassLogin();
             } else {
                 appLog("Unable to parse credentials from user profile response");
             }
         },
-        checkUserProfileRequestStatus(profileResponse) {
+        checkUserProfileRequestStatus: function(profileResponse) {
             console.log('HELLO FROM checkUserProfileRequestStatus: ' + profileResponse.status);
             if (profileResponse.status === 401) {
-                this.amJustLoggingIn = true;
                 this.loginBusy = false;
             } else if (profileResponse.status === 200) {
                 this.handleUserProfileAlreadyLoaded(profileResponse);
@@ -154,10 +224,14 @@ export default {
                 this.loginBusy = false;
             }
         },
-        checkLoginStatus() {
-            console.log('Checking login status');
+        checkLoginStatus: function() {
             this.loginBusy = true;
             this.getUserProfile(this.checkUserProfileRequestStatus);
+        }
+    },
+    computed: {
+        legacyLoginEnabled: function() {
+            return this.$store.getters['featuresEnabled/legacyLoginEnabled'];
         }
     },
     mounted() {

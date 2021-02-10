@@ -1172,7 +1172,7 @@ export default {
     },
     watch: {
         currentRoute: function(val) {
-            appLog("logged in", this.loggedInPerson);
+            // appLog("logged in", this.loggedInPerson);
             if (!this.isLoggedIn && val === '/users') {
                 this.$router.push({path: '/'});
             }

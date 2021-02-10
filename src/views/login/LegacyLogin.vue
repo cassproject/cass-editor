@@ -197,13 +197,15 @@
                             </span><span>cancel</span>
                         </div>
                         <template v-if="amJustLoggingIn">
-                            <div
-                                class="button is-outlined is-dark"
-                                @click="showCreateAccount">
-                                <span class="icon">
-                                    <i class="fa fa-plus" />
-                                </span><span>create account</span>
-                            </div>
+                            <!--
+                                <div
+                                    class="button is-outlined is-dark"
+                                    @click="showCreateAccount">
+                                    <span class="icon">
+                                        <i class="fa fa-plus" />
+                                    </span><span>create account</span>
+                                </div>
+                            -->
                             <div
                                 class="button is-outlined is-primary"
                                 @click="attemptCassLogin">
@@ -230,6 +232,9 @@
                         </div>
                     </div>
                 </footer>
+                <div class="has-text-centered">
+                    <a @click="goToStandardLogin">Return to Standard Login</a>
+                </div>
             </div>
         </div>
     </div>
@@ -270,6 +275,10 @@ export default {
         linkedPerson: {}
     }),
     methods: {
+        goToStandardLogin: function() {
+            this.loginBusy = false;
+            this.$router.push({path: '/login'});
+        },
         goToAppHome: function() {
             this.loginBusy = false;
             this.$router.push({path: '/frameworks'});
