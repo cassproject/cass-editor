@@ -15,7 +15,7 @@
                 @click="$store.commit('app/closeRightAside')"
                 aria-label="close">
                 <span class="icon">
-                    <i class="fa fa-times"/>
+                    <i class="fa fa-times" />
                 </span>
             </button>
             <div class="cass--right-aside--title">

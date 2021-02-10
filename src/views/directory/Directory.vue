@@ -1,5 +1,106 @@
 <template>
     <div id="directory">
+        <!-- name directory modal -->
+        <modal-template :active="createSubdirectory">
+            <template slot="modal-header">
+                Create directory
+            </template>
+            <template slot="modal-body">
+                <div
+                    class="field">
+                    <div class="label">
+                        <label>Name of new directory</label>
+                    </div>
+                    <div class="control">
+                        <div class="control">
+                            <input
+                                class="input"
+                                placeholder="Name of new directory"
+                                v-model="subdirectoryName">
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template slot="modal-foot">
+                <div
+                    class="field">
+                    <div class="buttons">
+                        <div
+                            class="button is-dark is-outlined"
+                            @click="createSubdirectory = false">
+                            Cancel
+                        </div>
+                        <div
+                            class="button is-primary"
+                            :class="subdirectoryName.length === 0 ? 'is-disabled' : ''"
+                            :disabled="subdirectoryName.length === 0"
+                            @click="saveNewSubdirectory">
+                            Create
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </modal-template>
+        <!-- name directory modal -->
+        <modal-template :active="createResource">
+            <template slot="modal-header">
+                Create resource
+            </template>
+            <template slot="modal-body">
+                <div class="field">
+                    <div class="label">
+                        <label>Name of resource</label>
+                    </div>
+                    <div class="control">
+                        <div class="control">
+                            <input
+                                class="input"
+                                placeholder="Name of new resource"
+                                v-model="resourceName">
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="field">
+                    <div class="label">
+                        <label>URL of resource</label>
+                    </div>
+                    <div class="control">
+                        <div class="control">
+                            <input
+                                class="input"
+                                placeholder="Url of new resource"
+                                v-model="resourceUrl">
+                        </div>
+                        <p
+                            v-if="resouceUrl && !resourceUrl.startsWith('http')"
+                            class="help is-danger">
+                            url must start with 'https://'
+                        </p>
+                    </div>
+                </div>
+            </template>
+            <template slot="modal-foot">
+                <div
+                    class="field"
+                    v-if="createResource">
+                    <div class="buttons">
+                        <div
+                            class="button is-dark is-outlined"
+                            @click="createResource = false">
+                            Cancel
+                        </div>
+                        <div
+                            class="button is-primary"
+                            :class="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http')) ? 'is-disabled' : ''"
+                            :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http'))"
+                            @click="saveNewResource">
+                            Create
+                        </div>
+                    </div>
+                </div>
+            </template>
+        </modal-template>
         <thing-editing
             v-if="editDirectory && canEditDirectory"
             :obj="directory"
@@ -11,163 +112,59 @@
         <main-layout :rightActive="showRightAside">
             <template slot="top">
                 <div class="container is-fullhd">
-                    <div class="columns is-spaced">
+                    <div class="columns is-mobile is-spaced mt-0">
                         <!-- search bar -->
-                        <div class="column is-6">
+                        <div class="column is-6-desktop is-8-mobile">
                             <SearchBar
                                 filterSet="all"
                                 searchType="framework" />
                         </div>
                         <!-- top bar icons, add framework, resource, new directory, copy share link -->
-                        <div class="column is-6 is-hidden-mobile">
-                            <div class="buttons is-right">
-                                <div
-                                    @click="$emit('create-new-framework', directory)"
-                                    v-if="canEditDirectory"
-                                    class="button is-outlined is-primary">
-                                    <span class="icon">
-                                        <i class="fa fa-plus" />
-                                    </span>
-                                </div>
-                                <div
-                                    @click="createSubdirectory = true"
-                                    v-if="canEditDirectory"
-                                    class="button is-outlined is-primary"
-                                    title="Add a new sub-directory to this directory.">
-                                    <span class="icon">
-                                        <i class="fa fa-folder-plus" />
-                                    </span>
-                                </div>
-                                <div
-                                    class="field"
-                                    v-if="createSubdirectory">
-                                    <div class="control">
-                                        <div class="control">
-                                            <input
-                                                class="input"
-                                                placeholder="Name of new directory"
-                                                v-model="subdirectoryName">
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="field"
-                                    v-if="createSubdirectory">
-                                    <div class="buttons">
-                                        <div
-                                            class="button is-dark is-outlined is-small"
-                                            @click="createSubdirectory = false">
-                                            Cancel
-                                        </div>
-                                        <div
-                                            class="button is-primary is-small"
-                                            :class="subdirectoryName.length === 0 ? 'is-disabled' : ''"
-                                            :disabled="subdirectoryName.length === 0"
-                                            @click="saveNewSubdirectory">
-                                            Create
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    class="dropdown"
-                                    :class="createResource ? 'is-active' : ''">
-                                    <div class="dropdown-trigger">
-                                        <div
-                                            @click="createResource = true"
-                                            v-if="canEditDirectory"
-                                            aria-haspopup="true"
-                                            aria-controls="create-resource-dropdown"
-                                            class="button is-outlined is-primary"
-                                            title="Add a resource to this directory.">
-                                            <span class="icon">
-                                                <i class="fa fa-paperclip" />
-                                            </span>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="dropdown-menu"
-                                        role="menu"
-                                        id="create-resource-dropdown">
-                                        <div class="dropdown-content p-2">
-                                            <div
-                                                class="field">
-                                                <div class="control">
-                                                    <div class="control">
-                                                        <input
-                                                            class="input"
-                                                            placeholder="Name of new resource"
-                                                            v-model="resourceName">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div
-                                                class="field">
-                                                <div class="control">
-                                                    <div class="control">
-                                                        <input
-                                                            class="input"
-                                                            placeholder="Url of new resource"
-                                                            v-model="resourceUrl">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div
-                                                class="field"
-                                                v-if="createResource">
-                                                <div class="buttons">
-                                                    <div
-                                                        class="button is-dark is-outlined is-small"
-                                                        @click="createResource = false">
-                                                        Cancel
-                                                    </div>
-                                                    <div
-                                                        class="button is-primary is-small"
-                                                        :class="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http')) ? 'is-disabled' : ''"
-                                                        :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http'))"
-                                                        @click="saveNewResource">
-                                                        Create
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div
-                                    v-if="directory.parentDirectory"
-                                    @click="goToParentDirectory"
-                                    class="button is-outlined is-primary"
-                                    title="Navigate to parent.">
-                                    <span class="icon">
-                                        <i class="fa fa-level-up-alt" />
-                                    </span><span>go to parent</span>
-                                </div>
-                                <div
-                                    v-clipboard="shareLink"
-                                    v-clipboard:success="successfulClip"
-                                    v-clipboard:error="errorClip"
-                                    class="button is-outlined is-primary"
-                                    title="Copy URL to the clipboard.">
-                                    <i
-                                        v-if="clipStatus === 'ready'"
-                                        class="fa fa-share-alt" />
-                                    <i
-                                        v-if="clipStatus === 'success'"
-                                        class="fa fa-check" />
-                                    <i
-                                        v-if="clipStatus === 'error'"
-                                        class="fa fa-times" />
-                                </div>
-                                <div
-                                    class="column is-narrow"
-                                    v-if="showUserManagementIcon">
-                                    <div
-                                        v-if="loggedIn"
-                                        title="Manage users"
-                                        @click="showManageUsersModal"
-                                        class="button is-outlined is-primary">
+                        <div class="column is-narrow">
+                            <div
+                                class="dropdown is-right"
+                                v-click-outside="closeCreateDropDown"
+                                :class="createDropDownActive ? 'is-active' : ''">
+                                <div class="dropdown-trigger">
+                                    <button
+                                        @click="createDropDownActive = !createDropDownActive"
+                                        class="button is-primary is-outlined is-rounded"
+                                        aria-haspopup="true"
+                                        aria-controls="directory-add-dropdown">
                                         <span class="icon">
-                                            <i class="fas fa-users" />
+                                            <i class="fa fa-plus" />
                                         </span>
+                                        <span>Add New</span>
+                                        <span class="icon is-small">
+                                            <i
+                                                class="fas fa-angle-down"
+                                                aria-hidden="true" />
+                                        </span>
+                                    </button>
+                                </div>
+                                <div
+                                    class="dropdown-menu"
+                                    v-if="canEditDirectory"
+                                    id="directory-add-dropdown"
+                                    role="menu">
+                                    <div class="dropdown-content">
+                                        <a
+                                            href="#"
+                                            @click="$emit('create-new-framework', directory)"
+                                            class="dropdown-item">
+                                            Framework
+                                        </a>
+                                        <a
+                                            @click="createSubdirectory = true"
+                                            class="dropdown-item">
+                                            Sub directory
+                                        </a>
+                                        <a
+                                            @click="createResource = true"
+                                            href="#"
+                                            class="dropdown-item is-active">
+                                            Resource
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -238,19 +235,21 @@ import DirectoryList from './DirectoryList.vue';
 import common from '@/mixins/common.js';
 import SearchBar from '@/components/framework/SearchBar.vue';
 import MainLayout from '@/layouts/MainLayout.vue';
-
+import ModalTemplate from '@/components/ModalTemplate.vue';
 export default {
     name: "Directory",
     mixins: [common],
     components: {
         MainLayout,
         DirectoryList,
+        ModalTemplate,
         SearchBar,
         RightAside: () => import('@/components/framework/RightAside.vue'),
         ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue')
     },
     data: function() {
         return {
+            createDropDownActive: false,
             repo: window.repo,
             showMine: false,
             showNotMine: false,
@@ -438,6 +437,11 @@ export default {
         }
     },
     methods: {
+        closeCreateDropDown: function() {
+            if (this.createDropDownActive) {
+                this.createDropDownActive = false;
+            }
+        },
         canEditItem: function(item) {
             return item.canEditAny(EcIdentityManager.getMyPks());
         },
