@@ -31,7 +31,9 @@
             </div>
         </div>
         <slot name="right-aside-content">
-            <Component :is="rightAsideContent" />
+            <Component
+                @editResourceDetails="$emit('editResource')"
+                :is="rightAsideContent" />
         </slot>
     </aside>
 </template>

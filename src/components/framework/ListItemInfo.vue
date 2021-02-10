@@ -215,30 +215,8 @@
                                 <!-- resource link -->
                                 <div class="cass__right-aside--property">
                                     <div class="cass__right-aside--property-text">
-                                        <span v-if="!editingResource">
+                                        <span>
                                             {{ object.url }}
-                                        </span>
-                                        <div
-                                            v-else-if="editingResource">
-                                            <input
-                                                class="input"
-                                                v-model="resourceUrl">
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="cass__right-aside--property-icons"
-                                        v-if="objectType === 'CreativeWork' && canEditObject">
-                                        <span
-                                            class="icon"
-                                            v-if="editingResource"
-                                            @click="saveResource">
-                                            <i class="fa fa-save" />
-                                        </span>
-                                        <span
-                                            class="icon"
-                                            v-if="!editingResource && canEditObject"
-                                            @click="editResource">
-                                            <i class="fa fa-edit" />
                                         </span>
                                     </div>
                                     <div class="cass__right-aside--property-label">
@@ -248,34 +226,22 @@
                                 <!-- resource name -->
                                 <div class="cass__right-aside--property">
                                     <div class="cass__right-aside--property-text">
-                                        <span v-if="!editingResource">
+                                        <span>
                                             {{ objectName }}
-                                        </span>
-                                        <div
-                                            v-if="editingResource">
-                                            <input
-                                                class="input"
-                                                v-model="resourceName">
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="cass__right-aside--property-icons"
-                                        v-if="objectType === 'CreativeWork' && canEditObject">
-                                        <span
-                                            class="icon"
-                                            v-if="editingResource"
-                                            @click="saveResource">
-                                            <i class="fa fa-save" />
-                                        </span>
-                                        <span
-                                            class="icon"
-                                            v-if="!editingResource && canEditObject"
-                                            @click="editResource">
-                                            <i class="fa fa-edit" />
                                         </span>
                                     </div>
                                     <div class="cass__right-aside--property-label">
                                         Name
+                                    </div>
+                                </div>
+                                <div class="cass__right-aside--property flex-end">
+                                    <div
+                                        @click="$emit('editResourceDetails')"
+                                        class="button is-pulled-right is-primary is-outlined">
+                                        <span>Edit</span>
+                                        <span class="icon">
+                                            <i class="fa fa-edit" />
+                                        </span>
                                     </div>
                                 </div>
                             </template>

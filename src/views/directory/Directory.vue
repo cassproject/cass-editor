@@ -42,7 +42,7 @@
             </template>
         </modal-template>
         <!-- name directory modal -->
-        <modal-template :active="createResource">
+        <modal-template :active="createResource || editResource">
             <template slot="modal-header">
                 Create resource
             </template>
@@ -195,7 +195,9 @@
                     @dblclick="openObject" />
             </template>
             <template slot="right">
-                <RightAside v-if="showRightAside" />
+                <RightAside
+                    @editResource="editResource = true"
+                    v-if="showRightAside" />
             </template>
             <div class="section">
                 <div class="container is-fluid show-only-mine">
@@ -249,6 +251,7 @@ export default {
     },
     data: function() {
         return {
+            editResource: false,
             createDropDownActive: false,
             repo: window.repo,
             showMine: false,
