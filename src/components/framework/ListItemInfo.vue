@@ -4,17 +4,18 @@
         class="has-background-lightest">
         <div class="cass__right-aside--header">
             <div class="right-aside-bar__title">
+                <!--<span class="tag is-info is-small is-outlined">{{ objectTypeForDisplay }}</span>-->
+                <span class="help">{{ objectTypeForDisplay }}</span>
                 <div
                     :title="objectName"
                     class="right-aside-bar--title-text is-size-4 is-family-secondary">
                     {{ objectName }}
                 </div>
-                <span class="tag is-info">{{ objectTypeForDisplay }}</span>
                 <div
                     class="buttons pt-2"
                     v-if="objectShortId !== selectedDirectoryId">
                     <div
-                        class="button is-small is-primary"
+                        class="button is-small is-rounded is-primary"
                         @click="openObject">
                         <span>Open {{ objectTypeForDisplay }}</span>
                         <span class="icon">
@@ -332,18 +333,22 @@
                         </button>
                         <div
                             :class=" accordion === 'users' ? 'active' : ''"
-                            class="cass__right-side--accordion-panel">
+                            class="cass__right-side--accordion-panel users">
                             <div
-                                class="cass__right-aside--whole-item">
-                                <b>Manage Users and Privacy:</b>
-                                <span
-                                    class="icon"
-                                    @click="manageUsers">
-                                    <i class="fas fa-users" />
-                                </span>
+                                class="cass__right-aside--whole-item pt-2">
+                                <div class="buttons is-centered">
+                                    <div
+                                        @click="manageUsers"
+                                        class="button is-primary is-rounded">
+                                        <span>Manage Users and Privacy</span>
+                                        <span
+                                            class="icon">
+                                            <i class="fas fa-users" />
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <!-- manage users for resources -->
                     </template>
                     <!-- description -->
                     <template v-if="objectType === 'Directory'">
@@ -364,8 +369,13 @@
                         <div
                             :class=" accordion === 'description' ? 'active' : ''"
                             class="cass__right-side--accordion-panel">
-                            <div class="p-2">
+                            <div
+                                v-if="objectDescription"
+                                class="p-2">
                                 {{ objectDescription }}
+                            </div>
+                            <div class="p-2">
+                                No description
                             </div>
                         </div>
                     </template>
@@ -390,13 +400,21 @@
                         <li
                             class="cass--list-item-info--search-result--li"
                             v-for="directory in directoryOptions"
-                            :key="directory"
-                            @click="copyOrMove(directory)">
-                            {{ directory.name }}
+                            :key="directory">
+                            <span
+                                class="cass--list-item-info--search-results--li-text">
+                                {{ directory.name }}
+                            </span>
+                            <span
+                                @click="copyOrMove(directory)"
+                                class="button is-primary is-outlined is-small is-pulled-right">
+                                move
+                            </span>
                         </li>
                     </div>
                     <!-- move to directory -->
                     <button
+                        :class=" accordion === 'move' ? 'active' : ''"
                         @click="clickAccordion('move'); movingToDirectory = true;"
                         class="cass__right-side--accordion">
                         Move to Directory
@@ -415,30 +433,31 @@
                         <li
                             class="cass--list-item-info--search-result--li"
                             v-for="directory in directoryOptions"
-                            :key="directory"
-                            @click="copyOrMove(directory)">
-                            {{ directory.name }}
+                            :key="directory">
+                            <span
+                                class="cass--list-item-info--search-results--li-text">
+                                {{ directory.name }}
+                            </span>
+                            <span
+                                @click="copyOrMove(directory)"
+                                class="button is-primary is-v-centered is-outlined is-small is-pulled-right">
+                                move
+                            </span>
                         </li>
-                        <!--<li
-                            class="cass--list-item-info--search-result--li"
-                            @click="removeFromDirectory"
-                            v-if="movingToDirectory">
-                            Remove from directory
-                        </li>-->
-                    </div>
-                    <!--<ul
-                        class="cass--list-item-info--search-result"
-                        v-if="copyingToDirectory || movingToDirectory">
-                        <div class="title is-size-4">
-                            Choose a directory
-                        </div>
                         <li
-                            class="cass--list-item-info--search-result--li"
-                            @click="removeFromDirectory"
-                            v-if="movingToDirectory">
-                            Remove from directory
+                            class="cass--list-item-info--search-result--li">
+                            <span
+                                class="cass--list-item-info--search-results--li-text has-text-danger">
+                                Remove from directory
+                            </span>
+                            <span
+                                v-if="movingToDirectory"
+                                @click="removeFromDirectory"
+                                class="button is-danger is-outlined is-small is-pulled-right">
+                                move
+                            </span>
                         </li>
-                    </ul>-->
+                    </div>
                 </div>
             </div>
         </div>
