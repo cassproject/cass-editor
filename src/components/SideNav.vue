@@ -508,7 +508,7 @@ export default {
                 appLog("Directory saved: " + dir.id);
                 me.$store.dispatch('app/refreshDirectories');
                 me.selectDirectory(dir);
-            }, console.error, window.repo);
+            }, appError, window.repo);
         }
     },
     watch: {
