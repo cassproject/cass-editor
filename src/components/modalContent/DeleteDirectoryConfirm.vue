@@ -35,7 +35,7 @@
                 <div class="control">
                     <input
                         v-model="typedInName"
-                        class="input"/>
+                        class="input">
                 </div>
             </div>
         </section>
@@ -140,7 +140,7 @@ export default {
             return this.$store.state.user.loggedOnPerson;
         },
         directory: function() {
-            return this.$store.getters['app/selectedDirectory'];
+            return this.$store.getters['app/rightAsideObject'];
         }
     },
     mounted: function() {
