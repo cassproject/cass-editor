@@ -433,7 +433,7 @@
                         </div>
                     </template>
                     <!-- delete directory -->
-                    <template v-if="loggedIn && canEditObject">
+                    <template v-if="canEditObject && objectType === 'Directory'">
                         <div class="">
                             <div
                                 @click="deleteDirectory"
