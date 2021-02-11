@@ -96,13 +96,25 @@ export default {
                         appLog(success);
                         me.numDirectories--;
                         if (me.numDirectories === 0) {
-                            me.$router.push({name: "frameworks"});
+                            if (me.$route.name !== "frameworks") {
+                                me.$router.push({name: "frameworks"});
+                            }
+                            me.$store.commit('app/rightAsideObject', null);
+                            me.$store.commit('app/closeRightAside');
+                            me.$store.commit('app/refreshSearch', true);
+                            me.$store.commit('app/closeModal');
                         }
                     }, function(error) {
                         appError(error);
                         me.numDirectories--;
                         if (me.numDirectories === 0) {
-                            me.$router.push({name: "frameworks"});
+                            if (me.$route.name !== "frameworks") {
+                                me.$router.push({name: "frameworks"});
+                            }
+                            me.$store.commit('app/rightAsideObject', null);
+                            me.$store.commit('app/closeRightAside');
+                            me.$store.commit('app/refreshSearch', true);
+                            me.$store.commit('app/closeModal');
                         }
                     });
                 });
