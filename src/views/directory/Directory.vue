@@ -173,6 +173,15 @@
                 </div>
             </template>
             <template slot="secondary-top">
+                <div @click="$router.push({name: 'frameworks'}); $store.commit('app/selectDirectory', null)">
+                    CaSS /
+                </div>
+                <div
+                    v-for="each in directoryTrail"
+                    :key="each.id"
+                    @click="$store.commit('app/selectDirectory', each)">
+                    {{ each.name + ' /' }}
+                </div>
                 <div
                     class="container is-fullhd"
                     @click="showDirectoryInRightAside">
@@ -263,7 +272,8 @@ export default {
             subdirectoryName: '',
             createResource: false,
             resourceName: '',
-            resourceUrl: ''
+            resourceUrl: '',
+            directoryTrail: []
         };
     },
     created: function() {
@@ -644,6 +654,19 @@ export default {
         showDirectoryInRightAside() {
             this.$store.commit('app/rightAsideObject', this.directory);
             this.$store.commit('app/showRightAside', 'ListItemInfo');
+        },
+        findDirectoryTrail: function(directory) {
+            let me = this;
+            if (directory.parentDirectory) {
+                EcDirectory.get(directory.parentDirectory, function(parent) {
+                    if (parent && !parent.parentDirectory) {
+                        me.directoryTrail.unshift(parent);
+                    } else if (parent) {
+                        me.directoryTrail.unshift(parent);
+                        me.findDirectoryTrail(parent);
+                    }
+                }, appError);
+            }
         }
     },
     mounted: function() {
@@ -677,6 +700,7 @@ export default {
         }
         let documentBody = document.getElementById('directory');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
+        this.findDirectoryTrail(this.directory);
     },
     watch: {
         sortResults: function() {
@@ -714,6 +738,12 @@ export default {
                     }
                 }, appError);
                 this.$store.commit('editor/changedObject', null);
+            }
+        },
+        directory: function() {
+            if (this.directory) {
+                this.directoryTrail.splice(0, this.directoryTrail.length);
+                this.findDirectoryTrail(this.directory);
             }
         }
     }
