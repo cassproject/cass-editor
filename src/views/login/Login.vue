@@ -57,7 +57,7 @@
                         <div
                             v-if="identityFetchFailed || configRetrieveFailed || loginParamsInvalid"
                             class="column is-12">
-                            <div class="panel is-warning py-2 px-2">
+                            <div class="panel is-warning py-2 px-2 has-text-danger">
                                 <p class="panel-heading">
                                     Login failed
                                 </p>
@@ -250,12 +250,11 @@ export default {
             this.ecRemoteIdentMgr.create(this.handleCreateAccountRemoteIdentityMgrCreateSuccess, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
         },
         createNewAccountIdentity: function() {
-            appLog(" WOULD HAVE createNewAccountIdentity");
-            // appLog("Creating new account...");
-            // appLog("EcRemoteIdentityManager Configuring from server...");
-            // this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
-            // this.ecRemoteIdentMgr.server = window.repo.selectedServer;
-            // this.ecRemoteIdentMgr.configureFromServer(this.handleCreateAccountConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
+            appLog("Creating new account...");
+            appLog("EcRemoteIdentityManager Configuring from server...");
+            this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
+            this.ecRemoteIdentMgr.server = window.repo.selectedServer;
+            this.ecRemoteIdentMgr.configureFromServer(this.handleCreateAccountConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
         },
         handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck: function(failMsg) {
             // this shouldn't happen, but don't want to cause an unexpected create loop
@@ -313,13 +312,13 @@ export default {
             }
         },
         checkUserProfileRequestStatus: function(profileResponse) {
-            console.log('HELLO FROM checkUserProfileRequestStatus: ' + profileResponse.status);
+            // console.log('HELLO FROM checkUserProfileRequestStatus: ' + profileResponse.status);
             if (profileResponse.status === 401) {
                 this.loginBusy = false;
             } else if (profileResponse.status === 200) {
                 this.handleUserProfileAlreadyLoaded(profileResponse);
             } else {
-                appLog('Unexpected response status: ' + profileResponse.status);
+                appLog('Unexpected user profile response status: ' + profileResponse.status);
                 this.loginBusy = false;
             }
         },
