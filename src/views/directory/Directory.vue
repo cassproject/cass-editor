@@ -138,7 +138,9 @@
                                 searchType="framework" />
                         </div>
                         <!-- top bar icons, add framework, resource, new directory, copy share link -->
-                        <div class="column is-narrow">
+                        <div
+                            class="column is-narrow"
+                            v-if="canEditDirectory">
                             <div
                                 class="dropdown is-right"
                                 v-click-outside="closeCreateDropDown"

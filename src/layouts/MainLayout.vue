@@ -20,7 +20,7 @@
         <div
             v-if="rightActive"
             class="cass--main-layout--right"
-            :class="hasSimpleTopBar">
+            :class="topBarClass">
             <slot name="right" />
         </div>
     </div>
