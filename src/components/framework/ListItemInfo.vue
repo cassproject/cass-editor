@@ -417,7 +417,8 @@
                                 </span>
                             </li>
                             <li
-                                class="cass--list-item-info--search-result--li">
+                                class="cass--list-item-info--search-result--li"
+                                v-if="object.directory || object.parentDirectory">
                                 <span
                                     class="cass--list-item-info--search-results--li-text has-text-danger">
                                     Remove from directory
