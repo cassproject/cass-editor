@@ -17,7 +17,7 @@
             </h3>
             <p
                 class="comment-modal__details__competency">
-                Name of Directory
+                {{ directory.name }}
             </p>
         </section>
         <section class="modal-card-body pt-0 mt-0">
@@ -47,9 +47,9 @@
                     Cancel
                 </button>
                 <button
-                    :disabled="typedInName === ''"
+                    :disabled="typedInName !== directory.name"
                     class="button is-outlined is-danger"
-                    @click="deleteDirectory">
+                    @click="deleteDirectory(directory)">
                     Delete Directory
                 </button>
             </div>
@@ -60,21 +60,76 @@
 <script>
 
 import {cassUtil} from '../../mixins/cassUtil';
+import common from '@/mixins/common.js';
 
 export default {
-    mixins: [cassUtil],
+    mixins: [cassUtil, common],
     name: 'DeleteDirectory',
     data() {
         return {
             typedInName: '',
             loggedInPersonEcPk: {},
             commentToSave: {},
-            commentIsBusy: false
+            commentIsBusy: false,
+            numDirectories: 1,
+            repo: window.repo
         };
     },
     methods: {
-        deleteDirectory: function() {
-            console.log("TO DO: delete directory");
+        deleteDirectory: function(obj) {
+            appLog("deleting " + obj.id);
+            var me = this;
+            this.repo.search("(directory:\"" + obj.shortId() + "\" OR parentDirectory:\"" + obj.shortId() + "\")", function() {}, function(success) {
+                new EcAsyncHelper().each(success, function(obj, done) {
+                    if (obj.type === 'Framework') {
+                        me.deleteFramework(obj, done);
+                    } else if (obj.type === 'CreativeWork') {
+                        me.repo.deleteRegistered(obj, appLog, appError);
+                        done();
+                    } else if (obj.type === "Directory") {
+                        me.numDirectories++;
+                        me.deleteDirectory(obj);
+                        done();
+                    }
+                }, function(objs) {
+                    me.repo.deleteRegistered(obj, function(success) {
+                        appLog(success);
+                        me.numDirectories--;
+                        if (me.numDirectories === 0) {
+                            me.$router.push({name: "frameworks"});
+                        }
+                    }, function(error) {
+                        appError(error);
+                        me.numDirectories--;
+                        if (me.numDirectories === 0) {
+                            me.$router.push({name: "frameworks"});
+                        }
+                    });
+                });
+            }, appError);
+        },
+        deleteFramework: function(framework, callback) {
+            let me = this;
+            this.repo.deleteRegistered(framework, function(success) {
+                me.spitEvent("frameworkDeleted", framework.shortId(), "directoryPage");
+                // Delete the framework, delete all non-used stuff.
+                if (framework.competency != null) {
+                    for (var i = 0; i < framework.competency.length; i++) {
+                        me.conditionalDelete(framework.competency[i]);
+                    }
+                }
+                if (framework.relation != null) {
+                    for (var i = 0; i < framework.relation.length; i++) {
+                        me.conditionalDelete(framework.relation[i]);
+                    }
+                }
+                if (framework.level != null) {
+                    for (var i = 0; i < framework.level.length; i++) {
+                        me.conditionalDelete(framework.level[i]);
+                    }
+                }
+                callback();
+            }, appLog);
         },
         closeModal: function() {
             this.$store.commit('app/closeModal');
@@ -83,6 +138,9 @@ export default {
     computed: {
         loggedInPerson: function() {
             return this.$store.state.user.loggedOnPerson;
+        },
+        directory: function() {
+            return this.$store.getters['app/selectedDirectory'];
         }
     },
     mounted: function() {
