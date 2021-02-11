@@ -920,7 +920,9 @@ export default {
         handleMakePrivateDirectory: function(directory) {
             let me = this;
             if (directory.canEditAny(EcIdentityManager.getMyPks())) {
-                directory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                if (!directory.owner) {
+                    directory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
                 if (this.directory.shortId() === directory.shortId()) {
                     // Make sure new owner gets into store
                     this.$store.commit('app/selectDirectory', directory);
@@ -952,7 +954,9 @@ export default {
         handleMakePrivateResource: function(resource) {
             let me = this;
             if (resource.canEditAny(EcIdentityManager.getMyPks())) {
-                resource.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                if (!resource.owner) {
+                    resource.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
                 if (this.resource) {
                     this.$store.commit('app/objForShareModal', resource);
                 }
@@ -969,7 +973,9 @@ export default {
                 new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
                     EcCompetency.get(competencyId, function(c) {
                         if (c.canEditAny(EcIdentityManager.getMyPks())) {
-                            c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                            if (!c.owner) {
+                                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                            }
                             c["schema:dateModified"] = new Date().toISOString();
                             EcEncryptedValue.toEncryptedValueAsync(c, false, function(ec) {
                                 me.toSave.push(ec);
@@ -983,7 +989,9 @@ export default {
                     if (framework.relation && framework.relation.length > 0) {
                         new EcAsyncHelper().each(framework.relation, function(relationId, done) {
                             EcAlignment.get(relationId, function(r) {
-                                r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                if (!r.owner) {
+                                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                }
                                 EcEncryptedValue.toEncryptedValueAsync(r, false, function(er) {
                                     me.toSave.push(er);
                                     done();
@@ -1157,7 +1165,9 @@ export default {
             var me = this;
             var f = new EcFramework();
             f.copyFrom(framework);
-            f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (!f.owner) {
+                f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
             if (this.framework) {
                 // Make sure new owner gets into store
                 this.$store.commit('editor/framework', f);
@@ -1180,7 +1190,9 @@ export default {
             var framework = this.framework;
             var cs = new EcConceptScheme();
             cs.copyFrom(framework);
-            cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (!cs.owner) {
+                cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
             this.$store.commit('editor/framework', cs);
             var name = cs["dcterms:title"];
             cs["schema:dateModified"] = new Date().toISOString();
@@ -1224,7 +1236,9 @@ export default {
             var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
                 EcRepository.get(conceptId, function(concept) {
-                    concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (!concept.owner) {
+                        concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    }
                     concept["schema:dateModified"] = new Date().toISOString();
                     if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
                         me.encryptConcepts(concept);
