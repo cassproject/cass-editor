@@ -73,9 +73,9 @@
                                 v-model="resourceUrl">
                         </div>
                         <p
-                            v-if="resourceUrl && !resourceUrl.startsWith('http')"
+                            v-if="resourceUrl && !validResourceUrl"
                             class="help is-danger">
-                            url must start with 'http'
+                            url must start with 'http://' or 'https://'
                         </p>
                     </div>
                 </div>
@@ -92,8 +92,8 @@
                         </div>
                         <div
                             class="button is-primary"
-                            :class="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http')) ? 'is-disabled' : ''"
-                            :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http'))"
+                            :class="(resourceName.length === 0 || resourceUrl.length === 0 || !validResourceUrl) ? 'is-disabled' : ''"
+                            :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !validResourceUrl)"
                             @click="saveNewResource">
                             Create
                         </div>
@@ -110,8 +110,8 @@
                         </div>
                         <div
                             class="button is-primary"
-                            :class="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http')) ? 'is-disabled' : ''"
-                            :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http'))"
+                            :class="(resourceName.length === 0 || resourceUrl.length === 0 || !validResourceUrl) ? 'is-disabled' : ''"
+                            :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !validResourceUrl)"
                             @click="saveEditedResource">
                             Save
                         </div>
@@ -453,6 +453,14 @@ export default {
                 return false;
             }
             if (!this.shareEnabled && !this.userManagementEnabled) {
+                return false;
+            }
+            return true;
+        },
+        validResourceUrl: function() {
+            try {
+                let u = new URL(this.resourceUrl);
+            } catch (e) {
                 return false;
             }
             return true;
