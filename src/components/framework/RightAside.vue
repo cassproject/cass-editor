@@ -32,7 +32,7 @@
         </div>
         <slot name="right-aside-content">
             <Component
-                @editResourceDetails="$emit('editResource')"
+                @editResourceDetails="$emit('editResource', $event)"
                 :is="rightAsideContent" />
         </slot>
     </aside>

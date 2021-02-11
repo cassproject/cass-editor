@@ -236,7 +236,7 @@
                                 </div>
                                 <div class="cass__right-aside--property flex-end">
                                     <div
-                                        @click="$emit('editResourceDetails')"
+                                        @click="$emit('editResourceDetails', object)"
                                         class="button is-pulled-right is-primary is-outlined">
                                         <span>Edit</span>
                                         <span class="icon">
@@ -252,15 +252,6 @@
                                         <span>
                                             {{ objectName }}
                                         </span>
-                                        <!--<div
-                                            class="control"
-                                            v-if="editingResource">
-                                            <div class="control">
-                                                <input
-                                                    class="input"
-                                                    v-model="resourceName">
-                                            </div>
-                                        </div>-->
                                     </div>
                                     <!--<div
                                         class="cass__right-aside--property-icons"
@@ -458,9 +449,6 @@ export default {
             frameworksToProcess: 0,
             clipStatus: 'ready',
             ineligibleDirectoriesForMove: [],
-            editingResource: false,
-            resourceName: '',
-            resourceUrl: '',
             errorEditing: null,
             processingCopyOrMove: false
         };
@@ -1074,30 +1062,6 @@ export default {
         manageUsers: function() {
             this.$store.commit('app/objForShareModal', this.object);
             this.$store.commit('app/showModal', {component: 'Share'});
-        },
-        editResource: function() {
-            this.editingResource = true;
-            this.resourceName = this.objectName;
-            this.resourceUrl = this.object.url;
-        },
-        saveResource: function() {
-            if (this.resourceName.length === 0) {
-                this.errorEditing = "Resource must have a name.";
-                return;
-            }
-            if (this.resourceUrl.length === 0 || !this.resourceUrl.startsWith("http")) {
-                this.errorEditing = "Resource must have a URL starting with http.";
-                return;
-            }
-            this.errorEditing = null;
-            let me = this;
-            let resource = this.object;
-            resource.name = this.resourceName;
-            resource.url = this.resourceUrl;
-            repo.saveTo(resource, function() {
-                me.$store.commit('app/rightAsideObject', resource);
-                me.editingResource = false;
-            }, appError);
         },
         editDirectory: function() {
             this.$store.commit('app/editDirectory', true);
