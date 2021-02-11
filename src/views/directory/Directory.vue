@@ -191,23 +191,34 @@
                 </div>
             </template>
             <template slot="secondary-top">
-                <div @click="$router.push({name: 'frameworks'}); $store.commit('app/selectDirectory', null)">
-                    CaSS /
-                </div>
-                <div
-                    v-for="each in directoryTrail"
-                    :key="each.id"
-                    @click="$store.commit('app/selectDirectory', each)">
-                    {{ each.name + ' /' }}
-                </div>
-                <div
-                    class="container is-fullhd"
-                    @click="showDirectoryInRightAside">
-                    <!-- to do account for -->
-                    <h1 class="is-size-4 has-text-dark">
-                        {{ directory.name }}
-                    </h1>
-                </div>
+                <nav
+                    class="breadcrumb is-medium"
+                    aria-label="breadcrumbs has-text-dark">
+                    <ul>
+                        <li>
+                            <a
+                                href="#"
+                                @click="$router.push({name: 'frameworks'}); $store.commit('app/selectDirectory', null)">
+                                CaSS
+                            </a>
+                        </li>
+                        <li
+                            v-for="each in directoryTrail"
+                            :key="each.id">
+                            <a
+                                href="#"
+                                @click="$store.commit('app/selectDirectory', each)">{{ each.name + ' /' }}</a>
+                        </li>
+                        <li>
+                            <a
+                                href="#"
+                                @click="showDirectoryInRightAside">
+                                <!-- to do account for -->
+                                {{ directory.name }}
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
             </template>
             <template slot="body">
                 <DirectoryList
