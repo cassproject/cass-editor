@@ -261,7 +261,9 @@ iframe {
 .buttons.is-spaced {
     justify-content: space-between;
 }
-
+.modal {
+    z-index: 1000;
+}
 .modal-card {
     max-width: calc(100% - 1rem);
 }
