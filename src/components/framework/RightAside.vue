@@ -31,7 +31,8 @@
             </div>
         </div>
         <slot name="right-aside-content">
-            <Component :is="rightAsideContent" />
+            <Component
+                :is="rightAsideContent" />
         </slot>
     </aside>
 </template>

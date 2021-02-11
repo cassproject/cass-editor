@@ -249,6 +249,7 @@ export default {
     },
     data: function() {
         return {
+            copyMoveState: '',
             createDropDownActive: false,
             repo: window.repo,
             showMine: false,

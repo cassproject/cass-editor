@@ -25,19 +25,31 @@ import Share from '@/components/framework/Share.vue';
 import MultiEdit from '@/components/competency/MultiEdit.vue';
 import Search from '@/components/competency/Search.vue';
 import Single from '@/components/competency/Single.vue';
-import AddComment from '@/components/framework/AddComment.vue';
-import DeleteCommentConfirm from '@/components/framework/DeleteCommentConfirm.vue';
+import AddComment from '@/components/modalContent/AddComment.vue';
+import DeleteDirectoryConfirm from '@/components/modalContent/DeleteDirectoryConfirm.vue';
+import DeleteCommentConfirm from '@/components/modalContent/DeleteCommentConfirm.vue';
 import SupportedImportDetails from '@/components/import/SupportedImportDetails.vue';
 import Configuration from '@/views/configuration/ConfigurationEditor.vue';
 
 export default {
     name: 'DynamicModal',
+    props: {
+        type: {
+            default: 'info',
+            type: String
+        },
+        color: {
+            default: 'white',
+            type: String
+        }
+    },
     components: {
         Share,
         MultiEdit,
         Search,
         AddComment,
         DeleteCommentConfirm,
+        DeleteDirectoryConfirm,
         SupportedImportDetails,
         Single,
         Configuration

@@ -458,6 +458,18 @@
                             </span>
                         </li>
                     </div>
+                    <!-- delete directory -->
+                    <template v-if="loggedIn && canEditObject">
+                        <div class="">
+                            <div
+                                @click="deleteDirectory"
+                                class="buttons is-pulled-right p-2">
+                                <div class="button is-danger is-outlined">
+                                    delete directory
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -465,10 +477,11 @@
 </template>
 <script>
 import common from '@/mixins/common.js';
-
 export default {
     name: 'ListItemInfo',
     mixins: [common],
+    components: {
+    },
     data() {
         return {
             accordion: 'details',
@@ -488,6 +501,9 @@ export default {
         };
     },
     methods: {
+        deleteDirectory() {
+            this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});
+        },
         clickAccordion(item) {
             if (this.accordion === item) {
                 this.accordion = '';
@@ -582,6 +598,12 @@ export default {
         copyOrMove: function(directory) {
             this.frameworksToProcess = 0;
             this.processingCopyOrMove = true;
+            this.$Progress.start();
+            if (this.copyingToDirectory) {
+                this.$emit('beginCopy');
+            } else if (this.movingToDirectory) {
+                this.$emit('beginMove');
+            }
             // To do: add confirmation step once we have this in the right spot
             if (this.copyingToDirectory && this.objectType === 'Framework') {
                 this.copyFrameworkToDirectory(directory, this.object);
@@ -611,12 +633,13 @@ export default {
             this.frameworksToProcess--;
             if (this.frameworksToProcess <= 0) {
                 this.repo.multiput(toSave, function(success) {
-                    me.processingCopyOrMove = false;
+                    me.$Progress.finish();
                     me.copyingToDirectory = false;
                     if (me.movingToDirectory) {
                         // Remove the moved item from the right panel
                         me.$store.commit('app/rightAsideObject', null);
                         me.$store.commit('app/closeRightAside');
+                        me.$Progress.finish();
                         me.movingToDirectory = false;
                     }
                     if (shouldRefresh) {
@@ -963,6 +986,7 @@ export default {
             let framework = this.object;
             let me = this;
             let toSave = [];
+            this.$emit('beginRemove');
             EcDirectory.get(framework.directory, function(directory) {
                 if (directory.owner) {
                     for (let each of directory.owner) {
