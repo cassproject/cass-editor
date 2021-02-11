@@ -491,8 +491,7 @@ export default {
         }
     },
     mounted: function() {
-        this.getCurrentOwnersAndReaders();
-        this.getPossibleOwnersAndReaders();
+        this.getCurrentOwnersAndReaders(true);
         this.checkIsPrivate();
     },
     methods: {
@@ -562,10 +561,10 @@ export default {
                 me.getOrganizationByEcPk(pk, function(success) {
                     appLog(success);
                     if (success) {
+                        let ownerFingerprint = pk.fingerprint();
                         let currentUser = false;
                         for (let each in EcIdentityManager.ids) {
                             let idFingerprint = EcIdentityManager.ids[each].ppk.toPk().fingerprint();
-                            let ownerFingerprint = pk.fingerprint();
                             if (ownerFingerprint.equals(idFingerprint)) {
                                 currentUser = true;
                                 me.numGroupsAsOwner++;
@@ -602,7 +601,7 @@ export default {
                 });
             });
         },
-        getCurrentOwnersAndReaders: function() {
+        getCurrentOwnersAndReaders: function(getPossibleAfter) {
             var me = this;
             me.numGroupsAsOwner = 0;
             me.userIsOwner = false;
@@ -617,6 +616,12 @@ export default {
                 for (var i = 0; i < obj.reader.length; i++) {
                     this.getEachReader(obj.reader[i]);
                 }
+            }
+            if (getPossibleAfter) {
+                // May not need timeout after 'Cannot add a Reader if you don't know the secret' issue is resolved
+                setTimeout(() => {
+                    this.getPossibleOwnersAndReaders();
+                }, 4000);
             }
         },
         getPossibleOwnersAndReaders: function() {
