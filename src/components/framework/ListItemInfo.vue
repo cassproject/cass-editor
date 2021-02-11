@@ -817,7 +817,7 @@ export default {
             } else {
                 c.generateId(this.repo.selectedServer);
             }
-            c.name = resource.name;
+            c.name = "Copy of " + resource.name;
             c.url = resource.url;
             c.directory = directory.shortId();
             if (directory.owner) {
@@ -867,6 +867,7 @@ export default {
                 subdirectory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
             subdirectory['ceasn:derivedFrom'] = oldSubdirectory.id;
+            subdirectory.name = "Copy of " + subdirectory.name;
             toSave.push(subdirectory);
             this.repo.search("(directory:\"" + oldSubdirectory.shortId() + "\" OR parentDirectory:\"" + oldSubdirectory.shortId() + "\")", function() {}, function(success) {
                 me.frameworksToProcess += success.length;
