@@ -30,7 +30,7 @@ export default {
             default: false
         },
         type: {
-            default: 'info',
+            default: 'primary',
             type: String
         },
         fontColor: {

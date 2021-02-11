@@ -158,11 +158,13 @@
     flex-wrap: wrap;
     height: fit-content;
 }
+.cass__right-aside--property.flex-end {
+    justify-content: flex-end;
+}
 .cass__right-aside--property-text {
     font-size: 1rem;
-    width: calc(100% - 4rem);
+    width: calc(100%);
     padding: .125rem 0rem;
-    height: 2rem;
     margin-right:1rem;
     white-space: nowrap;
     text-overflow: ellipsis;

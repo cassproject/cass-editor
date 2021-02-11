@@ -42,9 +42,9 @@
             </template>
         </modal-template>
         <!-- name directory modal -->
-        <modal-template :active="createResource">
+        <modal-template :active="createResource || editResource">
             <template slot="modal-header">
-                Create resource
+                {{ createResource ? "Create resource" : "Edit resource" }}
             </template>
             <template slot="modal-body">
                 <div class="field">
@@ -73,9 +73,9 @@
                                 v-model="resourceUrl">
                         </div>
                         <p
-                            v-if="resouceUrl && !resourceUrl.startsWith('http')"
+                            v-if="resourceUrl && !validResourceUrl"
                             class="help is-danger">
-                            url must start with 'https://'
+                            url must start with 'http://' or 'https://'
                         </p>
                     </div>
                 </div>
@@ -87,15 +87,33 @@
                     <div class="buttons">
                         <div
                             class="button is-dark is-outlined"
-                            @click="createResource = false">
+                            @click="createResource = false; resourceName = ''; resourceUrl = ''">
                             Cancel
                         </div>
                         <div
                             class="button is-primary"
-                            :class="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http')) ? 'is-disabled' : ''"
-                            :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !resourceUrl.startsWith('http'))"
+                            :class="(resourceName.length === 0 || resourceUrl.length === 0 || !validResourceUrl) ? 'is-disabled' : ''"
+                            :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !validResourceUrl)"
                             @click="saveNewResource">
                             Create
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="field"
+                    v-if="editResource">
+                    <div class="buttons">
+                        <div
+                            class="button is-dark is-outlined"
+                            @click="editResource = false; resource = null;">
+                            Cancel
+                        </div>
+                        <div
+                            class="button is-primary"
+                            :class="(resourceName.length === 0 || resourceUrl.length === 0 || !validResourceUrl) ? 'is-disabled' : ''"
+                            :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !validResourceUrl)"
+                            @click="saveEditedResource">
+                            Save
                         </div>
                     </div>
                 </div>
@@ -204,7 +222,9 @@
                     @dblclick="openObject" />
             </template>
             <template slot="right">
-                <RightAside v-if="showRightAside" />
+                <RightAside
+                    @editResource="editResource = true; resource = $event"
+                    v-if="showRightAside" />
             </template>
             <div class="section">
                 <div class="container is-fluid show-only-mine">
@@ -258,7 +278,7 @@ export default {
     },
     data: function() {
         return {
-            copyMoveState: '',
+            editResource: false,
             createDropDownActive: false,
             repo: window.repo,
             showMine: false,
@@ -272,6 +292,7 @@ export default {
             createSubdirectory: false,
             subdirectoryName: '',
             createResource: false,
+            resource: null,
             resourceName: '',
             resourceUrl: '',
             directoryTrail: []
@@ -445,6 +466,14 @@ export default {
                 return false;
             }
             return true;
+        },
+        validResourceUrl: function() {
+            try {
+                let u = new URL(this.resourceUrl);
+            } catch (e) {
+                return false;
+            }
+            return true;
         }
     },
     methods: {
@@ -601,6 +630,18 @@ export default {
                 me.resourceUrl = '';
                 me.createResource = false;
                 me.$store.commit('app/refreshSearch', true);
+                me.$store.commit('app/rightAsideObject', c);
+            }, appError);
+        },
+        saveEditedResource: function() {
+            let me = this;
+            let resource = this.resource;
+            resource.name = this.resourceName;
+            resource.url = this.resourceUrl;
+            repo.saveTo(resource, function() {
+                me.$store.commit('app/rightAsideObject', resource);
+                me.editResource = false;
+                me.resource = null;
             }, appError);
         },
         onDoneEditingNode: function() {
@@ -741,10 +782,13 @@ export default {
                 this.$store.commit('editor/changedObject', null);
             }
         },
-        directory: function() {
-            if (this.directory) {
-                this.directoryTrail.splice(0, this.directoryTrail.length);
-                this.findDirectoryTrail(this.directory);
+        resource: function() {
+            if (this.resource) {
+                this.resourceName = this.resource.name;
+                this.resourceUrl = this.resource.url;
+            } else {
+                this.resourceName = '';
+                this.resourceUrl = '';
             }
         }
     }
