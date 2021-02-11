@@ -408,7 +408,7 @@
                             <span
                                 @click="copyOrMove(directory)"
                                 class="button is-primary is-outlined is-small is-pulled-right">
-                                move
+                                copy here
                             </span>
                         </li>
                     </div>
@@ -441,7 +441,7 @@
                             <span
                                 @click="copyOrMove(directory)"
                                 class="button is-primary is-v-centered is-outlined is-small is-pulled-right">
-                                move
+                                move here
                             </span>
                         </li>
                         <li
@@ -454,7 +454,7 @@
                                 v-if="movingToDirectory"
                                 @click="removeFromDirectory"
                                 class="button is-danger is-outlined is-small is-pulled-right">
-                                move
+                                remove
                             </span>
                         </li>
                     </div>
@@ -620,6 +620,7 @@ export default {
             }
         },
         removeFromDirectory: function() {
+            this.$Progress.start();
             if (this.objectType === 'Framework') {
                 this.removeFrameworkFromDirectory();
             } else if (this.objectType === 'CreativeWork') {
@@ -633,6 +634,7 @@ export default {
             this.frameworksToProcess--;
             if (this.frameworksToProcess <= 0) {
                 this.repo.multiput(toSave, function(success) {
+                    me.processingCopyOrMove = false;
                     me.$Progress.finish();
                     me.copyingToDirectory = false;
                     if (me.movingToDirectory) {
@@ -986,7 +988,7 @@ export default {
             let framework = this.object;
             let me = this;
             let toSave = [];
-            this.$emit('beginRemove');
+            this.$Progress.start();
             EcDirectory.get(framework.directory, function(directory) {
                 if (directory.owner) {
                     for (let each of directory.owner) {
