@@ -14,7 +14,7 @@
         </div>
         <div
             class="cass--main-layout--body"
-            :class="hasSimpleTopBar">
+            :class="topBarClass">
             <slot name="body" />
         </div>
         <div
@@ -48,9 +48,10 @@ export default {
                 'is-simple-top-bar': this.simple
             };
         },
-        hasSimpleTopBar() {
+        topBarClass() {
             return {
                 'has-simple-top-bar': this.simple,
+                'has-secondary-top-bar': !this.simple,
                 'regular-top-bar': !this.simple
             };
         }
