@@ -312,7 +312,6 @@ export default {
             }
         },
         checkUserProfileRequestStatus: function(profileResponse) {
-            // console.log('HELLO FROM checkUserProfileRequestStatus: ' + profileResponse.status);
             if (profileResponse.status === 401) {
                 this.loginBusy = false;
             } else if (profileResponse.status === 200) {
