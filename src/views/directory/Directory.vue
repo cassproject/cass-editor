@@ -207,7 +207,7 @@
                             :key="each.id">
                             <a
                                 href="#"
-                                @click="$store.commit('app/selectDirectory', each)">{{ each.name + ' /' }}</a>
+                                @click="$store.commit('app/selectDirectory', each)">{{ each.name }}</a>
                         </li>
                         <li>
                             <a
@@ -802,6 +802,12 @@ export default {
             } else {
                 this.resourceName = '';
                 this.resourceUrl = '';
+            }
+        },
+        directory: function() {
+            if (this.directory) {
+                this.directoryTrail.splice(0, this.directoryTrail.length);
+                this.findDirectoryTrail(this.directory);
             }
         }
     }
