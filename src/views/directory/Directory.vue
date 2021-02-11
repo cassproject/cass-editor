@@ -470,6 +470,7 @@ export default {
             } else if (object.type === "CreativeWork") {
                 window.open(object.url, '_blank');
             } else if (this.$store.getters['editor/conceptMode']) {
+                this.$store.commit('app/selectDirectory', null);
                 EcConceptScheme.get(object.id, function(success) {
                     me.$store.commit('editor/framework', success);
                     me.$store.commit('editor/clearFrameworkCommentData');
@@ -478,6 +479,7 @@ export default {
                     me.$router.push({name: "conceptScheme", params: {frameworkId: object.id}});
                 }, appError);
             } else {
+                this.$store.commit('app/selectDirectory', null);
                 EcFramework.get(object.id, function(success) {
                     me.$store.commit('editor/framework', success);
                     me.$store.commit('editor/clearFrameworkCommentData');
