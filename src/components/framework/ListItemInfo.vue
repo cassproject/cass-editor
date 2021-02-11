@@ -354,7 +354,7 @@
                             :class=" accordion === 'copy' ? 'active' : ''"
                             @click="clickAccordion('copy'); copyingToDirectory = true;"
                             class="cass__right-side--accordion">
-                            Copy {{objectType}}
+                            Copy {{ objectType }}
                             <span class="icon is-pulled-right">
                                 <i
                                     v-if="accordion === 'copy'"
@@ -369,7 +369,7 @@
                             class="cass__right-side--accordion-panel">
                             <li
                                 class="cass--list-item-info--search-result--li"
-                                v-for="directory in directoryOptions"
+                                v-for="directory in copyDirectoryOptions"
                                 :key="directory">
                                 <span
                                     class="cass--list-item-info--search-results--li-text">
@@ -389,7 +389,7 @@
                             :class=" accordion === 'move' ? 'active' : ''"
                             @click="clickAccordion('move'); movingToDirectory = true;"
                             class="cass__right-side--accordion">
-                            Move {{objectType}}
+                            Move {{ objectType }}
                             <span class="icon is-pulled-right">
                                 <i
                                     v-if="accordion === 'move'"
@@ -404,7 +404,7 @@
                             class="cass__right-side--accordion-panel">
                             <li
                                 class="cass--list-item-info--search-result--li"
-                                v-for="directory in directoryOptions"
+                                v-for="directory in moveDirectoryOptions"
                                 :key="directory">
                                 <span
                                     class="cass--list-item-info--search-results--li-text">
@@ -1213,9 +1213,17 @@ export default {
             }
             return (link + "?frameworkId=" + this.objectShortId);
         },
-        directoryOptions: function() {
+        copyDirectoryOptions: function() {
             let me = this;
-            if (this.movingToDirectory && this.objectType === "Directory") {
+            return this.$store.getters['app/directoryList'].filter(directory => {
+                return (directory.shortId() !== me.object.shortId() &&
+                    (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
+                    (me.object.directory ? (directory.shortId() !== me.object.directory) : true));
+            });
+        },
+        moveDirectoryOptions: function() {
+            let me = this;
+            if (this.objectType === "Directory") {
                 return this.$store.getters['app/directoryList'].filter(directory => {
                     return (directory.shortId() !== me.object.shortId() &&
                         (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
