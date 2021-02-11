@@ -62,47 +62,46 @@
                     class="buttons is-right"
                     v-if="showSideNav"
                     title="Log out">
-                    <router-link
+                    <div
                         class="button is-rounded is-white has-text-danger"
-                        to="/login">
+                        @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-out-alt" />
                         </span>
                         <span v-if="showSideNav">logout</span>
-                    </router-link>
+                    </div>
                 </div>
                 <div
                     class="buttons is-centered"
                     v-else>
-                    <router-link
+                    <div
                         class="button is-text has-text-link is-medium"
-                        to="/login">
+                        @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-out-alt" />
                         </span>
-                    </router-link>
+                    </div>
                 </div>
             </template>
             <template v-else-if="loginEnabled">
-                <router-link
+                <div
                     v-if="showSideNav"
                     class="button is-outlined is-link"
-                    to="/login">
+                    @click="performApplicationLogout">
                     <span class="icon">
                         <i class="fa fa-sign-in-alt" />
                     </span><span v-if="showSideNav">login</span>
-                </router-link>
+                </div>
                 <div
                     v-if="!showSideNav"
-                    class="buttons is-centered"
-                    to="/login">
-                    <router-link
-                        to="/login"
-                        class="button  is-outlined is-link">
+                    class="buttons is-centered">
+                    <div
+                        class="button is-outlined is-link"
+                        @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-in-alt" />
                         </span>
-                    </router-link>
+                    </div>
                 </div>
             </template>
             <!-- might need later to close -->
@@ -411,11 +410,12 @@ import {mapState} from 'vuex';
 import casslogo from '@/assets/cass-logo-white.svg';
 import casslogoSquare from '@/assets/cass-logo-square.png';
 import {cassUtil} from './../mixins/cassUtil';
+import {cassApi} from './../mixins/cassApi';
 import {pluginUtil} from './../mixins/pluginUtil';
 import {curatedPlugins} from './../mixins/curatedPlugins';
 
 export default {
-    mixins: [cassUtil, pluginUtil, curatedPlugins],
+    mixins: [cassUtil, cassApi, pluginUtil, curatedPlugins],
     name: 'SideNav',
     props: {
         method: {

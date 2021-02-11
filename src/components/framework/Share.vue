@@ -207,7 +207,8 @@
                                     <td>
                                         <div
                                             class="button is-text is-small has-text-danger"
-                                            @click="removeOwnerOrReader(group, 'group')">
+                                            @click="removeOwnerOrReader(group, 'group')"
+                                            :disabled="group.currentUser && numGroupsAsOwner === 1 && group.view == 'admin' && cantRemoveCurrentUserAsOwner && !userIsOwner">
                                             <div class="icon">
                                                 <i class="fa fa-trash" />
                                             </div>
@@ -258,7 +259,7 @@
                                         <div
                                             class="button is-text is-small has-text-danger"
                                             @click="removeOwnerOrReader(user, 'user')"
-                                            :disabled="cantRemoveCurrentUserAsOwner && user.currentUser">
+                                            :disabled="cantRemoveCurrentUserAsOwner && user.currentUser && !numGroupsAsOwner">
                                             <div class="icon">
                                                 <i class="fa fa-trash" />
                                             </div>
@@ -374,7 +375,9 @@ export default {
             ownerCount: 0,
             decryptingConcepts: false,
             toSave: [],
-            frameworksToProcess: 0
+            frameworksToProcess: 0,
+            numGroupsAsOwner: 0,
+            userIsOwner: false
         };
     },
     computed: {
@@ -548,6 +551,7 @@ export default {
                     let currentUser = false;
                     if (me.loggedOnPerson.shortId() === success.shortId()) {
                         currentUser = true;
+                        me.userIsOwner = true;
                     }
                     var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk, currentUser: currentUser};
                     me.users.push(user);
@@ -558,7 +562,16 @@ export default {
                 me.getOrganizationByEcPk(pk, function(success) {
                     appLog(success);
                     if (success) {
-                        var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                        let currentUser = false;
+                        for (let each in EcIdentityManager.ids) {
+                            let idFingerprint = EcIdentityManager.ids[each].ppk.toPk().fingerprint();
+                            let ownerFingerprint = pk.fingerprint();
+                            if (ownerFingerprint.equals(idFingerprint)) {
+                                currentUser = true;
+                                me.numGroupsAsOwner++;
+                            }
+                        }
+                        var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk, currentUser: currentUser};
                         me.groups.push(org);
                         me.ownerCount++;
                     }
@@ -591,6 +604,8 @@ export default {
         },
         getCurrentOwnersAndReaders: function() {
             var me = this;
+            me.numGroupsAsOwner = 0;
+            me.userIsOwner = false;
             let obj = this.directory ? this.directory : (this.resource ? this.resource : this.framework);
             if (obj.owner) {
                 for (var i = 0; i < obj.owner.length; i++) {

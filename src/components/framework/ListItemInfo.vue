@@ -623,6 +623,23 @@ export default {
                 }, appError);
             }
         },
+        getCopyFrameworkName: function(f) {
+            let name = f.name;
+            if (!EcArray.isArray(name)) {
+                name = [name];
+            }
+            for (let each in name) {
+                if (name[each]["@value"]) {
+                    name[each]["@value"] = "Copy of " + name[each]["@value"];
+                } else {
+                    name[each] = "Copy of " + name[each];
+                }
+            }
+            if (name.length === 1) {
+                name = name[0];
+            }
+            return name;
+        },
         copyFrameworkToDirectory: function(directory, framework, toSaveFromSubdirectory) {
             let toSave = [];
             if (toSaveFromSubdirectory) {
@@ -649,6 +666,8 @@ export default {
             if (EcIdentityManager.ids.length > 0) {
                 f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
+            let name = this.getCopyFrameworkName(f);
+            f.name = name;
             f['ceasn:derivedFrom'] = framework.id;
             let competencyMap = {};
             // to do: replace all the competency (etc) URLs in framework object and THEN push framework obj
@@ -798,7 +817,7 @@ export default {
             } else {
                 c.generateId(this.repo.selectedServer);
             }
-            c.name = resource.name;
+            c.name = "Copy of " + resource.name;
             c.url = resource.url;
             c.directory = directory.shortId();
             if (directory.owner) {
@@ -848,6 +867,7 @@ export default {
                 subdirectory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
             subdirectory['ceasn:derivedFrom'] = oldSubdirectory.id;
+            subdirectory.name = "Copy of " + subdirectory.name;
             toSave.push(subdirectory);
             this.repo.search("(directory:\"" + oldSubdirectory.shortId() + "\" OR parentDirectory:\"" + oldSubdirectory.shortId() + "\")", function() {}, function(success) {
                 me.frameworksToProcess += success.length;
