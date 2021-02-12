@@ -122,6 +122,13 @@ export default {
                         }
                     };
                 }
+            } else if (val === 'error') {
+                params = {
+                    type: val,
+                    title: "Error",
+                    text: data.message,
+                    details: data.details
+                };
             }
             // reveal modal
             this.$modal.show(params);
@@ -985,9 +992,28 @@ export default {
         },
         importFromUrl: function() {
             let me = this;
-            let error;
+            let error = {
+                message: "Unable to import from the URL source provided.",
+                details: ""
+            };
+            if (!this.isValidUrl(this.importUrl)) {
+                error.details = "The URL provided is not valid.";
+                me.$store.commit('app/addImportError', error.details);
+                me.$store.commit('app/importTransition', 'upload');
+                me.showModal('error', error);
+                return;
+            }
             EcRemote.getExpectingString(this.importUrl, null, function(result) {
-                result = JSON.parse(result);
+                try {
+                    result = JSON.parse(result);
+                } catch (ex) {
+                    error.details = ex.message;
+                    me.$store.commit('app/importStatus', ex.message);
+                    me.$store.commit('app/importTransition', 'upload');
+                    me.$store.commit('app/addImportError', ex.message);
+                    me.showModal('error', error);
+                    return;
+                }
                 var graph = result["@graph"];
                 if (graph != null) {
                     var id = graph[0]["@id"];
@@ -1003,39 +1029,53 @@ export default {
                                 me.$store.commit('app/importStatus', 'no match, saving new framework...');
                                 me.importJsonLd(result);
                             } /* TO DO - ERROR HANDLING HERE */
-                        }, function(error) {
-                            me.$store.commit('app/importStatus', error);
+                        }, function(failure) {
+                            error.details = failure;
+                            me.$store.commit('app/importStatus', failure);
                             me.$store.commit('app/importTransition', 'process');
-                            me.$store.commit('app/addImportError', error);
+                            me.$store.commit('app/addImportError', failure);
+                            me.showModal('error', error);
                         });
                     } else {
                         me.importJsonLd(result);
                     }
                 } else {
-                    error = "URL must have an '@graph' field at the top level.";
-                    me.$store.commit('app/addImportError', error);
+                    error.details = "URL must have an '@graph' field at the top level.";
+                    me.$store.commit('app/addImportError', error.details);
                     me.$store.commit('app/importTransition', 'process');
+                    me.showModal('error', error);
                     return;
                 }
                 if (graph[0]["@type"].indexOf("Concept") !== -1) {
                     if (me.ceasnDataFields === 'true') {
-                        error = "Competency Editor cannot be used to import concept schemes.";
+                        error.details = "Competency Editor cannot be used to import concept schemes.";
                     } else {
-                        error = "Competency Editor cannot be used to import taxonomies.";
+                        error.details = "Competency Editor cannot be used to import taxonomies.";
                     }
-                    me.$store.commit('app/addImportError', error);
+                    me.$store.commit('app/addImportError', error.details);
                     me.$store.commit('app/importTransition', 'process');
+                    me.showModal('error', error);
                 }
             }, function(failure) {
                 if (!failure) {
-                    error = "Import Error";
-                    me.$store.commit('app/addImportError', error);
-                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', error.message);
+                    me.$store.commit('app/importTransition', 'upload');
+                    me.showModal('error', error);
                 } else {
+                    error.details = failure;
                     me.$store.commit('app/addImportError', failure);
-                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/importTransition', 'upload');
+                    me.showModal('error', error);
                 }
             });
+        },
+        isValidUrl(s) {
+            try {
+                let u = new URL(s);
+            } catch (e) {
+                return false;
+            }
+            return true;
         },
         scrollFunction(e) {
             let documentObject = document.getElementsByClassName('parent-object');

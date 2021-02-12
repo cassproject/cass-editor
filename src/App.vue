@@ -41,7 +41,9 @@ export default {
             navBarActive: false,
             repo: window.repo,
             itemsSaving: 0,
-            showNav: true
+            showNav: true,
+            GROUP_SEARCH_SIZE: 10000,
+            linkedPerson: null
         };
     },
     $router: function(to, from) {
@@ -56,6 +58,8 @@ export default {
     methods: {
         initializeApp: function() {
             var server = "https://dev.api.cassproject.org/api/";
+            var cassApiLocation = "https://dev.rest.api.cassproject.org/";
+            this.$store.commit('environment/cassApiLocation', cassApiLocation);
             var me = this;
             if (this.$route.query) {
                 let queryParams = JSON.parse(JSON.stringify(this.$route.query));
@@ -205,18 +209,64 @@ export default {
         findLinkedPersonPersonSearchSuccess(ecRemoteLda) {
             appLog("Linked person person search success: ");
             appLog(ecRemoteLda);
+            let matchingPersonRecordFound = false;
             for (let ecrld of ecRemoteLda) {
                 let ep = new EcPerson();
                 ep.copyFrom(ecrld);
                 if (ep.getGuid().equals(EcIdentityManager.ids[0].ppk.toPk().fingerprint())) {
+                    matchingPersonRecordFound = true;
                     this.$store.commit('user/loggedOnPerson', ep);
+                    this.linkedPerson = ep;
                     appLog('Matching person record found: ');
                     appLog(ep);
                 }
             }
+            if (matchingPersonRecordFound) this.addGroupIdentities();
         },
         findLinkedPersonPersonSearchFailure(msg) {
             appLog('Linked person person search failure: ' + msg);
+        },
+        searchRepositoryForGroupsSuccess: function(ecoa) {
+            let linkedPersonShortId = this.linkedPerson.shortId();
+            if (ecoa && ecoa.length > 0) {
+                for (let eco of ecoa) {
+                    if (eco.employee && eco.employee.length > 0) {
+                        for (let e of eco.employee) {
+                            if (e.equals(linkedPersonShortId)) {
+                                this.addGroupIdentity(eco);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        searchRepositoryForGroupsFailure: function(msg) {
+            appLog("Group search failure: " + msg);
+        },
+        addGroupIdentities: function() {
+            appLog("Finding assigned groups...");
+            let paramObj = {};
+            paramObj.size = this.GROUP_SEARCH_SIZE;
+            EcOrganization.search(window.repo, '', this.searchRepositoryForGroupsSuccess, this.searchRepositoryForGroupsFailure, paramObj);
+        },
+        addGroupIdentity: function(group) {
+            try {
+                // add all available group keys to identity manager
+                let groupPpkSet = group.getOrgKeys();
+                appLog("Adding group identities: " + "(" + group.shortId() + ") - " + group.getName() + " - (" + groupPpkSet.length + ") keys");
+                for (let i = 0; i < groupPpkSet.length; i++) {
+                    let gPpk = groupPpkSet[i];
+                    let grpIdent = new EcIdentity();
+                    grpIdent.displayName = group.getName() + " - key[" + i + "]";
+                    grpIdent.ppk = gPpk;
+                    EcIdentityManager.addIdentityQuietly(grpIdent);
+                }
+            } catch (e) {
+                // TODO Problem with EcOrganization update and creating encrypted value when only a reader...
+                // Anticipated workaround....login as group owner and save it.
+                // console.error("TODO...fix this...needs FRITZ input!!!!: " + e.toString());
+            }
         },
         cappend: function(event) {
             if (event.data.message === "selected") {
@@ -1170,7 +1220,7 @@ export default {
     },
     watch: {
         currentRoute: function(val) {
-            appLog("logged in", this.loggedInPerson);
+            // appLog("logged in", this.loggedInPerson);
             if (!this.isLoggedIn && val === '/users') {
                 this.$router.push({path: '/'});
             }

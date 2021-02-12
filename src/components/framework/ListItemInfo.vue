@@ -4,17 +4,18 @@
         class="has-background-lightest">
         <div class="cass__right-aside--header">
             <div class="right-aside-bar__title">
+                <!--<span class="tag is-info is-small is-outlined">{{ objectTypeForDisplay }}</span>-->
+                <span class="help">{{ objectTypeForDisplay }}</span>
                 <div
                     :title="objectName"
                     class="right-aside-bar--title-text is-size-4 is-family-secondary">
                     {{ objectName }}
                 </div>
-                <span class="tag is-info">{{ objectTypeForDisplay }}</span>
                 <div
                     class="buttons pt-2"
                     v-if="objectShortId !== selectedDirectoryId">
                     <div
-                        class="button is-small is-primary"
+                        class="button is-small is-rounded is-primary"
                         @click="openObject">
                         <span>Open {{ objectTypeForDisplay }}</span>
                         <span class="icon">
@@ -214,30 +215,8 @@
                                 <!-- resource link -->
                                 <div class="cass__right-aside--property">
                                     <div class="cass__right-aside--property-text">
-                                        <span v-if="!editingResource">
+                                        <span>
                                             {{ object.url }}
-                                        </span>
-                                        <div
-                                            v-else-if="editingResource">
-                                            <input
-                                                class="input"
-                                                v-model="resourceUrl">
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="cass__right-aside--property-icons"
-                                        v-if="objectType === 'CreativeWork' && canEditObject">
-                                        <span
-                                            class="icon"
-                                            v-if="editingResource"
-                                            @click="saveResource">
-                                            <i class="fa fa-save" />
-                                        </span>
-                                        <span
-                                            class="icon"
-                                            v-if="!editingResource && canEditObject"
-                                            @click="editResource">
-                                            <i class="fa fa-edit" />
                                         </span>
                                     </div>
                                     <div class="cass__right-aside--property-label">
@@ -247,34 +226,22 @@
                                 <!-- resource name -->
                                 <div class="cass__right-aside--property">
                                     <div class="cass__right-aside--property-text">
-                                        <span v-if="!editingResource">
+                                        <span>
                                             {{ objectName }}
-                                        </span>
-                                        <div
-                                            v-if="editingResource">
-                                            <input
-                                                class="input"
-                                                v-model="resourceName">
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="cass__right-aside--property-icons"
-                                        v-if="objectType === 'CreativeWork' && canEditObject">
-                                        <span
-                                            class="icon"
-                                            v-if="editingResource"
-                                            @click="saveResource">
-                                            <i class="fa fa-save" />
-                                        </span>
-                                        <span
-                                            class="icon"
-                                            v-if="!editingResource && canEditObject"
-                                            @click="editResource">
-                                            <i class="fa fa-edit" />
                                         </span>
                                     </div>
                                     <div class="cass__right-aside--property-label">
                                         Name
+                                    </div>
+                                </div>
+                                <div class="cass__right-aside--property flex-end">
+                                    <div
+                                        @click="$emit('editResourceDetails', object)"
+                                        class="button is-pulled-right is-primary is-outlined">
+                                        <span>Edit</span>
+                                        <span class="icon">
+                                            <i class="fa fa-edit" />
+                                        </span>
                                     </div>
                                 </div>
                             </template>
@@ -282,20 +249,11 @@
                             <template v-if="objectType === 'Directory'">
                                 <div class="cass__right-aside--property">
                                     <div class="cass__right-aside--property-text">
-                                        <span v-if="!editingResource">
+                                        <span>
                                             {{ objectName }}
                                         </span>
-                                        <div
-                                            class="control"
-                                            v-if="editingResource">
-                                            <div class="control">
-                                                <input
-                                                    class="input"
-                                                    v-model="resourceName">
-                                            </div>
-                                        </div>
                                     </div>
-                                    <div
+                                    <!--<div
                                         class="cass__right-aside--property-icons"
                                         v-if="canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId">
                                         <div
@@ -303,9 +261,21 @@
                                             class="icon is-small">
                                             <i class="fa fa-edit is-size-5" />
                                         </div>
-                                    </div>
+                                    </div>-->
                                     <div class="cass__right-aside--property-label">
                                         Directory Name
+                                    </div>
+                                    <div
+                                        v-if="canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId"
+                                        class="cass__right-aside--property flex-end">
+                                        <div
+                                            @click="editDirectory"
+                                            class="button is-pulled-right is-primary is-outlined">
+                                            <span>Edit</span>
+                                            <span class="icon">
+                                                <i class="fa fa-edit" />
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </template>
@@ -332,18 +302,22 @@
                         </button>
                         <div
                             :class=" accordion === 'users' ? 'active' : ''"
-                            class="cass__right-side--accordion-panel">
+                            class="cass__right-side--accordion-panel users">
                             <div
-                                class="cass__right-aside--whole-item">
-                                <b>Manage Users and Privacy:</b>
-                                <span
-                                    class="icon"
-                                    @click="manageUsers">
-                                    <i class="fas fa-users" />
-                                </span>
+                                class="cass__right-aside--whole-item pt-2">
+                                <div class="buttons is-centered">
+                                    <div
+                                        @click="manageUsers"
+                                        class="button is-primary is-rounded">
+                                        <span>Manage Users and Privacy</span>
+                                        <span
+                                            class="icon">
+                                            <i class="fas fa-users" />
+                                        </span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <!-- manage users for resources -->
                     </template>
                     <!-- description -->
                     <template v-if="objectType === 'Directory'">
@@ -364,81 +338,112 @@
                         <div
                             :class=" accordion === 'description' ? 'active' : ''"
                             class="cass__right-side--accordion-panel">
-                            <div class="p-2">
+                            <div
+                                v-if="objectDescription"
+                                class="p-2">
                                 {{ objectDescription }}
+                            </div>
+                            <div class="p-2">
+                                No description
                             </div>
                         </div>
                     </template>
                     <!-- copy to directory -->
-                    <button
-                        :class=" accordion === 'copy' ? 'active' : ''"
-                        @click="clickAccordion('copy'); copyingToDirectory = true;"
-                        class="cass__right-side--accordion">
-                        Copy to Directory
-                        <span class="icon is-pulled-right">
-                            <i
-                                v-if="accordion === 'copy'"
-                                class="fa fa-minus" />
-                            <i
-                                v-else
-                                class="fa fa-plus" />
-                        </span>
-                    </button>
-                    <div
-                        :class=" accordion === 'copy' ? 'active' : ''"
-                        class="cass__right-side--accordion-panel">
-                        <li
-                            class="cass--list-item-info--search-result--li"
-                            v-for="directory in directoryOptions"
-                            :key="directory"
-                            @click="copyOrMove(directory)">
-                            {{ directory.name }}
-                        </li>
-                    </div>
-                    <!-- move to directory -->
-                    <button
-                        @click="clickAccordion('move'); movingToDirectory = true;"
-                        class="cass__right-side--accordion">
-                        Move to Directory
-                        <span class="icon is-pulled-right">
-                            <i
-                                v-if="accordion === 'move'"
-                                class="fa fa-minus" />
-                            <i
-                                v-else
-                                class="fa fa-plus" />
-                        </span>
-                    </button>
-                    <div
-                        :class=" accordion === 'move' ? 'active' : ''"
-                        class="cass__right-side--accordion-panel">
-                        <li
-                            class="cass--list-item-info--search-result--li"
-                            v-for="directory in directoryOptions"
-                            :key="directory"
-                            @click="copyOrMove(directory)">
-                            {{ directory.name }}
-                        </li>
-                        <!--<li
-                            class="cass--list-item-info--search-result--li"
-                            @click="removeFromDirectory"
-                            v-if="movingToDirectory">
-                            Remove from directory
-                        </li>-->
-                    </div>
-                    <!--<ul
-                        class="cass--list-item-info--search-result"
-                        v-if="copyingToDirectory || movingToDirectory">
-                        <div class="title is-size-4">
-                            Choose a directory
+                    <template>
+                        <button
+                            :class=" accordion === 'copy' ? 'active' : ''"
+                            @click="clickAccordion('copy'); copyingToDirectory = true;"
+                            class="cass__right-side--accordion">
+                            Copy {{ objectType }}
+                            <span class="icon is-pulled-right">
+                                <i
+                                    v-if="accordion === 'copy'"
+                                    class="fa fa-minus" />
+                                <i
+                                    v-else
+                                    class="fa fa-plus" />
+                            </span>
+                        </button>
+                        <div
+                            :class=" accordion === 'copy' ? 'active' : ''"
+                            class="cass__right-side--accordion-panel">
+                            <li
+                                class="cass--list-item-info--search-result--li"
+                                v-for="directory in copyDirectoryOptions"
+                                :key="directory">
+                                <span
+                                    class="cass--list-item-info--search-results--li-text">
+                                    {{ directory.name }}
+                                </span>
+                                <span
+                                    @click="copyOrMove(directory)"
+                                    class="button is-primary is-outlined is-small is-pulled-right">
+                                    copy here
+                                </span>
+                            </li>
                         </div>
-                        <li
-                            class="cass--list-item-info--search-result--li"
-                            @click="removeFromDirectory"
-                            v-if="movingToDirectory">
-                            Remove from directory
-                        </li>
-                    </ul>-->
+                    </template>
+                    <!-- move to directory -->
+                    <template v-if="loggedIn && canEditObject">
+                        <button
+                            :class=" accordion === 'move' ? 'active' : ''"
+                            @click="clickAccordion('move'); movingToDirectory = true;"
+                            class="cass__right-side--accordion">
+                            Move {{ objectType }}
+                            <span class="icon is-pulled-right">
+                                <i
+                                    v-if="accordion === 'move'"
+                                    class="fa fa-minus" />
+                                <i
+                                    v-else
+                                    class="fa fa-plus" />
+                            </span>
+                        </button>
+                        <div
+                            :class=" accordion === 'move' ? 'active' : ''"
+                            class="cass__right-side--accordion-panel">
+                            <li
+                                class="cass--list-item-info--search-result--li"
+                                v-for="directory in moveDirectoryOptions"
+                                :key="directory">
+                                <span
+                                    class="cass--list-item-info--search-results--li-text">
+                                    {{ directory.name }}
+                                </span>
+                                <span
+                                    @click="copyOrMove(directory)"
+                                    class="button is-primary is-v-centered is-outlined is-small is-pulled-right">
+                                    move here
+                                </span>
+                            </li>
+                            <li
+                                class="cass--list-item-info--search-result--li"
+                                v-if="object.directory || object.parentDirectory">
+                                <span
+                                    class="cass--list-item-info--search-results--li-text has-text-danger">
+                                    Remove from directory
+                                </span>
+                                <span
+                                    v-if="movingToDirectory"
+                                    @click="removeFromDirectory"
+                                    class="button is-danger is-outlined is-small is-pulled-right">
+                                    remove
+                                </span>
+                            </li>
+                        </div>
+                    </template>
+                    <!-- delete directory -->
+                    <template v-if="canEditObject && objectType === 'Directory'">
+                        <div class="">
+                            <div
+                                @click="deleteDirectory"
+                                class="buttons is-pulled-right p-2">
+                                <div class="button is-danger is-outlined">
+                                    delete directory
+                                </div>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -446,10 +451,11 @@
 </template>
 <script>
 import common from '@/mixins/common.js';
-
 export default {
     name: 'ListItemInfo',
     mixins: [common],
+    components: {
+    },
     data() {
         return {
             accordion: 'details',
@@ -461,13 +467,14 @@ export default {
             frameworksToProcess: 0,
             clipStatus: 'ready',
             ineligibleDirectoriesForMove: [],
-            editingResource: false,
-            resourceName: '',
-            resourceUrl: '',
-            errorEditing: null
+            errorEditing: null,
+            processingCopyOrMove: false
         };
     },
     methods: {
+        deleteDirectory() {
+            this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});
+        },
         clickAccordion(item) {
             if (this.accordion === item) {
                 this.accordion = '';
@@ -523,6 +530,7 @@ export default {
             } else if (this.object.type === "CreativeWork") {
                 window.open(this.object.url, '_blank');
             } else if (this.$store.getters['editor/conceptMode']) {
+                this.$store.commit('app/selectDirectory', null);
                 EcConceptScheme.get(this.object.id, function(success) {
                     me.$store.commit('editor/framework', success);
                     me.$store.commit('editor/clearFrameworkCommentData');
@@ -531,6 +539,7 @@ export default {
                     me.$router.push({name: "conceptScheme", params: {frameworkId: me.object.id}});
                 }, appError);
             } else {
+                this.$store.commit('app/selectDirectory', null);
                 EcFramework.get(this.object.id, function(success) {
                     me.$store.commit('editor/framework', success);
                     me.$store.commit('editor/clearFrameworkCommentData');
@@ -561,6 +570,13 @@ export default {
         },
         copyOrMove: function(directory) {
             this.frameworksToProcess = 0;
+            this.processingCopyOrMove = true;
+            this.$Progress.start();
+            if (this.copyingToDirectory) {
+                this.$emit('beginCopy');
+            } else if (this.movingToDirectory) {
+                this.$emit('beginMove');
+            }
             // To do: add confirmation step once we have this in the right spot
             if (this.copyingToDirectory && this.objectType === 'Framework') {
                 this.copyFrameworkToDirectory(directory, this.object);
@@ -577,6 +593,7 @@ export default {
             }
         },
         removeFromDirectory: function() {
+            this.$Progress.start();
             if (this.objectType === 'Framework') {
                 this.removeFrameworkFromDirectory();
             } else if (this.objectType === 'CreativeWork') {
@@ -590,11 +607,14 @@ export default {
             this.frameworksToProcess--;
             if (this.frameworksToProcess <= 0) {
                 this.repo.multiput(toSave, function(success) {
+                    me.processingCopyOrMove = false;
+                    me.$Progress.finish();
                     me.copyingToDirectory = false;
                     if (me.movingToDirectory) {
                         // Remove the moved item from the right panel
                         me.$store.commit('app/rightAsideObject', null);
                         me.$store.commit('app/closeRightAside');
+                        me.$Progress.finish();
                         me.movingToDirectory = false;
                     }
                     if (shouldRefresh) {
@@ -603,6 +623,23 @@ export default {
                     }
                 }, appError);
             }
+        },
+        getCopyFrameworkName: function(f) {
+            let name = f.name;
+            if (!EcArray.isArray(name)) {
+                name = [name];
+            }
+            for (let each in name) {
+                if (name[each]["@value"]) {
+                    name[each]["@value"] = "Copy of " + name[each]["@value"];
+                } else {
+                    name[each] = "Copy of " + name[each];
+                }
+            }
+            if (name.length === 1) {
+                name = name[0];
+            }
+            return name;
         },
         copyFrameworkToDirectory: function(directory, framework, toSaveFromSubdirectory) {
             let toSave = [];
@@ -630,6 +667,8 @@ export default {
             if (EcIdentityManager.ids.length > 0) {
                 f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
+            let name = this.getCopyFrameworkName(f);
+            f.name = name;
             f['ceasn:derivedFrom'] = framework.id;
             let competencyMap = {};
             // to do: replace all the competency (etc) URLs in framework object and THEN push framework obj
@@ -779,7 +818,7 @@ export default {
             } else {
                 c.generateId(this.repo.selectedServer);
             }
-            c.name = resource.name;
+            c.name = "Copy of " + resource.name;
             c.url = resource.url;
             c.directory = directory.shortId();
             if (directory.owner) {
@@ -829,6 +868,7 @@ export default {
                 subdirectory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
             subdirectory['ceasn:derivedFrom'] = oldSubdirectory.id;
+            subdirectory.name = "Copy of " + subdirectory.name;
             toSave.push(subdirectory);
             this.repo.search("(directory:\"" + oldSubdirectory.shortId() + "\" OR parentDirectory:\"" + oldSubdirectory.shortId() + "\")", function() {}, function(success) {
                 me.frameworksToProcess += success.length;
@@ -941,6 +981,7 @@ export default {
             let framework = this.object;
             let me = this;
             let toSave = [];
+            this.$Progress.start();
             EcDirectory.get(framework.directory, function(directory) {
                 if (directory.owner) {
                     for (let each of directory.owner) {
@@ -1075,30 +1116,6 @@ export default {
             this.$store.commit('app/objForShareModal', this.object);
             this.$store.commit('app/showModal', {component: 'Share'});
         },
-        editResource: function() {
-            this.editingResource = true;
-            this.resourceName = this.objectName;
-            this.resourceUrl = this.object.url;
-        },
-        saveResource: function() {
-            if (this.resourceName.length === 0) {
-                this.errorEditing = "Resource must have a name.";
-                return;
-            }
-            if (this.resourceUrl.length === 0 || !this.resourceUrl.startsWith("http")) {
-                this.errorEditing = "Resource must have a URL starting with http.";
-                return;
-            }
-            this.errorEditing = null;
-            let me = this;
-            let resource = this.object;
-            resource.name = this.resourceName;
-            resource.url = this.resourceUrl;
-            repo.saveTo(resource, function() {
-                me.$store.commit('app/rightAsideObject', resource);
-                me.editingResource = false;
-            }, appError);
-        },
         editDirectory: function() {
             this.$store.commit('app/editDirectory', true);
         }
@@ -1196,9 +1213,17 @@ export default {
             }
             return (link + "?frameworkId=" + this.objectShortId);
         },
-        directoryOptions: function() {
+        copyDirectoryOptions: function() {
             let me = this;
-            if (this.movingToDirectory && this.objectType === "Directory") {
+            return this.$store.getters['app/directoryList'].filter(directory => {
+                return (directory.shortId() !== me.object.shortId() &&
+                    (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
+                    (me.object.directory ? (directory.shortId() !== me.object.directory) : true));
+            });
+        },
+        moveDirectoryOptions: function() {
+            let me = this;
+            if (this.objectType === "Directory") {
                 return this.$store.getters['app/directoryList'].filter(directory => {
                     return (directory.shortId() !== me.object.shortId() &&
                         (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
