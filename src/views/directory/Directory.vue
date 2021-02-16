@@ -182,7 +182,7 @@
                                         <a
                                             @click="createResource = true"
                                             href="#"
-                                            class="dropdown-item is-active">
+                                            class="dropdown-item">
                                             Resource
                                         </a>
                                     </div>
