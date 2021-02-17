@@ -682,7 +682,9 @@ export default {
                     }
                     done();
                 }, function(objs) {
-                    me.repo.deleteRegistered(obj, appLog, appError);
+                    me.repo.deleteRegistered(obj, function() {
+                        me.$store.dispatch('app/refreshDirectories');
+                    }, appError);
                     if (obj.shortId() === me.directory.shortId()) {
                         me.$router.push({name: "frameworks"});
                     }

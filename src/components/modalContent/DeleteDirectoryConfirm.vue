@@ -96,6 +96,8 @@ export default {
                         appLog(success);
                         me.numDirectories--;
                         if (me.numDirectories === 0) {
+                            me.$store.dispatch('app/refreshDirectories');
+                            me.$store.commit('app/refreshSearch', true);
                             if (me.$route.name !== "frameworks") {
                                 me.$router.push({name: "frameworks"});
                             }
