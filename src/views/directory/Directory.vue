@@ -121,7 +121,7 @@
         </modal-template>
         <thing-editing
             v-if="editDirectory && canEditDirectory"
-            :obj="directory"
+            :obj="$store.getters['app/rightAsideObject']"
             :repo="repo"
             :parentNotEditable="queryParams.view==='true'"
             :profile="directoryProfile"
@@ -660,6 +660,12 @@ export default {
             }, appError);
         },
         onDoneEditingNode: function() {
+            let me = this;
+            if (this.$store.getters['app/rightAsideObject']) {
+                EcRepository.get(this.$store.getters['app/rightAsideObject'].shortId(), function(success) {
+                    me.$store.commit('app/rightAsideObject', success);
+                }, appError);
+            }
             this.$store.commit('app/editDirectory', false);
         },
         deleteObject: function(obj) {
