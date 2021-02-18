@@ -57,6 +57,12 @@ module.exports = {
             ]
         },
         {
+            title: 'Managing Directories',   // required
+            collapsable: true, // optional, defaults to true
+            path: '/directories/',
+            sidebarDepth: 1  // optional, defaults to 1
+        },
+        {
             title: 'Managing Taxonomies',   // required
             collapsable: true, // optional, defaults to true
             path: '/taxonomies/',
