@@ -60,6 +60,9 @@ export default {
             return this.$store.getters['app/editDirectory'];
         },
         canEditDirectory: function() {
+            if (!this.directory) {
+                return false;
+            }
             if (this.queryParams && this.queryParams.view === 'true') {
                 return false;
             } else if (!this.directory.canEditAny(EcIdentityManager.getMyPks())) {
@@ -120,7 +123,7 @@ export default {
     },
     watch: {
         changedObject: function() {
-            if (this.changedObject && this.changedObject === this.directory.shortId()) {
+            if (this.changedObject && this.directory && this.changedObject === this.directory.shortId()) {
                 let me = this;
                 EcRepository.get(this.directory.shortId(), function(dir) {
                     if (me.$store.getters['app/selectedDirectory'] && me.$store.getters['app/selectedDirectory'].shortId() === dir.shortId()) {
