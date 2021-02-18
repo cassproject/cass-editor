@@ -330,6 +330,6 @@ export default {
 
 <style lang="scss">
 #cass-modal {
-    z-index: 50;
+    z-index: 101;
 }
 </style>
