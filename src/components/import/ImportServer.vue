@@ -247,6 +247,12 @@
                                         Cancel
                                     </div>
                                     <div
+                                        class="button is-outlined is-dark"
+                                        v-if="directoryThatsOpen"
+                                        @click="goBack">
+                                        Back
+                                    </div>
+                                    <div
                                         v-if="importTransition !== 'importingCassFrameworks'"
                                         class="button is-outlined is-primary"
                                         @click="importCassFrameworks()">
@@ -294,7 +300,8 @@ export default {
             serverType: '',
             cassDirectories: [],
             cassFrameworks: [],
-            remoteRepo: null
+            remoteRepo: null,
+            directoryThatsOpen: null
         };
     },
     computed: {
@@ -376,6 +383,7 @@ export default {
         cassSearchEndpoint: function() {
             this.cassDirectories.splice(0, this.cassDirectories.length);
             this.cassFrameworks.splice(0, this.cassFrameworks.length);
+            this.searchingTopLevel = true;
             let me = this;
             let paramObj = {};
             paramObj.size = 50;
@@ -402,7 +410,7 @@ export default {
                 success[each].success = false;
                 success[each].error = false;
                 success[each].checked = false;
-                if (objectType === "directory") {
+                if (objectType === "directory" && (!success[each].parentDirectory || !this.searchingTopLevel)) {
                     this.cassDirectories.push(success[each]);
                 } else if (objectType === "framework") {
                     this.cassFrameworks.push(success[each]);
@@ -519,12 +527,14 @@ export default {
             });
         },
         openDirectory: function(directory) {
+            this.directoryThatsOpen = directory;
             let me = this;
             let paramObj = {};
             paramObj.size = 50;
             paramObj.sort = '[ { "name.keyword": {"order" : "asc"}} ]';
             EcDirectory.search(this.remoteRepo, "parentDirectory:\"" + directory.shortId() + "\"", function(success) {
                 me.cassDirectories.splice(0, me.cassDirectories.length);
+                me.searchingTopLevel = false;
                 me.cassSearchSuccess(success, "directory");
             }, appError, paramObj);
             EcFramework.search(this.remoteRepo, "directory:\"" + directory.shortId() + "\"", function(success) {
@@ -692,6 +702,21 @@ export default {
             }
             this.clearImport();
             this.$store.commit('app/importTransition', 'upload');
+        },
+        goBack: function() {
+            let me = this;
+            if (this.directoryThatsOpen && this.directoryThatsOpen.parentDirectory) {
+                EcRepository.get(this.directoryThatsOpen.parentDirectory, function(success) {
+                    me.openDirectory(success);
+                }, function(error) {
+                    appError(error);
+                    me.directoryThatsOpen = null;
+                    me.cassSearchEndpoint();
+                });
+            } else {
+                this.directoryThatsOpen = null;
+                this.cassSearchEndpoint();
+            }
         }
     },
     watch: {
