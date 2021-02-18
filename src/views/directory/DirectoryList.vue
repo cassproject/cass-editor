@@ -26,7 +26,9 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="cass--list-item--content">
+                            <div
+                                class="cass--list-item--content"
+                                :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass-list-item--selected' : ''">
                                 <Breadcrumbs
                                     v-if="searchTerm"
                                     :competency="item"
@@ -61,7 +63,9 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="cass--list-item--content">
+                            <div
+                                class="cass--list-item--content"
+                                :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass-list-item--selected' : ''">
                                 <Breadcrumbs
                                     v-if="searchTerm"
                                     :competency="item"
@@ -96,7 +100,9 @@
                                     </span>
                                 </div>
                             </div>
-                            <div class="cass--list-item--content">
+                            <div
+                                class="cass--list-item--content"
+                                :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass-list-item--selected' : ''">
                                 <Breadcrumbs
                                     :competency="item"
                                     :ref="item.id" />
@@ -127,7 +133,9 @@
                                     <i class="fa fa-paperclip" />
                                 </div>
                             </div>
-                            <div class="cass--list-item--content">
+                            <div
+                                class="cass--list-item--content"
+                                :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass-list-item--selected' : ''">
                                 <div
                                     class="list-ul__item--resource">
                                     {{ item.name }}
@@ -279,6 +287,12 @@ export default {
         },
         searchingInDirectory: function() {
             return this.$store.getters['app/searchingInDirectory'];
+        },
+        rightAsideObjectId: function() {
+            if (this.$store.getters['app/rightAsideObject']) {
+                return this.$store.getters['app/rightAsideObject'].shortId();
+            }
+            return null;
         }
     },
     methods: {
