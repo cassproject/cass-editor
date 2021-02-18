@@ -767,7 +767,6 @@ export default {
         }
     },
     beforeRouteLeave(to, from, next) {
-        console.log("before nav");
         if (this.currentUserGroupChanged) {
             this.saveWorkBeforeNav(to);
         } else {
