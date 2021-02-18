@@ -20,7 +20,6 @@
         .cass--list {
              li.cass--list--item {
                     padding: .5rem;
-                    background-color: white;
                     width: 100%;
                     display: flex;
                     flex-wrap: no-wrap;
@@ -89,6 +88,9 @@
                     }
                 }
 
+            }
+            .cass--list--item--selected {
+                background-color: tint($cass-primary, 60%) !important;
             }
             .cass--list--item:hover {
             }

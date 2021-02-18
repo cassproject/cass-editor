@@ -15,6 +15,7 @@
                         <!-- directories -->
                         <li
                             class="cass--list--item "
+                            :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
                             v-for="(item) in directory"
                             :key="item.id"
                             @click="click(item)">
@@ -27,8 +28,7 @@
                                 </div>
                             </div>
                             <div
-                                class="cass--list-item--content"
-                                :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass-list-item--selected' : ''">
+                                class="cass--list-item--content">
                                 <Breadcrumbs
                                     v-if="searchTerm"
                                     :competency="item"
@@ -51,6 +51,7 @@
                         <!-- frameworks -->
                         <li
                             class="cass--list--item "
+                            :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
                             v-for="(item) in framework"
                             :key="item.id"
                             @click="click(item)">
@@ -64,8 +65,7 @@
                                 </div>
                             </div>
                             <div
-                                class="cass--list-item--content"
-                                :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass-list-item--selected' : ''">
+                                class="cass--list-item--content">
                                 <Breadcrumbs
                                     v-if="searchTerm"
                                     :competency="item"
@@ -88,6 +88,7 @@
                         <!-- After the framework/concept scheme search results, show competencies/concepts -->
                         <li
                             class="cass--list--item "
+                            :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
                             v-for="(item) in competency"
                             :key="item.id"
                             @click="competencyClick(item)">
@@ -101,8 +102,7 @@
                                 </div>
                             </div>
                             <div
-                                class="cass--list-item--content"
-                                :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass-list-item--selected' : ''">
+                                class="cass--list-item--content">
                                 <Breadcrumbs
                                     :competency="item"
                                     :ref="item.id" />
