@@ -878,6 +878,15 @@ export default {
             }, function() {});
         },
         removeOwnerOrReader: function(userOrGroup, type) {
+            if (type === 'user') {
+                if (this.cantRemoveCurrentUserAsOwner && userOrGroup.currentUser && !this.numGroupsAsOwner) {
+                    return;
+                }
+            } else if (type === 'group') {
+                if (userOrGroup.currentUser && this.numGroupsAsOwner === 1 && userOrGroup.view === 'admin' && this.cantRemoveCurrentUserAsOwner && !this.userIsOwner) {
+                    return;
+                }
+            }
             if (userOrGroup.view === "view") {
                 this.removeReader.push(userOrGroup.pk);
             } else if (userOrGroup.view === "admin") {
