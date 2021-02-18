@@ -436,7 +436,15 @@ export default {
             }
             if (lis === 0) {
                 this.$store.commit('app/importFramework', this.$store.getters['editor/framework']);
-                this.importSuccess();
+                if (this.cassFrameworks.length === 1) {
+                    this.importSuccess();
+                } else {
+                    this.$store.commit('app/sortResults', {
+                        id: 'lastEdited',
+                        label: 'last modified'
+                    });
+                    this.$router.push({name: "frameworks"});
+                }
                 this.$store.commit('app/importStatus', "Import finished.");
             } else {
                 var me = this;
@@ -460,6 +468,7 @@ export default {
                 framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
             framework.id = framework.shortId();
+            framework["schema:dateModified"] = new Date().toISOString();
             delete framework.loading;
             delete framework.success;
             delete framework.error;
