@@ -171,7 +171,7 @@
                                     <span
                                         class="inline-link"
                                         title="Copy URL to the clipboard."
-                                        v-clipboard="shareLink"
+                                        v-clipboard="() => shareLink"
                                         v-clipboard:success="successfulClip"
                                         v-clipboard:error="errorClip">
                                         <span
