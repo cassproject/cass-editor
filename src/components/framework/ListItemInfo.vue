@@ -194,7 +194,7 @@
                         </div>
                     </template>
                     <!-- properties -->
-                    <template v-if="objectType === 'CreativeWork' || canEditObject && objectType === 'Directory' && $route.name === 'directory'">
+                    <template v-if="objectType === 'CreativeWork' || canEditObject && objectType === 'Directory'">
                         <button
                             @click="clickAccordion('properties')"
                             class="cass__right-side--accordion details">

@@ -4,6 +4,14 @@
         :class=" showRightAside ? 'right-side-open' : ''">
         <!-- should be used for search bar -->
         <template #top>
+            <thing-editing
+                v-if="editDirectory && canEditDirectory"
+                :obj="$store.getters['app/rightAsideObject']"
+                :repo="repo"
+                :parentNotEditable="queryParams.view==='true'"
+                :profile="directoryProfile"
+                @delete-object="deleteObject"
+                @done-editing-node-event="onDoneEditingNode()" />
             <div class="container">
                 <div class="columns">
                     <div class="column is-6">
@@ -305,10 +313,11 @@ import debounce from 'lodash/debounce';
 import List from '@/lode/components/lode/List.vue';
 import RightAside from '@/components/framework/RightAside.vue';
 import common from '@/mixins/common.js';
+import editDirectory from '@/mixins/editDirectory.js';
 import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: "Frameworks",
-    mixins: [common],
+    mixins: [common, editDirectory],
     data: function() {
         return {
             repo: window.repo,
@@ -420,7 +429,13 @@ export default {
             return this.$store.getters['editor/conceptMode'];
         }
     },
-    components: {List, RightAside, SearchBar, MainLayout},
+    components: {
+        List,
+        RightAside,
+        SearchBar,
+        MainLayout,
+        ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue')
+    },
     methods: {
         canEditItem: function(item) {
             return item.canEditAny(EcIdentityManager.getMyPks());
