@@ -766,6 +766,14 @@ export default {
             });
         }
     },
+    beforeRouteLeave(to, from, next) {
+        console.log("before nav");
+        if (this.currentUserGroupChanged) {
+            this.saveWorkBeforeNav(to);
+        } else {
+            next();
+        }
+    },
     methods: {
         showMemberListView() {
             this.currentUserGroupNeedsRekey = false;
@@ -1159,6 +1167,23 @@ export default {
             } else {
                 appLog('Cannot find user group: ' + id);
             }
+        },
+        saveWorkBeforeNav(val) {
+            let params = {};
+            var me = this;
+            appLog("modal");
+            params = {
+                type: 'removeObject',
+                selectedExportOption: '',
+                title: "Discard unsaved changes?",
+                text: "You have unsaved changes.  Cancel to return to group and save changes, or confirm to discard changes.",
+                onConfirm: () => {
+                    this.currentUserGroupChanged = false;
+                    return this.$router.push(val.name);
+                }
+            };
+            // reveal modal
+            this.$modal.show(params);
         },
         showModal(val) {
             let params = {};

@@ -17,7 +17,7 @@ module.exports = {
         https: true,
         key: fs.readFileSync('localhost.key'),
         cert: fs.readFileSync('localhost.crt'),
-        ca: fs.readFileSync('ca.pem'),
+        ca: fs.readFileSync('ca.pem')
     },
     configureWebpack: {
         plugins: [new CompressionPlugin()]
