@@ -506,6 +506,7 @@ export default {
             // To do: Add other owners and readers
             dir.save(function(success) {
                 appLog("Directory saved: " + dir.id);
+                me.directoryName = '';
                 me.$store.dispatch('app/refreshDirectories');
                 me.selectDirectory(dir);
             }, appError, window.repo);

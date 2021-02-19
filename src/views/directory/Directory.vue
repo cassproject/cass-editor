@@ -544,6 +544,7 @@ export default {
                 me.createSubdirectory = false;
                 me.subdirectoryName = '';
                 me.$store.commit('app/selectDirectory', dir);
+                me.$store.commit('app/rightAsideObject', dir);
             }, appError, this.repo);
         },
         successfulClip({value, event}) {
