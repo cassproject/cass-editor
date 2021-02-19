@@ -56,7 +56,7 @@ export const cassApi = {
         },
         redirectToExternalLogout: function() {
             appLog("Redirecting to external logout...");
-            window.location = this.cassApiLocation + this.USER_LOGOUT_SERVICE + "?redirectUrl=" + encodeURIComponent(this.LOGOUT_REDIRECT_URL);
+            window.location = this.cassApiLocation + this.USER_LOGOUT_SERVICE + "?redirectUrl=" + encodeURIComponent(this.LOGOUT_REDIRECT_URL + this.addQueryParams());
         },
         performApplicationLogout: function() {
             // TODO implement and tie to SideNav.vue
@@ -66,6 +66,33 @@ export const cassApi = {
             let clearPerson = {};
             this.$store.commit('user/loggedOnPerson', clearPerson);
             this.redirectToExternalLogout();
+        },
+        addQueryParams: function() {
+            let paramObj = this.$store.getters['editor/queryParams'];
+            let keys = EcObject.keys(paramObj);
+            if (paramObj && keys.length) {
+                let toAdd = '?';
+                for (let each in keys) {
+                    if (each !== 0) {
+                        toAdd += "&";
+                    }
+                    let key = keys[each];
+                    let val = paramObj[key];
+                    if (EcArray.isArray(val)) {
+                        for (let i in val) {
+                            if (i !== 0) {
+                                toAdd += "&";
+                            }
+                            toAdd += (key + "=" + val[i]);
+                        }
+                    } else {
+                        toAdd += (key + "=" + val);
+                    }
+                }
+                return toAdd;
+            } else {
+                return '';
+            }
         }
     },
     computed: {

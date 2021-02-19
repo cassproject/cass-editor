@@ -3,7 +3,7 @@
 #directory,
 #directoryList,
 #frameworks,
-.framework-list-page {
+.framework-list-page:not(.thing-editing) {
     .lode__Property {
         padding: .125rem 0rem;
     }
@@ -20,7 +20,6 @@
         .cass--list {
              li.cass--list--item {
                     padding: .5rem;
-                    background-color: white;
                     width: 100%;
                     display: flex;
                     flex-wrap: no-wrap;
@@ -90,6 +89,9 @@
                 }
 
             }
+            .cass--list--item--selected {
+                background-color: tint($cass-primary, 60%) !important;
+            }
             .cass--list--item:hover {
             }
             .lode__thing {
@@ -112,10 +114,10 @@
             }
         }
     }
-     .lode__Framework,
-     .framework-list-page,
-     .lode__ConceptScheme,
-     .lode__Concept {
+    .lode__Framework,
+    .framework-list-page,
+    .lode__ConceptScheme,
+    .lode__Concept {
         a {
             display:none;
         }
@@ -132,68 +134,78 @@
             padding-left: 0;
         }
     }
-    .lode__name {
-        .field {
-            padding-left: 0;
-            display: inline-block;
+    .lode__thing-editing {
+        .field.is-grouped {
+            padding: .25rem 0rem;
         }
-        .field:nth-of-type(n + 3) {
-            .field-body {
-                .field {
-                    padding-left: 0;
-                    &::before {
-                        content: ", ";
+        .lode__Property {
+            padding: .5rem 0rem;
+        }
+    }
+    .lode__thing {
+        .lode__name {
+            .field {
+                padding-left: 0;
+                display: inline-block;
+            }
+            .field:nth-of-type(n + 3) {
+                .field-body {
+                    .field {
+                        padding-left: 0;
+                        &::before {
+                            content: ", ";
+                        }
                     }
                 }
             }
-        }
-        .field:first-of-type{
-            display: block;
-            .field-body {
-                .field {
-                    display: block;
+            .field:first-of-type{
+                display: block;
+                .field-body {
+                    .field {
+                        display: block;
+                        font-weight: 500;
+                        font-family: $family-secondary;
+                        width: 100%;
+                        font-size: $size-3;
+                    }
+                }
+            }
+    
+    
+    
+            label {
+                display:none;
+            }
+            .lode__Property-ul{
+                border-radius: .25rem;
+                padding: 0rem .0rem;
+                font-size: .8rem;
+                margin: .125em 0em;
+    
+                color: rgba($dark, .9);
+                .lode__description {
+                    font-weight: 400;
+                    font-size: $size-6;
+                }
+                .lode__name{
+                    font-weight: 600;
+                    font-size: $size-4;
+                }
+    
+                label {
+                    font-size: $size-6;
                     font-weight: 500;
-                    font-family: $family-secondary;
-                    width: 100%;
-                    font-size: $size-3;
                 }
             }
         }
-
-
-
-        label {
-            display:none;
-        }
-        .lode__Property-ul{
-            border-radius: .25rem;
-            padding: 0rem .0rem;
-            font-size: .8rem;
-            margin: .125em 0em;
-
-            color: rgba($dark, .9);
-            .lode__description {
-                font-weight: 400;
+        .lode__description {
+            display: none;
+            .lode__Property-text  {
                 font-size: $size-6;
             }
-            .lode__name{
-                font-weight: 600;
-                font-size: $size-4;
+            .lode__Property-ul {
+                margin: 0rem;
             }
-
-            label {
-                font-size: $size-6;
-                font-weight: 500;
-            }
-        }
-    }
-    .lode__description {
-        display: none;
-        .lode__Property-text  {
-            font-size: $size-6;
-        }
-        .lode__Property-ul {
-            margin: 0rem;
         }
     }
 }

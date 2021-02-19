@@ -171,7 +171,7 @@
                                     <span
                                         class="inline-link"
                                         title="Copy URL to the clipboard."
-                                        v-clipboard="shareLink"
+                                        v-clipboard="() => shareLink"
                                         v-clipboard:success="successfulClip"
                                         v-clipboard:error="errorClip">
                                         <span
@@ -194,7 +194,7 @@
                         </div>
                     </template>
                     <!-- properties -->
-                    <template v-if="objectType === 'CreativeWork' || canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId">
+                    <template v-if="objectType === 'CreativeWork' || canEditObject && objectType === 'Directory'">
                         <button
                             @click="clickAccordion('properties')"
                             class="cass__right-side--accordion details">
@@ -266,7 +266,7 @@
                                         Directory Name
                                     </div>
                                     <div
-                                        v-if="canEditObject && objectType === 'Directory' && objectShortId === selectedDirectoryId"
+                                        v-if="canEditObject && objectType === 'Directory'"
                                         class="cass__right-aside--property flex-end">
                                         <div
                                             @click="editDirectory"
@@ -343,7 +343,9 @@
                                 class="p-2">
                                 {{ objectDescription }}
                             </div>
-                            <div class="p-2">
+                            <div
+                                class="p-2"
+                                v-else>
                                 No description
                             </div>
                         </div>

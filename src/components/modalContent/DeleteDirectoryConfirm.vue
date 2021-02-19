@@ -24,7 +24,7 @@
             <p>
                 You are about to delete the above directory. <b>This action is not reversable.</b>
                 Deleting this directory will delete all of its
-                contents and make it unavailble to others who might be using it.
+                contents and make it unavailable to others who might be using it.
             </p>
         </section>
         <section class="modal-card-body pt-0 mt-0">
@@ -96,6 +96,8 @@ export default {
                         appLog(success);
                         me.numDirectories--;
                         if (me.numDirectories === 0) {
+                            me.$store.dispatch('app/refreshDirectories');
+                            me.$store.commit('app/refreshSearch', true);
                             if (me.$route.name !== "frameworks") {
                                 me.$router.push({name: "frameworks"});
                             }

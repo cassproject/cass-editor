@@ -80,6 +80,12 @@ export default {
             appLog("evt", evt);
             this.$emit('change', this.relationship, 'enabled', retVal);
         }
+    },
+    watch: {
+        enabled: function() {
+            // If parent component changes this, update it in modal too
+            this.localEnabled = this.enabled;
+        }
     }
 };
 </script>
