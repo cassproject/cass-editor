@@ -397,7 +397,19 @@ export default {
             }, appError, paramObj);
             EcFramework.search(this.remoteRepo, search, function(success) {
                 me.cassSearchSuccess(success, "framework");
-            }, appError, paramObj);
+            }, function(error) {
+                appLog(error);
+                me.cassSearchError();
+            }, paramObj);
+        },
+        cassSearchError: function() {
+            let error = {
+                message: "Unable to search the URL Endpoint provided.",
+                details: "Make sure you entered the URL of a CaSS Repository."
+            };
+            this.$store.commit('app/addImportError', error.details);
+            this.$store.commit('app/importTransition', 'upload');
+            this.showModal('error', error);
         },
         cassSearchSuccess: function(success, objectType) {
             if (objectType === "framework") {
