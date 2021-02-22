@@ -185,61 +185,128 @@
                             </div>
                             <!-- HANDLE CASS DOCS -->
                             <div
-                                class=""
+                                class="cass__import--cass"
                                 v-if="cassDirectories.length || cassFrameworks.length">
-                                <SearchBar
-                                    searchType="framework" />
-                                <div v-if="cassDirectories.length">
-                                    <h3 class="subtitle has-text-weight-bold is-size-4">
+                                <!--
+                                <div
+                                    v-if="cassDirectories.length"
+                                    class="cass__import--directories">
+                                    <h3 class="has-text-weight-bold is-size-4">
                                         Found Directories
                                     </h3>
                                     <p>
-                                        Select a directory with frameworks you would like to import.
+                                        Select a directory to view its contents.
                                     </p>
-                                    <div
-                                        v-for="directory in cassDirectories"
-                                        :key="directory.id"
-                                        @click="openDirectory(directory)">
-                                        {{ directory.getName() }}
+                                    <div class="cass__import--cass--list">
+                                         if directory is selected show me
+                                        <div class="select">
+                                            <select>
+                                                <option>Select dropdown</option>
+                                                <option
+                                                    v-for="directory in cassDirectories"
+                                                    :key="directory.id"
+                                                    @click="openDirectory(directory)">
+                                                    {{ directory.getName() }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <div
+                                            v-for="directory in cassDirectories"
+                                            :key="directory.id"
+                                            @click="openDirectory(directory)"
+                                            class="cass__import--cass--list-item">
+                                            {{ directory.getName() }}
+                                        </div>
+                                    </div>
+                                </div>-->
+                                <div class="cass__import--frameworks">
+                                    <h3 class="has-text-weight-bold is-size-4">
+                                        Found Frameworks
+                                    </h3>
+                                    <p>
+                                        Select a directory to view its contents.
+                                    </p>
+                                    <div class="field">
+                                        <div class="select">
+                                            <select>
+                                                <label>Directories</label>
+                                                <option>Filter by directory</option>
+                                                <option>All frameworks</option>
+                                                <option
+                                                    v-for="directory in cassDirectories"
+                                                    :key="directory.id"
+                                                    @click="openDirectory(directory)">
+                                                    {{ directory.getName() }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <SearchBar
+                                            searchType="framework" />
+                                    </div>
+                                    <div class='field'>
+                                        <div class='buttons is-right'>
+                                            <div
+                                                class="button is-primary"
+                                                @click="selectAllFrameworks">
+                                                Select All
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <div
+                                            size="6"
+                                            class="select is-fullwidth is-primary is-multiple">
+                                            <select
+                                                multiple
+                                                size="8">
+                                                <option
+                                                    v-for="doc in cassFrameworks"
+                                                    :key="doc.id"
+                                                    :id="'check' + doc.id"
+                                                    value="Argentina">
+                                                    {{ doc.getName() }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <p class='help is-info'>
+                                            Select framework(s) to import.
+                                        </p>
+                                        <!--
+                                        <div
+                                            class="field is-grouped"
+                                            v-for="doc in cassFrameworks"
+                                            :key="doc.id">
+                                            <input
+                                                class="is-checkradio is-small"
+                                                type="checkbox"
+                                                :checked="doc.checked"
+                                                :id="'check' + doc.id"
+                                                :name="'check' + doc.id"
+                                                v-model="doc.checked"
+                                                v-if="!doc.loading && !doc.success && !doc.error">
+
+                                            <label
+                                                class="label"
+                                                :for="'check' + doc.id">{{ doc.getName() }}</label>
+                                            <span class="icon is-pulled-right">
+                                                <i
+                                                    class="fa fa-spinner fa-pulse"
+                                                    v-if="doc.loading" />
+                                                <i
+                                                    class="fa fa-exclamation-triangle"
+                                                    v-else-if="doc.error" />
+                                                <i
+                                                    class="fa fa-check"
+                                                    v-else-if="doc.success" />
+                                            </span>
+                                        </div>
+                                        -->
                                     </div>
                                 </div>
-                                <h3 class="subtitle has-text-weight-bold is-size-4">
-                                    Found Frameworks
-                                </h3>
-                                <p>
-                                    Select the framework you would like to import.
-                                </p>
-                                <div
-                                    class="field is-grouped"
-                                    v-for="doc in cassFrameworks"
-                                    :key="doc.id">
-                                    <input
-                                        class="is-checkradio is-small"
-                                        type="checkbox"
-                                        :checked="doc.checked"
-                                        :id="'check' + doc.id"
-                                        :name="'check' + doc.id"
-                                        v-model="doc.checked"
-                                        v-if="!doc.loading && !doc.success && !doc.error">
-
-                                    <label
-                                        class="label"
-                                        :for="'check' + doc.id">{{ doc.getName() }}</label>
-                                    <span class="icon is-pulled-right">
-                                        <i
-                                            class="fa fa-spinner fa-pulse"
-                                            v-if="doc.loading" />
-                                        <i
-                                            class="fa fa-exclamation-triangle"
-                                            v-else-if="doc.error" />
-                                        <i
-                                            class="fa fa-check"
-                                            v-else-if="doc.success" />
-                                    </span>
-                                </div>
-                                <div @click="selectAllFrameworks">
-                                    Select All
-                                </div>
+                            </div>
+                            <div class="is-12">
                                 <div class="buttons is-right">
                                     <div
                                         class="button is-outlined is-dark"
@@ -741,3 +808,45 @@ export default {
     }
 };
 </script>
+
+<style>
+.cass__import--cass {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.cass__import--directories {
+    width: 100%;
+    padding: 1rem 0rem;
+
+}
+.cass__import--frameworks {
+    width: 100%;
+    padding: 1rem 0rem;
+}
+.cass__import--cass--list {
+    height: 200px;
+    overflow-y: auto;
+    border-radius: 10px;
+    padding: 0rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.cass__import--cass--list-item {
+    padding: .5rem 1rem;
+}
+.cass__import--cass--list-item:hover {
+    background-color: rgba(0, 0, 0, .25);
+    padding: .5rem 1rem;
+}
+
+@media only screen and (max-width: 600px) {
+  .cass__import--directories,
+  .cass__import--frameworks {
+    width: 100%;
+  }
+}
+</style>

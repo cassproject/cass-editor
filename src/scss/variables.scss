@@ -8,6 +8,10 @@
 
 
 // generic variables need to update before import 
+:root {
+    --cass-primary: #4F99A8;
+    --cass-secondary: #68C8DB;
+}
 $cass-secondary:#68C8DB;
 $cass-secondary-up: tint($cass-secondary, 50%);
 $cass-secondary-down: shade($cass-secondary, 50%);
