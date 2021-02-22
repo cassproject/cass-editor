@@ -228,15 +228,18 @@
                                     </p>
                                     <div class="field">
                                         <div class="select">
-                                            <select>
+                                            <select v-model="selectDirectory">
                                                 <label>Directories</label>
-                                                <option>Filter by directory</option>
-                                                <option>All frameworks</option>
+                                                <option disabled>
+                                                    Filter by directory
+                                                </option>
+                                                <option value="all">
+                                                    All frameworks
+                                                </option>
                                                 <option
                                                     v-for="directory in cassDirectories"
                                                     :key="directory.id"
-                                                    :value="directory.id"
-                                                    @select="openDirectory(directory)">
+                                                    :value="directory">
                                                     {{ directory.getName() }}
                                                 </option>
                                             </select>
@@ -368,7 +371,8 @@ export default {
             cassDirectories: [],
             cassFrameworks: [],
             remoteRepo: null,
-            directoryThatsOpen: null
+            directoryThatsOpen: null,
+            selectDirectory: null
         };
     },
     computed: {
@@ -804,6 +808,14 @@ export default {
         },
         searchTerm: function(val) {
             this.cassSearchEndpoint();
+        },
+        selectDirectory: function() {
+            if (this.selectDirectory === "all") {
+                this.selectDirectory = null;
+                this.directoryThatsOpen = null;
+                this.cassSearchEndpoint();
+            }
+            this.openDirectory(this.selectDirectory);
         }
     }
 };
