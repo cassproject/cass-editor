@@ -235,7 +235,8 @@
                                                 <option
                                                     v-for="directory in cassDirectories"
                                                     :key="directory.id"
-                                                    @click="openDirectory(directory)">
+                                                    :value="directory.id"
+                                                    @select="openDirectory(directory)">
                                                     {{ directory.getName() }}
                                                 </option>
                                             </select>
@@ -256,16 +257,15 @@
                                     </div>
                                     <div class="field">
                                         <div
-                                            size="6"
                                             class="select is-fullwidth is-primary is-multiple">
                                             <select
                                                 multiple
-                                                size="8">
+                                                size="6">
                                                 <option
                                                     v-for="doc in cassFrameworks"
                                                     :key="doc.id"
                                                     :id="'check' + doc.id"
-                                                    value="Argentina">
+                                                    :value="doc.id">
                                                     {{ doc.getName() }}
                                                 </option>
                                             </select>
