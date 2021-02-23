@@ -187,90 +187,58 @@
                             <div
                                 class="cass__import--cass"
                                 v-if="cassDirectories.length || cassFrameworks.length">
-                                <!--
-                                <div
-                                    v-if="cassDirectories.length"
-                                    class="cass__import--directories">
-                                    <h3 class="has-text-weight-bold is-size-4">
-                                        Found Directories
-                                    </h3>
-                                    <p>
-                                        Select a directory to view its contents.
-                                    </p>
-                                    <div class="cass__import--cass--list">
-                                         if directory is selected show me
-                                        <div class="select">
-                                            <select>
-                                                <option>Select dropdown</option>
-                                                <option
-                                                    v-for="directory in cassDirectories"
-                                                    :key="directory.id"
-                                                    @click="openDirectory(directory)">
-                                                    {{ directory.getName() }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                        <div
-                                            v-for="directory in cassDirectories"
-                                            :key="directory.id"
-                                            @click="openDirectory(directory)"
-                                            class="cass__import--cass--list-item">
-                                            {{ directory.getName() }}
-                                        </div>
-                                    </div>
-                                </div>-->
                                 <div class="cass__import--frameworks">
                                     <h3 class="has-text-weight-bold is-size-4">
                                         Found Frameworks
                                     </h3>
-                                    <div
-                                        v-if="selectDirectory"
-                                        class="breadcrumb is-medium"
-                                        aria-label="breadcrumbs has-text-dark">
-                                        <li
-                                            v-for="each in directoryTrail"
-                                            :key="each.id">
-                                            {{ each.name }}
-                                        </li>
-                                        <li>
-                                            {{ selectDirectory.name }}
-                                        </li>
-                                        <p>
-                                            Select a directory to view its contents.
-                                        </p>
+                                    <div class="field">
+                                        <SearchBar
+                                            searchType="framework" />
                                     </div>
                                     <div class="field">
-                                        <div class="select">
+                                        <div class="label">
+                                            <label>Select a directory to filter results</label>
+                                        </div>
+                                        <div class="select is-fullwidth is-primary">
                                             <select v-model="selectDirectory">
                                                 <label>Directories</label>
-                                                <option disabled>
-                                                    Filter by directory
-                                                </option>
-                                                <option value="all">
-                                                    All frameworks
+                                                <option
+                                                    value="all">
+                                                    <span class="has-text-dark">All frameworks</span>
                                                 </option>
                                                 <option
                                                     v-for="directory in cassDirectories"
-                                                    :key="directory.id"
-                                                    :value="directory">
-                                                    {{ directory.getName() }}
+                                                    :key="directory.id">
+                                                    <span class="has-text-dark">{{ directory.getName() }}</span>
                                                 </option>
                                             </select>
                                         </div>
                                     </div>
-                                    <div class="field">
-                                        <SearchBar
-                                            searchType="framework" />
+                                    <div
+                                        v-if="selectDirectory"
+                                        class="breadcrumb is-medium"
+                                        aria-label="breadcrumbs has-text-dark">
+                                        <ul>
+                                            <li
+                                                v-for="each in directoryTrail"
+                                                :key="each.id">
+                                                <a>{{ each.name }}</a>
+                                            </li>
+                                            <li>
+                                                <a>{{ selectDirectory.name }}</a>
+                                            </li>
+                                        </ul>
                                     </div>
                                     <div class="field">
                                         <div class="buttons is-right">
                                             <div
                                                 class="button is-primary"
                                                 @click="selectAllFrameworks">
-                                                Select All
+                                                Select all
                                             </div>
                                         </div>
                                     </div>
+                                    <!-- multi select for frameworks -->
                                     <div class="field">
                                         <div
                                             class="select is-fullwidth is-primary is-multiple">
@@ -288,38 +256,8 @@
                                             </select>
                                         </div>
                                         <p class="help is-info">
-                                            Select framework(s) to import.
+                                            Select the framework(s) to import.
                                         </p>
-                                        <!--
-                                        <div
-                                            class="field is-grouped"
-                                            v-for="doc in cassFrameworks"
-                                            :key="doc.id">
-                                            <input
-                                                class="is-checkradio is-small"
-                                                type="checkbox"
-                                                :checked="doc.checked"
-                                                :id="'check' + doc.id"
-                                                :name="'check' + doc.id"
-                                                v-model="doc.checked"
-                                                v-if="!doc.loading && !doc.success && !doc.error">
-
-                                            <label
-                                                class="label"
-                                                :for="'check' + doc.id">{{ doc.getName() }}</label>
-                                            <span class="icon is-pulled-right">
-                                                <i
-                                                    class="fa fa-spinner fa-pulse"
-                                                    v-if="doc.loading" />
-                                                <i
-                                                    class="fa fa-exclamation-triangle"
-                                                    v-else-if="doc.error" />
-                                                <i
-                                                    class="fa fa-check"
-                                                    v-else-if="doc.success" />
-                                            </span>
-                                        </div>
-                                        -->
                                     </div>
                                 </div>
                             </div>
@@ -386,7 +324,7 @@ export default {
             cassFrameworks: [],
             remoteRepo: null,
             directoryThatsOpen: null,
-            selectDirectory: null,
+            selectDirectory: 'all',
             selectedFrameworks: [],
             directoryTrail: []
         };

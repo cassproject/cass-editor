@@ -24,13 +24,30 @@
         :rightActive="importInfoVisible"
         :simple="true"
         :class=" importInfoVisible ? 'right-side-open' : ''">
-        <template #top />
+        <template #top>
+            <div
+                class="container"
+                style="line-height: 38px;">
+                <div
+                    class="breadcrumb is-medium"
+                    aria-label="breadcrumbs has-text-dark">
+                    <ul>
+                        <li>
+                            <router-link to="frameworks">CaSS</router-link>
+                        </li>
+                        <li>
+                            <a href="#">Import</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </template>
         <template #body>
             <div
                 id="import">
                 <!--- main body section -->
                 <!-- top section import information -->
-                <div class="container is-fluid import-container">
+                <div class="container">
                     <div class="section">
                         <!-- import file -->
                         <ImportFile
