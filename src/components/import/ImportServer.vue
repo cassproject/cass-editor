@@ -223,7 +223,10 @@
                                     <h3 class="has-text-weight-bold is-size-4">
                                         Found Frameworks
                                     </h3>
-                                    <div v-if="selectDirectory">
+                                    <div
+                                        v-if="selectDirectory"
+                                        class="breadcrumb is-medium"
+                                        aria-label="breadcrumbs has-text-dark">
                                         <li
                                             v-for="each in directoryTrail"
                                             :key="each.id">
