@@ -7,7 +7,7 @@ the functionality of CaSS Authoring Tools and includes detailed
 instructions for use. If you are looking for help with a specific
 function of CaSS Authoring Tools, you can navigate to the appropriate
 section by using the table of contents above. A list of helpful
-resources and links are also included at the end of this user guide.
+resources and links is also included at the end of this user guide.
 
 
 ## Welcome
@@ -40,18 +40,22 @@ Once expanded, the navigation menu displays links to the following
 application areas:
 
 - Application Login  - Login to the application
+- Create New - Dropdown menu for creating a new Framework, Directory, or Taxonomy 
 - Competencies & Frameworks
     - Frameworks - Competency framework search
-    - New Framework - Competency framework creation
+    - Import - Import of competency frameworks
     - Crosswalk Frameworks - Dual competency framework
     alignment/relationships
-    - Import Framework - Import of competency frameworks
+    - Documentation - This CaSS Authoring Tools User Guide
+- My Directories
+    - A list of Directories that you have access to
 - Taxonomy
     - Taxonomies - Taxonomy search
-    - New Taxonomy - Taxonomy creation
-    - Import Taxonomy - Import of taxonomies
+    - Import - Import of taxonomies
+    - Documentation - This CaSS Authoring Tools User Guide
 - Configuration
-    - Configurations - Configuration management        
+    - Configurations - Configuration management    
+    - Plugins - Plugin management    
 - Users and Groups - User group management (note: this option only
     appears if you are logged into the application)
 
@@ -60,7 +64,7 @@ application areas:
 ![Collapse Menu](/docs/collapse-menu-button.png)
 
 
-The navigation menu can be collapsed by clicking on the x button on the
+The navigation menu can be collapsed by clicking on the collapse menu icon on the
 upper right hand corner of the expanded navigation menu.
 
 
@@ -72,8 +76,10 @@ application areas:
 - Application Login  - Login to the application
 - Frameworks - Competency framework search
 - Crosswalk Frameworks - Dual competency framework alignment/relationships
+- Direcotries - Direcotires available to user
 - Taxonomies - Taxonomy search
 - Configurations - Configuration management        
+- Plugins - Plugin management
 - Users and Groups - User group management (note: this option only appears if you are logged into the application)
 
 
