@@ -249,8 +249,8 @@
                                         <SearchBar
                                             searchType="framework" />
                                     </div>
-                                    <div class='field'>
-                                        <div class='buttons is-right'>
+                                    <div class="field">
+                                        <div class="buttons is-right">
                                             <div
                                                 class="button is-primary"
                                                 @click="selectAllFrameworks">
@@ -263,7 +263,8 @@
                                             class="select is-fullwidth is-primary is-multiple">
                                             <select
                                                 multiple
-                                                size="6">
+                                                size="6"
+                                                v-model="selectedFrameworks">
                                                 <option
                                                     v-for="doc in cassFrameworks"
                                                     :key="doc.id"
@@ -273,7 +274,7 @@
                                                 </option>
                                             </select>
                                         </div>
-                                        <p class='help is-info'>
+                                        <p class="help is-info">
                                             Select framework(s) to import.
                                         </p>
                                         <!--
@@ -372,7 +373,8 @@ export default {
             cassFrameworks: [],
             remoteRepo: null,
             directoryThatsOpen: null,
-            selectDirectory: null
+            selectDirectory: null,
+            selectedFrameworks: []
         };
     },
     computed: {
@@ -628,6 +630,7 @@ export default {
         selectAllFrameworks: function() {
             for (let each in this.cassFrameworks) {
                 this.cassFrameworks[each].checked = true;
+                EcArray.setAdd(this.selectedFrameworks, this.cassFrameworks[each].id);
             }
         },
         caseDetectEndpoint: function() {
@@ -816,6 +819,18 @@ export default {
                 this.cassSearchEndpoint();
             }
             this.openDirectory(this.selectDirectory);
+        },
+        selectedFrameworks: function() {
+            for (let each in this.cassFrameworks) {
+                if (EcArray.has(this.selectedFrameworks, this.cassFrameworks[each].id)) {
+                    this.cassFrameworks[each].checked = true;
+                } else {
+                    this.cassFrameworks[each].checked = false;
+                }
+            }
+        },
+        cassFrameworks: function() {
+            this.selectedFrameworks.splice(0, this.selectedFrameworks.length);
         }
     }
 };
