@@ -52,7 +52,7 @@
     "sass": "^1.30.0",
     "sass-loader": "^10.1.0",
     "vue-template-compiler": "^2.6.12",
-    "vuepress": "^1.7.1"
+    "vuepress": "^1.8.2"
   },
   "eslintConfig": {
     "root": true,
