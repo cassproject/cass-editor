@@ -14,5 +14,5 @@ features:
   details: Our Authoring Tools support your organizations unique needs.  Use our custom competency properties to customize the abilities of the authoring tool.
 - title: Work with existing frameworks
   details: CaSS can import and export a variety of file format and types.  Start working with your existing data.
-footer: Copyright © 2020 Eduworks Corporation
+footer: Copyright © 2021 Eduworks Corporation
 ---
