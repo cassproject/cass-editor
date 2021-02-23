@@ -388,25 +388,14 @@ export default {
             return false;
         },
         shareableFrameworkInEditor: function() {
+            let link = window.location.href;
+            link = link.replace('/frameworks', '').replace('/directory', '');
             if (this.directory) {
-                if (window.location.href.indexOf('directory') !== -1) {
-                    return window.location.href.replace('/directory', "?directoryId=" + this.directory.shortId());
-                }
-                return window.location.href.replace('frameworks', "?directoryId=" + this.directory.shortId());
+                return (link + "?directoryId=" + this.directory.shortId());
+            } else if (this.$store.getters['editor/conceptMode'] === true) {
+                return (link + "?concepts=true&frameworkId=" + this.frameworkId);
             }
-            if (this.$store.getters['editor/conceptMode'] === true) {
-                if (window.location.href.indexOf('concepts') !== -1) {
-                    return window.location.href.replace('/concepts', "?concepts=true&frameworkId=" + this.frameworkId);
-                }
-                return window.location.href.replace('/conceptScheme', "?concepts=true&frameworkId=" + this.frameworkId);
-            }
-            if (window.location.href.indexOf('directory') !== -1) {
-                return window.location.href.replace('/directory', "?frameworkId=" + this.frameworkId);
-            }
-            if (window.location.href.indexOf('frameworks') !== -1) {
-                return window.location.href.replace('/frameworks', "?frameworkId=" + this.frameworkId);
-            }
-            return window.location.href.replace('/framework', "?frameworkId=" + this.frameworkId);
+            return (link + "?frameworkId=" + this.frameworkId);
         },
         framework: function() {
             if (this.objFromListItemInfo && (this.objFromListItemInfo.type === "Framework" || this.objFromListItemInfo.type === "ConceptScheme")) {
