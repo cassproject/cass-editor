@@ -223,9 +223,19 @@
                                     <h3 class="has-text-weight-bold is-size-4">
                                         Found Frameworks
                                     </h3>
-                                    <p>
-                                        Select a directory to view its contents.
-                                    </p>
+                                    <div v-if="selectDirectory">
+                                        <li
+                                            v-for="each in directoryTrail"
+                                            :key="each.id">
+                                            {{ each.name }}
+                                        </li>
+                                        <li>
+                                            {{ selectDirectory.name }}
+                                        </li>
+                                        <p>
+                                            Select a directory to view its contents.
+                                        </p>
+                                    </div>
                                     <div class="field">
                                         <div class="select">
                                             <select v-model="selectDirectory">
@@ -374,7 +384,8 @@ export default {
             remoteRepo: null,
             directoryThatsOpen: null,
             selectDirectory: null,
-            selectedFrameworks: []
+            selectedFrameworks: [],
+            directoryTrail: []
         };
     },
     computed: {
@@ -803,6 +814,19 @@ export default {
                 this.directoryThatsOpen = null;
                 this.cassSearchEndpoint();
             }
+        },
+        findDirectoryTrail: function(directory) {
+            let me = this;
+            if (directory.parentDirectory) {
+                EcDirectory.get(directory.parentDirectory, function(parent) {
+                    if (parent && !parent.parentDirectory) {
+                        me.directoryTrail.unshift(parent);
+                    } else if (parent) {
+                        me.directoryTrail.unshift(parent);
+                        me.findDirectoryTrail(parent);
+                    }
+                }, appError);
+            }
         }
     },
     watch: {
@@ -817,8 +841,11 @@ export default {
                 this.selectDirectory = null;
                 this.directoryThatsOpen = null;
                 this.cassSearchEndpoint();
+            } else {
+                this.openDirectory(this.selectDirectory);
+                this.directoryTrail.splice(0, this.directoryTrail.length);
+                this.findDirectoryTrail(this.selectDirectory);
             }
-            this.openDirectory(this.selectDirectory);
         },
         selectedFrameworks: function() {
             for (let each in this.cassFrameworks) {
