@@ -50,6 +50,8 @@ For more details and options for an item in the current directory, click on the 
 
 The type of item (Directory, Framework, or Resource) along with the item name is shown in the top section of the Information panel. The type of item being viewed and its properties determines the contents available within the information panel.
 
+If the type of item is a Competency, then the details and options within the Information panel will refer to the Framework that the Competency is within.
+
 If the item is not currently open, then a button providing the option to open that item is available under the name of the item. 
 
 Not all options listed below are available on all items.
@@ -82,10 +84,21 @@ Not all options listed below are available on all items.
 
 ## Searching for Items from the Directory View
 
-<!-- [TODO: revisit this... it doesn't seem to work this way] -->
+Use the search bar at the top of the page to type in a search term and then press ENTER.
 
-Use the search bar at the top of the page to type in a serach term and then press ENTER.
-Contents of the currently open directory and its subdirectories containing the search term will be listed under Available Items. This includes Directories, Frameworks, and Resources.
+Items that contain the search term and are within the currently open directory (and its subdirectories) will be listed under Available Items. This included Directories, Frameworks, Resources, and Competencies within Frameworks. 
+
+You can sort and filter the list of items by clicking the filter
+button next to the search bar. The button next to it clears any filters
+you’ve applied.
+
+![CAT Competency Framework Management - Filter Button](/docs/filter-frameworks-button.png)
+
+The filter button will open up a side panel to the right of the
+Available items with options to sort, filter, and apply your search term
+to various fields.
+
+![CAT Competency and Framework Management - Filter and Sort Panel](/docs/filter-and-sort-panel.png)
 
 ## Making Changes to Directories
 
