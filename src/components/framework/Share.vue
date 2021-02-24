@@ -497,21 +497,24 @@ export default {
         checkIsPrivate: function() {
             let obj = this.directory ? this.directory : (this.resource ? this.resource : this.framework);
             delete EcRepository.cache[obj.shortId()];
-            if (EcRepository.getBlocking(obj.shortId())) {
-                if (EcRepository.getBlocking(obj.shortId()).type === "EncryptedValue") {
-                    this.privateFramework = true;
-                    this.viewOptions[1].disabled = false;
-                    this.viewOptions[1].title = null;
-                    this.cantRemoveCurrentUserAsOwner = true;
+            let me = this;
+            EcRepository.get(obj.shortId(), function(success) {
+                if (success.type === "EncryptedValue") {
+                    me.privateFramework = true;
+                    me.viewOptions[1].disabled = false;
+                    me.viewOptions[1].title = null;
+                    me.cantRemoveCurrentUserAsOwner = true;
                 } else {
-                    this.privateFramework = false;
-                    this.viewOptions[1].disabled = true;
-                    this.viewOptions[1].title = 'Make the ' + this.objectType + ' private to add users/groups with view access';
-                    if (this.ownerCount < 2) {
-                        this.cantRemoveCurrentUserAsOwner = false;
+                    me.privateFramework = false;
+                    me.viewOptions[1].disabled = true;
+                    me.viewOptions[1].title = 'Make the ' + me.objectType + ' private to add users/groups with view access';
+                    if (me.ownerCount < 2) {
+                        me.cantRemoveCurrentUserAsOwner = false;
                     }
                 }
-            }
+            }, function(failure) {
+                appError(failure);
+            });
         },
         closeAutoComplete: function() {
             this.isOpenAutocomplete = false;
