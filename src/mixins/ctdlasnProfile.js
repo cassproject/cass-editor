@@ -301,8 +301,8 @@ export default {
                     "max": 1,
                     "heading": "Rights"
                 },
-                "https://schema.cassproject.org/0.4/SOCList": {
-                    "@id": "https://schema.cassproject.org/0.4/SOCList",
+                "https://schema.cassproject.org/0.4/socList": {
+                    "@id": "https://schema.cassproject.org/0.4/socList",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
@@ -312,8 +312,8 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Occupation Type"}],
                     "heading": "Tagging"
                 },
-                "https://schema.cassproject.org/0.4/NaicsList": {
-                    "@id": "https://schema.cassproject.org/0.4/NaicsList",
+                "https://schema.cassproject.org/0.4/naicsList": {
+                    "@id": "https://schema.cassproject.org/0.4/naicsList",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
@@ -339,8 +339,8 @@ export default {
                     "https://purl.org/ctdlasn/terms/isVersionOf",
                     "http://purl.org/dc/elements/1.1/source",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
-                    "https://schema.cassproject.org/0.4/SOCList",
-                    "https://schema.cassproject.org/0.4/NaicsList"
+                    "https://schema.cassproject.org/0.4/socList",
+                    "https://schema.cassproject.org/0.4/naicsList"
                 ],
                 "tertiaryProperties": [
                     "@id",
