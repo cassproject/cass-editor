@@ -157,7 +157,7 @@ export default {
                 for (let eco of ecoa) {
                     if (eco.employee && eco.employee.length > 0) {
                         for (let e of eco.employee) {
-                            if (e.equals(linkedPersonShortId)) {
+                            if (!EcObject.isObject(e) && e.equals(linkedPersonShortId)) {
                                 this.addGroupIdentity(eco);
                                 break;
                             }
