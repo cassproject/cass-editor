@@ -348,7 +348,7 @@ export default {
                             }
                             list += ")";
                             success(list);
-                        } else success("");
+                        } else success(null);
                     });
                 } else {
                     this.getSubDirectoryIds(this.directoryId, function() {
@@ -364,7 +364,7 @@ export default {
                                 }
                                 list += ")";
                                 success(list);
-                            } else success("");
+                            } else success(null);
                         });
                     });
                 }
@@ -412,6 +412,9 @@ export default {
             // Used to only add OR to query if there's already a term
             var termAdded = false;
             this.buildIdList(function(idList) {
+                if (!idList) {
+                    return callback(null);
+                }
                 if (!me.applySearchTo || me.searchTerm === "") {
                     search = "(@type:" + type + (me.searchTerm != null && me.searchTerm !== "" ? " AND " + me.searchTerm : "") + ")" + (me.searchOptions == null || me.searchOptions === "" ? "" : me.searchOptions);
                     search += idList;
@@ -513,58 +516,62 @@ export default {
             let type = this.searchingFor;
             let arrayType = type.toLowerCase();
             me.buildSearch(type, function(search) {
-                me.repo.searchWithParams(search, localParamObj, function(result) {
-                    if (!EcArray.has(me.resultIds, result.id)) {
-                        if (result.isAny(new EcEncryptedValue().getTypes())) {
-                            let v = new EcEncryptedValue();
-                            v.copyFrom(result);
-                            let unencrypted = new window["Ec" + type]();
-                            unencrypted.copyFrom(v.decryptIntoObject());
-                            result = unencrypted;
-                        }
-                        me[arrayType].push(result);
-                        me.resultIds.push(result.id);
-                    }
-                }, function(results) {
-                    me.firstSearchProcessing = false;
-                    if (!me.applySearchTo) {
-                        me.buildSearch("EncryptedValue AND \\*encryptedType:" + type, function(search) {
-                            me.repo.searchWithParams(search, localParamObj, function(result) {
-                                // Decrypt and add to results list
-                                var type = "Ec" + result.encryptedType;
-                                var v = new EcEncryptedValue();
+                if (search) {
+                    me.repo.searchWithParams(search, localParamObj, function(result) {
+                        if (!EcArray.has(me.resultIds, result.id)) {
+                            if (result.isAny(new EcEncryptedValue().getTypes())) {
+                                let v = new EcEncryptedValue();
                                 v.copyFrom(result);
-                                var obj = new window[type]();
-                                obj.copyFrom(v.decryptIntoObject());
-                                if (!EcArray.has(me.resultIds, obj.id)) {
-                                    me[arrayType].push(obj);
-                                    me.resultIds.push(obj.id);
-                                }
-                            }, function(results2) {
-                                me.start += me.paramObj.size;
-                                if (results.length < 10) {
-                                    me.changeType($state);
-                                } else if (results.length > 0 && $state) {
-                                    $state.loaded();
-                                } else if ($state) {
-                                    $state.complete();
-                                }
-                            }, appError);
-                        });
-                    } else {
-                        me.start += me.paramObj.size;
-                        if (results.length < 10) {
-                            me.changeType($state);
-                        } else if (results.length > 0 && $state) {
-                            $state.loaded();
-                        } else if ($state) {
-                            $state.complete();
+                                let unencrypted = new window["Ec" + type]();
+                                unencrypted.copyFrom(v.decryptIntoObject());
+                                result = unencrypted;
+                            }
+                            me[arrayType].push(result);
+                            me.resultIds.push(result.id);
                         }
-                    }
-                }, function(err) {
-                    appError(err);
-                    me.firstSearchProcessing = false;
-                });
+                    }, function(results) {
+                        me.firstSearchProcessing = false;
+                        if (!me.applySearchTo) {
+                            me.buildSearch("EncryptedValue AND \\*encryptedType:" + type, function(search) {
+                                me.repo.searchWithParams(search, localParamObj, function(result) {
+                                    // Decrypt and add to results list
+                                    var type = "Ec" + result.encryptedType;
+                                    var v = new EcEncryptedValue();
+                                    v.copyFrom(result);
+                                    var obj = new window[type]();
+                                    obj.copyFrom(v.decryptIntoObject());
+                                    if (!EcArray.has(me.resultIds, obj.id)) {
+                                        me[arrayType].push(obj);
+                                        me.resultIds.push(obj.id);
+                                    }
+                                }, function(results2) {
+                                    me.start += me.paramObj.size;
+                                    if (results.length < 10) {
+                                        me.changeType($state);
+                                    } else if (results.length > 0 && $state) {
+                                        $state.loaded();
+                                    } else if ($state) {
+                                        $state.complete();
+                                    }
+                                }, appError);
+                            });
+                        } else {
+                            me.start += me.paramObj.size;
+                            if (results.length < 10) {
+                                me.changeType($state);
+                            } else if (results.length > 0 && $state) {
+                                $state.loaded();
+                            } else if ($state) {
+                                $state.complete();
+                            }
+                        }
+                    }, function(err) {
+                        appError(err);
+                        me.firstSearchProcessing = false;
+                    });
+                } else {
+                    me.changeType($state);
+                }
             });
         },
         changeType: function($state) {
