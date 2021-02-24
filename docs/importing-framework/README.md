@@ -35,13 +35,24 @@ To import a framework from a CaSS respository, click on "Remote Server".
 Set the input for "Paste URL Endpoint Of Server" to the CaSS endpoint with the 
 framework(s) you would like to import. Click on "connect to cass endpoint".
 
-You will then see a list of directories (if any) in the remote CaSS repository, followed by a list of frameworks.
-Use the search bar to narrow your results. You can click on a directory to open it.
+To search for frameworks within the CaSS repository, enter a search term in the "Search for frameworks..." field. Leave this field blank to return all frameworks within the set filters below.
+
+To search all frameworks within the CaSS repository, click on the dropdown list under "Select A Directory To Filter Results" and select "All frameworks".
+
+If the CaSS repository you are importing from contains directories, then you can import frameworks located within a directory. 
+To view the frameworks within a specific directory, click on the dropdown list under "Select A Directory To Filter Results" and select the desired directory. 
+You will then see a list of frameworks (if any) in the directory.
+
+When you select a directory to view the contents of, the directory name will show above the list of frameworks within it AND the list of directories to filter by will be updated to reflect any subdirectories located within that directory.
+
+To navigate back to the parent directory, click on the Back button in the bottom right corner.
+
+![CAT Competency Framework Management - Importing Open Directory](/docs/importing-open-directory.png)
+
+You can select one or more individual frameworks to import by clicking on each framwork name. 
+When you have selected the frameworks that you would like to import, click "import". 
 
 ![CAT Competency Framework Management - Importing CaSS Repository](/docs/importing-cass-directories.png)
-
-You can select one or more individual frameworks to import by checking the box next to each framwork name. 
-When you have selected the frameworks that you would like to import, click "import". 
 
 ## Importing From an IMS CASE Repositories
 
