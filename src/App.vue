@@ -179,8 +179,8 @@ export default {
             }
             // Preload schema so large frameworks are faster
             let types = [
-                "https://schema.cassproject.org/0.4/skos/ConceptScheme/", "https://schema.cassproject.org/0.4/skos/Concept/", "https://schema.cassproject.org/0.4/skos/", "https://schema.cassproject.org/0.4/Framework/", "https://schema.cassproject.org/0.4/Competency/", "https://schema.cassproject.org/0.4/", "https://schema.cassproject.org/0.4/Directory/",
-                "https://schema.cassproject.org/0.4/skos/ConceptScheme", "https://schema.cassproject.org/0.4/skos/Concept", "https://schema.cassproject.org/0.4/skos", "https://schema.cassproject.org/0.4/Framework", "https://schema.cassproject.org/0.4/Competency", "https://schema.cassproject.org/0.4", "https://schema.cassproject.org/0.4/Directory"
+                "https://schema.cassproject.org/0.4", "https://schema.cassproject.org/0.4/Directory", "https://schema.cassproject.org/0.4/", "https://schema.cassproject.org/0.4/Directory/", "https://schema.cassproject.org/0.4/skos/ConceptScheme/", "https://schema.cassproject.org/0.4/skos/", "https://schema.cassproject.org/0.4/Framework/",
+                "https://schema.cassproject.org/0.4/skos/ConceptScheme", "https://schema.cassproject.org/0.4/skos/Concept", "https://schema.cassproject.org/0.4/skos", "https://schema.cassproject.org/0.4/Framework", "https://schema.cassproject.org/0.4/Competency", "https://schema.cassproject.org/0.4/skos/Concept/", "https://schema.cassproject.org/0.4/Competency/"
             ];
             for (let type of types) {
                 if (this.$store.state.lode.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
