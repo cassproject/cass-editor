@@ -4,66 +4,68 @@
         :class=" showRightAside ? 'right-side-open' : ''">
         <!-- should be used for search bar -->
         <template #top>
-            <thing-editing
-                v-if="editDirectory && canEditDirectory"
-                :obj="$store.getters['app/rightAsideObject']"
-                :repo="repo"
-                :parentNotEditable="queryParams.view==='true'"
-                :profile="directoryProfile"
-                @delete-object="deleteObject"
-                @done-editing-node-event="onDoneEditingNode()" />
-            <div class="container">
-                <div class="columns">
-                    <div class="column is-6">
-                        <SearchBar
-                            filterSet="all"
-                            :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
-                    </div>
-                    <div class="column is-6">
-                        <div
-                            v-if="conceptMode"
-                            class="buttons is-right concept-buttons">
-                            <div
-                                @click="$emit('create-new-concept-scheme')"
-                                class="button is-outlined is-primary">
-                                <span class="icon">
-                                    <i class="fa fa-plus" />
-                                </span><span>new {{ conceptSchemeStringForButton }}</span>
-                            </div>
-                            <router-link
-                                to="/import"
-                                @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
-                                class="button is-hidden-mobile is-outlined is-primary">
-                                <span class="icon">
-                                    <i class="fa fa-upload" />
-                                </span><span>import {{ conceptSchemeStringForButton }}</span>
-                            </router-link>
+            <div class="container is-fullhd">
+                <thing-editing
+                    v-if="editDirectory && canEditDirectory"
+                    :obj="$store.getters['app/rightAsideObject']"
+                    :repo="repo"
+                    :parentNotEditable="queryParams.view==='true'"
+                    :profile="directoryProfile"
+                    @delete-object="deleteObject"
+                    @done-editing-node-event="onDoneEditingNode()" />
+                <div class="container">
+                    <div class="columns">
+                        <div class="column is-6">
+                            <SearchBar
+                                filterSet="all"
+                                :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
                         </div>
-                        <div
-                            v-else
-                            class="buttons  is-hidden-mobile is-right frameworks-buttons">
+                        <div class="column is-6">
                             <div
-                                @click="$emit('create-new-framework')"
-                                class="button is-outlined is-primary">
-                                <span class="icon">
-                                    <i class="fa fa-plus" />
-                                </span><span>create</span>
+                                v-if="conceptMode"
+                                class="buttons is-right concept-buttons">
+                                <div
+                                    @click="$emit('create-new-concept-scheme')"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-plus" />
+                                    </span><span>new {{ conceptSchemeStringForButton }}</span>
+                                </div>
+                                <router-link
+                                    to="/import"
+                                    @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
+                                    class="button is-hidden-mobile is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-upload" />
+                                    </span><span>import {{ conceptSchemeStringForButton }}</span>
+                                </router-link>
                             </div>
-                            <router-link
-                                to="/import"
-                                @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
-                                class="button is-outlined is-primary">
-                                <span class="icon">
-                                    <i class="fa fa-upload" />
-                                </span><span>import</span>
-                            </router-link>
-                            <router-link
-                                to="/crosswalk"
-                                class="button is-outlined is-primary">
-                                <span class="icon">
-                                    <i class="fa fa-network-wired" />
-                                </span><span>crosswalk</span>
-                            </router-link>
+                            <div
+                                v-else
+                                class="buttons  is-hidden-mobile is-right frameworks-buttons">
+                                <div
+                                    @click="$emit('create-new-framework')"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-plus" />
+                                    </span><span>create</span>
+                                </div>
+                                <router-link
+                                    to="/import"
+                                    @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-upload" />
+                                    </span><span>import</span>
+                                </router-link>
+                                <router-link
+                                    to="/crosswalk"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-network-wired" />
+                                    </span><span>crosswalk</span>
+                                </router-link>
+                            </div>
                         </div>
                     </div>
                 </div>

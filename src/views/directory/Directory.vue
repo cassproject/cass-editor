@@ -129,7 +129,7 @@
             @done-editing-node-event="onDoneEditingNode()" />
         <main-layout :rightActive="showRightAside">
             <template slot="top">
-                <div class="container is-fullhd">
+                <div class="container">
                     <div class="columns is-mobile is-spaced mt-0">
                         <!-- search bar -->
                         <div class="column is-6-desktop is-8-mobile">

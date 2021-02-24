@@ -9,7 +9,7 @@
             </span>
         </div>
         <template>
-            <div class="container">
+            <div class="container is-fluid">
                 <div class="cass--list--container">
                     <ul class="cass--list">
                         <!-- directories -->
