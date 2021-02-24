@@ -185,61 +185,84 @@
                             </div>
                             <!-- HANDLE CASS DOCS -->
                             <div
-                                class=""
+                                class="cass__import--cass"
                                 v-if="cassDirectories.length || cassFrameworks.length">
-                                <SearchBar
-                                    searchType="framework" />
-                                <div v-if="cassDirectories.length">
-                                    <h3 class="subtitle has-text-weight-bold is-size-4">
-                                        Found Directories
+                                <div class="cass__import--frameworks">
+                                    <h3 class="has-text-weight-bold is-size-4">
+                                        Found Frameworks
                                     </h3>
-                                    <p>
-                                        Select a directory with frameworks you would like to import.
-                                    </p>
+                                    <div class="field">
+                                        <SearchBar
+                                            searchType="framework" />
+                                    </div>
+                                    <div class="field">
+                                        <div class="label">
+                                            <label>Select a directory to filter results</label>
+                                        </div>
+                                        <div class="select is-fullwidth is-primary">
+                                            <select v-model="selectDirectory">
+                                                <label>Directories</label>
+                                                <option
+                                                    value="all">
+                                                    <span class="has-text-dark">All frameworks</span>
+                                                </option>
+                                                <option
+                                                    v-for="directory in cassDirectories"
+                                                    :key="directory.id"
+                                                    :value="directory">
+                                                    <span class="has-text-dark">{{ directory.getName() }}</span>
+                                                </option>
+                                            </select>
+                                        </div>
+                                    </div>
                                     <div
-                                        v-for="directory in cassDirectories"
-                                        :key="directory.id"
-                                        @click="openDirectory(directory)">
-                                        {{ directory.getName() }}
+                                        v-if="selectDirectory"
+                                        class="breadcrumb is-medium"
+                                        aria-label="breadcrumbs has-text-dark">
+                                        <ul>
+                                            <li
+                                                v-for="each in directoryTrail"
+                                                :key="each.id">
+                                                <a>{{ each.name }}</a>
+                                            </li>
+                                            <li>
+                                                <a>{{ selectDirectory.name }}</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="field">
+                                        <div class="buttons is-right">
+                                            <div
+                                                class="button is-primary"
+                                                @click="selectAllFrameworks">
+                                                Select all
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- multi select for frameworks -->
+                                    <div class="field">
+                                        <div
+                                            class="select is-fullwidth is-primary is-multiple">
+                                            <select
+                                                multiple
+                                                size="6"
+                                                v-model="selectedFrameworks">
+                                                <option
+                                                    v-for="doc in cassFrameworks"
+                                                    :key="doc.id"
+                                                    :id="'check' + doc.id"
+                                                    :value="doc.id">
+                                                    {{ doc.getName() }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <p class="help is-info">
+                                            Select the framework(s) to import.
+                                        </p>
                                     </div>
                                 </div>
-                                <h3 class="subtitle has-text-weight-bold is-size-4">
-                                    Found Frameworks
-                                </h3>
-                                <p>
-                                    Select the framework you would like to import.
-                                </p>
-                                <div
-                                    class="field is-grouped"
-                                    v-for="doc in cassFrameworks"
-                                    :key="doc.id">
-                                    <input
-                                        class="is-checkradio is-small"
-                                        type="checkbox"
-                                        :checked="doc.checked"
-                                        :id="'check' + doc.id"
-                                        :name="'check' + doc.id"
-                                        v-model="doc.checked"
-                                        v-if="!doc.loading && !doc.success && !doc.error">
-
-                                    <label
-                                        class="label"
-                                        :for="'check' + doc.id">{{ doc.getName() }}</label>
-                                    <span class="icon is-pulled-right">
-                                        <i
-                                            class="fa fa-spinner fa-pulse"
-                                            v-if="doc.loading" />
-                                        <i
-                                            class="fa fa-exclamation-triangle"
-                                            v-else-if="doc.error" />
-                                        <i
-                                            class="fa fa-check"
-                                            v-else-if="doc.success" />
-                                    </span>
-                                </div>
-                                <div @click="selectAllFrameworks">
-                                    Select All
-                                </div>
+                            </div>
+                            <div class="is-12">
                                 <div class="buttons is-right">
                                     <div
                                         class="button is-outlined is-dark"
@@ -301,7 +324,10 @@ export default {
             cassDirectories: [],
             cassFrameworks: [],
             remoteRepo: null,
-            directoryThatsOpen: null
+            directoryThatsOpen: null,
+            selectDirectory: 'all',
+            selectedFrameworks: [],
+            directoryTrail: []
         };
     },
     computed: {
@@ -557,6 +583,7 @@ export default {
         selectAllFrameworks: function() {
             for (let each in this.cassFrameworks) {
                 this.cassFrameworks[each].checked = true;
+                EcArray.setAdd(this.selectedFrameworks, this.cassFrameworks[each].id);
             }
         },
         caseDetectEndpoint: function() {
@@ -729,6 +756,19 @@ export default {
                 this.directoryThatsOpen = null;
                 this.cassSearchEndpoint();
             }
+        },
+        findDirectoryTrail: function(directory) {
+            let me = this;
+            if (directory.parentDirectory) {
+                EcDirectory.get(directory.parentDirectory, function(parent) {
+                    if (parent && !parent.parentDirectory) {
+                        me.directoryTrail.unshift(parent);
+                    } else if (parent) {
+                        me.directoryTrail.unshift(parent);
+                        me.findDirectoryTrail(parent);
+                    }
+                }, appError);
+            }
         }
     },
     watch: {
@@ -737,7 +777,72 @@ export default {
         },
         searchTerm: function(val) {
             this.cassSearchEndpoint();
+        },
+        selectDirectory: function() {
+            if (this.selectDirectory === "all") {
+                this.selectDirectory = null;
+                this.directoryThatsOpen = null;
+                this.cassSearchEndpoint();
+            } else {
+                this.openDirectory(this.selectDirectory);
+                this.directoryTrail.splice(0, this.directoryTrail.length);
+                this.findDirectoryTrail(this.selectDirectory);
+            }
+        },
+        selectedFrameworks: function() {
+            for (let each in this.cassFrameworks) {
+                if (EcArray.has(this.selectedFrameworks, this.cassFrameworks[each].id)) {
+                    this.cassFrameworks[each].checked = true;
+                } else {
+                    this.cassFrameworks[each].checked = false;
+                }
+            }
+        },
+        cassFrameworks: function() {
+            this.selectedFrameworks.splice(0, this.selectedFrameworks.length);
         }
     }
 };
 </script>
+
+<style>
+.cass__import--cass {
+    display: flex;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+.cass__import--directories {
+    width: 100%;
+    padding: 1rem 0rem;
+
+}
+.cass__import--frameworks {
+    width: 100%;
+    padding: 1rem 0rem;
+}
+.cass__import--cass--list {
+    height: 200px;
+    overflow-y: auto;
+    border-radius: 10px;
+    padding: 0rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+}
+
+.cass__import--cass--list-item {
+    padding: .5rem 1rem;
+}
+.cass__import--cass--list-item:hover {
+    background-color: rgba(0, 0, 0, .25);
+    padding: .5rem 1rem;
+}
+
+@media only screen and (max-width: 600px) {
+  .cass__import--directories,
+  .cass__import--frameworks {
+    width: 100%;
+  }
+}
+</style>

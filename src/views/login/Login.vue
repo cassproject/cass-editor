@@ -157,7 +157,7 @@ export default {
                 for (let eco of ecoa) {
                     if (eco.employee && eco.employee.length > 0) {
                         for (let e of eco.employee) {
-                            if (e.equals(linkedPersonShortId)) {
+                            if (!EcObject.isObject(e) && e.equals(linkedPersonShortId)) {
                                 this.addGroupIdentity(eco);
                                 break;
                             }
@@ -329,10 +329,14 @@ export default {
     computed: {
         legacyLoginEnabled: function() {
             return this.$store.getters['featuresEnabled/legacyLoginEnabled'];
+        },
+        apiLoginEnabled: function() {
+            return this.$store.getters['featuresEnabled/apiLoginEnabled'];
         }
     },
     mounted() {
-        this.checkLoginStatus();
+        if (!this.apiLoginEnabled) this.goToLegacyLogin();
+        else this.checkLoginStatus();
     }
 };
 </script>

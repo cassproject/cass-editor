@@ -11,6 +11,7 @@ const state = {
     pluginsEnabled: true,
     loginEnabled: true,
     legacyLoginEnabled: true,
+    apiLoginEnabled: true,
     shareEnabled: true
 };
 
@@ -48,6 +49,9 @@ const actions = {
 const getters = {
     legacyLoginEnabled: function(state) {
         return state.legacyLoginEnabled;
+    },
+    apiLoginEnabled: function(state) {
+        return state.apiLoginEnabled;
     }
 };
 
