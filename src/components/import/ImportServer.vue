@@ -208,7 +208,8 @@
                                                 </option>
                                                 <option
                                                     v-for="directory in cassDirectories"
-                                                    :key="directory.id">
+                                                    :key="directory.id"
+                                                    :value="directory">
                                                     <span class="has-text-dark">{{ directory.getName() }}</span>
                                                 </option>
                                             </select>
