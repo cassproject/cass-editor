@@ -27,6 +27,17 @@ to various fields.
 
 ![CAT Competency and Framework Management - Filter and Sort Panel](/docs/filter-and-sort-panel.png)
 
+## Opening a Framework
+
+Double-click on a framework to open the framework. 
+
+## Viewing a Framework in More Detail
+
+Single-click on a framework to view an Information panel with more details and options for the framework. 
+
+The Information about the framework will show on a side panel to the right of the directory list.
+
+![CAT Competency and Framework Management - Information Panel](/docs/framework-information.png)
 
 ## Creating a New Competency Framework 
 
