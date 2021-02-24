@@ -329,10 +329,14 @@ export default {
     computed: {
         legacyLoginEnabled: function() {
             return this.$store.getters['featuresEnabled/legacyLoginEnabled'];
+        },
+        apiLoginEnabled: function() {
+            return this.$store.getters['featuresEnabled/apiLoginEnabled'];
         }
     },
     mounted() {
-        this.checkLoginStatus();
+        if (!this.apiLoginEnabled) this.goToLegacyLogin();
+        else this.checkLoginStatus();
     }
 };
 </script>

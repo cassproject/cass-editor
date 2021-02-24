@@ -356,7 +356,7 @@
                             :class=" accordion === 'copy' ? 'active' : ''"
                             @click="clickAccordion('copy'); copyingToDirectory = true;"
                             class="cass__right-side--accordion">
-                            Copy {{ objectType }}
+                            Copy {{ objectTypeForDisplay }}
                             <span class="icon is-pulled-right">
                                 <i
                                     v-if="accordion === 'copy'"
@@ -391,7 +391,7 @@
                             :class=" accordion === 'move' ? 'active' : ''"
                             @click="clickAccordion('move'); movingToDirectory = true;"
                             class="cass__right-side--accordion">
-                            Move {{ objectType }}
+                            Move {{ objectTypeForDisplay }}
                             <span class="icon is-pulled-right">
                                 <i
                                     v-if="accordion === 'move'"

@@ -212,7 +212,8 @@ export default {
             repo: window.repo,
             editsFinishedCounter: 0,
             totalEditsCounter: 0,
-            defaultFrameworkConfigName: null
+            defaultFrameworkConfigName: null,
+            privateFramework: false
         };
     },
     methods: {
@@ -423,6 +424,20 @@ export default {
                 me.$store.commit('app/selectDirectory', success);
                 me.$router.push({name: "directory"});
             }, appError);
+        },
+        checkIsPrivate: function() {
+            let obj = this.framework;
+            delete EcRepository.cache[obj.shortId()];
+            let me = this;
+            EcRepository.get(obj.shortId(), function(success) {
+                if (success.type === "EncryptedValue") {
+                    me.privateFramework = true;
+                } else {
+                    me.privateFramework = false;
+                }
+            }, function(failure) {
+                appError(failure);
+            });
         }
     },
     computed: {
@@ -472,6 +487,8 @@ export default {
                 return false;
             } else if (this.framework.reader && this.framework.reader.length > 0) {
                 return false;
+            } else if (this.privateFramework) {
+                return false;
             } else {
                 return true;
             }
@@ -519,6 +536,7 @@ export default {
             this.changeProperties(this.$store.getters['editor/setPropertyLevel']);
             this.$store.commit('editor/setPropertyLevel', null);
         }
+        this.checkIsPrivate();
         this.getConfigurationName();
     }
 };

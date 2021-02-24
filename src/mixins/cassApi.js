@@ -54,18 +54,37 @@ export const cassApi = {
             appLog("Redirecting to external login...");
             window.location = this.cassApiLocation + this.USER_LOGIN_SERVICE + "?redirectUrl=" + encodeURIComponent(window.location);
         },
-        redirectToExternalLogout: function() {
-            appLog("Redirecting to external logout...");
-            window.location = this.cassApiLocation + this.USER_LOGOUT_SERVICE + "?redirectUrl=" + encodeURIComponent(this.LOGOUT_REDIRECT_URL + this.addQueryParams());
+        // OLD Logout
+        // redirectToExternalLogout: function() {
+        //     appLog("Redirecting to external logout...");
+        //     window.location = this.cassApiLocation + this.USER_LOGOUT_SERVICE + "?redirectUrl=" + encodeURIComponent(this.LOGOUT_REDIRECT_URL + this.addQueryParams());
+        // },
+        goToLogin: function() {
+            this.$router.push({path: '/login'});
+        },
+        checkExternalLogoutStatus: function(logoutResponse) {
+            if (logoutResponse.status !== 200) {
+                appLog('Logout fired but returned an unexpected response code: ' + logoutResponse.status);
+            }
+            this.goToLogin();
+        },
+        performExternalLogout: function() {
+            appLog("Performing external logout...");
+            let oReq = new XMLHttpRequest();
+            oReq.addEventListener("load", (x) => this.checkExternalLogoutStatus(x.currentTarget));
+            oReq.withCredentials = true;
+            let serviceEndpoint = this.cassApiLocation + this.USER_LOGOUT_SERVICE;
+            oReq.open("GET", serviceEndpoint);
+            oReq.send();
         },
         performApplicationLogout: function() {
-            // TODO implement and tie to SideNav.vue
             appLog("Performing application logout...");
             EcIdentityManager.clearContacts();
             EcIdentityManager.clearIdentities();
             let clearPerson = {};
             this.$store.commit('user/loggedOnPerson', clearPerson);
-            this.redirectToExternalLogout();
+            if (this.apiLoginEnabled) this.performExternalLogout();
+            else this.goToLogin();
         },
         addQueryParams: function() {
             let paramObj = this.$store.getters['editor/queryParams'];
@@ -98,6 +117,9 @@ export const cassApi = {
     computed: {
         cassApiLocation: function() {
             return this.$store.getters['environment/cassApiLocation'];
+        },
+        apiLoginEnabled: function() {
+            return this.$store.getters['featuresEnabled/apiLoginEnabled'];
         }
     }
 };
