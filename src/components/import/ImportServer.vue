@@ -371,6 +371,7 @@ export default {
         },
         connectToServer: function() {
             appLog("connecting to server 1");
+            this.$store.commit('app/clearImportErrors');
             let error = {
                 message: "Unable to import from the URL Endpoint provided.",
                 details: ""
