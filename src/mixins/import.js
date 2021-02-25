@@ -829,6 +829,7 @@ export default {
                 }, false, me.repo);
         },
         importJsonLd: function(data) {
+            this.$store.commit('app/importTransition', 'process');
             var formData = new FormData();
             if (data != null && data !== undefined) {
                 formData.append('data', JSON.stringify(data));

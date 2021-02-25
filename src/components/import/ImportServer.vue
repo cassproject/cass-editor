@@ -261,25 +261,25 @@
                                         </p>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="is-12">
-                                <div class="buttons is-right">
-                                    <div
-                                        class="button is-outlined is-dark"
-                                        @click="cancelImport">
-                                        Cancel
-                                    </div>
-                                    <div
-                                        class="button is-outlined is-dark"
-                                        v-if="directoryThatsOpen"
-                                        @click="goBack">
-                                        Back
-                                    </div>
-                                    <div
-                                        v-if="importTransition !== 'importingCassFrameworks'"
-                                        class="button is-outlined is-primary"
-                                        @click="importCassFrameworks()">
-                                        Import
+                                <div class="is-12">
+                                    <div class="buttons is-right">
+                                        <div
+                                            class="button is-outlined is-dark"
+                                            @click="cancelImport">
+                                            Cancel
+                                        </div>
+                                        <div
+                                            class="button is-outlined is-dark"
+                                            v-if="directoryThatsOpen"
+                                            @click="goBack">
+                                            Back
+                                        </div>
+                                        <div
+                                            v-if="importTransition !== 'importingCassFrameworks'"
+                                            class="button is-outlined is-primary"
+                                            @click="importCassFrameworks()">
+                                            Import
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -371,6 +371,7 @@ export default {
         },
         connectToServer: function() {
             appLog("connecting to server 1");
+            this.$store.commit('app/clearImportErrors');
             let error = {
                 message: "Unable to import from the URL Endpoint provided.",
                 details: ""

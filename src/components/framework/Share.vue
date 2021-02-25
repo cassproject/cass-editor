@@ -412,7 +412,7 @@ export default {
         directory: function() {
             if (this.objFromListItemInfo && this.objFromListItemInfo.type === "Directory") {
                 return this.objFromListItemInfo;
-            } else if (this.objFromListItemInfo) {
+            } else if (this.objFromListItemInfo || this.$route.name === "framework" || this.$route.name === "conceptScheme") {
                 return null;
             }
             return this.$store.getters['app/selectedDirectory'];

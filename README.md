@@ -323,6 +323,14 @@ git submodule update
 npm install
 ```
 
+* Enable HTTPS using the ca.pem file.
+With Windows/Chrome:
+    * Save the ca.pem file as ca.crt
+    * Import the crt file through Chrome
+        * browser settings -> privacy & security -> security -> manage certificates -> trusted root certification authorities -> import
+        * Select the crt file
+
+
 * Start cass-editor.
 
 ```bash
@@ -331,4 +339,4 @@ npm run serve
 
 * Connect.
 
-    http://localhost:8080/cass-editor#/
+    https://localhost:8080/cass-editor#/
