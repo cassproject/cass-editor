@@ -43,12 +43,16 @@ Opening a Framework will show the framework. This navigates away from the Direct
 Opening a Resource will open the URL of the resource in your browser. 
 
 ## Viewing an Item in More Detail
- 
-For more details and options for an item in the current directory, click on the item name or the arrow to the right of the item. Information about the item will show on a side panel to the right of the directory list.
+
+Single-click on any item name within a directory (including another directory) to view an Information panel with more details and options for that item. 
+
+The Information about the item will show on a side panel to the right of the directory list.
 
 ![Directory Management - Directory Information](/docs/directory-information.png)
 
 The type of item (Directory, Framework, or Resource) along with the item name is shown in the top section of the Information panel. The type of item being viewed and its properties determines the contents available within the information panel.
+
+If the type of item is a Competency, then the details and options within the Information panel will refer to the Framework that the Competency is within.
 
 If the item is not currently open, then a button providing the option to open that item is available under the name of the item. 
 
@@ -64,12 +68,12 @@ Not all options listed below are available on all items.
     
     ![Directory Management - Directory Information Details](/docs/directory-information-details.png)
 
-- **Users** - 
-    <!-- [TODO: Add Users and Groups] -->
+- **Users** - Click on "manage users and privacy" and a window dialogue will allow you to view and control access to this item. 
 
     ![Directory Management - Directory Information Users](/docs/directory-information-users.png)
 
 - **Properties** - Available properties on this item, including name and URL (if a resource). Includes option to edit properties if editable
+
 - **Description** - A description for the item if one has been provided
 
 - **Copy** - Includes a list of available directories that this item can be copied to
@@ -82,14 +86,25 @@ Not all options listed below are available on all items.
 
 ## Searching for Items from the Directory View
 
-<!-- [TODO: revisit this... it doesn't seem to work this way] -->
+Use the search bar at the top of the page to type in a search term and then press ENTER.
 
-Use the search bar at the top of the page to type in a serach term and then press ENTER.
-Contents of the currently open directory and its subdirectories containing the search term will be listed under Available Items. This includes Directories, Frameworks, and Resources.
+Items that contain the search term and are within the currently open directory (and its subdirectories) will be listed under Available Items. This included Directories, Frameworks, Resources, and Competencies within Frameworks. 
+
+You can sort and filter the list of items by clicking the filter
+button next to the search bar. The button next to it clears any filters
+you’ve applied.
+
+![CAT Competency Framework Management - Filter Button](/docs/filter-frameworks-button.png)
+
+The filter button will open up a side panel to the right of the
+Available items with options to sort, filter, and apply your search term
+to various fields.
+
+![CAT Competency and Framework Management - Filter and Sort Panel](/docs/filter-and-sort-panel.png)
 
 ## Making Changes to Directories
 
-You can only make changes to a directory if you are the owner or are listed as Admin for the directory. To confirm that you can edit a directory, click on "CaSS" in the breadcrumb navigation to show all available items. If the directory has the label "Editable" beneath it, then you can make changes to it.
+You can only make changes to a directory if you are an owner (listed as Admin) for the directory. To confirm that you can edit a directory, click on "CaSS" in the breadcrumb navigation to show all available items. If the directory has the label "Editable" beneath it, then you can make changes to it.
 
 ![Directory Management - Directory Editable](/docs/directory-editable.png)
 
@@ -99,13 +114,15 @@ To create a new directory (not a subdirectory), click on the "create new" button
 
 ![Directory Management - Create New](/docs/directory-create-new.png)
 
-### Renaming a Directory
+### Editing Properties of a Directory
 
-To rename a directory, open the directory and click on the name of the directory in the Dirctory Path to show its Information on the right side panel. 
+To rename a directory or edit other properties, open the directory and click on the name of the directory in the Dirctory Path to show its Information on the right side panel. 
 Within the Information panel, click on "Properties" and click "edit". 
-A dialogue window opens with the name and properties of the directory. Enter the new name of the directory and click "done".
+A dialogue window opens with the name and properties of the directory. Make the desired changes to the directory and click "save".
 
 ## Adding Items
+
+You can only add items to a directory if you are an owner (listed as Admin) for the directory. 
 
 To add an item to a directory, open the directory and click on the "add new" button in the top right corner of the page to add new items to the current directory. A directory can contain Subdirectories, Frameworks, and Resources.
 
@@ -131,6 +148,16 @@ To create a new Resource, click on "Resource" in the dropdown menu. A dialogue w
 
 A new resource is created and the contents of the Directory is updated to relfect the additional resource.
 
+## Making Changes to Items
+
+You can only make changes to an item if you are an owner (listed as Admin) for the item.
+
+### Editing Properties of a Resource
+
+To rename an item or edit other properties, click on the item in the list of directory contents to show its Information on the right side panel. 
+Within the Information panel, click on "Properties" and click "edit". 
+A dialogue window opens with the name and properties of the item. Make the desired changes to the item and click "save".
+
 ## Copying Items
 
 To create a copy of an item in a directory, click on the name of the item to be copied to show its Information on the right side panel. 
@@ -143,15 +170,31 @@ The copy of the item will be in the new directory. The original item will remain
 
 ## Moving Items
 
+You can only move items to a directory if you are an owner (listed as Admin) for the directory and for the item to be moved.
+
 To move an item to a directory, click on the name of the item to be moved to show its Information on the right side panel. 
 Within the Information panel, expand the "Move" section.
 Each available directory that the currently selected item can be moved to is listed with a corresponding button. Click on the "move here" button to move the item into that directory. A progress bar at the top of the main window will move from left to right to indicate the progress of the move. 
 
-The item will now be in the new directory only. 
+The item will now be in the new directory location only. 
+
+![Directory Management - Copy Progress Bar](/docs/directory-copy-progress.png)
+
+## Remove Item from Directory
+
+You can only remove items from a directory if you are an owner (listed as Admin) for the directory and for the item to be removed.
+
+To remove an item from a directory, click on the name of the item to be removed to show its Information on the right side panel. 
+Within the Information panel, expand the "Move" section.
+At the bottom of the list of directories in the "Move" section is an option to remove the item from the current directory its location in. Click on the link to "Remove from directory". A progress bar at the top of the main window will move from left to right to indicate the progress of the removal. 
+
+The item will no longer reside in the directory. 
 
 ![Directory Management - Copy Progress Bar](/docs/directory-copy-progress.png)
 
 ## Deleting a Directory
+
+You can only delete a directory if you are an owner (listed as Admin) for the directory.
 
 To delete a directory, click on the name of the directory to be deleted to show its Information on the right side panel. 
 At the bottom of the Information panel, click on the "delete directory" button to delete the currently selected directory. You will need to type in the name of the directory when prompted in order to avoid accidental deletion. 
