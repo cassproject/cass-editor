@@ -488,6 +488,7 @@ export default {
         },
         selectDirectory: function(directory) {
             this.$store.commit('app/selectDirectory', directory);
+            this.$store.commit('app/rightAsideObject', directory);
             if (this.$router.currentRoute.name !== "directory") {
                 this.$router.push({name: "directory"});
             }
