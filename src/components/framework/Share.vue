@@ -946,6 +946,8 @@ export default {
                             } else if (obj.type === 'Directory') {
                                 me.frameworksToProcess--;
                                 me.handleMakePrivateDirectory(obj);
+                            } else {
+                                me.frameworksToProcess--;
                             }
                             done();
                         }, function(ids) {

@@ -209,7 +209,7 @@
                             :key="each.id">
                             <a
                                 href="#"
-                                @click="$store.commit('app/selectDirectory', each)">{{ each.name }}</a>
+                                @click="$store.commit('app/selectDirectory', each); $store.commit('app/rightAsideObject', each);">{{ each.name }}</a>
                         </li>
                         <li>
                             <a

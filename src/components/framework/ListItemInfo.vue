@@ -1124,6 +1124,14 @@ export default {
     },
     mounted: function() {
         this.setNumSubdirectoriesAndObjects();
+        if (this.object.encryptedType) {
+            let type = "Ec" + this.object.encryptedType;
+            let v = new EcEncryptedValue();
+            v.copyFrom(this.object);
+            let obj = new window[type]();
+            obj.copyFrom(v.decryptIntoObject());
+            this.$store.commit('app/rightAsideObject', obj);
+        }
         if (this.object.type === "Directory") {
             this.setIneligibleDirectoriesForMove(this.object);
         }
