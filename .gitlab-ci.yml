@@ -27,6 +27,7 @@ buildDev:
   - sed -i 's/cass-editor\///g' vue.config.js
   - sed -i 's/cass-editor//g' vue.config.js
   - sed -i 's/cass-editor\///g' ./src/mixins/cassApi.js
+  - export VUE_APP_API_LOGIN_ENABLED=true
   - npm install
   - npm run lint
   - npm run docs:build
@@ -51,6 +52,7 @@ buildQA:
 
   - sed -i 's/https:\/\/dev.api.cassproject.org\/api\//https:\/\/qa.api.cassproject.org\/api\//g' ./src/main.js
   - sed -i 's/https:\/\/dev.api.cassproject.org\/api\//https:\/\/qa.api.cassproject.org\/api\//g' ./src/App.vue
+  - export VUE_APP_API_LOGIN_ENABLED=true
 
   - npm install
   - npm run lint
