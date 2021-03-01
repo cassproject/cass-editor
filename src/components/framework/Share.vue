@@ -480,6 +480,14 @@ export default {
         }
     },
     mounted: function() {
+        if (this.objFromListItemInfo && this.objFromListItemInfo.encryptedType) {
+            let type = "Ec" + this.object.encryptedType;
+            let v = new EcEncryptedValue();
+            v.copyFrom(this.object);
+            let obj = new window[type]();
+            obj.copyFrom(v.decryptIntoObject());
+            this.$store.commit('app/objForShareModal', obj);
+        }
         this.getCurrentOwnersAndReaders(true);
         this.checkIsPrivate();
     },
