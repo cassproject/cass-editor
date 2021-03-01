@@ -28,6 +28,29 @@ to various fields.
 ![CAT Competency and Framework Management - Filter and Sort Panel](/docs/filter-and-sort-panel.png)
 
 
+The filter options under "Apply search term to" are available based on the type of each field wtihin the current configuration (either browser default or instance default). 
+
+
+![CAT Competency and Framework Management - Search Apply Term TO](/docs/search-apply-to.png)
+
+Fields for frameworks, competencies, and directories that are of the type "Text" or "Lang-String" are made available to filter on when searching. These settings are applied when creating or editing fields in Configuration.
+
+![CAT Competency and Framework Management - Search Apply Term TO](/docs/search-field-types.png)
+
+For advanced users: The configuration settings of "ceasnDataFields=true" or "tlaProfile=true" override browser default or instance default configurations when listing available fields to filter on.
+
+## Opening a Framework
+
+Double-click on a framework to open the framework. 
+
+## Viewing a Framework in More Detail
+
+Single-click on a framework to view an Information panel with more details and options for the framework. 
+
+The Information about the framework will show on a side panel to the right of the directory list.
+
+![CAT Competency and Framework Management - Information Panel](/docs/framework-information.png)
+
 ## Creating a New Competency Framework 
 
 A new competency framework can be created within CaSS Authoring Tools by

@@ -301,6 +301,28 @@ export default {
                     "max": 1,
                     "heading": "Rights"
                 },
+                "https://schema.cassproject.org/0.4/socList": {
+                    "@id": "https://schema.cassproject.org/0.4/socList",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Type of occupation; select from an existing enumeration of such types. See https://www.bls.gov/soc/."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Occupation Type"}],
+                    "heading": "Tagging"
+                },
+                "https://schema.cassproject.org/0.4/naicsList": {
+                    "@id": "https://schema.cassproject.org/0.4/naicsList",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Type of industry; select from an existing enumeration of such types such as the SIC, NAICS, and ISIC classifications. See https://www.naics.com/search/."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Industry Type"}],
+                    "heading": "Tagging"
+                },
                 "headings": ["General", "Tagging", "Connections", "Context", "Rights", "Keys"],
                 "primaryProperties": [
                     "http://schema.org/name",
@@ -316,7 +338,9 @@ export default {
                     "https://purl.org/ctdlasn/terms/derivedFrom",
                     "https://purl.org/ctdlasn/terms/isVersionOf",
                     "http://purl.org/dc/elements/1.1/source",
-                    "https://purl.org/ctdlasn/terms/educationLevelType"
+                    "https://purl.org/ctdlasn/terms/educationLevelType",
+                    "https://schema.cassproject.org/0.4/socList",
+                    "https://schema.cassproject.org/0.4/naicsList"
                 ],
                 "tertiaryProperties": [
                     "@id",

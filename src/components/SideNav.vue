@@ -21,7 +21,7 @@
                 v-if="showSideNav"
                 class="icon is-pulled-right"
                 @click="$store.commit('app/closeSideNav')">
-                <i class="fa fa-times" />
+                <i class="fa fa-chevron-down" />
             </div>
         </div>
         <div
@@ -32,13 +32,14 @@
                 @click="$store.commit('app/showSideNav')">
                 <div class="button is-outlined is-white">
                     <span class="icon icon has-text-centered">
-                        <i class="fa fa-bars has-text-centered" />
+                        <i class="fa fa-chevron-right has-text-centered" />
                     </span>
                 </div>
             </div>
             <template v-if="displayName !== 'No user'">
                 <div class="has-text-centered">
                     <span
+                        :title="'Signed in as: ' + displayName"
                         class="icon has-text-centered"
                         v-if="!showSideNav">
                         <i class="far fa-user-circle" />
@@ -59,48 +60,48 @@
                 </p>
                 <div
                     class="buttons is-right"
-                    v-if="showSideNav">
-                    <router-link
-                        class="button is-outlined is-link"
-                        to="/login">
+                    v-if="showSideNav"
+                    title="Log out">
+                    <div
+                        class="button is-rounded is-white has-text-danger"
+                        @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-out-alt" />
                         </span>
                         <span v-if="showSideNav">logout</span>
-                    </router-link>
+                    </div>
                 </div>
                 <div
                     class="buttons is-centered"
                     v-else>
-                    <router-link
+                    <div
                         class="button is-text has-text-link is-medium"
-                        to="/login">
+                        @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-out-alt" />
                         </span>
-                    </router-link>
+                    </div>
                 </div>
             </template>
             <template v-else-if="loginEnabled">
-                <router-link
+                <div
                     v-if="showSideNav"
                     class="button is-outlined is-link"
-                    to="/login">
+                    @click="performApplicationLogout">
                     <span class="icon">
                         <i class="fa fa-sign-in-alt" />
                     </span><span v-if="showSideNav">login</span>
-                </router-link>
+                </div>
                 <div
                     v-if="!showSideNav"
-                    class="buttons is-centered"
-                    to="/login">
-                    <router-link
-                        to="/login"
-                        class="button  is-outlined is-link">
+                    class="buttons is-centered">
+                    <div
+                        class="button is-outlined is-link"
+                        @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-in-alt" />
                         </span>
-                    </router-link>
+                    </div>
                 </div>
             </template>
             <!-- might need later to close -->
@@ -111,8 +112,73 @@
             </div>
         </div>
         <hr>
-        <!-- END OPTION TO NAVIGATE BACK -->
-
+        <!-- Add new buttons -->
+        <div
+            v-if="showSideNav"
+            class="cass-add-item--button button is-rounded has-text-primary has-font-weight-medium"
+            v-click-outside="handleClickoutsidePopup"
+            @click="addFrameworkOrDirectory = true;">
+            <span class="icon">
+                <i class="fa fa-plus" />
+            </span>
+            <span>Create new</span>
+            <div
+                class="cass--pop-out"
+                v-if="addFrameworkOrDirectory">
+                <div
+                    @click="$emit('create-new-framework')"
+                    class="cass--popout-text-button">
+                    <span v-if="showSideNav">Framework</span>
+                </div>
+                <div
+                    @click.prevent="addNewDirectory = true"
+                    class="cass--popout-text-button">
+                    <span v-if="showSideNav">Directory</span>
+                </div>
+                <div
+                    class="cass--popout-text-button"
+                    @click="$emit('create-new-concept-scheme')">
+                    <span>
+                        <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
+                            Concept Scheme
+                        </span>
+                        <span v-else-if="showSideNav">
+                            Taxonomy
+                        </span>
+                    </span>
+                </div>
+                <div
+                    class="field"
+                    v-if="addNewDirectory">
+                    <div class="control">
+                        <div class="control">
+                            <input
+                                class="input"
+                                placeholder="Name of new directory"
+                                v-model="directoryName">
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="field"
+                    v-if="addNewDirectory">
+                    <div class="buttons">
+                        <div
+                            class="button is-dark is-outlined is-small"
+                            @click="addFrameworkOrDirectory = false">
+                            Cancel
+                        </div>
+                        <div
+                            class="button is-primary is-small"
+                            :class="directoryName.length === 0 ? 'is-disabled' : ''"
+                            :disabled="directoryName.length === 0"
+                            @click="saveDirectory">
+                            Create
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- GENERAL MENU -->
         <!-- COMPETENCIES AND FRAMEWORKS -->
         <div
@@ -125,21 +191,24 @@
             <li class="has-text-white">
                 <router-link to="/frameworks">
                     <span class="icon">
-                        <i class="fa fa-list-alt" />
+                        <i class="fa fa-th-list" />
                     </span>
                     <span v-if="showSideNav"> Frameworks</span>
                 </router-link>
             </li>
             <li
-                v-if="showSideNav"
                 class="has-text-white"
-                @click="$emit('create-new-framework')">
-                <a>
+                v-if="showSideNav">
+                <router-link
+                    to="/import"
+                    @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');">
                     <span class="icon">
-                        <i class="fa fa-plus" />
-                    </span><span v-if="showSideNav">New framework</span></a>
+                        <i class="fa fa-upload" />
+                    </span><span v-if="showSideNav">
+                        Import
+                    </span>
+                </router-link>
             </li>
-            <!-- hidding this for now -->
             <li
                 class="has-text-white"
                 v-if="crosswalkEnabled">
@@ -153,26 +222,13 @@
             <li
                 class="has-text-white"
                 v-if="showSideNav">
-                <router-link
-                    to="/import"
-                    @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');">
-                    <span class="icon">
-                        <i class="fa fa-upload" />
-                    </span><span v-if="showSideNav">
-                        Import Framework
-                    </span>
-                </router-link>
-            </li>
-            <li
-                class="has-text-white"
-                v-if="showSideNav">
                 <a
                     href="docs/competency-and-framework-management/"
                     target="_blank">
                     <span class="icon">
                         <i class="fas fa-book" />
                     </span>
-                    Framework Documentation
+                    Documentation
                 </a>
             </li>
             <li
@@ -186,6 +242,36 @@
                     </span>
                     <span v-if="showSideNav"> {{ navLink.launchName }}</span>
                 </a>
+            </li>
+        </ul>
+        <!-- DIRECTORIES -->
+        <div
+            v-if="showSideNav"
+            class="menu-label has-text-weight-bold">
+            My Directories
+        </div>
+        <ul
+            class="menu-list">
+            <li
+                class="has-text-white cass--main-nav--list-item "
+                v-for="directory in myTopLevelDirectories"
+                :key="directory.id"
+                @click="selectDirectory(directory)">
+                <router-link to="/directory">
+                    <span
+                        class="icon"
+                        v-if="$store.getters['app/selectedDirectory'] && $store.getters['app/selectedDirectory'].id === directory.id">
+                        <i class="fa fa-folder-open" />
+                    </span>
+                    <span
+                        class="icon"
+                        v-else>
+                        <i class="fa fa-folder" />
+                    </span>
+                    <span
+                        v-if="showSideNav"
+                        class="cass--main-nav--item"> {{ directory.name }}</span>
+                </router-link>
             </li>
         </ul>
         <!-- CONCEPT SCHEMES -->
@@ -211,25 +297,6 @@
                 </router-link>
             </li>
             <li
-                v-if="showSideNav"
-                class="has-text-white"
-                @click="$emit('create-new-concept-scheme')">
-                <a>
-                    <span class="icon">
-                        <i class="fa fa-plus" />
-                    </span>
-                    <span>
-                        New
-                        <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
-                            Concept Scheme
-                        </span>
-                        <span v-else-if="showSideNav">
-                            Taxonomy
-                        </span>
-                    </span>
-                </a>
-            </li>
-            <li
                 class="has-text-white"
                 v-if="showSideNav">
                 <router-link
@@ -239,12 +306,6 @@
                         <i class="fa fa-upload" />
                     </span>
                     Import
-                    <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
-                        Concept Scheme
-                    </span>
-                    <span v-else-if="showSideNav">
-                        Taxonomy
-                    </span>
                 </router-link>
             </li>
             <li
@@ -255,8 +316,7 @@
                     target="_blank">
                     <span class="icon">
                         <i class="fas fa-book" />
-                    </span>
-                    {{ queryParams.ceasnDataFields === 'true' ? "Concept Scheme" : "Taxonomy" }} Documentation
+                    </span> Documentation
                 </a>
             </li>
             <li
@@ -350,11 +410,12 @@ import {mapState} from 'vuex';
 import casslogo from '@/assets/cass-logo-white.svg';
 import casslogoSquare from '@/assets/cass-logo-square.png';
 import {cassUtil} from './../mixins/cassUtil';
+import {cassApi} from './../mixins/cassApi';
 import {pluginUtil} from './../mixins/pluginUtil';
 import {curatedPlugins} from './../mixins/curatedPlugins';
 
 export default {
-    mixins: [cassUtil, pluginUtil, curatedPlugins],
+    mixins: [cassUtil, cassApi, pluginUtil, curatedPlugins],
     name: 'SideNav',
     props: {
         method: {
@@ -371,10 +432,19 @@ export default {
             STANDARD_NAV_CATEGORIES: ['Competencies & Frameworks', 'Taxonomy', 'Configuration'],
             casslogo: casslogo,
             casslogoSquare: casslogoSquare,
-            pluginLinkMap: {}
+            pluginLinkMap: {},
+            addFrameworkOrDirectory: false,
+            addNewDirectory: false,
+            directoryName: ""
         };
     },
     methods: {
+        handleClickoutsidePopup() {
+            if (this.addFrameworkOrDirectory) {
+                this.addFrameworkOrDirectory = false;
+                this.addNewDirectory = false;
+            }
+        },
         setLaunchPluginValues(pluginShortcut) {
             this.$store.commit('app/pluginToLaunch', pluginShortcut);
             this.$store.commit('app/pluginToLaunchLastUpdate', Date.now());
@@ -401,6 +471,46 @@ export default {
             if (enabledPluginUrlList && enabledPluginUrlList.length > 0) {
                 this.loadManifestDataForPluginUrlList(enabledPluginUrlList, this.buildPluginLinkMap);
             } else this.pluginLinkMap = {};
+        },
+        addNewlinesToId: function(pem) {
+            // Begin public key line
+            pem = pem.substring(0, 26) + "\n" + pem.substring(26);
+            var length = pem.length;
+            var start = 27;
+            while (start + 64 < length) {
+                pem = pem.substring(0, start + 64) + "\n" + pem.substring(start + 64);
+                start += 65;
+                length++;
+            }
+            // End public key line
+            pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
+            return pem;
+        },
+        selectDirectory: function(directory) {
+            this.$store.commit('app/selectDirectory', directory);
+            this.$store.commit('app/rightAsideObject', directory);
+            if (this.$router.currentRoute.name !== "directory") {
+                this.$router.push({name: "directory"});
+            }
+        },
+        saveDirectory: function() {
+            let me = this;
+            let dir = new EcDirectory();
+            dir.name = this.directoryName;
+            // dir.description = "Test Description";
+            dir.generateId(window.repo.selectedServer);
+            if (EcIdentityManager.ids.length > 0) {
+                dir.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            dir["schema:dateCreated"] = new Date().toISOString();
+            dir["schema:dateModified"] = new Date().toISOString();
+            // To do: Add other owners and readers
+            dir.save(function(success) {
+                appLog("Directory saved: " + dir.id);
+                me.directoryName = '';
+                me.$store.dispatch('app/refreshDirectories');
+                me.selectDirectory(dir);
+            }, appError, window.repo);
         }
     },
     watch: {
@@ -416,7 +526,8 @@ export default {
             pluginsEnabled: state => state.featuresEnabled.pluginsEnabled,
             loginEnabled: state => state.featuresEnabled.loginEnabled,
             queryParams: state => state.editor.queryParams,
-            pluginLastUpdate: state => state.app.pluginLastUpdate
+            pluginLastUpdate: state => state.app.pluginLastUpdate,
+            directoryList: state => state.app.directories.directoryList
         }),
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
@@ -452,57 +563,29 @@ export default {
             }
             nonStandardNavCats.sort();
             return nonStandardNavCats;
+        },
+        myTopLevelDirectories: function() {
+            return this.directoryList.filter(directory => {
+                return !directory.parentDirectory;
+            });
         }
     },
     mounted() {
         this.buildPluginList(this.buildPluginListComplete);
+        this.$store.dispatch('app/refreshDirectories');
     }
 };
 </script>
 <style lang="scss">
-.cass-logo {
-    max-width: 100px;
-    display: inline;
-    margin: auto;
-    width: 100%;
-    padding: 0rem .5rem;
-}
-.cass-logo-square {
-    max-width: 100px;
-    display: block;
-    margin: auto;
-    width: 100%;
-    padding: .5rem .5rem;
-}
-#app-side-nav-bar {
-    position: fixed;
-    z-index: 12;
-    top: 0;
-    left:0;
-    height: calc(100vh);
-    margin-top: 0rem;
-    bottom: 0;
-    overflow-y: scroll;
-}
+ @import '../scss/variables.scss';
+ @import '../scss/side-nav.scss';
 
-.menu.is-narrow {
-    margin: auto !important;
-    padding: .25rem !important;
-    width: 4rem;
-    .menu-label {
-        div.open-nav {
-            display: block;
-            margin: auto;
-            padding: .5rem 0rem;
-        }
-    }
-    .menu-list {
-        margin: auto !important;
-        display: block;
-        a {
-            padding: .5em !important;
-            text-align: center;
-        }
-    }
+.cass--main-nav--list-item a {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+    overflow: hidden;
+    max-width: 240px;
+    display: inline-block;
 }
 </style>

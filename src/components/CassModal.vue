@@ -22,6 +22,11 @@
             <div class="modal-card-body has-text-dark">
                 {{ text }}
             </div>
+            <div
+                v-if="details"
+                class="modal-card-body has-text-dark">
+                {{ details }}
+            </div>
             <section
                 v-if="type==='export'"
                 class="modal-card-body has-text-dark">
@@ -107,7 +112,7 @@
                         </span>
                     </button>
                     <button
-                        v-else
+                        v-if="(type!='export') && (type!='error')"
                         class="confirm button is-outlined"
                         :disabled="confirmDisabled"
                         :class="modalConfirmButton"
@@ -142,6 +147,7 @@ export default {
             title: '',
             type: '',
             text: '',
+            details: '',
             // adding callback function variable
             onConfirm: {},
             options: [],
@@ -225,7 +231,7 @@ export default {
             let modalClass = '';
             if (this.type === 'removeObject') {
                 modalClass = 'has-background-primary has-text-white';
-            } else if (this.type === 'deleteObject') {
+            } else if (this.type === 'deleteObject' || this.type === 'error') {
                 modalClass = 'has-background-danger';
             } else if (this.type === 'duplicate') {
                 modalClass = 'has-background-warning';
@@ -302,6 +308,7 @@ export default {
             this.text = params.text;
             this.exportOptions = params.exportOptions;
             this.options = params.options;
+            this.details = params.details;
             // callback
             this.onConfirm = params.onConfirm;
             this.onCancel = params.onCancel;
@@ -323,6 +330,6 @@ export default {
 
 <style lang="scss">
 #cass-modal {
-    z-index: 50;
+    z-index: 101;
 }
 </style>

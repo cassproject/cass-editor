@@ -82,11 +82,17 @@ export default {
                             if (this.importType === "url") {
                                 return this.importJsonLd(data[0]);
                             }
+                            if (this.serverType === "cass") {
+                                return this.importCassFrameworks(data[0]);
+                            }
                             return this.continueCaseImport(data[0]);
                         },
                         onCancel: () => {
                             if (data[0][1]) {
-                                // more CASE imports in the queue
+                                // more imports in the queue
+                                if (this.serverType === "cass") {
+                                    return this.importCassFrameworks(data[0]);
+                                }
                                 return this.importCase(data[0]);
                             }
                             return this.clearImport();
@@ -100,6 +106,8 @@ export default {
                         onConfirm: () => {
                             if (this.importType === "url") {
                                 return this.importJsonLd(data[0]);
+                            } else if (this.serverType === "cass") {
+                                return this.continueCassImport(data[0]);
                             }
                             return this.continueCaseImport(data[0]);
                         },
@@ -107,10 +115,20 @@ export default {
                             if (this.importType === "url") {
                                 return this.clearImport();
                             }
+                            if (this.serverType === "cass") {
+                                return this.importCassFrameworks(data[0]);
+                            }
                             return this.importCase(data[0]);
                         }
                     };
                 }
+            } else if (val === 'error') {
+                params = {
+                    type: val,
+                    title: "Error",
+                    text: data.message,
+                    details: data.details
+                };
             }
             // reveal modal
             this.$modal.show(params);
@@ -230,6 +248,11 @@ export default {
                         CSVImport.analyzeFile(file, function(data) {
                             me.$store.commit('app/importFileType', 'csv');
                             me.importFrameworkName = file.name.replace(".csv", "");
+                            for (let i = 0; i < data.length; i++) {
+                                if (data[i][0] === "") {
+                                    data.splice(i, 1);
+                                }
+                            }
                             for (var i = 0; i < data[0].length; i++) {
                                 let column = {};
                                 column.name = data[0][i];
@@ -806,6 +829,7 @@ export default {
                 }, false, me.repo);
         },
         importJsonLd: function(data) {
+            this.$store.commit('app/importTransition', 'process');
             var formData = new FormData();
             if (data != null && data !== undefined) {
                 formData.append('data', JSON.stringify(data));
@@ -969,9 +993,28 @@ export default {
         },
         importFromUrl: function() {
             let me = this;
-            let error;
+            let error = {
+                message: "Unable to import from the URL source provided.",
+                details: ""
+            };
+            if (!this.isValidUrl(this.importUrl)) {
+                error.details = "The URL provided is not valid.";
+                me.$store.commit('app/addImportError', error.details);
+                me.$store.commit('app/importTransition', 'upload');
+                me.showModal('error', error);
+                return;
+            }
             EcRemote.getExpectingString(this.importUrl, null, function(result) {
-                result = JSON.parse(result);
+                try {
+                    result = JSON.parse(result);
+                } catch (ex) {
+                    error.details = ex.message;
+                    me.$store.commit('app/importStatus', ex.message);
+                    me.$store.commit('app/importTransition', 'upload');
+                    me.$store.commit('app/addImportError', ex.message);
+                    me.showModal('error', error);
+                    return;
+                }
                 var graph = result["@graph"];
                 if (graph != null) {
                     var id = graph[0]["@id"];
@@ -987,39 +1030,53 @@ export default {
                                 me.$store.commit('app/importStatus', 'no match, saving new framework...');
                                 me.importJsonLd(result);
                             } /* TO DO - ERROR HANDLING HERE */
-                        }, function(error) {
-                            me.$store.commit('app/importStatus', error);
+                        }, function(failure) {
+                            error.details = failure;
+                            me.$store.commit('app/importStatus', failure);
                             me.$store.commit('app/importTransition', 'process');
-                            me.$store.commit('app/addImportError', error);
+                            me.$store.commit('app/addImportError', failure);
+                            me.showModal('error', error);
                         });
                     } else {
                         me.importJsonLd(result);
                     }
                 } else {
-                    error = "URL must have an '@graph' field at the top level.";
-                    me.$store.commit('app/addImportError', error);
+                    error.details = "URL must have an '@graph' field at the top level.";
+                    me.$store.commit('app/addImportError', error.details);
                     me.$store.commit('app/importTransition', 'process');
+                    me.showModal('error', error);
                     return;
                 }
                 if (graph[0]["@type"].indexOf("Concept") !== -1) {
                     if (me.ceasnDataFields === 'true') {
-                        error = "Competency Editor cannot be used to import concept schemes.";
+                        error.details = "Competency Editor cannot be used to import concept schemes.";
                     } else {
-                        error = "Competency Editor cannot be used to import taxonomies.";
+                        error.details = "Competency Editor cannot be used to import taxonomies.";
                     }
-                    me.$store.commit('app/addImportError', error);
+                    me.$store.commit('app/addImportError', error.details);
                     me.$store.commit('app/importTransition', 'process');
+                    me.showModal('error', error);
                 }
             }, function(failure) {
                 if (!failure) {
-                    error = "Import Error";
-                    me.$store.commit('app/addImportError', error);
-                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', error.message);
+                    me.$store.commit('app/importTransition', 'upload');
+                    me.showModal('error', error);
                 } else {
+                    error.details = failure;
                     me.$store.commit('app/addImportError', failure);
-                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/importTransition', 'upload');
+                    me.showModal('error', error);
                 }
             });
+        },
+        isValidUrl(s) {
+            try {
+                let u = new URL(s);
+            } catch (e) {
+                return false;
+            }
+            return true;
         },
         scrollFunction(e) {
             let documentObject = document.getElementsByClassName('parent-object');
@@ -1100,7 +1157,7 @@ export default {
             }
         },
         importFramework: function() {
-            if (this.importFramework && !this.conceptMode && this.frameworkSize === 0) {
+            if (this.importFramework && !this.conceptMode && (!this.importFramework.competency || this.importFramework.competency === 0)) {
                 this.hierarchyIsdoneLoading = true;
             }
         }

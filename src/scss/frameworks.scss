@@ -1,6 +1,9 @@
 @import './variables.scss';
 
-.framework-list-page {
+#directory,
+#directoryList,
+#frameworks,
+.framework-list-page:not(.thing-editing) {
     .lode__Property {
         padding: .125rem 0rem;
     }
@@ -10,20 +13,20 @@
     .page {
         margin-top: 2rem;
     }
-    .List {
+    .cass--list--container {
         .button {
             display: none;
         }
-        .list-ul {
-             li.list-ul__item {
+        .cass--list {
+             li.cass--list--item {
                     padding: .5rem;
-                    background-color: white;
                     width: 100%;
                     display: flex;
-                    flex-wrap: wrap;
+                    flex-wrap: no-wrap;
                     align-items: center;
-                    .list-thing {
+                    .cass--list--thing {
                         width: calc(100% - 56px);
+                        display: flex;
                     }
                     .lode__type {
                         display: none;
@@ -34,15 +37,44 @@
                     .arrow-icon {
                         visibility: hidden;
                     }
-
+                    .cass--list-item--content {
+                        .breadcrumb {
+                            padding-bottom: .25rem;
+                        }
+                    }
+                    .cass--list--thing {
+                        .lode__Directory,
+                        .lode__Competency,
+                        .lode__Concept,
+                        .lode__ConceptScheme,
+                        .lode__Definition,
+                        .lode__prefLabel {
+                            .lode__thing-heading {
+                                line-height: 1rem;
+                                .framework-details {
+                                }
+                            }
+                            .lode__Property {
+                                overflow: hidden;
+                                white-space: nowrap;
+                                text-overflow: ellipsis;
+                                max-width: 400px;
+                                line-height: 1rem;
+                                padding: 0 0 .25rem 0;
+                                .tag {
+                                    display: none;
+                                }
+                            }
+                        }
+                    }
             }
-            li.list-ul__item:hover {
+            li.cass--list--item:hover {
                 background-color: $cass-lightest;
                 .arrow-icon {
                     visibility:visible;
                 }
             }
-            .list-ul__item{
+            .cass--list--item{
                 border-radius: $border-radius;
                 padding: .0rem .5rem .25rem .125rem;
                 margin-top: .5rem;
@@ -57,7 +89,10 @@
                 }
 
             }
-            .list-ul__item:hover {
+            .cass--list--item--selected {
+                background-color: tint($cass-primary, 60%) !important;
+            }
+            .cass--list--item:hover {
             }
             .lode__thing {
                 .bottom-actions, .top-actions {
@@ -79,10 +114,10 @@
             }
         }
     }
-     .lode__Framework,
-     .framework-list-page,
-     .lode__ConceptScheme,
-     .lode__Concept {
+    .lode__Framework,
+    .framework-list-page,
+    .lode__ConceptScheme,
+    .lode__Concept {
         a {
             display:none;
         }
@@ -99,104 +134,140 @@
             padding-left: 0;
         }
     }
-    .lode__name {
-        .field {
-            padding-left: 0;
-            display: inline-block;
+    .lode__thing-editing {
+        .field.is-grouped {
+            padding: .25rem 0rem;
         }
-        .field:nth-of-type(n + 3) {
-            .field-body {
-                .field {
-                    padding-left: 0;
-                    &::before {
-                        content: ", ";
+        .lode__Property {
+            padding: .5rem 0rem;
+        }
+    }
+    .lode__thing {
+        .lode__name {
+            .field {
+                padding-left: 0;
+                display: inline-block;
+            }
+            .field:nth-of-type(n + 3) {
+                .field-body {
+                    .field {
+                        padding-left: 0;
+                        &::before {
+                            content: ", ";
+                        }
                     }
                 }
             }
-        }
-        .field:first-of-type{
-            display: block;
-            .field-body {
-                .field {
-                    display: block;
+            .field:first-of-type{
+                display: block;
+                .field-body {
+                    .field {
+                        display: block;
+                        font-weight: 500;
+                        font-family: $family-secondary;
+                        width: 100%;
+                        font-size: $size-3;
+                    }
+                }
+            }
+    
+    
+    
+            label {
+                display:none;
+            }
+            .lode__Property-ul{
+                border-radius: .25rem;
+                padding: 0rem .0rem;
+                font-size: .8rem;
+                margin: .125em 0em;
+    
+                color: rgba($dark, .9);
+                .lode__description {
+                    font-weight: 400;
+                    font-size: $size-6;
+                }
+                .lode__name{
+                    font-weight: 600;
+                    font-size: $size-4;
+                }
+    
+                label {
+                    font-size: $size-6;
                     font-weight: 500;
-                    font-family: $family-secondary;
-                    width: 100%;
-                    font-size: $size-3;
                 }
             }
         }
-
-
-
-        label {
-            display:none;
-        }
-        .lode__Property-ul{
-            border-radius: .25rem;
-            padding: 0rem .0rem;
-            font-size: .8rem;
-            margin: .125em 0em;
-
-            color: rgba($dark, .9);
-            .lode__description {
-                font-weight: 400;
+        .lode__description {
+            display: none;
+            .lode__Property-text  {
                 font-size: $size-6;
             }
-            .lode__name{
-                font-weight: 600;
-                font-size: $size-4;
+            .lode__Property-ul {
+                margin: 0rem;
             }
-
-            label {
-                font-size: $size-6;
-                font-weight: 500;
-            }
-        }
-    }
-    .lode__description {
-        display: none;
-        .lode__Property-text  {
-            font-size: $size-6;
-        }
-        .lode__Property-ul {
-            margin: 0rem;
         }
     }
 }
 
 /* handles search */
-.lode__thing-editing, .lode__thing {
-    .List {
-        .list-ul {
-            .list-ul__item {
-                padding: .25rem;
-
-                .search-selection__icon,
-                .search-selection__add-icon
-                {
-                    float: right;
-                    right: 16px;
-                    display: flex;
+.cass--list--container {
+    .cass--list {
+        
+        .cass--list--item {
+            display: flex;
+            flex-wrap: no-wrap;
+            padding: .25rem;
+            .search-selection__icon,
+            .search-selection__add-icon
+            {
+                display: flex;
+                height: 100%;
+                align-content: center;
+                .icon {
                     height: 100%;
-                    align-content: center;
-                    .icon {
-                        height: 100%;
-                        padding-right: 16px;
-                    }
-                }
-                .search-selection__add-icon {
-                    visibility: hidden;
+                    padding-right: 16px;
                 }
             }
-            .list-ul__item:hover {
-                background-color: rgba($light, .5);
-                .lode__Competency .search-selection__add-icon,
-                .lode__Level .search-selection__add-icon {
-                    visibility: visible !important;
-                }
+            .search-selection__add-icon {
+                visibility: hidden;
+            }
+        }
+        .cass--list--item:hover {
+            background-color: rgba($light, .5);
+            .lode__Competency .search-selection__add-icon,
+            .lode__Level .search-selection__add-icon {
+                visibility: visible !important;
             }
         }
     }
 }
 
+
+
+
+
+.cass--list-item--icon {
+    width: 3.5rem;
+}
+.cass--list-item--icon-wrap {
+    height: 32px;
+    border-radius: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: .125rem;
+    color: white;
+    width: 32px;
+    border: 32px;
+}
+.cass--list-item--content {
+    width: 100%;
+    .lode__name {
+        font-weight: 600;
+        font-family: $family-secondary;
+    }
+}
+.cass--list-item--hover {
+    width: 100px;
+}

@@ -2,9 +2,9 @@
     <div class="modal-card">
         <header class="modal-card-head has-background-primary">
             <p class="modal-card-title">
-                <span class="title has-text-white">Share {{ conceptOrFramework }}</span>
+                <span class="title has-text-white">Share {{ objectType }}</span>
                 <br><span class="subtitle has-text-white has-text-weight-medium">
-                    Sharing settings for {{ frameworkName }} {{ conceptOrFramework }}
+                    Sharing settings for {{ frameworkName }} {{ objectType }}
                 </span>
             </p>
             <button
@@ -32,8 +32,8 @@
                 Confirm make private
             </h2>
             <p>
-                Making this {{ conceptOrFramework }} private means only those users/groups in
-                your access list will have the ability to read, write, or edit this {{ conceptOrFramework }}.
+                Making this {{ objectType }} private means only those users/groups in
+                your access list will have the ability to read, write, or edit this {{ objectType }}.
             </p>
         </section>
         <!-- confirm make public -->
@@ -44,8 +44,8 @@
                 Confirm make public
             </h2>
             <p>
-                Making this {{ conceptOrFramework }} public means anyone with a link can access and read this {{ conceptOrFramework }}.
-                Only those with admin access will be able to edit or delete the {{ conceptOrFramework }}.
+                Making this {{ objectType }} public means anyone with a link can access and read this {{ objectType }}.
+                Only those with admin access will be able to edit or delete the {{ objectType }}.
             </p>
         </section>
         <section
@@ -89,7 +89,7 @@
                 v-if="canEditFramework && userManagementEnabled">
                 <!-- end share link -->
                 <div v-if="ownerCount === 0">
-                    To add users or groups or to make your {{ conceptOrFramework }} private, first add yourself as an owner.
+                    To add users or groups or to make your {{ objectType }} private, first add yourself as an owner.
                     <button @click="makeCurrentUserAnOwner">
                         Make me an owner
                     </button>
@@ -207,7 +207,8 @@
                                     <td>
                                         <div
                                             class="button is-text is-small has-text-danger"
-                                            @click="removeOwnerOrReader(group, 'group')">
+                                            @click="removeOwnerOrReader(group, 'group')"
+                                            :disabled="group.currentUser && numGroupsAsOwner === 1 && group.view == 'admin' && cantRemoveCurrentUserAsOwner && !userIsOwner">
                                             <div class="icon">
                                                 <i class="fa fa-trash" />
                                             </div>
@@ -258,7 +259,7 @@
                                         <div
                                             class="button is-text is-small has-text-danger"
                                             @click="removeOwnerOrReader(user, 'user')"
-                                            :disabled="cantRemoveCurrentUserAsOwner && user.currentUser">
+                                            :disabled="cantRemoveCurrentUserAsOwner && user.currentUser && !numGroupsAsOwner">
                                             <div class="icon">
                                                 <i class="fa fa-trash" />
                                             </div>
@@ -340,7 +341,6 @@ export default {
             confirmMakePrivate: false,
             confirmMakePublic: false,
             clipStatus: 'ready',
-            frameworkId: this.$store.state.editor.framework.shortId(),
             viewOptions: [
                 {
                     label: 'Admin',
@@ -374,7 +374,10 @@ export default {
             cantRemoveCurrentUserAsOwner: false,
             ownerCount: 0,
             decryptingConcepts: false,
-            toSave: []
+            toSave: [],
+            frameworksToProcess: 0,
+            numGroupsAsOwner: 0,
+            userIsOwner: false
         };
     },
     computed: {
@@ -385,17 +388,50 @@ export default {
             return false;
         },
         shareableFrameworkInEditor: function() {
-            if (this.$store.getters['editor/conceptMode'] === true) {
-                return window.location.href.replace('/conceptScheme', "?concepts=true&frameworkId=" + this.frameworkId);
+            let link = window.location.href;
+            link = link.replace('/frameworks', '').replace('/directory', '');
+            if (this.directory) {
+                return (link + "?directoryId=" + this.directory.shortId());
+            } else if (this.$store.getters['editor/conceptMode'] === true) {
+                return (link + "?concepts=true&frameworkId=" + this.frameworkId);
             }
-            return window.location.href.replace('/framework', "?frameworkId=" + this.frameworkId);
+            return (link + "?frameworkId=" + this.frameworkId);
         },
         framework: function() {
+            if (this.objFromListItemInfo && (this.objFromListItemInfo.type === "Framework" || this.objFromListItemInfo.type === "ConceptScheme")) {
+                return this.objFromListItemInfo;
+            }
             return this.$store.state.editor.framework;
         },
+        frameworkId: function() {
+            if (this.framework) {
+                return this.framework.shortId();
+            }
+            return null;
+        },
+        directory: function() {
+            if (this.objFromListItemInfo && this.objFromListItemInfo.type === "Directory") {
+                return this.objFromListItemInfo;
+            } else if (this.objFromListItemInfo || this.$route.name === "framework" || this.$route.name === "conceptScheme") {
+                return null;
+            }
+            return this.$store.getters['app/selectedDirectory'];
+        },
+        resource: function() {
+            if (this.objFromListItemInfo && this.objFromListItemInfo.type === "CreativeWork") {
+                return this.objFromListItemInfo;
+            }
+            return null;
+        },
         frameworkName: function() {
+            if (this.directory) {
+                return this.directory.name;
+            }
+            if (this.resource) {
+                return this.resource.name;
+            }
             if (this.framework.name) {
-                return this.framework.getName();
+                return Thing.getDisplayStringFrom(this.framework.name);
             } else {
                 return Thing.getDisplayStringFrom(this.framework["dcterms:title"]);
             }
@@ -409,7 +445,11 @@ export default {
             }
             if (this.queryParams && this.queryParams.view === 'true') {
                 return false;
-            } else if (!this.framework.canEditAny(EcIdentityManager.getMyPks())) {
+            } else if (this.framework && !this.framework.canEditAny(EcIdentityManager.getMyPks())) {
+                return false;
+            } else if (this.directory && !this.directory.canEditAny(EcIdentityManager.getMyPks())) {
+                return false;
+            } else if (this.resource && !this.resource.canEditAny(EcIdentityManager.getMyPks())) {
                 return false;
             }
             return true;
@@ -417,19 +457,30 @@ export default {
         loggedOnPerson: function() {
             return this.$store.getters['user/loggedOnPerson'];
         },
-        conceptOrFramework: function() {
+        objectType: function() {
+            if (this.resource) {
+                return 'resource';
+            }
+            if (this.directory) {
+                return 'directory';
+            }
             return this.$store.getters['editor/conceptMode'] ? 'concept scheme' : 'framework';
         },
         shareEnabled: function() {
+            if (this.resource) {
+                return false;
+            }
             return this.$store.state.featuresEnabled.shareEnabled;
         },
         userManagementEnabled: function() {
             return this.$store.state.featuresEnabled.userManagementEnabled;
+        },
+        objFromListItemInfo: function() {
+            return this.$store.getters['app/objForShareModal'];
         }
     },
     mounted: function() {
-        this.getCurrentOwnersAndReaders();
-        this.getPossibleOwnersAndReaders();
+        this.getCurrentOwnersAndReaders(true);
         this.checkIsPrivate();
     },
     methods: {
@@ -444,22 +495,26 @@ export default {
             }
         },
         checkIsPrivate: function() {
-            delete EcRepository.cache[this.framework.shortId()];
-            if (EcRepository.getBlocking(this.framework.shortId())) {
-                if (EcRepository.getBlocking(this.framework.shortId()).type === "EncryptedValue") {
-                    this.privateFramework = true;
-                    this.viewOptions[1].disabled = false;
-                    this.viewOptions[1].title = null;
-                    this.cantRemoveCurrentUserAsOwner = true;
+            let obj = this.directory ? this.directory : (this.resource ? this.resource : this.framework);
+            delete EcRepository.cache[obj.shortId()];
+            let me = this;
+            EcRepository.get(obj.shortId(), function(success) {
+                if (success.type === "EncryptedValue") {
+                    me.privateFramework = true;
+                    me.viewOptions[1].disabled = false;
+                    me.viewOptions[1].title = null;
+                    me.cantRemoveCurrentUserAsOwner = true;
                 } else {
-                    this.privateFramework = false;
-                    this.viewOptions[1].disabled = true;
-                    this.viewOptions[1].title = 'Make the ' + this.conceptOrFramework + ' private to add users/groups with view access';
-                    if (this.ownerCount < 2) {
-                        this.cantRemoveCurrentUserAsOwner = false;
+                    me.privateFramework = false;
+                    me.viewOptions[1].disabled = true;
+                    me.viewOptions[1].title = 'Make the ' + me.objectType + ' private to add users/groups with view access';
+                    if (me.ownerCount < 2) {
+                        me.cantRemoveCurrentUserAsOwner = false;
                     }
                 }
-            }
+            }, function(failure) {
+                appError(failure);
+            });
         },
         closeAutoComplete: function() {
             this.isOpenAutocomplete = false;
@@ -473,7 +528,7 @@ export default {
         },
         errorClip({value, event}) {
             appLog('error', value);
-            this.slipStatus = 'error';
+            this.clipStatus = 'error';
             setTimeout(() => {
                 this.clipStatus = 'ready';
             }, 1000);
@@ -487,6 +542,7 @@ export default {
                     let currentUser = false;
                     if (me.loggedOnPerson.shortId() === success.shortId()) {
                         currentUser = true;
+                        me.userIsOwner = true;
                     }
                     var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk, currentUser: currentUser};
                     me.users.push(user);
@@ -497,7 +553,16 @@ export default {
                 me.getOrganizationByEcPk(pk, function(success) {
                     appLog(success);
                     if (success) {
-                        var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk};
+                        let ownerFingerprint = pk.fingerprint();
+                        let currentUser = false;
+                        for (let each in EcIdentityManager.ids) {
+                            let idFingerprint = EcIdentityManager.ids[each].ppk.toPk().fingerprint();
+                            if (ownerFingerprint.equals(idFingerprint)) {
+                                currentUser = true;
+                                me.numGroupsAsOwner++;
+                            }
+                        }
+                        var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk, currentUser: currentUser};
                         me.groups.push(org);
                         me.ownerCount++;
                     }
@@ -528,17 +593,27 @@ export default {
                 });
             });
         },
-        getCurrentOwnersAndReaders: function() {
-            if (this.framework.owner) {
-                for (var i = 0; i < this.framework.owner.length; i++) {
-                    this.getEachOwner(this.framework.owner[i]);
+        getCurrentOwnersAndReaders: function(getPossibleAfter) {
+            var me = this;
+            me.numGroupsAsOwner = 0;
+            me.userIsOwner = false;
+            let obj = this.directory ? this.directory : (this.resource ? this.resource : this.framework);
+            if (obj.owner) {
+                for (var i = 0; i < obj.owner.length; i++) {
+                    this.getEachOwner(obj.owner[i]);
                 }
             }
-            if (this.framework.reader) {
+            if (obj.reader) {
                 this.cantRemoveCurrentUserAsOwner = true;
-                for (var i = 0; i < this.framework.reader.length; i++) {
-                    this.getEachReader(this.framework.reader[i]);
+                for (var i = 0; i < obj.reader.length; i++) {
+                    this.getEachReader(obj.reader[i]);
                 }
+            }
+            if (getPossibleAfter) {
+                // May not need timeout after 'Cannot add a Reader if you don't know the secret' issue is resolved
+                setTimeout(() => {
+                    this.getPossibleOwnersAndReaders();
+                }, 4000);
             }
         },
         getPossibleOwnersAndReaders: function() {
@@ -613,13 +688,89 @@ export default {
                 this.addOwner.push(EcIdentityManager.ids[0].ppk.toPk());
             }
         },
-        addAndRemoveFromAllObjects: function() {
+        multiput: function(toSave, callback) {
             let me = this;
+            this.frameworksToProcess--;
+            if (this.frameworksToProcess <= 0) {
+                this.repo.multiput(toSave, function(success) {
+                    me.resetVariables();
+                    me.confirmMakePublic = false;
+                    if (!me.confirmMakePrivate) {
+                        me.getCurrentOwnersAndReaders();
+                    }
+                    me.confirmMakePrivate = false;
+                    if (callback) {
+                        callback();
+                    }
+                }, appError);
+            }
+        },
+        addAndRemoveFromAllObjects: function() {
+            if (this.resource) {
+                return this.addAndRemoveFromResource(this.resource);
+            }
+            if (this.directory) {
+                return this.addAndRemoveFromAllDirectoryObjects(this.directory);
+            }
             if (this.$store.getters['editor/conceptMode'] === true) {
                 return this.addAndRemoveFromAllConceptObjects();
             }
-            if (this.framework.competency && this.framework.competency.length > 0) {
-                new EcAsyncHelper().each(this.framework.competency, function(competencyId, done) {
+            return this.addAndRemoveFromAllFrameworkObjects(this.framework);
+        },
+        addAndRemoveFromAllDirectoryObjects: function(directory) {
+            let me = this;
+            for (let i = 0; i < me.removeReader.length; i++) {
+                directory.removeReader(me.removeReader[i]);
+            }
+            for (let i = 0; i < me.removeOwner.length; i++) {
+                directory.removeOwner(me.removeOwner[i]);
+            }
+            for (let i = 0; i < me.addReader.length; i++) {
+                directory.addReader(me.addReader[i]);
+            }
+            for (let i = 0; i < me.addOwner.length; i++) {
+                directory.addOwner(me.addOwner[i]);
+            }
+            me.toSave.push(directory);
+            this.repo.search("(directory:\"" + directory.shortId() + "\" OR parentDirectory:\"" + directory.shortId() + "\")", function() {}, function(success) {
+                me.frameworksToProcess += success.length;
+                new EcAsyncHelper().each(success, function(obj, done) {
+                    if (obj.type === 'Framework' || obj.encryptedType === "Framework") {
+                        me.addAndRemoveFromAllFrameworkObjects(obj);
+                    } else if (obj.type === 'CreativeWork' || obj.encryptedType === "CreativeWork") {
+                        me.addAndRemoveFromResource(obj);
+                    } else if (obj.type === 'Directory' || obj.encryptedType === "Directory") {
+                        me.frameworksToProcess--;
+                        me.addAndRemoveFromAllDirectoryObjects(obj);
+                    }
+                    done();
+                }, function(ids) {
+                    if (ids.length === 0) {
+                        me.multiput(me.toSave);
+                    }
+                });
+            }, appError);
+        },
+        addAndRemoveFromResource: function(resource) {
+            for (let i = 0; i < this.removeReader.length; i++) {
+                resource.removeReader(this.removeReader[i]);
+            }
+            for (let i = 0; i < this.removeOwner.length; i++) {
+                resource.removeOwner(this.removeOwner[i]);
+            }
+            for (let i = 0; i < this.addReader.length; i++) {
+                resource.addReader(this.addReader[i]);
+            }
+            for (let i = 0; i < this.addOwner.length; i++) {
+                resource.addOwner(this.addOwner[i]);
+            }
+            this.toSave.push(resource);
+            this.multiput(this.toSave);
+        },
+        addAndRemoveFromAllFrameworkObjects: function(framework, passedInToSave) {
+            let me = this;
+            if (framework.competency && framework.competency.length > 0) {
+                new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
                     EcCompetency.get(competencyId, function(c) {
                         for (let i = 0; i < me.removeReader.length; i++) {
                             c.removeReader(me.removeReader[i]);
@@ -637,8 +788,8 @@ export default {
                         done();
                     }, done);
                 }, function(competencyIds) {
-                    if (me.framework.relation && me.framework.relation.length > 0) {
-                        new EcAsyncHelper().each(me.framework.relation, function(relationId, done) {
+                    if (framework.relation && framework.relation.length > 0) {
+                        new EcAsyncHelper().each(framework.relation, function(relationId, done) {
                             EcAlignment.get(relationId, function(r) {
                                 for (let i = 0; i < me.removeReader.length; i++) {
                                     r.removeReader(me.removeReader[i]);
@@ -656,18 +807,17 @@ export default {
                                 done();
                             }, done);
                         }, function(relationIds) {
-                            me.addAndRemoveFromFrameworkObject();
+                            me.addAndRemoveFromFrameworkObject(framework);
                         });
                     } else {
-                        me.addAndRemoveFromFrameworkObject();
+                        me.addAndRemoveFromFrameworkObject(framework);
                     }
                 });
             } else {
-                me.addAndRemoveFromFrameworkObject();
+                me.addAndRemoveFromFrameworkObject(framework);
             }
         },
-        addAndRemoveFromFrameworkObject: function() {
-            let f = this.framework;
+        addAndRemoveFromFrameworkObject: function(f) {
             let me = this;
             for (let i = 0; i < me.removeReader.length; i++) {
                 f.removeReader(me.removeReader[i]);
@@ -682,10 +832,10 @@ export default {
                 f.addOwner(me.addOwner[i]);
             }
             me.toSave.push(f);
-            me.repo.multiput(me.toSave, function() {
-                me.resetVariables();
-                me.$store.commit('editor/framework', f);
-                me.getCurrentOwnersAndReaders();
+            me.multiput(me.toSave, function() {
+                if (me.framework) {
+                    me.$store.commit('editor/framework', f);
+                }
             }, function() {});
         },
         addAndRemoveFromAllConceptObjects: function() {
@@ -720,6 +870,15 @@ export default {
             }, function() {});
         },
         removeOwnerOrReader: function(userOrGroup, type) {
+            if (type === 'user') {
+                if (this.cantRemoveCurrentUserAsOwner && userOrGroup.currentUser && !this.numGroupsAsOwner) {
+                    return;
+                }
+            } else if (type === 'group') {
+                if (userOrGroup.currentUser && this.numGroupsAsOwner === 1 && userOrGroup.view === 'admin' && this.cantRemoveCurrentUserAsOwner && !this.userIsOwner) {
+                    return;
+                }
+            }
             if (userOrGroup.view === "view") {
                 this.removeReader.push(userOrGroup.pk);
             } else if (userOrGroup.view === "admin") {
@@ -749,152 +908,299 @@ export default {
             me.decryptingConcepts = false;
         },
         makePrivate: function() {
-            var me = this;
             this.isProcessing = true;
             var framework = this.framework;
+            this.$store.commit('editor/private', true);
+            if (this.resource) {
+                return this.handleMakePrivateResource(this.resource);
+            }
+            if (this.directory) {
+                return this.handleMakePrivateDirectory(this.directory);
+            }
             if (this.$store.getters['editor/conceptMode'] === true) {
                 this.handleMakePrivateConceptScheme();
             } else {
-                this.$store.commit('editor/private', true);
-                if (framework.competency && framework.competency.length > 0) {
-                    new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
-                        EcCompetency.get(competencyId, function(c) {
-                            if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                this.handleMakePrivateFramework(framework);
+            }
+        },
+        handleMakePrivateDirectory: function(directory) {
+            let me = this;
+            if (directory.canEditAny(EcIdentityManager.getMyPks())) {
+                if (!directory.owner) {
+                    directory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                if (this.directory.shortId() === directory.shortId()) {
+                    // Make sure new owner gets into store
+                    this.$store.commit('app/selectDirectory', directory);
+                }
+                directory["schema:dateModified"] = new Date().toISOString();
+                EcEncryptedValue.toEncryptedValueAsync(directory, false, function(edirectory) {
+                    me.toSave.push(edirectory);
+                    me.repo.search("(directory:\"" + directory.shortId() + "\" OR parentDirectory:\"" + directory.shortId() + "\")", function() {}, function(success) {
+                        me.frameworksToProcess += success.length;
+                        new EcAsyncHelper().each(success, function(obj, done) {
+                            if (obj.type === 'Framework') {
+                                me.handleMakePrivateFramework(obj);
+                            } else if (obj.type === 'CreativeWork') {
+                                me.handleMakePrivateResource(obj);
+                            } else if (obj.type === 'Directory') {
+                                me.frameworksToProcess--;
+                                me.handleMakePrivateDirectory(obj);
+                            } else {
+                                me.frameworksToProcess--;
+                            }
+                            done();
+                        }, function(ids) {
+                            if (ids.length === 0) {
+                                me.multiput(me.toSave);
+                            }
+                        });
+                    }, appError);
+                }, appError);
+            }
+        },
+        handleMakePrivateResource: function(resource) {
+            let me = this;
+            if (resource.canEditAny(EcIdentityManager.getMyPks())) {
+                if (!resource.owner) {
+                    resource.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                }
+                if (this.resource) {
+                    this.$store.commit('app/objForShareModal', resource);
+                }
+                resource["schema:dateModified"] = new Date().toISOString();
+                EcEncryptedValue.toEncryptedValueAsync(resource, false, function(eresource) {
+                    me.toSave.push(eresource);
+                    me.multiput(me.toSave);
+                }, appError);
+            }
+        },
+        handleMakePrivateFramework: function(framework) {
+            let me = this;
+            if (framework.competency && framework.competency.length > 0) {
+                new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
+                    EcCompetency.get(competencyId, function(c) {
+                        if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                            if (!c.owner) {
                                 c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                                c["schema:dateModified"] = new Date().toISOString();
-                                EcEncryptedValue.toEncryptedValueAsync(c, false, function(ec) {
-                                    me.toSave.push(ec);
+                            }
+                            c["schema:dateModified"] = new Date().toISOString();
+                            EcEncryptedValue.toEncryptedValueAsync(c, false, function(ec) {
+                                me.toSave.push(ec);
+                                done();
+                            }, done);
+                        } else {
+                            done();
+                        }
+                    }, done);
+                }, function(competencyIds) {
+                    if (framework.relation && framework.relation.length > 0) {
+                        new EcAsyncHelper().each(framework.relation, function(relationId, done) {
+                            EcAlignment.get(relationId, function(r) {
+                                if (!r.owner) {
+                                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                }
+                                EcEncryptedValue.toEncryptedValueAsync(r, false, function(er) {
+                                    me.toSave.push(er);
                                     done();
                                 }, done);
-                            } else {
-                                done();
-                            }
-                        }, done);
-                    }, function(competencyIds) {
-                        if (framework.relation && framework.relation.length > 0) {
-                            new EcAsyncHelper().each(framework.relation, function(relationId, done) {
-                                EcAlignment.get(relationId, function(r) {
-                                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                                    EcEncryptedValue.toEncryptedValueAsync(r, false, function(er) {
-                                        me.toSave.push(er);
-                                        done();
-                                    }, done);
-                                }, done);
-                            }, function(relationIds) {
-                                me.encryptFramework(framework);
-                            });
-                        } else {
+                            }, done);
+                        }, function(relationIds) {
                             me.encryptFramework(framework);
-                        }
-                    });
-                } else {
-                    me.encryptFramework(framework);
-                }
+                        });
+                    } else {
+                        me.encryptFramework(framework);
+                    }
+                });
+            } else {
+                me.encryptFramework(framework);
             }
         },
         makePublic: function() {
-            var me = this;
             this.isProcessing = true;
             var framework = this.framework;
+            this.$store.commit('editor/private', false);
+            if (this.resource) {
+                return this.handleMakePublicResource(this.resource);
+            }
+            if (this.directory) {
+                return this.handleMakePublicDirectory(this.directory);
+            }
             if (this.$store.getters['editor/conceptMode'] === true) {
                 this.handleMakePublicConceptScheme();
             } else {
-                this.$store.commit('editor/private', false);
-                framework = EcEncryptedValue.toEncryptedValue(framework);
-                var f = new EcFramework();
-                f.copyFrom(framework.decryptIntoObject());
-                f["schema:dateModified"] = new Date().toISOString();
-                delete f.reader;
-                EcEncryptedValue.encryptOnSave(f.id, false);
-                me.toSave.push(f);
+                this.handleMakePublicFramework(framework);
+            }
+        },
+        handleMakePublicDirectory: function(directory) {
+            let me = this;
+            let d = new EcDirectory();
+            let v;
+            if (directory.type === "Directory") {
+                v = EcEncryptedValue.toEncryptedValue(directory);
+            } else {
+                v = new EcEncryptedValue();
+                v.copyFrom(directory);
+            }
+            d.copyFrom(v.decryptIntoObject());
+            d["schema:dateModified"] = new Date().toISOString();
+            delete d.reader;
+            EcEncryptedValue.encryptOnSave(d.id, false);
+            me.toSave.push(d);
+            if (this.directory.shortId() === d.shortId()) {
+                this.$store.commit('app/selectDirectory', d);
+            }
+            this.repo.search("(directory:\"" + directory.shortId() + "\" OR parentDirectory:\"" + directory.shortId() + "\")", function() {}, function(success) {
+                me.frameworksToProcess += success.length;
+                new EcAsyncHelper().each(success, function(obj, done) {
+                    if (obj.type === 'Framework' || obj.encryptedType === 'Framework') {
+                        me.handleMakePublicFramework(obj);
+                    } else if (obj.type === 'CreativeWork' || obj.encryptedType === 'CreativeWork') {
+                        me.handleMakePublicResource(obj);
+                    } else if (obj.type === 'Directory' || obj.encryptedType === 'Directory') {
+                        me.frameworksToProcess--;
+                        me.handleMakePublicDirectory(obj);
+                    }
+                    done();
+                }, function(ids) {
+                    if (ids.length === 0) {
+                        me.multiput(me.toSave);
+                    }
+                });
+            }, appError);
+        },
+        handleMakePublicResource: function(resource) {
+            let cw = new CreativeWork();
+            let v;
+            if (resource.type === "CreativeWork") {
+                v = EcEncryptedValue.toEncryptedValue(resource);
+            } else {
+                v = new EcEncryptedValue();
+                v.copyFrom(resource);
+            }
+            cw.copyFrom(v.decryptIntoObject());
+            cw["schema:dateModified"] = new Date().toISOString();
+            delete cw.reader;
+            EcEncryptedValue.encryptOnSave(cw.id, false);
+            this.toSave.push(cw);
+            if (this.resource) {
+                this.$store.commit('app/objForShareModal', cw);
+            }
+            this.multiput(this.toSave);
+        },
+        handleMakePublicFramework: function(framework) {
+            let me = this;
+            let f = new EcFramework();
+            let v;
+            if (framework.type === "Framework") {
+                v = EcEncryptedValue.toEncryptedValue(framework);
+            } else {
+                v = new EcEncryptedValue();
+                v.copyFrom(framework);
+            }
+            f.copyFrom(v.decryptIntoObject());
+            f["schema:dateModified"] = new Date().toISOString();
+            delete f.reader;
+            EcEncryptedValue.encryptOnSave(f.id, false);
+            me.toSave.push(f);
+            if (this.framework) {
                 me.$store.commit('editor/framework', f);
-                framework = f;
-                if (framework.competency && framework.competency.length > 0) {
-                    new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
-                        EcRepository.get(competencyId, function(c) {
-                            var v;
-                            if (c.canEditAny(EcIdentityManager.getMyPks())) {
-                                if (c.isAny(new EcEncryptedValue().getTypes())) {
-                                    v = new EcEncryptedValue();
-                                    v.copyFrom(c);
-                                } else {
-                                    v = EcEncryptedValue.toEncryptedValue(c);
-                                }
-                                c = new EcCompetency();
-                                c.copyFrom(v.decryptIntoObject());
-                                c["schema:dateModified"] = new Date().toISOString();
-                                delete c.reader;
-                                EcEncryptedValue.encryptOnSave(c.id, false);
-                                me.toSave.push(c);
-                                done();
+            }
+            framework = f;
+            if (framework.competency && framework.competency.length > 0) {
+                new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
+                    EcRepository.get(competencyId, function(c) {
+                        var v;
+                        if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                            if (c.isAny(new EcEncryptedValue().getTypes())) {
+                                v = new EcEncryptedValue();
+                                v.copyFrom(c);
                             } else {
-                                done();
+                                v = EcEncryptedValue.toEncryptedValue(c);
                             }
-                        }, done);
-                    }, function(competencyIds) {
-                        if (framework.relation && framework.relation.length > 0) {
-                            new EcAsyncHelper().each(framework.relation, function(relationId, done) {
-                                EcRepository.get(relationId, function(r) {
-                                    var v;
-                                    if (r.isAny(new EcEncryptedValue().getTypes())) {
-                                        v = new EcEncryptedValue();
-                                        v.copyFrom(r);
-                                    } else {
-                                        v = EcEncryptedValue.toEncryptedValue(r);
-                                    }
-                                    r = new EcAlignment();
-                                    r.copyFrom(v.decryptIntoObject());
-                                    delete r.reader;
-                                    EcEncryptedValue.encryptOnSave(r.id, false);
-                                    me.toSave.push(r);
-                                    done();
-                                }, done);
-                            }, function(relationIds) {
-                                me.finishedMakingPublic();
-                            });
+                            c = new EcCompetency();
+                            c.copyFrom(v.decryptIntoObject());
+                            c["schema:dateModified"] = new Date().toISOString();
+                            delete c.reader;
+                            EcEncryptedValue.encryptOnSave(c.id, false);
+                            me.toSave.push(c);
+                            done();
                         } else {
-                            me.finishedMakingPublic();
+                            done();
                         }
-                    });
-                } else {
-                    me.finishedMakingPublic();
-                }
+                    }, done);
+                }, function(competencyIds) {
+                    if (framework.relation && framework.relation.length > 0) {
+                        new EcAsyncHelper().each(framework.relation, function(relationId, done) {
+                            EcRepository.get(relationId, function(r) {
+                                var v;
+                                if (r.isAny(new EcEncryptedValue().getTypes())) {
+                                    v = new EcEncryptedValue();
+                                    v.copyFrom(r);
+                                } else {
+                                    v = EcEncryptedValue.toEncryptedValue(r);
+                                }
+                                r = new EcAlignment();
+                                r.copyFrom(v.decryptIntoObject());
+                                delete r.reader;
+                                EcEncryptedValue.encryptOnSave(r.id, false);
+                                me.toSave.push(r);
+                                done();
+                            }, done);
+                        }, function(relationIds) {
+                            me.finishedMakingPublic();
+                        });
+                    } else {
+                        me.finishedMakingPublic();
+                    }
+                });
+            } else {
+                me.finishedMakingPublic();
             }
         },
         finishedMakingPublic: function() {
             let me = this;
-            this.repo.multiput(this.toSave, function() {
-                me.confirmMakePublic = false;
-                me.isProcessing = false;
-                me.resetVariables();
-                me.getCurrentOwnersAndReaders();
-            }, appError);
+            this.multiput(this.toSave, function() {
+                if (me.framework) {
+                    me.confirmMakePublic = false;
+                    me.isProcessing = false;
+                    me.resetVariables();
+                    me.getCurrentOwnersAndReaders();
+                }
+            });
         },
         encryptFramework: function(framework) {
             var me = this;
             var f = new EcFramework();
             f.copyFrom(framework);
-            f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-            // Make sure new owner gets into store
-            this.$store.commit('editor/framework', f);
+            if (!f.owner) {
+                f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            if (this.framework) {
+                // Make sure new owner gets into store
+                this.$store.commit('editor/framework', f);
+            }
             f["schema:dateModified"] = new Date().toISOString();
             EcEncryptedValue.toEncryptedValueAsync(f, false, function(ef) {
                 me.toSave.push(ef);
-                me.repo.multiput(me.toSave, function() {
-                    me.confirmMakePrivate = false;
-                    me.cantRemoveCurrentUserAsOwner = true;
-                    me.isProcessing = false;
-                    me.toSave.splice(0, me.toSave.length);
-                }, appError);
+                me.multiput(me.toSave, function() {
+                    if (me.framework) {
+                        me.confirmMakePrivate = false;
+                        me.cantRemoveCurrentUserAsOwner = true;
+                        me.isProcessing = false;
+                        me.toSave.splice(0, me.toSave.length);
+                    }
+                });
             }, appError);
         },
         handleMakePrivateConceptScheme: function() {
             var me = this;
             var framework = this.framework;
-            this.$store.commit('editor/private', true);
             var cs = new EcConceptScheme();
             cs.copyFrom(framework);
-            cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (!cs.owner) {
+                cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
             this.$store.commit('editor/framework', cs);
             var name = cs["dcterms:title"];
             cs["schema:dateModified"] = new Date().toISOString();
@@ -914,7 +1220,6 @@ export default {
         handleMakePublicConceptScheme: function() {
             var me = this;
             var framework = this.framework;
-            this.$store.commit('editor/private', false);
             framework = EcEncryptedValue.toEncryptedValue(framework);
             var cs = new EcConceptScheme();
             appLog(framework);
@@ -939,7 +1244,9 @@ export default {
             var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
                 EcRepository.get(conceptId, function(concept) {
-                    concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (!concept.owner) {
+                        concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    }
                     concept["schema:dateModified"] = new Date().toISOString();
                     if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
                         me.encryptConcepts(concept);
@@ -987,46 +1294,86 @@ export default {
             });
         },
         makeCurrentUserAnOwner: function() {
-            let me = this;
             this.isProcessing = true;
+            if (this.resource) {
+                return this.makeCurrentUserResourceOwner(this.resource);
+            }
+            if (this.directory) {
+                return this.makeCurrentUserDirectoryOwner(this.directory);
+            }
             if (this.$store.getters['editor/conceptMode'] === true) {
                 return this.makeCurrentUserAnOwnerForConceptObjects();
             }
-            if (this.framework.competency && this.framework.competency.length > 0) {
-                new EcAsyncHelper().each(this.framework.competency, function(competencyId, done) {
+            this.makeCurrentUserFrameworkAndSubObjectOwner(this.framework);
+        },
+        makeCurrentUserDirectoryOwner: function(directory) {
+            let me = this;
+            directory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            me.toSave.push(directory);
+            if (this.directory.shortId() === directory.shortId()) {
+                this.$store.commit('app/selectDirectory', directory);
+            }
+            this.repo.search("(directory:\"" + directory.shortId() + "\" OR parentDirectory:\"" + directory.shortId() + "\")", function() {}, function(success) {
+                me.frameworksToProcess += success.length;
+                new EcAsyncHelper().each(success, function(obj, done) {
+                    if (obj.type === 'Framework' || obj.encryptedType === "Framework") {
+                        me.makeCurrentUserFrameworkAndSubObjectOwner(obj);
+                    } else if (obj.type === 'CreativeWork' || obj.encryptedType === "CreativeWork") {
+                        me.makeCurrentUserResourceOwner(obj);
+                    } else if (obj.type === 'Directory' || obj.encryptedType === "Directory") {
+                        me.frameworksToProcess--;
+                        me.makeCurrentUserDirectoryOwner(obj);
+                    }
+                    done();
+                }, function(ids) {
+                    if (ids.length === 0) {
+                        me.multiput(me.toSave);
+                    }
+                });
+            }, appError);
+        },
+        makeCurrentUserResourceOwner: function(resource) {
+            resource.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            this.toSave.push(resource);
+            this.multiput(this.toSave);
+        },
+        makeCurrentUserFrameworkAndSubObjectOwner: function(framework) {
+            let me = this;
+            if (framework.competency && framework.competency.length > 0) {
+                new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
                     EcCompetency.get(competencyId, function(c) {
                         c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                         me.toSave.push(c);
                         done();
                     }, done);
                 }, function(competencyIds) {
-                    if (me.framework.relation && me.framework.relation.length > 0) {
-                        new EcAsyncHelper().each(me.framework.relation, function(relationId, done) {
+                    if (framework.relation && framework.relation.length > 0) {
+                        new EcAsyncHelper().each(framework.relation, function(relationId, done) {
                             EcAlignment.get(relationId, function(r) {
                                 r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                                 me.toSave.push(r);
                                 done();
                             }, done);
                         }, function(relationIds) {
-                            me.makeCurrentUserFrameworkOwner();
+                            me.makeCurrentUserFrameworkOwner(framework);
                         });
                     } else {
-                        me.makeCurrentUserFrameworkOwner();
+                        me.makeCurrentUserFrameworkOwner(framework);
                     }
                 });
             } else {
-                me.makeCurrentUserFrameworkOwner();
+                me.makeCurrentUserFrameworkOwner(framework);
             }
         },
-        makeCurrentUserFrameworkOwner: function() {
-            let f = this.framework;
+        makeCurrentUserFrameworkOwner: function(framework) {
+            let f = framework;
             let me = this;
             f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             me.toSave.push(f);
-            me.repo.multiput(me.toSave, function() {
-                me.resetVariables();
-                me.$store.commit('editor/framework', f);
-                me.getCurrentOwnersAndReaders();
+            me.multiput(me.toSave, function() {
+                if (me.framework) {
+                    me.$store.commit('editor/framework', f);
+                }
             }, function() {});
         },
         makeCurrentUserAnOwnerForConceptObjects: function() {
@@ -1059,7 +1406,7 @@ export default {
                     if (this.ownerCount > 0) {
                         this.addAndRemoveFromFrameworkObject();
                     } else {
-                        this.makeCurrentUserFrameworkOwner();
+                        this.makeCurrentUserFrameworkOwner(this.framework);
                     }
                 }
             }

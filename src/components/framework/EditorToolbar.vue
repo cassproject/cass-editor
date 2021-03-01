@@ -3,7 +3,7 @@
         id="framework-editor-toolbar">
         <!-- property view -->
         <div class="container">
-            <div class="columns is-mobile is-spaced">
+            <div class="columns is-mobile">
                 <!-- view options -->
                 <!-- primary -->
                 <div class="column is-narrow">
@@ -96,7 +96,7 @@
                                 <i class="fas fa-undo-alt " />
                             </span>
                         </div>
-                        <!-- <div
+                    <!-- <div
                             title="View history"
                             @click="$store.commit('app/showRightAside', 'Versions')"
                             class="button is-text  has-text-dark">
@@ -179,6 +179,15 @@
                         <span class="is-hidden-touch">{{ defaultFrameworkConfigName }}</span>
                     </div>
                 </div>
+                <!-- directory -->
+                <div
+                    v-if="directoryId"
+                    class="column is-narrow"
+                    @click="goToDirectory">
+                    <div class="button is-text has-text-dark">
+                        Go to directory
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -203,7 +212,8 @@ export default {
             repo: window.repo,
             editsFinishedCounter: 0,
             totalEditsCounter: 0,
-            defaultFrameworkConfigName: null
+            defaultFrameworkConfigName: null,
+            privateFramework: false
         };
     },
     methods: {
@@ -407,6 +417,27 @@ export default {
             } else {
                 this.defaultFrameworkConfigName = "No configuration";
             }
+        },
+        goToDirectory: function() {
+            let me = this;
+            EcDirectory.get(this.directoryId, function(success) {
+                me.$store.commit('app/selectDirectory', success);
+                me.$router.push({name: "directory"});
+            }, appError);
+        },
+        checkIsPrivate: function() {
+            let obj = this.framework;
+            delete EcRepository.cache[obj.shortId()];
+            let me = this;
+            EcRepository.get(obj.shortId(), function(success) {
+                if (success.type === "EncryptedValue") {
+                    me.privateFramework = true;
+                } else {
+                    me.privateFramework = false;
+                }
+            }, function(failure) {
+                appError(failure);
+            });
         }
     },
     computed: {
@@ -456,6 +487,8 @@ export default {
                 return false;
             } else if (this.framework.reader && this.framework.reader.length > 0) {
                 return false;
+            } else if (this.privateFramework) {
+                return false;
             } else {
                 return true;
             }
@@ -477,6 +510,9 @@ export default {
                 return false;
             }
             return true;
+        },
+        directoryId: function() {
+            return this.framework.directory;
         }
     },
     watch: {
@@ -500,6 +536,7 @@ export default {
             this.changeProperties(this.$store.getters['editor/setPropertyLevel']);
             this.$store.commit('editor/setPropertyLevel', null);
         }
+        this.checkIsPrivate();
         this.getConfigurationName();
     }
 };
@@ -508,13 +545,8 @@ export default {
 <style lang="scss">
     @import './../../scss/variables.scss';
 #framework-editor-toolbar {
-    border-bottom: solid 1px rgba($dark, .5);
-    top: 0rem;
     width: calc(100% - 4rem);
     z-index: 10;
-    height: 2.6rem;
-    position: fixed;
-    padding: 4px;
     background-color: white;
     .fet__wrapper {
         max-width: 1400px;

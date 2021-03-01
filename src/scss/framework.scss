@@ -1,9 +1,13 @@
 @import './variables.scss';
-#framework, #concept {
-    margin-top: 2.6rem !important;
-    height: calc(100% - 2.6rem);
+#directory, #directoryList, #concept {
+ 
 }
-#framework, #concept, #import {
+
+#framework,
+#concept,
+#directory,
+#directoryList,
+#import {
 .framework-wrapper {
     max-width: 1400px;
     width: 100%;
@@ -490,7 +494,7 @@ ul.processing-list {
     .parent-object.scrolled {
         z-index: 8;
         position: fixed;
-        width: 100%;
+        width: calc(100% - 280px);
         height: 58px;
         overflow: hidden;
         .tag {

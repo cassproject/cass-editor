@@ -1,91 +1,104 @@
 <template>
     <div id="framework">
-        <RightAside v-if="showRightAside" />
-        <!-- begin framework -->
-        <div
-            class="framework-content"
-            id="framework-content">
-            <div class="framework-body columns is-multiline is-gapless is-paddingless is-marginless">
+        <main-layout
+            :rightActive="showRightAside"
+            :simple="true">
+            <!-- begin framework -->
+            <template slot="top">
                 <FrameworkEditorToolbar
                     :properties="properties"
                     @show-export-modal="onOpenExportModal"
                     @change-properties="changeProperties" />
-                <div class="column is-12">
-                    <!-- loading section -- dummy content to show while loading dome elemnts -->
-                    <div
-                        class="container is-paddingless">
-                        <draggable
-                            v-bind="dragOptions"
-                            v-model="frameworkDrag"
-                            tag="div"
-                            id="framework_drag"
-                            :disabled="canEdit !== true"
-                            :group="{ name: 'test' }"
-                            handle=".handle">
-                            <Component
-                                :class="[dynamicThingComponent === 'Thing' ? parentObjectClass: '']"
-                                :is="dynamicThingComponent"
-                                :id="'scroll-' + framework.shortId().split('/').pop()"
-                                :obj="framework"
-                                :repo="repo"
-                                :newFramework="newFramework"
-                                :parentNotEditable="queryParams.view==='true'"
-                                :profile="frameworkProfile"
-                                @delete-object="deleteObject"
-                                @remove-object="removeObject"
-                                @edit-node-event="onEditNode()"
-                                @done-editing-node-event="onDoneEditingNode()"
-                                :properties="properties">
-                                <template #frameworkDetails>
-                                    <div class="lode__framework__info-bar">
-                                        <span
-                                            class="tag is-medium-grey has-text-dark"
-                                            v-if="framework.competency && framework.competency.length == 1">
-                                            {{ framework.competency.length }} item
-                                        </span>
-                                        <span
-                                            class="tag is-medium-grey has-text-dark"
-                                            v-else-if="framework.competency && framework.competency.length > 1">
-                                            {{ framework.competency.length }} items
-                                        </span>
-                                        <span
-                                            class="tag is-medium-grey has-text-dark"
-                                            v-if="timestamp"
-                                            :title="new Date(timestamp)">
-                                            Last modified {{ lastModified }}
-                                        </span>
-                                        <span
-                                            class="tag is-medium-grey has-text-dark"
-                                            v-if="framework['schema:dateCreated']"
-                                            :title="new Date(framework['schema:dateCreated'])">
-                                            Created {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
-                                        </span>
-                                        <span
-                                            class="tag is-medium-grey has-text-dark"
-                                            v-if="framework['Approved']"
-                                            :title="framework['Approved']">
-                                            Approved
-                                        </span>
-                                        <span
-                                            class="tag is-medium-grey has-text-dark"
-                                            v-if="framework['Published']"
-                                            :title="framework['Published']">Published</span>
-                                    </div>
-                                </template>
-                            </Component>
-                        </draggable>
-                        <div
-                            class="section"
-                            v-if="!hierarchyIsdoneLoading">
-                            <ul class="processing-list">
-                                <li />
-                                <li />
-                                <ul>
-                                    <li />
-                                    <li />
-                                    <li />
-                                    <ul>
+            </template>
+            <template slot="body">
+                <div
+                    class="framework-content"
+                    id="framework-content">
+                    <div class="framework-body columns is-multiline is-gapless is-paddingless is-marginless">
+                        <div class="column is-12">
+                            <!-- loading section -- dummy content to show while loading dome elemnts -->
+                            <div
+                                class="container is-paddingless">
+                                <draggable
+                                    v-bind="dragOptions"
+                                    v-model="frameworkDrag"
+                                    tag="div"
+                                    id="framework_drag"
+                                    :disabled="canEdit !== true"
+                                    :group="{ name: 'test' }"
+                                    handle=".handle">
+                                    <Component
+                                        :class="[dynamicThingComponent === 'Thing' ? parentObjectClass: '']"
+                                        :is="dynamicThingComponent"
+                                        :id="'scroll-' + framework.shortId().split('/').pop()"
+                                        :obj="framework"
+                                        :repo="repo"
+                                        :newFramework="newFramework"
+                                        :parentNotEditable="queryParams.view==='true'"
+                                        :profile="frameworkProfile"
+                                        @delete-object="deleteObject"
+                                        @remove-object="removeObject"
+                                        @edit-node-event="onEditNode()"
+                                        @done-editing-node-event="onDoneEditingNode()"
+                                        :properties="properties">
+                                        <template #frameworkDetails>
+                                            <div class="lode__framework__info-bar">
+                                                <span
+                                                    class="tag is-medium-grey has-text-dark"
+                                                    v-if="framework.competency && framework.competency.length == 1">
+                                                    {{ framework.competency.length }} item
+                                                </span>
+                                                <span
+                                                    class="tag is-medium-grey has-text-dark"
+                                                    v-else-if="framework.competency && framework.competency.length > 1">
+                                                    {{ framework.competency.length }} items
+                                                </span>
+                                                <span
+                                                    class="tag is-medium-grey has-text-dark"
+                                                    v-if="timestamp"
+                                                    :title="new Date(timestamp)">
+                                                    Last modified {{ lastModified }}
+                                                </span>
+                                                <span
+                                                    class="tag is-medium-grey has-text-dark"
+                                                    v-if="framework['schema:dateCreated']"
+                                                    :title="new Date(framework['schema:dateCreated'])">
+                                                    Created {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
+                                                </span>
+                                                <span
+                                                    class="tag is-medium-grey has-text-dark"
+                                                    v-if="framework['Approved']"
+                                                    :title="framework['Approved']">
+                                                    Approved
+                                                </span>
+                                                <span
+                                                    class="tag is-medium-grey has-text-dark"
+                                                    v-if="framework['Published']"
+                                                    :title="framework['Published']">Published</span>
+                                            </div>
+                                        </template>
+                                    </Component>
+                                </draggable>
+                                <div
+                                    class="section"
+                                    v-if="!hierarchyIsdoneLoading">
+                                    <ul class="processing-list">
                                         <li />
+                                        <li />
+                                        <ul>
+                                            <li />
+                                            <li />
+                                            <li />
+                                            <ul>
+                                                <li />
+                                                <li />
+                                                <li />
+                                                <ul>
+                                                    <li />
+                                                    <li />
+                                                </ul>
+                                            </ul>
+                                        </ul>
                                         <li />
                                         <li />
                                         <ul>
@@ -93,53 +106,51 @@
                                             <li />
                                         </ul>
                                     </ul>
-                                </ul>
-                                <li />
-                                <li />
-                                <ul>
-                                    <li />
-                                    <li />
-                                </ul>
-                            </ul>
+                                </div>
+                                <Hierarchy
+                                    :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                    :container="framework"
+                                    containerType="Framework"
+                                    containerTypeGet="EcFramework"
+                                    containerNodeProperty="competency"
+                                    containerEdgeProperty="relation"
+                                    nodeType="EcCompetency"
+                                    edgeType="EcAlignment"
+                                    edgeRelationProperty="relationType"
+                                    edgeRelationLiteral="narrows"
+                                    edgeSourceProperty="source"
+                                    edgeTargetProperty="target"
+                                    :viewOnly="queryParams.view === 'true'"
+                                    :repo="repo"
+                                    :exportOptions="competencyExportOptions"
+                                    :highlightList="highlightCompetency"
+                                    :profile="competencyProfile"
+                                    :newFramework="newFramework"
+                                    @delete-object="deleteObject"
+                                    @edit-multiple-event="onEditMultiple"
+                                    @remove-object="removeObject"
+                                    @export-object="exportObject"
+                                    @search-things="handleSearch($event)"
+                                    @select-button-click="onSelectButtonClick"
+                                    :properties="properties"
+                                    @selected-array="selectedArrayEvent"
+                                    @done-loading-nodes="preloadRelations" />
+                            </div>
                         </div>
-                        <Hierarchy
-                            :class="{'is-hidden': !hierarchyIsdoneLoading}"
-                            :container="framework"
-                            containerType="Framework"
-                            containerTypeGet="EcFramework"
-                            containerNodeProperty="competency"
-                            containerEdgeProperty="relation"
-                            nodeType="EcCompetency"
-                            edgeType="EcAlignment"
-                            edgeRelationProperty="relationType"
-                            edgeRelationLiteral="narrows"
-                            edgeSourceProperty="source"
-                            edgeTargetProperty="target"
-                            :viewOnly="queryParams.view === 'true'"
-                            :repo="repo"
-                            :exportOptions="competencyExportOptions"
-                            :highlightList="highlightCompetency"
-                            :profile="competencyProfile"
-                            :newFramework="newFramework"
-                            @delete-object="deleteObject"
-                            @edit-multiple-event="onEditMultiple"
-                            @remove-object="removeObject"
-                            @export-object="exportObject"
-                            @search-things="handleSearch($event)"
-                            @select-button-click="onSelectButtonClick"
-                            :properties="properties"
-                            @selected-array="selectedArrayEvent"
-                            @done-loading-nodes="preloadRelations" />
                     </div>
                 </div>
-            </div>
-        </div>
-        <div
-            v-if="scrolled"
-            class="extra-space-for-scroll" />
+            </template>
+            <template slot="right">
+                <RightAside v-if="showRightAside" />
+            </template>
+            <div
+                v-if="scrolled"
+                class="extra-space-for-scroll" />
+        </main-layout>
     </div>
 </template>
 <script>
+import MainLayout from '@/layouts/MainLayout.vue';
 import common from '@/mixins/common.js';
 import getLevelsAndRelations from '@/mixins/getLevelsAndRelations.js';
 import exports from '@/mixins/exports.js';
@@ -156,6 +167,7 @@ export default {
         profileOverride: Object
     },
     components: {
+        MainLayout,
         FrameworkButtons: () => import('@/components/FrameworkButtons.vue'),
         Hierarchy: () => import('@/lode/components/lode/Hierarchy.vue'),
         Thing: () => import('@/lode/components/lode/Thing.vue'),
@@ -639,13 +651,17 @@ export default {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
         }
-        let documentBody = document.getElementById('framework');
+        this.$store.commit('app/objForShareModal', this.object);
+        let documentBody = document.getElementsByClassName('cass--main-layout--body')[0];
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
         if (!this.framework.competency || this.framework.competency.length === 0) {
             this.hierarchyIsdoneLoading = true;
         }
     },
     beforeDestroy() {
+        if (this.queryParams && this.queryParams.private !== 'true') {
+            this.$store.commit('editor/private', false);
+        }
     },
     watch: {
         shortId: function() {

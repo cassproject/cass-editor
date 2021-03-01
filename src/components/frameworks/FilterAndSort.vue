@@ -1,74 +1,76 @@
 <template>
-    <div class="right-aside__filter-and-sort">
-        <h3 class="title is-size-4">
-            Filter and Sort
-        </h3>
-        <div class="filter-sort-section">
-            <h3 class="filter-sort-header">
-                Sort by
+    <div class="cass--right-aside--content">
+        <div class="section">
+            <h3 class="title is-size-4">
+                Filter and Sort
             </h3>
-            <div
-                v-for="option in sortResults"
-                :key="option"
-                class="field">
-                <template v-if="option.enabled">
-                    <input
-                        class="is-checkradio"
-                        :id="option.id"
-                        type="radio"
-                        v-model="sortBy"
-                        :value="{id: option.id, label: option.label}"
-                        name="sortResults">
-                    <label
-                        class="label"
-                        :for="option.id">{{ option.label }}</label>
-                </template>
+            <div class="filter-sort-section">
+                <h3 class="filter-sort-header">
+                    Sort by
+                </h3>
+                <div
+                    v-for="option in sortResults"
+                    :key="option"
+                    class="field">
+                    <template v-if="option.enabled">
+                        <input
+                            class="is-checkradio"
+                            :id="option.id"
+                            type="radio"
+                            v-model="sortBy"
+                            :value="{id: option.id, label: option.label}"
+                            name="sortResults">
+                        <label
+                            class="label"
+                            :for="option.id">{{ option.label }}</label>
+                    </template>
+                </div>
             </div>
-        </div>
-        <div
-            class="filter-sort-section"
-            v-if="showQuickFilterHeading && !($store.getters['editor/conceptMode'] && !loggedIn)">
-            <h3 class="filter-sort-header">
-                Quick Filters
-            </h3>
             <div
-                v-for="option in quickFilters"
-                :key="option"
-                class="field">
-                <template v-if="option.enabled">
-                    <input
-                        class="is-checkradio"
-                        :id="option.id"
-                        type="checkbox"
-                        v-model="option.checked"
-                        :name="option.id">
-                    <label
-                        class="label"
-                        :for="option.id">{{ option.label }}</label>
-                </template>
+                class="filter-sort-section"
+                v-if="showQuickFilterHeading && !($store.getters['editor/conceptMode'] && !loggedIn)">
+                <h3 class="filter-sort-header">
+                    Quick Filters
+                </h3>
+                <div
+                    v-for="option in quickFilters"
+                    :key="option"
+                    class="field">
+                    <template v-if="option.enabled">
+                        <input
+                            class="is-checkradio"
+                            :id="option.id"
+                            type="checkbox"
+                            v-model="option.checked"
+                            :name="option.id">
+                        <label
+                            class="label"
+                            :for="option.id">{{ option.label }}</label>
+                    </template>
+                </div>
             </div>
-        </div>
-        <div
-            class="filter-sort-section"
-            v-if="!$store.getters['editor/conceptMode']">
-            <h3 class="filter-sort-header">
-                Apply search term to
-            </h3>
             <div
-                v-for="option in applySearchTo"
-                :key="option"
-                class="field">
-                <template v-if="option.enabled">
-                    <input
-                        class="is-checkradio"
-                        :id="option.id"
-                        v-model="option.checked"
-                        type="checkbox"
-                        :name="option.id">
-                    <label
-                        class="label"
-                        :for="option.id">{{ option.label }}</label>
-                </template>
+                class="filter-sort-section"
+                v-if="!$store.getters['editor/conceptMode']">
+                <h3 class="filter-sort-header">
+                    Apply search term to
+                </h3>
+                <div
+                    v-for="option in applySearchTo"
+                    :key="option"
+                    class="field">
+                    <template v-if="option.enabled">
+                        <input
+                            class="is-checkradio"
+                            :id="option.id"
+                            v-model="option.checked"
+                            type="checkbox"
+                            :name="option.id">
+                        <label
+                            class="label"
+                            :for="option.id">{{ option.label }}</label>
+                    </template>
+                </div>
             </div>
         </div>
     </div>
@@ -84,6 +86,11 @@ export default {
     data() {
         return {
             sortResults: [
+                {
+                    id: 'alphabetical',
+                    label: 'alphabetical',
+                    enabled: true
+                },
                 {
                     id: 'dateCreated',
                     label: 'created date',
@@ -306,17 +313,29 @@ export default {
             ];
         },
         setOtherPropertiesApplySearchTo: function() {
+            this.otherPropertiesApplySearchTo = [
+                {
+                    id: 'directoryName',
+                    checked: false,
+                    label: 'Directory name',
+                    enabled: true
+                },
+                {
+                    id: 'directoryDescription',
+                    checked: false,
+                    label: 'Directory description',
+                    enabled: true
+                }
+            ];
             if (this.searchByOwnerNameEnabled) {
-                this.otherPropertiesApplySearchTo = [
+                this.otherPropertiesApplySearchTo.push(
                     {
                         id: 'ownerName',
                         checked: false,
                         label: 'Owner name',
                         enabled: true
                     }
-                ];
-            } else {
-                this.otherPropertiesApplySearchTo = [];
+                );
             }
         },
         setCompetencyPropertiesApplySearchTo: function() {

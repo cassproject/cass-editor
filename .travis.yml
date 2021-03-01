@@ -8,6 +8,7 @@ script:
 - sed -i 's/\/docs\//\/cass-editor\/docs\//g' ./src/views/Welcome.vue
 - sed -i 's/\/docs\//\/cass-editor\/docs\//g' ./docs/.vuepress/config.js
 - find ./docs -name '*.md' -exec sed -i 's/\/docs\//\/cass-editor\/docs\//g' {} \;
+- export VUE_APP_API_LOGIN_ENABLED=false
 - npm run docs:build
 - npm run build
 deploy:

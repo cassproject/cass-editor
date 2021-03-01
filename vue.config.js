@@ -1,3 +1,4 @@
+const fs = require('fs');
 const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
@@ -10,6 +11,13 @@ module.exports = {
                 }
             }
         }
+    },
+    devServer: {
+        host: 'localhost',
+        https: true,
+        key: fs.readFileSync('localhost.key'),
+        cert: fs.readFileSync('localhost.crt'),
+        ca: fs.readFileSync('ca.pem')
     },
     configureWebpack: {
         plugins: [new CompressionPlugin()]

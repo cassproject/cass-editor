@@ -10,8 +10,11 @@ const state = {
     searchByOwnerNameEnabled: true,
     pluginsEnabled: true,
     loginEnabled: true,
+    legacyLoginEnabled: true,
+    apiLoginEnabled: (process.env.VUE_APP_API_LOGIN_ENABLED ? (process.env.VUE_APP_API_LOGIN_ENABLED === 'true') : (process.env.NODE_ENV !== 'production')),
     shareEnabled: true
 };
+
 const mutations = {
     crosswalkEnabled(state, bool) {
         state.crosswalkEnabled = bool;
@@ -31,15 +34,25 @@ const mutations = {
     loginEnabled(state, bool) {
         state.loginEnabled = bool;
     },
+    legacyLoginEnabled(state, bool) {
+        state.legacyLoginEnabled = bool;
+    },
     shareEnabled(state, bool) {
         state.shareEnabled = bool;
     }
 };
+
 const actions = {
 
 };
-const getters = {
 
+const getters = {
+    legacyLoginEnabled: function(state) {
+        return state.legacyLoginEnabled;
+    },
+    apiLoginEnabled: function(state) {
+        return state.apiLoginEnabled;
+    }
 };
 
 export default {

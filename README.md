@@ -304,3 +304,39 @@ Validation can be accomplished through the configuration manager. Here you can s
 * Shift + U - Unlink competency  (1.2 and earlier)
 * Shift + &uarr; & Shift + &darr; - Move competency up and down in the list.
 * Shift + &larr; & Shift + &rarr; - Move competency indent and outdent in the list (1.3)
+
+# Development Environment Setup
+## Prerequisites
+
+* [git](https://git-scm.com/)
+* [Node.js](https://nodejs.org/en/download/)
+
+## Setting up
+* Clone cass-editor to local repository.
+
+* Install dependencies and submodule.
+
+```bash
+cd cass-editor
+git submodule init
+git submodule update
+npm install
+```
+
+* Enable HTTPS using the ca.pem file.
+With Windows/Chrome:
+    * Save the ca.pem file as ca.crt
+    * Import the crt file through Chrome
+        * browser settings -> privacy & security -> security -> manage certificates -> trusted root certification authorities -> import
+        * Select the crt file
+
+
+* Start cass-editor.
+
+```bash
+npm run serve
+```
+
+* Connect.
+
+    https://localhost:8080/cass-editor#/

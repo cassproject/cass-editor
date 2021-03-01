@@ -48,6 +48,16 @@ export default new Router({
             component: () => import(/* webpackChunkName: "login" */ './views/login/Login.vue')
         },
         {
+            path: '/legacyLogin',
+            name: 'legacyLogin',
+            component: () => import(/* webpackChunkName: "login" */ './views/login/LegacyLogin.vue')
+        },
+        {
+            path: '/createAccount',
+            name: 'createAccount',
+            component: () => import(/* webpackChunkName: "login" */ './views/login/CreateAccount.vue')
+        },
+        {
             path: '/configuration',
             name: 'configuration',
             components: {
@@ -189,6 +199,15 @@ export default new Router({
             path: '/viewer',
             name: 'viewer',
             component: () => import(/* webpackChunkName: "viewer" */ './legacy/ViewerIframe.vue')
+        },
+        {
+            path: '/directory',
+            name: 'directory',
+            components: {
+                default: () => import('./views/directory/Directory.vue'),
+                sidebar: () => import('./components/SideNav.vue'),
+                topbar: () => import('./components/Topbar.vue')
+            }
         }
     ]
 });

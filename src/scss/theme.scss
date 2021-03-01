@@ -64,17 +64,17 @@ $menu-item-active-background-color: $link !default;
 
 $menu-list-border-left: 1px solid $dark !default;
 $menu-list-line-height: 1.25 !default;
-$menu-list-link-padding: 0.5em 0.75em !default;
+$menu-list-link-padding: 0.25em 0.75em !default;
 $menu-nested-list-margin: 0.75em !default;
 $menu-nested-list-padding-left: 0.75em !default;
 
 $menu-label-color: $light !default;
 $menu-label-font-size: 0.75em !default;
 $menu-label-letter-spacing: 0.1em !default;
-$menu-label-spacing: 1em !default;
+$menu-label-spacing: 0rem !default;
 
 $breadcrumb-item-padding-vertial: .25rem;
-$breadcrumb-item-color: $cass-primary-down;
+$breadcrumb-item-color: $cass-primary;
 $breadcrumb-item-hover-color: $cass-primary-down;
 $breadcrumb-item-active-color: $cass-primary-down;
 
@@ -120,13 +120,17 @@ $divider-background-color: $dark;
         padding-right: 1.75rem !important;
     }
     .clear-side-bar #framework-editor-toolbar {
-        width: calc(100% - 340px);
+        width: calc(100% - 360px);
+    }
+    .clear-side-bar .cass--main-layout--primary-top {
+        width: calc(100% - 300px);
+        left: 300px;
     }
      .clear-side-bar {
         margin-left: 300px;
     }
     .clear-right-aside {
-        margin-right: 340px;
+        margin-right: 360px;
     }
 }
 

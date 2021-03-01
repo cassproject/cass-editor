@@ -21,260 +21,119 @@
                 <header
                     class="modal-card-head has-text-centered has-background-primary"
                     v-if="!loginBusy">
-                    <h3
-                        v-if="amJustLoggingIn"
-                        class="modal-card-title is-size-2 has-text-centered has-text-white">
-                        Login to CaSS Authoring Tool
+                    <h3 class="modal-card-title is-size-2 has-text-centered has-text-white">
+                        Login to CaSS
                     </h3>
-                    <h3
-                        v-if="amCreatingAccount"
-                        class="modal-card-title is-size-2 has-text-centered has-text-white">
-                        Create CaSS Authoring Tool User
-                    </h3>
-                    <h4
-                        class="title is-size-2 has-text-centered has-text-white"
-                        v-if="amCreatingLinkedPerson">
-                        Link User Information
-                    </h4>
                 </header>
                 <section class="modal-card-body">
-                    <div
-                        class="section"
-                        v-if="amCreatingAccount || amCreatingLinkedPerson">
-                        <p v-if="amCreatingLinkedPerson">
-                            No matching user record could be found that matched your login information. Please provide the following:
-                        </p>
-                    </div>
-                    <!-- inputs -->
-                    <div
-                        class="section"
-                        v-if="amJustLoggingIn">
-                        <div class="field">
-                            <div class="control">
-                                <label class="label">Username</label>
-                                <input
-                                    type="text"
-                                    class="input"
-                                    v-model="username"
-                                    placeholder="username">
+                    <div class="columns is-mobile is-multiline">
+                        <div class="column is-6">
+                            <div class="section box py-2 px-2">
+                                <div class="modal-card-body has-text-centered">
+                                    <div
+                                        class="button is-outlined is-primary"
+                                        @click="attemptExternalCassLogin">
+                                        <span class="icon">
+                                            <i class="fa fa-sign-in-alt" />
+                                        </span><span>login</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="field">
-                            <div class="control">
-                                <label class="label">Password</label>
-                                <input
-                                    type="password"
-                                    class="input"
-                                    v-model="password"
-                                    placeholder="password"
-                                    @keyup.enter="attemptCassLogin">
+                        <div class="column is-6">
+                            <div class="section box py-2 px-2">
+                                <div class="modal-card-body has-text-centered">
+                                    <div
+                                        class="button is-outlined is-dark"
+                                        @click="goToCreateAccount">
+                                        <span class="icon">
+                                            <i class="fa fa-plus" />
+                                        </span><span>create account</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <!-- inputs -->
-                    <div class="section">
-                        <!-- name and email -->
+                        <!-- error messages -->
                         <div
-                            class="field"
-                            v-if="amCreatingAccount || amCreatingLinkedPerson">
-                            <div class="control">
-                                <label class="label">name</label>
-                                <input
-                                    class="input"
-                                    type="text "
-                                    v-model="createLinkPersonName">
-                            </div>
-                        </div>
-                        <div
-                            v-if="amCreatingAccount || amCreatingLinkedPerson"
-                            class="field">
-                            <div class="control">
-                                <label class="label">email</label>
-                                <input
-                                    class="input"
-                                    type="text "
-                                    v-model="createLinkPersonEmail">
+                            v-if="identityFetchFailed || configRetrieveFailed || loginParamsInvalid"
+                            class="column is-12">
+                            <div class="panel is-warning py-2 px-2 has-text-danger">
+                                <p class="panel-heading">
+                                    Login failed
+                                </p>
+                                <div
+                                    class="panel-block"
+                                    v-if="identityFetchFailed">
+                                    <p>Could not fetch identity: {{ identityFailMsg }}</p>
+                                </div>
+                                <div
+                                    class="panel-block"
+                                    v-if="configRetrieveFailed">
+                                    <p>Could not retrieve configuration from selected server: {{ configFailMsg }}</p>
+                                </div>
+                                <div
+                                    class="panel-block"
+                                    v-if="loginParamsInvalid">
+                                    <p>Login failed: Invalid Username/Password</p>
+                                </div>
                             </div>
                         </div>
                         <div
-                            class="field"
-                            v-if="amCreatingAccount">
-                            <div class="control">
-                                <label class="label">username</label>
-                                <input
-                                    type="text"
-                                    class="input"
-                                    v-model="createAccountUsername">
+                            class="column is-12 pt-4"
+                            v-if="legacyLoginEnabled">
+                            <div class="section box p-2 has-text-centered">
+                                <i class="fas fa-exclamation-circle" /> For accounts created in CaSS <b>1.3 and earlier</b>: <a @click="goToLegacyLogin">Legacy Login</a>
                             </div>
-                        </div>
-                        <!--  password -->
-                        <div
-                            class="field is-grouped"
-                            v-if="amCreatingAccount">
-                            <div class="control is-expanded">
-                                <label class="label">password</label>
-                                <input
-                                    type="password"
-                                    class="input"
-                                    v-model="createAccountPassword">
-                            </div>
-                            <div class="control is-expanded">
-                                <label class="label">Confirm password</label>
-                                <input
-                                    class="input"
-                                    type="password"
-                                    v-model="createAccountPasswordRetype">
-                            </div>
-                        </div>
-                    </div>
-                    <!-- error messages -->
-                    <div
-                        class="field has-text-danger"
-                        v-if="createAccountOrLinkPersonDataInvalid">
-                        <div class="label has-text-danger">
-                            Please correct the following errors:
-                        </div>
-                        <div
-                            class="is-size-6"
-                            v-if="createAccountUsernameInvalid">
-                            Username is required
-                        </div>
-                        <div
-                            class="is-size-6"
-                            v-if="createAccountPasswordInvalid">
-                            Password is required
-                        </div>
-                        <div
-                            class="is-size-6"
-                            v-if="createAccountPasswordMismatch">
-                            Passwords do not match
-                        </div>
-                        <div
-                            class="is-size-6"
-                            v-if="createLinkPersonNameInvalid">
-                            Name is required
-                        </div>
-                        <div
-                            class="is-size-6"
-                            v-if="createLinkPersonEmailInvalid">
-                            Valid email is required
-                        </div>
-                        <div
-                            class="is-size-6"
-                            v-if="createLinkPersonEmailExists">
-                            That email is already in use
-                        </div>
-                        <div
-                            class="is-size-6"
-                            v-if="createAccountUsernameUnavailable">
-                            That username is unavailable
-                        </div>
-                    </div>
-                    <!-- error messages -->
-                    <div
-                        v-if="identityFetchFailed || configRetrieveFailed || loginParamsInvalid"
-                        class="section">
-                        <div v-if="identityFetchFailed">
-                            <p><b>Login failed: {{ identityFailMsg }}</b></p>
-                        </div>
-                        <div v-if="configRetrieveFailed">
-                            <p><b>Could not retrieve configuration from selected server: {{ configFailMsg }}</b></p>
-                        </div>
-                        <div v-if="loginParamsInvalid">
-                            <p><b>Login failed: Invalid Username/Password</b></p>
                         </div>
                     </div>
                 </section>
-                <!-- footer with actions -->
-                <footer class="modal-card-foot has-background-white">
-                    <div class="buttons is-spaced">
-                        <div
-                            class="button is-dark is-outlined"
-                            v-if="amCreatingLinkedPerson || amCreatingAccount"
-                            @click="setDataToBaseLogin(true)">
-                            <span class="icon">
-                                <i class="fa fa-times" />
-                            </span><span>cancel</span>
-                        </div>
-                        <template v-if="amJustLoggingIn">
-                            <div
-                                class="button is-outlined is-dark"
-                                @click="showCreateAccount">
-                                <span class="icon">
-                                    <i class="fa fa-plus" />
-                                </span><span>create account</span>
-                            </div>
-                            <div
-                                class="button is-outlined is-primary"
-                                @click="attemptCassLogin">
-                                <span class="icon">
-                                    <i class="fa fa-sign-in-alt" />
-                                </span><span>login</span>
-                            </div>
-                        </template>
-                        <div
-                            class="button is-expanded is-primary is-outlined"
-                            v-if="amCreatingAccount"
-                            @click="createNewAccount">
-                            <span class="icon">
-                                <i class="fa fa-sign-in-alt" />
-                            </span><span>create</span>
-                        </div>
-                        <div
-                            class="button is-success is-outlined"
-                            v-if="amCreatingLinkedPerson"
-                            @click="linkPerson">
-                            <span class="icon">
-                                <i class="fa fa-sign-in-alt" />
-                            </span><span>update</span>
-                        </div>
-                    </div>
-                </footer>
             </div>
         </div>
     </div>
 </template>
 
 <script>
+
+import {cassApi} from '../../mixins/cassApi';
+
 export default {
     name: 'Login',
+    mixins: [cassApi],
     data: () => ({
         GROUP_SEARCH_SIZE: 10000,
         PERSON_SEARCH_SIZE: 10000,
-        username: '',
-        password: '',
-        createAccountUsername: '',
-        createAccountPassword: '',
-        createAccountPasswordRetype: '',
-        createLinkPersonName: '',
-        createLinkPersonEmail: '',
-        loginParamsInvalid: false,
+        loginBusy: false,
+        ecRemoteIdentMgr: null,
         identityFetchFailed: false,
         configRetrieveFailed: false,
-        loginBusy: false,
-        ecRemoteIdentMgr: {},
-        configFailMsg: '',
+        loginParamsInvalid: false,
         identityFailMsg: '',
-        amJustLoggingIn: true,
-        amCreatingAccount: false,
-        amCreatingLinkedPerson: false,
-        createAccountOrLinkPersonDataInvalid: false,
-        createAccountUsernameInvalid: false,
-        createAccountPasswordInvalid: false,
-        createAccountPasswordMismatch: false,
-        createLinkPersonNameInvalid: false,
-        createLinkPersonEmailInvalid: false,
-        createLinkPersonEmailExists: false,
-        createAccountUsernameUnavailable: false,
-        identityToLinkToPerson: {},
-        linkedPerson: {}
+        configFailMsg: '',
+        loginCredentials: null,
+        identityToLinkToPerson: null,
+        linkedPerson: null
     }),
     methods: {
+        forceLogout: function() {
+            this.redirectToExternalLogout();
+        },
         goToAppHome: function() {
             this.loginBusy = false;
             this.$router.push({path: '/frameworks'});
         },
-        addGroupIdentity(group) {
+        goToLegacyLogin: function() {
+            this.loginBusy = false;
+            this.loginCredentials = null;
+            this.identityToLinkToPerson = null;
+            this.$router.push({path: '/legacyLogin'});
+        },
+        goToCreateAccount: function() {
+            this.loginBusy = false;
+            this.loginCredentials = null;
+            this.identityToLinkToPerson = null;
+            this.$router.push({path: '/createAccount'});
+        },
+        addGroupIdentity: function(group) {
             try {
                 // add all available group keys to identity manager
                 let groupPpkSet = group.getOrgKeys();
@@ -292,13 +151,13 @@ export default {
                 // console.error("TODO...fix this...needs FRITZ input!!!!: " + e.toString());
             }
         },
-        searchRepositoryForGroupsSuccess(ecoa) {
+        searchRepositoryForGroupsSuccess: function(ecoa) {
             let linkedPersonShortId = this.linkedPerson.shortId();
             if (ecoa && ecoa.length > 0) {
                 for (let eco of ecoa) {
                     if (eco.employee && eco.employee.length > 0) {
                         for (let e of eco.employee) {
-                            if (e.equals(linkedPersonShortId)) {
+                            if (!EcObject.isObject(e) && e.equals(linkedPersonShortId)) {
                                 this.addGroupIdentity(eco);
                                 break;
                             }
@@ -306,258 +165,35 @@ export default {
                     }
                 }
             }
+            this.goToAppHome();
         },
-        searchRepositoryForGroupsFailure(msg) {
+        searchRepositoryForGroupsFailure: function(msg) {
             appLog("Group search failure: " + msg);
             this.goToAppHome();
         },
         addGroupIdentities: function() {
-            appLog(" Adding group identities...");
+            appLog("Finding assigned groups...");
             let paramObj = {};
             paramObj.size = this.GROUP_SEARCH_SIZE;
             EcOrganization.search(window.repo, '', this.searchRepositoryForGroupsSuccess, this.searchRepositoryForGroupsFailure, paramObj);
-            this.goToAppHome();
+            // this.goToAppHome();
         },
-        setDataToBaseLogin: function(clearIdentityManager) {
-            this.username = '';
-            this.password = '';
-            this.createAccountUsername = '';
-            this.createAccountPassword = '';
-            this.createAccountPasswordRetype = '';
-            this.createLinkPersonName = '';
-            this.createLinkPersonEmail = '';
-            this.loginParamsInvalid = false;
-            this.identityFetchFailed = false;
-            this.configRetrieveFailed = false;
-            this.configFailMsg = "";
-            this.identityFailMsg = "";
-            this.amCreatingAccount = false;
-            this.amCreatingLinkedPerson = false;
-            this.createAccountOrLinkPersonDataInvalid = false;
-            this.createAccountUsernameInvalid = false;
-            this.createAccountPasswordInvalid = false;
-            this.createAccountPasswordMismatch = false;
-            this.createLinkPersonNameInvalid = false;
-            this.createLinkPersonEmailInvalid = false;
-            this.createLinkPersonEmailExists = false;
-            this.createAccountUsernameUnavailable = false;
-            if (clearIdentityManager) {
-                this.ecRemoteIdentMgr = {};
-                EcIdentityManager.clearContacts();
-                EcIdentityManager.clearIdentities();
-                this.identityToLinkToPerson = {};
-                this.linkedPerson = {};
-            }
-            this.amJustLoggingIn = true;
-            this.loginBusy = false;
-        },
-        showCreateAccount: function() {
-            this.setDataToBaseLogin(true);
-            this.amJustLoggingIn = false;
-            this.amCreatingAccount = true;
-        },
-        showCreateLinkedPerson: function() {
-            this.setDataToBaseLogin(false);
-            this.amJustLoggingIn = false;
-            this.amCreatingLinkedPerson = true;
-        },
-        setAllNewAccountValidationsChecksToValid() {
-            this.createAccountOrLinkPersonDataInvalid = false;
-            this.createAccountUsernameInvalid = false;
-            this.createAccountPasswordInvalid = false;
-            this.createAccountPasswordMismatch = false;
-            this.createLinkPersonNameInvalid = false;
-            this.createLinkPersonEmailInvalid = false;
-            this.createLinkPersonEmailExists = false;
-            this.createAccountUsernameUnavailable = false;
-        },
-        isValidEmail(email) {
-            let re = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/igm;
-            if (re.test(email)) return true;
-            return false;
-        },
-        validateNewAccountData() {
-            if (!this.createAccountUsername || this.createAccountUsername.trim().equals('')) {
-                this.createAccountOrLinkPersonDataInvalid = true;
-                this.createAccountUsernameInvalid = true;
-            }
-            if (!this.createAccountPassword || this.createAccountPassword.trim().equals('') ||
-                !this.createAccountPasswordRetype || this.createAccountPasswordRetype.trim().equals('')) {
-                this.createAccountOrLinkPersonDataInvalid = true;
-                this.createAccountPasswordInvalid = true;
-            } else if (!this.createAccountPassword.equals(this.createAccountPasswordRetype)) {
-                this.createAccountOrLinkPersonDataInvalid = true;
-                this.createAccountPasswordMismatch = true;
-            }
-            this.validateLinkPersonData();
-        },
-        handleCreatePersonSuccess() {
+        handleCreatePersonSuccess: function() {
             appLog("Person created.");
-            if (this.amCreatingAccount) {
-                this.goToAppHome();
-            } else this.addGroupIdentities();
+            this.addGroupIdentities();
         },
-        createPersonObjectToLinkToIdentity() {
+        createPersonObjectForIdentity: function() {
             appLog("Creating person object for identity...");
             let p = new Person();
             p.assignId(window.repo.selectedServer, this.identityToLinkToPerson.ppk.toPk().fingerprint());
             p.addOwner(this.identityToLinkToPerson.ppk.toPk());
-            p.name = this.createLinkPersonName;
-            p.email = this.createLinkPersonEmail;
-            appLog(p);
+            p.name = this.loginCredentials.name;
+            p.email = this.loginCredentials.email;
             this.$store.commit('user/loggedOnPerson', p);
             this.linkedPerson = p;
-            EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailure);
+            EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
         },
-        handleCreateAccountFetchIdentitySuccess() {
-            appLog("Creating new account identity object...");
-            let ident = new EcIdentity();
-            ident.displayName = this.createLinkPersonName;
-            ident.ppk = EcPpk.generateKey();
-            EcIdentityManager.addIdentity(ident);
-            EcIdentityManager.saveContacts();
-            EcIdentityManager.saveIdentities();
-            this.identityToLinkToPerson = ident;
-            this.ecRemoteIdentMgr.commit(this.createPersonObjectToLinkToIdentity, this.handleAttemptLoginFetchIdentityFailure);
-        },
-        handleCreateAccountRemoteIdentityMgrCreateSuccess() {
-            appLog("Creating new account manager fetch...");
-            this.ecRemoteIdentMgr.fetch(this.handleCreateAccountFetchIdentitySuccess, this.handleAttemptLoginFetchIdentityFailure);
-        },
-        handleCreateAccountConfigureFromServerSuccess: function(obj) {
-            appLog("EcRemoteIdentityManager creating...");
-            appLog("Creating new account login...");
-            this.ecRemoteIdentMgr.startLogin(this.createAccountUsername, this.createAccountPassword);
-            this.ecRemoteIdentMgr.create(this.handleCreateAccountRemoteIdentityMgrCreateSuccess, this.handleAttemptLoginFetchIdentityFailure);
-        },
-        createNewAccountIdentityAndPerson() {
-            appLog("Creating new account...");
-            appLog("EcRemoteIdentityManager Configuring from server...");
-            this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
-            this.ecRemoteIdentMgr.server = window.repo.selectedServer;
-            this.ecRemoteIdentMgr.configureFromServer(this.handleCreateAccountConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
-        },
-        handleCheckUsernameFetchIdentitySuccess: function(obj) {
-            appLog('handleCheckUsernameFetchIdentitySuccess !!!!');
-            this.createAccountOrLinkPersonDataInvalid = true;
-            this.createAccountUsernameUnavailable = true;
-            this.loginBusy = false;
-            EcIdentityManager.clearIdentities();
-            EcIdentityManager.clearContacts();
-        },
-        handleCheckUsernameFetchIdentityFailure: function(failMsg) {
-            appLog('handleCheckUsernameFetchIdentityFailure: ' + failMsg);
-            if (failMsg && failMsg.toLowerCase().trim().equals('user does not exist.')) {
-                this.createNewAccountIdentityAndPerson();
-            } else {
-                this.createAccountOrLinkPersonDataInvalid = true;
-                this.createAccountUsernameUnavailable = true;
-                this.loginBusy = false;
-                EcIdentityManager.clearIdentities();
-                EcIdentityManager.clearContacts();
-            }
-        },
-        handleCheckUsernameConfigureFromServerSuccess: function(obj) {
-            appLog("Fetching identity for username check...");
-            this.ecRemoteIdentMgr.startLogin(this.createAccountUsername, this.createAccountPassword); // Creates the hashes for storage and retrieval of keys.
-            this.ecRemoteIdentMgr.fetch(this.handleCheckUsernameFetchIdentitySuccess, this.handleCheckUsernameFetchIdentityFailure); // Retrieves the identities and encryption keys from the server.
-        },
-        handleCheckUsernameConfigureFromServerFail: function(failMsg) {
-            this.loginBusy = false;
-            appLog('New account configure from server for username check failure: ' + msg);
-        },
-        checkForExistingUsername: function() {
-            appLog("Check if new account username already exists");
-            this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
-            this.ecRemoteIdentMgr.server = window.repo.selectedServer;
-            this.ecRemoteIdentMgr.configureFromServer(this.handleCheckUsernameConfigureFromServerSuccess, this.handleCheckUsernameConfigureFromServerFail); // Retrieves username and password salts from the serve
-        },
-        searchPersonsForNewAccountSuccess(ecRemoteLda) {
-            appLog("New account person search success: ");
-            appLog(ecRemoteLda);
-            let emailExists = false;
-            for (let ecrld of ecRemoteLda) {
-                let ep = new EcPerson();
-                ep.copyFrom(ecrld);
-                if (this.createLinkPersonEmail.equalsIgnoreCase(ep.email)) {
-                    emailExists = true;
-                    break;
-                }
-            }
-            if (emailExists) {
-                this.createAccountOrLinkPersonDataInvalid = true;
-                this.createLinkPersonEmailExists = true;
-                this.loginBusy = false;
-            } else {
-                this.checkForExistingUsername();
-                // this.createNewAccountIdentityAndPerson();
-            }
-        },
-        searchPersonsForNewAccountFailure(msg) {
-            // Search fails if the index doesn't exist yet.
-            this.checkForExistingUsername();
-        },
-        verifyEmailAddressForNewAccountAndGo() {
-            this.loginBusy = true;
-            let paramObj = {};
-            paramObj.size = this.PERSON_SEARCH_SIZE;
-            window.repo.searchWithParams("@type:Person AND email:\"" + this.createLinkPersonEmail + "\"", paramObj, null,
-                this.searchPersonsForNewAccountSuccess, this.searchPersonsForNewAccountFailure);
-        },
-        createNewAccount: function() {
-            this.setAllNewAccountValidationsChecksToValid();
-            this.validateNewAccountData();
-            if (!this.createAccountOrLinkPersonDataInvalid) this.verifyEmailAddressForNewAccountAndGo();
-        },
-        validateLinkPersonData() {
-            if (!this.createLinkPersonName || this.createLinkPersonName.trim().equals('')) {
-                this.createAccountOrLinkPersonDataInvalid = true;
-                this.createLinkPersonNameInvalid = true;
-            }
-            if (!this.createLinkPersonEmail || this.createLinkPersonEmail.trim().equals('') || !this.isValidEmail(this.createLinkPersonEmail)) {
-                this.createAccountOrLinkPersonDataInvalid = true;
-                this.createLinkPersonEmailInvalid = true;
-            }
-        },
-        searchPersonsForLinkPersonSuccess(ecRemoteLda) {
-            this.loginBusy = true;
-            let emailExists = false;
-            for (let ecrld of ecRemoteLda) {
-                let ep = new EcPerson();
-                ep.copyFrom(ecrld);
-                if (this.createLinkPersonEmail.equalsIgnoreCase(ep.email)) {
-                    emailExists = true;
-                    break;
-                }
-            }
-            if (emailExists) {
-                this.createAccountOrLinkPersonDataInvalid = true;
-                this.createLinkPersonEmailExists = true;
-                this.loginBusy = false;
-            } else {
-                this.createPersonObjectToLinkToIdentity();
-            }
-        },
-        verifyEmailAddressForLinkPersonAndGo() {
-            appLog('Validating link person email...');
-            let paramObj = {};
-            paramObj.size = this.PERSON_SEARCH_SIZE;
-            window.repo.searchWithParams("@type:Person AND email:\"" + this.createLinkPersonEmail + "\"", paramObj, null,
-                this.searchPersonsForLinkPersonSuccess, this.searchPersonsForNewAccountFailure);
-        },
-        linkPerson: function() {
-            this.setAllNewAccountValidationsChecksToValid();
-            this.validateLinkPersonData();
-            if (!this.createAccountOrLinkPersonDataInvalid) this.verifyEmailAddressForLinkPersonAndGo();
-        },
-        areLoginParamsValid: function() {
-            if (this.username == null || this.username.length === 0 || this.password == null || this.password.length === 0) {
-                this.loginParamsInvalid = true;
-                return false;
-            }
-            return true;
-        },
-        findLinkedPersonPersonSearchSuccess(ecRemoteLda) {
+        findLinkedPersonPersonSearchSuccess: function(ecRemoteLda) {
             appLog("Linked person person search success: ");
             appLog(ecRemoteLda);
             this.identityToLinkToPerson = EcIdentityManager.ids[0];
@@ -578,10 +214,10 @@ export default {
             if (matchingPersonRecordFound) this.addGroupIdentities();
             else {
                 appLog('Matching person record NOT found');
-                this.showCreateLinkedPerson();
+                this.createPersonObjectForIdentity();
             }
         },
-        findLinkedPersonPersonSearchFailure(msg) {
+        findLinkedPersonPersonSearchFailure: function(msg) {
             this.loginBusy = false;
             appLog('Linked person person search failure: ' + msg);
         },
@@ -593,43 +229,114 @@ export default {
             window.repo.searchWithParams("@type:Person AND @id:\"" + identFingerprint + "\"", paramObj, null,
                 this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
         },
+        handleCreateAccountFetchIdentitySuccess: function() {
+            appLog("Creating new account identity object...");
+            let ident = new EcIdentity();
+            ident.displayName = this.loginCredentials.name;
+            ident.ppk = EcPpk.generateKey();
+            EcIdentityManager.addIdentity(ident);
+            EcIdentityManager.saveContacts();
+            EcIdentityManager.saveIdentities();
+            this.identityToLinkToPerson = ident;
+            this.ecRemoteIdentMgr.commit(this.createPersonObjectForIdentity, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
+        },
+        handleCreateAccountRemoteIdentityMgrCreateSuccess: function() {
+            appLog("Creating new account manager fetch...");
+            this.ecRemoteIdentMgr.fetch(this.handleCreateAccountFetchIdentitySuccess, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
+        },
+        handleCreateAccountConfigureFromServerSuccess: function(obj) {
+            appLog("Creating new account identity...");
+            this.ecRemoteIdentMgr.startLogin(this.loginCredentials.username, this.loginCredentials.password);
+            this.ecRemoteIdentMgr.create(this.handleCreateAccountRemoteIdentityMgrCreateSuccess, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
+        },
+        createNewAccountIdentity: function() {
+            appLog("Creating new account...");
+            appLog("EcRemoteIdentityManager Configuring from server...");
+            this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
+            this.ecRemoteIdentMgr.server = window.repo.selectedServer;
+            this.ecRemoteIdentMgr.configureFromServer(this.handleCreateAccountConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
+        },
+        handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck: function(failMsg) {
+            // this shouldn't happen, but don't want to cause an unexpected create loop
+            this.identityFailMsg = failMsg;
+            this.identityFetchFailed = true;
+            this.loginBusy = false;
+        },
         handleAttemptLoginFetchIdentitySuccess: function(obj) {
             if (!EcIdentityManager.ids || EcIdentityManager.ids.length <= 0) {
                 this.handleAttemptLoginFetchIdentityFailure('Login credentials valid but no identity could be found.');
             } else this.findLinkedPersonForIdentity();
         },
         handleAttemptLoginFetchIdentityFailure: function(failMsg) {
-            this.identityFailMsg = failMsg;
-            this.identityFetchFailed = true;
-            this.loginBusy = false;
+            if (failMsg && failMsg.toLowerCase().trim().equals('user does not exist.')) {
+                this.createNewAccountIdentity();
+            } else {
+                this.identityFailMsg = failMsg;
+                this.identityFetchFailed = true;
+                this.loginBusy = false;
+            }
         },
         handleAttemptLoginConfigureFromServerSuccess: function(obj) {
             appLog("Fetching identity...");
-            this.ecRemoteIdentMgr.startLogin(this.username, this.password); // Creates the hashes for storage and retrieval of keys.
-            this.ecRemoteIdentMgr.fetch(this.handleAttemptLoginFetchIdentitySuccess, this.handleAttemptLoginFetchIdentityFailure); // Retrieves the identities and encryption keys from the server.
+            // Creates the hashes for storage and retrieval of keys.
+            this.ecRemoteIdentMgr.startLogin(this.loginCredentials.username, this.loginCredentials.password);
+            // Retrieves the identities and encryption keys from the server.
+            this.ecRemoteIdentMgr.fetch(this.handleAttemptLoginFetchIdentitySuccess, this.handleAttemptLoginFetchIdentityFailure);
         },
         handleAttemptLoginConfigureFromServerFail: function(failMsg) {
             this.configFailMsg = failMsg;
             this.configRetrieveFailed = true;
             this.loginBusy = false;
         },
-        attemptCassLogin: function() {
-            this.loginParamsInvalid = false;
-            this.identityFetchFailed = false;
-            this.configRetrieveFailed = false;
-            if (this.areLoginParamsValid()) {
-                appLog("Attempting CaSS login....");
-                this.loginBusy = true;
-                EcIdentityManager.clearContacts();
-                EcIdentityManager.clearIdentities();
-                this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
-                this.ecRemoteIdentMgr.server = window.repo.selectedServer;
-                this.ecRemoteIdentMgr.configureFromServer(this.handleAttemptLoginConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail); // Retrieves username and password salts from the serve
+        performInternalCassLogin: function() {
+            appLog("Attempting CaSS login....");
+            this.loginBusy = true;
+            this.identityToLinkToPerson = null;
+            EcIdentityManager.clearContacts();
+            EcIdentityManager.clearIdentities();
+            this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
+            this.ecRemoteIdentMgr.server = window.repo.selectedServer;
+            // Retrieve username and password salts from the server
+            this.ecRemoteIdentMgr.configureFromServer(this.handleAttemptLoginConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
+        },
+        attemptExternalCassLogin: function() {
+            this.redirectToExternalLoginPage();
+        },
+        handleUserProfileAlreadyLoaded: function(profileResponse) {
+            let co = this.parseCredentialsFromProfileResponse(profileResponse);
+            if (co.username && co.username.trim().length > 0 && co.password && co.password.trim().length > 0) {
+                this.loginCredentials = co;
+                this.performInternalCassLogin();
+            } else {
+                appLog("Unable to parse credentials from user profile response");
             }
+        },
+        checkUserProfileRequestStatus: function(profileResponse) {
+            if (profileResponse.status === 401) {
+                this.loginBusy = false;
+            } else if (profileResponse.status === 200) {
+                this.handleUserProfileAlreadyLoaded(profileResponse);
+            } else {
+                appLog('Unexpected user profile response status: ' + profileResponse.status);
+                this.loginBusy = false;
+            }
+        },
+        checkLoginStatus: function() {
+            this.loginBusy = true;
+            this.getUserProfile(this.checkUserProfileRequestStatus);
+        }
+    },
+    computed: {
+        legacyLoginEnabled: function() {
+            return this.$store.getters['featuresEnabled/legacyLoginEnabled'];
+        },
+        apiLoginEnabled: function() {
+            return this.$store.getters['featuresEnabled/apiLoginEnabled'];
         }
     },
     mounted() {
-        this.setDataToBaseLogin(true);
+        if (!this.apiLoginEnabled) this.goToLegacyLogin();
+        else this.checkLoginStatus();
     }
 };
 </script>

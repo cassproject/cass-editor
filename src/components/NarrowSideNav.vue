@@ -179,7 +179,7 @@ export default {
 <style>
 #app-side-nav-bar {
     position: fixed;
-    z-index: 12;
+    z-index: 1001;
     top: 0;
     left:0;
     height: calc(100vh - 3.25rem);
