@@ -60,7 +60,11 @@ export const cassApi = {
         //     window.location = this.cassApiLocation + this.USER_LOGOUT_SERVICE + "?redirectUrl=" + encodeURIComponent(this.LOGOUT_REDIRECT_URL + this.addQueryParams());
         // },
         goToLogin: function() {
-            this.$router.push({path: '/login'});
+            if (this.apiLoginEnabled) {
+                this.$router.push({path: '/login'});
+            } else {
+                this.$router.push({path: '/legacyLogin'});
+            }
         },
         checkExternalLogoutStatus: function(logoutResponse) {
             if (logoutResponse.status !== 200) {
