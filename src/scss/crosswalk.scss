@@ -5,6 +5,13 @@
         width: calc(45vw - 150px);
     }
 }
+.crosswalk-topbar{
+    height: 100%;
+    width: 100%;
+    line-height: 40px;
+    display: inline-flex;
+    justify-content: space-between;
+}
 #crosswalk {
     height: calc(100vh);
     overflow: hidden;
@@ -62,7 +69,7 @@
     .crosswalk-column {
         overflow:hidden;
         display: flex;
-        height: calc(100vh - 24px);
+        height: calc(100vh - 48px);
         flex-direction: column;
     }
     .crosswalk__title {
@@ -192,7 +199,7 @@
             ul.lode__hierarchy-ul {
                 overflow: scroll;
                 
-                height: calc(100% - 0rem); // account for top buttons
+                height: calc(100% - 69px); // account for top buttons
                 padding: 0rem .5rem;
               
                 li.lode__hierarchy-li {
