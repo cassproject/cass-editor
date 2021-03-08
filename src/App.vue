@@ -4,9 +4,9 @@
         :class="editorClass">
         <!-- nav bar navigation -->
         <cass-modal
-            @create-directory="saveDirectory(e)"
             class="cass-modal" />
-        <DynamicModal />
+        <DynamicModal
+            @create-directory="saveDirectory" />
 
         <!-- <router-view
             :showSideNav="showSideNav"
@@ -284,10 +284,17 @@ export default {
             // To do: Add other owners and readers
             dir.save(function(success) {
                 appLog("Directory saved: " + dir.id);
-                me.directoryName = '';
+                me.$store.commit('app/closeModal');
                 me.$store.dispatch('app/refreshDirectories');
                 me.selectDirectory(dir);
             }, appError, window.repo);
+        },
+        selectDirectory: function(directory) {
+            this.$store.commit('app/selectDirectory', directory);
+            this.$store.commit('app/rightAsideObject', directory);
+            if (this.$router.currentRoute.name !== "directory") {
+                this.$router.push({name: "directory"});
+            }
         },
         cappend: function(event) {
             if (event.data.message === "selected") {
