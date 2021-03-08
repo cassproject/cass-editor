@@ -14,6 +14,7 @@ returns content.
         :class="{'is-active': showModal}">
         <div class="modal-background" />
         <Component
+            @create-directory="$emit('create-directory', $event)"
             view="dynamic-modal"
             :content="dynamicModalContent"
             :is="dynamicModal" />
@@ -26,6 +27,7 @@ import MultiEdit from '@/components/competency/MultiEdit.vue';
 import Search from '@/components/competency/Search.vue';
 import Single from '@/components/competency/Single.vue';
 import AddComment from '@/components/modalContent/AddComment.vue';
+import AddDirectory from '@/components/modalContent/AddDirectory.vue';
 import DeleteDirectoryConfirm from '@/components/modalContent/DeleteDirectoryConfirm.vue';
 import DeleteCommentConfirm from '@/components/modalContent/DeleteCommentConfirm.vue';
 import SupportedImportDetails from '@/components/import/SupportedImportDetails.vue';
@@ -52,7 +54,8 @@ export default {
         DeleteDirectoryConfirm,
         SupportedImportDetails,
         Single,
-        Configuration
+        Configuration,
+        AddDirectory
     },
     data() {
         return {

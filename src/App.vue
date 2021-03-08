@@ -3,7 +3,9 @@
         id="app"
         :class="editorClass">
         <!-- nav bar navigation -->
-        <cass-modal class="cass-modal" />
+        <cass-modal
+            @create-directory="saveDirectory(e)"
+            class="cass-modal" />
         <DynamicModal />
 
         <!-- <router-view
@@ -267,6 +269,25 @@ export default {
                 // Anticipated workaround....login as group owner and save it.
                 // console.error("TODO...fix this...needs FRITZ input!!!!: " + e.toString());
             }
+        },
+        saveDirectory: function(e) {
+            let me = this;
+            let dir = new EcDirectory();
+            dir.name = e;
+            // dir.description = "Test Description";
+            dir.generateId(window.repo.selectedServer);
+            if (EcIdentityManager.ids.length > 0) {
+                dir.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            dir["schema:dateCreated"] = new Date().toISOString();
+            dir["schema:dateModified"] = new Date().toISOString();
+            // To do: Add other owners and readers
+            dir.save(function(success) {
+                appLog("Directory saved: " + dir.id);
+                me.directoryName = '';
+                me.$store.dispatch('app/refreshDirectories');
+                me.selectDirectory(dir);
+            }, appError, window.repo);
         },
         cappend: function(event) {
             if (event.data.message === "selected") {

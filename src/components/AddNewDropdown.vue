@@ -1,12 +1,13 @@
 <template>
     <div
-        class="dropdown is-right"
+        class="dropdown"
         v-click-outside="closeCreateDropdown"
-        :class="active ? 'is-active' : ''">
+        :class="[active ? 'is-active' : '', 'is-' + align]">
         <div class="dropdown-trigger">
             <button
                 @click="$emit('toggle')"
-                class="button is-primary is-hidden-touch is-outlined"
+                :class="'is-' + color"
+                class="button is-hidden-touch is-outlined"
                 aria-haspopup="true"
                 aria-controls="directory-add-dropdown">
                 <span class="icon">
@@ -21,7 +22,8 @@
             </button>
             <button
                 @click="$emit('toggle')"
-                class="button is-primary is-hidden-desktop is-outlined"
+                :class="'is-' + color"
+                class="button is-hidden-desktop is-outlined"
                 aria-haspopup="true"
                 aria-controls="directory-add-dropdown">
                 <span class="icon">
@@ -59,10 +61,16 @@
                     Directory
                 </a>
                 <a
-                    v-if="conceptEnabled"
+                    v-if="conceptEnabled && queryParams.ceasnDataFields === 'true'"
                     @click="$emit('concept')"
                     class="dropdown-item">
                     Concept
+                </a>
+                <a
+                    v-else-if="conceptEnabled"
+                    @click="$emit('concept')"
+                    class="dropdown-item">
+                    Taxonomy
                 </a>
                 <a
                     v-if="resourceEnabled"
@@ -77,9 +85,18 @@
 </template>
 
 <script>
+import {mapState} from 'vuex';
 export default {
     name: 'AddNewDropdown',
     props: {
+        color: {
+            type: String,
+            default: 'primary'
+        },
+        align: {
+            type: String,
+            default: 'right'
+        },
         active: {
             type: Boolean,
             default: false
@@ -112,6 +129,11 @@ export default {
             createDirectory: false,
             createSubdirectory: false
         };
+    },
+    computed: {
+        ...mapState({
+            queryParams: state => state.editor.queryParams
+        })
     },
     methods: {
         closeCreateDropdown() {
