@@ -310,7 +310,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Type of occupation; select from an existing enumeration of such types. See https://www.bls.gov/soc/."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Occupation Type"}],
-                    "heading": "Tagging"
+                    "heading": "General"
                 },
                 "https://schema.cassproject.org/0.4/naicsList": {
                     "@id": "https://schema.cassproject.org/0.4/naicsList",
@@ -321,7 +321,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Type of industry; select from an existing enumeration of such types such as the SIC, NAICS, and ISIC classifications. See https://www.naics.com/search/."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Industry Type"}],
-                    "heading": "Tagging"
+                    "heading": "General"
                 },
                 "headings": ["General", "Tagging", "Connections", "Context", "Rights", "Keys"],
                 "primaryProperties": [
@@ -681,6 +681,39 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Task Embodied"}],
                     "heading": "Connections"
                 },
+                "https://schema.cassproject.org/0.4/socList": {
+                    "@id": "https://schema.cassproject.org/0.4/socList",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Type of occupation; select from an existing enumeration of such types. See https://www.bls.gov/soc/."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Occupation Type"}],
+                    "heading": "General"
+                },
+                "https://schema.cassproject.org/0.4/naicsList": {
+                    "@id": "https://schema.cassproject.org/0.4/naicsList",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Type of industry; select from an existing enumeration of such types such as the SIC, NAICS, and ISIC classifications. See https://www.naics.com/search/."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Industry Type"}],
+                    "heading": "General"
+                },
+                "https://schema.cassproject.org/0.4/cipList": {
+                    "@id": "https://schema.cassproject.org/0.4/cipList",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Type of instructional program; select from an existing enumeration of such types. See https://nces.ed.gov/ipeds/cipcode."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Instructional Program Type"}],
+                    "heading": "General"
+                },
                 "headings": ["General", "Context", "Tagging", "Scales", "Connections", "Keys"],
                 "primaryProperties": [
                     "https://purl.org/ctdlasn/terms/competencyLabel",
@@ -698,7 +731,10 @@ export default {
                     "http://schema.org/keywords",
                     "https://purl.org/ctdlasn/terms/conceptTerm",
                     "https://purl.org/ctdlasn/terms/complexityLevel",
-                    "https://purl.org/ctdlasn/terms/weight"
+                    "https://purl.org/ctdlasn/terms/weight",
+                    "https://schema.cassproject.org/0.4/socList",
+                    "https://schema.cassproject.org/0.4/naicsList",
+                    "https://schema.cassproject.org/0.4/cipList"
                 ],
                 "tertiaryProperties": [
                     "@id",
