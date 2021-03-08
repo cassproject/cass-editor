@@ -16,21 +16,43 @@
             :simple="true">
             <template slot="top">
                 <div class="crosswalk-topbar">
-                    <h2 class="has-text-dark has-text-weight-bold is-size-5 text-align-left">
-                        Crosswalk
-                    </h2>
-                    <div class="buttons">
-                        <a
-                            href="/docs/crosswalk-tool/"
-                            title="Go to documentation on crosswalking"
-                            class="button is-primary is-outlined">
-                            <span class="icon">
-                                <i class="far fa-question-circle" />
+                    <div
+                        style="width: 100%;"
+                        class="columns is-spaced is-vcentered">
+                        <div class="column">
+                            <h2 class="has-text-dark has-text-weight-bold is-size-5 text-align-left">
+                                Crosswalk
+                            </h2>
+                        </div>
+                        <div class="column">
+                            <span class="tags">
+                                <span
+                                    v-if="alignmentsToSave.length > 0"
+                                    class="is-size-6 is-dark tag">
+                                    adding {{ alignmentsToSave.length }}
+                                </span>
+                                <span
+                                    v-if="alignmentsToDelete.length > 0"
+                                    class="tag is-size-6 is-dark">
+                                    removing {{ alignmentsToDelete.length }}
+                                </span>
                             </span>
-                            <span>
-                                Help
-                            </span>
-                        </a>
+                        </div>
+                        <div class="column">
+                            <div class="buttons is-right">
+                                <a
+                                    href="/docs/crosswalk-tool/"
+                                    title="Go to documentation on crosswalking"
+                                    class="button is-primary is-outlined">
+                                    <span class="icon">
+                                        <i class="far fa-question-circle" />
+                                    </span>
+                                    <span>
+                                        Help
+                                    </span>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -85,17 +107,6 @@
                                 class="crosswalk__buttons">
                                 <div class="container">
                                     <h2 class="title is-size-1">
-                                        <span
-                                            v-if="alignmentsToSave.length > 0"
-                                            class="is-size-6 is-dark tag">
-                                            adding {{ alignmentsToSave.length }}
-                                        </span>
-                                        <span
-                                            v-if="alignmentsToDelete.length > 0"
-                                            class="tag is-size-6 is-dark">
-                                            removing {{ alignmentsToDelete.length }}
-                                        </span>
-
                                         <span
                                             v-if="workingAlignmentsChanged"
                                             @click="applyWorkingAlignmentChanges"
@@ -257,9 +268,10 @@
                         <transition
                             v-if="step === 3"
                             name="slide-fade">
-                            <div class="is-narrow crosswalk__summary">
+                            <div class="is-12 crosswalk__summary">
                                 <div
-                                    class="box"
+                                    class="box mt-6"
+                                    style="max-width: 600px; display:block; margin: auto;"
                                     v-if="!alignmentsSaved">
                                     <div class="section">
                                         <h4 class="title is-size-2 has-text-centered">
