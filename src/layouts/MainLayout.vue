@@ -102,7 +102,7 @@ export default {
 }
 .cass--main-layout--body.has-simple-top-bar{
     height: calc(100vh - 48px);
-    overflow: scroll;
+    overflow: auto;
     margin-top: 48px;
     width: 100%;
 }

@@ -7,13 +7,13 @@
             <button
                 @click="$emit('toggle')"
                 :class="'is-' + color"
-                class="button is-hidden-touch is-outlined"
+                class="button is-hidden-touch"
                 aria-haspopup="true"
                 aria-controls="directory-add-dropdown">
                 <span class="icon">
                     <i class="fa fa-plus" />
                 </span>
-                <span>Add New</span>
+                <span>New</span>
                 <span class="icon is-small">
                     <i
                         class="fas fa-angle-down"

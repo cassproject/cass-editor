@@ -19,115 +19,119 @@
                     <h2 class="has-text-dark has-text-weight-bold is-size-5 text-align-left">
                         Crosswalk
                     </h2>
-                    <button
-                        title="Go to documentation on crosswalking"
-                        class="button is-text has-text-primary">
-                        <span class="icon pt-1">
-                            <i class="far fa-question-circle" />
-                        </span>
-                        <span>
-                            Help using this page
-                        </span>
-                    </button>
+                    <div class="buttons">
+                        <a
+                            href="/docs/crosswalk-tool/"
+                            title="Go to documentation on crosswalking"
+                            class="button is-primary is-outlined">
+                            <span class="icon">
+                                <i class="far fa-question-circle" />
+                            </span>
+                            <span>
+                                Help
+                            </span>
+                        </a>
+                    </div>
                 </div>
             </template>
             <template slot="body">
                 <div
                     id="crosswalk"
-                    class="crosswalk section has-background-white">
+                    class="crosswalk">
                     <div class="crosswalk-column is-gapless is-paddiingless is-marginless is-multiline">
-                        <!-- steps -->
-                        <div class="crosswalk__steps">
-                            <div
-                                class="step-item"
-                                :class="[{'complete': item.complete}, {'current': index === step}]"
-                                v-for="(item, index) in steps"
-                                :key="index">
+                        <div class="has-background-light crosswalk-top-section">
+                            <!-- steps -->
+                            <div class="crosswalk__steps">
                                 <div
-                                    class="step-marker"
-                                    :class="[{'has-background-primary': index === step}, { 'has-background-success': step > index}, { 'has-background-medium': step < index}]">
-                                    <span
-                                        v-if="item.name === 'from'"
-                                        class="has-text-white">
-                                        A
-                                    </span>
-                                    <span
-                                        v-if="item.name === 'to'"
-                                        class="has-text-white">
-                                        B
-                                    </span>
-                                    <i
-                                        v-if="item.name === 'align'"
-                                        class="fa fa-network-wired" />
-                                    <i
-                                        v-if="item.name === 'review'"
-                                        class="fa fa-check" />
+                                    class="step-item"
+                                    :class="[{'complete': item.complete}, {'current': index === step}]"
+                                    v-for="(item, index) in steps"
+                                    :key="index">
+                                    <div
+                                        class="step-marker"
+                                        :class="[{'has-background-primary': index === step}, { 'has-background-success': step > index}, { 'has-background-medium': step < index}]">
+                                        <span
+                                            v-if="item.name === 'from'"
+                                            class="has-text-white">
+                                            A
+                                        </span>
+                                        <span
+                                            v-if="item.name === 'to'"
+                                            class="has-text-white">
+                                            B
+                                        </span>
+                                        <i
+                                            v-if="item.name === 'align'"
+                                            class="fa fa-network-wired" />
+                                        <i
+                                            v-if="item.name === 'review'"
+                                            class="fa fa-check" />
+                                    </div>
+                                    <p class="step-details is-hidden-touch">
+                                        <span
+                                            v-if="item.complete"
+                                            class="icon has-text-success">
+                                            <i class="fa fa-check" />
+                                        </span>
+                                        <span :class="[{'has-text-primary has-text-weight-bold': index === step}, { 'has-text-success': step > index}, { 'has-text-medium': step < index}]">
+                                            {{ item.description }}
+                                        </span>
+                                    </p>
                                 </div>
-                                <p class="step-details is-hidden-touch">
-                                    <span
-                                        v-if="item.complete"
-                                        class="icon has-text-success">
-                                        <i class="fa fa-check" />
-                                    </span>
-                                    <span :class="[{'has-text-primary has-text-weight-bold': index === step}, { 'has-text-success': step > index}, { 'has-text-medium': step < index}]">
-                                        {{ item.description }}
-                                    </span>
-                                </p>
                             </div>
-                        </div>
-                        <!-- buttons -->
-                        <div
-                            v-if="step===2"
-                            class="crosswalk__buttons">
-                            <div class="container">
-                                <h2 class="title is-size-1">
-                                    Crosswalk:
-                                    <span
-                                        v-if="alignmentsToSave.length > 0"
-                                        class="is-size-6 is-dark tag">
-                                        adding {{ alignmentsToSave.length }}
-                                    </span>
-                                    <span
-                                        v-if="alignmentsToDelete.length > 0"
-                                        class="tag is-size-6 is-dark">
-                                        removing {{ alignmentsToDelete.length }}
-                                    </span>
+                            <!-- buttons -->
+                            <div
+                                v-if="step===2"
+                                class="crosswalk__buttons">
+                                <div class="container">
+                                    <h2 class="title is-size-1">
+                                        <span
+                                            v-if="alignmentsToSave.length > 0"
+                                            class="is-size-6 is-dark tag">
+                                            adding {{ alignmentsToSave.length }}
+                                        </span>
+                                        <span
+                                            v-if="alignmentsToDelete.length > 0"
+                                            class="tag is-size-6 is-dark">
+                                            removing {{ alignmentsToDelete.length }}
+                                        </span>
 
-                                    <span
-                                        v-if="workingAlignmentsChanged"
-                                        @click="applyWorkingAlignmentChanges"
-                                        class="button is-pulled-right is-outlined is-primary">
-                                        <span class="icon">
-                                            <i class="fa fa-plus" />
+                                        <span
+                                            v-if="workingAlignmentsChanged"
+                                            @click="applyWorkingAlignmentChanges"
+                                            class="button is-pulled-right is-outlined is-primary">
+                                            <span class="icon">
+                                                <i class="fa fa-plus" />
+                                            </span>
+                                            <span>
+                                                apply alignments
+                                            </span>
                                         </span>
-                                        <span>
-                                            apply alignments
+                                        <span
+                                            v-if="(alignmentsToSave.length > 0 || alignmentsToDelete.length > 0) && sourceState === 'ready'"
+                                            @click="goToSummaryAndSave"
+                                            class="button  is-pulled-right is-outlined is-primary">
+                                            <span class="icon">
+                                                <i class="fa fa-arrow-right" />
+                                            </span>
+                                            <span>
+                                                save & review
+                                            </span>
                                         </span>
-                                    </span>
-                                    <span
-                                        v-if="(alignmentsToSave.length > 0 || alignmentsToDelete.length > 0) && sourceState === 'ready'"
-                                        @click="goToSummaryAndSave"
-                                        class="button  is-pulled-right is-outlined is-primary">
-                                        <span class="icon">
-                                            <i class="fa fa-arrow-right" />
-                                        </span>
-                                        <span>
-                                            save & review
-                                        </span>
-                                    </span>
-                                </h2>
+                                    </h2>
+                                </div>
                             </div>
-                        </div>
-                        <!-- search -->
-                        <div
-                            class="crosswalk__search column is-8 is-offset-2"
-                            v-if="step < 2 ">
-                            <div class="container">
-                                <SearchBar
-                                    view="crosswalk"
-                                    filterSet="basic"
-                                    :ownedByMe="setSearchToOnlyShowOwned"
-                                    searchType="framework" />
+                            <!-- search -->
+                            <div
+                                class="crosswalk__search column is-8 is-offset-2"
+                                v-if="step < 2 ">
+                                <div class="container">
+                                    <SearchBar
+                                        view="crosswalk"
+                                        filterSet="basic"
+                                        :ownedByMe="setSearchToOnlyShowOwned"
+                                        searchType="framework" />
+                                </div>
                             </div>
                         </div>
                         <!-- step framework list for selecting a & b -->

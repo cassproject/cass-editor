@@ -138,32 +138,40 @@
                             filterSet="all"
                             searchType="framework" />
                     </div>
-                    <div class="column is-1"/>
+                    <div class="column is-1" />
                     <div class="column is-narrow">
-                        <div class="buttons">
-                            <add-new-dropdown
-                                :subdirectoryEnabled="true"
-                                :frameworkEnabled="true"
-                                :resourceEnabled="true"
-                                @subdirectory="createSubdirectory = true"
-                                @framework="$emit('create-new-framework', directory)"
-                                @resource="createResource = true"
-                                @close="createDropDownActive = false"
-                                @toggle="createDropDownActive = !createDropDownActive"
-                                v-if="canEditDirectory"
-                                :active="createDropDownActive" />
-                            <a
-                                href="/docs/directory-management/"
-                                title="Go to documentation on framework library"
-                                class="button is-primary">
-                                <span class="icon">
-                                    <i class="far fa-question-circle" />
-                                </span>
-                                <span>
-                                    Help
-                                </span>
-                            </a>
-                        </div>
+                        <add-new-dropdown
+                            :subdirectoryEnabled="true"
+                            :frameworkEnabled="true"
+                            :resourceEnabled="true"
+                            @subdirectory="createSubdirectory = true"
+                            @framework="$emit('create-new-framework', directory)"
+                            @resource="createResource = true"
+                            @close="createDropDownActive = false"
+                            @toggle="createDropDownActive = !createDropDownActive"
+                            v-if="canEditDirectory"
+                            :active="createDropDownActive" />
+                    </div>
+                    <div class="column is-narrow">
+                        <a
+                            href="/docs/directory-management/"
+                            title="Go to documentation on framework library"
+                            class="button is-hidden-touch is-outlined is-primary">
+                            <span class="icon">
+                                <i class="far fa-question-circle" />
+                            </span>
+                            <span>
+                                Help
+                            </span>
+                        </a>
+                        <a
+                            href="/docs/directory-management/"
+                            title="Go to documentation on framework library"
+                            class="button is-hidden-desktop is-outlined is-primary">
+                            <span class="icon">
+                                <i class="far fa-question-circle" />
+                            </span>
+                        </a>
                     </div>
                 </div>
             </template>

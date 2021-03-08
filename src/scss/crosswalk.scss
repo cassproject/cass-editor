@@ -12,8 +12,11 @@
     display: inline-flex;
     justify-content: space-between;
 }
+.crosswalk-top-section {
+    padding: 1rem;
+}
 #crosswalk {
-    height: calc(100vh);
+    height: calc(100vh - 64px);
     overflow: hidden;
     background-color: white;
     .lode__Framework {
@@ -151,7 +154,8 @@
     .crosswalk__list {
         flex: 10;
         margin-bottom: .5rem;
-        overflow-y:scroll;
+        overflow-y:auto;
+        overflow-x: hidden;
         flex-shrink: 1 0 auto;
         flex-grow: 10;
         .List {

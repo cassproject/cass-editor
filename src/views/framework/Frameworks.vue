@@ -20,7 +20,7 @@
                         filterSet="all"
                         :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
                 </div>
-                <div class="column is-1"/>
+                <div class="column is-1" />
                 <div class="column is-narrow">
                     <div
                         v-if="conceptMode"
@@ -30,7 +30,6 @@
                             @concept="$emit('create-new-concept-scheme')"
                             @close="createDropDownActive = false"
                             @toggle="createDropDownActive = !createDropDownActive"
-                            v-if="canEditDirectory"
                             :active="createDropDownActive" />
                         <router-link
                             to="/import"
@@ -48,6 +47,26 @@
                                 <i class="fa fa-upload" />
                             </span>
                         </router-link>
+                        <!-- help -->
+                        <a
+                            href="docs/taxonomies/"
+                            title="Go to documentation on framework library"
+                            class="button is-hidden-touch is-primary is-outlined">
+                            <span class="icon">
+                                <i class="far fa-question-circle" />
+                            </span>
+                            <span class="is-hidden-touch">
+                                Help
+                            </span>
+                        </a>
+                        <a
+                            href="docs/taxonomies/"
+                            title="Go to documentation on framework library"
+                            class="button is-primary is-hidden-desktop is-outlined">
+                            <span class="icon">
+                                <i class="far fa-question-circle" />
+                            </span>
+                        </a>
                     </div>
                     <!-- frameworks -->
                     <div
@@ -120,9 +139,9 @@
         </template>
         <!-- should be used for title / breadcrumbs -->
         <template #secondary-top>
-            <div class="container">
+            <div style="width: 100%;">
                 <h2 class="has-text-dark is-size-5 text-align-left pl-0 ml-0">
-                    Available items
+                    Available Items
                 </h2>
             </div>
         </template>
@@ -131,102 +150,6 @@
             <div
                 id="frameworks"
                 class="framework-list-page">
-                <!--
-                <div class="column is-narrow">
-                    <h2 class="subtitle is-size-5">
-                        List of available
-                        <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">concepts</span>
-                        <span v-else-if="conceptMode">taxonomies.</span>
-                        <p
-                            class="is-size-6"
-                            v-if="conceptMode && queryParams.ceasnDataFields !== 'true'">
-                            <a
-                                class="custom-link external is-size-6"
-                                title="Wikipedia: Taxonomy (general)"
-                                href="https://en.wikipedia.org/wiki/Taxonomy_(general)"
-                                target="_blank">Taxonomies
-                            </a>
-                            can be used to categorize and label competencies in frameworks.
-                        </p>
-                        <span v-if="!conceptMode">frameworks</span>
-                    </h2>
-                </div>
-                <div class="column">
-                    <div
-                        v-if="conceptMode"
-                        class="buttons is-right concept-buttons">
-                        <div
-                            @click="$emit('create-new-concept-scheme')"
-                            class="button is-outlined is-primary">
-                            <span class="icon">
-                                <i class="fa fa-plus" />
-                            </span><span>new {{ conceptSchemeStringForButton }}</span>
-                        </div>
-                        <router-link
-                            to="/import"
-                            @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
-                            class="button is-outlined is-primary">
-                            <span class="icon">
-                                <i class="fa fa-upload" />
-                            </span><span>import {{ conceptSchemeStringForButton }}</span>
-                        </router-link>
-                    </div>
-                    <div
-                        v-else
-                        class="buttons is-right frameworks-buttons">
-                        <div
-                            @click="$emit('create-new-framework')"
-                            class="button is-outlined is-primary">
-                            <span class="icon">
-                                <i class="fa fa-plus" />
-                            </span><span>create new</span>
-                        </div>
-                        <router-link
-                            to="/import"
-                            @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
-                            class="button is-outlined is-primary">
-                            <span class="icon">
-                                <i class="fa fa-upload" />
-                            </span><span>import framework</span>
-                        </router-link>
-                        <router-link
-                            to="/crosswalk"
-                            class="button is-outlined is-primary">
-                            <span class="icon">
-                                <i class="fa fa-network-wired" />
-                            </span><span>crosswalk</span>
-                        </router-link>
-                    </div>
-                </div>
-                <div class="section">
-                    <h1
-                        class="title"
-                        v-if="conceptMode">
-                        {{ conceptSchemeString }}
-                    </h1>
-                    <h1
-                        class="title"
-                        v-else>
-                        Frameworks
-                    </h1>
-                    <div
-                        v-if="!conceptMode"
-                        class="container is-fluid show-only-mine">
-                        <div class="control">
-                            <div v-if="queryParams.show !== 'mine' && queryParams.conceptShow !== 'mine' && numIdentities">
-                                <label
-                                    class="checkbox"
-                                    for="showMine">
-                                    <input
-                                        type="checkbox"
-                                        value="true"
-                                        id="showMine"
-                                        v-model="showMine">
-                                    Show only mine</label>
-                            </div>
-                        </div>
-                    </div>
-                </div>-->
                 <div class="container is-fluid">
                     <List
                         :type="type"

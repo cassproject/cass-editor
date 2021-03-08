@@ -119,6 +119,7 @@
             <add-new-dropdown
                 :frameworkEnabled="true"
                 :directoryEnabled="true"
+                @close="addFrameworkOrDirectory = false"
                 :conceptEnabled="true"
                 @toggle="addFrameworkOrDirectory = !addFrameworkOrDirectory"
                 align="left"
@@ -126,8 +127,7 @@
                 @directory="$store.commit('app/showModal', {component: 'AddDirectory'});"
                 @concept="$emit('create-new-concept-scheme')"
                 @framework="$emit('create-new-framework')"
-                :active="addFrameworkOrDirectory">
-            </add-new-dropdown>
+                :active="addFrameworkOrDirectory" />
         </div>
         <!-- GENERAL MENU -->
         <!-- COMPETENCIES AND FRAMEWORKS -->
@@ -168,18 +168,6 @@
                     </span>
                     <span v-if="showSideNav"> Crosswalk Frameworks</span>
                 </router-link>
-            </li>
-            <li
-                class="has-text-white"
-                v-if="showSideNav">
-                <a
-                    href="docs/competency-and-framework-management/"
-                    target="_blank">
-                    <span class="icon">
-                        <i class="fas fa-book" />
-                    </span>
-                    Documentation
-                </a>
             </li>
             <li
                 v-for="navLink of pluginLinkMap['Competencies & Frameworks']"
@@ -257,17 +245,6 @@
                     </span>
                     Import
                 </router-link>
-            </li>
-            <li
-                class="has-text-white"
-                v-if="showSideNav">
-                <a
-                    href="docs/taxonomies/"
-                    target="_blank">
-                    <span class="icon">
-                        <i class="fas fa-book" />
-                    </span> Documentation
-                </a>
             </li>
             <li
                 v-for="navLink of pluginLinkMap['Taxonomy']"
