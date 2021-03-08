@@ -4,69 +4,116 @@
         :class=" showRightAside ? 'right-side-open' : ''">
         <!-- should be used for search bar -->
         <template #top>
-            <div class="container is-fullhd">
-                <thing-editing
-                    v-if="editDirectory && canEditDirectory"
-                    :obj="$store.getters['app/rightAsideObject']"
-                    :repo="repo"
-                    :parentNotEditable="queryParams.view==='true'"
-                    :profile="directoryProfile"
-                    @delete-object="deleteObject"
-                    @done-editing-node-event="onDoneEditingNode()" />
-                <div class="container">
-                    <div class="columns">
-                        <div class="column is-6">
-                            <SearchBar
-                                filterSet="all"
-                                :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
-                        </div>
-                        <div class="column is-6">
-                            <div
-                                v-if="conceptMode"
-                                class="buttons is-right concept-buttons">
-                                <div
-                                    @click="$emit('create-new-concept-scheme')"
-                                    class="button is-outlined is-primary">
-                                    <span class="icon">
-                                        <i class="fa fa-plus" />
-                                    </span><span>new {{ conceptSchemeStringForButton }}</span>
-                                </div>
-                                <router-link
-                                    to="/import"
-                                    @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
-                                    class="button is-hidden-mobile is-outlined is-primary">
-                                    <span class="icon">
-                                        <i class="fa fa-upload" />
-                                    </span><span>import {{ conceptSchemeStringForButton }}</span>
-                                </router-link>
-                            </div>
-                            <div
-                                v-else
-                                class="buttons  is-hidden-mobile is-right frameworks-buttons">
-                                <div
-                                    @click="$emit('create-new-framework')"
-                                    class="button is-outlined is-primary">
-                                    <span class="icon">
-                                        <i class="fa fa-plus" />
-                                    </span><span>create</span>
-                                </div>
-                                <router-link
-                                    to="/import"
-                                    @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
-                                    class="button is-outlined is-primary">
-                                    <span class="icon">
-                                        <i class="fa fa-upload" />
-                                    </span><span>import</span>
-                                </router-link>
-                                <router-link
-                                    to="/crosswalk"
-                                    class="button is-outlined is-primary">
-                                    <span class="icon">
-                                        <i class="fa fa-network-wired" />
-                                    </span><span>crosswalk</span>
-                                </router-link>
-                            </div>
-                        </div>
+            <thing-editing
+                v-if="editDirectory && canEditDirectory"
+                :obj="$store.getters['app/rightAsideObject']"
+                :repo="repo"
+                :parentNotEditable="queryParams.view==='true'"
+                :profile="directoryProfile"
+                @delete-object="deleteObject"
+                @done-editing-node-event="onDoneEditingNode()" />
+            <div
+                class="columns is-mobile is-spaced is-vcentered"
+                style="width: 100%;">
+                <div class="column">
+                    <SearchBar
+                        filterSet="all"
+                        :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
+                </div>
+                <div class="column is-1"/>
+                <div class="column is-narrow">
+                    <div
+                        v-if="conceptMode"
+                        class="buttons is-right concept-buttons">
+                        <add-new-dropdown
+                            :conceptEnabled="true"
+                            @concept="$emit('create-new-concept-scheme')"
+                            @close="createDropDownActive = false"
+                            @toggle="createDropDownActive = !createDropDownActive"
+                            v-if="canEditDirectory"
+                            :active="createDropDownActive" />
+                        <router-link
+                            to="/import"
+                            @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
+                            class="button is-hidden-touch is-outlined is-primary">
+                            <span class="icon">
+                                <i class="fa fa-upload" />
+                            </span><span>import {{ conceptSchemeStringForButton }}</span>
+                        </router-link>
+                        <router-link
+                            to="/import"
+                            @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
+                            class="button is-hidden-desktop is-outlined is-primary">
+                            <span class="icon">
+                                <i class="fa fa-upload" />
+                            </span>
+                        </router-link>
+                    </div>
+                    <!-- frameworks -->
+                    <div
+                        v-else
+                        class="buttons is-right frameworks-buttons">
+                        <add-new-dropdown
+                            :frameworkEnabled="true"
+                            @framework="$emit('create-new-framework')"
+                            @close="createDropDownActive = false"
+                            @toggle="createDropDownActive = !createDropDownActive"
+                            :active="createDropDownActive" />
+                        <!-- upload -->
+                        <router-link
+                            to="/import"
+                            @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
+                            class="button is-outlined is-hidden-desktop is-primary">
+                            <span class="icon">
+                                <i class="fa fa-upload" />
+                            </span>
+                        </router-link>
+                        <router-link
+                            to="/import"
+                            @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
+                            class="button is-outlined is-hidden-touch is-primary">
+                            <span class="icon">
+                                <i class="fa fa-upload" />
+                            </span><span>import</span>
+                        </router-link>
+                        <!-- crosswalk -->
+                        <router-link
+                            to="/crosswalk"
+                            class="button is-hidden-touch is-outlined is-primary">
+                            <span class="icon">
+                                <i class="fa fa-network-wired" />
+                            </span>
+                            <span>
+                                Crosswalk
+                            </span>
+                        </router-link>
+                        <router-link
+                            to="/crosswalk"
+                            class="button is-hidden-desktop is-outlined is-primary">
+                            <span class="icon">
+                                <i class="fa fa-network-wired" />
+                            </span>
+                        </router-link>
+                        <!-- help -->
+                        <a
+                            href="/docs/competency-and-framework-management/"
+                            title="Go to documentation on framework library"
+                            class="button is-hidden-touch is-primary is-outlined">
+                            <span class="icon">
+                                <i class="far fa-question-circle" />
+                            </span>
+                            <span class="is-hidden-touch">
+                                Help
+                            </span>
+                        </a>
+                        <a
+                            href="/docs/competency-and-framework-management/"
+                            title="Go to documentation on framework library"
+                            class="button is-primary is-hidden-desktop is-outlined">
+                            <span class="icon">
+                                <i class="far fa-question-circle" />
+                            </span>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -317,11 +364,14 @@ import RightAside from '@/components/framework/RightAside.vue';
 import common from '@/mixins/common.js';
 import editDirectory from '@/mixins/editDirectory.js';
 import SearchBar from '@/components/framework/SearchBar.vue';
+import AddNewDropdown from '@/components/AddNewDropdown.vue';
+
 export default {
     name: "Frameworks",
     mixins: [common, editDirectory],
     data: function() {
         return {
+            createDropDownActive: false,
             repo: window.repo,
             showMine: false,
             showNotMine: false,
@@ -434,6 +484,7 @@ export default {
     components: {
         List,
         RightAside,
+        AddNewDropdown,
         SearchBar,
         MainLayout,
         ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue')

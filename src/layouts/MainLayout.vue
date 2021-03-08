@@ -67,9 +67,11 @@ export default {
     position: absolute;
     width:calc(100% - 64px);
     top: 0px;
-    padding: .25rem 1rem;
+    padding: 0rem 1rem;
     height: 60px;
     display: flex;
+    justify-content: space-between;
+    align-items: center;
     background-color: white;
     z-index:30;
     border-bottom: solid 1px black;

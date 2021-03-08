@@ -37,7 +37,7 @@ export default new Router({
             path: '/concepts',
             name: 'concepts',
             components: {
-                default: () => import(/* webpackChunkName: "frameworks" */ './views/framework/Frameworks.vue'),
+                default: () => import(/* webpackChunkName: "concepts" */ './views/framework/Frameworks.vue'),
                 sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
                 topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
@@ -204,9 +204,9 @@ export default new Router({
             path: '/directory',
             name: 'directory',
             components: {
-                default: () => import('./views/directory/Directory.vue'),
-                sidebar: () => import('./components/SideNav.vue'),
-                topbar: () => import('./components/Topbar.vue')
+                default: () => import(/* webpackChunkName: "directory" */ './views/directory/Directory.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
         }
     ]

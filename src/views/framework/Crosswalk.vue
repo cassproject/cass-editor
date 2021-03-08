@@ -23,7 +23,7 @@
                         title="Go to documentation on crosswalking"
                         class="button is-text has-text-primary">
                         <span class="icon pt-1">
-                            <i class="far fa-question-circle"/>
+                            <i class="far fa-question-circle" />
                         </span>
                         <span>
                             Help using this page

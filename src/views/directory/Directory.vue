@@ -129,65 +129,40 @@
             @done-editing-node-event="onDoneEditingNode()" />
         <main-layout :rightActive="showRightAside">
             <template slot="top">
-                <div class="container">
-                    <div class="columns is-mobile is-spaced mt-0">
-                        <!-- search bar -->
-                        <div class="column is-6-desktop is-8-mobile">
-                            <SearchBar
-                                filterSet="all"
-                                searchType="framework" />
-                        </div>
-                        <!-- top bar icons, add framework, resource, new directory, copy share link -->
-                        <div
-                            class="column is-narrow"
-                            v-if="canEditDirectory">
-                            <div
-                                class="dropdown is-right"
-                                v-click-outside="closeCreateDropDown"
-                                :class="createDropDownActive ? 'is-active' : ''">
-                                <div class="dropdown-trigger">
-                                    <button
-                                        @click="createDropDownActive = !createDropDownActive"
-                                        class="button is-primary is-outlined is-rounded"
-                                        aria-haspopup="true"
-                                        aria-controls="directory-add-dropdown">
-                                        <span class="icon">
-                                            <i class="fa fa-plus" />
-                                        </span>
-                                        <span>Add New</span>
-                                        <span class="icon is-small">
-                                            <i
-                                                class="fas fa-angle-down"
-                                                aria-hidden="true" />
-                                        </span>
-                                    </button>
-                                </div>
-                                <div
-                                    class="dropdown-menu"
-                                    v-if="canEditDirectory"
-                                    id="directory-add-dropdown"
-                                    role="menu">
-                                    <div class="dropdown-content">
-                                        <a
-                                            href="#"
-                                            @click="$emit('create-new-framework', directory)"
-                                            class="dropdown-item">
-                                            Framework
-                                        </a>
-                                        <a
-                                            @click="createSubdirectory = true"
-                                            class="dropdown-item">
-                                            Sub directory
-                                        </a>
-                                        <a
-                                            @click="createResource = true"
-                                            href="#"
-                                            class="dropdown-item">
-                                            Resource
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                <div
+                    style="width: 100%;"
+                    class="columns is-mobile is-spaced mt-0">
+                    <!-- search bar -->
+                    <div class="column">
+                        <SearchBar
+                            filterSet="all"
+                            searchType="framework" />
+                    </div>
+                    <div class="column is-1"/>
+                    <div class="column is-narrow">
+                        <div class="buttons">
+                            <add-new-dropdown
+                                :subdirectoryEnabled="true"
+                                :frameworkEnabled="true"
+                                :resourceEnabled="true"
+                                @subdirectory="createSubdirectory = true"
+                                @framework="$emit('create-new-framework', directory)"
+                                @resource="createResource = true"
+                                @close="createDropDownActive = false"
+                                @toggle="createDropDownActive = !createDropDownActive"
+                                v-if="canEditDirectory"
+                                :active="createDropDownActive" />
+                            <a
+                                href="/docs/directory-management/"
+                                title="Go to documentation on framework library"
+                                class="button is-primary">
+                                <span class="icon">
+                                    <i class="far fa-question-circle" />
+                                </span>
+                                <span>
+                                    Help
+                                </span>
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -279,12 +254,14 @@ import editDirectory from '@/mixins/editDirectory.js';
 import SearchBar from '@/components/framework/SearchBar.vue';
 import MainLayout from '@/layouts/MainLayout.vue';
 import ModalTemplate from '@/components/ModalTemplate.vue';
+import AddNewDropdown from '@/components/AddNewDropdown.vue';
 export default {
     name: "Directory",
     mixins: [common, editDirectory],
     components: {
         MainLayout,
         DirectoryList,
+        AddNewDropdown,
         ModalTemplate,
         SearchBar,
         RightAside: () => import('@/components/framework/RightAside.vue'),
