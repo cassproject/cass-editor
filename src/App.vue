@@ -3,8 +3,10 @@
         id="app"
         :class="editorClass">
         <!-- nav bar navigation -->
-        <cass-modal class="cass-modal" />
-        <DynamicModal />
+        <cass-modal
+            class="cass-modal" />
+        <DynamicModal
+            @create-directory="saveDirectory" />
 
         <!-- <router-view
             :showSideNav="showSideNav"
@@ -266,6 +268,32 @@ export default {
                 // TODO Problem with EcOrganization update and creating encrypted value when only a reader...
                 // Anticipated workaround....login as group owner and save it.
                 // console.error("TODO...fix this...needs FRITZ input!!!!: " + e.toString());
+            }
+        },
+        saveDirectory: function(e) {
+            let me = this;
+            let dir = new EcDirectory();
+            dir.name = e;
+            // dir.description = "Test Description";
+            dir.generateId(window.repo.selectedServer);
+            if (EcIdentityManager.ids.length > 0) {
+                dir.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            }
+            dir["schema:dateCreated"] = new Date().toISOString();
+            dir["schema:dateModified"] = new Date().toISOString();
+            // To do: Add other owners and readers
+            dir.save(function(success) {
+                appLog("Directory saved: " + dir.id);
+                me.$store.commit('app/closeModal');
+                me.$store.dispatch('app/refreshDirectories');
+                me.selectDirectory(dir);
+            }, appError, window.repo);
+        },
+        selectDirectory: function(directory) {
+            this.$store.commit('app/selectDirectory', directory);
+            this.$store.commit('app/rightAsideObject', directory);
+            if (this.$router.currentRoute.name !== "directory") {
+                this.$router.push({name: "directory"});
             }
         },
         cappend: function(event) {

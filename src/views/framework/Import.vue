@@ -33,7 +33,9 @@
                     aria-label="breadcrumbs has-text-dark">
                     <ul>
                         <li>
-                            <router-link to="frameworks">CaSS</router-link>
+                            <router-link to="frameworks">
+                                CaSS
+                            </router-link>
                         </li>
                         <li>
                             <a href="#">Import</a>

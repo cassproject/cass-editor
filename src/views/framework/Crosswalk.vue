@@ -1,7 +1,5 @@
 <template>
-    <div
-        id="crosswalk"
-        class="crosswalk section has-background-white">
+    <div>
         <!-- busy modal-->
         <div
             class="modal"
@@ -13,314 +11,357 @@
                 </span>
             </div>
         </div>
-        <div class="container is-fluid">
-            <div class="crosswalk-column is-gapless is-paddiingless is-marginless is-multiline">
-                <!-- steps -->
-                <div class="crosswalk__steps">
+        <main-layout
+            :rightActive="showRightAside"
+            :simple="true">
+            <template slot="top">
+                <div class="crosswalk-topbar">
                     <div
-                        class="step-item"
-                        :class="[{'complete': item.complete}, {'current': index === step}]"
-                        v-for="(item, index) in steps"
-                        :key="index">
-                        <div
-                            class="step-marker"
-                            :class="[{'has-background-primary': index === step}, { 'has-background-success': step > index}, { 'has-background-medium': step < index}]">
-                            <span
-                                v-if="item.name === 'from'"
-                                class="has-text-white">
-                                A
-                            </span>
-                            <span
-                                v-if="item.name === 'to'"
-                                class="has-text-white">
-                                B
-                            </span>
-                            <i
-                                v-if="item.name === 'align'"
-                                class="fa fa-network-wired" />
-                            <i
-                                v-if="item.name === 'review'"
-                                class="fa fa-check" />
+                        style="width: 100%;"
+                        class="columns is-spaced is-vcentered">
+                        <div class="column">
+                            <h2 class="has-text-dark has-text-weight-bold is-size-5 text-align-left">
+                                Crosswalk
+                            </h2>
                         </div>
-                        <p class="step-details is-hidden-touch">
-                            <span
-                                v-if="item.complete"
-                                class="icon has-text-success">
-                                <i class="fa fa-check" />
-                            </span>
-                            <span :class="[{'has-text-primary has-text-weight-bold': index === step}, { 'has-text-success': step > index}, { 'has-text-medium': step < index}]">
-                                {{ item.description }}
-                            </span>
-                        </p>
-                    </div>
-                </div>
-                <!-- buttons -->
-                <div
-                    v-if="step===2"
-                    class="crosswalk__buttons">
-                    <div class="container">
-                        <h2 class="title is-size-1">
-                            Crosswalk:
-                            <span
-                                v-if="alignmentsToSave.length > 0"
-                                class="is-size-6 is-dark tag">
-                                adding {{ alignmentsToSave.length }}
-                            </span>
-                            <span
-                                v-if="alignmentsToDelete.length > 0"
-                                class="tag is-size-6 is-dark">
-                                removing {{ alignmentsToDelete.length }}
-                            </span>
-
-                            <span
-                                v-if="workingAlignmentsChanged"
-                                @click="applyWorkingAlignmentChanges"
-                                class="button is-pulled-right is-outlined is-primary">
-                                <span class="icon">
-                                    <i class="fa fa-plus" />
+                        <div class="column">
+                            <span class="tags">
+                                <span
+                                    v-if="alignmentsToSave.length > 0"
+                                    class="is-size-6 is-dark tag">
+                                    adding {{ alignmentsToSave.length }}
                                 </span>
-                                <span>
-                                    apply alignments
+                                <span
+                                    v-if="alignmentsToDelete.length > 0"
+                                    class="tag is-size-6 is-dark">
+                                    removing {{ alignmentsToDelete.length }}
                                 </span>
                             </span>
-                            <span
-                                v-if="(alignmentsToSave.length > 0 || alignmentsToDelete.length > 0) && sourceState === 'ready'"
-                                @click="goToSummaryAndSave"
-                                class="button  is-pulled-right is-outlined is-primary">
-                                <span class="icon">
-                                    <i class="fa fa-arrow-right" />
-                                </span>
-                                <span>
-                                    save & review
-                                </span>
-                            </span>
-                        </h2>
-                    </div>
-                </div>
-                <!-- search -->
-                <div
-                    class="crosswalk__search column is-8 is-offset-2"
-                    v-if="step < 2 ">
-                    <div class="container">
-                        <SearchBar
-                            view="crosswalk"
-                            filterSet="basic"
-                            :ownedByMe="setSearchToOnlyShowOwned"
-                            searchType="framework" />
-                    </div>
-                </div>
-                <!-- step framework list for selecting a & b -->
-                <transition
-                    name="slide-fade">
-                    <div
-                        v-if="step === 0"
-                        class="column is-12 crosswalk__list">
-                        <div class="container">
-                            <List
-                                :type="type"
-                                :repo="repo"
-                                :view="view"
-                                :click="frameworkClickSource"
-                                :searchOptions="searchOptions"
-                                :paramObj="paramObj"
-                                :disallowEdits="true"
-                                :filterToEditable="true" />
                         </div>
-                    </div>
-                </transition>
-                <!-- step framework list for selecting a & b -->
-                <transition
-                    v-if="step === 1"
-                    name="slide-fade">
-                    <div
-                        class="column is-12 crosswalk__list">
-                        <div class="container">
-                            <List
-                                :type="type"
-                                :repo="repo"
-                                :view="view"
-                                :click="frameworkClickTarget"
-                                :searchOptions="searchOptions"
-                                :paramObj="paramObj"
-                                :disallowEdits="true" />
-                        </div>
-                    </div>
-                </transition>
-                <!-- double hierarchy view -->
-                <transition
-                    name="slide-fade">
-                    <div
-                        v-if="step === 2"
-                        class="column is-12 crosswalk__double-hierarchy">
-                        <div class="columns is-mobile crosswalk__double-heirarchy__column">
-                            <div
-                                class="column is-6 has-text-centered"
-                                v-if="!crosswalkSourceLoaded">
-                                <span class="icon is-large">
-                                    <i class="fa fa-spinner fa-2x fa-pulse" />
-                                </span>
-                            </div>
-                            <div
-                                v-show="crosswalkSourceLoaded"
-                                class="column is-6 source">
-                                <Thing
-                                    :obj="frameworkSource"
-                                    :repo="repo"
-                                    :view="view" />
-                                <Hierarchy
-                                    :container="frameworkSource"
-                                    view="crosswalk"
-                                    subview="crosswalkSource"
-                                    containerType="Framework"
-                                    containerTypeGet="EcFramework"
-                                    containerNodeProperty="competency"
-                                    containerEdgeProperty="relation"
-                                    nodeType="EcCompetency"
-                                    edgeType="EcAlignment"
-                                    edgeRelationProperty="relationType"
-                                    edgeRelationLiteral="narrows"
-                                    edgeSourceProperty="source"
-                                    edgeTargetProperty="target"
-                                    :viewOnly="queryParams.view === 'true'"
-                                    :repo="repo"
-                                    :queryParams="queryParams"
-                                    :exportOptions="[]"
-                                    :highlightList="null"
-                                    @search-things="handleSearch($event)"
-                                    @done-loading-nodes="prepareToLoadCrosswalkTarget"
-                                    properties="primary" />
-                            </div>
-                            <div
-                                class="column is-6 has-text-centered"
-                                v-if="!loadCrosswalkTarget">
-                                <span class="icon is-large">
-                                    <i class="fa fa-spinner fa-2x fa-pulse" />
-                                </span>
-                            </div>
-                            <div
-                                class="column is-6 target"
-                                v-if="loadCrosswalkTarget">
-                                <Thing
-                                    :obj="frameworkTarget"
-                                    :repo="repo"
-                                    :view="view" />
-                                <Hierarchy
-                                    :container="frameworkTarget"
-                                    view="crosswalk"
-                                    subview="crosswalkTarget"
-                                    containerType="Framework"
-                                    containerTypeGet="EcFramework"
-                                    containerNodeProperty="competency"
-                                    containerEdgeProperty="relation"
-                                    nodeType="EcCompetency"
-                                    edgeType="EcAlignment"
-                                    edgeRelationProperty="relationType"
-                                    edgeRelationLiteral="narrows"
-                                    edgeSourceProperty="source"
-                                    edgeTargetProperty="target"
-                                    :viewOnly="queryParams.view === 'true'"
-                                    :repo="repo"
-                                    :queryParams="queryParams"
-                                    :exportOptions="[]"
-                                    :highlightList="null"
-                                    @search-things="handleSearch($event)"
-                                    properties="primary" />
-                            </div>
-                        </div>
-                    </div>
-                </transition>
-                <transition
-                    v-if="step === 3"
-                    name="slide-fade">
-                    <div class="is-narrow crosswalk__summary">
-                        <div
-                            class="box"
-                            v-if="!alignmentsSaved">
-                            <div class="section">
-                                <h4 class="title is-size-2 has-text-centered">
-                                    Crosswalk Alignment Summary
-                                </h4>
-                                <p
-                                    class="has-text-centered"
-                                    v-if="alignmentsToSave.length > 0">
-                                    {{ alignmentsToSave.length }} alignment<span v-if="alignmentsToSave.length > 1">s</span> ready to add
-                                </p>
-                                <p
-                                    class="has-text-centered"
-                                    v-if="alignmentsToDelete.length > 0">
-                                    {{ alignmentsToDelete.length }} alignment<span v-if="alignmentsToDelete.length > 1">s</span> ready to remove
-                                </p>
-                            </div>
-                            <div class="section">
-                                <h4 class="title is-size-2 has-text-centered">
-                                    Choose which framework to apply alignments
-                                </h4>
-                                <div
-                                    v-if="canSaveToSourceFramework"
-                                    class="field has-text-centered">
-                                    <input
-                                        title="You do not have permission to save to this framework"
-                                        :disabled="!canSaveToSourceFramework"
-                                        v-model="saveToSourceFramework"
-                                        class="is-checkradio"
-                                        id="saveToSourceFramework"
-                                        type="checkbox"
-                                        name="saveToSourceFramework">
-                                    <label
-                                        class="label"
-                                        for="saveToSourceFramework">{{ frameworkSource.getName() }}</label>
-                                </div>
-                                <div
-                                    v-if="canSaveToTargetFramework"
-                                    class="field has-text-centered">
-                                    <input
-                                        title="You do not have permission to save to this framework"
-                                        :disabled="!canSaveToTargetFramework"
-                                        v-model="saveToTargetFramework"
-                                        class="is-checkradio"
-                                        id="saveToTargetFramework"
-                                        type="checkbox"
-                                        name="saveToTargetFramework">
-                                    <label
-                                        class="label"
-                                        for="saveToTargetFramework">{{ frameworkTarget.getName() }}</label>
-                                </div>
-                            </div>
-                            <div
-                                style="margin-top: 3rem"
-                                class="buttons is-spaced"
-                                v-if="saveToSourceFramework || saveToTargetFramework">
-                                <div
-                                    class="button is-outlined is-dark"
-                                    @click="returnToCrosswalkEditing">
+                        <div class="column">
+                            <div class="buttons is-right">
+                                <a
+                                    href="docs/crosswalk-tool/"
+                                    target="_blank"
+                                    title="Go to documentation on crosswalking"
+                                    class="button is-primary is-outlined">
                                     <span class="icon">
-                                        <i class="fa fa-arrow-left" />
+                                        <i class="far fa-question-circle" />
                                     </span>
                                     <span>
-                                        continue editing
+                                        Help
                                     </span>
-                                </div>
-                                <div
-                                    class="button is-outlined is-primary"
-                                    @click="saveAlignments">
-                                    <span class="icon">
-                                        <i class="fa fa-save" />
-                                    </span>
-                                    <span>
-                                        save alignments
-                                    </span>
-                                </div>
+                                </a>
                             </div>
                         </div>
                     </div>
-                </transition>
-            </div>
-        </div>
+                </div>
+            </template>
+            <template slot="body">
+                <div
+                    id="crosswalk"
+                    class="crosswalk">
+                    <div class="crosswalk-column is-gapless is-paddiingless is-marginless is-multiline">
+                        <div class="has-background-light crosswalk-top-section">
+                            <!-- steps -->
+                            <div class="crosswalk__steps">
+                                <div
+                                    class="step-item"
+                                    :class="[{'complete': item.complete}, {'current': index === step}]"
+                                    v-for="(item, index) in steps"
+                                    :key="index">
+                                    <div
+                                        class="step-marker"
+                                        :class="[{'has-background-primary': index === step}, { 'has-background-success': step > index}, { 'has-background-medium': step < index}]">
+                                        <span
+                                            v-if="item.name === 'from'"
+                                            class="has-text-white">
+                                            A
+                                        </span>
+                                        <span
+                                            v-if="item.name === 'to'"
+                                            class="has-text-white">
+                                            B
+                                        </span>
+                                        <i
+                                            v-if="item.name === 'align'"
+                                            class="fa fa-network-wired" />
+                                        <i
+                                            v-if="item.name === 'review'"
+                                            class="fa fa-check" />
+                                    </div>
+                                    <p class="step-details is-hidden-touch">
+                                        <span
+                                            v-if="item.complete"
+                                            class="icon has-text-success">
+                                            <i class="fa fa-check" />
+                                        </span>
+                                        <span :class="[{'has-text-primary has-text-weight-bold': index === step}, { 'has-text-success': step > index}, { 'has-text-medium': step < index}]">
+                                            {{ item.description }}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- buttons -->
+                            <div
+                                v-if="step===2"
+                                class="crosswalk__buttons">
+                                <div class="container">
+                                    <h2 class="title is-size-1">
+                                        <span
+                                            v-if="workingAlignmentsChanged"
+                                            @click="applyWorkingAlignmentChanges"
+                                            class="button is-pulled-right is-outlined is-primary">
+                                            <span class="icon">
+                                                <i class="fa fa-plus" />
+                                            </span>
+                                            <span>
+                                                apply alignments
+                                            </span>
+                                        </span>
+                                        <span
+                                            v-if="(alignmentsToSave.length > 0 || alignmentsToDelete.length > 0) && sourceState === 'ready'"
+                                            @click="goToSummaryAndSave"
+                                            class="button  is-pulled-right is-outlined is-primary">
+                                            <span class="icon">
+                                                <i class="fa fa-arrow-right" />
+                                            </span>
+                                            <span>
+                                                save & review
+                                            </span>
+                                        </span>
+                                    </h2>
+                                </div>
+                            </div>
+                            <!-- search -->
+                            <div
+                                class="crosswalk__search column is-8 is-offset-2"
+                                v-if="step < 2 ">
+                                <div class="container">
+                                    <SearchBar
+                                        view="crosswalk"
+                                        filterSet="basic"
+                                        :ownedByMe="setSearchToOnlyShowOwned"
+                                        searchType="framework" />
+                                </div>
+                            </div>
+                        </div>
+                        <!-- step framework list for selecting a & b -->
+                        <transition
+                            name="slide-fade">
+                            <div
+                                v-if="step === 0"
+                                class="column is-12 crosswalk__list">
+                                <div class="container">
+                                    <List
+                                        :type="type"
+                                        :repo="repo"
+                                        :view="view"
+                                        :click="frameworkClickSource"
+                                        :searchOptions="searchOptions"
+                                        :paramObj="paramObj"
+                                        :disallowEdits="true"
+                                        :filterToEditable="true" />
+                                </div>
+                            </div>
+                        </transition>
+                        <!-- step framework list for selecting a & b -->
+                        <transition
+                            v-if="step === 1"
+                            name="slide-fade">
+                            <div
+                                class="column is-12 crosswalk__list">
+                                <div class="container">
+                                    <List
+                                        :type="type"
+                                        :repo="repo"
+                                        :view="view"
+                                        :click="frameworkClickTarget"
+                                        :searchOptions="searchOptions"
+                                        :paramObj="paramObj"
+                                        :disallowEdits="true" />
+                                </div>
+                            </div>
+                        </transition>
+                        <!-- double hierarchy view -->
+                        <transition
+                            name="slide-fade">
+                            <div
+                                v-if="step === 2"
+                                class="column is-12 crosswalk__double-hierarchy">
+                                <div class="columns is-mobile crosswalk__double-heirarchy__column">
+                                    <div
+                                        class="column is-6 has-text-centered"
+                                        v-if="!crosswalkSourceLoaded">
+                                        <span class="icon is-large">
+                                            <i class="fa fa-spinner fa-2x fa-pulse" />
+                                        </span>
+                                    </div>
+                                    <div
+                                        v-show="crosswalkSourceLoaded"
+                                        class="column is-6 source">
+                                        <Thing
+                                            :obj="frameworkSource"
+                                            :repo="repo"
+                                            :view="view" />
+                                        <Hierarchy
+                                            :container="frameworkSource"
+                                            view="crosswalk"
+                                            subview="crosswalkSource"
+                                            containerType="Framework"
+                                            containerTypeGet="EcFramework"
+                                            containerNodeProperty="competency"
+                                            containerEdgeProperty="relation"
+                                            nodeType="EcCompetency"
+                                            edgeType="EcAlignment"
+                                            edgeRelationProperty="relationType"
+                                            edgeRelationLiteral="narrows"
+                                            edgeSourceProperty="source"
+                                            edgeTargetProperty="target"
+                                            :viewOnly="queryParams.view === 'true'"
+                                            :repo="repo"
+                                            :queryParams="queryParams"
+                                            :exportOptions="[]"
+                                            :highlightList="null"
+                                            @search-things="handleSearch($event)"
+                                            @done-loading-nodes="prepareToLoadCrosswalkTarget"
+                                            properties="primary" />
+                                    </div>
+                                    <div
+                                        class="column is-6 has-text-centered"
+                                        v-if="!loadCrosswalkTarget">
+                                        <span class="icon is-large">
+                                            <i class="fa fa-spinner fa-2x fa-pulse" />
+                                        </span>
+                                    </div>
+                                    <div
+                                        class="column is-6 target"
+                                        v-if="loadCrosswalkTarget">
+                                        <Thing
+                                            :obj="frameworkTarget"
+                                            :repo="repo"
+                                            :view="view" />
+                                        <Hierarchy
+                                            :container="frameworkTarget"
+                                            view="crosswalk"
+                                            subview="crosswalkTarget"
+                                            containerType="Framework"
+                                            containerTypeGet="EcFramework"
+                                            containerNodeProperty="competency"
+                                            containerEdgeProperty="relation"
+                                            nodeType="EcCompetency"
+                                            edgeType="EcAlignment"
+                                            edgeRelationProperty="relationType"
+                                            edgeRelationLiteral="narrows"
+                                            edgeSourceProperty="source"
+                                            edgeTargetProperty="target"
+                                            :viewOnly="queryParams.view === 'true'"
+                                            :repo="repo"
+                                            :queryParams="queryParams"
+                                            :exportOptions="[]"
+                                            :highlightList="null"
+                                            @search-things="handleSearch($event)"
+                                            properties="primary" />
+                                    </div>
+                                </div>
+                            </div>
+                        </transition>
+                        <transition
+                            v-if="step === 3"
+                            name="slide-fade">
+                            <div class="is-12 crosswalk__summary">
+                                <div
+                                    class="box mt-6"
+                                    style="max-width: 600px; display:block; margin: auto;"
+                                    v-if="!alignmentsSaved">
+                                    <div class="section">
+                                        <h4 class="title is-size-2 has-text-centered">
+                                            Crosswalk Alignment Summary
+                                        </h4>
+                                        <p
+                                            class="has-text-centered"
+                                            v-if="alignmentsToSave.length > 0">
+                                            {{ alignmentsToSave.length }} alignment<span v-if="alignmentsToSave.length > 1">s</span> ready to add
+                                        </p>
+                                        <p
+                                            class="has-text-centered"
+                                            v-if="alignmentsToDelete.length > 0">
+                                            {{ alignmentsToDelete.length }} alignment<span v-if="alignmentsToDelete.length > 1">s</span> ready to remove
+                                        </p>
+                                    </div>
+                                    <div class="section">
+                                        <h4 class="title is-size-2 has-text-centered">
+                                            Choose which framework to apply alignments
+                                        </h4>
+                                        <div
+                                            v-if="canSaveToSourceFramework"
+                                            class="field has-text-centered">
+                                            <input
+                                                title="You do not have permission to save to this framework"
+                                                :disabled="!canSaveToSourceFramework"
+                                                v-model="saveToSourceFramework"
+                                                class="is-checkradio"
+                                                id="saveToSourceFramework"
+                                                type="checkbox"
+                                                name="saveToSourceFramework">
+                                            <label
+                                                class="label"
+                                                for="saveToSourceFramework">{{ frameworkSource.getName() }}</label>
+                                        </div>
+                                        <div
+                                            v-if="canSaveToTargetFramework"
+                                            class="field has-text-centered">
+                                            <input
+                                                title="You do not have permission to save to this framework"
+                                                :disabled="!canSaveToTargetFramework"
+                                                v-model="saveToTargetFramework"
+                                                class="is-checkradio"
+                                                id="saveToTargetFramework"
+                                                type="checkbox"
+                                                name="saveToTargetFramework">
+                                            <label
+                                                class="label"
+                                                for="saveToTargetFramework">{{ frameworkTarget.getName() }}</label>
+                                        </div>
+                                    </div>
+                                    <div
+                                        style="margin-top: 3rem"
+                                        class="buttons is-spaced"
+                                        v-if="saveToSourceFramework || saveToTargetFramework">
+                                        <div
+                                            class="button is-outlined is-dark"
+                                            @click="returnToCrosswalkEditing">
+                                            <span class="icon">
+                                                <i class="fa fa-arrow-left" />
+                                            </span>
+                                            <span>
+                                                continue editing
+                                            </span>
+                                        </div>
+                                        <div
+                                            class="button is-outlined is-primary"
+                                            @click="saveAlignments">
+                                            <span class="icon">
+                                                <i class="fa fa-save" />
+                                            </span>
+                                            <span>
+                                                save alignments
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </transition>
+                    </div>
+                </div>
+            </template>
+        </main-layout>
     </div>
 </template>
 
 <script>
 import {mapState, mapGetters} from 'vuex';
+import MainLayout from '@/layouts/MainLayout.vue';
 import List from '@/lode/components/lode/List.vue';
 import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
 import Thing from '@/lode/components/lode/Thing.vue';
@@ -384,7 +425,8 @@ export default {
         List,
         SearchBar,
         Hierarchy,
-        Thing
+        Thing,
+        MainLayout
     },
     mounted() {
         this.$store.commit('crosswalk/resetCrosswalk');
