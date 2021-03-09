@@ -33,7 +33,9 @@
                     aria-label="breadcrumbs has-text-dark">
                     <ul>
                         <li>
-                            <router-link to="frameworks">CaSS</router-link>
+                            <router-link to="frameworks">
+                                CaSS
+                            </router-link>
                         </li>
                         <li>
                             <a href="#">Import</a>
@@ -1153,6 +1155,20 @@ export default {
         this.$store.commit('app/showRightAside');
         let documentBody = document.getElementById('import');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
+    },
+    watch: {
+        importStatus: function(val, oldVal) {
+            if (val === oldVal) {
+                return;
+            }
+            if (val === 'connectToServer') {
+                this.connectToServer();
+            } else if (val === 'importFromUrl') {
+                this.importFromUrl();
+            } else if (val === 'parseText') {
+                this.parseText();
+            }
+        }
     }
 };
 </script>

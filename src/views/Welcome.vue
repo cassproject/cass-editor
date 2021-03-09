@@ -30,7 +30,14 @@
                             <p class="is-size-6">
                                 Navigate to the <router-link
                                     to="/login"
-                                    class="custom-link local">
+                                    class="custom-link local"
+                                    v-if="$store.getters['featuresEnabled/apiLoginEnabled']">
+                                    login screen
+                                </router-link>
+                                <router-link
+                                    to="/legacyLogin"
+                                    class="custom-link local"
+                                    v-else>
                                     login screen
                                 </router-link> and select create a new user.  Input your details. After creation,
                                 login to your account using the username you created. You can now access the user and groups manager as well as create comments on frameworks.

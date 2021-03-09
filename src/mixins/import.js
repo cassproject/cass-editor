@@ -977,6 +977,7 @@ export default {
             }
             this.repo.multiput(toSave, function() {
                 me.spitEvent("importFinished", me.importFramework.shortId(), "importPage");
+                me.$store.commit('editor/framework', me.importFramework);
                 me.$router.push({name: "framework", params: {frameworkId: me.importFramework.shortId()}});
             }, function(failure) {
                 appLog("failure", failure);
@@ -1089,18 +1090,6 @@ export default {
         }
     },
     watch: {
-        importStatus: function(val, oldVal) {
-            if (val === oldVal) {
-                return;
-            }
-            if (val === 'connectToServer') {
-                this.connectToServer();
-            } else if (val === 'importFromUrl') {
-                this.importFromUrl();
-            } else if (val === 'parseText') {
-                this.parseText();
-            }
-        },
         importType: function(val) {
             this.caseDocs = [];
             this.clearImport();

@@ -115,69 +115,19 @@
         <!-- Add new buttons -->
         <div
             v-if="showSideNav"
-            class="cass-add-item--button button is-rounded has-text-primary has-font-weight-medium"
-            v-click-outside="handleClickoutsidePopup"
             @click="addFrameworkOrDirectory = true;">
-            <span class="icon">
-                <i class="fa fa-plus" />
-            </span>
-            <span>Create new</span>
-            <div
-                class="cass--pop-out"
-                v-if="addFrameworkOrDirectory">
-                <div
-                    @click="$emit('create-new-framework')"
-                    class="cass--popout-text-button">
-                    <span v-if="showSideNav">Framework</span>
-                </div>
-                <div
-                    @click.prevent="addNewDirectory = true"
-                    class="cass--popout-text-button">
-                    <span v-if="showSideNav">Directory</span>
-                </div>
-                <div
-                    class="cass--popout-text-button"
-                    @click="$emit('create-new-concept-scheme')">
-                    <span>
-                        <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
-                            Concept Scheme
-                        </span>
-                        <span v-else-if="showSideNav">
-                            Taxonomy
-                        </span>
-                    </span>
-                </div>
-                <div
-                    class="field"
-                    v-if="addNewDirectory">
-                    <div class="control">
-                        <div class="control">
-                            <input
-                                class="input"
-                                placeholder="Name of new directory"
-                                v-model="directoryName">
-                        </div>
-                    </div>
-                </div>
-                <div
-                    class="field"
-                    v-if="addNewDirectory">
-                    <div class="buttons">
-                        <div
-                            class="button is-dark is-outlined is-small"
-                            @click="addFrameworkOrDirectory = false">
-                            Cancel
-                        </div>
-                        <div
-                            class="button is-primary is-small"
-                            :class="directoryName.length === 0 ? 'is-disabled' : ''"
-                            :disabled="directoryName.length === 0"
-                            @click="saveDirectory">
-                            Create
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <add-new-dropdown
+                :frameworkEnabled="true"
+                :directoryEnabled="true"
+                @close="addFrameworkOrDirectory = false"
+                :conceptEnabled="true"
+                @toggle="addFrameworkOrDirectory = !addFrameworkOrDirectory"
+                align="left"
+                color="light"
+                @directory="$store.commit('app/showModal', {component: 'AddDirectory'});"
+                @concept="$emit('create-new-concept-scheme')"
+                @framework="$emit('create-new-framework')"
+                :active="addFrameworkOrDirectory" />
         </div>
         <!-- GENERAL MENU -->
         <!-- COMPETENCIES AND FRAMEWORKS -->
@@ -218,18 +168,6 @@
                     </span>
                     <span v-if="showSideNav"> Crosswalk Frameworks</span>
                 </router-link>
-            </li>
-            <li
-                class="has-text-white"
-                v-if="showSideNav">
-                <a
-                    href="docs/competency-and-framework-management/"
-                    target="_blank">
-                    <span class="icon">
-                        <i class="fas fa-book" />
-                    </span>
-                    Documentation
-                </a>
             </li>
             <li
                 v-for="navLink of pluginLinkMap['Competencies & Frameworks']"
@@ -307,17 +245,6 @@
                     </span>
                     Import
                 </router-link>
-            </li>
-            <li
-                class="has-text-white"
-                v-if="showSideNav">
-                <a
-                    href="docs/taxonomies/"
-                    target="_blank">
-                    <span class="icon">
-                        <i class="fas fa-book" />
-                    </span> Documentation
-                </a>
             </li>
             <li
                 v-for="navLink of pluginLinkMap['Taxonomy']"
@@ -413,6 +340,7 @@ import {cassUtil} from './../mixins/cassUtil';
 import {cassApi} from './../mixins/cassApi';
 import {pluginUtil} from './../mixins/pluginUtil';
 import {curatedPlugins} from './../mixins/curatedPlugins';
+import AddNewDropdown from './AddNewDropdown.vue';
 
 export default {
     mixins: [cassUtil, cassApi, pluginUtil, curatedPlugins],
@@ -425,6 +353,9 @@ export default {
             default: false,
             type: Boolean
         }
+    },
+    components: {
+        AddNewDropdown
     },
     data() {
         return {
