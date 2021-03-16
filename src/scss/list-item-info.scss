@@ -11,10 +11,9 @@
 }
 #cass__right-aside {
     position: fixed;
-    height: 100%;
+    height: calc(100% - 44px);
     top: 44px;
     overflow: hidden;
-
     width: 100%;
     transform: translateX(0);
 }
