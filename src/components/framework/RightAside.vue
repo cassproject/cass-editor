@@ -114,7 +114,7 @@ export default {
         border-bottom: solid 1px rgba($dark, .3);
     }
     .cass--right-aside--content {
-        height: 100%;
+        height: calc(100% - 44px);
         overflow-y: scroll;
         margin-top: 44px;
     }
