@@ -286,7 +286,7 @@
 <script>
 import MainLayout from './../../layouts/MainLayout.vue';
 import debounce from 'lodash/debounce';
-import List from '@/lode/components/lode/List.vue';
+import List from '@/lode/components/List.vue';
 import RightAside from '@/components/framework/RightAside.vue';
 import common from '@/mixins/common.js';
 import editDirectory from '@/mixins/editDirectory.js';
@@ -414,7 +414,7 @@ export default {
         AddNewDropdown,
         SearchBar,
         MainLayout,
-        ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue')
+        ThingEditing: () => import('@/lode/components/ThingEditing.vue')
     },
     methods: {
         canEditItem: function(item) {

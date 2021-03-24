@@ -54,7 +54,7 @@
     </div>
 </template>
 <script>
-import List from '@/lode/components/lode/List.vue';
+import List from '@/lode/components/List.vue';
 import common from '@/mixins/common.js';
 export default {
     name: "Organizations",

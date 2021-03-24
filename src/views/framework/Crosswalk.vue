@@ -362,9 +362,9 @@
 <script>
 import {mapState, mapGetters} from 'vuex';
 import MainLayout from '@/layouts/MainLayout.vue';
-import List from '@/lode/components/lode/List.vue';
-import Hierarchy from '@/lode/components/lode/Hierarchy.vue';
-import Thing from '@/lode/components/lode/Thing.vue';
+import List from '@/lode/components/List.vue';
+import Hierarchy from '@/lode/components/Hierarchy.vue';
+import Thing from '@/lode/components/Thing.vue';
 import SearchBar from '@/components/framework/SearchBar.vue';
 import common from '@/mixins/common.js';
 import {cassUtil} from '@/mixins/cassUtil.js';

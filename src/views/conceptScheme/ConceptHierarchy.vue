@@ -291,7 +291,7 @@ export default {
         };
     },
     components: {
-        HierarchyNode: () => import('@/lode/components/lode/HierarchyNode.vue'),
+        HierarchyNode: () => import('@/lode/components/HierarchyNode.vue'),
         draggable: () => import('vuedraggable')
     },
     mixins: [common],

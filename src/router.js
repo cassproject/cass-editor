@@ -148,11 +148,6 @@ export default new Router({
             }
         },
         {
-            path: '/test',
-            name: 'test',
-            component: () => import(/* webpackChunkName: "test" */ './lode/views/Test.vue')
-        },
-        {
             path: '/pluginContainer',
             name: 'pluginContainer',
             components: {

@@ -169,9 +169,9 @@ export default {
     components: {
         MainLayout,
         FrameworkButtons: () => import('@/components/FrameworkButtons.vue'),
-        Hierarchy: () => import('@/lode/components/lode/Hierarchy.vue'),
-        Thing: () => import('@/lode/components/lode/Thing.vue'),
-        ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue'),
+        Hierarchy: () => import('@/lode/components/Hierarchy.vue'),
+        Thing: () => import('@/lode/components/Thing.vue'),
+        ThingEditing: () => import('@/lode/components/ThingEditing.vue'),
         FrameworkEditorToolbar: () => import('@/components/framework/EditorToolbar.vue'),
         RightAside: () => import('@/components/framework/RightAside.vue'),
         draggable: () => import('vuedraggable')

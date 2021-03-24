@@ -134,8 +134,8 @@
 <script>
 import {mapState} from 'vuex';
 
-import Thing from '@/lode/components/lode/Thing.vue';
-import ThingEditing from '@/lode/components/lode/ThingEditing.vue';
+import Thing from '@/lode/components/Thing.vue';
+import ThingEditing from '@/lode/components/ThingEditing.vue';
 
 export default {
     name: 'Single',

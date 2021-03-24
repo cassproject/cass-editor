@@ -112,7 +112,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
 </template>
 
 <script>
-import List from '@/lode/components/lode/List.vue';
+import List from '@/lode/components/List.vue';
 import common from '@/mixins/common.js';
 import {mapState} from 'vuex';
 import SearchBar from '@/components/framework/SearchBar.vue';

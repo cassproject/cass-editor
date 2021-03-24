@@ -275,7 +275,7 @@ export default {
         ModalTemplate,
         SearchBar,
         RightAside: () => import('@/components/framework/RightAside.vue'),
-        ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue')
+        ThingEditing: () => import('@/lode/components/ThingEditing.vue')
     },
     data: function() {
         return {

@@ -724,8 +724,8 @@ export default {
         }
     },
     components: {
-        Thing: () => import('@/lode/components/lode/Thing.vue'),
-        ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue'),
+        Thing: () => import('@/lode/components/Thing.vue'),
+        ThingEditing: () => import('@/lode/components/ThingEditing.vue'),
         FrameworkEditorToolbar: () => import('@/components/framework/EditorToolbar.vue'),
         RightAside: () => import('@/components/framework/RightAside.vue'),
         ConceptHierarchy: () => import('./ConceptHierarchy.vue'),
