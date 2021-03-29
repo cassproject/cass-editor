@@ -1254,11 +1254,11 @@ export default {
                         me.saving = false;
                         me.saved = "last saved " + new Date(rld["schema:dateModified"]).toLocaleString();
                         me.$store.commit('editor/changedObject', rld.shortId());
-                        if (me.addAnother) {
-                            me.$store.commit('editor/addAnother', true);
-                            me.addAnother = false;
-                        }
                         if (me.doneValidating) {
+                            if (me.addAnother) {
+                                me.$store.commit('editor/addAnother', true);
+                                me.addAnother = false;
+                            }
                             me.$emit('done-editing-node-event');
                         }
                         if (rld.type === "Framework") {
@@ -1520,7 +1520,7 @@ export default {
             this.validate = true;
             // If object needs to be saved, this will be set to false in saveThing
             this.doneSaving = true;
-            if (this.addAnother) {
+            if (this.addAnother && this.doneValidating) {
                 this.$store.commit('editor/addAnother', true);
                 this.addAnother = false;
             }
