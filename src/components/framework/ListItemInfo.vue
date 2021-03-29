@@ -386,7 +386,7 @@
                         </div>
                     </template>
                     <!-- move to directory -->
-                    <template v-if="loggedIn && canEditObject">
+                    <template v-if="canEditObject">
                         <button
                             :class=" accordion === 'move' ? 'active' : ''"
                             @click="clickAccordion('move'); movingToDirectory = true;"
