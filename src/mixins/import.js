@@ -83,7 +83,7 @@ export default {
                                 return this.importJsonLd(data[0]);
                             }
                             if (this.serverType === "cass") {
-                                return this.importCassFrameworks(data[0]);
+                                return this.continueCassImport(data[0]);
                             }
                             return this.continueCaseImport(data[0]);
                         },
