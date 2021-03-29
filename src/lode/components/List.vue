@@ -313,9 +313,9 @@ export default {
             // Used to only add OR to query if there's already a term
             var termAdded = false;
             if (!this.applySearchTo || this.searchTerm === "") {
-                search = "(@type:" + type + (this.searchTerm != null && this.searchTerm !== "" ? " AND " + this.searchTerm : "") + ")" + (this.searchOptions == null || this.searchOptions === "" ? "" : this.searchOptions);
+                search = "((@type:" + type + " OR (EncryptedValue AND \\*encryptedType:" + type + "))" + (this.searchTerm != null && this.searchTerm !== "" ? " AND " + this.searchTerm : "") + ")" + (this.searchOptions == null || this.searchOptions === "" ? "" : this.searchOptions);
             } else {
-                search = "(@type:" + type + " AND (";
+                search = "((@type:" + type + " OR (EncryptedValue AND \\*encryptedType:" + type + "))" + " AND (";
                 for (let i = 0; i < this.applySearchTo.length; i++) {
                     if ((type === "Framework" && this.applySearchTo[i].id === "frameworkName") ||
                     (type === "Competency" && this.applySearchTo[i].id === "competencyName") ||
@@ -428,51 +428,16 @@ export default {
                         }
                     }
                 }, function(results) {
+                    me.firstSearchProcessing = false;
                     if (directories && directories.length > 0) {
                         me.results = me.results.concat(directories);
-                    }
-                    me.firstSearchProcessing = false;
-                    if (!me.applySearchTo) {
-                        directories = [];
-                        me.buildSearch("EncryptedValue AND \\*encryptedType:Directory", function(search) {
-                            me.repo.searchWithParams(search, paramObj, function(result) {
-                                let obj = result;
-                                if (result.isAny(new EcEncryptedValue().getTypes())) {
-                                    // Decrypt and add to results list
-                                    var type = "Ec" + result.encryptedType;
-                                    var v = new EcEncryptedValue();
-                                    v.copyFrom(result);
-                                    obj = new window[type]();
-                                    obj.copyFrom(v.decryptIntoObject());
-                                }
-                                if (!EcArray.has(me.resultIds, obj.id)) {
-                                    if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, obj.shortId())) {
-                                        if (!obj.parentDirectory || me.searchTerm !== "") {
-                                            directories.push(obj);
-                                            me.resultIds.push(obj.id);
-                                        }
-                                    }
-                                }
-                            }, function(results2) {
-                                if (directories && directories.length > 0) {
-                                    me.results = me.results.concat(directories);
-                                } else if ((results.length + results2.length) === 0) {
-                                    me.searchingForDirectories = false;
-                                    me.start = 0;
-                                    me.loadMore();
-                                } else if ((results.length + results2.length) > 0 && $state) {
-                                    // $state references are for vue-infinite-loading component
-                                    $state.loaded();
-                                } else if ($state) {
-                                    $state.complete();
-                                }
-                            }, function(error) {
-                                appError(error);
-                                if ($state) {
-                                    $state.complete();
-                                }
-                            });
-                        });
+                        if ($state) {
+                            $state.loaded();
+                        }
+                    } else if (results.length === 0) {
+                        me.searchingForDirectories = false;
+                        me.start = 0;
+                        me.loadMore($state);
                     } else if (results.length > 0 && $state) {
                         // $state references are for vue-infinite-loading component
                         $state.loaded();
@@ -544,38 +509,9 @@ export default {
                         }
                     }, function(results) {
                         me.firstSearchProcessing = false;
-                        if (!me.applySearchTo) {
-                            me.buildSearch("EncryptedValue AND \\*encryptedType:" + me.type, function(search) {
-                                me.repo.searchWithParams(search, paramObj, function(result) {
-                                    let obj = result;
-                                    if (result.isAny(new EcEncryptedValue().getTypes())) {
-                                        // Decrypt and add to results list
-                                        var type = "Ec" + result.encryptedType;
-                                        var v = new EcEncryptedValue();
-                                        v.copyFrom(result);
-                                        obj = new window[type]();
-                                        obj.copyFrom(v.decryptIntoObject());
-                                    }
-                                    if (!EcArray.has(me.resultIds, obj.id)) {
-                                        if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, obj.shortId())) {
-                                            me.results.push(obj);
-                                            me.resultIds.push(obj.id);
-                                            me.nonDirectoryResults = true;
-                                        }
-                                    }
-                                }, function(results2) {
-                                    if (results.length < 10 && (me.type === "Framework" || me.type === "ConceptScheme")) {
-                                        if (me.searchCompetencies) {
-                                            me.searchForSubObjects();
-                                        }
-                                    }
-                                }, appError);
-                            });
-                        } else {
-                            if (results.length < 10 && (me.type === "Framework" || me.type === "ConceptScheme")) {
-                                if (me.searchCompetencies) {
-                                    me.searchForSubObjects();
-                                }
+                        if (results.length < 10 && (me.type === "Framework" || me.type === "ConceptScheme")) {
+                            if (me.searchCompetencies) {
+                                me.searchForSubObjects();
                             }
                         }
                     }, function(err) {
@@ -662,6 +598,8 @@ export default {
                         if (results.length === 0 && (me.type === "Framework" || me.type === "ConceptScheme")) {
                             if (me.searchCompetencies) {
                                 me.searchForSubObjects($state);
+                            } else if ($state) {
+                                $state.complete();
                             }
                         } else if (results.length > 0) {
                             me.nonDirectoryResults = true;
@@ -695,6 +633,15 @@ export default {
                     if (!me.filterToEditable || (me.filterToEditable && subResult.canEditAny(EcIdentityManager.getMyPks()))) {
                         if (!EcArray.has(me.resultIds, subResult.id)) {
                             if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, subResult.shortId())) {
+                                if (subResult.isAny(new EcEncryptedValue().getTypes())) {
+                                    // Decrypt and add to results list
+                                    var objType = "Ec" + subResult.encryptedType;
+                                    var v = new EcEncryptedValue();
+                                    v.copyFrom(subResult);
+                                    let obj = new window[objType]();
+                                    obj.copyFrom(v.decryptIntoObject());
+                                    subResult = obj;
+                                }
                                 me.subResults.push(subResult);
                                 me.resultIds.push(subResult.id);
                                 me.nonDirectoryResults = true;
@@ -722,6 +669,13 @@ export default {
             } else {
                 return false;
             }
+        }
+    },
+    mounted: function() {
+        if (this.view === 'crosswalk') {
+            this.searchFrameworks = true;
+            this.searchCompetencies = false;
+            this.searchDirectories = false;
         }
     }
 };
