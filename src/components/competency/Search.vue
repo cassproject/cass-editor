@@ -28,17 +28,18 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 aria-label="close" />
         </header>
         <section
-            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
+            v-if="(view !== 'thing-editing' && view !== 'multi-edit') && !selectedFramework"
             class="modal-card-body">
             <div class="column is-12">
                 <SearchBar
                     filterSet="basic"
-                    :searchType="searchType" />
+                    :searchType="searchType"
+                    :allowShowFrameworks="true" />
             </div>
             <div class="column is-12">
                 <List
                     v-if="$store.state.lode.competencySearchModalOpen"
-                    :type="searchType"
+                    :type="searchTypeToPassToList"
                     view="search"
                     :repo="repo"
                     :click="select"
@@ -72,6 +73,40 @@ placed anywhere in a structured html element such as a <section> or a <div>
                     :idsNotPermittedInSearch="idsNotPermittedInSearch" />
             </div>
         </template>
+        <div
+            v-if="selectedFramework && !hierarchyLoaded">
+            <span class="icon is-large">
+                <i class="fa fa-spinner fa-2x fa-pulse" />
+            </span>
+        </div>
+        <div v-show="hierarchyLoaded">
+            <Thing
+                v-if="selectedFramework"
+                :obj="selectedFramework"
+                :repo="repo"
+                :view="view"
+                :expandInModal="true" />
+            <Hierarchy
+                :container="selectedFramework"
+                view="competencySearch"
+                containerType="Framework"
+                containerTypeGet="EcFramework"
+                containerNodeProperty="competency"
+                containerEdgeProperty="relation"
+                nodeType="EcCompetency"
+                edgeType="EcAlignment"
+                edgeRelationProperty="relationType"
+                edgeRelationLiteral="narrows"
+                edgeSourceProperty="source"
+                edgeTargetProperty="target"
+                :viewOnly="true"
+                :repo="repo"
+                :exportOptions="[]"
+                :highlightList="null"
+                @done-loading-nodes="hierarchyLoaded = true"
+                properties="primary"
+                @selected-array="selectedArrayEvent" />
+        </div>
         <footer
             v-if="view !== 'thing-editing' && view !== 'multi-edit'"
             class="modal-card-foot">
@@ -87,6 +122,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 <button
                     class="button is-outlined is-primary"
                     v-if="copyOrLink"
+                    :disabled="!selectedIds || selectedIds.length === 0"
                     @click="copyCompetencies(selectedIds); resetModal();">
                     <span class="icon">
                         <i class="fa fa-copy" />
@@ -98,6 +134,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 <button
                     class="button is-outlined is-primary"
                     v-if="copyOrLink"
+                    :disabled="!selectedIds || selectedIds.length === 0"
                     @click="appendCompetencies(selectedIds); resetModal();">
                     <span class="icon">
                         <i class="fa fa-link" />
@@ -113,6 +150,8 @@ placed anywhere in a structured html element such as a <section> or a <div>
 
 <script>
 import List from '@/lode/components/List.vue';
+import Hierarchy from '@/lode/components/Hierarchy.vue';
+import Thing from '@/lode/components/Thing.vue';
 import common from '@/mixins/common.js';
 import {mapState} from 'vuex';
 import SearchBar from '@/components/framework/SearchBar.vue';
@@ -129,7 +168,7 @@ export default {
             default: null
         }
     },
-    components: {List, SearchBar},
+    components: {List, SearchBar, Hierarchy, Thing},
     mixins: [common],
     data() {
         return {
@@ -138,7 +177,9 @@ export default {
             itemsSaving: 0,
             displayFirst: [],
             showMine: false,
-            sortBy: null
+            sortBy: null,
+            selectedFramework: null,
+            hierarchyLoaded: false
         };
     },
     created: function() {
@@ -229,6 +270,16 @@ export default {
             } else {
                 return [];
             }
+        },
+        searchFrameworksInCompetencySearch: function() {
+            return this.$store.getters['app/searchFrameworksInCompetencySearch'];
+        },
+        searchTypeToPassToList: function() {
+            if (this.searchType === "Competency" && this.searchFrameworksInCompetencySearch) {
+                return "Framework";
+            } else {
+                return "Competency";
+            }
         }
     },
     mounted: function() {
@@ -260,7 +311,28 @@ export default {
             this.$store.commit('app/closeModal');
             this.selectedIds = [];
         },
+        selectedArrayEvent: function(ary) {
+            this.selectedIds = ary;
+            if (!this.copyOrLink || this.searchType === "Level") {
+                this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
+            }
+            if (this.queryParams.selectRelations === "true" && this.framework.relation) {
+                for (var i = 0; i < this.framework.relation.length; i++) {
+                    var relation = EcAlignment.getBlocking(this.framework.relation[i]);
+                    if (EcArray.has(selectedArray, relation.target)) {
+                        if (this.queryParams.selectVerbose === "true") {
+                            ary.push(JSON.parse((rld).toJson()));
+                        } else {
+                            ary.push(relation.shortId());
+                        }
+                    }
+                }
+            }
+        },
         select: function(competency) {
+            if (competency.type === "Framework") {
+                return this.selectFramework(competency);
+            }
             if (!EcArray.has(this.selectedIds, competency.shortId())) {
                 this.selectedIds.push(competency.shortId());
             } else {
@@ -270,7 +342,21 @@ export default {
                 this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
             }
         },
+        selectFramework: function(framework) {
+            this.selectedFramework = framework;
+        },
+        addRelations: function() {
+            if (this.searchFrameworksInCompetencySearch && this.selectedFramework.relation) {
+                for (var i = 0; i < this.selectedFramework.relation.length; i++) {
+                    var relation = EcAlignment.getBlocking(this.selectedFramework.relation[i]);
+                    if (EcArray.has(this.selectedIds, relation.target) && EcArray.has(this.selectedIds, relation.source)) {
+                        this.selectedIds.push(relation.shortId());
+                    }
+                }
+            }
+        },
         copyCompetencies: function(results) {
+            this.addRelations();
             var copyDict = {};
             var framework = this.$store.state.editor.framework;
             var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
@@ -308,7 +394,7 @@ export default {
                         }
                     }
                     c['ceasn:derivedFrom'] = thing.id;
-                    copyDict[c['ceasn:derivedFrom']] = c;
+                    copyDict[thing.shortId()] = c;
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
                         c = EcEncryptedValue.toEncryptedValue(c);
                     }
@@ -340,7 +426,7 @@ export default {
                     level.competency = this.$store.state.editor.selectedCompetency.shortId();
                     delete level.owner;
                     level['ceasn:derivedFrom'] = thing.id;
-                    copyDict[level['ceasn:derivedFrom']] = level;
+                    copyDict[thing.shortId()] = level;
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
                         level = EcEncryptedValue.toEncryptedValue(level);
                     }
@@ -398,7 +484,6 @@ export default {
                         }
                         if (r.source !== r.target) {
                             framework["schema:dateModified"] = new Date().toISOString();
-                            EcArray.setRemove(results, thing.source);
                             if (this.$store.state.editor.private === true) {
                                 r = EcEncryptedValue.toEncryptedValue(r);
                             }
@@ -436,7 +521,7 @@ export default {
                         addedNew.push(r.shortId());
                         r["schema:dateCreated"] = new Date().toISOString();
 
-                        var child = copyDict[thing.id];
+                        var child = copyDict[thing.shortId()];
 
                         r.target = selectedCompetency.shortId();
                         r.source = child.shortId();
@@ -499,6 +584,7 @@ export default {
             }
         },
         appendCompetencies: function(results, newLink) {
+            this.addRelations();
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             var framework = this.$store.state.editor.framework;
             var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
@@ -530,7 +616,6 @@ export default {
                     if (EcArray.has(framework.competency, thing.source)) {
                         if (EcArray.has(framework.competency, thing.target)) {
                             framework.addRelation(thing.shortId());
-                            EcArray.setRemove(results, thing.source);
                         }
                     }
                 }
