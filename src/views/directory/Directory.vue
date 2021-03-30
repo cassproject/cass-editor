@@ -263,7 +263,7 @@ import common from '@/mixins/common.js';
 import editDirectory from '@/mixins/editDirectory.js';
 import SearchBar from '@/components/framework/SearchBar.vue';
 import MainLayout from '@/layouts/MainLayout.vue';
-import ModalTemplate from '@/components/ModalTemplate.vue';
+import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import AddNewDropdown from '@/components/AddNewDropdown.vue';
 export default {
     name: "Directory",

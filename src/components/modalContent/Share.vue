@@ -1,278 +1,277 @@
 <template>
-    <div class="modal-card">
-        <header class="modal-card-head has-background-primary">
-            <p class="modal-card-title">
-                <span class="title has-text-white">Share {{ objectType }}</span>
-                <br><span class="subtitle has-text-white has-text-weight-medium">
-                    Sharing settings for {{ frameworkName }} {{ objectType }}
-                </span>
-            </p>
-            <button
-                class="delete"
-                @click="$store.commit('app/closeModal')"
-                aria-label="close" />
-        </header>
-        <section
-            v-if="isProcessing"
-            class="modal-card-body">
-            <h2 class="header has-text-centered">
-                Processing request...
-            </h2>
-            <div class="section has-background-white has-text-centered">
-                <span class="icon is-large">
-                    <i class="fa fa-spinner fa-2x fa-pulse" />
-                </span>
-            </div>
-        </section>
-        <!-- confirm make private -->
-        <section
-            v-else-if="confirmMakePrivate"
-            class="modal-card-body">
-            <h2 class="header is-size-3">
-                Confirm make private
-            </h2>
-            <p>
-                Making this {{ objectType }} private means only those users/groups in
-                your access list will have the ability to read, write, or edit this {{ objectType }}.
-            </p>
-        </section>
-        <!-- confirm make public -->
-        <section
-            v-else-if="confirmMakePublic"
-            class="modal-card-body">
-            <h2 class="header is-size-3">
-                Confirm make public
-            </h2>
-            <p>
-                Making this {{ objectType }} public means anyone with a link can access and read this {{ objectType }}.
-                Only those with admin access will be able to edit or delete the {{ objectType }}.
-            </p>
-        </section>
-        <section
-            v-else-if="!confirmMakePublic && !confirmMakePrivate"
-            class="modal-card-body">
-            <div
-                class="columns box is-mobile is-multiline"
-                v-if="shareEnabled">
-                <!-- share link -->
-                <div class="column is-12">
-                    <h3 class="has-text-weight-bold">
-                        Shareable link
-                    </h3>
+    <modal-template
+        @close="closeModal"
+        :active="true"
+        type="info">
+        <template slot="modal-header">
+            <span class="title has-text-white">Share {{ objectType }}</span>
+            <br><span class="subtitle has-text-white has-text-weight-medium">
+                Sharing settings for {{ frameworkName }} {{ objectType }}
+            </span>
+        </template>
+        <template slot="modal-body">
+            <section
+                v-if="isProcessing"
+                class="modal-card-body">
+                <h2 class="header has-text-centered">
+                    Processing request...
+                </h2>
+                <div class="section has-background-white has-text-centered">
+                    <span class="icon is-large">
+                        <i class="fa fa-spinner fa-2x fa-pulse" />
+                    </span>
                 </div>
-                <div class="column">
-                    <p class="share-url has-text-weight-light">
-                        {{ shareableFrameworkInEditor }}
-                    </p>
-                </div>
-                <div class="column is-narrow">
-                    <div
-                        class="button is-outlined is-large is-primary"
-                        title="Copy URL to the clipboard."
-                        v-clipboard="shareableFrameworkInEditor"
-                        v-clipboard:success="successfulClip"
-                        v-clipboard:error="errorClip">
-                        <i
-                            v-if="clipStatus === 'ready'"
-                            class="fa fa-copy" />
-                        <i
-                            v-if="clipStatus === 'success'"
-                            class="fa fa-check" />
-                        <i
-                            v-if="clipStatus === 'error'"
-                            class="fa fa-times" />
-                    </div>
-                </div>
-            </div>
-            <div
-                class="columns is-multiline is-mobile"
-                v-if="canEditFramework && userManagementEnabled">
-                <!-- end share link -->
-                <div v-if="ownerCount === 0">
-                    To add users or groups or to make your {{ objectType }} private, first add yourself as an owner.
-                    <button @click="makeCurrentUserAnOwner">
-                        Make me an owner
-                    </button>
-                </div>
-                <!-- input new groups or users -->
+            </section>
+            <!-- confirm make private -->
+            <section
+                v-else-if="confirmMakePrivate"
+                class="modal-card-body">
+                <h2 class="header is-size-3">
+                    Confirm make private
+                </h2>
+                <p>
+                    Making this {{ objectType }} private means only those users/groups in
+                    your access list will have the ability to read, write, or edit this {{ objectType }}.
+                </p>
+            </section>
+            <!-- confirm make public -->
+            <section
+                v-else-if="confirmMakePublic"
+                class="modal-card-body">
+                <h2 class="header is-size-3">
+                    Confirm make public
+                </h2>
+                <p>
+                    Making this {{ objectType }} public means anyone with a link can access and read this {{ objectType }}.
+                    Only those with admin access will be able to edit or delete the {{ objectType }}.
+                </p>
+            </section>
+            <section
+                v-else-if="!confirmMakePublic && !confirmMakePrivate"
+                class="modal-card-body">
                 <div
-                    class="column is-12"
-                    v-else>
-                    <div class="columns is-vcentered is-mobile">
-                        <div class="column">
-                            <label class="label">Add users or groups</label>
-                        </div>
+                    class="columns box is-mobile is-multiline"
+                    v-if="shareEnabled">
+                    <!-- share link -->
+                    <div class="column is-12">
+                        <h3 class="has-text-weight-bold">
+                            Shareable link
+                        </h3>
+                    </div>
+                    <div class="column">
+                        <p class="share-url has-text-weight-light">
+                            {{ shareableFrameworkInEditor }}
+                        </p>
+                    </div>
+                    <div class="column is-narrow">
                         <div
-                            class="column is-narrow"
-                            v-if="loggedIn">
-                            <div class="buttons has-addons is-pulled-right">
-                                <button
-                                    @click="handlePublicClick"
-                                    :class="{'is-outlined': privateFramework}"
-                                    class="button is-small is-link">
-                                    Public
-                                </button>
-                                <button
-                                    @click="handlePrivateClick"
-                                    :class="{'is-outlined': !privateFramework}"
-                                    class="button is-small is-link">
-                                    Private
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="field is-grouped">
-                        <div class="control is-expanded share auto-complete__control">
-                            <input
-                                @blur="closeAutoComplete"
-                                type="search"
-                                placeholder="search"
-                                class="input share is-fullwidth"
-                                v-model="search"
-                                @input="filterResults">
-                            <div
-                                v-show="isOpenAutocomplete"
-                                class="auto">
-                                <ul>
-                                    <li
-                                        v-for="(result, i) in filtered"
-                                        :key="i"
-                                        @mousedown="selectUserOrGroup(result)">
-                                        {{ result.name + " (" + result.email + ")" }}
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="control">
-                            <div class="select is-dark">
-                                <select v-model="selectViewOrAdmin">
-                                    <option
-                                        v-for="(option, index) in viewOptions"
-                                        :key="index"
-                                        :value="option.value"
-                                        :disabled="option.disabled"
-                                        :title="option.title">
-                                        {{ option.label }}
-                                    </option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="control is-narrow">
-                            <div
-                                @click="saveSettings"
-                                class="button is-outlined is-primary">
-                                <span class="icon">
-                                    <i class="fa fa-save" />
-                                </span>
-                                <span>Add Selection</span>
-                            </div>
+                            class="button is-outlined is-large is-primary"
+                            title="Copy URL to the clipboard."
+                            v-clipboard="shareableFrameworkInEditor"
+                            v-clipboard:success="successfulClip"
+                            v-clipboard:error="errorClip">
+                            <i
+                                v-if="clipStatus === 'ready'"
+                                class="fa fa-copy" />
+                            <i
+                                v-if="clipStatus === 'success'"
+                                class="fa fa-check" />
+                            <i
+                                v-if="clipStatus === 'error'"
+                                class="fa fa-times" />
                         </div>
                     </div>
                 </div>
-                <!-- end input new users or groups -->
-                <!-- begin list of access -->
                 <div
-                    class="column is-12"
-                    v-if="canEditFramework">
+                    class="columns is-multiline is-mobile"
+                    v-if="canEditFramework && userManagementEnabled">
+                    <!-- end share link -->
+                    <div v-if="ownerCount === 0">
+                        To add users or groups or to make your {{ objectType }} private, first add yourself as an owner.
+                        <button @click="makeCurrentUserAnOwner">
+                            Make me an owner
+                        </button>
+                    </div>
+                    <!-- input new groups or users -->
                     <div
-                        class="table-container"
-                        v-if="groups.length>0">
-                        <table class="table is-fullwidth">
-                            <thead>
-                                <tr>
-                                    <th><abbr title="Username">Group Name</abbr></th>
-                                    <th><abbr title="Access">View</abbr></th>
-                                    <th><abbr title="Delete">Delete</abbr></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="group in groups"
-                                    :key="group">
-                                    <td> {{ group.header }}</td>
-                                    <td>
-                                        <div class="select is-small is-primary">
-                                            <select
-                                                v-model="group.view"
-                                                @change="group.changed=true">
-                                                <option
-                                                    :value="option.value"
-                                                    v-for="option in viewOptions"
-                                                    :key="option">
-                                                    {{ option.label }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div
-                                            class="button is-text is-small has-text-danger"
-                                            @click="removeOwnerOrReader(group, 'group')"
-                                            :disabled="group.currentUser && numGroupsAsOwner === 1 && group.view == 'admin' && cantRemoveCurrentUserAsOwner && !userIsOwner">
-                                            <div class="icon">
-                                                <i class="fa fa-trash" />
+                        class="column is-12"
+                        v-else>
+                        <div class="columns is-vcentered is-mobile">
+                            <div class="column">
+                                <label class="label">Add users or groups</label>
+                            </div>
+                            <div
+                                class="column is-narrow"
+                                v-if="loggedIn">
+                                <div class="buttons has-addons is-pulled-right">
+                                    <button
+                                        @click="handlePublicClick"
+                                        :class="{'is-outlined': privateFramework}"
+                                        class="button is-small is-link">
+                                        Public
+                                    </button>
+                                    <button
+                                        @click="handlePrivateClick"
+                                        :class="{'is-outlined': !privateFramework}"
+                                        class="button is-small is-link">
+                                        Private
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="field is-grouped">
+                            <div class="control is-expanded share auto-complete__control">
+                                <input
+                                    @blur="closeAutoComplete"
+                                    type="search"
+                                    placeholder="search"
+                                    class="input share is-fullwidth"
+                                    v-model="search"
+                                    @input="filterResults">
+                                <div
+                                    v-show="isOpenAutocomplete"
+                                    class="auto">
+                                    <ul>
+                                        <li
+                                            v-for="(result, i) in filtered"
+                                            :key="i"
+                                            @mousedown="selectUserOrGroup(result)">
+                                            {{ result.name + " (" + result.email + ")" }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="control">
+                                <div class="select is-dark">
+                                    <select v-model="selectViewOrAdmin">
+                                        <option
+                                            v-for="(option, index) in viewOptions"
+                                            :key="index"
+                                            :value="option.value"
+                                            :disabled="option.disabled"
+                                            :title="option.title">
+                                            {{ option.label }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="control is-narrow">
+                                <div
+                                    @click="saveSettings"
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-save" />
+                                    </span>
+                                    <span>Add Selection</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- end input new users or groups -->
+                    <!-- begin list of access -->
+                    <div
+                        class="column is-12"
+                        v-if="canEditFramework">
+                        <div
+                            class="table-container"
+                            v-if="groups.length>0">
+                            <table class="table is-fullwidth">
+                                <thead>
+                                    <tr>
+                                        <th><abbr title="Username">Group Name</abbr></th>
+                                        <th><abbr title="Access">View</abbr></th>
+                                        <th><abbr title="Delete">Delete</abbr></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="group in groups"
+                                        :key="group">
+                                        <td> {{ group.header }}</td>
+                                        <td>
+                                            <div class="select is-small is-primary">
+                                                <select
+                                                    v-model="group.view"
+                                                    @change="group.changed=true">
+                                                    <option
+                                                        :value="option.value"
+                                                        v-for="option in viewOptions"
+                                                        :key="option">
+                                                        {{ option.label }}
+                                                    </option>
+                                                </select>
                                             </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                                        </td>
+                                        <td>
+                                            <div
+                                                class="button is-text is-small has-text-danger"
+                                                @click="removeOwnerOrReader(group, 'group')"
+                                                :disabled="group.currentUser && numGroupsAsOwner === 1 && group.view == 'admin' && cantRemoveCurrentUserAsOwner && !userIsOwner">
+                                                <div class="icon">
+                                                    <i class="fa fa-trash" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!-- user table -->
+                    <div
+                        class="column is-12"
+                        v-if="canEditFramework">
+                        <div
+                            class="table-container"
+                            v-if="users.length>0">
+                            <table class="table is-fullwidth">
+                                <thead>
+                                    <tr>
+                                        <th><abbr title="User name">User Name</abbr></th>
+                                        <th><abbr title="User email">User Email</abbr></th>
+                                        <th><abbr title="Access">View</abbr></th>
+                                        <th><abbr title="Delete">Delete</abbr></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        v-for="user in users"
+                                        :key="user">
+                                        <td> {{ user.header }}</td>
+                                        <td> {{ user.email }}</td>
+                                        <td>
+                                            <div class="select is-primary is-small">
+                                                <select
+                                                    v-model="user.view"
+                                                    @change="user.changed=true;saveSettings()">
+                                                    <option
+                                                        :value="option.value"
+                                                        v-for="option in viewOptions"
+                                                        :key="option">
+                                                        {{ option.label }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div
+                                                class="button is-text is-small has-text-danger"
+                                                @click="removeOwnerOrReader(user, 'user')"
+                                                :disabled="cantRemoveCurrentUserAsOwner && user.currentUser && !numGroupsAsOwner">
+                                                <div class="icon">
+                                                    <i class="fa fa-trash" />
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
-                <!-- user table -->
-                <div
-                    class="column is-12"
-                    v-if="canEditFramework">
-                    <div
-                        class="table-container"
-                        v-if="users.length>0">
-                        <table class="table is-fullwidth">
-                            <thead>
-                                <tr>
-                                    <th><abbr title="User name">User Name</abbr></th>
-                                    <th><abbr title="User email">User Email</abbr></th>
-                                    <th><abbr title="Access">View</abbr></th>
-                                    <th><abbr title="Delete">Delete</abbr></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="user in users"
-                                    :key="user">
-                                    <td> {{ user.header }}</td>
-                                    <td> {{ user.email }}</td>
-                                    <td>
-                                        <div class="select is-primary is-small">
-                                            <select
-                                                v-model="user.view"
-                                                @change="user.changed=true;saveSettings()">
-                                                <option
-                                                    :value="option.value"
-                                                    v-for="option in viewOptions"
-                                                    :key="option">
-                                                    {{ option.label }}
-                                                </option>
-                                            </select>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div
-                                            class="button is-text is-small has-text-danger"
-                                            @click="removeOwnerOrReader(user, 'user')"
-                                            :disabled="cantRemoveCurrentUserAsOwner && user.currentUser && !numGroupsAsOwner">
-                                            <div class="icon">
-                                                <i class="fa fa-trash" />
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <footer class="modal-card-foot has-background-light">
+            </section>
+        </template>
+        <template slot="modal-foot">
             <div
                 v-if="!confirmMakePrivate && !confirmMakePublic"
                 class="buttons is-spaced">
@@ -323,16 +322,20 @@
                     </span><span>confirm make public</span>
                 </div>
             </div>
-        </footer>
-    </div>
+        </template>
+    </modal-template>
 </template>
 
 <script>
 import {cassUtil} from '@/mixins/cassUtil.js';
+import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'ShareModal',
     props: {
         isActive: Boolean
+    },
+    components: {
+        ModalTemplate
     },
     mixins: [ cassUtil ],
     data() {

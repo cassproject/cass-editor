@@ -1,45 +1,40 @@
 <template>
-    <div class="modal-card comment-modal">
-        <header class="modal-card-head has-background-danger">
-            <p class="modal-card-title">
-                <span class="title has-text-white">
-                    Are you sure?
-                </span>
-            </p>
-            <button
-                class="delete"
-                @click="closeModal"
-                aria-label="close" />
-        </header>
-        <section class="modal-card-body comment-modal__details">
-            <h3 class="has-text-weight-bold is-size-4">
+    <modal-template
+        :active="true"
+        type="danger"
+        @close="closeModal">
+        <template slot="modal-header">
+            <span class="title has-text-white">
+                Are you sure?
+            </span>
+        </template>
+        <template slot="modal-body">
+            <h3 class="title is-size-4">
                 <span class="">Delete the following directory</span>
             </h3>
             <p
-                class="comment-modal__details__competency">
+                class="py-2">
                 {{ directory.name }}
             </p>
-        </section>
-        <section class="modal-card-body pt-0 mt-0">
             <p>
                 You are about to delete the above directory. <b>This action is not reversable.</b>
                 Deleting this directory will delete all of its
                 contents and make it unavailable to others who might be using it.
             </p>
-        </section>
-        <section class="modal-card-body pt-0 mt-0">
-            <div class="field">
-                <div class="label">
-                    <label>Type the name of the directory to enable this action.</label>
-                </div>
-                <div class="control">
-                    <input
-                        v-model="typedInName"
-                        class="input">
+            <div class="py-2">
+                <div class="field">
+                    <div class="label">
+                        <label>Type the name of the directory to enable this action.</label>
+                    </div>
+                    <div class="control">
+                        <input
+                            v-model="typedInName"
+                            class="input">
+                    </div>
                 </div>
             </div>
-        </section>
-        <footer class="modal-card-foot">
+        </template>
+        <template slot="modal-foot">
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
@@ -53,11 +48,12 @@
                     Delete Directory
                 </button>
             </div>
-        </footer>
-    </div>
+        </template>
+    </modal-template>
 </template>
 
 <script>
+import ModalTemplate from './ModalTemplate.vue';
 
 import {cassUtil} from '../../mixins/cassUtil';
 import common from '@/mixins/common.js';
@@ -65,6 +61,9 @@ import common from '@/mixins/common.js';
 export default {
     mixins: [cassUtil, common],
     name: 'DeleteDirectory',
+    components: {
+        ModalTemplate
+    },
     data() {
         return {
             typedInName: '',

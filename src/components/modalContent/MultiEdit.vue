@@ -1,61 +1,60 @@
 <template>
-    <div class="modal-card lode__thing-editing multi-edit">
-        <header class="modal-card-head has-background-primary">
-            <h3 class="modal-card-title has-text-white is-size-3">
-                Edit Multiple Competencies
-            </h3>
-            <button
-                class="delete"
-                aria-label="close"
-                @click="$store.commit('app/closeModal')" />
-        </header>
-        <section
-            v-if="isProcessing"
-            class="modal-card-body">
-            <div class="section has-text-centered">
-                <span class="icon is-large">
-                    <i class="fa fa-spinner fa-2x fa-pulse" />
-                </span>
-            </div>
-        </section>
-        <section
-            class="modal-card-body"
-            v-else-if="!isSearching">
-            <div
-                v-for="(item,idx) in addedPropertiesAndValues"
-                :key="item">
-                <AddProperty
-                    :profile="profile"
-                    :editingMultipleCompetencies="true"
-                    @property-string-updated="propertyStringUpdated"
-                    :idx="idx"
-                    @is-searching="isSearching=true"
-                    :addedPropertiesAndValuesFromSearching="item" />
-                <span v-if="item['error']">
-                    {{ item['error'] }}
-                </span>
-            </div>
-            <!-- after adding one property, show button to add another HIDING FOR NOW
-            <div class="buttons is-right">
-                <div class="button is-small is-outlined is-primary">
-                    <span class="icon">
-                        <i class="fa fa-plus" />
+    <modal-template
+        :active="true"
+        type="info"
+        @close="closeModal">
+        <template slot="modal-header">
+            Edit Multiple Competencies
+        </template>
+        <template slot="modal-body">
+            <section
+                v-if="isProcessing"
+                class="modal-card-body">
+                <div class="section has-text-centered">
+                    <span class="icon is-large">
+                        <i class="fa fa-spinner fa-2x fa-pulse" />
                     </span>
-                    <span @click="addAnotherProperty">Add another property</span>
                 </div>
-            </div> -->
-            <p
-                class="help is-danger"
-                v-if="errorMessage !== []">
-                {{ this.errorMessage[0] }}
-            </p>
-        </section>
-        <section
-            v-if="isSearching"
-            class="modal-card-body">
-            <Search view="multi-edit" />
-        </section>
-        <footer class="modal-card-foot">
+            </section>
+            <section
+                class="modal-card-body"
+                v-else-if="!isSearching">
+                <div
+                    v-for="(item,idx) in addedPropertiesAndValues"
+                    :key="item">
+                    <AddProperty
+                        :profile="profile"
+                        :editingMultipleCompetencies="true"
+                        @property-string-updated="propertyStringUpdated"
+                        :idx="idx"
+                        @is-searching="isSearching=true"
+                        :addedPropertiesAndValuesFromSearching="item" />
+                    <span v-if="item['error']">
+                        {{ item['error'] }}
+                    </span>
+                </div>
+                <!-- after adding one property, show button to add another HIDING FOR NOW
+                <div class="buttons is-right">
+                    <div class="button is-small is-outlined is-primary">
+                        <span class="icon">
+                            <i class="fa fa-plus" />
+                        </span>
+                        <span @click="addAnotherProperty">Add another property</span>
+                    </div>
+                </div> -->
+                <p
+                    class="help is-danger"
+                    v-if="errorMessage !== []">
+                    {{ this.errorMessage[0] }}
+                </p>
+            </section>
+            <section
+                v-if="isSearching"
+                class="modal-card-body">
+                <Search view="multi-edit" />
+            </section>
+        </template>
+        <template slot="modal-foot">
             <div class="buttons is-spaced">
                 <button
                     @click="onCancel"
@@ -87,17 +86,19 @@
                     <span>Add Selected</span>
                 </div>
             </template>
-        </footer>
-    </div>
+        </template>
+    </modal-template>
 </template>
 <script>
 import AddProperty from '@/lode/components/AddProperty.vue';
 import Search from './Search.vue';
+import ModalTemplate from '../ModalTemplate.vue';
 export default {
     name: 'MultiEdit',
     components: {
         AddProperty,
-        Search
+        Search,
+        ModalTemplate
     },
     props: {
         content: Object

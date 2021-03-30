@@ -9,6 +9,10 @@
                 class="modal-card-head is-size-4"
                 :class="['has-background-' + type, 'has-text-' + fontColor, ]">
                 <slot name="modal-header" />
+                <button
+                    class="delete is-pulled-right"
+                    @click="$emit('close')"
+                    aria-label="close" />
             </header>
             <div class="modal-card-body has-text-dark">
                 <slot name="modal-body" />
