@@ -31,7 +31,7 @@
                         <div
                             class="check-radio-column column is-narrow is-vcentered">
                             <div
-                                v-if="(canEdit && view !== 'crosswalk' && view !== 'importPreview' && view !== 'importLight') || queryParams.select"
+                                v-if="(canEdit && view !== 'crosswalk' && view !== 'importPreview' && view !== 'importLight') || queryParams.select || view === 'competencySearch'"
                                 class="field">
                                 <input
                                     class="is-checkradio"

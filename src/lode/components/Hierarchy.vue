@@ -101,7 +101,7 @@
                 <!-- MULTI EDIT BUTTONS -->
                 <div
                     class="column is-narrow"
-                    v-if="view !== 'crosswalk'">
+                    v-if="view !== 'crosswalk' && view !== 'competencySearch'">
                     <div
                         class="buttons">
                         <div
