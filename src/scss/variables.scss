@@ -95,9 +95,6 @@ $body-font-size: 1rem;
 
 // generic variables need to update before import 
 
-$cass-primary:#4F99A8;
-$cass-primary-down: tint($cass-primary, 50%);
-$cass-primary-up: shade($cass-primary, 50%);
 
 $cass-error: #D74C44;
 $cass-success: #68C8DB;
