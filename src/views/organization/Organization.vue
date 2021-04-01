@@ -25,7 +25,7 @@
     </div>
 </template>
 <script>
-import Thing from '@/lode/components/lode/Thing.vue';
+import Thing from '@/lode/components/Thing.vue';
 import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
 export default {

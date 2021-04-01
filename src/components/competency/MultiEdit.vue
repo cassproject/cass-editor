@@ -91,7 +91,7 @@
     </div>
 </template>
 <script>
-import AddProperty from '@/lode/components/lode/AddProperty.vue';
+import AddProperty from '@/lode/components/AddProperty.vue';
 import Search from './Search.vue';
 export default {
     name: 'MultiEdit',

@@ -29,7 +29,8 @@ const state = {
         quickFilters: [],
         applySearchTo: [],
         sortResults: [],
-        refreshSearch: false
+        refreshSearch: false,
+        searchFrameworksInCompetencySearch: false
     },
     modal: {
         framework: '',
@@ -289,6 +290,9 @@ const mutations = {
     },
     editDirectory: function(state, bool) {
         state.directories.editDirectory = bool;
+    },
+    searchFrameworksInCompetencySearch: function(state, bool) {
+        state.frameworks.searchFrameworksInCompetencySearch = bool;
     }
 };
 const actions = {
@@ -475,6 +479,9 @@ const getters = {
     },
     editDirectory: state => {
         return state.directories.editDirectory;
+    },
+    searchFrameworksInCompetencySearch: state => {
+        return state.frameworks.searchFrameworksInCompetencySearch;
     }
 };
 
