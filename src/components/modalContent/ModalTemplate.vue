@@ -18,7 +18,8 @@
                 <slot name="modal-body" />
             </div>
             <footer class="modal-card-foot has-background-white">
-                <slot name="modal-foot" />
+                <slot name="modal-foot">
+                </slot>
             </footer>
         </div>
     </div>

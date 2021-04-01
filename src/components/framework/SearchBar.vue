@@ -58,38 +58,6 @@
                 </div>
             </div>
         </div>
-        <!-- info tags to remove filters
-        <div
-            v-if="filterSet === 'all' &&
-                (filteredQuickFilters.length > 0 || filteredSearchTo.length>0 || sortResults.label)"
-            class="">
-            <span
-                v-for="filter in filteredQuickFilters"
-                :key="filter"
-                class="tag is-dark">
-                {{ filter.label }}
-                <button
-                    @click="removeFilter('quickFilters', filter)"
-                    class="delete is-small" />
-            </span>
-            <span
-                v-if="sortResults.label"
-                class="tag is-dark">
-                {{ sortResults.label }}
-                <button
-                    @click="clearSortBy"
-                    class="delete is-small" />
-            </span>
-            <span
-                v-for="filter in filteredSearchTo"
-                :key="filter"
-                class="tag is-dark">
-                {{ filter.label }}
-                <button
-                    @click="removeFilter('applySearchTo', filter)"
-                    class="delete is-small" />
-            </span>
-        </div> -->
         <!-- to do connect basic filters to list results -->
         <div v-if="filterSet === 'basic'">
             <div class="field is-grouped">
@@ -280,9 +248,11 @@ export default {
         },
         searchFrameworks: {
             get() {
+                console.log("hello");
                 return this.$store.getters['app/searchFrameworksInCompetencySearch'];
             },
             set(val) {
+                console.log("val", val);
                 this.$store.commit("app/searchFrameworksInCompetencySearch", val);
             }
         }

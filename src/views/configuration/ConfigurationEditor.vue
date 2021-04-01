@@ -1,10 +1,4 @@
 <template>
-        <template slot="modal-header">
-        </template>
-        <template slot="modal-body">
-        </template>
-        <template slot="modal-foot">
-        </template>
     <div
         id="configuration"
         :class="[{'modal-card': view === 'dynamic-modal'}, {'section': view !== 'dynamic-modal'}]">

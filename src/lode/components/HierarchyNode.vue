@@ -817,7 +817,7 @@ export default {
         },
         clickToSearch: function() {
             this.$store.commit('lode/competencySearchModalOpen', true);
-            this.$store.commit('app/showModal', {component: 'Search'});
+            this.$store.commit('app/showModal', {component: 'SearchModal'});
             this.$store.commit('lode/searchType', "Competency");
             this.$store.commit('lode/copyOrLink', true);
             if (this.$store.state.editor) {

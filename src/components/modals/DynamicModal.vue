@@ -24,14 +24,14 @@ returns content.
 <script>
 import Share from '@/components/modalContent/Share.vue';
 import MultiEdit from '@/components/modalContent/MultiEdit.vue';
-import Search from '@/components/modalContent/Search.vue';
+import SearchModal from '@/components/modalContent/SearchModal.vue';
 import Single from '@/components/modalContent/Single.vue';
 import AddComment from '@/components/modalContent/AddComment.vue';
 import AddDirectory from '@/components/modalContent/AddDirectory.vue';
 import DeleteDirectoryConfirm from '@/components/modalContent/DeleteDirectoryConfirm.vue';
 import DeleteCommentConfirm from '@/components/modalContent/DeleteCommentConfirm.vue';
 import SupportedImportDetails from '@/components/modalContent/SupportedImportDetails.vue';
-import Configuration from '@/components/modalContent/ConfigurationEditor.vue';
+import Configuration from '@/views/configuration/ConfigurationEditor.vue';
 
 export default {
     name: 'DynamicModal',
@@ -48,7 +48,7 @@ export default {
     components: {
         Share,
         MultiEdit,
-        Search,
+        SearchModal,
         AddComment,
         DeleteCommentConfirm,
         DeleteDirectoryConfirm,

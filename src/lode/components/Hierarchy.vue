@@ -1069,7 +1069,7 @@ export default {
                 selectedCompetency: null,
                 searchType: 'Competency',
                 copyOrLink: true,
-                component: 'Search'
+                component: 'SearchModal'
             };
             this.$emit('search-things', payload);
             this.$store.commit('lode/competencySearchModalOpen', true);

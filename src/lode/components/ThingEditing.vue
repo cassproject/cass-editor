@@ -295,7 +295,8 @@
 import {mapState} from 'vuex';
 import Property from './Property.vue';
 import AddProperty from './AddProperty.vue';
-import Search from '@/components/competency/Search.vue';
+import Search from '@/components/framework/Search.vue';
+// import SearchModal from '@/components/modalContent/SearchModal.vue';
 import common from '@/mixins/common.js';
 export default {
     // Thing represents a JSON-LD object. Does not have to be based on http://schema.org/Thing.
@@ -338,6 +339,7 @@ export default {
         Property,
         AddProperty,
         Search
+        // SearchModal
     },
     mixins: [ common ],
     data: function() {

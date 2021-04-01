@@ -91,8 +91,8 @@
 </template>
 <script>
 import AddProperty from '@/lode/components/AddProperty.vue';
-import Search from './Search.vue';
-import ModalTemplate from '../ModalTemplate.vue';
+import Search from '../framework/Search.vue';
+import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'MultiEdit',
     components: {

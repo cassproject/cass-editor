@@ -5,74 +5,33 @@ with some adjustments to the modal-card classes to just card, this could be
 placed anywhere in a structured html element such as a <section> or a <div>
 -->
 <template>
-    <div :class="[{'search-modal modal-card': view !== 'thing-editing' && view !== 'multi-edit'}, {'columns is-multiline': view === 'thing-editing' || view === 'multi-edit'}]">
-        <header
-            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
-            :class="{'modal-card-head has-background-primary': view !== 'thing-editing' && view !== 'multi-edit'}">
-            <p class="modal-card-title">
-                <span class="title has-text-white">Search for {{ searchType }}</span>
-                <br><span
-                    class="subtitle has-text-white"
-                    v-if="copyOrLink">
-                    {{ frameworkName }}
-                </span>
-                <span
-                    v-else
-                    class="subtitle has-text-white">
-                    {{ nameOfSelectedCompetency }}
-                </span>
-            </p>
-            <button
-                class="delete"
-                @click="resetModal();"
-                aria-label="close" />
-        </header>
-        <section
-            v-if="(view !== 'thing-editing' && view !== 'multi-edit') && !selectedFramework"
-            class="modal-card-body">
-            <div class="column is-12">
-                <SearchBar
-                    filterSet="basic"
-                    :searchType="searchType"
-                    :allowShowFrameworks="true" />
-            </div>
-            <div class="column is-12">
-                <List
-                    v-if="$store.state.lode.competencySearchModalOpen"
-                    :type="searchTypeToPassToList"
-                    view="search"
-                    :repo="repo"
-                    :click="select"
-                    :searchOptions="searchOptions"
-                    :paramObj="paramObj"
-                    :disallowEdits="true"
-                    :selectingCompetency="true"
-                    :selected="selectedIds"
-                    :displayFirst="displayFirst" />
-            </div>
-        </section>
-        <template v-if="view === 'thing-editing' || view === 'multi-edit'">
-            <div class="column is-12">
-                <SearchBar
-                    filterSet="basic"
-                    :searchType="searchType" />
-            </div>
-            <div class="column is-12">
-                <List
-                    v-if="$store.state.lode.competencySearchModalOpen"
-                    :type="searchType"
-                    view="search"
-                    :repo="repo"
-                    :click="select"
-                    :searchOptions="searchOptions"
-                    :paramObj="paramObj"
-                    :disallowEdits="true"
-                    :selectingCompetency="true"
-                    :selected="selectedIds"
-                    :displayFirst="displayFirst"
-                    :idsNotPermittedInSearch="idsNotPermittedInSearch" />
-            </div>
-        </template>
+    <div
+        class="columns is-multiline">
+        <div
+            class="column is-12"
+            v-if="!selectedFramework">
+            <SearchBar
+                filterSet="basic"
+                :allowShowFrameworks="allowShowFrameworks"
+                :searchType="searchType" />
+        </div>
+        <div
+            v-if="!selectedFramework"
+            class="column is-12">
+            <List
+                v-if="$store.state.lode.competencySearchModalOpen"
+                :type="searchTypeToPassToList"
+                view="search"
+                :repo="repo"
+                :click="select"
+                :searchOptions="searchOptions"
+                :paramObj="paramObj"
+                :disallowEdits="true"
+                :selectingCompetency="true"
+                :selected="selectedIds"
+                :displayFirst="displayFirst"
+                :idsNotPermittedInSearch="idsNotPermittedInSearch" />
+        </div>
         <div
             v-if="selectedFramework && !hierarchyLoaded">
             <span class="icon is-large">
@@ -107,44 +66,6 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 properties="primary"
                 @selected-array="selectedArrayEvent" />
         </div>
-        <footer
-            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
-            class="modal-card-foot">
-            <div class="buttons">
-                <button
-                    class="button is-outlined is-dark"
-                    @click="resetModal();">
-                    <span class="icon">
-                        <i class="fa fa-times" />
-                    </span>
-                    <span>cancel</span>
-                </button>
-                <button
-                    class="button is-outlined is-primary"
-                    v-if="copyOrLink"
-                    :disabled="!selectedIds || selectedIds.length === 0"
-                    @click="copyCompetencies(selectedIds); resetModal();">
-                    <span class="icon">
-                        <i class="fa fa-copy" />
-                    </span>
-                    <span>
-                        Copy {{ searchType }}
-                    </span>
-                </button>
-                <button
-                    class="button is-outlined is-primary"
-                    v-if="copyOrLink"
-                    :disabled="!selectedIds || selectedIds.length === 0"
-                    @click="appendCompetencies(selectedIds); resetModal();">
-                    <span class="icon">
-                        <i class="fa fa-link" />
-                    </span>
-                    <span>
-                        Link {{ searchType }}
-                    </span>
-                </button>
-            </div>
-        </footer>
     </div>
 </template>
 
@@ -166,6 +87,10 @@ export default {
         idsNotPermittedInSearch: {
             type: Array,
             default: null
+        },
+        allowShowFrameworks: {
+            type: Boolean,
+            default: false
         }
     },
     components: {List, SearchBar, Hierarchy, Thing},
