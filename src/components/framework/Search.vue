@@ -672,7 +672,7 @@ export default {
 
         .list-ul__item:hover {
             padding-top: .5rem;
-            background-color: $cass-lightest;
+            background-color: var(--light-color);
         }
         .list-ul__item {
             margin-top: .25rem;

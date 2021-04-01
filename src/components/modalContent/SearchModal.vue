@@ -1,6 +1,7 @@
 <template>
     <modal-template
         @close="closeModal"
+        content="search"
         :active="true">
         <template slot="modal-header">
             <p class="modal-card-title">
@@ -9,11 +10,6 @@
                     class="subtitle has-text-white"
                     v-if="copyOrLink">
                     {{ frameworkName }}
-                </span>
-                <span
-                    v-else
-                    class="subtitle has-text-white">
-                    {{ nameOfSelectedCompetency }}
                 </span>
             </p>
         </template>
@@ -83,20 +79,18 @@ export default {
             selectedCompetency: state => state.editor.selectedCompetency,
             framework: state => state.editor.framework
         }),
-        nameOfSelectedCompetency: function() {
-            if (this.selectedCompetency && this.selectedCompetency.name) {
-                return this.selectedCompetency.getName();
-            } else if (this.selectedCompetency) {
-                return Thing.getDisplayStringFrom(this.selectedCompetency["skos:prefLabel"]);
-            } else {
-                return '';
-            }
-        },
         copyOrLink: function() {
             return this.$store.state.lode.copyOrLink;
         },
         searchType: function() {
             return this.$store.state.lode.searchType;
+        },
+        frameworkName: function() {
+            if (this.framework && this.framework.context) {
+                return this.framework.getName();
+            } else {
+                return '';
+            }
         }
     },
     methods: {
@@ -104,16 +98,22 @@ export default {
             this.$store.commit('app/closeModal');
             this.selectedIds = [];
         },
-        frameworkName: function() {
-            if (this.framework) {
-                return this.framework.getName();
-            } else {
-                return '';
-            }
-        },
         closeModal: function() {
             this.$store.commit('app/closeModal');
         }
     }
 };
 </script>
+
+<style scoped lang="scss">
+.cass-editor__modal--search {
+    .hierarchy-item__buttons {
+        display: none !important;
+    }
+    .lode__type {
+        font-size: 1rem;
+        color: var(--dark);
+    }
+}
+
+</style>

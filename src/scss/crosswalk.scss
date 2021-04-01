@@ -437,7 +437,7 @@
                 display: none;
             }
             li.list-ul__item:hover {
-                background-color: $cass-lightest;
+                background-color: var(--light-color);
                 .arrow-icon {
                     visibility:visible;
                 }

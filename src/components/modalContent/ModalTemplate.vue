@@ -1,8 +1,8 @@
 <template>
     <div
-        class="modal"
+        class="modal cass-editor___modal"
         id="cass-modal"
-        :class="[{'is-active': active}, 'is-' + size]">
+        :class="[{'is-active': active}, 'is-' + size, 'cass-editor__modal--' + content]">
         <div class="modal-background" />
         <div class="modal-card">
             <header
@@ -11,7 +11,7 @@
                 <slot name="modal-header" />
                 <button
                     class="delete is-pulled-right"
-                    @click="$emit('close')"
+                    @click="$store.commit('app/closeModal')"
                     aria-label="close" />
             </header>
             <div class="modal-card-body has-text-dark">
@@ -45,6 +45,10 @@ export default {
         size: {
             type: Boolean,
             default: false
+        },
+        content: {
+            defualt: 'default',
+            type: String
         }
     },
     data() {
@@ -57,5 +61,11 @@ export default {
 </script>
 
 <style lang="scss">
+.cass-editor__modal {
+    .hierarchy-item__buttons {
+        display: none !important;
+    }
+}
 
 </style>
+
