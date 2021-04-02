@@ -7,14 +7,13 @@
             Manage configuration
         </template>
         <template slot="modal-body">
-             <p>
+            <p>
                 Choose a configuration to apply to this framework below.  You can view and manage details about
                 your available configurations in <router-link to="/config">
                     configuration management
                 </router-link>.
             </p>
-            <p>
-            </p>
+            <p />
         </template>
         <template slot="modal-foot">
             <div class="buttons is-spaced">

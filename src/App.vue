@@ -1319,7 +1319,7 @@ export default {
         }
     }
     .cass-modal {
-        z-index:100;
+        z-index:130;
     }
 
 </style>

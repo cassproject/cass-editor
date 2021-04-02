@@ -35,65 +35,25 @@
             class="container"
             v-if="!configBusy">
             <div class="section">
-                    <h3
-                        class="title">
-                        Configuration
-                    </h3>
-                    <p v-if="configViewMode.equals('list')">
-                        Configurations control the way your frameworks appear in the editor, as well as what properties, relationships,
-                        and in some cases value types of properties and relationships you can add to your framework. If a browser configuration
-                        is not set then the system will default to your instance default. If you are the configuration administrator you will be
-                        able to manage the property settings and change which instance is the default.  Otherwise contact your CAT administrator.
-                    </p>
+                <h3
+                    class="title">
+                    Configuration
+                </h3>
+                <p v-if="configViewMode.equals('list')">
+                    Configurations control the way your frameworks appear in the editor, as well as what properties, relationships,
+                    and in some cases value types of properties and relationships you can add to your framework. If a browser configuration
+                    is not set then the system will default to your instance default. If you are the configuration administrator you will be
+                    able to manage the property settings and change which instance is the default.  Otherwise contact your CAT administrator.
+                </p>
             </div>
-            <div
-                v-if="configViewMode.equals('list')"
-                class="table-container">
-                <table class="table is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th><abbr title="Name">name</abbr></th>
-                            <th v-if="view !=='dynamic-modal'">
-                                <abbr title="Description">description</abbr>
-                            </th>
-                            <th v-if="view !=='dynamic-modal'">
-                                <abbr title="Instance Default">instance default</abbr>
-                            </th>
-                            <th v-if="view !=='dynamic-modal'">
-                                <abbr title="Browser Default" />browser default
-                            </th>
-                            <th v-else>
-                                <abbr title="Framework Default">framework default</abbr>
-                            </th>
-                            <th v-if="view !=='dynamic-modal'">
-                                <abbr title="" />view/manage/delete
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <configuration-list-item
-                            v-for="config in configList"
-                            :id="config.id"
-                            :view="view"
-                            :key="config"
-                            :name="config.name"
-                            :isDefault="config.isDefault"
-                            :description="config.description"
-                            :isOwned="config.isOwned"
-                            :defaultBrowserConfigId="localDefaultBrowserConfigId"
-                            :defaultFrameworkConfigId="frameworkConfigId"
-                            @set-browser-default="setConfigAsBrowserDefault"
-                            @remove-browser-default-config="removeConfigAsBrowserDefault"
-                            @set-framework-default="setConfigAsFrameworkDefault"
-                            @show-details="showConfigDetails"
-                            @show-delete="showDeleteConfirm" />
-                    </tbody>
-                    <br>
-                </table>
-            </div>
+            <!-- configuration list -->
+            <configuration-list
+                view="configuration"
+                :configList='configList'
+                v-if="configViewMode.equals('list')" />
             <div
                 class="button is-outlined is-primary is-pulled-right"
-                v-if="configViewMode.equals('list') && view !== 'dynamic-modal'"
+                v-if="configViewMode.equals('list')"
                 @click="createNewConfig">
                 <span class="icon">
                     <i class="fa fa-plus" />
@@ -120,12 +80,12 @@
 
 <script>
 // @ is an alias to /src
-import ConfigurationListItem from '../../components/configuration/ConfigurationListItem';
 import ConfigurationDetails from "../../components/configuration/ConfigurationDetails";
 import {cassUtil} from '../../mixins/cassUtil';
 import DeleteConfigurationConfirm from '@/components/modalContent/DeleteConfigurationConfirm.vue';
 import ConfigurationNotPermitted from '@/components/modalContent/ConfigurationNotPermitted.vue';
 import ConfigurationSetSuccess from '@/components/modalContent/ConfigurationSetSuccess.vue';
+import ConfigurationList from '@/views/configuration/components/ConfigurationList.vue';
 export default {
     mixins: [cassUtil],
     props: {
@@ -137,10 +97,10 @@ export default {
     name: 'ConfigurationEditor',
     components: {
         ConfigurationDetails,
-        ConfigurationListItem,
         DeleteConfigurationConfirm,
         ConfigurationNotPermitted,
-        ConfigurationSetSuccess
+        ConfigurationSetSuccess,
+        ConfigurationList
     },
     computed: {
         currentConfigIsReadOnly: function() {
@@ -164,7 +124,6 @@ export default {
         showBrowserConfigSetModal: false,
         defaultBrowserConfigName: '',
         localDefaultBrowserConfigId: '',
-        frameworkConfigId: '',
         configToDelete: {},
         showConfirmDeleteConfigModal: false,
         showMustBeLoggedInModal: false,
@@ -212,6 +171,10 @@ export default {
             this.setConfigToDelete(configId);
             this.showConfirmDeleteConfigModal = true;
         },
+        /* showDeleteConfirm(configId) {
+            this.setConfigToDelete(configId);
+            this.$store.commit('app/showModal', {component: 'DeleteConfigurationConfirm'});
+        }, */
         showConfigDetails(configId) {
             this.setCurrentConfig(configId);
             this.showDetailView();
@@ -1030,7 +993,7 @@ export default {
             window.repo.searchWithParams("@type:Configuration", paramObj, null, this.searchRepositoryForConfigsSuccess, this.searchRepositoryForConfigsFailure);
         },
         buildConfigList() {
-            this.configBusy = true;
+            this.$store.commit('configuration/configurationBusy', true);
             this.complexConfigObject = {};
             this.buildConfigListFromRepository();
         },
@@ -1039,31 +1002,16 @@ export default {
         },
         setConfigAsBrowserDefault(configId) {
             let bdc = this.getConfigById(configId);
-            this.setDefaultBrowserConfigId(configId);
-            this.defaultBrowserConfigName = bdc.name;
-            this.localDefaultBrowserConfigId = configId;
-            this.showBrowserConfigSetModal = true;
+            this.$store.commit('configuration/setDefaultBrowserConfigName', bdc.name);
+            this.$store.commit('configuration/setDefaultBrowserConfig', configId);
+            this.$store.commit('configuration/setLocalDefaultBrowserConfig', configId);
+            this.$store.commit('app/showModal', {component: 'ConfigurationSetSuccess'});
         },
         removeConfigAsBrowserDefault(configId) {
             this.removeDefaultBrowserConfig();
-            this.defaultBrowserConfigName = '';
-            this.localDefaultBrowserConfigId = '';
-            this.showBrowserConfigSetModal = false;
-        },
-        setConfigAsFrameworkDefault(configId) {
-            let me = this;
-            let f = this.$store.getters['editor/framework'];
-            let previousConfig = f.configuration;
-            f.configuration = configId;
-            if (!previousConfig) {
-                f = this.setOwnersAndReaders(f);
-            }
-            if (f) {
-                this.frameworkConfigId = configId;
-                window.repo.saveTo(f, function() {
-                    me.$store.commit('editor/framework', EcRepository.getBlocking(f.shortId()));
-                }, function() {});
-            }
+            this.$store.commit('configuration/setDefaultBrowserConfigName', '');
+            this.$store.commit('configuration/setLocalDefaultBrowserConfig', '');
+            this.$store.commit('app/closeModal');
         },
         setOwnersAndReaders(framework) {
             let userIdentity = null;
@@ -1123,9 +1071,6 @@ export default {
     mounted() {
         this.buildConfigList();
         this.localDefaultBrowserConfigId = this.getDefaultBrowserConfigId();
-        if (this.$store.getters['editor/framework'] && this.$store.getters['editor/framework'].configuration) {
-            this.frameworkConfigId = this.$store.getters['editor/framework'].configuration;
-        }
     }
 };
 </script>

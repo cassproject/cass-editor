@@ -40,7 +40,7 @@
                     class="cass-editor__logged-in-user-icon">
                     <span
                         :title="'Signed in as: ' + displayName">
-                        {{ loggedOnPerson.email.slice(0, 2)}}
+                        {{ loggedOnPerson.email.slice(0, 2) }}
                     </span>
                 </div>
                 <h3 class="is-size-2 has-text-weight-semibold">
@@ -61,7 +61,7 @@
                     v-if="showSideNav"
                     title="Log out">
                     <div
-                        class="button is-rounded is-white has-text-danger"
+                        class="button is-rounded white"
                         @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-out-alt" />
@@ -70,10 +70,10 @@
                     </div>
                 </div>
                 <div
-                    class="buttons is-centered"
+                    class="buttons pt-4 is-centered"
                     v-else>
                     <div
-                        class="button is-text has-text-link is-medium"
+                        class="button is-outlined is-white"
                         @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-out-alt" />
@@ -84,7 +84,7 @@
             <template v-else-if="loginEnabled">
                 <div
                     v-if="showSideNav"
-                    class="button is-outlined is-link"
+                    class="button  is-large is-outlined is-white"
                     @click="performApplicationLogout">
                     <span class="icon">
                         <i class="fa fa-sign-in-alt" />
@@ -94,7 +94,7 @@
                     v-if="!showSideNav"
                     class="buttons is-centered">
                     <div
-                        class="button is-outlined is-link"
+                        class="button is-outlined is-white"
                         @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-in-alt" />

@@ -3,7 +3,7 @@ Dynamic component used to display various modal content such as
 search, edit multiple competencies, view single competency, export,
 share framework settings, and more.
 
-To add content to this modal, imort the relevant compontnt and trigger it
+To add content to this modal, imort the relevant component and trigger it
 by this.$store.commit('app/showmodal', payload); Where payload at minimum
 returns an object with component: 'View' so the dynamic :is=dynamicModal
 returns content.
@@ -12,10 +12,11 @@ returns content.
     <div
         class="modal competency-search"
         :class="{'is-active': showModal}">
-        <div class="modal-background" />
         <Component
             @create-directory="$emit('create-directory', $event)"
             view="dynamic-modal"
+            @close="$emit('app/closeModal')"
+            @cancel="$emit('app/closeModal')"
             :content="dynamicModalContent"
             :is="dynamicModal" />
     </div>
@@ -32,7 +33,8 @@ import DeleteDirectoryConfirm from '@/components/modalContent/DeleteDirectoryCon
 import DeleteCommentConfirm from '@/components/modalContent/DeleteCommentConfirm.vue';
 import SupportedImportDetails from '@/components/modalContent/SupportedImportDetails.vue';
 import Configuration from '@/views/configuration/ConfigurationEditor.vue';
-
+import DeleteConfigurationConfirm from '@/components/modalContent/DeleteConfigurationConfirm.vue';
+import FrameworkConfiguration from '@/components/modalContent/FrameworkConfiguration.vue';
 export default {
     name: 'DynamicModal',
     props: {
@@ -55,7 +57,9 @@ export default {
         SupportedImportDetails,
         Single,
         Configuration,
-        AddDirectory
+        AddDirectory,
+        DeleteConfigurationConfirm,
+        FrameworkConfiguration
     },
     data() {
         return {
