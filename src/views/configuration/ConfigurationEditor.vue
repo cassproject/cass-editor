@@ -13,121 +13,28 @@
                 </span>
             </div>
         </div>
-        <!-- configuration deletion confirm modal-->
-        <div
-            class="modal"
-            :class="[{'is-active': showConfirmDeleteConfigModal}]">
-            <div class="modal-background" />
-            <div class="modal-card">
-                <header class="modal-card-head has-background-primary">
-                    <p class="modal-card-title">
-                        <span class="title has-text-white">
-                            Delete Configuration?
-                        </span>
-                    </p>
-                    <button
-                        class="delete"
-                        @click="cancelConfigurationDelete"
-                        aria-label="close" />
-                </header>
-                <section class="modal-card-body">
-                    Are you sure you wish to delete the configuration <b>'{{ configToDelete.name }}'</b>?
-                </section>
-                <footer class="modal-card-foot">
-                    <div class="buttons is-spaced">
-                        <button
-                            class="button is-dark is-outlined"
-                            @click="cancelConfigurationDelete">
-                            Cancel
-                        </button>
-                        <button
-                            class="button is-outlined is-primary"
-                            @click="deleteConfiguration">
-                            Delete
-                        </button>
-                    </div>
-                </footer>
-            </div>
-        </div>
-        <!-- this configuration can't be selected when not logged in modal-->
-        <div
-            class="modal"
-            :class="[{'is-active': showMustBeLoggedInModal}]">
-            <div class="modal-background" />
-            <div class="modal-card">
-                <header class="modal-card-head has-background-primary">
-                    <p class="modal-card-title">
-                        <span class="title has-text-white">
-                            Not permitted
-                        </span>
-                    </p>
-                    <button
-                        class="delete"
-                        @click="showMustBeLoggedInModal=false"
-                        aria-label="close" />
-                </header>
-                <section class="modal-card-body">
-                    This configuration has default owners and readers defined. You must be logged in to apply this configuration.
-                </section>
-                <footer class="modal-card-foot">
-                    <div class="buttons is-spaced">
-                        <button
-                            class="button is-dark is-outlined"
-                            @click="showMustBeLoggedInModal=false">
-                            OK
-                        </button>
-                    </div>
-                </footer>
-            </div>
-        </div>
+        <delete-configuration-confirm
+            v-if="showConfirmDeleteConfigModal"
+            :name="configToDelete.name"
+            @close="cancelConfigurationDelete"
+            @confirm="deleteConfiguration"
+            @cancel="cancelConfigurationDelete" />
+        <configuration-not-permitted
+            v-if="showMustBeLoggedInModal"
+            @cancel="showMustBeLoggedInModal = false"
+            @close="showMustBeLoggedInModal=false" />
         <!-- set browser commit success modal-->
-        <div
-            class="modal"
-            :class="[{'is-active': showBrowserConfigSetModal}]">
-            <div class="modal-background" />
-            <div class="modal-card">
-                <header class="modal-card-head has-background-primary">
-                    <p class="modal-card-title">
-                        <span class="title has-text-white">
-                            Configuration set as browser default
-                        </span>
-                    </p>
-                    <div
-                        class="delete is-pulled-right"
-                        aria-label="close"
-                        @click="closeBrowserConfigSetModal" />
-                </header>
-                <section class="modal-card-body">
-                    <p>'<b>{{ defaultBrowserConfigName }}</b>' has been set as your browser's default CaSS Authoring Tool configuration.</p>
-                </section>
-                <footer class="modal-card-foot">
-                    <div class="buttons is-spaced">
-                        <button
-                            class="button is-dark is-outlined"
-                            @click="closeBrowserConfigSetModal">
-                            OK
-                        </button>
-                    </div>
-                </footer>
-            </div>
-        </div>
-        <header
-            v-if="view === 'dynamic-modal'"
-            class="modal-card-head has-background-primary">
-            <p class="modal-card-title">
-                Manage configuration
-            </p>
-            <button
-                class="delete"
-                @click="$store.commit('app/closeModal')"
-                aria-label="close" />
-        </header>
+        <configuration-set-success
+            :name="defaultBrowserConfigName"
+            v-if="showBrowserConfigSetModal"
+            @ok="closeBrowserConfigSetModal"
+            @close="closeBrowserConfigSetModal"
+            @cancel="closeBrowserConfigSetModal" />
         <!-- configuration editor content-->
         <section
-            :class="[{ 'container': view !== 'dynamic-modal'}, { 'modal-card-body': view === 'dynamic-modal'}]"
+            class="container"
             v-if="!configBusy">
             <div class="section">
-                <template v-if="view !== 'dynamic-modal'">
                     <h3
                         class="title">
                         Configuration
@@ -138,13 +45,6 @@
                         is not set then the system will default to your instance default. If you are the configuration administrator you will be
                         able to manage the property settings and change which instance is the default.  Otherwise contact your CAT administrator.
                     </p>
-                </template>
-                <p v-if="view === 'dynamic-modal'">
-                    Choose a configuration to apply to this framework below.  You can view and manage details about
-                    your available configurations in <router-link to="/config">
-                        configuration management
-                    </router-link>.
-                </p>
             </div>
             <div
                 v-if="configViewMode.equals('list')"
@@ -215,15 +115,6 @@
                     @back="backFromEditCurrentConfig" />
             </div>
         </section>
-        <footer
-            v-if="view === 'dynamic-modal'"
-            class="modal-card-foot hasbackground-light">
-            <div
-                @click="closeModal"
-                class="button is-pulled-right">
-                done
-            </div>
-        </footer>
     </div>
 </template>
 
@@ -232,7 +123,9 @@
 import ConfigurationListItem from '../../components/configuration/ConfigurationListItem';
 import ConfigurationDetails from "../../components/configuration/ConfigurationDetails";
 import {cassUtil} from '../../mixins/cassUtil';
-
+import DeleteConfigurationConfirm from '@/components/modalContent/DeleteConfigurationConfirm.vue';
+import ConfigurationNotPermitted from '@/components/modalContent/ConfigurationNotPermitted.vue';
+import ConfigurationSetSuccess from '@/components/modalContent/ConfigurationSetSuccess.vue';
 export default {
     mixins: [cassUtil],
     props: {
@@ -244,7 +137,10 @@ export default {
     name: 'ConfigurationEditor',
     components: {
         ConfigurationDetails,
-        ConfigurationListItem
+        ConfigurationListItem,
+        DeleteConfigurationConfirm,
+        ConfigurationNotPermitted,
+        ConfigurationSetSuccess
     },
     computed: {
         currentConfigIsReadOnly: function() {

@@ -4,22 +4,25 @@
         id="cass-modal"
         :class="[{'is-active': active}, 'is-' + size, 'cass-editor__modal--' + content]">
         <div class="modal-background" />
-        <div class="modal-card">
+        <div
+            class="modal-card"
+            :class="'cass-editor__modal-card--' + size">
             <header
-                class="modal-card-head is-size-4"
+                class="modal-card-head is-size-4 has-text-weight-bold"
                 :class="['has-background-' + type, 'has-text-' + fontColor, ]">
-                <slot name="modal-header" />
+                <p class="modal-card-title">
+                    <slot name="modal-header" />
+                </p>
                 <button
-                    class="delete is-pulled-right"
-                    @click="$store.commit('app/closeModal')"
+                    class="delete"
+                    @click="$emit('close')"
                     aria-label="close" />
             </header>
             <div class="modal-card-body has-text-dark">
                 <slot name="modal-body" />
             </div>
             <footer class="modal-card-foot has-background-white">
-                <slot name="modal-foot">
-                </slot>
+                <slot name="modal-foot" />
             </footer>
         </div>
     </div>
@@ -43,8 +46,8 @@ export default {
             default: 'white'
         },
         size: {
-            type: Boolean,
-            default: false
+            type: String,
+            default: 'medium'
         },
         content: {
             defualt: 'default',
@@ -61,11 +64,9 @@ export default {
 </script>
 
 <style lang="scss">
-.cass-editor__modal {
-    .hierarchy-item__buttons {
-        display: none !important;
-    }
+.modal-card.cass-editor__modal-card--small{
+    max-width: 600px;
+    min-height: 200px;
 }
-
 </style>
 
