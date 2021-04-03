@@ -2,14 +2,16 @@
     <modal-template
         :active="true"
         size="small"
-        content="delete-configuration"
+        content="deleteConfiguration"
         type="danger"
         @close="$store.commit('app/closeModal')">
         <template slot="modal-header">
             Framework Configuration
         </template>
         <template slot="modal-body">
-            <confuration-list />
+            <div class="p-4">
+                <configuration-list view="modal" />
+            </div>
         </template>
         <template slot="modal-foot">
             <div class="buttons is-spaced">
@@ -30,7 +32,7 @@
 
 <script>
 import ModalTemplate from './ModalTemplate.vue';
-import ConfigurationList from '@/components/ConfigurationList.vue';
+import ConfigurationList from '@/views/configuration/components/ConfigurationList.vue';
 
 import {cassUtil} from '../../mixins/cassUtil';
 import common from '@/mixins/common.js';
@@ -59,6 +61,10 @@ export default {
         }
     },
     methods: {
+    },
+    updated() {
+    },
+    mounted() {
     }
 };
 </script>

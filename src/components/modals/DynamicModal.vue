@@ -9,12 +9,10 @@ returns an object with component: 'View' so the dynamic :is=dynamicModal
 returns content.
 -->
 <template>
-    <div
-        class="modal competency-search"
-        :class="{'is-active': showModal}">
+    <div>
         <Component
             @create-directory="$emit('create-directory', $event)"
-            view="dynamic-modal"
+            view="modal"
             @close="$emit('app/closeModal')"
             @cancel="$emit('app/closeModal')"
             :content="dynamicModalContent"
@@ -32,7 +30,6 @@ import AddDirectory from '@/components/modalContent/AddDirectory.vue';
 import DeleteDirectoryConfirm from '@/components/modalContent/DeleteDirectoryConfirm.vue';
 import DeleteCommentConfirm from '@/components/modalContent/DeleteCommentConfirm.vue';
 import SupportedImportDetails from '@/components/modalContent/SupportedImportDetails.vue';
-import Configuration from '@/views/configuration/ConfigurationEditor.vue';
 import DeleteConfigurationConfirm from '@/components/modalContent/DeleteConfigurationConfirm.vue';
 import FrameworkConfiguration from '@/components/modalContent/FrameworkConfiguration.vue';
 export default {
@@ -56,7 +53,6 @@ export default {
         DeleteDirectoryConfirm,
         SupportedImportDetails,
         Single,
-        Configuration,
         AddDirectory,
         DeleteConfigurationConfirm,
         FrameworkConfiguration

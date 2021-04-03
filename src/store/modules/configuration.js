@@ -2,7 +2,7 @@ const state = {
     defaultBrowserConfig: '',
     defaultBrowserConfigName: '',
     localDefaultBrowserConfig: '',
-    configurationIsBusy: ''
+    configurationBusy: false
 };
 
 const mutations = {
@@ -27,7 +27,10 @@ const getters = {
         return state.defaultBrowserConfigName;
     },
     localDefaultBrowserConfig(state) {
-        return state.defaultBrowserConfig;
+        return state.localDefaultBrowserConfig;
+    },
+    configurationBusy(state) {
+        return state.configurationBusy;
     }
 };
 
