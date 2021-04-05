@@ -581,5 +581,35 @@ EcRemoteLinkedData = stjs.extend(EcRemoteLinkedData, EcLinkedData, [], function(
         if (me["@encryptedContext"] != null) {
             me["encryptedContext"] = me["@encryptedContext"];
         }
+        this.handleForwarding();
     };
-}, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+    constructor.forwardingTable = new Object();
+    prototype.handleForwarding = function() {
+        var me = (this);
+        if (this.owner != null) {
+            for (var i = 0; i < this.owner.length; i++) {
+                var forwardTo = "";
+                 while (forwardTo != null){
+                    var homogenizedPk = EcPk.fromPem(this.owner[i]).toPem();
+                    forwardTo = (EcRemoteLinkedData.forwardingTable)[homogenizedPk];
+                    if (forwardTo != null) 
+                        this.owner[i] = forwardTo;
+                }
+            }
+        }
+        if (this.reader != null) {
+            for (var i = 0; i < this.reader.length; i++) {
+                var forwardTo = "";
+                 while (forwardTo != null){
+                    var homogenizedPk = EcPk.fromPem(this.reader[i]).toPem();
+                    forwardTo = (EcRemoteLinkedData.forwardingTable)[homogenizedPk];
+                    if (forwardTo != null) 
+                        this.reader[i] = forwardTo;
+                }
+            }
+        }
+    };
+    constructor.forwardKey = function(oldKey, newKey) {
+        (EcRemoteLinkedData.forwardingTable)[oldKey] = newKey;
+    };
+}, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, forwardingTable: "Object", atProperties: {name: "Array", arguments: [null]}}, {});

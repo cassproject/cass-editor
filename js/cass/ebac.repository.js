@@ -911,7 +911,7 @@ EcEncryptedValue = stjs.extend(EcEncryptedValue, EbacEncryptedValue, [], functio
             });
         }, failure);
     };
-}, {encryptOnSaveMap: {name: "Map", arguments: [null, null]}, secret: {name: "Array", arguments: [null]}, owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {encryptOnSaveMap: {name: "Map", arguments: [null, null]}, secret: {name: "Array", arguments: [null]}, owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, forwardingTable: "Object", atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  A representation of a file.
  * 
@@ -982,7 +982,7 @@ GeneralFile = stjs.extend(GeneralFile, EcRemoteLinkedData, [], function(construc
         a.push(GeneralFile.TYPE_0_1);
         return a;
     };
-}, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, forwardingTable: "Object", atProperties: {name: "Array", arguments: [null]}}, {});
 /**
  *  Repository object used to interact with the CASS Repository web services.
  *  Should be used for all CRUD and search operations
@@ -1006,6 +1006,60 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
     prototype.selectedServer = null;
     prototype.autoDetectFound = false;
     prototype.timeOffset = 0;
+    prototype.init = function(selectedServer, success, failure) {
+        this.selectedServer = selectedServer;
+        this.negotiateTimeOffset(success, failure);
+    };
+    prototype.negotiateTimeOffset = function(success, failure) {
+        var oldTimeout = EcRemote.timeout;
+        EcRemote.timeout = 500;
+        var me = this;
+        var successCheck = function(p1) {
+            if (p1 != null) {
+                if ((p1)["ping"] == "pong") {
+                    if ((p1)["time"] != null) 
+                        me.timeOffset = (((p1)["time"] - new Date().getTime()));
+                    me.buildKeyForwardingTable(success, failure);
+                }
+            }
+        };
+        var failureCheck = function(p1) {
+            if (p1 != null) {
+                if (p1 != "") {
+                    try {
+                        if (p1.indexOf("pong") != -1) 
+                            if ((p1)["time"] != null) 
+                                me.timeOffset = (new Date().getTime()) - ((p1)["time"]);
+                        me.buildKeyForwardingTable(success, failure);
+                    }catch (ex) {
+                        if (failure != null) 
+                            failure(ex);
+                    }
+                }
+            }
+        };
+        try {
+            EcRemote.getExpectingObject(this.selectedServer, "ping", successCheck, failureCheck);
+        }catch (ex) {
+            if (failure != null) 
+                failure(ex.toString());
+        }
+        EcRemote.timeout = oldTimeout;
+    };
+    prototype.buildKeyForwardingTable = function(success, failure) {
+        var params = new Object();
+        (params)["size"] = 10000;
+        EcRepository.searchAs(this, "*", function() {
+            return new EcRekeyRequest();
+        }, function(array) {
+            var rekeyRequests = array;
+            for (var i = 0; i < rekeyRequests.length; i++) {
+                rekeyRequests[i].addRekeyRequestToForwardingTable();
+            }
+            if (success != null) 
+                success();
+        }, failure, params);
+    };
     /**
      *  Gets a JSON-LD object from the place designated by the URI.
      *  <p>
@@ -1375,7 +1429,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         if (data.owner != null && data.owner.length == 0) {
             delete (data)["owner"];
         }
-        if (EcEncryptedValue.encryptOnSave(data.id, null)) {
+        if (EcEncryptedValue.encryptOnSave(data.id, null) && !data.isAny(new EcEncryptedValue().getTypes())) {
             var encrypted = EcEncryptedValue.toEncryptedValue(data, false);
             EcIdentityManager.sign(encrypted);
             EcRepository._saveWithoutSigning(encrypted, success, failure, repo);
@@ -1423,10 +1477,11 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
         var serialized = new Array();
         for (var i = 0; i < data.length; i++) {
             var d = data[i];
-            if (EcEncryptedValue.encryptOnSave(d.id, null)) {
+            if (EcEncryptedValue.encryptOnSave(d.id, null) && !d.isAny(new EcEncryptedValue().getTypes())) {
                 var encrypted = EcEncryptedValue.toEncryptedValue(d, false);
                 EcIdentityManager.sign(encrypted);
                 data[i] = encrypted;
+                d = encrypted;
             } else {
                 EcIdentityManager.sign(d);
             }
@@ -1753,7 +1808,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
      *  @method multiget
      */
     prototype.multiget = function(urls, success, failure) {
-        if (urls == null || urls.length == 0) {
+        if (urls == null) {
             if (failure != null) {
                 failure("");
             }
@@ -2203,7 +2258,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
             if (p1 != null) {
                 if ((p1)["ping"] == "pong") {
                     if ((p1)["time"] != null) 
-                        me.timeOffset = (new Date().getTime()) - ((p1)["time"]);
+                        me.timeOffset = (((p1)["time"] - new Date().getTime()));
                     if (me.autoDetectFound == false) {
                         me.selectedServer = guess;
                         me.autoDetectFound = true;
@@ -2251,7 +2306,7 @@ EcRepository = stjs.extend(EcRepository, null, [], function(constructor, prototy
             if (p1 != null) {
                 if ((p1)["ping"] == "pong") {
                     if ((p1)["time"] != null) 
-                        me.timeOffset = (new Date().getTime()) - ((p1)["time"]);
+                        me.timeOffset = (((p1)["time"] - new Date().getTime()));
                     me.selectedServer = guess;
                     me.autoDetectFound = true;
                 }
@@ -2590,4 +2645,4 @@ EcFile = stjs.extend(EcFile, GeneralFile, [], function(constructor, prototype) {
     prototype._delete = function(repo, success, failure) {
         repo.constructor.DELETE(this, success, failure);
     };
-}, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, atProperties: {name: "Array", arguments: [null]}}, {});
+}, {owner: {name: "Array", arguments: [null]}, signature: {name: "Array", arguments: [null]}, reader: {name: "Array", arguments: [null]}, forwardingTable: "Object", atProperties: {name: "Array", arguments: [null]}}, {});

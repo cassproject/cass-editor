@@ -488,6 +488,29 @@ EcRsaOaep = stjs.extend(EcRsaOaep, null, [], function(constructor, prototype) {
             return false;
         }
     };
+    /**
+     *  Verifies the integrity of the provided text using a signature and a
+     *  public key. Uses SHA1 hash with a UTF8 decoding of the text.
+     * 
+     *  @param {EcPk}   pk Public key.
+     *  @param {string} text Text to verify.
+     *  @param {string} signature Base64 encoded signature.
+     *  @return True IFF the signature is valid.
+     *  @static
+     *  @method verify
+     */
+    constructor.verifySha256 = function(pk, text, signature) {
+        if ((typeof httpStatus) != "undefined") {
+            return rsaVerifySha256(signature, pk.toPem(), text);
+        }
+        var s = forge.md.sha256.create();
+        s.update(forge.util.encodeUtf8(text), "utf8");
+        try {
+            return pk.verify(s.digest().bytes(), forge.util.decode64(signature));
+        }catch (ex) {
+            return false;
+        }
+    };
 }, {}, {});
 /**
  *  Encrypts data synchronously using AES-256-CTR. Requires secret and iv to be 32 bytes.
