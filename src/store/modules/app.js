@@ -92,7 +92,16 @@ const mutations = {
         state.rightAsideObject = null;
     },
     rightAsideObject: function(state, payload) {
-        state.rightAsideObject = payload;
+        if (payload.encryptedType) {
+            let type = "Ec" + payload.encryptedType;
+            let v = new EcEncryptedValue();
+            v.copyFrom(payload);
+            let obj = new window[type]();
+            obj.copyFrom(v.decryptIntoObject());
+            state.rightAsideObject = obj;
+        } else {
+            state.rightAsideObject = payload;
+        }
     },
     showModal: function(state, payload) {
         state.modal.showModal = true;
