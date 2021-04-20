@@ -405,7 +405,12 @@ export default {
             }, appError);
         },
         saveCheckedLevels: function(selectedCompetency, checkedOptions, allOptions) {
-            var competencyId = EcRemoteLinkedData.trimVersionFromUrl(selectedCompetency["@id"]);
+            let competencyId = [];
+            if (EcArray.isArray(selectedCompetency)) {
+                competencyId = selectedCompetency;
+            } else {
+                competencyId.push(EcRemoteLinkedData.trimVersionFromUrl(selectedCompetency["@id"]));
+            }
             var initialLevels = this.framework.level ? this.framework.level.slice() : null;
             var frameworkChanged = false;
             var edits = [];
@@ -421,8 +426,14 @@ export default {
                     if (!EcArray.isArray(level.competency)) {
                         level.competency = level.competency == null ? [] : [level.competency];
                     }
-                    if (level.competency.indexOf(competencyId) === -1) {
-                        level.competency.push(competencyId);
+                    let levelChanged = false;
+                    for (let each in competencyId) {
+                        if (level.competency.indexOf(competencyId[each]) === -1) {
+                            level.competency.push(competencyId[each]);
+                            levelChanged = true;
+                        }
+                    }
+                    if (levelChanged) {
                         edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
                         this.repo.saveTo(level, function() {
                             me.$store.commit('editor/refreshLevels', true);
@@ -436,8 +447,14 @@ export default {
                     // If not selected
                     var level = EcLevel.getBlocking(allOptions[i].val);
                     var initialComp = JSON.parse(JSON.stringify(level.competency));
-                    if (level.competency && level.competency.indexOf(competencyId) !== -1) {
-                        EcArray.setRemove(level.competency, competencyId);
+                    let levelChanged = false;
+                    for (let each in competencyId) {
+                        if (level.competency && level.competency.indexOf(competencyId[each]) !== -1) {
+                            EcArray.setRemove(level.competency, competencyId[each]);
+                            levelChanged = true;
+                        }
+                    }
+                    if (levelChanged) {
                         edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
                         this.repo.saveTo(level, function() {
                             me.$store.commit('editor/refreshLevels', true);

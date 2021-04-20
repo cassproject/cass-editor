@@ -437,6 +437,7 @@ export default {
         },
         checkedOptions: function() {
             this.$store.commit('lode/setAddingChecked', this.checkedOptions);
+            this.updatePropertyString(this.checkedOptions);
             // this.$emit('checkedOptions', this.checkedOptions);
         },
         selectedPropertyToAddValue: function() {

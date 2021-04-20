@@ -1535,6 +1535,10 @@ export default {
                 this.doneValidating = true;
                 this.validateCount = 0;
                 if (this.doneSaving) {
+                    if (this.addAnother) {
+                        this.$store.commit('editor/addAnother', true);
+                        this.addAnother = false;
+                    }
                     this.$emit('done-editing-node-event');
                 }
             }
