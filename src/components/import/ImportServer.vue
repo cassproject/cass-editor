@@ -614,7 +614,7 @@ export default {
                     });
                 });
             }, function(error) {
-                console.error(error);
+                appError(error);
             });
         },
         openDirectory: function(directory) {

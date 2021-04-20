@@ -11,7 +11,7 @@ const state = {
     pluginsEnabled: true,
     loginEnabled: true,
     legacyLoginEnabled: true,
-    apiLoginEnabled: (process.env.VUE_APP_API_LOGIN_ENABLED ? (process.env.VUE_APP_API_LOGIN_ENABLED === 'true') : (process.env.NODE_ENV !== 'production')),
+    apiLoginEnabled: (process.env.VUE_APP_API_LOGIN_ENABLED ? (process.env.VUE_APP_API_LOGIN_ENABLED === 'true') : false),
     shareEnabled: true
 };
 
