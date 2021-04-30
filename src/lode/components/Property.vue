@@ -69,7 +69,9 @@ TO DO MAYBE: Separate out property by editing or not.
                         :parentNotEditable="!canEdit"
                         :profile="childProfile"
                         @delete-object="deleteObject" />
-                    <div class="field delete-property-button">
+                    <div
+                        class="field delete-property-button"
+                        v-if="editingProperty">
                         <div class="control">
                             <label><br></label>
                             <div
