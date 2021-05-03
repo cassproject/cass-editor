@@ -286,9 +286,9 @@ export default {
             },
             set: function(value) {
                 if (EcObject.isObject(this.text)) {
-                    this.text["@value"] = value;
+                    this.text["@value"] = value.trim();
                 } else {
-                    this.text = value;
+                    this.text = value.trim();
                 }
             }
         },
