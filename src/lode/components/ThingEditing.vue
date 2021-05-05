@@ -258,6 +258,7 @@
                     <div
                         v-if="!showAddPropertyContent"
                         @click="doneEditing"
+                        :disabled="disableDoneEditingButton"
                         title="Done editing"
                         class="button is-outlined is-dark">
                         <span class="export icon">
@@ -368,7 +369,8 @@ export default {
             doneSaving: false,
             errorMessage: [],
             idsNotPermittedInSearch: [],
-            addAnother: false
+            addAnother: false,
+            disableDoneEditingButton: false
         };
     },
     created: function() {
@@ -1512,6 +1514,7 @@ export default {
             this.$emit('done-editing-node-event');
         },
         doneEditing: function() {
+            this.disableDoneEditingButton = true;
             if (this.showAddPropertyContent === true) {
                 return this.onCancelAddProperty();
             }
@@ -1677,6 +1680,12 @@ export default {
         },
         profile: function() {
             this.populateRequiredFields();
+        },
+        validate: function() {
+            if (!this.validate) {
+                this.disableDoneEditingButton = false;
+                this.validateCount = 0;
+            }
         }
     }
 };
