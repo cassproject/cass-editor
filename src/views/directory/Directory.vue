@@ -611,6 +611,11 @@ export default {
             }
         }
     },
+    beforeDestroy() {
+        if (this.queryParams && this.queryParams.private !== 'true') {
+            this.$store.commit('editor/private', false);
+        }
+    },
     mounted: function() {
         if (!this.directory || this.directory === '') {
             this.$router.push({name: "frameworks"});
