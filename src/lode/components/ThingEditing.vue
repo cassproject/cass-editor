@@ -384,6 +384,9 @@ export default {
         if (lastSaved) {
             this.saved = "last saved " + new Date(lastSaved).toLocaleString();
         }
+        if (this.obj && this.obj.shortId() === this.changedObject) {
+            this.$store.commit('editor/changedObject', null);
+        }
     },
     beforeDestroy: function() {
         this.$store.commit('editor/selectedCompetency', null);
