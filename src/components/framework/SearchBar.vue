@@ -131,6 +131,20 @@
                         Date modified
                     </label>
                 </div>
+                <div
+                    class="field"
+                    v-if="allowShowFrameworks">
+                    <input
+                        v-model="searchFrameworks"
+                        class="is-checkradio"
+                        value="searchFrameworks"
+                        id="searchFrameworks"
+                        type="checkbox"
+                        name="filtersearchFrameworks">
+                    <label for="searchFrameworks">
+                        Show Frameworks
+                    </label>
+                </div>
             </div>
         </div>
     </div>
@@ -155,6 +169,10 @@ export default {
         filterSet: {
             type: String,
             default: ''
+        },
+        allowShowFrameworks: {
+            type: Boolean,
+            default: false
         }
     },
     data() {
@@ -259,6 +277,14 @@ export default {
         },
         storeSearchTerm: function() {
             return this.$store.getters['app/searchTerm'];
+        },
+        searchFrameworks: {
+            get() {
+                return this.$store.getters['app/searchFrameworksInCompetencySearch'];
+            },
+            set(val) {
+                this.$store.commit("app/searchFrameworksInCompetencySearch", val);
+            }
         }
     }
 };

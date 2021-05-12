@@ -29,7 +29,8 @@ const state = {
         quickFilters: [],
         applySearchTo: [],
         sortResults: [],
-        refreshSearch: false
+        refreshSearch: false,
+        searchFrameworksInCompetencySearch: false
     },
     modal: {
         framework: '',
@@ -91,7 +92,16 @@ const mutations = {
         state.rightAsideObject = null;
     },
     rightAsideObject: function(state, payload) {
-        state.rightAsideObject = payload;
+        if (payload.encryptedType) {
+            let type = "Ec" + payload.encryptedType;
+            let v = new EcEncryptedValue();
+            v.copyFrom(payload);
+            let obj = new window[type]();
+            obj.copyFrom(v.decryptIntoObject());
+            state.rightAsideObject = obj;
+        } else {
+            state.rightAsideObject = payload;
+        }
     },
     showModal: function(state, payload) {
         state.modal.showModal = true;
@@ -289,6 +299,9 @@ const mutations = {
     },
     editDirectory: function(state, bool) {
         state.directories.editDirectory = bool;
+    },
+    searchFrameworksInCompetencySearch: function(state, bool) {
+        state.frameworks.searchFrameworksInCompetencySearch = bool;
     }
 };
 const actions = {
@@ -475,6 +488,9 @@ const getters = {
     },
     editDirectory: state => {
         return state.directories.editDirectory;
+    },
+    searchFrameworksInCompetencySearch: state => {
+        return state.frameworks.searchFrameworksInCompetencySearch;
     }
 };
 

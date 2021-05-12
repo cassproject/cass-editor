@@ -275,7 +275,7 @@ export default {
         ModalTemplate,
         SearchBar,
         RightAside: () => import('@/components/framework/RightAside.vue'),
-        ThingEditing: () => import('@/lode/components/lode/ThingEditing.vue')
+        ThingEditing: () => import('@/lode/components/ThingEditing.vue')
     },
     data: function() {
         return {
@@ -609,6 +609,11 @@ export default {
                     }
                 }, appError);
             }
+        }
+    },
+    beforeDestroy() {
+        if (this.queryParams && this.queryParams.private !== 'true') {
+            this.$store.commit('editor/private', false);
         }
     },
     mounted: function() {

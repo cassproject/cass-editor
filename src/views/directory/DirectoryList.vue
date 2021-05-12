@@ -169,8 +169,8 @@
 </template>
 
 <script>
-import Thing from '@/lode/components/lode/Thing.vue';
-import Breadcrumbs from '@/lode/components/lode/Breadcrumbs.vue';
+import Thing from '@/lode/components/Thing.vue';
+import Breadcrumbs from '@/lode/components/Breadcrumbs.vue';
 import {cassUtil} from '@/mixins/cassUtil.js';
 export default {
     name: 'DirectoryList',

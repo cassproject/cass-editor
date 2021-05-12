@@ -505,12 +505,58 @@ export default {
                 });
             }
         },
+        precacheRemoteServer: function(urls, success, failure) {
+            var cacheUrls = [];
+            for (var i = 0; i < urls.length; i++) {
+                var url = urls[i];
+                if (url.startsWith(this.remoteRepo.selectedServer)) {
+                    cacheUrls.push(url.replace(this.remoteRepo.selectedServer, "").replace("custom/", ""));
+                } else {
+                    cacheUrls.push("data/" + EcCrypto.md5(url));
+                }
+            }
+            if (cacheUrls.length === 0) {
+                if (success != null) {
+                    success();
+                }
+                return;
+            }
+            var fd = new FormData();
+            fd.append("data", JSON.stringify(cacheUrls));
+            EcRemote.postExpectingObject(this.remoteRepo.selectedServer, "sky/repo/multiGet", fd, function(p1) {
+                var results = p1;
+                for (var i = 0; i < results.length; i++) {
+                    var d = new EcRemoteLinkedData(null, null);
+                    d.copyFrom(results[i]);
+                    results[i] = d;
+                    if (EcRepository.caching) {
+                        if (!EcRepository.shouldTryUrl(d.id)) {
+                            var md5 = EcCrypto.md5(d.shortId());
+                            for (var j = 0; j < cacheUrls.length; j++) {
+                                var url = cacheUrls[j];
+                                if (url.indexOf(md5) !== -1) {
+                                    (EcRepository.cache)[url] = d;
+                                    break;
+                                }
+                            }
+                        }
+                        (EcRepository.cache)[d.shortId()] = d;
+                        (EcRepository.cache)[d.id] = d;
+                    }
+                }
+                if (success != null) {
+                    success();
+                }
+            }, null);
+        },
         continueCassImport(dataArray) {
             var data = dataArray[0];
             var firstIndex = dataArray[1];
             var me = this;
             let framework = new EcFramework();
             framework.copyFrom(data);
+            delete framework.owner;
+            delete framework.reader;
             if (EcIdentityManager.ids.length > 0) {
                 framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
             }
@@ -535,34 +581,40 @@ export default {
                 subObjects = subObjects.concat(framework.level);
             }
             EcRepository.alwaysTryUrl = true;
-            new EcAsyncHelper().each(subObjects, function(id, done) {
-                EcRepository.get(id, function(result) {
-                    let type = "Ec" + result.type;
-                    if (type === "EcRelation") {
-                        type = "EcAlignment";
-                    }
-                    let newObj = new window[type]();
-                    newObj.copyFrom(result);
-                    if (EcIdentityManager.ids.length > 0) {
-                        newObj.addOwner(EcIdentityManager.ids[0].ppk.toPk());
-                    }
-                    newObj.id = newObj.shortId();
-                    toSave.push(newObj);
-                    done();
-                }, done);
-            }, function(allDone) {
-                EcRepository.alwaysTryUrl = false;
-                me.repo.multiput(toSave, function() {
-                    me.cassFrameworks[firstIndex].loading = false;
-                    me.cassFrameworks[firstIndex].success = true;
-                    me.$store.commit('editor/framework', framework);
-                    me.spitEvent("importFinished", framework.shortId(), "importPage");
-                    me.importCassFrameworks();
-                }, function() {
-                    me.caseDocs[firstIndex].loading = false;
-                    me.caseDocs[firstIndex].error = true;
-                    me.importCase();
+            this.precacheRemoteServer(subObjects, function() {
+                new EcAsyncHelper().each(subObjects, function(subId, done) {
+                    EcRepository.get(subId, function(result) {
+                        let type = "Ec" + result.type;
+                        if (type === "EcRelation") {
+                            type = "EcAlignment";
+                        }
+                        let newObj = new window[type]();
+                        newObj.copyFrom(result);
+                        delete newObj.owner;
+                        delete newObj.reader;
+                        if (EcIdentityManager.ids.length > 0) {
+                            newObj.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        }
+                        newObj.id = newObj.shortId();
+                        toSave.push(newObj);
+                        done();
+                    }, done);
+                }, function(allDone) {
+                    EcRepository.alwaysTryUrl = false;
+                    me.repo.multiput(toSave, function() {
+                        me.cassFrameworks[firstIndex].loading = false;
+                        me.cassFrameworks[firstIndex].success = true;
+                        me.$store.commit('editor/framework', framework);
+                        me.spitEvent("importFinished", framework.shortId(), "importPage");
+                        me.importCassFrameworks();
+                    }, function() {
+                        me.cassFrameworks[firstIndex].loading = false;
+                        me.cassFrameworks[firstIndex].error = true;
+                        me.importCassFrameworks();
+                    });
                 });
+            }, function(error) {
+                appError(error);
             });
         },
         openDirectory: function(directory) {
