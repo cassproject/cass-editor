@@ -28,6 +28,7 @@ jobs:
       - run: sed -i 's/\/docs\//\/cass-editor\/docs\//g' ./docs/.vuepress/config.js
       - run: find ./docs -name '*.md' -exec sed -i 's/\/docs\//\/cass-editor\/docs\//g' {} \;
       - run: export VUE_APP_API_LOGIN_ENABLED=false
+      - run: npm ci
       - run: npm run docs:build
       - run: npm run build
 
