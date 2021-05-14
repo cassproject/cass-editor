@@ -1,8 +1,13 @@
 const state = {
+    CONFIG_SEARCH_SIZE: 10000,
+    DEFAULT_CONFIGURATION_TYPE: 'Configuration',
+    DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
+    LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
+    DEFAULT_HEADING: "General",
     defaultBrowserConfig: '',
     defaultBrowserConfigName: '',
     localDefaultBrowserConfig: '',
-    configurationBusy: false,
+    configBusy: false,
     configList: [],
     configView: 'list',
     currentConfig: {}
@@ -18,8 +23,8 @@ const mutations = {
     setConfigList(state, val) {
         state.setConfigList = val;
     },
-    setConfigurationBusy(state, val) {
-        state.configurationBusy = val;
+    setConfigBusy(state, val) {
+        state.configBusy = val;
     },
     setDefaultBrowserConfig(state, val) {
         state.defaultBrowserConfig = val;
@@ -35,6 +40,21 @@ const actions = {
 
 };
 const getters = {
+    DEFAULT_CONFIGURATION_TYPE: function(state) {
+        return state.DEFAULT_CONFIGURATION_TYPE;
+    },
+    DEFAULT_CONFIGURATION_CONTEXT: function(state) {
+        return state.DEFAULT_CONFIGURATION_CONTEXT;
+    },
+    LANG_STRING_RANGE: function(state) {
+        return state.LANG_STRING_RANGE;
+    },
+    DEFAULT_HEADING: function(state) {
+        return state.DEFAULT_HEADING;
+    },
+    CONFIG_SEARCH_SIZE(state) {
+        return state.CONFIG_SEARCH_SIZE;
+    },
     currentConfig(state) {
         return state.currentConfig;
     },
@@ -53,8 +73,8 @@ const getters = {
     localDefaultBrowserConfig(state) {
         return state.localDefaultBrowserConfig;
     },
-    configurationBusy(state) {
-        return state.configurationBusy;
+    configBusy(state) {
+        return state.configBusy;
     }
 };
 

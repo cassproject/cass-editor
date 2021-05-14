@@ -27,7 +27,7 @@
 
 <script>
 import ModalTemplate from './ModalTemplate.vue';
-import ConfigurationList from '@/views/configuration/components/ConfigurationList.vue';
+import ConfigurationList from '@/components/configuration/ConfigurationList.vue';
 
 import {cassUtil} from '../../mixins/cassUtil';
 import common from '@/mixins/common.js';

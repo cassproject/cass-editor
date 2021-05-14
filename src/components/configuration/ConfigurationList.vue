@@ -48,6 +48,7 @@
 import ConfigurationListItem from '@/components/configuration/ConfigurationListItem';
 import {cassUtil} from '@/mixins/cassUtil';
 import {configuration} from '@/mixins/configuration';
+import {mapGetters} from 'vuex';
 
 export default {
     name: 'ConfigurationList',
@@ -61,6 +62,13 @@ export default {
         }
     },
     computed: {
+        ...mapGetters([
+            'configSearchSize',
+            'defaultConfigurationType',
+            'DEFAULT_CONFIGURATION_CONTEXT',
+            'langStringRange',
+            'defaultHeading'
+        ]),
         configViewMode() {
             return this.$store.getters['configuration/configView'];
         },
@@ -72,7 +80,6 @@ export default {
         }
     },
     data: () => ({
-        CONFIG_SEARCH_SIZE: 10000,
         DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
         DEFAULT_CONFIGURATION_TYPE: 'Configuration',
         LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',

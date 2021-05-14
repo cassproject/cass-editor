@@ -864,7 +864,7 @@ export const configuration = {
         },
         buildConfigListFromRepository() {
             let paramObj = {};
-            paramObj.size = this.configSearchSize;
+            paramObj.size = this.CONFIG_SEARCH_SIZE;
             window.repo.searchWithParams("@type:Configuration", paramObj, null, this.searchRepositoryForConfigsSuccess, this.searchRepositoryForConfigsFailure);
         },
         buildConfigList() {

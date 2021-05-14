@@ -14,12 +14,6 @@
             </span>
         </td>
         <td v-if="view !== 'modal'">
-            <!-- <div
-                class="button is-outlined is-primary is-small"
-                :disabled="defaultBrowserConfigId && defaultBrowserConfigId.equals(id)"
-                @click="$emit('setBrowserDefault', id)">
-                set as browser default
-            </div>-->
             <div class="field">
                 <div class="control is-size-3">
                     <input

@@ -82,20 +82,26 @@
 
 <script>
 // @ is an alias to /src
-import ConfigurationDetails from "../../components/configuration/ConfigurationDetails";
-import {cassUtil} from '../../mixins/cassUtil';
-import {configuration} from '../../mixins/configuration';
+import ConfigurationDetails from "@/components/configuration/ConfigurationDetails";
+import {cassUtil} from '@/mixins/cassUtil';
+import {configuration} from '@/mixins/configuration';
 import DeleteConfigurationConfirm from '@/components/modalContent/DeleteConfigurationConfirm.vue';
 import ConfigurationNotPermitted from '@/components/modalContent/ConfigurationNotPermitted.vue';
 import ConfigurationSetSuccess from '@/components/modalContent/ConfigurationSetSuccess.vue';
-import ConfigurationList from '@/views/configuration/components/ConfigurationList.vue';
+import ConfigurationList from '@/components/configuration/ConfigurationList.vue';
 import {mapGetters} from 'vuex';
 
 export default {
     name: 'ConfigurationEditor',
     mixins: [cassUtil, configuration],
     computed: {
-        ...mapGetters(['configSearchSize']),
+        ...mapGetters([
+            'CONFIG_SEARCH_SIZE',
+            'DEFAULT_CONFIGURATION_TYPE',
+            'DEFAULT_CONFIGURATION_CONTEXT',
+            'LANG_STRING_RANGE',
+            'DEFAULT_HEADING'
+        ]),
         configViewMode() {
             return this.$store.getters['configuration/configView'];
         },
@@ -107,10 +113,6 @@ export default {
         }
     },
     data: () => ({
-        DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
-        DEFAULT_CONFIGURATION_TYPE: 'Configuration',
-        LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
-        DEFAULT_HEADING: "General",
         configBusy: false,
         configList: [],
         complexConfigObject: {},
