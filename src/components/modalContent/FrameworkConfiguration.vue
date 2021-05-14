@@ -3,7 +3,7 @@
         :active="true"
         size="small"
         content="deleteConfiguration"
-        type="danger"
+        type="primary"
         @close="$store.commit('app/closeModal')">
         <template slot="modal-header">
             Framework Configuration
@@ -16,14 +16,9 @@
         <template slot="modal-foot">
             <div class="buttons is-spaced">
                 <button
-                    class="button is-outlined is-danger"
-                    @click="$emit('cancel')">
-                    Cancel
-                </button>
-                <button
-                    class="button is-dark"
-                    @click="$emit('confirm')">
-                    Confirm Change
+                    class="button is-primary"
+                    @click="$store.commit('app/closeModal')">
+                    Done
                 </button>
             </div>
         </template>

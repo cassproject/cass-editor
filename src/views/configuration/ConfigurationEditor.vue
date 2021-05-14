@@ -48,6 +48,7 @@
             </div>
             <!-- configuration list -->
             <configuration-list
+                view="editor"
                 @showDetails="showConfigDetails($event)"
                 :configList="configList"
                 v-if="configViewMode.equals('list')" />
@@ -88,10 +89,13 @@ import DeleteConfigurationConfirm from '@/components/modalContent/DeleteConfigur
 import ConfigurationNotPermitted from '@/components/modalContent/ConfigurationNotPermitted.vue';
 import ConfigurationSetSuccess from '@/components/modalContent/ConfigurationSetSuccess.vue';
 import ConfigurationList from '@/views/configuration/components/ConfigurationList.vue';
+import {mapGetters} from 'vuex';
+
 export default {
     name: 'ConfigurationEditor',
     mixins: [cassUtil, configuration],
     computed: {
+        ...mapGetters(['configSearchSize']),
         configViewMode() {
             return this.$store.getters['configuration/configView'];
         },
@@ -103,7 +107,6 @@ export default {
         }
     },
     data: () => ({
-        CONFIG_SEARCH_SIZE: 10000,
         DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
         DEFAULT_CONFIGURATION_TYPE: 'Configuration',
         LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
