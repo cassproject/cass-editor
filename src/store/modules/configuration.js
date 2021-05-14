@@ -2,10 +2,25 @@ const state = {
     defaultBrowserConfig: '',
     defaultBrowserConfigName: '',
     localDefaultBrowserConfig: '',
-    configurationBusy: false
+    configurationBusy: false,
+    configList: [],
+    configView: 'list',
+    currentConfig: {}
 };
 
 const mutations = {
+    setCurrentConfig(state, val) {
+        state.currentConfig = val;
+    },
+    setConfigView(state, val) {
+        state.configView = val;
+    },
+    setConfigList(state, val) {
+        state.setConfigList = val;
+    },
+    setConfigurationBusy(state, val) {
+        state.configurationBusy = val;
+    },
     setDefaultBrowserConfig(state, val) {
         state.defaultBrowserConfig = val;
     },
@@ -20,6 +35,15 @@ const actions = {
 
 };
 const getters = {
+    currentConfig(state) {
+        return state.currentConfig;
+    },
+    configView(state) {
+        return state.configView;
+    },
+    configList(state) {
+        return state.configList;
+    },
     defaultBrowserConfig(state) {
         return state.defaultBrowserConfig;
     },

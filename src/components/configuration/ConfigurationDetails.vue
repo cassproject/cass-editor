@@ -3162,6 +3162,9 @@ export default {
         }
     },
     computed: {
+        currentConfig() {
+            return this.$store.getters['configuration/currentConfig'];
+        },
         isSetInstanceDisabled() {
             if (!this.defaultConfigId) { // if there is no default instance set
                 return false;
@@ -3228,6 +3231,7 @@ export default {
     }
 };
 </script>
+
 
 <style lang="scss" scoped>
     @import '@/scss/variables.scss';
