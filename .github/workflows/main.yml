@@ -1,0 +1,39 @@
+name: github pages
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node
+        uses: actions/setup-node@v2.1.2
+        with:
+          node-version: '16.x'
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - run: sed -i 's/\/docs\//\/cass-editor\/docs\//g' ./src/views/Welcome.vue
+      - run: sed -i 's/\/docs\//\/cass-editor\/docs\//g' ./docs/.vuepress/config.js
+      - run: find ./docs -name '*.md' -exec sed -i 's/\/docs\//\/cass-editor\/docs\//g' {} \;
+      - run: export VUE_APP_API_LOGIN_ENABLED=false
+      - run: npm ci
+      - run: npm run docs:build
+      - run: npm run build
+
+      - name: deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
