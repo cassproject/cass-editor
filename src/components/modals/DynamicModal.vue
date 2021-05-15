@@ -7,17 +7,18 @@ To add content to this modal, imort the relevant component and trigger it
 by this.$store.commit('app/showmodal', payload); Where payload at minimum
 returns an object with component: 'View' so the dynamic :is=dynamicModal
 returns content.
+
+Notes: If a modal should go on top of an existing modal - such as some delete / warning modals
+it should always be produced in its own modal as to not replace the existing modal.
 -->
 <template>
-    <div>
-        <Component
-            @create-directory="$emit('create-directory', $event)"
-            view="modal"
-            @close="$emit('app/closeModal')"
-            @cancel="$emit('app/closeModal')"
-            :content="dynamicModalContent"
-            :is="dynamicModal" />
-    </div>
+    <Component
+        @create-directory="$emit('create-directory', $event)"
+        view="modal"
+        @close="$emit('app/closeModal')"
+        @cancel="$emit('app/closeModal')"
+        :content="dynamicModalContent"
+        :is="dynamicModal" />
 </template>
 
 <script>

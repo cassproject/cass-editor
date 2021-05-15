@@ -22,6 +22,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 v-if="$store.state.lode.competencySearchModalOpen"
                 :type="searchTypeToPassToList"
                 view="search"
+                :parent="parent"
                 :repo="repo"
                 :click="select"
                 :searchOptions="searchOptions"
@@ -40,12 +41,14 @@ placed anywhere in a structured html element such as a <section> or a <div>
         </div>
         <div v-show="hierarchyLoaded">
             <Thing
+                :parent="parent"
                 v-if="selectedFramework"
                 :obj="selectedFramework"
                 :repo="repo"
                 :view="view"
                 :expandInModal="true" />
             <Hierarchy
+                :parent="parent"
                 :container="selectedFramework"
                 view="competencySearch"
                 containerType="Framework"
@@ -79,6 +82,10 @@ import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: 'CompetencySearch',
     props: {
+        parent: {
+            type: String,
+            default: ''
+        },
         isActive: Boolean,
         view: {
             type: String,
@@ -638,6 +645,11 @@ export default {
                     this.showMine = true;
                     this.displayFirst.splice(0, this.displayFirst.length);
                 }
+            }
+        },
+        selectedIds(newVal) {
+            if (this.parent === 'search-modal') {
+                this.$emit('setSelectedIds', newVal);
             }
         }
     }

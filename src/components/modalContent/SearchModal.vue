@@ -15,6 +15,9 @@
         </template>
         <template slot="modal-body">
             <search
+                ref="search"
+                @setSelectedIds="selectedIds = $event"
+                parent="search-modal"
                 :allowShowFrameworks="true" />
         </template>
         <template slot="modal-foot">
@@ -31,7 +34,7 @@
                     class="button is-outlined is-primary"
                     v-if="copyOrLink"
                     :disabled="!selectedIds || selectedIds.length === 0"
-                    @click="copyCompetencies(selectedIds); resetModal();">
+                    @click="copyCompetencies()">
                     <span class="icon">
                         <i class="fa fa-copy" />
                     </span>
@@ -94,9 +97,9 @@ export default {
         }
     },
     methods: {
-        resetModal: function() {
-            this.$store.commit('app/closeModal');
-            this.selectedIds = [];
+        copyCompetencies() {
+            this.$refs.search.copyCompetencies(this.selectedIds);
+            this.$refs.resetModal();
         },
         closeModal: function() {
             this.$store.commit('app/closeModal');

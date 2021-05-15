@@ -3,23 +3,6 @@
         <div
             class="hierarchy-buttons">
             <div class="columns is-gapless is-paddingless is-mobile is-marginless is-paddingless">
-                <!-- CONTROLS FOR SELECT: ENABLED MULTI EDIT  -->
-                <div class="column is-narrow">
-                    <div
-                        v-if="(canEdit && view !== 'importPreview' && view !== 'importLight' && view !== 'crosswalk') || queryParams.select"
-                        class="check-radio-all-column">
-                        <div
-                            class="field">
-                            <input
-                                class="is-checkradio"
-                                id="selectAllCheckbox"
-                                type="checkbox"
-                                name="selectAllCheckbox"
-                                v-model="selectAll">
-                            <label for="selectAllCheckbox" />
-                        </div>
-                    </div>
-                </div>
                 <!-- CONTROLS FOR EXPAND  -->
                 <div class="column is-narrow">
                     <div
@@ -44,6 +27,23 @@
                         @click="$emit('select-button-click', selectedArray)"
                         class="button is-outlined is-primary">
                         {{ selectButtonText }}
+                    </div>
+                </div>
+                <!-- CONTROLS FOR SELECT: ENABLED MULTI EDIT  -->
+                <div class="column is-narrow">
+                    <div
+                        v-if="(canEdit && view !== 'importPreview' && view !== 'importLight' && view !== 'crosswalk') || queryParams.select || view === 'competencySearch'"
+                        class="pl-2 check-radio-all-column">
+                        <div
+                            class="field">
+                            <input
+                                class="is-checkradio"
+                                id="selectAllCheckbox"
+                                type="checkbox"
+                                name="selectAllCheckbox"
+                                v-model="selectAll">
+                            <label for="selectAllCheckbox" />
+                        </div>
                     </div>
                 </div>
                 <!-- CROSSWALK CHANGE FRAMEWORK BUTTONS -->
@@ -314,6 +314,7 @@
                     type="transition"
                     :name="!dragging ? 'flip-list' : null">-->
                 <HierarchyNode
+                    :depth="1"
                     :view="view"
                     @create-new-node-event="onCreateNewNode"
                     :subview="subview"

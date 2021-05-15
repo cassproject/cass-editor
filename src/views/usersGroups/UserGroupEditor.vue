@@ -690,11 +690,11 @@
     </div>
 </template>
 <script>
-import CassPanel from '../../components/Panel';
-import CassPanelItem from '../../components/PanelItem';
-import CassDropdown from '../../components/Dropdown';
-import CassDropdownItem from '../../components/DropdownItem';
-import {cassUtil} from '../../mixins/cassUtil';
+import CassPanel from '@/components/Panel';
+import CassPanelItem from '@/components/PanelItem';
+import CassDropdown from '@/components/Dropdown';
+import CassDropdownItem from '@/components/DropdownItem';
+import {cassUtil} from '@/mixins/cassUtil';
 
 export default {
     name: 'UserGroupEditor',

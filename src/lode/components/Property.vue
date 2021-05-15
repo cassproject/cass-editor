@@ -297,6 +297,8 @@ TO DO MAYBE: Separate out property by editing or not.
     </div>
 </template>
 <script>
+import '@/scss/property.scss';
+
 export default {
     // Property represents one property of a Thing.
     name: 'Property',

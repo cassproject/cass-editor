@@ -1,7 +1,6 @@
 <template>
     <li
         :class="[isPotentialCrosswalkTarget ? crosswalkTargetClass : '', editingNodeClass
-
         ]"
         v-cloak
         :id="obj.shortId()">
@@ -27,25 +26,6 @@
                 :id="obj.shortId() === newCompetency ? 'scroll-newCompetency' : null">
                 <div class="section is-paddingless">
                     <div class="columns is-paddingless is-gapless is-marginless is-mobile is-multiline">
-                        <!-- CONTROLS FOR SELECT -->
-                        <div
-                            class="check-radio-column column is-narrow is-vcentered">
-                            <div
-                                v-if="(canEdit && view !== 'crosswalk' && view !== 'importPreview' && view !== 'importLight') || queryParams.select || view === 'competencySearch'"
-                                class="field">
-                                <input
-                                    class="is-checkradio"
-                                    @focus="focusHierarchyItem()"
-                                    tabindex="0"
-                                    @blur="unfocusHierarchyItem()"
-                                    :class="{'is-focused': isItemFocused}"
-                                    :id="obj.shortId() + 'checkbox'"
-                                    type="checkbox"
-                                    :name="obj.shortId() + 'checkbox'"
-                                    v-model="checked">
-                                <label :for="obj.shortId() + 'checkbox'" />
-                            </div>
-                        </div>
                         <!-- CONTROLS FOR EXPAND -->
                         <div class="expand-column column is-narrow is-vcentered">
                             <div
@@ -66,8 +46,27 @@
                             </div>
                             <div
                                 v-else
-                                class="icon is-vcentered is-dark">
-                                <i class="fa fa-circle has-text-black is-size-7" />
+                                class="icon is-vcentered is-transparent">
+                                <i class="fa fa-circle has-text-white is-size-7" />
+                            </div>
+                        </div>
+                        <!-- CONTROLS FOR SELECT -->
+                        <div
+                            class="check-radio-column column is-narrow is-vcentered">
+                            <div
+                                v-if="(canEdit && view !== 'crosswalk' && view !== 'importPreview' && view !== 'importLight') || queryParams.select || view === 'competencySearch'"
+                                class="field">
+                                <input
+                                    class="is-checkradio"
+                                    @focus="focusHierarchyItem()"
+                                    tabindex="0"
+                                    @blur="unfocusHierarchyItem()"
+                                    :class="{'is-focused': isItemFocused}"
+                                    :id="obj.shortId() + 'checkbox'"
+                                    type="checkbox"
+                                    :name="obj.shortId() + 'checkbox'"
+                                    v-model="checked">
+                                <label :for="obj.shortId() + 'checkbox'" />
                             </div>
                         </div>
                         <!-- end controls for select and expand -->
@@ -76,6 +75,7 @@
                                 :filter="filter"
                                 :is="dynamicThing"
                                 :view="view"
+                                :style="{ transform: indent, width: calcWidth }"
                                 :subview="subview"
                                 :id="'scroll-' + obj.shortId().split('/').pop()"
                                 :obj="changedObj ? changedObj : obj"
@@ -312,6 +312,7 @@
                     type="transition"
                     :name="!dragging ? 'flip-list' : null">-->
                 <HierarchyNode
+                    :depth="depth + 1"
                     :view="view"
                     :filter="filter"
                     :subview="subview"
@@ -357,6 +358,7 @@ import {mapState} from 'vuex';
 export default {
     name: "HierarchyNode",
     props: {
+        depth: Number,
         obj: Object,
         filter: {
             type: String,
@@ -436,6 +438,12 @@ export default {
         };
     },
     computed: {
+        indent() {
+            return `translate(${(this.depth * 16 - 16)}px)`;
+        },
+        calcWidth() {
+            return `calc(100% - ${(this.depth * 16 - 16)}px) !important`;
+        },
         ...mapState({
             workingAlignmentsSource: state => state.crosswalk.workingAlignmentsMap.source,
             workingAlignmentsTargets: state => state.crosswalk.workingAlignmentsMap.targets,

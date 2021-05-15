@@ -1,5 +1,7 @@
 <template>
-    <div class="cass--list--container">
+    <div
+        class="cass--list--container"
+        :class="parent">
         <div
             class="section has-text-centered"
             v-if="firstSearchProcessing">
@@ -46,6 +48,7 @@
                                 v-if="selectingCompetency || item.parentDirectory"
                                 :competency="item" />
                             <Thing
+                                :parent="parent"
                                 :obj="item"
                                 @dblclick.native="$emit('dblclick', item)"
                                 :view="view"
@@ -160,6 +163,10 @@ import {cassUtil} from '@/mixins/cassUtil.js';
 export default {
     name: 'List',
     props: {
+        parent: {
+            type: String,
+            default: ''
+        },
         type: String,
         repo: Object,
         profile: Object,

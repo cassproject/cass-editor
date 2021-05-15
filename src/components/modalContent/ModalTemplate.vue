@@ -29,7 +29,7 @@
 </template>
 
 <script>
-
+import '@/scss/modal-template.scss';
 export default {
     name: 'ModalTemplate',
     props: {
