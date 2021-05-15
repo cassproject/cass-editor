@@ -157,13 +157,13 @@ export default {
             // Validate input
             if (range.length === 1 && (range[0] === "http://schema.org/URL" ||
             range[0].toLowerCase().indexOf("concept") !== -1 || range[0].toLowerCase().indexOf("competency") !== -1 ||
-            range[0].toLowerCase().indexOf("level") !== -1)) {
+            (range[0].toLowerCase().indexOf("level") !== -1 && !this.checkedOptions))) {
                 if (value.indexOf("http") === -1) {
                     this.addedPropertiesAndValues[index].error = "This property must be a URL. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.";
                     return;
                 }
             }
-            if (range[0].toLowerCase().indexOf("level") !== -1) {
+            if (range[0].toLowerCase().indexOf("level") !== -1 && !this.checkedOptions) {
                 var level = EcLevel.getBlocking(value);
                 if (!level) {
                     this.addedPropertiesAndValues[index].error = "This URL must be a Level that is already in the system.";
@@ -211,13 +211,29 @@ export default {
             }
             return true;
         },
+        applyCheckedOptions: function() {
+            let me = this;
+            for (var j = 0; j < me.addedPropertiesAndValues.length; j++) {
+                var property = me.addedPropertiesAndValues[j].property.value;
+                if (me.profile && me.profile[property]["add"]) {
+                    var f = me.profile[property]["add"];
+                    if (f === "checkedOptions") {
+                        let save = me.profile[property]["save"];
+                        save(me.selectedCompetencies, me.checkedOptions, me.profile[property]["options"]);
+                    }
+                }
+            }
+        },
         applyToMultiple: function() {
             var me = this;
             this.errorMessage = [];
             if (me.addedPropertiesAndValues.length === 0 || (me.addedPropertiesAndValues[0].property === "")) {
-                return me.addErrorMessage("Saving to multiple required a property and value.");
+                return me.addErrorMessage("Saving to multiple requires a property and value.");
             }
             this.isProcessing = true;
+            if (me.checkedOptions) {
+                this.applyCheckedOptions();
+            }
             for (var i = 0; i < this.selectedCompetencies.length; i++) {
                 var competencyId = this.selectedCompetencies[i];
                 EcRepository.get(competencyId, function(competency) {
@@ -269,9 +285,7 @@ export default {
                             }
                             if (me.profile && me.profile[property]["save"]) {
                                 var f = me.profile[property]["save"];
-                                if (me.checkedOptions) {
-                                    f(expandedCompetency, me.checkedOptions, me.profile[property]["options"]);
-                                } else {
+                                if (!me.checkedOptions) {
                                     f();
                                 }
                             }
@@ -384,7 +398,7 @@ export default {
                 if (this.changedItemsForUndo) {
                     this.$store.commit('editor/addEditsToUndo', this.changedItemsForUndo);
                 }
-                if (!me.errorMessage || me.errorMessage.length === 0) {
+                if (!this.errorMessage || this.errorMessage.length === 0) {
                     this.$store.commit('app/closeModal');
                 }
             }
