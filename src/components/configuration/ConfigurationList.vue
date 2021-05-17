@@ -62,13 +62,29 @@ export default {
         }
     },
     computed: {
-        ...mapGetters([
-            'CONFIG_SEARCH_SIZE',
-            'DEFAULT_CONFIGURATION_TYPE',
-            'DEFAULT_CONFIGURATION_CONTEXT',
-            'LANG_STRING_TYPE',
-            'DEFAULT_HEADING'
-        ]),
+        ...mapGetters({
+            CONFIG_SEARCH_SIZE: 'configuration/CONFIG_SEARCH_SIZE',
+            DEFAULT_CONFIGURATION_TYPE: 'configuration/DEFAULT_CONFIGURATION_TYPE',
+            DEFAULT_CONFIGURATION_CONTEXT: 'configuration/DEFAULT_CONFIGURATION_CONTEXT',
+            LANG_STRING_TYPE: 'configuration/LANG_STRING_TYPE',
+            DEFAULT_HEADING: 'configuration/DEFAULT_HEADING'
+        }),
+        showConfirmDeleteConfigModal: {
+            get() {
+                return this.$store.getters['configuration/showConfirmDeleteConfigModal'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setShowConfirmDeleteConfigModal', val);
+            }
+        },
+        configToDelete: {
+            get() {
+                return this.$store.getters['configuration/configToDelete'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setConfigToDelete', val);
+            }
+        },
         configViewMode() {
             return this.$store.getters['configuration/configView'];
         },
@@ -87,8 +103,6 @@ export default {
         showBrowserConfigSetModal: false,
         defaultBrowserConfigName: '',
         frameworkConfigId: '',
-        configToDelete: {},
-        showConfirmDeleteConfigModal: false,
         showMustBeLoggedInModal: false,
         enforceHeadings: false
     }),

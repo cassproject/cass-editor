@@ -2336,10 +2336,10 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce';
 import FrameworkCompetencyPropertyListItem from "./FrameworkCompetencyPropertyListItem";
 import RelationshipListItem from "./RelationshipListItem";
 import {cassUtil} from '../../mixins/cassUtil';
+import {mapGetters} from 'vuex';
 
 export default {
     mixins: [cassUtil],
@@ -2371,13 +2371,6 @@ export default {
             customPropertyValuesLimited: false,
             showManageRelationshipsModal: false,
             tab: 'general',
-            LEVEL_SEARCH_SIZE: 10000,
-            GROUP_SEARCH_SIZE: 10000,
-            PERSON_SEARCH_SIZE: 10000,
-            DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'https://schema.cassproject.org/0.4/',
-            DEFAULT_CUSTOM_PROPERTY_RANGE: 'http://schema.org/Text',
-            LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
-            DEFAULT_HEADING: "General",
             configDetailsBusy: false,
             configInvalid: false,
             configNameInvalid: false,
@@ -3162,8 +3155,26 @@ export default {
         }
     },
     computed: {
-        currentConfig() {
-            return this.$store.getters['configuration/currentConfig'];
+        ...mapGetters({
+            LANG_STRING_RANGE: 'configuration/LANG_STRING_RANGE',
+            CONFIG_SEARCH_SIZE: 'configuration/CONFIG_SEARCH_SIZE',
+            DEFAULT_CONFIGURATION_TYPE: 'configuration/DEFAULT_CONFIGURATION_TYPE',
+            DEFAULT_CONFIGURATION_CONTEXT: 'configuration/DEFAULT_CONFIGURATION_CONTEXT',
+            LANG_STRING_TYPE: 'configuration/LANG_STRING_TYPE',
+            DEFAULT_HEADING: 'configuration/DEFAULT_HEADING',
+            LEVEL_SEARCH_SIZE: 'configuration/LEVEL_SEARCH_SIZE',
+            GROUP_SEARCH_SIZE: 'configuration/GROUP_SEARCH_SIZE',
+            PERSON_SEARCH_SIZE: 'configuration/PERSON_SEARCH_SIZE',
+            DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'configuration/DEFAULT_CUSTOM_PROPERTY_CONTEXT',
+            DEFAULT_CUSTOM_PROPERTY_RANGE: 'configuration/DEFAULT_CUSTOM_PROPERTY_RANGE'
+        }),
+        currentConfig: {
+            get() {
+                return this.$store.getters['configuration/currentConfig'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setCurrentConfig', val);
+            }
         },
         isSetInstanceDisabled() {
             if (!this.defaultConfigId) { // if there is no default instance set

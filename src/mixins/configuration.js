@@ -43,7 +43,7 @@ export const configuration = {
             this.showConfirmDeleteConfigModal = false;
         },
         setConfigToDelete(configId) {
-            this.configToDelete = this.getConfigById(configId);
+            this.$store.commit('configuration/setConfigToDelete', this.getConfigById(configId));
         },
         showDeleteConfirm(configId) {
             this.setConfigToDelete(configId);
@@ -864,7 +864,7 @@ export const configuration = {
         },
         buildConfigListFromRepository() {
             let paramObj = {};
-            paramObj.size = this.CONFIG_SEARCH_SIZE;
+            paramObj.size = this.buildConfigListFromRepository_SIZE;
             window.repo.searchWithParams("@type:Configuration", paramObj, null, this.searchRepositoryForConfigsSuccess, this.searchRepositoryForConfigsFailure);
         },
         buildConfigList() {
