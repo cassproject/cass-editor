@@ -98,6 +98,10 @@ export default {
         allowShowFrameworks: {
             type: Boolean,
             default: false
+        },
+        clearFramework: {
+            type: Boolean,
+            default: false
         }
     },
     components: {List, SearchBar, Hierarchy, Thing},
@@ -276,6 +280,7 @@ export default {
         },
         selectFramework: function(framework) {
             this.selectedFramework = framework;
+            this.$emit('selectFramework', framework);
         },
         addRelations: function() {
             if (this.searchFrameworksInCompetencySearch && this.selectedFramework.relation) {
@@ -650,6 +655,11 @@ export default {
         selectedIds(newVal) {
             if (this.parent === 'search-modal') {
                 this.$emit('setSelectedIds', newVal);
+            }
+        },
+        clearFramework() {
+            if (this.clearFramework) {
+                this.selectFramework(null);
             }
         }
     }

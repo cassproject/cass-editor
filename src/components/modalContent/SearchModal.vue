@@ -14,7 +14,10 @@
             </p>
         </template>
         <template slot="modal-body">
-            <button class="button is-dark is-outlined is-small is-pulled-right">
+            <button
+                class="button is-dark is-outlined is-small is-pulled-right"
+                v-if="(selectedIds && selectedIds.length) || frameworkIsSelected"
+                @click="clickClearFramework">
                 <span class="icon">
                     <i class="fa fa-times" />
                 </span>
@@ -26,7 +29,9 @@
                 ref="search"
                 @setSelectedIds="selectedIds = $event"
                 parent="search-modal"
-                :allowShowFrameworks="true" />
+                :allowShowFrameworks="true"
+                :clearFramework="clearFramework"
+                @selectFramework="setFrameworkIsSelected" />
         </template>
         <template slot="modal-foot">
             <div class="buttons">
@@ -77,7 +82,9 @@ export default {
     name: 'SearchModal',
     data() {
         return {
-            selectedIds: []
+            selectedIds: [],
+            clearFramework: false,
+            frameworkIsSelected: false
         };
     },
     components: {
@@ -118,6 +125,20 @@ export default {
         },
         closeModal: function() {
             this.$store.commit('app/closeModal');
+        },
+        clickClearFramework: function() {
+            this.selectedIds.splice(0, this.selectedIds.length);
+            this.clearFramework = true;
+            this.$nextTick(() => {
+                this.clearFramework = false;
+            });
+        },
+        setFrameworkIsSelected: function(val) {
+            if (val) {
+                this.frameworkIsSelected = true;
+            } else {
+                this.frameworkIsSelected = false;
+            }
         }
     }
 };
