@@ -16,12 +16,20 @@ const state = {
     configView: 'list',
     currentConfig: {},
     showConfirmDeleteConfigModal: false,
+    showMustBeLoggedInModal: false,
+    showBrowserConfigSetModal: false,
     configToDelete: {}
 };
 
 const mutations = {
     setConfigToDelete(state, val) {
         state.configToDelete = val;
+    },
+    setShowMustBeLoggedInModal(state, val) {
+        state.showMustBeLoggedInModal = val;
+    },
+    setShowBrowserConfigSetModal(state, val) {
+        state.showBrowserConfigSetModal = val;
     },
     setShowConfirmDeleteConfigModal(state, val) {
         state.showConfirmDeleteConfigModal = val;
@@ -57,6 +65,12 @@ const getters = {
     },
     showConfirmDeleteConfigModal: function(state) {
         return state.showConfirmDeleteConfigModal;
+    },
+    showMustBeLoggedInModal: function(state) {
+        return state.showMustBeLoggedInModal;
+    },
+    showBrowserConfigSetModal: function(state) {
+        return state.showBrowserConfigSetModal;
     },
     LEVEL_SEARCH_SIZE: function(state) {
         return state.LEVEL_SEARCH_SIZE;

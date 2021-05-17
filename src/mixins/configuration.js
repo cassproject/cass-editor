@@ -873,20 +873,20 @@ export const configuration = {
             this.buildConfigListFromRepository();
         },
         closeBrowserConfigSetModal() {
-            this.showBrowserConfigSetModal = false;
+            this.$store.commit('configuration/setShowConfirmDeleteConfigModal', false);
         },
         setConfigAsBrowserDefault(configId) {
             let bdc = this.getConfigById(configId);
             this.setDefaultBrowserConfigId(configId);
             this.defaultBrowserConfigName = bdc.name;
             this.$store.commit('configuration/setLocalDefaultBrowserConfig', configId);
-            this.showBrowserConfigSetModal = true;
+            this.$store.commit('configuration/setShowBrowserConfigSetModal', true);
         },
         removeConfigAsBrowserDefault(configId) {
             this.removeDefaultBrowserConfig();
-            this.defaultBrowserConfigName = '';
+            this.$store.commit('configuration/setDefaultBrowserConfigName', '');
             this.$store.commit('configuration/setLocalDefaultBrowserConfig', '');
-            this.showBrowserConfigSetModal = false;
+            this.$store.commit('configuration/setShowBrowserConfigSetModal', false);
         },
         setConfigAsFrameworkDefault(configId) {
             let me = this;
@@ -915,7 +915,7 @@ export const configuration = {
                 if (userIdentity) {
                     framework.addOwner(userIdentity);
                 } else {
-                    this.showMustBeLoggedInModal = true;
+                    this.$store.commit('configuration/setShowMustBeLoggedInModal', true);
                     return false;
                 }
             }

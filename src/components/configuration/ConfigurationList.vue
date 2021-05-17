@@ -69,12 +69,36 @@ export default {
             LANG_STRING_TYPE: 'configuration/LANG_STRING_TYPE',
             DEFAULT_HEADING: 'configuration/DEFAULT_HEADING'
         }),
+        defaultBrowserConfigName: {
+            get() {
+                return this.$store.getters['configuration/defaultBrowserConfigName'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setDefaultBrowserConfigName', val);
+            }
+        },
         showConfirmDeleteConfigModal: {
             get() {
                 return this.$store.getters['configuration/showConfirmDeleteConfigModal'];
             },
             set(val) {
                 this.$store.commit('configuration/setShowConfirmDeleteConfigModal', val);
+            }
+        },
+        showBrowserConfigSetModal: {
+            get() {
+                return this.$store.getters['configuration/showBrowserConfigSetModal'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setShowBrowserConfigSetModal', val);
+            }
+        },
+        showMustBeLoggedInModal: {
+            get() {
+                return this.$store.getters['configuration/showMustBeLoggedInModal'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setShowMustBeLoggedInModal', val);
             }
         },
         configToDelete: {
@@ -100,10 +124,7 @@ export default {
         configList: [],
         complexConfigObject: {},
         defaultConfigId: null,
-        showBrowserConfigSetModal: false,
-        defaultBrowserConfigName: '',
         frameworkConfigId: '',
-        showMustBeLoggedInModal: false,
         enforceHeadings: false
     }),
     mixins: [cassUtil, configuration]

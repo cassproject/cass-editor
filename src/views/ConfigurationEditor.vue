@@ -27,8 +27,8 @@
         <configuration-set-success
             :name="defaultBrowserConfigName"
             v-if="showBrowserConfigSetModal"
-            @ok="closeBrowserConfigSetModal"
-            @close="closeBrowserConfigSetModal"
+            @ok="showBrowserConfigSetModal = false"
+            @close="showBrowserConfigSetModal = false"
             @cancel="closeBrowserConfigSetModal" />
         <!-- configuration editor content-->
         <section
@@ -105,12 +105,36 @@ export default {
         configViewMode() {
             return this.$store.getters['configuration/configView'];
         },
+        defaultBrowserConfigName: {
+            get() {
+                return this.$store.getters['configuration/defaultBrowserConfigName'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setDefaultBrowserConfigName', val);
+            }
+        },
         showConfirmDeleteConfigModal: {
             get() {
                 return this.$store.getters['configuration/showConfirmDeleteConfigModal'];
             },
             set(val) {
                 this.$store.commit('configuration/setShowConfirmDeleteConfigModal', val);
+            }
+        },
+        showBrowserConfigSetModal: {
+            get() {
+                return this.$store.getters['configuration/showBrowserConfigSetModal'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setShowBrowserConfigSetModal', val);
+            }
+        },
+        showMustBeLoggedInModal: {
+            get() {
+                return this.$store.getters['configuration/showMustBeLoggedInModal'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setShowMustBeLoggedInModal', val);
             }
         },
         configToDelete: {
@@ -138,10 +162,7 @@ export default {
         configList: [],
         complexConfigObject: {},
         defaultConfigId: null,
-        showBrowserConfigSetModal: false,
-        defaultBrowserConfigName: '',
         frameworkConfigId: '',
-        showMustBeLoggedInModal: false,
         enforceHeadings: false
     }),
     components: {
