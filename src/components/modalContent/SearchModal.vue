@@ -54,7 +54,7 @@
                     class="button is-outlined is-primary"
                     v-if="copyOrLink"
                     :disabled="!selectedIds || selectedIds.length === 0"
-                    @click="appendCompetencies(selectedIds); resetModal();">
+                    @click="appendCompetencies(selectedIds);">
                     <span class="icon">
                         <i class="fa fa-link" />
                     </span>
@@ -107,7 +107,14 @@ export default {
     methods: {
         copyCompetencies() {
             this.$refs.search.copyCompetencies(this.selectedIds);
-            this.$refs.resetModal();
+            this.$refs.search.resetModal();
+        },
+        resetModal() {
+            this.$refs.search.resetModal();
+        },
+        appendCompetencies() {
+            this.$refs.search.appendCompetencies(this.selectedIds);
+            this.$refs.search.resetModal();
         },
         closeModal: function() {
             this.$store.commit('app/closeModal');
