@@ -213,8 +213,12 @@ export default {
         searchTypeToPassToList: function() {
             if (this.searchType === "Competency" && this.searchFrameworksInCompetencySearch) {
                 return "Framework";
-            } else {
+            } else if (this.searchType === "Competency") {
                 return "Competency";
+            } else if (this.searchType === "Concept") {
+                return "Concept";
+            } else {
+                return '';
             }
         }
     },
