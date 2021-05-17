@@ -9,11 +9,19 @@
                 <br><span
                     class="subtitle has-text-white"
                     v-if="copyOrLink">
-                    {{ frameworkName }}
+                    <b>Editing framework:</b> {{ frameworkName }}
                 </span>
             </p>
         </template>
         <template slot="modal-body">
+            <button class="button is-dark is-outlined is-small is-pulled-right">
+                <span class="icon">
+                    <i class="fa fa-times" />
+                </span>
+                <span>
+                    Clear selection
+                </span>
+            </button>
             <search
                 ref="search"
                 @setSelectedIds="selectedIds = $event"
