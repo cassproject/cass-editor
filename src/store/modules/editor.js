@@ -45,7 +45,8 @@ const state = {
     nodeInFocus: null,
     relations: {},
     setPropertyLevel: null,
-    addAnother: false
+    addAnother: false,
+    itemToDelete: {}
 };
 const mutations = {
     framework(state, f) {
@@ -175,6 +176,9 @@ const mutations = {
     },
     addAnother(state, bool) {
         state.addAnother = bool;
+    },
+    setItemToDelete(state, val) {
+        state.itemToDelete = val;
     }
 };
 const actions = {
@@ -291,6 +295,9 @@ const getters = {
     },
     addAnother: function(state) {
         return state.addAnother;
+    },
+    itemToDelete: function(state) {
+        return state.itemToDelete;
     }
 };
 

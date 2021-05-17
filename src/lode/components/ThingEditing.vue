@@ -1620,7 +1620,13 @@ export default {
                 this.$store.commit('app/editDirectory', false);
                 this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});
             } else {
-                this.showModal('deleteObject');
+                this.$store.commit('editor/setItemToDelete', this.obj);
+                if (this.obj && this.shortType === "Competency") {
+                    this.$store.commit('app/showModal', {component: 'DeleteCompetencyConfirm'});
+                // this.showModal('deleteObject');
+                } else {
+                    this.$store.commit('app/showModal', {component: 'DeleteLevelConfirm'});
+                }
             }
         }
     },

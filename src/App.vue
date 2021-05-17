@@ -7,11 +7,6 @@
             class="cass-modal" />
         <DynamicModal
             @create-directory="saveDirectory" />
-
-        <!-- <router-view
-            :showSideNav="showSideNav"
-            @sideBarEvent="onSidebarEvent"
-            name="topbar" /> -->
         <router-view
             @create-new-framework="createNewFramework"
             @create-new-concept-scheme="createNewConceptScheme"

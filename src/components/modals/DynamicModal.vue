@@ -22,17 +22,6 @@ it should always be produced in its own modal as to not replace the existing mod
 </template>
 
 <script>
-import Share from '@/components/modalContent/Share.vue';
-import MultiEdit from '@/components/modalContent/MultiEdit.vue';
-import SearchModal from '@/components/modalContent/SearchModal.vue';
-import Single from '@/components/modalContent/Single.vue';
-import AddComment from '@/components/modalContent/AddComment.vue';
-import AddDirectory from '@/components/modalContent/AddDirectory.vue';
-import DeleteDirectoryConfirm from '@/components/modalContent/DeleteDirectoryConfirm.vue';
-import DeleteCommentConfirm from '@/components/modalContent/DeleteCommentConfirm.vue';
-import SupportedImportDetails from '@/components/modalContent/SupportedImportDetails.vue';
-import DeleteConfigurationConfirm from '@/components/modalContent/DeleteConfigurationConfirm.vue';
-import FrameworkConfiguration from '@/components/modalContent/FrameworkConfiguration.vue';
 export default {
     name: 'DynamicModal',
     props: {
@@ -46,17 +35,19 @@ export default {
         }
     },
     components: {
-        Share,
-        MultiEdit,
-        SearchModal,
-        AddComment,
-        DeleteCommentConfirm,
-        DeleteDirectoryConfirm,
-        SupportedImportDetails,
-        Single,
-        AddDirectory,
-        DeleteConfigurationConfirm,
-        FrameworkConfiguration
+        'Share': () => import('@/components/modalContent/Share.vue'),
+        'MultiEdit': () => import('@/components/modalContent/MultiEdit.vue'),
+        'SearchModal': () => import('@/components/modalContent/SearchModal.vue'),
+        'AddComment': () => import('@/components/modalContent/AddComment.vue'),
+        'DeleteCommentConfirm': () => import('@/components/modalContent/DeleteCommentConfirm.vue'),
+        'DeleteDirectoryConfirm': () => import('@/components/modalContent/DeleteDirectoryConfirm.vue'),
+        'SupportedImportDetails': () => import('@/components/modalContent/SupportedImportDetails.vue'),
+        'Single': () => ('@/components/modalContent/Single.vue'),
+        'AddDirectory': () => import('@/components/modalContent/AddDirectory.vue'),
+        'DeleteConfigurationConfirm': () => import('@/components/modalContent/DeleteConfigurationConfirm.vue'),
+        'FrameworkConfiguration': () => import('@/components/modalContent/FrameworkConfiguration.vue'),
+        'DeleteCompetencyConfirm': () => import('@/components/modalContent/DeleteCompetencyConfirm.vue'),
+        'DeleteLevelConfirm': () => import('@/components/modalContent/DeleteLevelConfirm.vue')
     },
     data() {
         return {

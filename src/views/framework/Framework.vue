@@ -1,5 +1,7 @@
 <template>
-    <div id="framework">
+    <div
+        ref="framework"
+        id="framework">
         <main-layout
             :rightActive="showRightAside"
             :simple="true">

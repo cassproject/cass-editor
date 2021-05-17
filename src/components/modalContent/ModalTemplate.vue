@@ -1,3 +1,13 @@
+<!--
+The modal template can be used to stylize any modal.
+
+Modals that can be triggered from anywhere in the app
+should be componetized and imported into the DynamicModal.vue
+So they can be triggered from anywhere in the app using the store/app
+
+Modals that are only used in one screen (info on very specific content)
+should be componentized and imported into the screen that needs it.
+-->
 <template>
     <div
         class="modal cass-editor___modal"
@@ -15,7 +25,7 @@
                 </p>
                 <button
                     class="delete"
-                    @click="$emit('close')"
+                    @click="$store.commit('app/closeModal')"
                     aria-label="close" />
             </header>
             <div class="modal-card-body has-text-dark">
@@ -64,6 +74,9 @@ export default {
 </script>
 
 <style lang="scss">
+.cass-editor___modal{
+    z-index: 1000;
+}
 .modal-card.cass-editor__modal-card--small{
     max-width: 600px;
     min-height: 200px;
