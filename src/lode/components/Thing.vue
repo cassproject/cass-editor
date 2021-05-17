@@ -1247,7 +1247,7 @@ export default {
                 if (this.uri) {
                     this.resolveNameFromUrl(this.uri);
                 }
-                var type = "Ec" + this.obj ? this.obj.type : this.shortType;
+                var type = "Ec" + (this.obj ? this.obj.type : this.shortType);
                 if (type && window[type]) {
                     var thing = window[type].getBlocking(this.changedObject);
                     this.obj = thing;
