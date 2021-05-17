@@ -684,6 +684,10 @@ export default {
                 this.moveToTopLevel(id);
                 this.frameworkDrag = [];
             }
+        },
+        configHasLevels: function() {
+            this.gotInitialLevelsRelationsAndAlignments = false;
+            this.preloadRelations();
         }
     },
     methods: {
