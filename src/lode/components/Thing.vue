@@ -34,8 +34,8 @@
                         <i class="fa fa-external-link-alt" />
                     </span>
                 </div>
-                <div
-                    @click="$store.commit('app/showModal', thingAsPropertyModalObject)"
+                <button
+                    @click="clickShowDetails"
                     class="button  is-small is-outlined is-link"
                     v-if="thingAsPropertyModalObject.objectType === 'Competency' || thingAsPropertyModalObject.objectType === 'Concept' || thingAsPropertyModalObject.objectType === 'Level'">
                     <span class="has-text-weight-bold">details</span>
@@ -43,7 +43,7 @@
                         class="icon is-small">
                         <i class="fa fa-info" />
                     </span>
-                </div>
+                </button>
             </span>
             <span
                 class="thing-as-property__text"
@@ -658,6 +658,9 @@ export default {
         }
     },
     methods: {
+        clickShowDetails() {
+            this.$store.commit('app/showModal', this.thingAsPropertyModalObject);
+        },
         goToCompetencyWithinThisFramework: function() {
             // Scroll to competency
             this.$scrollTo("#scroll-" + this.uri.split('/').pop());

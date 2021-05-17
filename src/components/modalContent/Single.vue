@@ -1,21 +1,16 @@
 <template>
-    <div class="single modal-card">
-        <header class="modal-card-head has-background-primary">
-            <p class="modal-card-title has-text-white is-size-2">
-                {{ dynamicModalContent.objectType }}
-            </p>
-            <button
-                @click="$store.commit('app/closeModal')"
-                class="delete"
-                aria-label="close" />
-        </header>
-        <section class="modal-card-body">
-            <div class="section">
-                <template v-if="numberOfParentFrameworks === 0">
-                    <h3 class="title">
-                        Orphan {{ dynamicModalContent.objectType }}
-                    </h3>
-                </template>
+    <modal-template
+        :active="true">
+        <template slot="modal-header">
+            {{ dynamicModalContent.objectType }}
+        </template>
+        <template slot="modal-body">
+            <div class="container">
+                <h3
+                    v-if="numberOfParentFrameworks === 0"
+                    class="title">
+                    Orphan {{ dynamicModalContent.objectType }}
+                </h3>
                 <template v-else-if="dynamicModalContent.type === 'Level'">
                     <h3 class="title">
                         Level
@@ -88,7 +83,7 @@
                             :title="parentFramework.name"
                             class="single__li-a button is-text"
                             @click="goToFramework(parentFramework)">
-                            <span>{{ parentFramework.name }}</span>
+                            <div>{{ parentFramework.name }}</div>
                             <div
                                 :title="parentFramework.name"
                                 class="button is-outlined is-small is-primary">
@@ -103,8 +98,8 @@
                     </li>
                 </ul>
             </div>
-        </section>
-        <footer class="modal-card-foot">
+        </template>
+        <template slot="modal-foot">
             <div class="buttons is-right is-fullwidth">
                 <!--to do, make sure level is updated in framework after
                     edit is made -->
@@ -127,25 +122,31 @@
                     done
                 </button>
             </div>
-        </footer>
-    </div>
+        </template>
+    </modal-template>
 </template>
 
 <script>
 import {mapState} from 'vuex';
-
+import ModalTemplate from './ModalTemplate.vue';
 import Thing from '@/lode/components/Thing.vue';
 import ThingEditing from '@/lode/components/ThingEditing.vue';
 
 export default {
     name: 'Single',
-    components: {Thing, ThingEditing},
+    components: {Thing, ModalTemplate, ThingEditing},
     data() {
         return {
             edit: false,
             parentFrameworks: [],
             repo: window.repo
         };
+    },
+    props: {
+        content: {
+            type: Object,
+            default: function() { return {}; }
+        }
     },
     computed: {
         ...mapState({
@@ -289,16 +290,18 @@ export default {
             padding-left: 0rem;
         }
     }
-    .single__list {
-        width: 100%;
-        .single__list-element {
-            padding: .25rem 0rem;
-            .single__li-a {
-                display: flex;
-                flex-wrap: no-wrap;
-                justify-content: space-between;
-            }
+}
+.single__list {
+    width: 100%;
+    li.single__list-element {
+        padding: .25rem 0rem;
+        a.single__li-a.button {
+            width: 100%;
+            display: flex;
+            flex-wrap: no-wrap;
+            justify-content: space-between;
         }
     }
 }
+
 </style>

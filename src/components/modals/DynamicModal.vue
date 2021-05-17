@@ -12,13 +12,15 @@ Notes: If a modal should go on top of an existing modal - such as some delete / 
 it should always be produced in its own modal as to not replace the existing modal.
 -->
 <template>
-    <Component
-        @create-directory="$emit('create-directory', $event)"
-        view="modal"
-        @close="$emit('app/closeModal')"
-        @cancel="$emit('app/closeModal')"
-        :content="dynamicModalContent"
-        :is="dynamicModal" />
+    <div>
+        <Component
+            @create-directory="$emit('create-directory', $event)"
+            view="modal"
+            @close="$emit('app/closeModal')"
+            @cancel="$emit('app/closeModal')"
+            :content="dynamicModalContent"
+            :is="dynamicModal" />
+    </div>
 </template>
 
 <script>
@@ -42,7 +44,7 @@ export default {
         'DeleteCommentConfirm': () => import('@/components/modalContent/DeleteCommentConfirm.vue'),
         'DeleteDirectoryConfirm': () => import('@/components/modalContent/DeleteDirectoryConfirm.vue'),
         'SupportedImportDetails': () => import('@/components/modalContent/SupportedImportDetails.vue'),
-        'Single': () => ('@/components/modalContent/Single.vue'),
+        'Single': () => import('@/components/modalContent/Single.vue'),
         'AddDirectory': () => import('@/components/modalContent/AddDirectory.vue'),
         'DeleteConfigurationConfirm': () => import('@/components/modalContent/DeleteConfigurationConfirm.vue'),
         'FrameworkConfiguration': () => import('@/components/modalContent/FrameworkConfiguration.vue'),
