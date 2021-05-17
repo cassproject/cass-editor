@@ -63,11 +63,11 @@ export default {
     },
     computed: {
         ...mapGetters([
-            'configSearchSize',
-            'defaultConfigurationType',
+            'CONFIG_SEARCH_SIZE',
+            'DEFAULT_CONFIGURATION_TYPE',
             'DEFAULT_CONFIGURATION_CONTEXT',
-            'langStringRange',
-            'defaultHeading'
+            'LANG_STRING_TYPE',
+            'DEFAULT_HEADING'
         ]),
         configViewMode() {
             return this.$store.getters['configuration/configView'];
@@ -80,10 +80,6 @@ export default {
         }
     },
     data: () => ({
-        DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
-        DEFAULT_CONFIGURATION_TYPE: 'Configuration',
-        LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
-        DEFAULT_HEADING: "General",
         configBusy: false,
         configList: [],
         complexConfigObject: {},
