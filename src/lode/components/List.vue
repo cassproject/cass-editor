@@ -508,9 +508,11 @@ export default {
                                         obj.copyFrom(v.decryptIntoObject());
                                         result = obj;
                                     }
-                                    me.results.push(result);
-                                    me.resultIds.push(result.id);
-                                    me.nonDirectoryResults = true;
+                                    if (result.name !== '') {
+                                        me.results.push(result);
+                                        me.resultIds.push(result.id);
+                                        me.nonDirectoryResults = true;
+                                    }
                                 }
                             }
                         }
