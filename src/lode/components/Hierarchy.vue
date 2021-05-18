@@ -1065,9 +1065,13 @@ export default {
             this.isDraggable = checked;
         },
         clickToSearch: function() {
-            this.$store.commit('editor/selectedCompetency', null);
+            let selected = null;
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                selected = EcRepository.getBlocking(this.selectedArray[0]);
+            }
+            this.$store.commit('editor/selectedCompetency', selected);
             var payload = {
-                selectedCompetency: null,
+                selectedCompetency: selected,
                 searchType: 'Competency',
                 copyOrLink: true,
                 component: 'SearchModal'
