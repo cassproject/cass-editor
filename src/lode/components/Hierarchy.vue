@@ -645,19 +645,8 @@ export default {
         showModal(val, data) {
             let params = {};
             if (val === 'export') {
-                params = {
-                    type: val,
-                    selectedExportOption: '',
-                    title: "Export framework",
-                    exportOptions: this.frameworkExportOptions,
-                    text: "Select a file format to export your framework. Files download locally.",
-                    onConfirm: (e) => {
-                        return this.exportObject(e);
-                    }
-                };
+                this.$store.commit('app/showModal', {title: 'Export Framework', component: 'ExportOptionsModal', exportOptions: this.frameworkExportOptions});
             }
-            // reveal modal
-            this.$modal.show(params);
         },
         openFramework: function() {
             var f = EcFramework.getBlocking(this.container.shortId());

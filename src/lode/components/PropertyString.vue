@@ -368,7 +368,6 @@ export default {
             this.blur();
         },
         showModal(val) {
-            let params = {};
             let expandedValue;
             let me = this;
             if (this.expandedThing) {
@@ -377,32 +376,28 @@ export default {
             if (val === 'remove') {
                 if (expandedValue && this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
                     if (expandedValue.length === 1 || (expandedValue["@value"] && expandedValue["@value"].trim().length === 1)) {
-                        this.showModal("required");
+                        this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
                         return;
                     }
                 }
                 if (!this.newProperty) {
-                    params = {
+                    this.$store.commit('editor/setItemToRemove');
+                    this.$store.commit('app/showModal', {component: 'RemovePropertyConfirm'});
+                    /* params = {
                         type: val,
                         title: "Remove property",
                         text: "Remove this property?",
                         onConfirm: () => {
                             return me.$emit('remove');
                         }
-                    };
+                    };*/
                 } else {
                     return me.$emit('remove');
                 }
             }
             if (val === 'required') {
-                params = {
-                    type: val,
-                    title: "Required property",
-                    text: "This property is required. It cannot be removed."
-                };
+                this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
             }
-            // reveal modal
-            this.$modal.show(params);
         }
     }
 };

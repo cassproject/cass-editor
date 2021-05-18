@@ -771,10 +771,12 @@ export default {
                 if (this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
                     if (this.expandedValue.length === 1 || (this.expandedValue["@value"] && this.expandedValue["@value"].trim().length === 1)) {
                         this.showModal("required");
+                        this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
                         return;
                     }
                 }
-                params = {
+                this.$store.commit('editor/setItemToRemove', {component: 'RemovePropertyConfirm'});
+                /* params = {
                     type: val,
                     title: "Remove property",
                     text: "Remove this property?",
@@ -782,7 +784,7 @@ export default {
                         return this.remove(item);
                     }
                 };
-                this.$modal.show(params);
+                this.$modal.show(params);*/
             }
             if (val === 'required') {
                 params = {

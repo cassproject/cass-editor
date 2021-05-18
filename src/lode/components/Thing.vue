@@ -712,77 +712,40 @@ export default {
             this.$emit('expand-event');
         },
         /*
-             * initialize modal with params this depends on
-             * ./plugins/modalPlugin.js;
-             * can possibly be moved to a mixin
-             * and ./components/CassModal.vue;
-             * can further breakout if we decide to use vuex // plugin is global
-             * this modal depends on cass-editor repo, not sure what we
-             * should do here to future proof the LODE repo. Might be a better solution.
-             */
+        Do not use plugin modal anymore, this has been updated for
+        template based modals
+        */
         showModal(val) {
-            let params = {};
             var me = this;
             if (val === 'deleteObject') {
-                if (this.obj && this.shortType === "Competency") {
-                    repo.search("@type:Framework AND competency:\"" + this.obj.shortId() + "\"", function(f) {}, function(fs) {
-                        var numFrameworks = fs.length;
-                        repo.search("@type:Relation AND (source:\"" + me.obj.shortId() + "\" OR target:\"" + me.obj.shortId() + "\")", function(r) {}, function(rs) {
-                            var numRelations = rs.length;
-                            params = {
-                                type: val,
-                                title: "Delete competency",
-                                text: "Warning! This action deletes the competency in its entirety. This includes " + numRelations + " relationship(s) and " + numFrameworks +
-                                        " framework(s). If you just want to remove the competency from the framework, use the \"remove\" button.",
-                                onConfirm: () => {
-                                    return me.deleteObject();
-                                }
-                            };
-                            me.$modal.show(params);
-                        }, function() {});
-                    }, function() {});
+                if (this.shortType === 'Competency') {
+                    this.$store.commit('app/showModal', {component: 'DeleteCompetencyConfirm'});
                 } else if (this.shortType === "Level") {
-                    repo.search("@type:Framework AND level:\"" + this.originalThing.shortId() + "\"", function(level) {}, function(levels) {
-                        var numFrameworks = levels.length;
-                        params = {
-                            type: val,
-                            title: "Delete level",
-                            text: "Warning! This action deletes the level in its entirety. This includes " + numFrameworks + " framework(s).",
-                            onConfirm: () => {
-                                return me.deleteObject();
-                            }
-                        };
-                        me.$modal.show(params);
-                    }, function() {});
+                    this.$store.commit('app/showModal', {component: 'DeleteLevelConfirm'});
+                } else if (this.shortType === "Framework" || this.shortType === "ConceptScheme" || this.shortType === "Concept") {
+                    let type = this.shortType.toLowerCase();
+                    if (type === "conceptscheme") {
+                        type = "concept scheme";
+                        this.$store.commit('app/showModal', {component: 'DeleteConceptConfirm'});
+                    } else {
+                        this.$store.commit('app/showModal', {component: 'DeleteFrameworkConfirm'});
+                    }
+                } else if (this.shortType === "Directory") {
+                    this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});
                 } else {
+                    // what is this for?
                     return me.deleteObject();
                 }
             } else {
                 if (val === 'removeObject') {
-                    params = {
-                        type: val,
-                        title: "Remove competency",
-                        text: "Removing a competency safely removes it from your framework without removing it from the system.",
-                        onConfirm: () => {
-                            return this.removeObject();
-                        }
-                    };
+                    this.$store.commit('editor/setItemToRemove', this.obj);
+                    this.$store.commit('app/showModal', {component: 'RemoveCompetency'});
                 }
                 if (val === 'export') {
+                    this.$store.commit('editor/setItemToExport', this.expandedThing);
                     appLog("options", typeof this.exportOptions);
-                    params = {
-                        type: val,
-                        selectedExportOption: '',
-                        title: "Export Competency",
-                        exportOptions: this.exportOptions,
-                        text: "Select a file format to export your competency. Files download locally.",
-                        onConfirm: (e) => {
-                            return this.exportObject(e);
-                        }
-                    };
+                    this.$store.commit('app/showModal', {title: 'Export ' + this.shortType, exportOptions: me.exportOptions, component: 'ExportOptionsModal'});
                 }
-                // reveal modal
-                this.$modal.show(params);
             }
         },
         load: function() {

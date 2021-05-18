@@ -46,18 +46,7 @@ export default {
         },
         showModal(val, data) {
             let params = {};
-            if (val === 'export') {
-                params = {
-                    type: val,
-                    selectedExportOption: '',
-                    title: "Export framework",
-                    exportOptions: this.frameworkExportOptions,
-                    text: "Select a file format to export your framework. Files download locally.",
-                    onConfirm: (e) => {
-                        return this.exportObject(e);
-                    }
-                };
-            } else if (val === 'duplicate') {
+            if (val === 'duplicate') {
                 params = {
                     type: val,
                     title: "Duplicate framework",

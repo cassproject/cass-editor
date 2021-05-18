@@ -509,184 +509,196 @@
                 </div>
             </div>
         </div>
+        <!-- confirm lose changes -->
+        <modal-template
+            size="small"
+            :active="showConfirmLoseChangesModal">
+            <template slot="modal-header">
+                Discard Unsaved Changes?
+            </template>
+            <template slot="modal-body">
+                You have unsaved changes.  Cancel to return to group and save changes, or confirm to discard changes.
+            </template>
+            <template slot="modal-foot">
+                <button
+                    class="button is-primary is-outlined"
+                    v-if="toRoute !== ''"
+                    @click="confirmLoseChangesAndNav">
+                    Confirm
+                </button>
+                <button
+                    class="button is-primary is-outlined"
+                    v-else
+                    @click="confirmLoseChanges">
+                    Confirm
+                </button>
+                <button
+                    class="button is-info"
+                    @click="cancelLoseChanges">
+                    cancel
+                </button>
+            </template>
+        </modal-template>
         <!-- busy modal -->
-        <div
-            class="modal"
-            :class="[{'is-active': userGroupBusy}]">
-            <div class="modal-background" />
-            <div class="modal-content has-text-centered">
-                <span class="icon is-large has-text-center has-text-link">
-                    <i class="fas fa-2x fa-spinner is-info fa-pulse" />
-                </span>
-            </div>
-        </div>
+        <modal-template
+            :header="false"
+            :active="userGroupBusy">
+            <template slot="modal-header">
+                Processing Request
+            </template>
+            <template slot="modal-body">
+                <div class="modal-content has-text-centered">
+                    <span class="icon is-large has-text-center has-text-link">
+                        <i class="fas fa-2x fa-spinner is-info fa-pulse" />
+                    </span>
+                </div>
+            </template>
+        </modal-template>
         <!-- add member search modal -->
-        <div
-            class="modal"
-            :class="[{'is-active': showAddMemberModal}]">
-            <div class="modal-background" />
-            <div class="modal-card">
-                <header class="modal-card-head has-background-primary">
-                    <p class="is-size-3 modal-card-title has-text-white">
-                        Add members to '{{ currentUserGroupName }}'
-                        <button
-                            class="delete is-pulled-right"
-                            aria-label="close"
-                            @click="closeAddGroupMemberModal" />
-                    </p>
-                </header>
-                <div class="modal-card-body has-text-dark">
-                    <div
-                        v-if="!(filteredAvailablePersonsForMembership.length === 0 && addMemberPersonFilter === '')"
-                        class="field">
-                        <input
-                            type="text"
-                            class="input"
-                            v-model="addMemberPersonFilter"
-                            placeholder="search for person...">
-                    </div>
-                    <div v-if="filteredAvailablePersonsForMembership.length === 0 && addMemberPersonFilter === ''">
-                        <i class="fa fa-info-circle" /> No group members available. Users must be managers or members of any parent groups in order to be available for sub-groups.
-                    </div>
-                    <div v-if="filteredAvailablePersonsForMembership.length > 0">
-                        <h4 class="header is-size-3">
-                            Available members
-                        </h4>
-                        <div class="table-container">
-                            <table class="table is-hoverable is-fullwidth">
-                                <thead>
-                                    <tr>
-                                        <th title="Add as member">
-                                            <i class="fa fa-user" />
-                                        </th>
-                                        <th title="Add as manager">
-                                            <i class="fa fa-user-shield" />
-                                        </th>
-                                        <th>name</th>
-                                        <th>email</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr
-                                        v-for="(prs, index) in filteredAvailablePersonsForMembership"
-                                        :key="index">
-                                        <th>
-                                            <div class="checkbox">
-                                                <input
-                                                    :id="prs.shortId()"
-                                                    :value="prs.shortId()"
-                                                    name="prs.shortId()"
-                                                    type="checkbox"
-                                                    title="Add as member"
-                                                    @change="removeFromSelectedNewManagers(prs.shortId())"
-                                                    v-model="selectedNewMembers">
-                                            </div>
-                                        </th>
-                                        <th>
-                                            <div class="checkbox">
-                                                <input
-                                                    :id="prs.shortId()"
-                                                    :value="prs.shortId()"
-                                                    name="prs.shortId()"
-                                                    type="checkbox"
-                                                    title="Add as manager"
-                                                    @change="removeFromSelectedNewMembers(prs.shortId())"
-                                                    v-model="selectedNewManagers">
-                                            </div>
-                                        </th>
-                                        <td> {{ prs.getName() }} </td>
-                                        <td> {{ prs.email }} </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
+        <modal-template :active="showAddMemberModal">
+            <template slot="modal-header">
+                <p class="is-size-3 modal-card-title has-text-white">
+                    Add members to '{{ currentUserGroupName }}'
+                    <button
+                        class="delete is-pulled-right"
+                        aria-label="close"
+                        @click="closeAddGroupMemberModal" />
+                </p>
+            </template>
+            <template slot="modal-body">
+                <div
+                    v-if="!(filteredAvailablePersonsForMembership.length === 0 && addMemberPersonFilter === '')"
+                    class="field">
+                    <input
+                        type="text"
+                        class="input"
+                        v-model="addMemberPersonFilter"
+                        placeholder="search for person...">
+                </div>
+                <div v-if="filteredAvailablePersonsForMembership.length === 0 && addMemberPersonFilter === ''">
+                    <i class="fa fa-info-circle" /> No group members available. Users must be managers or members of any parent groups in order to be available for sub-groups.
+                </div>
+                <div v-if="filteredAvailablePersonsForMembership.length > 0">
+                    <h4 class="header is-size-3">
+                        Available members
+                    </h4>
+                    <div class="table-container">
+                        <table class="table is-hoverable is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th title="Add as member">
+                                        <i class="fa fa-user" />
+                                    </th>
+                                    <th title="Add as manager">
+                                        <i class="fa fa-user-shield" />
+                                    </th>
+                                    <th>name</th>
+                                    <th>email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(prs, index) in filteredAvailablePersonsForMembership"
+                                    :key="index">
+                                    <th>
+                                        <div class="checkbox">
+                                            <input
+                                                :id="prs.shortId()"
+                                                :value="prs.shortId()"
+                                                name="prs.shortId()"
+                                                type="checkbox"
+                                                title="Add as member"
+                                                @change="removeFromSelectedNewManagers(prs.shortId())"
+                                                v-model="selectedNewMembers">
+                                        </div>
+                                    </th>
+                                    <th>
+                                        <div class="checkbox">
+                                            <input
+                                                :id="prs.shortId()"
+                                                :value="prs.shortId()"
+                                                name="prs.shortId()"
+                                                type="checkbox"
+                                                title="Add as manager"
+                                                @change="removeFromSelectedNewMembers(prs.shortId())"
+                                                v-model="selectedNewManagers">
+                                        </div>
+                                    </th>
+                                    <td> {{ prs.getName() }} </td>
+                                    <td> {{ prs.email }} </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <footer class="modal-card-foot has-background-light">
-                    <div class="buttons is-right">
-                        <div
-                            v-if="selectedNewMembers.length > 0 || selectedNewManagers.length > 0"
-                            class="button is-outlined is-primary is-small"
-                            @click="applySelectedNewMembersToCurrentUserGroup"
-                            title="Apply new members">
-                            <span class="icon">
-                                <i class="fa fa-save" />
-                            </span>
-                            <span>
-                                apply
-                            </span>
-                        </div>
-                        <div
-                            class="button is-outlined is-small"
-                            @click="closeAddGroupMemberModal"
-                            title="Cancel add new members">
-                            <span class="icon">
-                                <i class="fa fa-times" />
-                            </span>
-                            <span>
-                                cancel
-                            </span>
-                        </div>
-                    </div>
-                </footer>
-            </div>
-        </div>
+            </template>
+            <template slot="modal-foot">
+                <div
+                    v-if="selectedNewMembers.length > 0 || selectedNewManagers.length > 0"
+                    class="button is-outlined is-primary is-small"
+                    @click="applySelectedNewMembersToCurrentUserGroup"
+                    title="Apply new members">
+                    <span class="icon">
+                        <i class="fa fa-save" />
+                    </span>
+                    <span>
+                        apply
+                    </span>
+                </div>
+                <div
+                    class="button is-outlined is-small"
+                    @click="closeAddGroupMemberModal"
+                    title="Cancel add new members">
+                    <span class="icon">
+                        <i class="fa fa-times" />
+                    </span>
+                    <span>
+                        cancel
+                    </span>
+                </div>
+            </template>
+        </modal-template>
         <!-- group deletion confirm modal-->
-        <div
-            class="modal"
-            :class="[{'is-active': showConfirmDeleteUserGroupModal}]">
-            <div class="modal-background" />
-            <div class="modal-card">
-                <header class="modal-card-head has-background-primary">
-                    <p class="modal-card-title">
-                        <span class="title has-text-white">
-                            Delete User Group?
-                        </span>
-                    </p>
-                    <button
-                        class="delete"
-                        @click="closeDeleteGroupConfirmModal"
-                        aria-label="close" />
-                </header>
-                <section class="modal-card-body">
-                    Are you sure you wish to delete the user group <b>'{{ currentUserGroupName }}'</b>?
-                    <div
-                        class="field has-text-danger pt-4"
-                        v-if="deleteConfirmNumberOfSubGroups > 0">
-                        <div class="label has-text-danger">
-                            <i class="fa fa-exclamation-triangle" /> Warning! Deleting this group will also delete all of
-                            its sub-groups (<b>{{ deleteConfirmNumberOfSubGroups }}</b>).  This is non-reversible.
-                        </div>
+        <modal-template :active="showConfirmDeleteUserGroupModal">
+            <template slot="modal-header">
+                Delete User Group?
+            </template>
+            <template slot="modal-body">
+                Are you sure you wish to delete the user group <b>'{{ currentUserGroupName }}'</b>?
+                <div
+                    class="field has-text-danger pt-4"
+                    v-if="deleteConfirmNumberOfSubGroups > 0">
+                    <div class="label has-text-danger">
+                        <i class="fa fa-exclamation-triangle" /> Warning! Deleting this group will also delete all of
+                        its sub-groups (<b>{{ deleteConfirmNumberOfSubGroups }}</b>).  This is non-reversible.
                     </div>
-                </section>
-                <footer class="modal-card-foot">
-                    <div class="buttons is-right">
-                        <div
-                            class="button is-outlined"
-                            @click="closeDeleteGroupConfirmModal"
-                            title="Cancel user group delete">
-                            <span class="icon">
-                                <i class="fa fa-times" />
-                            </span>
-                            <span>
-                                cancel
-                            </span>
-                        </div>
-                        <div
-                            class="button is-outlined is-warning"
-                            @click="deleteCurrentUserGroupAndSubGroups"
-                            title="Confirm user group delete">
-                            <span class="icon">
-                                <i class="fa fa-trash" />
-                            </span>
-                            <span>
-                                delete
-                            </span>
-                        </div>
-                    </div>
-                </footer>
-            </div>
-        </div>
+                </div>
+            </template>
+            <template slot="modal-foot">
+                <div
+                    class="button is-outlined"
+                    @click="closeDeleteGroupConfirmModal"
+                    title="Cancel user group delete">
+                    <span class="icon">
+                        <i class="fa fa-times" />
+                    </span>
+                    <span>
+                        cancel
+                    </span>
+                </div>
+                <div
+                    class="button is-outlined is-warning"
+                    @click="deleteCurrentUserGroupAndSubGroups"
+                    title="Confirm user group delete">
+                    <span class="icon">
+                        <i class="fa fa-trash" />
+                    </span>
+                    <span>
+                        delete
+                    </span>
+                </div>
+            </template>
+        </modal-template>
     </div>
 </template>
 <script>
@@ -695,11 +707,15 @@ import CassPanelItem from '@/components/PanelItem';
 import CassDropdown from '@/components/Dropdown';
 import CassDropdownItem from '@/components/DropdownItem';
 import {cassUtil} from '@/mixins/cassUtil';
+import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 
 export default {
     name: 'UserGroupEditor',
     mixins: [cassUtil],
     data: () => ({
+        toId: '',
+        toRoute: '',
+        showConfirmLoseChangesModal: false,
         displayLength: 300,
         showMore: false,
         groupsDropdownActive: false,
@@ -749,7 +765,8 @@ export default {
         CassPanel,
         CassPanelItem,
         CassDropdown,
-        CassDropdownItem
+        CassDropdownItem,
+        ModalTemplate
     },
     computed: {
         getCreateUserGroupButtonTitle: function() {
@@ -768,7 +785,8 @@ export default {
     },
     beforeRouteLeave(to, from, next) {
         if (this.currentUserGroupChanged) {
-            this.saveWorkBeforeNav(to);
+            this.toRoute = to;
+            this.showConfirmLoseChangesModal = true;
         } else {
             next();
         }
@@ -1151,7 +1169,8 @@ export default {
         },
         showGroupDetailsById(id) {
             if (this.currentUserGroupChanged) {
-                this.showModal(id);
+                this.toId = id;
+                this.showConfirmLoseChanges(id);
             } else {
                 this.switchUserGroupDetailsById(id);
                 this.groupsDropdownActive = false;
@@ -1167,38 +1186,23 @@ export default {
                 appLog('Cannot find user group: ' + id);
             }
         },
-        saveWorkBeforeNav(val) {
-            let params = {};
-            var me = this;
-            appLog("modal");
-            params = {
-                type: 'removeObject',
-                selectedExportOption: '',
-                title: "Discard unsaved changes?",
-                text: "You have unsaved changes.  Cancel to return to group and save changes, or confirm to discard changes.",
-                onConfirm: () => {
-                    this.currentUserGroupChanged = false;
-                    return this.$router.push(val.name);
-                }
-            };
-            // reveal modal
-            this.$modal.show(params);
+        showConfirmLoseChanges(val) {
+            this.toId = val;
+            this.showConfirmLoseChangesModal = true;
         },
-        showModal(val) {
-            let params = {};
-            var me = this;
-            appLog("modal");
-            params = {
-                type: 'removeObject',
-                selectedExportOption: '',
-                title: "Discard unsaved changes?",
-                text: "You have unsaved changes.  Cancel to return to group and save changes, or confirm to discard changes.",
-                onConfirm: () => {
-                    return this.switchUserGroupDetailsById(val);
-                }
-            };
-            // reveal modal
-            this.$modal.show(params);
+        confirmLoseChanges() {
+            this.switchUserGroupDetailsById(this.toId);
+            this.toId = '';
+            this.showConfirmLoseChangesModal = false;
+        },
+        confirmLoseChangesAndNav() {
+            this.showConfirmLoseChangesModal = false;
+            this.currentUserGroupChanged = false;
+            this.$router.push(this.toRoute.name);
+        },
+        cancelLoseChanges() {
+            this.toId = '';
+            this.showConfirmLoseChangesModal = false;
         },
         sortUserGroupList(userGroupList) {
             let me = this;

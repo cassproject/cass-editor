@@ -982,10 +982,10 @@ export default {
             }
         },
         onOpenExportModal() {
-            let params = {};
             var me = this;
             appLog("options", typeof me.conceptSchemeExportOptions);
-            params = {
+            this.$store.commit('app/showModal', {component: 'ExportOptionsModal', title: 'Export Concept Scheme', exportOptions: me.conceptSchemeExportOptions});
+            /* params = {
                 type: "export",
                 selectedExportOption: '',
                 title: "Export Concept Scheme",
@@ -996,7 +996,7 @@ export default {
                 }
             };
             // reveal modal
-            this.$modal.show(params);
+            this.$modal.show(params);*/
         },
         changeProperties: function(type) {
             this.properties = type;

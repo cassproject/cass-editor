@@ -94,7 +94,6 @@ export default {
         closeModal() {
             this.$store.commit('app/closeModal');
         },
-
         exportObject: function() {
             var thing = EcRepository.getBlocking(this.obj["@id"]);
             this.$emit('export-object', thing, this.selectedExportOption);
