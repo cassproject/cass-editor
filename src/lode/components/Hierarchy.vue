@@ -702,8 +702,20 @@ export default {
             if (this.container == null) { return r; }
             if (this.container[this.containerNodeProperty] !== null && this.container[this.containerNodeProperty] !== undefined) {
                 for (var i = 0; i < this.container[this.containerNodeProperty].length; i++) {
-                    var c = window[this.nodeType].getBlocking(this.container[this.containerNodeProperty][i]);
-                    if (c !== null) { r[this.container[this.containerNodeProperty][i]] = r[c.shortId()] = top[c.shortId()] = c; }
+                    let c = window[this.nodeType].getBlocking(this.container[this.containerNodeProperty][i]);
+                    if (c == null) {
+                        c = EcRepository.getBlocking(this.container[this.containerNodeProperty][i]);
+                        if (c.encryptedType && c.encryptedType.toLowerCase() === this.containerNodeProperty) {
+                            let encryptedType = "Ec" + c.encryptedType;
+                            let v = new EcEncryptedValue();
+                            v.copyFrom(c);
+                            c = new window[encryptedType]();
+                            c.copyFrom(v.decryptIntoObject());
+                        }
+                    }
+                    if (c !== null) {
+                        r[this.container[this.containerNodeProperty][i]] = r[c.shortId()] = top[c.shortId()] = c;
+                    }
                 }
             }
             if (this.container[this.containerEdgeProperty] != null && this.container[this.containerEdgeProperty] !== undefined) {
