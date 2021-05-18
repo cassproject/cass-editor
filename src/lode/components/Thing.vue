@@ -1251,10 +1251,21 @@ export default {
                     this.resolveNameFromUrl(this.uri);
                 }
                 var type = "Ec" + (this.obj ? this.obj.type : this.shortType);
-                if (type && window[type]) {
-                    var thing = window[type].getBlocking(this.changedObject);
+                if (type === "EcEncryptedValue") {
+                    let encryptedType = "Ec" + this.obj.encryptedType;
+                    let encryptedThing = EcRepository.getBlocking(this.changedObject);
+                    let v = new EcEncryptedValue();
+                    v.copyFrom(encryptedThing);
+                    let returnObject = new window[encryptedType]();
+                    returnObject.copyFrom(v.decryptIntoObject());
+                    this.obj = returnObject;
+                    this.load();
+                } else if (type && window[type] && window[type].getBlocking) {
+                    let thing = window[type].getBlocking(this.changedObject);
                     this.obj = thing;
                     this.load();
+                } else if (type && window[type]) {
+                    appLog("Can't getBlocking for type: " + type);
                 }
                 this.$store.commit('editor/changedObject', null);
             }
