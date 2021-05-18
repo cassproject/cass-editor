@@ -704,7 +704,7 @@ export default {
                     let c = window[this.nodeType].getBlocking(this.container[this.containerNodeProperty][i]);
                     if (c == null) {
                         c = EcRepository.getBlocking(this.container[this.containerNodeProperty][i]);
-                        if (c.encryptedType && c.encryptedType.toLowerCase() === this.containerNodeProperty) {
+                        if (c && c.encryptedType && c.encryptedType.toLowerCase() === this.containerNodeProperty) {
                             let encryptedType = "Ec" + c.encryptedType;
                             let v = new EcEncryptedValue();
                             v.copyFrom(c);
