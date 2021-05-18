@@ -839,10 +839,10 @@ export default {
             this.selectButton(ids);
         },
         onOpenExportModal() {
-            let params = {};
             var me = this;
             appLog("options", typeof me.frameworkExportOptions);
-            params = {
+            this.$store.commit('app/showModal', {title: 'Export Framework', exportOptions: me.frameworkExportOptions, component: 'ExportOptionsModal'});
+            /* params = {
                 type: "export",
                 selectedExportOption: '',
                 title: "Export Framework",
@@ -851,9 +851,9 @@ export default {
                 onConfirm: (e) => {
                     return me.exportFramework(e);
                 }
-            };
+            };*/
             // reveal modal
-            this.$modal.show(params);
+            // this.$modal.show(params);
         },
         // Speed up load of secondary properties
         preloadRelations: function() {

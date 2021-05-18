@@ -46,7 +46,9 @@ const state = {
     relations: {},
     setPropertyLevel: null,
     addAnother: false,
-    itemToDelete: {}
+    itemToDelete: {},
+    itemToRemove: {},
+    itemToExport: {}
 };
 const mutations = {
     framework(state, f) {
@@ -179,6 +181,12 @@ const mutations = {
     },
     setItemToDelete(state, val) {
         state.itemToDelete = val;
+    },
+    setItemToRemove(state, val) {
+        state.itemToRemove = val;
+    },
+    setItemToExport(state, val) {
+        state.itemToExport = val;
     }
 };
 const actions = {
@@ -298,6 +306,12 @@ const getters = {
     },
     itemToDelete: function(state) {
         return state.itemToDelete;
+    },
+    itemToRemove: function(state) {
+        return state.itemToRemove;
+    },
+    itemToExport: function(state) {
+        return state.itemToExport;
     }
 };
 

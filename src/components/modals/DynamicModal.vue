@@ -14,6 +14,8 @@ it should always be produced in its own modal as to not replace the existing mod
 <template>
     <div>
         <Component
+            :title="title"
+            :exportOptions="exportOptions"
             @create-directory="$emit('create-directory', $event)"
             view="modal"
             @close="$emit('app/closeModal')"
@@ -49,7 +51,9 @@ export default {
         'DeleteConfigurationConfirm': () => import('@/components/modalContent/DeleteConfigurationConfirm.vue'),
         'FrameworkConfiguration': () => import('@/components/modalContent/FrameworkConfiguration.vue'),
         'DeleteCompetencyConfirm': () => import('@/components/modalContent/DeleteCompetencyConfirm.vue'),
-        'DeleteLevelConfirm': () => import('@/components/modalContent/DeleteLevelConfirm.vue')
+        'DeleteFrameworkConfirm': () => import('@/components/modalContent/DeleteFrameworkConfirm.vue'),
+        'DeleteLevelConfirm': () => import('@/components/modalContent/DeleteLevelConfirm.vue'),
+        'ExportOptionsModal': () => import('@/components/modalContent/ExportOptionsModal.vue')
     },
     data() {
         return {
@@ -69,6 +73,20 @@ export default {
         dynamicModal: function() {
             if (this.dynamicModalContent) {
                 return this.dynamicModalContent.component;
+            } else {
+                return '';
+            }
+        },
+        exportOptions: function() {
+            if (this.dynamicModalContent && this.dynamicModalContent.exportOptions) {
+                return this.dynamicModalContent.exportOptions;
+            } else {
+                return {};
+            }
+        },
+        title: function() {
+            if (this.dynamicModalContent && this.dynamicModalContent.title) {
+                return this.dynamicModalContent.title;
             } else {
                 return '';
             }

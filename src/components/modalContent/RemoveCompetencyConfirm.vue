@@ -1,27 +1,26 @@
 <template>
     <modal-template
-        type="danger"
+        type="primary"
         @close="closeModal"
         size="small"
         :active="true">
         <template slot="modal-header">
-            Confirm Delete Level
+            Confirm Remove Comeptency
         </template>
         <template slot="modal-body">
             <section>
                 <b>
-                    Warning! This action deletes all instances of this level.
+                    Removing a competency safely removes the item from this framework.
                 </b>
+                The competency will still be discoverable via search and will remain in other frameworks
+                it may be a part of.
             </section>
-            <p class="help is-danger">
-                This action will remove <b>{{ numFrameworks }}</b>.
-            </p>
         </template>
         <template slot="modal-foot">
             <button
-                @click="deleteItem()"
+                @click="removeItem()"
                 class="is-danger is-outlined button">
-                Delete Competency
+                Remove Competency
             </button>
             <button
                 @click="closeModal()"
@@ -35,34 +34,26 @@
 import ModalTemplate from './ModalTemplate.vue';
 import competencyEdits from '@/mixins/competencyEdits.js';
 export default {
-    name: 'DeleteCompetencyConfirm',
+    name: 'DeleteConceptConfirm',
     mixins: [competencyEdits],
     components: {
         ModalTemplate
     },
     data() {
         return {
-            numFrameworks: 0
         };
     },
     computed: {
         obj() {
-            return this.$store.getters['editor/itemToDelete'];
+            return this.$store.getters['editor/itemToRemove'];
         }
     },
     mounted() {
-        this.getNums();
     },
     methods: {
-        getNums() {
-            let me = this;
-            repo.search("@type:Framework AND level:\"" + this.originalThing.shortId() + "\"", function(level) {}, function(levels) {
-                me.numFrameworks = levels.length;
-            }, function() {});
-        },
-        deleteItem() {
+        removeItem() {
             let item = this.$store.getters['editor/itemToDelete'];
-            this.deleteObject(item);
+            this.removeObject(item);
             this.closeModal();
             this.$store.commit('editor/itemToDelete', {});
         },

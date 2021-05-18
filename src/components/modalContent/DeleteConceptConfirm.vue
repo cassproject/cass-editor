@@ -5,17 +5,14 @@
         size="small"
         :active="true">
         <template slot="modal-header">
-            Confirm Delete Level
+            Confirm Delete Concept
         </template>
         <template slot="modal-body">
             <section>
                 <b>
-                    Warning! This action deletes all instances of this level.
+                    Warning! This action is permanent.
                 </b>
             </section>
-            <p class="help is-danger">
-                This action will remove <b>{{ numFrameworks }}</b>.
-            </p>
         </template>
         <template slot="modal-foot">
             <button
@@ -35,14 +32,15 @@
 import ModalTemplate from './ModalTemplate.vue';
 import competencyEdits from '@/mixins/competencyEdits.js';
 export default {
-    name: 'DeleteCompetencyConfirm',
+    name: 'DeleteConceptConfirm',
     mixins: [competencyEdits],
     components: {
         ModalTemplate
     },
     data() {
         return {
-            numFrameworks: 0
+            numFrameworks: 0,
+            numRelationships: 0
         };
     },
     computed: {
@@ -56,8 +54,11 @@ export default {
     methods: {
         getNums() {
             let me = this;
-            repo.search("@type:Framework AND level:\"" + this.originalThing.shortId() + "\"", function(level) {}, function(levels) {
-                me.numFrameworks = levels.length;
+            repo.search("@type:Framework AND competency:\"" + this.obj.shortId() + "\"", function(f) {}, function(fs) {
+                me.numFrameworks = fs.length;
+                repo.search("@type:Relation AND (source:\"" + me.obj.shortId() + "\" OR target:\"" + me.obj.shortId() + "\")", function(r) {}, function(rs) {
+                    me.numRelationships = rs.length;
+                }, function() {});
             }, function() {});
         },
         deleteItem() {

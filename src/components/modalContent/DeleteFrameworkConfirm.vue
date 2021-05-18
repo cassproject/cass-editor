@@ -5,23 +5,23 @@
         size="small"
         :active="true">
         <template slot="modal-header">
-            Confirm Delete Level
+            Confirm Delete Framework
         </template>
         <template slot="modal-body">
             <section>
                 <b>
-                    Warning! This action deletes all instances of this level.
+                    Warning! This action is not reversable.
                 </b>
             </section>
             <p class="help is-danger">
-                This action will remove <b>{{ numFrameworks }}</b>.
+                This action will delete {{ obj.name }} and all of its contents.
             </p>
         </template>
         <template slot="modal-foot">
             <button
                 @click="deleteItem()"
                 class="is-danger is-outlined button">
-                Delete Competency
+                Delete Framework
             </button>
             <button
                 @click="closeModal()"
@@ -35,14 +35,13 @@
 import ModalTemplate from './ModalTemplate.vue';
 import competencyEdits from '@/mixins/competencyEdits.js';
 export default {
-    name: 'DeleteCompetencyConfirm',
+    name: 'DeleteFrameworkConfirm',
     mixins: [competencyEdits],
     components: {
         ModalTemplate
     },
     data() {
         return {
-            numFrameworks: 0
         };
     },
     computed: {
@@ -51,15 +50,8 @@ export default {
         }
     },
     mounted() {
-        this.getNums();
     },
     methods: {
-        getNums() {
-            let me = this;
-            repo.search("@type:Framework AND level:\"" + this.originalThing.shortId() + "\"", function(level) {}, function(levels) {
-                me.numFrameworks = levels.length;
-            }, function() {});
-        },
         deleteItem() {
             let item = this.$store.getters['editor/itemToDelete'];
             this.deleteObject(item);
