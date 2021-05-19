@@ -305,20 +305,6 @@ export default {
                 }
                 appLog("I got " + event.data.selected.length + " selected items from the iframe");
                 appLog(event.data.selected);
-                /* if (this.$store.getters['editor/conceptMode'] === true && event.data.type === 'Concept' && this.$store.state.editor.selectCompetencyRelation) {
-                    this.addAlignments(selectedIds, selectedCompetency, this.$store.state.editor.selectCompetencyRelation);
-                } else if (event.data.type === 'Concept') {
-                    this.attachUrlProperties(selectedIds);
-                } else if (this.$store.state.editor.selectingCompetencies === true && this.$store.state.editor.selectCompetencyRelation !== "https://schema.cassproject.org/0.4/Level") {
-                    var targets = selectedIds;
-                    var thing = this.$store.state.editor.selectedCompetency;
-                    var relationType = this.$store.state.editor.selectCompetencyRelation;
-                    this.addAlignments(targets, thing, relationType);
-                } else if (selectedIds.length > 0) {
-                    this.showModal("copyOrLink", selectedIds);
-                } else if (event.data.selected.length <= 0) {
-                    alert("No items have been selected.");
-                }*/
             } else if (event.data.message === "back") {
                 this.$router.push({name: "framework", params: {frameworkId: this.$store.state.editor.framework.id}});
             } else if (event.data.message === "highlightedCompetencies") {
@@ -867,22 +853,6 @@ export default {
                 resource = EcEncryptedValue.toEncryptedValue(resource);
             }
             this.repo.saveTo(resource, function() {}, appError);
-        },
-        showModal(val, data) {
-            let params = {};
-            if (val === 'copyOrLink') {
-                params = {
-                    type: val,
-                    title: "Copy or Link",
-                    text: "Do you want to copy or link to the selected items?",
-                    options: ["Copy", "Link"],
-                    onConfirm: (choice) => {
-                        return this.copyOrLink(choice, data);
-                    }
-                };
-            }
-            // reveal modal
-            this.$modal.show(params);
         },
         copyOrLink(choice, selectedIds) {
             if (choice === "Copy") {
