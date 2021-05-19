@@ -248,11 +248,9 @@ export default {
         },
         searchFrameworks: {
             get() {
-                console.log("hello");
                 return this.$store.getters['app/searchFrameworksInCompetencySearch'];
             },
             set(val) {
-                console.log("val", val);
                 this.$store.commit("app/searchFrameworksInCompetencySearch", val);
             }
         }
