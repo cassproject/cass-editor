@@ -5,7 +5,6 @@ import './scss/theme.scss';
 import './scss/styles.scss';
 import router from './router';
 import Vuex from 'vuex';
-import Modal from './plugins/modalPlugin.js';
 import Clipboard from 'v-clipboard';
 import store from './store/index.js';
 import InfiniteLoading from 'vue-infinite-loading';
@@ -29,7 +28,6 @@ const options = {
 };
 
 Vue.use(VueProgressBar, options);
-Vue.use(Modal);
 Vue.use(require('vue-moment'));
 Vue.use(Vuex);
 Vue.use(Clipboard);
