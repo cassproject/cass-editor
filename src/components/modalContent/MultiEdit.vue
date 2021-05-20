@@ -349,11 +349,11 @@ export default {
                     appError(err);
                 }
                 if (compacted) {
+                    compacted = me.turnFieldsBackIntoArrays(compacted);
                     var rld = new EcRemoteLinkedData();
                     rld.copyFrom(compacted);
                     rld.context = context;
                     delete rld["@context"];
-                    rld = me.turnFieldsBackIntoArrays(rld);
                     rld["schema:dateModified"] = new Date().toISOString();
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                         rld = EcEncryptedValue.toEncryptedValue(rld);
