@@ -144,7 +144,6 @@
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
                                         @delete-object="deleteObject"
-                                        @export-object="exportObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -197,7 +196,6 @@
                                         :repo="repo"
                                         :newFramework="true"
                                         @delete-object="deleteObject"
-                                        @export-object="exportObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -302,7 +300,6 @@
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
                                         @delete-object="deleteObject"
-                                        @export-object="exportObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -355,7 +352,6 @@
                                         :repo="repo"
                                         :newFramework="true"
                                         @delete-object="deleteObject"
-                                        @export-object="exportObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -458,7 +454,6 @@
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
                                         @delete-object="deleteObject"
-                                        @export-object="exportObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -511,7 +506,6 @@
                                         :repo="repo"
                                         :newFramework="true"
                                         @delete-object="deleteObject"
-                                        @export-object="exportObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -590,7 +584,6 @@
                                         :repo="repo"
                                         :newFramework="true"
                                         @delete-object="deleteObject"
-                                        @export-object="exportObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -903,7 +896,6 @@ import ImportTabs from '@/components/import/ImportTabs.vue';
 import ImportDetails from '@/components/import/ImportDetails.vue';
 import ConceptHierarchy from '@/views/conceptScheme/ConceptHierarchy.vue';
 import getLevelsAndRelations from '@/mixins/getLevelsAndRelations.js';
-import exports from '@/mixins/exports.js';
 import imports from '@/mixins/import.js';
 export default {
     name: "Import",
@@ -912,7 +904,6 @@ export default {
         competencyEdits,
         t3Profile,
         ctdlasnProfile,
-        exports,
         getLevelsAndRelations,
         imports
     ],
@@ -949,18 +940,6 @@ export default {
             relationCount: 0,
             caseCancel: false,
             selectedArray: [],
-            frameworkExportOptions: [
-                {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
-                {name: "CASS (JSON-LD)", value: "jsonld"},
-                {name: "CASS (RDF Quads)", value: "rdfQuads"},
-                {name: "CASS (RDF+JSON)", value: "rdfJson"},
-                {name: "CASS (RDF+XML)", value: "rdfXml"},
-                {name: "CASS (Turtle)", value: "turtle"},
-                {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
-                {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
-                {name: "Table (CSV)", value: "csv"},
-                {name: "IMS Global CASE (JSON)", value: "case"}
-            ],
             changedObj: null
         };
     },

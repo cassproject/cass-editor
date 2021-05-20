@@ -63,7 +63,6 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 edgeTargetProperty="target"
                 :viewOnly="true"
                 :repo="repo"
-                :exportOptions="[]"
                 :highlightList="null"
                 @done-loading-nodes="hierarchyLoaded = true"
                 properties="primary"

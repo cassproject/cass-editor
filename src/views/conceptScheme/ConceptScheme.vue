@@ -65,11 +65,9 @@
                     :viewOnly="queryParams.view === 'true'"
                     :repo="repo"
                     view="concept"
-                    :exportOptions="conceptExportOptions"
                     :highlightList="highlightCompetency"
                     :profile="conceptProfile"
                     @delete-object="deleteObject"
-                    @export-object="exportObject"
                     @edit-multiple-event="onEditMultiple"
                     @search-things="handleSearch($event)"
                     @select-button-click="onSelectButtonClick"
@@ -85,7 +83,6 @@
 </template>
 <script>
 import debounce from 'lodash/debounce';
-import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 
@@ -100,24 +97,6 @@ export default {
             showEditMultiple: false,
             showClipboardSuccessModal: false,
             repo: window.repo,
-            schemeExportLink: null,
-            schemeExportGuid: null,
-            conceptExportOptions: [
-                {name: "SKOS (JSON-LD)", value: "jsonld"},
-                {name: "SKOS (RDF Quads)", value: "rdfQuads"},
-                {name: "SKOS (RDF+JSON)", value: "rdfJson"},
-                {name: "SKOS (RDF+XML)", value: "rdfXml"},
-                {name: "SKOS (Turtle)", value: "turtle"}
-            ],
-            conceptSchemeExportOptions: [
-                {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
-                {name: "CASS (JSON-LD)", value: "jsonld"},
-                {name: "CaSS (RDF Quads)", value: "rdfQuads"},
-                {name: "CaSS (RDF+JSON)", value: "rdfJson"},
-                {name: "CaSS (RDF+XML)", value: "rdfXml"},
-                {name: "CaSS (Turtle)", value: "turtle"},
-                {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"}
-            ],
             highlightCompetency: null,
             editingFramework: false,
             properties: "primary",
@@ -802,12 +781,6 @@ export default {
                 appLog("no framework to refresh");
                 return;
             }
-            if (EcRepository.shouldTryUrl(this.framework.id) === false && this.framework.id.indexOf(this.repo.selectedServer) === -1) {
-                this.schemeExportGuid = EcCrypto.md5(this.framework.shortId());
-            } else {
-                this.schemeExportGuid = this.framework.getGuid();
-            }
-            this.schemeExportLink = this.repo.selectedServer + "data/" + this.schemeExportGuid;
             this.setDefaultLanguage();
             this.highlightCompetency = [];
             if (this.queryParams.highlightCompetency) {
@@ -817,52 +790,6 @@ export default {
                     this.highlightCompetency = this.queryParams.highlightCompetency;
                 }
             }
-        },
-        download: function(fileName, data) {
-            var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
-            saveAs(blob, fileName);
-        },
-        exportJsonld: function(link) {
-            window.open(link, '_blank');
-        },
-        exportRdfQuads: function(link) {
-            var fileName = this.getDisplayStringFrom(this.framework["dcterms:title"]);
-            var me = this;
-            this.get(link, null, {"Accept": "text/n4"}, function(success) {
-                me.download(fileName + ".n4", success);
-            }, function(failure) {
-                appLog(failure);
-            });
-        },
-        exportRdfJson: function(link) {
-            var fileName = this.getDisplayStringFrom(this.framework["dcterms:title"]);
-            var me = this;
-            this.get(link, null, {"Accept": "application/rdf+json"}, function(success) {
-                me.download(fileName + ".rdf.json", success);
-            }, function(failure) {
-                appLog(failure);
-            });
-        },
-        exportRdfXml: function(link) {
-            var fileName = this.getDisplayStringFrom(this.framework["dcterms:title"]);
-            var me = this;
-            this.get(link, null, {"Accept": "application/rdf+xml"}, function(success) {
-                me.download(fileName + ".rdf.xml", success);
-            }, function(failure) {
-                appLog(failure);
-            });
-        },
-        exportTurtle: function(link) {
-            var fileName = this.getDisplayStringFrom(this.framework["dcterms:title"]);
-            var me = this;
-            this.get(link, null, {"Accept": "text/turtle"}, function(success) {
-                me.download(fileName + ".turtle", success);
-            }, function(failure) {
-                appLog(failure);
-            });
-        },
-        exportCtdlasnJsonld: function(link) {
-            window.open(link.replace("/data/", "/ceasn/"), '_blank');
         },
         getDisplayStringFrom: function(n) {
             if (n != null && EcArray.isArray(n)) {
@@ -946,57 +873,9 @@ export default {
                 me.editsToUndo.splice(0, me.editsToUndo.length);
             }, appError);
         },
-        exportObject: function(concept, exportType) {
-            var guid;
-            if (EcRepository.shouldTryUrl(concept.id) === false && concept.id.indexOf(this.repo.selectedServer) === -1) {
-                guid = EcCrypto.md5(concept.shortId());
-            } else {
-                guid = concept.getGuid();
-            }
-            var link = this.repo.selectedServer + "data/" + guid;
-            if (exportType === "jsonld") {
-                this.exportJsonld(link);
-            } else if (exportType === "rdfQuads") {
-                this.exportRdfQuads(link);
-            } else if (exportType === "rdfJson") {
-                this.exportRdfJson(link);
-            } else if (exportType === "rdfXml") {
-                this.exportRdfXml(link);
-            } else if (exportType === "turtle") {
-                this.exportTurtle(link);
-            }
-        },
-        exportScheme: function(exportType) {
-            if (exportType === "jsonld") {
-                this.exportJsonld(this.schemeExportLink);
-            } else if (exportType === "rdfQuads") {
-                this.exportRdfQuads(this.schemeExportLink);
-            } else if (exportType === "rdfJson") {
-                this.exportRdfJson(this.schemeExportLink);
-            } else if (exportType === "rdfXml") {
-                this.exportRdfXml(this.schemeExportLink);
-            } else if (exportType === "turtle") {
-                this.exportTurtle(this.schemeExportLink);
-            } else if (exportType === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld(this.schemeExportLink);
-            }
-        },
         onOpenExportModal() {
-            var me = this;
-            appLog("options", typeof me.conceptSchemeExportOptions);
-            this.$store.commit('app/showModal', {component: 'ExportOptionsModal', title: 'Export Concept Scheme', exportOptions: me.conceptSchemeExportOptions});
-            /* params = {
-                type: "export",
-                selectedExportOption: '',
-                title: "Export Concept Scheme",
-                exportOptions: me.conceptSchemeExportOptions,
-                text: "Select a file format to export your concept scheme. Files download locally.",
-                onConfirm: (e) => {
-                    return me.exportScheme(e);
-                }
-            };
-            // reveal modal
-            this.$modal.show(params);*/
+            this.$store.commit('editor/setItemToExport', this.framework);
+            this.$store.commit('app/showModal', {component: 'ExportOptionsModal', title: 'Export Concept Scheme'});
         },
         changeProperties: function(type) {
             this.properties = type;

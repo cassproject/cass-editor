@@ -122,36 +122,6 @@ export default {
             // reveal modal
             this.$modal.show(params);
         },
-        exportObject: function(type) {
-            var guid;
-            if (EcRepository.shouldTryUrl(this.importFramework.id) === false && this.importFramework.id.indexOf(this.repo.selectedServer) === -1) {
-                guid = EcCrypto.md5(this.importFramework.shortId());
-            } else {
-                guid = this.importFramework.getGuid();
-            }
-            var link = this.repo.selectedServer + "data/" + guid;
-            if (type === "asn") {
-                this.exportAsn(link);
-            } else if (type === "jsonld") {
-                this.exportJsonld(link);
-            } else if (type === "rdfQuads") {
-                this.exportRdfQuads(link);
-            } else if (type === "rdfJson") {
-                this.exportRdfJson(link);
-            } else if (type === "rdfXml") {
-                this.exportRdfXml(link);
-            } else if (type === "turtle") {
-                this.exportTurtle(link);
-            } else if (type === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld(link);
-            } else if (type === "ctdlasnCsv") {
-                this.exportCtdlasnCsv(link);
-            } else if (type === "csv") {
-                this.exportCsv();
-            } else if (type === "case") {
-                this.exportCasePackages(guid);
-            }
-        },
         unsupportedFile: function(val) {
             this.$store.commit('app/importFileType', val);
             let error = "File type " + fileType + " is unsupported in this workflow";

@@ -221,7 +221,6 @@
                                             :viewOnly="queryParams.view === 'true'"
                                             :repo="repo"
                                             :queryParams="queryParams"
-                                            :exportOptions="[]"
                                             :highlightList="null"
                                             @search-things="handleSearch($event)"
                                             @done-loading-nodes="prepareToLoadCrosswalkTarget"
@@ -258,7 +257,6 @@
                                             :viewOnly="queryParams.view === 'true'"
                                             :repo="repo"
                                             :queryParams="queryParams"
-                                            :exportOptions="[]"
                                             :highlightList="null"
                                             @search-things="handleSearch($event)"
                                             properties="primary" />

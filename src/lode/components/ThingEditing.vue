@@ -203,7 +203,7 @@
                     </div>
                     <!-- export -->
                     <div
-                        v-if="exportOptions && !isSearching"
+                        v-if="!isSearching"
                         @click.stop="showModal('export')"
                         :title="'Export ' + shortType"
                         class="button is-outlined is-info">
@@ -316,7 +316,6 @@ export default {
         parentNotEditable: Boolean,
         // Application profile used to constrain and respecify properties that are to be made editable.
         profile: Object,
-        exportOptions: Array,
         highlightList: Array,
         childrenExpanded: {
             type: Boolean,
@@ -958,9 +957,8 @@ export default {
                     this.$store.commit('app/showModal', {component: 'RemoveCompetency'});
                 }
                 if (val === 'export') {
-                    this.$store.commit('editor/setItemToExport', this.expandedThing);
-                    appLog("options", typeof this.exportOptions);
-                    this.$store.commit('app/showModal', {title: 'Export ' + this.shortType, exportOptions: me.exportOptions, component: 'ExportOptionsModal'});
+                    this.$store.commit('editor/setItemToExport', this.obj);
+                    this.$store.commit('app/showModal', {title: 'Export ' + this.shortType, component: 'ExportOptionsModal'});
                 }
             }
         },
@@ -1297,10 +1295,6 @@ export default {
         },
         removeObject: function() {
             this.$emit('remove-object', this.originalThing);
-        },
-        exportObject: function(type) {
-            var thing = EcRepository.getBlocking(this.expandedThing["@id"]);
-            this.$emit('export-object', thing, type);
         },
         resolveNameFromUrl: function(url) {
             var me = this;

@@ -327,7 +327,6 @@
                     :canEdit="canEdit"
                     :hasChild="item.children"
                     :profile="profile"
-                    :exportOptions="exportOptions"
                     :highlightList="highlightList"
                     :selectAll="selectAll"
                     :newFramework="newFramework"
@@ -343,7 +342,6 @@
                     @add="add"
                     @delete-object="deleteObject"
                     @remove-object="removeObject"
-                    @export-object="exportObject"
                     @draggable-check="onDraggableCheck"
                     :properties="properties"
                     :expandAll="expanded==true"
@@ -358,14 +356,12 @@
     </div>
 </template>
 <script>
-import exports from '@/mixins/exports.js';
 import common from '@/mixins/common.js';
-import saveAs from 'file-saver';
 
 var hierarchyTimeout;
 export default {
     name: 'Hierarchy',
-    mixins: [ exports, common ],
+    mixins: [ common ],
     props: {
         container: Object,
         containerType: String,
@@ -381,7 +377,6 @@ export default {
         viewOnly: Boolean,
         repo: Object,
         profile: Object,
-        exportOptions: Array,
         highlightList: Array,
         newFramework: Boolean,
         properties: String,
@@ -427,18 +422,6 @@ export default {
             expanded: true,
             showAligned: false,
             isDraggable: true,
-            frameworkExportOptions: [
-                {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
-                {name: "CASS (JSON-LD)", value: "jsonld"},
-                {name: "CASS (RDF Quads)", value: "rdfQuads"},
-                {name: "CASS (RDF+JSON)", value: "rdfJson"},
-                {name: "CASS (RDF+XML)", value: "rdfXml"},
-                {name: "CASS (Turtle)", value: "turtle"},
-                {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
-                {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
-                {name: "Table (CSV)", value: "csv"},
-                {name: "IMS Global CASE (JSON)", value: "case"}
-            ],
             shiftKey: false,
             arrowKey: null,
             addCompetencyOrChildText: "Add Competency"
@@ -645,7 +628,8 @@ export default {
         showModal(val, data) {
             let params = {};
             if (val === 'export') {
-                this.$store.commit('app/showModal', {title: 'Export Framework', component: 'ExportOptionsModal', exportOptions: this.frameworkExportOptions});
+                this.$store.commit('editor/setItemToExport', this.container);
+                this.$store.commit('app/showModal', {title: 'Export Framework', component: 'ExportOptionsModal'});
             }
         },
         openFramework: function() {
@@ -1058,9 +1042,6 @@ export default {
         },
         removeObject: function(thing) {
             this.$emit('remove-object', thing);
-        },
-        exportObject: function(thing, type) {
-            this.$emit('export-object', thing, type);
         },
         onDraggableCheck: function(checked) {
             this.isDraggable = checked;

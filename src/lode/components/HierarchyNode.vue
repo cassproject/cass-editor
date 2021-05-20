@@ -87,7 +87,6 @@
                                 :profile="profile"
                                 :childrenExpanded="childrenExpanded"
                                 :children="this.hasChild.length"
-                                :exportOptions="exportOptions"
                                 :highlightList="highlightList"
                                 class="list-complete-item"
                                 :class="newThingClass"
@@ -101,7 +100,6 @@
                                 @select="select"
                                 @delete-object="deleteObject"
                                 @remove-object="removeObject"
-                                @export-object="exportObject"
                                 :editingNode="editingNode"
                                 :cantMoveUp="cantMoveUp"
                                 :cantMoveDown="cantMoveDown"
@@ -325,7 +323,6 @@
                     :dragging="dragging"
                     :canEdit="canEdit"
                     :profile="profile"
-                    :exportOptions="exportOptions"
                     :highlightList="highlightList"
                     :selectAll="selectAll"
                     :newFramework="newFramework"
@@ -340,7 +337,6 @@
                     @add="add"
                     @delete-object="deleteObject"
                     @remove-object="removeObject"
-                    @export-object="exportObject"
                     :properties="properties"
                     :parentChecked="checked"
                     :shiftKey="shiftKey"
@@ -368,7 +364,6 @@ export default {
         canEdit: Boolean,
         dragging: Boolean,
         profile: Object,
-        exportOptions: Array,
         highlightList: Array,
         selectAll: Boolean,
         newFramework: Boolean,
@@ -816,9 +811,6 @@ export default {
         },
         removeObject: function(thing) {
             this.$emit('remove-object', thing);
-        },
-        exportObject: function(thing, type) {
-            this.$emit('export-object', thing, type);
         },
         onCreateNewNode: function(parentId, previousSiblingId) {
             this.$emit('create-new-node-event', parentId, previousSiblingId);

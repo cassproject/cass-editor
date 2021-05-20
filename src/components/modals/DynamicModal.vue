@@ -15,7 +15,6 @@ it should always be produced in its own modal as to not replace the existing mod
     <div>
         <Component
             :title="title"
-            :exportOptions="exportOptions"
             @create-directory="$emit('create-directory', $event)"
             view="modal"
             @close="$emit('app/closeModal')"
@@ -77,13 +76,6 @@ export default {
                 return this.dynamicModalContent.component;
             } else {
                 return '';
-            }
-        },
-        exportOptions: function() {
-            if (this.dynamicModalContent && this.dynamicModalContent.exportOptions) {
-                return this.dynamicModalContent.exportOptions;
-            } else {
-                return {};
             }
         },
         title: function() {

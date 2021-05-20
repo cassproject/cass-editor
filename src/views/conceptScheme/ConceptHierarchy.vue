@@ -205,7 +205,6 @@
                     :canEdit="canEdit"
                     :hasChild="item.children"
                     :profile="profile"
-                    :exportOptions="exportOptions"
                     :highlightList="highlightList"
                     :selectAll="selectAll"
                     :newFramework="newFramework"
@@ -216,7 +215,6 @@
                     @begin-drag="beginDrag"
                     @move="move"
                     @delete-object="deleteObject"
-                    @export-object="exportObject"
                     @select="select"
                     :parentStructure="hierarchy"
                     :parent="container"
@@ -241,7 +239,6 @@ export default {
         containerType: String,
         repo: Object,
         profile: Object,
-        exportOptions: Array,
         highlightList: Array,
         selectMode: Boolean,
         selectAll: Boolean,
@@ -754,9 +751,6 @@ export default {
         },
         deleteObject: function(thing) {
             this.$emit('delete-object', thing);
-        },
-        exportObject: function(thing, type) {
-            this.$emit('export-object', thing, type);
         },
         onDraggableCheck: function(checked) {
             this.isDraggable = checked;
