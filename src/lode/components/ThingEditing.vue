@@ -203,7 +203,7 @@
                     </div>
                     <!-- export -->
                     <div
-                        v-if="!isSearching"
+                        v-if="!isSearching && shortType !== 'Level'"
                         @click.stop="showModal('export')"
                         :title="'Export ' + shortType"
                         class="button is-outlined is-info">
