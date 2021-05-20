@@ -643,8 +643,11 @@ export default {
             EcOrganization.search(window.repo, '', function(success) {
                 appLog(success);
                 for (var i = 0; i < success.length; i++) {
-                    let org = {id: success[i].shortId(), name: success[i].name, pk: me.getOrganizationEcPk(success[i])};
-                    me.possibleGroupsAndUsers.push(org);
+                    let pk = me.getOrganizationEcPk(success[i]);
+                    if (pk) {
+                        let org = {id: success[i].shortId(), name: success[i].name, pk: pk};
+                        me.possibleGroupsAndUsers.push(org);
+                    }
                 }
             }, function(failure) {
                 appError(failure);
@@ -1415,7 +1418,7 @@ export default {
                     this.finishedMakingPublic();
                 } else {
                     if (this.ownerCount > 0) {
-                        this.addAndRemoveFromFrameworkObject();
+                        this.addAndRemoveFromFrameworkObject(this.framework);
                     } else {
                         this.makeCurrentUserFrameworkOwner(this.framework);
                     }
