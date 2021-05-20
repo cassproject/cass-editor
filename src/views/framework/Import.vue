@@ -84,8 +84,7 @@
                                 <!-- import details -->
                                 <ImportDetails
                                     :detailsDetected="detailsDetected"
-                                    v-if="importTransition === 'detail'"
-                                    @delete-object="deleteObject" />
+                                    v-if="importTransition === 'detail'" />
                                 <!-- import preview -->
                                 <div
                                     v-if="importFramework && importTransition === 'preview'"
@@ -143,7 +142,6 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -159,7 +157,6 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :profile="ctdlAsnConceptProfile"
                                         properties="tertiary" />
                                 </div>
@@ -195,7 +192,6 @@
                                         edgeTargetProperty="target"
                                         :repo="repo"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -207,7 +203,6 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :profile="ctdlAsnConceptProfile"
                                         properties="tertiary" />
                                 </div>
@@ -299,7 +294,6 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -315,7 +309,6 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :profile="ctdlAsnConceptProfile"
                                         properties="tertiary" />
                                 </div>
@@ -351,7 +344,6 @@
                                         edgeTargetProperty="target"
                                         :repo="repo"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -363,7 +355,6 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :profile="ctdlAsnConceptProfile"
                                         properties="tertiary" />
                                 </div>
@@ -453,7 +444,6 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -469,7 +459,6 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :profile="ctdlAsnConceptProfile"
                                         properties="tertiary" />
                                 </div>
@@ -505,7 +494,6 @@
                                         edgeTargetProperty="target"
                                         :repo="repo"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -517,7 +505,6 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :profile="ctdlAsnConceptProfile"
                                         properties="tertiary" />
                                 </div>
@@ -583,7 +570,6 @@
                                         edgeTargetProperty="target"
                                         :repo="repo"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :properties="importType === 'text' ? 'primary' : 'tertiary'" />
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
@@ -595,7 +581,6 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        @delete-object="deleteObject"
                                         :profile="ctdlAsnConceptProfile"
                                         properties="tertiary" />
                                 </div>

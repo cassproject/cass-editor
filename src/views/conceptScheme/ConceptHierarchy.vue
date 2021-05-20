@@ -214,7 +214,6 @@
                     @add="add"
                     @begin-drag="beginDrag"
                     @move="move"
-                    @delete-object="deleteObject"
                     @select="select"
                     :parentStructure="hierarchy"
                     :parent="container"
@@ -231,6 +230,7 @@
 <script>
 
 import common from '@/mixins/common.js';
+import competencyEdits from '@/mixins/competencyEdits.js';
 var hierarchyTimeout;
 export default {
     name: 'ConceptHierarchy',
@@ -291,7 +291,7 @@ export default {
         HierarchyNode: () => import('@/lode/components/HierarchyNode.vue'),
         draggable: () => import('vuedraggable')
     },
-    mixins: [common],
+    mixins: [common, competencyEdits],
     computed: {
         canCopyOrCut: function() {
             if (this.selectedArray && this.selectedArray.length === 1) {
@@ -748,9 +748,6 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedArray, objId);
             }
-        },
-        deleteObject: function(thing) {
-            this.$emit('delete-object', thing);
         },
         onDraggableCheck: function(checked) {
             this.isDraggable = checked;

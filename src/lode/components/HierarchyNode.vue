@@ -98,7 +98,6 @@
                                 @move-left="moveLeft"
                                 :frameworkEditable="frameworkEditable"
                                 @select="select"
-                                @delete-object="deleteObject"
                                 @remove-object="removeObject"
                                 :editingNode="editingNode"
                                 :cantMoveUp="cantMoveUp"
@@ -335,7 +334,6 @@
                     @move="move"
                     @select="select"
                     @add="add"
-                    @delete-object="deleteObject"
                     @remove-object="removeObject"
                     :properties="properties"
                     :parentChecked="checked"
@@ -805,9 +803,6 @@ export default {
         },
         select: function(objId, checked) {
             this.$emit('select', objId, checked);
-        },
-        deleteObject: function(thing) {
-            this.$emit('delete-object', thing);
         },
         removeObject: function(thing) {
             this.$emit('remove-object', thing);

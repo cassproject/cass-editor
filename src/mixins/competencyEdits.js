@@ -1,4 +1,6 @@
+import common from '@/mixins/common.js';
 export default {
+    mixins: [common],
     methods: {
         removeObject: function(thing) {
             // Remove from container but don't delete
@@ -15,7 +17,7 @@ export default {
                 if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[f.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
-                repo.saveTo(framework, function() {
+                window.repo.saveTo(framework, function() {
                     me.$store.commit('editor/framework', thisFramework);
                 }, appError);
             }, appLog);
@@ -26,7 +28,7 @@ export default {
             var framework = this.$store.getters['editor/framework'];
             if (thing.shortId() === framework.shortId()) {
                 // delete framework
-                this.repo.deleteRegistered(framework, function(success) {
+                window.repo.deleteRegistered(framework, function(success) {
                     me.spitEvent("frameworkDeleted", framework.shortId(), "editFrameworkSection");
                     // Delete the framework, delete all non-used stuff.
                     if (framework.competency != null) {
@@ -72,7 +74,7 @@ export default {
                     if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                         frameworkToSave = EcEncryptedValue.toEncryptedValue(framework);
                     }
-                    me.repo.saveTo(frameworkToSave, function() {
+                    window.repo.saveTo(frameworkToSave, function() {
                         me.$store.commit('editor/framework', framework);
                     }, appError);
                 }, appLog);

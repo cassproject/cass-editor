@@ -125,7 +125,6 @@
             :repo="repo"
             :parentNotEditable="queryParams.view==='true'"
             :profile="directoryProfile"
-            @delete-object="deleteObject"
             @done-editing-node-event="onDoneEditingNode()" />
         <main-layout :rightActive="showRightAside">
             <template slot="top">

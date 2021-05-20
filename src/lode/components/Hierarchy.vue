@@ -340,7 +340,6 @@
                     @move="move"
                     @select="select"
                     @add="add"
-                    @delete-object="deleteObject"
                     @remove-object="removeObject"
                     @draggable-check="onDraggableCheck"
                     :properties="properties"
@@ -357,11 +356,11 @@
 </template>
 <script>
 import common from '@/mixins/common.js';
-
+import competencyEdits from '@/mixins/competencyEdits.js';
 var hierarchyTimeout;
 export default {
     name: 'Hierarchy',
-    mixins: [ common ],
+    mixins: [ common, competencyEdits ],
     props: {
         container: Object,
         containerType: String,
@@ -1036,9 +1035,6 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedArray, objId);
             }
-        },
-        deleteObject: function(thing) {
-            this.$emit('delete-object', thing);
         },
         removeObject: function(thing) {
             this.$emit('remove-object', thing);

@@ -52,6 +52,8 @@ export default {
         'DeleteCompetencyConfirm': () => import('@/components/modalContent/DeleteCompetencyConfirm.vue'),
         'DeleteFrameworkConfirm': () => import('@/components/modalContent/DeleteFrameworkConfirm.vue'),
         'DeleteLevelConfirm': () => import('@/components/modalContent/DeleteLevelConfirm.vue'),
+        'DeleteConceptConfirm': () => import('@/components/modalContent/DeleteConceptConfirm.vue'),
+        'DeleteConceptSchemeConfirm': () => import('@/components/modalContent/DeleteConceptSchemeConfirm.vue'),
         'ExportOptionsModal': () => import('@/components/modalContent/ExportOptionsModal.vue'),
         'RemovePropertyConfirm': () => import('@/components/modalContent/RemovePropertyConfirm.vue'),
         'RequiredPropertyModal': () => import('@/components/modalContent/RequiredPropertyModal.vue')

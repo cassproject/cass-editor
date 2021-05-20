@@ -18,7 +18,7 @@
             <button
                 @click="deleteItem()"
                 class="is-danger is-outlined button">
-                Delete Competency
+                Delete Concept
             </button>
             <button
                 @click="closeModal()"
@@ -30,46 +30,87 @@
 </template>
 <script>
 import ModalTemplate from './ModalTemplate.vue';
-import competencyEdits from '@/mixins/competencyEdits.js';
+import common from '@/mixins/common.js';
 export default {
     name: 'DeleteConceptConfirm',
-    mixins: [competencyEdits],
     components: {
         ModalTemplate
     },
-    data() {
-        return {
-            numFrameworks: 0,
-            numRelationships: 0
-        };
-    },
+    mixins: [common],
     computed: {
         obj() {
             return this.$store.getters['editor/itemToDelete'];
+        },
+        framework() {
+            return this.$store.getters['editor/framework'];
         }
     },
-    mounted() {
-        this.getNums();
+    data() {
+        return {
+            editsToUndo: []
+        };
     },
     methods: {
-        getNums() {
-            let me = this;
-            repo.search("@type:Framework AND competency:\"" + this.obj.shortId() + "\"", function(f) {}, function(fs) {
-                me.numFrameworks = fs.length;
-                repo.search("@type:Relation AND (source:\"" + me.obj.shortId() + "\" OR target:\"" + me.obj.shortId() + "\")", function(r) {}, function(rs) {
-                    me.numRelationships = rs.length;
-                }, function() {});
-            }, function() {});
-        },
         deleteItem() {
-            let item = this.$store.getters['editor/itemToDelete'];
-            this.deleteObject(item);
+            this.deleteObject(this.obj);
             this.closeModal();
-            this.$store.commit('editor/itemToDelete', {});
         },
         closeModal() {
             this.$store.commit('app/closeModal');
             this.$store.commit('editor/setItemToDelete', {});
+        },
+        deleteObject: function(thing) {
+            appLog("deleting " + thing.id);
+            this.deleteConceptInner(thing);
+
+            this.framework["schema:dateModified"] = new Date().toISOString();
+            this.$store.commit('editor/selectedCompetency', null);
+        },
+        deleteConceptInner: function(c) {
+            var me = this;
+            if (c["skos:broader"] != null) {
+                for (var i = 0; i < c["skos:broader"].length; i++) {
+                    EcConcept.get(c["skos:broader"][i], function(concept) {
+                        var initialValue = concept["skos:narrower"].slice();
+                        EcArray.setRemove(concept["skos:narrower"], c.shortId());
+                        concept["schema:dateModified"] = new Date().toISOString();
+                        me.editsToUndo.push({operation: "update", id: concept.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]});
+                        if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
+                            concept = EcEncryptedValue.toEncryptedValue(concept);
+                        }
+                        repo.saveTo(concept, function() {
+                            me.$store.commit('editor/framework', me.framework);
+                        }, appError);
+                    }, appError);
+                }
+            }
+            if (c["skos:narrower"] != null) {
+                for (var i = 0; i < c["skos:narrower"].length; i++) {
+                    EcConcept.get(c["skos:narrower"][i], function(concept) {
+                        me.deleteConceptInner(concept);
+                    }, appError);
+                }
+            }
+            if (c["skos:topConceptOf"] != null) {
+                var initialValue = this.framework["skos:hasTopConcept"].slice();
+                EcArray.setRemove(this.framework["skos:hasTopConcept"], c.shortId());
+                me.editsToUndo.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]});
+                var framework = this.framework;
+                framework["schema:dateModified"] = new Date().toISOString();
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                }
+                repo.saveTo(framework, function() {
+                    me.$store.commit('editor/framework', me.framework);
+                }, appError);
+            }
+            this.spitEvent("conceptDeleted", c.shortId(), "editFrameworkPage");
+            me.editsToUndo.push({operation: "delete", obj: c});
+            repo.deleteRegistered(c, function() {
+                me.$store.commit('editor/framework', me.framework);
+                me.$store.commit('editor/addEditsToUndo', JSON.parse(JSON.stringify(me.editsToUndo)));
+                me.editsToUndo.splice(0, me.editsToUndo.length);
+            }, appError);
         }
     }
 };

@@ -5,23 +5,20 @@
         size="small"
         :active="true">
         <template slot="modal-header">
-            Confirm Delete Framework
+            Confirm Delete {{ type }}
         </template>
         <template slot="modal-body">
             <section>
                 <b>
-                    Warning! This action is not reversable.
+                    Warning! This action is permanent.
                 </b>
             </section>
-            <p class="help is-danger">
-                This action will delete {{ name }} and all of its contents.
-            </p>
         </template>
         <template slot="modal-foot">
             <button
                 @click="deleteItem()"
                 class="is-danger is-outlined button">
-                Delete Framework
+                Delete {{ type }}
             </button>
             <button
                 @click="closeModal()"
@@ -33,26 +30,28 @@
 </template>
 <script>
 import ModalTemplate from './ModalTemplate.vue';
-import competencyEdits from '@/mixins/competencyEdits.js';
+import common from '@/mixins/common.js';
 export default {
-    name: 'DeleteFrameworkConfirm',
-    mixins: [competencyEdits],
+    name: 'DeleteConceptSchemeConfirm',
     components: {
         ModalTemplate
     },
+    mixins: [common],
     data() {
         return {
+            repo: window.repo
         };
     },
     computed: {
         obj() {
             return this.$store.getters['editor/itemToDelete'];
         },
-        name() {
-            return this.obj.getName();
+        type() {
+            if (this.$store.getters['queryParams/ceasnDataFields'] === 'true') {
+                return "Concept Scheme";
+            }
+            return 'Taxonomy';
         }
-    },
-    mounted() {
     },
     methods: {
         deleteItem() {
@@ -63,6 +62,23 @@ export default {
         closeModal() {
             this.$store.commit('app/closeModal');
             this.$store.commit('editor/setItemToDelete', {});
+        },
+        deleteObject: function(thing) {
+            appLog("deleting " + thing.id);
+            var me = this;
+            // delete scheme
+            var framework = this.obj;
+            this.repo.deleteRegistered(framework, function(success) {
+                me.spitEvent("frameworkDeleted", framework.shortId(), "editFrameworkSection");
+                // Delete the framework, delete all non-used stuff.
+                EcConcept.search(me.repo, "skos\\:inScheme:\"" + framework.shortId() + "\"", function(concepts) {
+                    for (var i = 0; i < concepts.length; i++) {
+                        me.repo.deleteRegistered(concepts[i], appLog, appError);
+                    }
+                }, appError);
+                me.$store.commit('editor/framework', null);
+                me.$router.push({name: "concepts"});
+            }, appLog);
         }
     }
 };

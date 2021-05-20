@@ -80,7 +80,6 @@
                             :profile="profile"
                             @select="select"
                             :editingThing="editingThing"
-                            @delete-object="deleteObject"
                             :validate="validate"
                             :view="view"
                             @validated="validated"
@@ -100,7 +99,6 @@
                             :profile="profile"
                             @select="select"
                             :editingThing="editingThing"
-                            @delete-object="deleteObject"
                             :validate="validate"
                             :view="view"
                             @validated="validated"
@@ -119,7 +117,6 @@
                             :profile="profile"
                             @select="select"
                             :editingThing="editingThing"
-                            @delete-object="deleteObject"
                             :validate="validate"
                             :view="view"
                             @validated="validated"
@@ -937,19 +934,14 @@ export default {
                     this.$store.commit('app/showModal', {component: 'DeleteCompetencyConfirm'});
                 } else if (this.shortType === "Level") {
                     this.$store.commit('app/showModal', {component: 'DeleteLevelConfirm'});
-                } else if (this.shortType === "Framework" || this.shortType === "ConceptScheme" || this.shortType === "Concept") {
-                    let type = this.shortType.toLowerCase();
-                    if (type === "conceptscheme") {
-                        type = "concept scheme";
-                        this.$store.commit('app/showModal', {component: 'DeleteConceptConfirm'});
-                    } else {
-                        this.$store.commit('app/showModal', {component: 'DeleteFrameworkConfirm'});
-                    }
+                } else if (this.shortType === "Concept") {
+                    this.$store.commit('app/showModal', {component: 'DeleteConceptConfirm'});
+                } else if (this.shortType === "ConceptScheme") {
+                    this.$store.commit('app/showModal', {component: 'DeleteConceptSchemeConfirm'});
+                } else if (this.shortType === "Framework") {
+                    this.$store.commit('app/showModal', {component: 'DeleteFrameworkConfirm'});
                 } else if (this.shortType === "Directory") {
                     this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});
-                } else {
-                    // what is this for?
-                    return me.deleteObject();
                 }
             } else {
                 if (val === 'removeObject') {
@@ -1552,7 +1544,7 @@ export default {
                 this.$store.commit('app/editDirectory', false);
                 this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});
             } else {
-                this.$store.commit('editor/setItemToDelete', this.obj);
+                this.$store.commit('editor/setItemToDelete', this.obj ? this.obj : this.originalThing);
                 this.showModal('deleteObject');
             }
         }

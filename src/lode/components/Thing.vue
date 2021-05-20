@@ -115,8 +115,7 @@
                                 :editingThing="editingThing"
                                 :canEdit="false"
                                 :profile="profile"
-                                @select="select"
-                                @delete-object="deleteObject" />
+                                @select="select" />
                             <slot name="frameworkTags" />
                         </template>
                         <template
@@ -132,8 +131,7 @@
                                 :editingThing="editingThing"
                                 :canEdit="allowPropertyEdits(key)"
                                 :profile="profile"
-                                @select="select"
-                                @delete-object="deleteObject" />
+                                @select="select" />
                         </template>
                         <template v-else-if="showViewProperties && viewProperties[heading]">
                             <!-- here we have the expandable / does not contain value for properties -->
@@ -147,8 +145,7 @@
                                 :editingThing="editingThing"
                                 :canEdit="allowPropertyEdits(key)"
                                 :profile="profile"
-                                @select="select"
-                                @delete-object="deleteObject" />
+                                @select="select" />
                         </template>
                     </div>
                 </div>
@@ -710,42 +707,6 @@ export default {
         emitExpandEvent: function(e) {
             this.$emit('expand-event');
         },
-        /*
-        Do not use plugin modal anymore, this has been updated for
-        template based modals
-        */
-        showModal(val) {
-            var me = this;
-            if (val === 'deleteObject') {
-                if (this.shortType === 'Competency') {
-                    this.$store.commit('app/showModal', {component: 'DeleteCompetencyConfirm'});
-                } else if (this.shortType === "Level") {
-                    this.$store.commit('app/showModal', {component: 'DeleteLevelConfirm'});
-                } else if (this.shortType === "Framework" || this.shortType === "ConceptScheme" || this.shortType === "Concept") {
-                    let type = this.shortType.toLowerCase();
-                    if (type === "conceptscheme") {
-                        type = "concept scheme";
-                        this.$store.commit('app/showModal', {component: 'DeleteConceptConfirm'});
-                    } else {
-                        this.$store.commit('app/showModal', {component: 'DeleteFrameworkConfirm'});
-                    }
-                } else if (this.shortType === "Directory") {
-                    this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});
-                } else {
-                    // what is this for?
-                    return me.deleteObject();
-                }
-            } else {
-                if (val === 'removeObject') {
-                    this.$store.commit('editor/setItemToRemove', this.obj);
-                    this.$store.commit('app/showModal', {component: 'RemoveCompetency'});
-                }
-                if (val === 'export') {
-                    this.$store.commit('editor/setItemToExport', this.obj);
-                    this.$store.commit('app/showModal', {title: 'Export ' + this.shortType, component: 'ExportOptionsModal'});
-                }
-            }
-        },
         load: function() {
             var me = this;
             if (this.uri != null) {
@@ -1008,15 +969,6 @@ export default {
                 }
             }
             return types;
-        },
-        deleteObject: function(thing) {
-            if (thing) {
-                // Handles delete message passed through Property
-                this.$emit('delete-object', thing);
-            } else {
-                // If not passed through, delete current thing.
-                this.$emit('delete-object', this.originalThing);
-            }
         },
         removeObject: function() {
             this.$emit('remove-object', this.originalThing);

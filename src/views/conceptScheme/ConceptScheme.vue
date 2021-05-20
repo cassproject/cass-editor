@@ -25,7 +25,6 @@
                         view="concept"
                         :newFramework="newFramework"
                         :parentNotEditable="queryParams.view==='true'"
-                        @delete-object="deleteObject"
                         :profile="conceptSchemeProfile"
                         @edit-node-event="onEditNode()"
                         @done-editing-node-event="onDoneEditingNode()"
@@ -67,7 +66,6 @@
                     view="concept"
                     :highlightList="highlightCompetency"
                     :profile="conceptProfile"
-                    @delete-object="deleteObject"
                     @edit-multiple-event="onEditMultiple"
                     @search-things="handleSearch($event)"
                     @select-button-click="onSelectButtonClick"
@@ -801,77 +799,6 @@ export default {
                 return (n)["@value"];
             }
             return n;
-        },
-        deleteObject: function(thing) {
-            appLog("deleting " + thing.id);
-            var me = this;
-            if (thing.shortId() === this.framework.shortId()) {
-                // delete scheme
-                var framework = this.framework;
-                this.repo.deleteRegistered(framework, function(success) {
-                    me.spitEvent("frameworkDeleted", framework.shortId(), "editFrameworkSection");
-                    // Delete the framework, delete all non-used stuff.
-                    EcConcept.search(me.repo, "skos\\:inScheme:\"" + framework.shortId() + "\"", function(concepts) {
-                        for (var i = 0; i < concepts.length; i++) {
-                            me.repo.deleteRegistered(concepts[i], appLog, appError);
-                        }
-                    }, appError);
-                    me.$store.commit('editor/framework', null);
-                    me.$router.push({name: "concepts"});
-                }, appLog);
-            } else {
-                // Delete concept and fields
-                this.deleteConceptInner(thing);
-
-                this.framework["schema:dateModified"] = new Date().toISOString();
-                this.$store.commit('editor/selectedCompetency', null);
-            }
-        },
-        deleteConceptInner: function(c) {
-            var me = this;
-            if (c["skos:broader"] != null) {
-                for (var i = 0; i < c["skos:broader"].length; i++) {
-                    EcConcept.get(c["skos:broader"][i], function(concept) {
-                        var initialValue = concept["skos:narrower"].slice();
-                        EcArray.setRemove(concept["skos:narrower"], c.shortId());
-                        concept["schema:dateModified"] = new Date().toISOString();
-                        me.editsToUndo.push({operation: "update", id: concept.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]});
-                        if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
-                            concept = EcEncryptedValue.toEncryptedValue(concept);
-                        }
-                        repo.saveTo(concept, function() {
-                            me.$store.commit('editor/framework', me.framework);
-                        }, appError);
-                    }, appError);
-                }
-            }
-            if (c["skos:narrower"] != null) {
-                for (var i = 0; i < c["skos:narrower"].length; i++) {
-                    EcConcept.get(c["skos:narrower"][i], function(concept) {
-                        me.deleteConceptInner(concept);
-                    }, appError);
-                }
-            }
-            if (c["skos:topConceptOf"] != null) {
-                var initialValue = this.framework["skos:hasTopConcept"].slice();
-                EcArray.setRemove(this.framework["skos:hasTopConcept"], c.shortId());
-                me.editsToUndo.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]});
-                var framework = this.framework;
-                framework["schema:dateModified"] = new Date().toISOString();
-                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
-                }
-                repo.saveTo(framework, function() {
-                    me.$store.commit('editor/framework', me.framework);
-                }, appError);
-            }
-            this.spitEvent("conceptDeleted", c.shortId(), "editFrameworkPage");
-            me.editsToUndo.push({operation: "delete", obj: c});
-            repo.deleteRegistered(c, function() {
-                me.$store.commit('editor/framework', me.framework);
-                me.$store.commit('editor/addEditsToUndo', JSON.parse(JSON.stringify(me.editsToUndo)));
-                me.editsToUndo.splice(0, me.editsToUndo.length);
-            }, appError);
         },
         onOpenExportModal() {
             this.$store.commit('editor/setItemToExport', this.framework);

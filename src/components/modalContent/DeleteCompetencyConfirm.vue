@@ -14,7 +14,7 @@
                 </b>
             </section>
             <p class="help is-danger">
-                This action will remove <b>{{ numFrameworks }}</b> and impact <b>{{ numRelationships }}</b> relationships.
+                This action will remove the competency from <b>{{ numFrameworks }}</b> frameworks and impact <b>{{ numRelationships }}</b> relationships.
             </p>
             <section class="pt-2">
                 <p>
@@ -70,10 +70,9 @@ export default {
             }, function() {});
         },
         deleteItem() {
-            let item = this.$store.getters['editor/itemToDelete'];
-            this.deleteObject(item);
+            this.deleteObject(this.obj);
             this.closeModal();
-            this.$store.commit('editor/itemToDelete', {});
+            this.$store.commit('editor/setItemToDelete', {});
         },
         closeModal() {
             this.$store.commit('app/closeModal');
