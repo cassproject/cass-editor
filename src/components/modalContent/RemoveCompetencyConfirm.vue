@@ -5,7 +5,7 @@
         size="small"
         :active="true">
         <template slot="modal-header">
-            Confirm Remove Comeptency
+            Confirm Remove Competency
         </template>
         <template slot="modal-body">
             <section>
@@ -34,7 +34,7 @@
 import ModalTemplate from './ModalTemplate.vue';
 import competencyEdits from '@/mixins/competencyEdits.js';
 export default {
-    name: 'DeleteConceptConfirm',
+    name: 'RemoveCompetencyConfirm',
     mixins: [competencyEdits],
     components: {
         ModalTemplate
@@ -46,20 +46,22 @@ export default {
     computed: {
         obj() {
             return this.$store.getters['editor/itemToRemove'];
+        },
+        framework() {
+            return this.$store.getters['editor/framework'];
         }
     },
     mounted() {
     },
     methods: {
         removeItem() {
-            let item = this.$store.getters['editor/itemToDelete'];
-            this.removeObject(item);
+            this.removeObject(this.obj);
             this.closeModal();
-            this.$store.commit('editor/itemToDelete', {});
+            this.$store.commit('editor/setItemToRemove', {});
         },
         closeModal() {
             this.$store.commit('app/closeModal');
-            this.$store.commit('editor/setItemToDelete', {});
+            this.$store.commit('editor/setItemToRemove', {});
         }
     }
 };

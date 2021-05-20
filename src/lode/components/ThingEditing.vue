@@ -946,7 +946,7 @@ export default {
             } else {
                 if (val === 'removeObject') {
                     this.$store.commit('editor/setItemToRemove', this.obj);
-                    this.$store.commit('app/showModal', {component: 'RemoveCompetency'});
+                    this.$store.commit('app/showModal', {component: 'RemoveCompetencyConfirm'});
                 }
                 if (val === 'export') {
                     this.$store.commit('editor/setItemToExport', this.obj);
