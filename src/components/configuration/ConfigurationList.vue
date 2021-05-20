@@ -127,6 +127,81 @@ export default {
         frameworkConfigId: '',
         enforceHeadings: false
     }),
-    mixins: [cassUtil, configuration]
+    mixins: [cassUtil, configuration],
+    methods: {
+        showDeleteConfirm(configId) {
+            this.setConfigToDelete(configId);
+            this.showConfirmDeleteConfigModal = true;
+        },
+        setConfigToDelete(configId) {
+            this.$store.commit('configuration/setConfigToDelete', this.getConfigById(configId));
+        },
+        setConfigAsFrameworkDefault(configId) {
+            let me = this;
+            let f = this.$store.getters['editor/framework'];
+            let previousConfig = f.configuration;
+            f.configuration = configId;
+            if (!previousConfig) {
+                f = this.setOwnersAndReaders(f);
+            }
+            if (f) {
+                this.frameworkConfigId = configId;
+                window.repo.saveTo(f, function() {
+                    me.$store.commit('editor/framework', EcRepository.getBlocking(f.shortId()));
+                }, function() {});
+            }
+        },
+        setOwnersAndReaders(framework) {
+            let userIdentity = null;
+            if (EcIdentityManager.ids.length > 0) {
+                userIdentity = EcIdentityManager.ids[0].ppk.toPk();
+            }
+            let config = EcRepository.getBlocking(framework.configuration);
+            let owners = config.defaultObjectOwners;
+            let readers = config.defaultObjectReaders;
+            if (owners.length > 0 || readers.length > 0) {
+                if (userIdentity) {
+                    framework.addOwner(userIdentity);
+                } else {
+                    this.$store.commit('configuration/setShowMustBeLoggedInModal', true);
+                    return false;
+                }
+            }
+            for (let i = 0; i < owners.length; i++) {
+                framework.addOwner(EcPk.fromPem(owners[i]));
+            }
+            let compsAndRelations = framework.competency ? framework.competency : [];
+            if (framework.relation) {
+                compsAndRelations = compsAndRelations.concat(framework.relation);
+            }
+            new EcAsyncHelper().each(compsAndRelations, function(id, done) {
+                EcRepository.get(id, function(obj) {
+                    if (owners.length > 0 || readers.length > 0) {
+                        if (userIdentity) {
+                            obj.addOwner(userIdentity);
+                        }
+                    }
+                    for (let i = 0; i < owners.length; i++) {
+                        obj.addOwner(EcPk.fromPem(owners[i]));
+                    }
+                    if (readers.length > 0) {
+                        for (let i = 0; i < readers.length; i++) {
+                            obj.addReader(EcPk.fromPem(readers[i]));
+                        }
+                        obj = EcEncryptedValue.toEncryptedValue(obj);
+                    }
+                    window.repo.saveTo(obj, done, done);
+                }, done);
+            }, function(competencyIds) {
+            });
+            if (readers.length > 0) {
+                for (let i = 0; i < readers.length; i++) {
+                    framework.addReader(EcPk.fromPem(readers[i]));
+                }
+                framework = EcEncryptedValue.toEncryptedValue(framework);
+            }
+            return framework;
+        }
+    }
 };
 </script>
