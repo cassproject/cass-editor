@@ -1,21 +1,10 @@
 <template>
-    <div class="modal-card">
-        <header class="modal-card-head has-background-primary">
-            <p class="modal-card-title">
-                <span class="title has-text-white">
-                    Supported Import Types
-                </span>
-                <br>
-                <span class="subtitle has-text-white has-text-weight-medium">
-                    Supported Import Files & Formats
-                </span>
-            </p>
-            <button
-                class="delete"
-                @click="$store.commit('app/closeModal')"
-                aria-label="close" />
-        </header>
-        <section class="modal-card-body">
+    <modal-template
+        :active="true">
+        <template slot="modal-header">
+            Supported Import Files & Formats
+        </template>
+        <template slot="modal-body">
             <div class="tabs">
                 <ul>
                     <li
@@ -434,8 +423,8 @@
                     </a>
                 </div>
             </div>
-        </section>
-        <footer class="modal-card-foot">
+        </template>
+        <template slot="modal-foot">
             <div
                 @click="$store.commit('app/closeModal')"
                 class="buttons is-right">
@@ -443,11 +432,12 @@
                     Back to import screen
                 </div>
             </div>
-        </footer>
-    </div>
+        </template>
+    </modal-template>
 </template>
 
 <script>
+import ModalTemplate from './ModalTemplate.vue';
 import ctdlAsnCsvExample from 'file-loader!../../../files/CTDL-ASN.ONET.example.csv';
 import ctdlAsnCsvTemplate from 'file-loader!../../../files/CTDL-ASN.ONET.template.csv';
 import csvExampleCompetencies from 'file-loader!../../../files/CAP Software Engineering - Competencies.csv';
@@ -467,6 +457,9 @@ export default {
         initialTab: {
             type: String
         }
+    },
+    components: {
+        ModalTemplate
     },
     data() {
         return {
