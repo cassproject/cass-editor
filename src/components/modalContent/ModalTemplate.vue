@@ -24,8 +24,9 @@ should be componentized and imported into the screen that needs it.
                     <slot name="modal-header" />
                 </p>
                 <button
+                    v-if="canClose"
                     class="delete"
-                    @click="$store.commit('app/closeModal')"
+                    @click="$store.commit('app/closeModal'); $emit('close')"
                     aria-label="close" />
             </header>
             <div class="modal-card-body has-text-dark">
@@ -43,6 +44,10 @@ import '@/scss/modal-template.scss';
 export default {
     name: 'ModalTemplate',
     props: {
+        canClose: {
+            type: Boolean,
+            default: true
+        },
         active: {
             type: Boolean,
             default: false
