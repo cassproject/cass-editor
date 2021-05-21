@@ -6,53 +6,42 @@
         <template slot="modal-header">
             Edit Multiple Competencies
         </template>
-        <template slot="modal-body">
-            <section
-                v-if="isProcessing"
-                class="modal-card-body">
-                <div class="section has-text-centered">
-                    <span class="icon is-large">
-                        <i class="fa fa-spinner fa-2x fa-pulse" />
-                    </span>
-                </div>
-            </section>
-            <section
-                class="modal-card-body"
-                v-else-if="!isSearching">
-                <div
-                    v-for="(item,idx) in addedPropertiesAndValues"
-                    :key="item">
-                    <AddProperty
-                        :profile="profile"
-                        :editingMultipleCompetencies="true"
-                        @property-string-updated="propertyStringUpdated"
-                        :idx="idx"
-                        @is-searching="isSearching=true"
-                        :addedPropertiesAndValuesFromSearching="item" />
-                    <span v-if="item['error']">
-                        {{ item['error'] }}
-                    </span>
-                </div>
-                <!-- after adding one property, show button to add another HIDING FOR NOW
-                <div class="buttons is-right">
-                    <div class="button is-small is-outlined is-primary">
-                        <span class="icon">
-                            <i class="fa fa-plus" />
-                        </span>
-                        <span @click="addAnotherProperty">Add another property</span>
-                    </div>
-                </div> -->
-                <p
-                    class="help is-danger"
-                    v-if="errorMessage !== []">
-                    {{ this.errorMessage[0] }}
-                </p>
-            </section>
-            <section
-                v-if="isSearching"
-                class="modal-card-body">
-                <Search view="multi-edit" />
-            </section>
+        <template
+            v-if="isProcessing"
+            slot="modal-body">
+            <div class="section has-text-centered">
+                <span class="icon is-large">
+                    <i class="fa fa-spinner fa-2x fa-pulse" />
+                </span>
+            </div>
+        </template>
+        <template
+            slot="modal-body"
+            v-else-if="!isSearching">
+            <div
+                v-for="(item,idx) in addedPropertiesAndValues"
+                :key="item">
+                <AddProperty
+                    :profile="profile"
+                    :editingMultipleCompetencies="true"
+                    @property-string-updated="propertyStringUpdated"
+                    :idx="idx"
+                    @is-searching="isSearching=true"
+                    :addedPropertiesAndValuesFromSearching="item" />
+                <span v-if="item['error']">
+                    {{ item['error'] }}
+                </span>
+            </div>
+            <p
+                class="help is-danger"
+                v-if="errorMessage !== []">
+                {{ this.errorMessage[0] }}
+            </p>
+        </template>
+        <template
+            slot="modal-body"
+            v-if="isSearching">
+            <Search view="multi-edit" />
         </template>
         <template slot="modal-foot">
             <div class="buttons is-spaced">
