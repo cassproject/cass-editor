@@ -3,23 +3,17 @@
         <th>
             <b>{{ name }}</b>
         </th>
-        <td v-if="view !== 'dynamic-modal'">
+        <td v-if="view !== 'modal'">
             {{ description }}
         </td>
-        <td v-if="view !== 'dynamic-modal'">
+        <td v-if="view !== 'modal'">
             <span
                 v-if="isDefault"
                 class="icon has-text-primary">
                 <i class="fa fa-check" />
             </span>
         </td>
-        <td v-if="view !== 'dynamic-modal'">
-            <!-- <div
-                class="button is-outlined is-primary is-small"
-                :disabled="defaultBrowserConfigId && defaultBrowserConfigId.equals(id)"
-                @click="$emit('setBrowserDefault', id)">
-                set as browser default
-            </div>-->
+        <td v-if="view !== 'modal'">
             <div class="field">
                 <div class="control is-size-3">
                     <input
@@ -40,7 +34,7 @@
                 set as framework default
             </div>
         </td>
-        <td v-if="view !== 'dynamic-modal'">
+        <td v-if="view !== 'modal'">
             <div
                 v-if="isOwned"
                 title="Manage configuration"

@@ -19,9 +19,9 @@
             </router-link>
             <div
                 v-if="showSideNav"
-                class="icon is-pulled-right"
+                class="button is-rounded p-0 is-pulled-right"
                 @click="$store.commit('app/closeSideNav')">
-                <i class="fa fa-chevron-down" />
+                <i class="fa fa-chevron-left p-3" />
             </div>
         </div>
         <div
@@ -30,19 +30,17 @@
                 v-if="!showSideNav"
                 class="buttons is-centered"
                 @click="$store.commit('app/showSideNav')">
-                <div class="button is-outlined is-white">
-                    <span class="icon icon has-text-centered">
-                        <i class="fa fa-chevron-right has-text-centered" />
-                    </span>
-                </div>
+                <button class="button is-outlined is-rounded p-0">
+                    <i class="fa fa-chevron-right px-3" />
+                </button>
             </div>
             <template v-if="displayName !== 'No user'">
-                <div class="has-text-centered">
+                <div
+                    v-if="!showSideNav"
+                    class="cass-editor__logged-in-user-icon">
                     <span
-                        :title="'Signed in as: ' + displayName"
-                        class="icon has-text-centered"
-                        v-if="!showSideNav">
-                        <i class="far fa-user-circle" />
+                        :title="'Signed in as: ' + displayName">
+                        {{ loggedOnPerson.email.slice(0, 2) }}
                     </span>
                 </div>
                 <h3 class="is-size-2 has-text-weight-semibold">
@@ -63,7 +61,7 @@
                     v-if="showSideNav"
                     title="Log out">
                     <div
-                        class="button is-rounded is-white has-text-danger"
+                        class="button is-rounded white"
                         @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-out-alt" />
@@ -72,10 +70,10 @@
                     </div>
                 </div>
                 <div
-                    class="buttons is-centered"
+                    class="buttons pt-4 is-centered"
                     v-else>
                     <div
-                        class="button is-text has-text-link is-medium"
+                        class="button is-outlined is-white"
                         @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-out-alt" />
@@ -86,7 +84,7 @@
             <template v-else-if="loginEnabled">
                 <div
                     v-if="showSideNav"
-                    class="button is-outlined is-link"
+                    class="button  is-large is-outlined is-white"
                     @click="performApplicationLogout">
                     <span class="icon">
                         <i class="fa fa-sign-in-alt" />
@@ -96,7 +94,7 @@
                     v-if="!showSideNav"
                     class="buttons is-centered">
                     <div
-                        class="button is-outlined is-link"
+                        class="button is-outlined is-white"
                         @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-in-alt" />
@@ -189,6 +187,7 @@
             My Directories
         </div>
         <ul
+            v-if="showSideNav"
             class="menu-list">
             <li
                 class="has-text-white cass--main-nav--list-item "
@@ -511,6 +510,18 @@ export default {
  @import '../scss/variables.scss';
  @import '../scss/side-nav.scss';
 
+.cass-editor__logged-in-user-icon {
+    border: solid 2px white;
+    border-radius: 36px;
+    text-align: center;
+    line-height: 32px;
+    font-size: 1.25rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    margin: auto;
+    height: 36px;
+    width: 36px;
+}
 .cass--main-nav--list-item a {
     text-overflow: ellipsis;
     white-space: nowrap;

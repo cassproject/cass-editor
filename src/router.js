@@ -61,7 +61,7 @@ export default new Router({
             path: '/configuration',
             name: 'configuration',
             components: {
-                default: () => import(/* webpackChunkName: "configurationEditor" */ './views/configuration/ConfigurationEditor'),
+                default: () => import(/* webpackChunkName: "configurationEditor" */ './views/ConfigurationEditor'),
                 sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
                 topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }

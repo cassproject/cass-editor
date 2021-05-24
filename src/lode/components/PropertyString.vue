@@ -1,5 +1,30 @@
 <template>
     <div class="property-string">
+        <!-- remove property confirm modal -->
+        <modal-template
+            :active="removePropertyConfirmModal"
+            @close="closeModal">
+            <template slot="modal-header">
+                Confirm Remove Property
+            </template>
+            <template slot="modal-body">
+                <section>
+                    Are you sure you'd like to remove this property?
+                </section>
+            </template>
+            <template slot="modal-foot">
+                <button
+                    @click="clickConfirmRemove"
+                    class="is-danger is-outlined button">
+                    Confirm Remove Property
+                </button>
+                <button
+                    @click="closeModal"
+                    class="is-dark button">
+                    Cancel
+                </button>
+            </template>
+        </modal-template>
         <!-- language modifier -->
         <div
             class="field is-grouped"
@@ -164,6 +189,7 @@
 </template>
 
 <script>
+import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 const languagesFile = require('../ietf-language-tags_json.json');
 export default {
     name: 'PropertyString',
@@ -186,6 +212,9 @@ export default {
             default: ''
         }
     },
+    components: {
+        ModalTemplate
+    },
     created: function() {
     },
     data: function() {
@@ -203,7 +232,8 @@ export default {
                 search: "",
                 languages: [],
                 filtered: [],
-                isResource: false
+                isResource: false,
+                removePropertyConfirmModal: false
             };
         } else {
             return {
@@ -213,7 +243,8 @@ export default {
                 search: "",
                 languages: [],
                 filtered: [],
-                isResource: false
+                isResource: false,
+                removePropertyConfirmModal: false
             };
         }
     },
@@ -368,7 +399,6 @@ export default {
             this.blur();
         },
         showModal(val) {
-            let params = {};
             let expandedValue;
             let me = this;
             if (this.expandedThing) {
@@ -377,32 +407,26 @@ export default {
             if (val === 'remove') {
                 if (expandedValue && this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
                     if (expandedValue.length === 1 || (expandedValue["@value"] && expandedValue["@value"].trim().length === 1)) {
-                        this.showModal("required");
+                        this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
                         return;
                     }
                 }
                 if (!this.newProperty) {
-                    params = {
-                        type: val,
-                        title: "Remove property",
-                        text: "Remove this property?",
-                        onConfirm: () => {
-                            return me.$emit('remove');
-                        }
-                    };
+                    this.removePropertyConfirmModal = true;
                 } else {
                     return me.$emit('remove');
                 }
             }
             if (val === 'required') {
-                params = {
-                    type: val,
-                    title: "Required property",
-                    text: "This property is required. It cannot be removed."
-                };
+                this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
             }
-            // reveal modal
-            this.$modal.show(params);
+        },
+        clickConfirmRemove: function() {
+            this.$emit('remove');
+            this.removePropertyConfirmModal = false;
+        },
+        closeModal: function() {
+            this.removePropertyConfirmModal = false;
         }
     }
 };

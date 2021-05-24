@@ -54,11 +54,9 @@ export default {
     methods: {
         showDetails() {
             this.showChildren = true;
-            // console.log("PanelItem - showDetails: " + this.id);
             this.$emit('showDetails', this.id);
         },
         showDetailsChild(id) {
-            // console.log("PanelItem - showDetailsChild: " + id);
             this.$emit('showDetails', id);
         }
     }

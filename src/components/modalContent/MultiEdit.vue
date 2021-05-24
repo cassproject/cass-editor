@@ -1,25 +1,22 @@
 <template>
-    <div class="modal-card lode__thing-editing multi-edit">
-        <header class="modal-card-head has-background-primary">
-            <h3 class="modal-card-title has-text-white is-size-3">
-                Edit Multiple Competencies
-            </h3>
-            <button
-                class="delete"
-                aria-label="close"
-                @click="$store.commit('app/closeModal')" />
-        </header>
-        <section
+    <modal-template
+        :active="true"
+        type="info"
+        @close="closeModal">
+        <template slot="modal-header">
+            Edit Multiple Competencies
+        </template>
+        <template
             v-if="isProcessing"
-            class="modal-card-body">
+            slot="modal-body">
             <div class="section has-text-centered">
                 <span class="icon is-large">
                     <i class="fa fa-spinner fa-2x fa-pulse" />
                 </span>
             </div>
-        </section>
-        <section
-            class="modal-card-body"
+        </template>
+        <template
+            slot="modal-body"
             v-else-if="!isSearching">
             <div
                 v-for="(item,idx) in addedPropertiesAndValues"
@@ -35,27 +32,18 @@
                     {{ item['error'] }}
                 </span>
             </div>
-            <!-- after adding one property, show button to add another HIDING FOR NOW
-            <div class="buttons is-right">
-                <div class="button is-small is-outlined is-primary">
-                    <span class="icon">
-                        <i class="fa fa-plus" />
-                    </span>
-                    <span @click="addAnotherProperty">Add another property</span>
-                </div>
-            </div> -->
             <p
                 class="help is-danger"
                 v-if="errorMessage !== []">
                 {{ this.errorMessage[0] }}
             </p>
-        </section>
-        <section
-            v-if="isSearching"
-            class="modal-card-body">
+        </template>
+        <template
+            slot="modal-body"
+            v-if="isSearching">
             <Search view="multi-edit" />
-        </section>
-        <footer class="modal-card-foot">
+        </template>
+        <template slot="modal-foot">
             <div class="buttons is-spaced">
                 <button
                     @click="onCancel"
@@ -87,17 +75,19 @@
                     <span>Add Selected</span>
                 </div>
             </template>
-        </footer>
-    </div>
+        </template>
+    </modal-template>
 </template>
 <script>
 import AddProperty from '@/lode/components/AddProperty.vue';
-import Search from './Search.vue';
+import Search from '../framework/Search.vue';
+import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'MultiEdit',
     components: {
         AddProperty,
-        Search
+        Search,
+        ModalTemplate
     },
     props: {
         content: Object
@@ -348,11 +338,11 @@ export default {
                     appError(err);
                 }
                 if (compacted) {
+                    compacted = me.turnFieldsBackIntoArrays(compacted);
                     var rld = new EcRemoteLinkedData();
                     rld.copyFrom(compacted);
                     rld.context = context;
                     delete rld["@context"];
-                    rld = me.turnFieldsBackIntoArrays(rld);
                     rld["schema:dateModified"] = new Date().toISOString();
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                         rld = EcEncryptedValue.toEncryptedValue(rld);
