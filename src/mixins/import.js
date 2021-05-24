@@ -118,9 +118,13 @@ export default {
                     text: data.message,
                     details: data.details
                 };
+                this.$store.commit('app/importModalParams', params);
+                this.$store.commit('app/showModal', {component: 'ImportError'});
+                return;
             }
             // reveal modal
-            this.$modal.show(params);
+            this.$store.commit('app/importModalParams', params);
+            this.$store.commit('app/showModal', {component: 'DuplicateImport'});
         },
         unsupportedFile: function(val) {
             this.$store.commit('app/importFileType', val);
