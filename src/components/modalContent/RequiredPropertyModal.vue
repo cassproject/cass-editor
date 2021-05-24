@@ -26,10 +26,8 @@
 </template>
 <script>
 import ModalTemplate from './ModalTemplate.vue';
-import competencyEdits from '@/mixins/competencyEdits.js';
 export default {
     name: 'RequiredPropertyModal',
-    mixins: [competencyEdits],
     components: {
         ModalTemplate
     },
@@ -44,7 +42,6 @@ export default {
     methods: {
         closeModal() {
             this.$store.commit('app/closeModal');
-            this.$store.commit('editor/setItemToDelete', {});
         }
     }
 };

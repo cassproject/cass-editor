@@ -11,6 +11,31 @@ TO DO MAYBE: Separate out property by editing or not.
         :class="['lode__Property lode__' + shortTypeAsClass, editingPropertyClass,
                  { 'has-value': expandedValue}
         ]">
+        <!-- remove property confirm modal -->
+        <modal-template
+            :active="removePropertyConfirmModal"
+            @close="closeModal">
+            <template slot="modal-header">
+                Confirm Remove Property
+            </template>
+            <template slot="modal-body">
+                <section>
+                    Are you sure you'd like to remove this property?
+                </section>
+            </template>
+            <template slot="modal-foot">
+                <button
+                    @click="clickConfirmRemove"
+                    class="is-danger is-outlined button">
+                    Confirm Remove Property
+                </button>
+                <button
+                    @click="closeModal"
+                    class="is-dark button">
+                    Cancel
+                </button>
+            </template>
+        </modal-template>
         <!-- begin values -->
         <template
             v-if="expandedValue && show">
@@ -296,6 +321,7 @@ TO DO MAYBE: Separate out property by editing or not.
 </template>
 <script>
 import '@/scss/property.scss';
+import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 
 export default {
     // Property represents one property of a Thing.
@@ -334,7 +360,9 @@ export default {
             initialValue: null,
             expandedValueNames: [],
             optionsArray: [],
-            errorValidating: null
+            errorValidating: null,
+            removePropertyConfirmModal: false,
+            propertyToRemove: null
         };
     },
     components: {
@@ -342,7 +370,8 @@ export default {
         Thing: () => import('./Thing.vue'),
         ThingEditing: () => import('./ThingEditing.vue'),
         // Property editing box for String type things. Should be one of these for each value type.
-        PropertyString: () => import('./PropertyString.vue')
+        PropertyString: () => import('./PropertyString.vue'),
+        ModalTemplate
     },
     created: function() {
         var me = this;
@@ -773,16 +802,8 @@ export default {
                         return;
                     }
                 }
-                this.$store.commit('editor/setItemToRemove', {component: 'RemovePropertyConfirm'});
-                /* params = {
-                    type: val,
-                    title: "Remove property",
-                    text: "Remove this property?",
-                    onConfirm: () => {
-                        return this.remove(item);
-                    }
-                };
-                this.$modal.show(params);*/
+                this.removePropertyConfirmModal = true;
+                this.propertyToRemove = item;
             }
             if (val === 'required') {
                 params = {
@@ -820,6 +841,15 @@ export default {
                 };
             }
             this.errorValidating = params.text;
+        },
+        clickConfirmRemove: function() {
+            this.remove(this.propertyToRemove);
+            this.propertyToRemove = null;
+            this.removePropertyConfirmModal = false;
+        },
+        closeModal: function() {
+            this.propertyToRemove = null;
+            this.removePropertyConfirmModal = false;
         },
         add: function(type) {
             if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["add"]) {

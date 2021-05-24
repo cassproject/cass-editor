@@ -56,7 +56,6 @@ export default {
         'DeleteConceptSchemeConfirm': () => import('@/components/modalContent/DeleteConceptSchemeConfirm.vue'),
         'RemoveCompetencyConfirm': () => import('@/components/modalContent/RemoveCompetencyConfirm.vue'),
         'ExportOptionsModal': () => import('@/components/modalContent/ExportOptionsModal.vue'),
-        'RemovePropertyConfirm': () => import('@/components/modalContent/RemovePropertyConfirm.vue'),
         'RequiredPropertyModal': () => import('@/components/modalContent/RequiredPropertyModal.vue')
     },
     data() {

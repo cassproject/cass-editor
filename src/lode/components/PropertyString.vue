@@ -1,5 +1,30 @@
 <template>
     <div class="property-string">
+        <!-- remove property confirm modal -->
+        <modal-template
+            :active="removePropertyConfirmModal"
+            @close="closeModal">
+            <template slot="modal-header">
+                Confirm Remove Property
+            </template>
+            <template slot="modal-body">
+                <section>
+                    Are you sure you'd like to remove this property?
+                </section>
+            </template>
+            <template slot="modal-foot">
+                <button
+                    @click="clickConfirmRemove"
+                    class="is-danger is-outlined button">
+                    Confirm Remove Property
+                </button>
+                <button
+                    @click="closeModal"
+                    class="is-dark button">
+                    Cancel
+                </button>
+            </template>
+        </modal-template>
         <!-- language modifier -->
         <div
             class="field is-grouped"
@@ -164,6 +189,7 @@
 </template>
 
 <script>
+import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 const languagesFile = require('../ietf-language-tags_json.json');
 export default {
     name: 'PropertyString',
@@ -186,6 +212,9 @@ export default {
             default: ''
         }
     },
+    components: {
+        ModalTemplate
+    },
     created: function() {
     },
     data: function() {
@@ -203,7 +232,8 @@ export default {
                 search: "",
                 languages: [],
                 filtered: [],
-                isResource: false
+                isResource: false,
+                removePropertyConfirmModal: false
             };
         } else {
             return {
@@ -213,7 +243,8 @@ export default {
                 search: "",
                 languages: [],
                 filtered: [],
-                isResource: false
+                isResource: false,
+                removePropertyConfirmModal: false
             };
         }
     },
@@ -381,16 +412,7 @@ export default {
                     }
                 }
                 if (!this.newProperty) {
-                    this.$store.commit('editor/setItemToRemove');
-                    this.$store.commit('app/showModal', {component: 'RemovePropertyConfirm'});
-                    /* params = {
-                        type: val,
-                        title: "Remove property",
-                        text: "Remove this property?",
-                        onConfirm: () => {
-                            return me.$emit('remove');
-                        }
-                    };*/
+                    this.removePropertyConfirmModal = true;
                 } else {
                     return me.$emit('remove');
                 }
@@ -398,6 +420,13 @@ export default {
             if (val === 'required') {
                 this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
             }
+        },
+        clickConfirmRemove: function() {
+            this.$emit('remove');
+            this.removePropertyConfirmModal = false;
+        },
+        closeModal: function() {
+            this.removePropertyConfirmModal = false;
         }
     }
 };
