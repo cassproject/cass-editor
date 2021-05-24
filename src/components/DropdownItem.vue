@@ -27,12 +27,10 @@ export default {
     props: [ 'nodes', 'label', 'depth', 'id' ],
     methods: {
         showDetailsChild(id) {
-            // console.log("PanelItem - showDetailsChild: " + id);
             this.$emit('showDetails', id);
         },
         showDetails() {
             this.showChildren = true;
-            // console.log("PanelItem - showDetails: " + this.id);
             this.$emit('showDetails', this.id);
         }
     }

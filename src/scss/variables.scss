@@ -1,3 +1,89 @@
+@function hexToRGB($hex) {
+    @return red($hex), green($hex), blue($hex);
+}
+
+$primary-color: #456DB9 ;
+$primary-color-light-1: #5D82C7 ;
+$primary-color-light-2: #7998d4 ;
+$primary-color-light-3: #96AFE0 ;
+$primary-color-light-4: #9AB7ED ;
+
+$secondary-color: #298DFC ;
+$secondary-color-light-1: #479CFC ;
+$secondary-color-light-2: #65ACFC ;
+$secondary-color-light-3: #65ACFC ;
+$secondary-color-light-4: #A2CCFC ;
+
+$accent-color: #E5740C ;
+$success-color: #57A773 ;
+$warning-color: #F9DC5C ;
+$danger-color: #C42348 ;
+
+$dark-grey-color: #2D3047 ;
+$grey-color: #555555 ;
+$light-grey-color: #ABABB4 ;
+$light-color: #FAF7FA ;
+$lightest-grey-color: #eeeef1;
+
+$font-size-1: 3rem;
+$font-size-2: 2.5rem;
+$font-size-3: 1.75rem;
+$font-size-4: 1.25rem;
+$font-size-5: 1.1rem;
+$font-size-6: 1rem;
+$small-font-size: .875rem;
+$smallest-font-size: .75rem;
+$body-font-size: 1rem;
+
+:root {
+    --primary-font: 'Barlow', 'sans-serif';
+    --secondary-font: 'Fira Sans', 'sans-serif';
+    --primary: #{$primary-color};
+    --primary-rgb: #{hexToRGB($primary-color)};
+    --primary-light-1: #{$primary-color-light-1};
+    --primary-light-1-rgb: #{hexToRGB($primary-color-light-1)};
+    --primary-light-2: #{$primary-color-light-2};
+    --primary-light-2-rgb: #{hexToRGB($primary-color-light-2)};
+    --primary-light-3: #{$primary-color-light-3};
+    --primary-light-3-rgb: #{hexToRGB($primary-color-light-3)};
+    --primary-light-4: #{$primary-color-light-4};
+    --primary-light-4-rgb: #{hexToRGB($primary-color-light-4)};
+    --secondary: #{$secondary-color};
+    --secondary-rgb: #{hexToRGB($secondary-color)};
+    --secondary-light-1: #{$secondary-color-light-1};
+    --secondary-light-1-rgb: #{hexToRGB($secondary-color-light-1)};
+    --secondary-light-2: #{$secondary-color-light-2};
+    --secondary-2-rgb: #{hexToRGB($secondary-color-light-2)};
+    --secondary-light-3: #{$secondary-color-light-3};
+    --secondary-light-3-rgb: #{hexToRGB($secondary-color-light-3)};
+    --secondary-light-4: #{$secondary-color-light-4};
+    --secondary-light-4-rgb: #{hexToRGB($secondary-color-light-4)};
+    --accent: #{$accent-color};
+    --accent-rgb: #{hexToRGB($accent-color)};
+    --success: #{$success-color};
+    --success-rgb: #{hexToRGB($success-color)};
+    --danger: #{$danger-color};
+    --danger-rgb: #{hexToRGB($danger-color)};
+    --warning: #{$warning-color};
+    --warning-rgb: #{hexToRGB($warning-color)};
+    --dark-grey: #{$dark-grey-color};
+    --dark-grey-rgb: #{hexToRGB($dark-grey-color)};
+    --grey: #{$grey-color};
+    --grey-rgb: #{hexToRGB($grey-color)};
+    --light-grey: #{$light-grey-color};
+    --light-grey-rgb: #{hexToRGB($light-grey-color)};
+    --light-color: #{$light-color};
+    --light-rgb: #{hexToRGB($light-color)};
+    --lightest-grey: #{$lightest-grey-color};
+    --lightest-grey-rgb: #{hexToRGB($lightest-grey-color)};
+    // FONTS
+    --font-size-1: #{$font-size-1};
+    --font-size-2: #{$font-size-2};
+    --font-size-3: #{$font-size-3};
+    --font-size-4: #{$font-size-4};
+    --font-size-5: #{$font-size-5};
+    --font-size-6: #{$font-size-6};
+}
 
 @function tint($color, $percentage) {
     @return mix(white, $color, $percentage);
@@ -8,27 +94,11 @@
 
 
 // generic variables need to update before import 
-:root {
-    --cass-primary: #4F99A8;
-    --cass-secondary: #68C8DB;
-    --cass-secondary: #68C8DB;
-}
-$cass-secondary:#68C8DB;
-$cass-secondary-up: tint($cass-secondary, 50%);
-$cass-secondary-down: shade($cass-secondary, 50%);
 
-$cass-primary:#4F99A8;
-$cass-primary-down: tint($cass-primary, 50%);
-$cass-primary-up: shade($cass-primary, 50%);
 
 $cass-error: #D74C44;
 $cass-success: #68C8DB;
 $cass-highlight: #EDAC5F;
-
-$cass-black: #47585C;
-$cass-medium: tint($cass-black, 80%);
-$cass-light: tint($cass-black, 96%);
-$cass-lightest:tint($cass-black, 97%);
 
 $family-primary: 'Assistant',
 'sans-serif';
@@ -36,18 +106,18 @@ $family-secondary: 'Roboto Condensed',
 'sans-serif';
 
 $highlight: #feffb045;
-$black: $cass-black;
+$black: $dark-grey-color;
 $white: #ffffff;
-$light: $cass-light;
-$primary: $cass-primary;
-$secondary: $cass-secondary;
-$link: $cass-highlight;
-$info: $black;
-$success: $cass-success;
-$warning: $cass-highlight;
-$danger: $cass-error;
+$light: $light-color;
+$primary: $primary-color;
+$secondary: $secondary-color;
+$link: $secondary-color;
+$info: $grey-color;
+$success: $success-color;
+$warning: $warning-color;
+$danger: $danger-color;
 
-$dark:$cass-black;
+$dark:$dark-grey-color;
 $text: #222222;
 
 
@@ -66,10 +136,10 @@ $background-white: $white;
 $background-light: $light;
 $background-medium: tint($dark, 80%);
 $background: $white;
-$text-strong: $cass-black;
+$text-strong: $dark-grey-color;
 $weight-bold: 600;
-$link-hover: $primary;
-$text-hover: $primary;
+$link-hover: $primary-color;
+$text-hover: $primary-color;
 $title-size: 2.2rem !important;
 $subtitle-weight: 600;
 $title-color: $black;
@@ -89,11 +159,11 @@ $border-radius: 4px;
 $gap: 6px;
 
 .has-background-lightest {
-    background-color:  $cass-lightest;
+    background-color:  $light-color;
 }
 .has-text-medium {
-    color: $cass-medium;
+    color: $light-color;
 }
 .has-background-medium {
-    background-color: $cass-medium;
+    background-color: $light-color;
 }

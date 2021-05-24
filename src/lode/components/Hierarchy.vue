@@ -3,23 +3,6 @@
         <div
             class="hierarchy-buttons">
             <div class="columns is-gapless is-paddingless is-mobile is-marginless is-paddingless">
-                <!-- CONTROLS FOR SELECT: ENABLED MULTI EDIT  -->
-                <div class="column is-narrow">
-                    <div
-                        v-if="(canEdit && view !== 'importPreview' && view !== 'importLight' && view !== 'crosswalk') || queryParams.select"
-                        class="check-radio-all-column">
-                        <div
-                            class="field">
-                            <input
-                                class="is-checkradio"
-                                id="selectAllCheckbox"
-                                type="checkbox"
-                                name="selectAllCheckbox"
-                                v-model="selectAll">
-                            <label for="selectAllCheckbox" />
-                        </div>
-                    </div>
-                </div>
                 <!-- CONTROLS FOR EXPAND  -->
                 <div class="column is-narrow">
                     <div
@@ -44,6 +27,23 @@
                         @click="$emit('select-button-click', selectedArray)"
                         class="button is-outlined is-primary">
                         {{ selectButtonText }}
+                    </div>
+                </div>
+                <!-- CONTROLS FOR SELECT: ENABLED MULTI EDIT  -->
+                <div class="column is-narrow">
+                    <div
+                        v-if="(canEdit && view !== 'importPreview' && view !== 'importLight' && view !== 'crosswalk') || queryParams.select || view === 'competencySearch'"
+                        class="pl-2 check-radio-all-column">
+                        <div
+                            class="field">
+                            <input
+                                class="is-checkradio"
+                                id="selectAllCheckbox"
+                                type="checkbox"
+                                name="selectAllCheckbox"
+                                v-model="selectAll">
+                            <label for="selectAllCheckbox" />
+                        </div>
                     </div>
                 </div>
                 <!-- CROSSWALK CHANGE FRAMEWORK BUTTONS -->
@@ -314,6 +314,7 @@
                     type="transition"
                     :name="!dragging ? 'flip-list' : null">-->
                 <HierarchyNode
+                    :depth="1"
                     :view="view"
                     @create-new-node-event="onCreateNewNode"
                     :subview="subview"
@@ -326,7 +327,6 @@
                     :canEdit="canEdit"
                     :hasChild="item.children"
                     :profile="profile"
-                    :exportOptions="exportOptions"
                     :highlightList="highlightList"
                     :selectAll="selectAll"
                     :newFramework="newFramework"
@@ -340,9 +340,7 @@
                     @move="move"
                     @select="select"
                     @add="add"
-                    @delete-object="deleteObject"
                     @remove-object="removeObject"
-                    @export-object="exportObject"
                     @draggable-check="onDraggableCheck"
                     :properties="properties"
                     :expandAll="expanded==true"
@@ -357,14 +355,12 @@
     </div>
 </template>
 <script>
-import exports from '@/mixins/exports.js';
 import common from '@/mixins/common.js';
-import saveAs from 'file-saver';
-
+import competencyEdits from '@/mixins/competencyEdits.js';
 var hierarchyTimeout;
 export default {
     name: 'Hierarchy',
-    mixins: [ exports, common ],
+    mixins: [ common, competencyEdits ],
     props: {
         container: Object,
         containerType: String,
@@ -380,7 +376,6 @@ export default {
         viewOnly: Boolean,
         repo: Object,
         profile: Object,
-        exportOptions: Array,
         highlightList: Array,
         newFramework: Boolean,
         properties: String,
@@ -426,18 +421,6 @@ export default {
             expanded: true,
             showAligned: false,
             isDraggable: true,
-            frameworkExportOptions: [
-                {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
-                {name: "CASS (JSON-LD)", value: "jsonld"},
-                {name: "CASS (RDF Quads)", value: "rdfQuads"},
-                {name: "CASS (RDF+JSON)", value: "rdfJson"},
-                {name: "CASS (RDF+XML)", value: "rdfXml"},
-                {name: "CASS (Turtle)", value: "turtle"},
-                {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
-                {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
-                {name: "Table (CSV)", value: "csv"},
-                {name: "IMS Global CASE (JSON)", value: "case"}
-            ],
             shiftKey: false,
             arrowKey: null,
             addCompetencyOrChildText: "Add Competency"
@@ -644,19 +627,9 @@ export default {
         showModal(val, data) {
             let params = {};
             if (val === 'export') {
-                params = {
-                    type: val,
-                    selectedExportOption: '',
-                    title: "Export framework",
-                    exportOptions: this.frameworkExportOptions,
-                    text: "Select a file format to export your framework. Files download locally.",
-                    onConfirm: (e) => {
-                        return this.exportObject(e);
-                    }
-                };
+                this.$store.commit('editor/setItemToExport', this.container);
+                this.$store.commit('app/showModal', {title: 'Export Framework', component: 'ExportOptionsModal'});
             }
-            // reveal modal
-            this.$modal.show(params);
         },
         openFramework: function() {
             var f = EcFramework.getBlocking(this.container.shortId());
@@ -701,8 +674,20 @@ export default {
             if (this.container == null) { return r; }
             if (this.container[this.containerNodeProperty] !== null && this.container[this.containerNodeProperty] !== undefined) {
                 for (var i = 0; i < this.container[this.containerNodeProperty].length; i++) {
-                    var c = window[this.nodeType].getBlocking(this.container[this.containerNodeProperty][i]);
-                    if (c !== null) { r[this.container[this.containerNodeProperty][i]] = r[c.shortId()] = top[c.shortId()] = c; }
+                    let c = window[this.nodeType].getBlocking(this.container[this.containerNodeProperty][i]);
+                    if (c == null) {
+                        c = EcRepository.getBlocking(this.container[this.containerNodeProperty][i]);
+                        if (c && c.encryptedType && c.encryptedType.toLowerCase() === this.containerNodeProperty) {
+                            let encryptedType = "Ec" + c.encryptedType;
+                            let v = new EcEncryptedValue();
+                            v.copyFrom(c);
+                            c = new window[encryptedType]();
+                            c.copyFrom(v.decryptIntoObject());
+                        }
+                    }
+                    if (c !== null) {
+                        r[this.container[this.containerNodeProperty][i]] = r[c.shortId()] = top[c.shortId()] = c;
+                    }
                 }
             }
             if (this.container[this.containerEdgeProperty] != null && this.container[this.containerEdgeProperty] !== undefined) {
@@ -1051,25 +1036,23 @@ export default {
                 EcArray.setRemove(this.selectedArray, objId);
             }
         },
-        deleteObject: function(thing) {
-            this.$emit('delete-object', thing);
-        },
         removeObject: function(thing) {
             this.$emit('remove-object', thing);
-        },
-        exportObject: function(thing, type) {
-            this.$emit('export-object', thing, type);
         },
         onDraggableCheck: function(checked) {
             this.isDraggable = checked;
         },
         clickToSearch: function() {
-            this.$store.commit('editor/selectedCompetency', null);
+            let selected = null;
+            if (this.selectedArray && this.selectedArray.length === 1) {
+                selected = EcRepository.getBlocking(this.selectedArray[0]);
+            }
+            this.$store.commit('editor/selectedCompetency', selected);
             var payload = {
-                selectedCompetency: null,
+                selectedCompetency: selected,
                 searchType: 'Competency',
                 copyOrLink: true,
-                component: 'Search'
+                component: 'SearchModal'
             };
             this.$emit('search-things', payload);
             this.$store.commit('lode/competencySearchModalOpen', true);

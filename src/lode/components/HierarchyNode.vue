@@ -1,7 +1,6 @@
 <template>
     <li
         :class="[isPotentialCrosswalkTarget ? crosswalkTargetClass : '', editingNodeClass
-
         ]"
         v-cloak
         :id="obj.shortId()">
@@ -27,25 +26,6 @@
                 :id="obj.shortId() === newCompetency ? 'scroll-newCompetency' : null">
                 <div class="section is-paddingless">
                     <div class="columns is-paddingless is-gapless is-marginless is-mobile is-multiline">
-                        <!-- CONTROLS FOR SELECT -->
-                        <div
-                            class="check-radio-column column is-narrow is-vcentered">
-                            <div
-                                v-if="(canEdit && view !== 'crosswalk' && view !== 'importPreview' && view !== 'importLight') || queryParams.select || view === 'competencySearch'"
-                                class="field">
-                                <input
-                                    class="is-checkradio"
-                                    @focus="focusHierarchyItem()"
-                                    tabindex="0"
-                                    @blur="unfocusHierarchyItem()"
-                                    :class="{'is-focused': isItemFocused}"
-                                    :id="obj.shortId() + 'checkbox'"
-                                    type="checkbox"
-                                    :name="obj.shortId() + 'checkbox'"
-                                    v-model="checked">
-                                <label :for="obj.shortId() + 'checkbox'" />
-                            </div>
-                        </div>
                         <!-- CONTROLS FOR EXPAND -->
                         <div class="expand-column column is-narrow is-vcentered">
                             <div
@@ -66,8 +46,27 @@
                             </div>
                             <div
                                 v-else
-                                class="icon is-vcentered is-dark">
-                                <i class="fa fa-circle has-text-black is-size-7" />
+                                class="icon is-vcentered is-transparent">
+                                <i class="fa fa-circle has-text-white is-size-7" />
+                            </div>
+                        </div>
+                        <!-- CONTROLS FOR SELECT -->
+                        <div
+                            class="check-radio-column column is-narrow is-vcentered">
+                            <div
+                                v-if="(canEdit && view !== 'crosswalk' && view !== 'importPreview' && view !== 'importLight') || queryParams.select || view === 'competencySearch'"
+                                class="field">
+                                <input
+                                    class="is-checkradio"
+                                    @focus="focusHierarchyItem()"
+                                    tabindex="0"
+                                    @blur="unfocusHierarchyItem()"
+                                    :class="{'is-focused': isItemFocused}"
+                                    :id="obj.shortId() + 'checkbox'"
+                                    type="checkbox"
+                                    :name="obj.shortId() + 'checkbox'"
+                                    v-model="checked">
+                                <label :for="obj.shortId() + 'checkbox'" />
                             </div>
                         </div>
                         <!-- end controls for select and expand -->
@@ -76,6 +75,7 @@
                                 :filter="filter"
                                 :is="dynamicThing"
                                 :view="view"
+                                :style="{ transform: indent, width: calcWidth }"
                                 :subview="subview"
                                 :id="'scroll-' + obj.shortId().split('/').pop()"
                                 :obj="changedObj ? changedObj : obj"
@@ -87,7 +87,6 @@
                                 :profile="profile"
                                 :childrenExpanded="childrenExpanded"
                                 :children="this.hasChild.length"
-                                :exportOptions="exportOptions"
                                 :highlightList="highlightList"
                                 class="list-complete-item"
                                 :class="newThingClass"
@@ -99,9 +98,7 @@
                                 @move-left="moveLeft"
                                 :frameworkEditable="frameworkEditable"
                                 @select="select"
-                                @delete-object="deleteObject"
                                 @remove-object="removeObject"
-                                @export-object="exportObject"
                                 :editingNode="editingNode"
                                 :cantMoveUp="cantMoveUp"
                                 :cantMoveDown="cantMoveDown"
@@ -312,6 +309,7 @@
                     type="transition"
                     :name="!dragging ? 'flip-list' : null">-->
                 <HierarchyNode
+                    :depth="depth + 1"
                     :view="view"
                     :filter="filter"
                     :subview="subview"
@@ -324,7 +322,6 @@
                     :dragging="dragging"
                     :canEdit="canEdit"
                     :profile="profile"
-                    :exportOptions="exportOptions"
                     :highlightList="highlightList"
                     :selectAll="selectAll"
                     :newFramework="newFramework"
@@ -337,9 +334,7 @@
                     @move="move"
                     @select="select"
                     @add="add"
-                    @delete-object="deleteObject"
                     @remove-object="removeObject"
-                    @export-object="exportObject"
                     :properties="properties"
                     :parentChecked="checked"
                     :shiftKey="shiftKey"
@@ -357,6 +352,7 @@ import {mapState} from 'vuex';
 export default {
     name: "HierarchyNode",
     props: {
+        depth: Number,
         obj: Object,
         filter: {
             type: String,
@@ -366,7 +362,6 @@ export default {
         canEdit: Boolean,
         dragging: Boolean,
         profile: Object,
-        exportOptions: Array,
         highlightList: Array,
         selectAll: Boolean,
         newFramework: Boolean,
@@ -436,6 +431,12 @@ export default {
         };
     },
     computed: {
+        indent() {
+            return `translate(${(this.depth * 16 - 16)}px)`;
+        },
+        calcWidth() {
+            return `calc(100% - ${(this.depth * 16 - 16)}px) !important`;
+        },
         ...mapState({
             workingAlignmentsSource: state => state.crosswalk.workingAlignmentsMap.source,
             workingAlignmentsTargets: state => state.crosswalk.workingAlignmentsMap.targets,
@@ -803,21 +804,15 @@ export default {
         select: function(objId, checked) {
             this.$emit('select', objId, checked);
         },
-        deleteObject: function(thing) {
-            this.$emit('delete-object', thing);
-        },
         removeObject: function(thing) {
             this.$emit('remove-object', thing);
-        },
-        exportObject: function(thing, type) {
-            this.$emit('export-object', thing, type);
         },
         onCreateNewNode: function(parentId, previousSiblingId) {
             this.$emit('create-new-node-event', parentId, previousSiblingId);
         },
         clickToSearch: function() {
             this.$store.commit('lode/competencySearchModalOpen', true);
-            this.$store.commit('app/showModal', {component: 'Search'});
+            this.$store.commit('app/showModal', {component: 'SearchModal'});
             this.$store.commit('lode/searchType', "Competency");
             this.$store.commit('lode/copyOrLink', true);
             if (this.$store.state.editor) {

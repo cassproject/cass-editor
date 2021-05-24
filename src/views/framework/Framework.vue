@@ -1,5 +1,7 @@
 <template>
-    <div id="framework">
+    <div
+        ref="framework"
+        id="framework">
         <main-layout
             :rightActive="showRightAside"
             :simple="true">
@@ -36,7 +38,6 @@
                                         :newFramework="newFramework"
                                         :parentNotEditable="queryParams.view==='true'"
                                         :profile="frameworkProfile"
-                                        @delete-object="deleteObject"
                                         @remove-object="removeObject"
                                         @edit-node-event="onEditNode()"
                                         @done-editing-node-event="onDoneEditingNode()"
@@ -122,14 +123,11 @@
                                     edgeTargetProperty="target"
                                     :viewOnly="queryParams.view === 'true'"
                                     :repo="repo"
-                                    :exportOptions="competencyExportOptions"
                                     :highlightList="highlightCompetency"
                                     :profile="competencyProfile"
                                     :newFramework="newFramework"
-                                    @delete-object="deleteObject"
                                     @edit-multiple-event="onEditMultiple"
                                     @remove-object="removeObject"
-                                    @export-object="exportObject"
                                     @search-things="handleSearch($event)"
                                     @select-button-click="onSelectButtonClick"
                                     :properties="properties"
@@ -153,12 +151,10 @@
 import MainLayout from '@/layouts/MainLayout.vue';
 import common from '@/mixins/common.js';
 import getLevelsAndRelations from '@/mixins/getLevelsAndRelations.js';
-import exports from '@/mixins/exports.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
-import saveAs from 'file-saver';
 import debounce from 'lodash/debounce';
 
 export default {
@@ -176,7 +172,7 @@ export default {
         RightAside: () => import('@/components/framework/RightAside.vue'),
         draggable: () => import('vuedraggable')
     },
-    mixins: [common, exports, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
+    mixins: [common, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {
         return {
             scrolled: false,
@@ -187,29 +183,6 @@ export default {
             showClipboardSuccessModal: false,
             showComments: false,
             repo: window.repo,
-            frameworkExportLink: null,
-            frameworkExportGuid: null,
-            competencyExportOptions: [
-                {name: "CASS (JSON-LD)", value: "jsonld"},
-                {name: "CASS (RDF Quads)", value: "rdfQuads"},
-                {name: "CASS (RDF+JSON)", value: "rdfJson"},
-                {name: "CASS (RDF+XML)", value: "rdfXml"},
-                {name: "CASS (Turtle)", value: "turtle"},
-                {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
-                {name: "IMS Global CASE (JSON)", value: "case"}
-            ],
-            frameworkExportOptions: [
-                {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
-                {name: "CASS (JSON-LD)", value: "jsonld"},
-                {name: "CaSS (RDF Quads)", value: "rdfQuads"},
-                {name: "CaSS (RDF+JSON)", value: "rdfJson"},
-                {name: "CaSS (RDF+XML)", value: "rdfXml"},
-                {name: "CaSS (Turtle)", value: "turtle"},
-                {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
-                {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
-                {name: "Table (CSV)", value: "csv"},
-                {name: "IMS Global CASE (JSON)", value: "case"}
-            ],
             highlightCompetency: null,
             editingFramework: false,
             properties: "primary",
@@ -682,6 +655,10 @@ export default {
                 this.moveToTopLevel(id);
                 this.frameworkDrag = [];
             }
+        },
+        configHasLevels: function() {
+            this.gotInitialLevelsRelationsAndAlignments = false;
+            this.preloadRelations();
         }
     },
     methods: {
@@ -763,12 +740,6 @@ export default {
                 appLog("no framework to refresh");
                 return;
             }
-            if (EcRepository.shouldTryUrl(this.framework.id) === false && this.framework.id.indexOf(this.repo.selectedServer) === -1) {
-                this.frameworkExportGuid = EcCrypto.md5(this.framework.shortId());
-            } else {
-                this.frameworkExportGuid = this.framework.getGuid();
-            }
-            this.frameworkExportLink = this.repo.selectedServer + "data/" + this.frameworkExportGuid;
             this.setDefaultLanguage();
             this.highlightCompetency = [];
             if (this.queryParams.highlightCompetency) {
@@ -779,53 +750,6 @@ export default {
                 }
             }
         },
-        exportObject: function(selectedCompetency, exportType) {
-            var guid;
-            if (EcRepository.shouldTryUrl(selectedCompetency.id) === false && selectedCompetency.id.indexOf(this.repo.selectedServer) === -1) {
-                guid = EcCrypto.md5(selectedCompetency.shortId());
-            } else {
-                guid = selectedCompetency.getGuid();
-            }
-            var link = this.repo.selectedServer + "data/" + guid;
-            if (exportType === "jsonld") {
-                this.exportJsonld(link);
-            } else if (exportType === "rdfQuads") {
-                this.exportRdfQuads(link);
-            } else if (exportType === "rdfJson") {
-                this.exportRdfJson(link);
-            } else if (exportType === "rdfXml") {
-                this.exportRdfXml(link);
-            } else if (exportType === "turtle") {
-                this.exportTurtle(link);
-            } else if (exportType === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld(link);
-            } else if (exportType === "case") {
-                this.exportCaseItems(guid);
-            }
-        },
-        exportFramework: function(exportType) {
-            if (exportType === "asn") {
-                this.exportAsn(this.frameworkExportLink);
-            } else if (exportType === "jsonld") {
-                this.exportJsonld(this.frameworkExportLink);
-            } else if (exportType === "rdfQuads") {
-                this.exportRdfQuads(this.frameworkExportLink);
-            } else if (exportType === "rdfJson") {
-                this.exportRdfJson(this.frameworkExportLink);
-            } else if (exportType === "rdfXml") {
-                this.exportRdfXml(this.frameworkExportLink);
-            } else if (exportType === "turtle") {
-                this.exportTurtle(this.frameworkExportLink);
-            } else if (exportType === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld(this.frameworkExportLink);
-            } else if (exportType === "ctdlasnCsv") {
-                this.exportCtdlasnCsv(this.frameworkExportLink);
-            } else if (exportType === "csv") {
-                this.exportCsv();
-            } else if (exportType === "case") {
-                this.exportCasePackages(this.frameworkExportGuid);
-            }
-        },
         changeProperties: function(type) {
             this.properties = type;
         },
@@ -833,21 +757,8 @@ export default {
             this.selectButton(ids);
         },
         onOpenExportModal() {
-            let params = {};
-            var me = this;
-            appLog("options", typeof me.frameworkExportOptions);
-            params = {
-                type: "export",
-                selectedExportOption: '',
-                title: "Export Framework",
-                exportOptions: me.frameworkExportOptions,
-                text: "Select a file format to export your framework. Files download locally.",
-                onConfirm: (e) => {
-                    return me.exportFramework(e);
-                }
-            };
-            // reveal modal
-            this.$modal.show(params);
+            this.$store.commit('editor/setItemToExport', this.framework);
+            this.$store.commit('app/showModal', {title: 'Export Framework', component: 'ExportOptionsModal'});
         },
         // Speed up load of secondary properties
         preloadRelations: function() {

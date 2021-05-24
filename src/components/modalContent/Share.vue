@@ -1,20 +1,18 @@
 <template>
-    <div class="modal-card">
-        <header class="modal-card-head has-background-primary">
-            <p class="modal-card-title">
-                <span class="title has-text-white">Share {{ objectType }}</span>
-                <br><span class="subtitle has-text-white has-text-weight-medium">
-                    Sharing settings for {{ frameworkName }} {{ objectType }}
-                </span>
-            </p>
-            <button
-                class="delete"
-                @click="$store.commit('app/closeModal')"
-                aria-label="close" />
-        </header>
-        <section
+    <modal-template
+        @close="closeModal; $emit('close')"
+        :active="true"
+        type="primary">
+        <template slot="modal-header">
+            <span class="title has-text-white">Share {{ objectType }}</span>
+            <br><span class="subtitle has-text-white has-text-weight-medium">
+                Sharing settings for {{ frameworkName }} {{ objectType }}
+            </span>
+        </template>
+        <!-- processing -->
+        <template
             v-if="isProcessing"
-            class="modal-card-body">
+            slot="modal-body">
             <h2 class="header has-text-centered">
                 Processing request...
             </h2>
@@ -23,11 +21,11 @@
                     <i class="fa fa-spinner fa-2x fa-pulse" />
                 </span>
             </div>
-        </section>
+        </template>
         <!-- confirm make private -->
-        <section
-            v-else-if="confirmMakePrivate"
-            class="modal-card-body">
+        <template
+            slot="modal-body"
+            v-else-if="confirmMakePrivate">
             <h2 class="header is-size-3">
                 Confirm make private
             </h2>
@@ -35,11 +33,11 @@
                 Making this {{ objectType }} private means only those users/groups in
                 your access list will have the ability to read, write, or edit this {{ objectType }}.
             </p>
-        </section>
+        </template>
         <!-- confirm make public -->
-        <section
-            v-else-if="confirmMakePublic"
-            class="modal-card-body">
+        <template
+            slot="modal-body"
+            v-else-if="confirmMakePublic">
             <h2 class="header is-size-3">
                 Confirm make public
             </h2>
@@ -47,10 +45,10 @@
                 Making this {{ objectType }} public means anyone with a link can access and read this {{ objectType }}.
                 Only those with admin access will be able to edit or delete the {{ objectType }}.
             </p>
-        </section>
-        <section
-            v-else-if="!confirmMakePublic && !confirmMakePrivate"
-            class="modal-card-body">
+        </template>
+        <template
+            slot="modal-body"
+            v-else-if="!confirmMakePublic && !confirmMakePrivate">
             <div
                 class="columns box is-mobile is-multiline"
                 v-if="shareEnabled">
@@ -271,8 +269,8 @@
                     </div>
                 </div>
             </div>
-        </section>
-        <footer class="modal-card-foot has-background-light">
+        </template>
+        <template slot="modal-foot">
             <div
                 v-if="!confirmMakePrivate && !confirmMakePublic"
                 class="buttons is-spaced">
@@ -323,16 +321,20 @@
                     </span><span>confirm make public</span>
                 </div>
             </div>
-        </footer>
-    </div>
+        </template>
+    </modal-template>
 </template>
 
 <script>
 import {cassUtil} from '@/mixins/cassUtil.js';
+import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'ShareModal',
     props: {
         isActive: Boolean
+    },
+    components: {
+        ModalTemplate
     },
     mixins: [ cassUtil ],
     data() {
@@ -640,8 +642,11 @@ export default {
             EcOrganization.search(window.repo, '', function(success) {
                 appLog(success);
                 for (var i = 0; i < success.length; i++) {
-                    let org = {id: success[i].shortId(), name: success[i].name, pk: me.getOrganizationEcPk(success[i])};
-                    me.possibleGroupsAndUsers.push(org);
+                    let pk = me.getOrganizationEcPk(success[i]);
+                    if (pk) {
+                        let org = {id: success[i].shortId(), name: success[i].name, pk: pk};
+                        me.possibleGroupsAndUsers.push(org);
+                    }
                 }
             }, function(failure) {
                 appError(failure);
@@ -1412,7 +1417,7 @@ export default {
                     this.finishedMakingPublic();
                 } else {
                     if (this.ownerCount > 0) {
-                        this.addAndRemoveFromFrameworkObject();
+                        this.addAndRemoveFromFrameworkObject(this.framework);
                     } else {
                         this.makeCurrentUserFrameworkOwner(this.framework);
                     }

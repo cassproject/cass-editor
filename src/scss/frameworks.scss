@@ -69,7 +69,7 @@
                     }
             }
             li.cass--list--item:hover {
-                background-color: $cass-lightest;
+                background-color: var(--light-color);
                 .arrow-icon {
                     visibility:visible;
                 }
@@ -90,7 +90,7 @@
 
             }
             .cass--list--item--selected {
-                background-color: tint($cass-primary, 60%) !important;
+                background-color: var(--primary-color-4) !important;
             }
             .cass--list--item:hover {
             }

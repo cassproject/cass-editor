@@ -46,18 +46,7 @@ export default {
         },
         showModal(val, data) {
             let params = {};
-            if (val === 'export') {
-                params = {
-                    type: val,
-                    selectedExportOption: '',
-                    title: "Export framework",
-                    exportOptions: this.frameworkExportOptions,
-                    text: "Select a file format to export your framework. Files download locally.",
-                    onConfirm: (e) => {
-                        return this.exportObject(e);
-                    }
-                };
-            } else if (val === 'duplicate') {
+            if (val === 'duplicate') {
                 params = {
                     type: val,
                     title: "Duplicate framework",
@@ -129,39 +118,13 @@ export default {
                     text: data.message,
                     details: data.details
                 };
+                this.$store.commit('app/importModalParams', params);
+                this.$store.commit('app/showModal', {component: 'ImportError'});
+                return;
             }
             // reveal modal
-            this.$modal.show(params);
-        },
-        exportObject: function(type) {
-            var guid;
-            if (EcRepository.shouldTryUrl(this.importFramework.id) === false && this.importFramework.id.indexOf(this.repo.selectedServer) === -1) {
-                guid = EcCrypto.md5(this.importFramework.shortId());
-            } else {
-                guid = this.importFramework.getGuid();
-            }
-            var link = this.repo.selectedServer + "data/" + guid;
-            if (type === "asn") {
-                this.exportAsn(link);
-            } else if (type === "jsonld") {
-                this.exportJsonld(link);
-            } else if (type === "rdfQuads") {
-                this.exportRdfQuads(link);
-            } else if (type === "rdfJson") {
-                this.exportRdfJson(link);
-            } else if (type === "rdfXml") {
-                this.exportRdfXml(link);
-            } else if (type === "turtle") {
-                this.exportTurtle(link);
-            } else if (type === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld(link);
-            } else if (type === "ctdlasnCsv") {
-                this.exportCtdlasnCsv(link);
-            } else if (type === "csv") {
-                this.exportCsv();
-            } else if (type === "case") {
-                this.exportCasePackages(guid);
-            }
+            this.$store.commit('app/importModalParams', params);
+            this.$store.commit('app/showModal', {component: 'DuplicateImport'});
         },
         unsupportedFile: function(val) {
             this.$store.commit('app/importFileType', val);

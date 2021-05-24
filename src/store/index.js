@@ -6,6 +6,7 @@ import app from './modules/app.js';
 import user from './modules/user.js';
 import crosswalk from './modules/crosswalk.js';
 import environment from './modules/environment.js';
+import configuration from './modules/configuration.js';
 import featuresEnabled from './modules/featuresEnabled.js';
 
 Vue.use(Vuex);
@@ -18,6 +19,7 @@ export default new Vuex.Store({
         user,
         crosswalk,
         environment,
-        featuresEnabled
+        featuresEnabled,
+        configuration
     }
 });

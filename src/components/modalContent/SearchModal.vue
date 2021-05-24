@@ -1,119 +1,43 @@
-<!--
-This component is displays a ui for searchin for compencies and selecting them
-this component can be dropped into a card element such as DynamicModel.vue
-with some adjustments to the modal-card classes to just card, this could be
-placed anywhere in a structured html element such as a <section> or a <div>
--->
 <template>
-    <div :class="[{'search-modal modal-card': view !== 'thing-editing' && view !== 'multi-edit'}, {'columns is-multiline': view === 'thing-editing' || view === 'multi-edit'}]">
-        <header
-            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
-            :class="{'modal-card-head has-background-primary': view !== 'thing-editing' && view !== 'multi-edit'}">
+    <modal-template
+        @close="closeModal"
+        content="search"
+        :active="true">
+        <template slot="modal-header">
             <p class="modal-card-title">
                 <span class="title has-text-white">Search for {{ searchType }}</span>
                 <br><span
                     class="subtitle has-text-white"
                     v-if="copyOrLink">
-                    {{ frameworkName }}
-                </span>
-                <span
-                    v-else
-                    class="subtitle has-text-white">
-                    {{ nameOfSelectedCompetency }}
+                    <b>Editing framework:</b> {{ frameworkName }}
                 </span>
             </p>
-            <button
-                class="delete"
-                @click="resetModal();"
-                aria-label="close" />
-        </header>
-        <section
-            v-if="(view !== 'thing-editing' && view !== 'multi-edit') && !selectedFramework"
-            class="modal-card-body">
-            <div class="column is-12">
-                <SearchBar
-                    filterSet="basic"
-                    :searchType="searchType"
-                    :allowShowFrameworks="true" />
-            </div>
-            <div class="column is-12">
-                <List
-                    v-if="$store.state.lode.competencySearchModalOpen"
-                    :type="searchTypeToPassToList"
-                    view="search"
-                    :repo="repo"
-                    :click="select"
-                    :searchOptions="searchOptions"
-                    :paramObj="paramObj"
-                    :disallowEdits="true"
-                    :selectingCompetency="true"
-                    :selected="selectedIds"
-                    :displayFirst="displayFirst" />
-            </div>
-        </section>
-        <template v-if="view === 'thing-editing' || view === 'multi-edit'">
-            <div class="column is-12">
-                <SearchBar
-                    filterSet="basic"
-                    :searchType="searchType" />
-            </div>
-            <div class="column is-12">
-                <List
-                    v-if="$store.state.lode.competencySearchModalOpen"
-                    :type="searchType"
-                    view="search"
-                    :repo="repo"
-                    :click="select"
-                    :searchOptions="searchOptions"
-                    :paramObj="paramObj"
-                    :disallowEdits="true"
-                    :selectingCompetency="true"
-                    :selected="selectedIds"
-                    :displayFirst="displayFirst"
-                    :idsNotPermittedInSearch="idsNotPermittedInSearch" />
-            </div>
         </template>
-        <div
-            v-if="selectedFramework && !hierarchyLoaded">
-            <span class="icon is-large">
-                <i class="fa fa-spinner fa-2x fa-pulse" />
-            </span>
-        </div>
-        <div v-show="hierarchyLoaded">
-            <Thing
-                v-if="selectedFramework"
-                :obj="selectedFramework"
-                :repo="repo"
-                :view="view"
-                :expandInModal="true" />
-            <Hierarchy
-                :container="selectedFramework"
-                view="competencySearch"
-                containerType="Framework"
-                containerTypeGet="EcFramework"
-                containerNodeProperty="competency"
-                containerEdgeProperty="relation"
-                nodeType="EcCompetency"
-                edgeType="EcAlignment"
-                edgeRelationProperty="relationType"
-                edgeRelationLiteral="narrows"
-                edgeSourceProperty="source"
-                edgeTargetProperty="target"
-                :viewOnly="true"
-                :repo="repo"
-                :exportOptions="[]"
-                :highlightList="null"
-                @done-loading-nodes="hierarchyLoaded = true"
-                properties="primary"
-                @selected-array="selectedArrayEvent" />
-        </div>
-        <footer
-            v-if="view !== 'thing-editing' && view !== 'multi-edit'"
-            class="modal-card-foot">
+        <template slot="modal-body">
+            <button
+                class="button is-dark is-outlined is-small is-pulled-right"
+                v-if="(selectedIds && selectedIds.length) || selectedFramework"
+                @click="clickClearFramework">
+                <span class="icon">
+                    <i class="fa fa-times" />
+                </span>
+                <span>
+                    Clear selection
+                </span>
+            </button>
+            <search
+                ref="search"
+                @setSelectedIds="selectedIds = $event"
+                parent="search-modal"
+                :allowShowFrameworks="true"
+                :clearFramework="clearFramework"
+                @selectFramework="selectFramework" />
+        </template>
+        <template slot="modal-foot">
             <div class="buttons">
                 <button
                     class="button is-outlined is-dark"
-                    @click="resetModal();">
+                    @click="closeModal">
                     <span class="icon">
                         <i class="fa fa-times" />
                     </span>
@@ -123,7 +47,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
                     class="button is-outlined is-primary"
                     v-if="copyOrLink"
                     :disabled="!selectedIds || selectedIds.length === 0"
-                    @click="copyCompetencies(selectedIds); resetModal();">
+                    @click="copyCompetencies">
                     <span class="icon">
                         <i class="fa fa-copy" />
                     </span>
@@ -135,7 +59,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
                     class="button is-outlined is-primary"
                     v-if="copyOrLink"
                     :disabled="!selectedIds || selectedIds.length === 0"
-                    @click="appendCompetencies(selectedIds); resetModal();">
+                    @click="appendCompetencies">
                     <span class="icon">
                         <i class="fa fa-link" />
                     </span>
@@ -144,206 +68,68 @@ placed anywhere in a structured html element such as a <section> or a <div>
                     </span>
                 </button>
             </div>
-        </footer>
-    </div>
+        </template>
+    </modal-template>
 </template>
 
 <script>
-import List from '@/lode/components/List.vue';
-import Hierarchy from '@/lode/components/Hierarchy.vue';
-import Thing from '@/lode/components/Thing.vue';
+import ModalTemplate from './ModalTemplate.vue';
+import Search from '@/components/framework/Search.vue';
 import common from '@/mixins/common.js';
 import {mapState} from 'vuex';
-import SearchBar from '@/components/framework/SearchBar.vue';
+
 export default {
-    name: 'CompetencySearch',
-    props: {
-        isActive: Boolean,
-        view: {
-            type: String,
-            default: 'modal'
-        },
-        idsNotPermittedInSearch: {
-            type: Array,
-            default: null
-        }
-    },
-    components: {List, SearchBar, Hierarchy, Thing},
-    mixins: [common],
+    name: 'SearchModal',
     data() {
         return {
-            repo: window.repo,
             selectedIds: [],
-            itemsSaving: 0,
-            displayFirst: [],
-            showMine: false,
-            sortBy: null,
+            clearFramework: false,
             selectedFramework: null,
-            hierarchyLoaded: false
+            repo: window.repo,
+            itemsSaving: 0
         };
     },
-    created: function() {
-        this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "dcterms:title.keyword" : "name.keyword";
-        this.$store.commit('app/searchTerm', "");
+    components: {
+        ModalTemplate,
+        Search
     },
-    beforeDestroy: function() {
-        this.$store.commit('app/searchTerm', "");
-    },
+    mixins: [common],
     computed: {
         ...mapState({
             selectedCompetency: state => state.editor.selectedCompetency,
             framework: state => state.editor.framework,
-            queryParams: state => state.editor.queryParams,
-            addingProperty: state => state.lode.addingProperty
+            queryParams: state => state.editor.queryParams
         }),
-        nameOfSelectedCompetency: function() {
-            if (this.selectedCompetency && this.selectedCompetency.name) {
-                return this.selectedCompetency.getName();
-            } else if (this.selectedCompetency) {
-                return Thing.getDisplayStringFrom(this.selectedCompetency["skos:prefLabel"]);
-            } else {
-                return '';
-            }
-        },
         copyOrLink: function() {
             return this.$store.state.lode.copyOrLink;
         },
+        searchType: function() {
+            return this.$store.state.lode.searchType;
+        },
         frameworkName: function() {
-            if (this.framework) {
+            if (this.framework && this.framework.context) {
                 return this.framework.getName();
             } else {
                 return '';
             }
         },
-        searchOptions: function() {
-            let search = "";
-            if (this.queryParams && this.queryParams.filter != null) {
-                search += " AND (" + this.queryParams.filter + ")";
-            }
-            if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] !== true && this.queryParams.show === "mine") ||
-                (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine")) {
-                if (EcIdentityManager.ids.length > 0) {
-                    search += " AND (";
-                    for (var i = 0; i < EcIdentityManager.ids.length; i++) {
-                        if (i !== 0) {
-                            search += " OR ";
-                        }
-                        var id = EcIdentityManager.ids[i];
-                        search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
-                        search += " OR \\*owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
-                    }
-                    search += ")";
-                }
-            }
-            return search;
-        },
-        paramObj: function() {
-            let obj = {};
-            obj.size = 20;
-            var searchTerm = this.$store.getters['app/searchTerm'];
-            if (!searchTerm || searchTerm.length === 0) {
-                var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
-                obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            } else {
-                delete obj.sort;
-            }
-            if (EcIdentityManager.ids.length > 0 && this.queryParams && ((this.$store.getters['editor/conceptMode'] !== true && this.queryParams.show === 'mine') ||
-                (this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine"))) {
-                obj.ownership = 'me';
-            }
-            return obj;
-        },
-        searchType: function() {
-            return this.$store.state.lode.searchType;
-        },
-        sortResults: function() {
-            return this.$store.getters['app/sortResults'];
-        },
-        quickFilters: function() {
-            return this.$store.getters['app/quickFilters'];
-        },
-        filteredQuickFilters: function() {
-            if (this.quickFilters) {
-                let filterValues = this.quickFilters.filter(item => item.checked === true);
-                appLog('filtered value', filterValues);
-                return filterValues;
-            } else {
-                return [];
-            }
-        },
         searchFrameworksInCompetencySearch: function() {
             return this.$store.getters['app/searchFrameworksInCompetencySearch'];
-        },
-        searchTypeToPassToList: function() {
-            if (this.searchType === "Competency" && this.searchFrameworksInCompetencySearch) {
-                return "Framework";
-            } else {
-                return "Competency";
-            }
-        }
-    },
-    mounted: function() {
-        this.displayFirst.splice(0, this.displayFirst.length);
-        this.$store.commit('app/searchTerm', "");
-        if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
-            for (var i = 0; i < this.framework.competency.length; i++) {
-                if (this.framework.competency[i] !== this.selectedCompetency.shortId()) {
-                    if (!this.idsNotPermittedInSearch || this.idsNotPermittedInSearch.length === 0 || !EcArray.has(this.idsNotPermittedInSearch, this.framework.competency[i])) {
-                        var comp = EcRepository.getBlocking(this.framework.competency[i]);
-                        if (comp) {
-                            this.displayFirst.push(comp);
-                        }
-                    }
-                }
-            }
-        }
-        if (this.searchType === "Level" && this.framework.level) {
-            for (var i = 0; i < this.framework.level.length; i++) {
-                var comp = EcRepository.getBlocking(this.framework.level[i]);
-                if (comp) {
-                    this.displayFirst.push(comp);
-                }
-            }
         }
     },
     methods: {
-        resetModal: function() {
+        closeModal: function() {
             this.$store.commit('app/closeModal');
-            this.selectedIds = [];
         },
-        selectedArrayEvent: function(ary) {
-            this.selectedIds = ary;
-            if (!this.copyOrLink || this.searchType === "Level") {
-                this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
-            }
-            if (this.queryParams.selectRelations === "true" && this.framework.relation) {
-                for (var i = 0; i < this.framework.relation.length; i++) {
-                    var relation = EcAlignment.getBlocking(this.framework.relation[i]);
-                    if (EcArray.has(selectedArray, relation.target)) {
-                        if (this.queryParams.selectVerbose === "true") {
-                            ary.push(JSON.parse((rld).toJson()));
-                        } else {
-                            ary.push(relation.shortId());
-                        }
-                    }
-                }
-            }
+        clickClearFramework: function() {
+            this.selectedIds.splice(0, this.selectedIds.length);
+            this.clearFramework = true;
+            this.$nextTick(() => {
+                this.clearFramework = false;
+            });
         },
-        select: function(competency) {
-            if (competency.type === "Framework") {
-                return this.selectFramework(competency);
-            }
-            if (!EcArray.has(this.selectedIds, competency.shortId())) {
-                this.selectedIds.push(competency.shortId());
-            } else {
-                EcArray.setRemove(this.selectedIds, competency.shortId());
-            }
-            if (!this.copyOrLink || this.searchType === "Level") {
-                this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
-            }
-        },
-        selectFramework: function(framework) {
-            this.selectedFramework = framework;
+        selectFramework: function(val) {
+            this.selectedFramework = val;
         },
         addRelations: function() {
             if (this.searchFrameworksInCompetencySearch && this.selectedFramework.relation) {
@@ -355,7 +141,8 @@ export default {
                 }
             }
         },
-        copyCompetencies: function(results) {
+        copyCompetencies: function() {
+            let results = this.selectedIds;
             this.addRelations();
             var copyDict = {};
             var framework = this.$store.state.editor.framework;
@@ -581,9 +368,11 @@ export default {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
                 this.repo.saveTo(framework, function() {}, appError);
+                this.closeModal();
             }
         },
-        appendCompetencies: function(results, newLink) {
+        appendCompetencies: function() {
+            let results = this.selectedIds;
             this.addRelations();
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             var framework = this.$store.state.editor.framework;
@@ -679,118 +468,22 @@ export default {
             }
             this.repo.saveTo(framework, function() {
                 me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
+                me.closeModal();
             }, appError);
-        },
-        addNewlinesToId: function(pem) {
-            // Begin public key line
-            pem = pem.substring(0, 26) + "\n" + pem.substring(26);
-            var length = pem.length;
-            var start = 27;
-            while (start + 64 < length) {
-                pem = pem.substring(0, start + 64) + "\n" + pem.substring(start + 64);
-                start += 65;
-                length++;
-            }
-            // End public key line
-            pem = pem.substring(0, length - 24) + "\n" + pem.substring(length - 24);
-            return pem;
-        }
-    },
-    watch: {
-        sortResults: function() {
-            if (this.sortResults.id === "lastEdited") {
-                this.sortBy = "schema:dateModified";
-                this.displayFirst.splice(0, this.displayFirst.length);
-            } else {
-                this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "dcterms:title.keyword" : "name.keyword";
-                this.displayFirst.splice(0, this.displayFirst.length);
-            }
-        },
-        filteredQuickFilters: function() {
-            this.showMine = false;
-            for (var i = 0; i < this.filteredQuickFilters.length; i++) {
-                if (this.filteredQuickFilters[i].id === "ownedByMe") {
-                    this.showMine = true;
-                    this.displayFirst.splice(0, this.displayFirst.length);
-                }
-            }
         }
     }
 };
 </script>
 
-
-<style lang="scss">
-    @import '@/scss/frameworks.scss';
-.search-modal,
-.modal.lode__thing-editing {
-    .breadcrumb {
-        padding-left: .125rem;
+<style scoped lang="scss">
+.cass-editor__modal--search {
+    .hierarchy-item__buttons {
+        display: none !important;
     }
     .lode__type {
-        display: none;
+        font-size: 1rem;
+        color: var(--dark);
     }
-    .competency-search{
-        .thing {
-            padding: .125rem .25rem !important;
-        }
-        .thing .list-thing:hover {
-            background-color: none;
-        }
-        .Thing__heading {
-            padding-left: .25rem !important;
-            margin-right: 2rem;
-        }
-        .edit-button {
-            display: none;
-        }
-
-        .list-ul__item:hover {
-            padding-top: .5rem;
-            background-color: $cass-lightest;
-        }
-        .list-ul__item {
-            margin-top: .25rem;
-            border-radius: 3px;
-            padding: .5rem;
-        }
-    }
-    .property-section {
-        padding-top: 0rem !important;
-        padding-bottom: 0rem !important;
-    }
-
-    .cass--list {
-        .list-ul {
-            .list-ul__item {
-                padding: .5rem .25rem;
-                .search-selection__add-icon {
-                    visibility: hidden;
-                }
-                .search-selection__icon,
-                .search-selection__add-icon
-                {
-                    float: right;
-                    right: 16px;
-                    display: flex;
-                    height: 100%;
-                    align-content: center;
-                    .icon {
-                        height: 100%;
-                        padding-right: 16px;
-                    }
-                }
-            }
-            .list-ul__item:hover {
-                background-color: rgba($light, .5);
-                .lode__Competency .search-selection__add-icon {
-                    visibility: visible !important;
-                }
-            }
-        }
-    }
-
 }
-
 
 </style>

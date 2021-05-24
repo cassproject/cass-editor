@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import ModalTemplate from './../ModalTemplate.vue';
+import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 export default {
     name: 'AddDirectoryModal',
     data() {

@@ -263,10 +263,14 @@ export default {
                         appLog("ID is undefined.");
                     }
                     if (depth < 5) {
-                        EcFramework.search(me.repo, "\"" + id + "\"", function(results) {
+                        EcFramework.search(window.repo, "\"" + id + "\"", function(results) {
                             if (results.length <= 0) {
                                 appLog("No references found for " + id + "... deleting.");
-                                me.repo.deleteRegistered(EcRepository.getBlocking(id), function(success) {
+                                let obj = EcRepository.getBlocking(id);
+                                window.repo.deleteRegistered(obj, function(success) {
+                                    if (obj.type === "Level") {
+                                        me.$store.commit('editor/refreshLevels', true);
+                                    }
                                     callback();
                                 }, function(failure) {
                                     appLog(failure);
@@ -297,8 +301,8 @@ export default {
                 if (this.queryParams.selectVerbose === "true" && this.$store.getters['editor/conceptMode'] !== true) {
                     if (this.queryParams.selectExport === "ctdlasn") {
                         var link;
-                        if (EcRepository.shouldTryUrl(selectedArray[i]) === false && selectedArray[i].indexOf(this.repo.selectedServer) === -1) {
-                            link = this.repo.selectedServer + "ceasn/" + EcCrypto.md5(selectedArray[i]);
+                        if (EcRepository.shouldTryUrl(selectedArray[i]) === false && selectedArray[i].indexOf(window.repo.selectedServer) === -1) {
+                            link = window.repo.selectedServer + "ceasn/" + EcCrypto.md5(selectedArray[i]);
                         } else {
                             link = selectedArray[i].replace("/data/", "/ceasn/");
                         }
@@ -332,8 +336,8 @@ export default {
             if (this.queryParams.selectExport === "ctdlasn" && this.$store.getters['editor/conceptMode'] !== true) {
                 if (this.framework != null) {
                     var link;
-                    if (EcRepository.shouldTryUrl(this.framework.id) === false && this.framework.id.indexOf(this.repo.selectedServer) === -1) {
-                        link = this.repo.selectedServer + "ceasn/" + EcCrypto.md5(this.framework.shortId());
+                    if (EcRepository.shouldTryUrl(this.framework.id) === false && this.framework.id.indexOf(window.repo.selectedServer) === -1) {
+                        link = window.repo.selectedServer + "ceasn/" + EcCrypto.md5(this.framework.shortId());
                     } else {
                         link = this.framework.id.replace("/data/", "/ceasn/");
                     }
@@ -368,7 +372,7 @@ export default {
                 if (this.queryParams.newObjectEndpoint != null) {
                     c.generateShortId(this.queryParams.newObjectEndpoint);
                 } else {
-                    c.generateId(this.repo.selectedServer);
+                    c.generateId(window.repo.selectedServer);
                 }
                 c["schema:dateCreated"] = new Date().toISOString();
                 c.name = "New Level";
@@ -384,7 +388,7 @@ export default {
                 c.competency.push(selectedCompetency);
             }
             framework["schema:dateModified"] = new Date().toISOString();
-            this.repo.saveTo(c, function() {
+            window.repo.saveTo(c, function() {
                 framework.addLevel(c.shortId());
                 var edits = [];
                 if (!optionalLevelUrl) {
@@ -398,7 +402,7 @@ export default {
                         framework = EcEncryptedValue.toEncryptedValue(framework);
                     }
                 }
-                me.repo.saveTo(framework, function() {
+                window.repo.saveTo(framework, function() {
                     me.$store.commit('lode/setIsAddingProperty', false);
                     me.$store.commit('editor/refreshLevels', true);
                 }, appError);
@@ -435,7 +439,7 @@ export default {
                     }
                     if (levelChanged) {
                         edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
-                        this.repo.saveTo(level, function() {
+                        window.repo.saveTo(level, function() {
                             me.$store.commit('editor/refreshLevels', true);
                         }, appError);
                     }
@@ -456,7 +460,7 @@ export default {
                     }
                     if (levelChanged) {
                         edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
-                        this.repo.saveTo(level, function() {
+                        window.repo.saveTo(level, function() {
                             me.$store.commit('editor/refreshLevels', true);
                         }, appError);
                     }
@@ -482,7 +486,7 @@ export default {
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
-            this.repo.saveTo(framework, function() {}, appError);
+            window.repo.saveTo(framework, function() {}, appError);
         },
         removeLevelFromFramework: function(levelId) {
             var initialLevels = this.framework.level ? this.framework.level.slice() : null;
@@ -518,7 +522,7 @@ export default {
                 if (this.$store.getters['editor/queryParams'].newObjectEndpoint != null) {
                     r.generateShortId(this.$store.getters['editor/queryParams'].newObjectEndpoint);
                 } else {
-                    r.generateId(this.repo.selectedServer);
+                    r.generateId(window.repo.selectedServer);
                 }
                 edits.push({operation: "addNew", id: r.shortId()});
                 r["schema:dateCreated"] = new Date().toISOString();
@@ -556,7 +560,7 @@ export default {
                 if (this.$store.state.editor.private === true) {
                     r = EcEncryptedValue.toEncryptedValue(r);
                 }
-                this.repo.saveTo(r, function() {}, appError);
+                window.repo.saveTo(r, function() {}, appError);
                 if (thing.type === 'Concept') {
                     if (framework.relation == null) {
                         framework.relation = [];
@@ -582,7 +586,7 @@ export default {
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
-            this.repo.saveTo(framework, function() {}, appError);
+            window.repo.saveTo(framework, function() {}, appError);
         },
         addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
             var me = this;
@@ -600,7 +604,7 @@ export default {
                     thing = EcEncryptedValue.toEncryptedValue(thing);
                 }
             }
-            me.repo.saveTo(thing, function() {}, appError);
+            window.repo.saveTo(thing, function() {}, appError);
         },
         removeRelationFromFramework: function(source, property, target) {
             var me = this;
@@ -634,7 +638,7 @@ export default {
                 if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = EcEncryptedValue.toEncryptedValue(framework);
                 }
-                me.repo.saveTo(framework, function() {}, appError);
+                window.repo.saveTo(framework, function() {}, appError);
             });
         },
         ceasnRegistryUriTransform: function(uri) {

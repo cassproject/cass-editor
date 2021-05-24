@@ -34,8 +34,8 @@
                         <i class="fa fa-external-link-alt" />
                     </span>
                 </div>
-                <div
-                    @click="$store.commit('app/showModal', thingAsPropertyModalObject)"
+                <button
+                    @click="clickShowDetails"
                     class="button  is-small is-outlined is-link"
                     v-if="thingAsPropertyModalObject.objectType === 'Competency' || thingAsPropertyModalObject.objectType === 'Concept' || thingAsPropertyModalObject.objectType === 'Level'">
                     <span class="has-text-weight-bold">details</span>
@@ -43,7 +43,7 @@
                         class="icon is-small">
                         <i class="fa fa-info" />
                     </span>
-                </div>
+                </button>
             </span>
             <span
                 class="thing-as-property__text"
@@ -115,8 +115,7 @@
                                 :editingThing="editingThing"
                                 :canEdit="false"
                                 :profile="profile"
-                                @select="select"
-                                @delete-object="deleteObject" />
+                                @select="select" />
                             <slot name="frameworkTags" />
                         </template>
                         <template
@@ -132,8 +131,7 @@
                                 :editingThing="editingThing"
                                 :canEdit="allowPropertyEdits(key)"
                                 :profile="profile"
-                                @select="select"
-                                @delete-object="deleteObject" />
+                                @select="select" />
                         </template>
                         <template v-else-if="showViewProperties && viewProperties[heading]">
                             <!-- here we have the expandable / does not contain value for properties -->
@@ -147,8 +145,7 @@
                                 :editingThing="editingThing"
                                 :canEdit="allowPropertyEdits(key)"
                                 :profile="profile"
-                                @select="select"
-                                @delete-object="deleteObject" />
+                                @select="select" />
                         </template>
                     </div>
                 </div>
@@ -190,7 +187,6 @@ export default {
         parentNotEditable: Boolean,
         // Application profile used to constrain and respecify properties that are to be made editable.
         profile: Object,
-        exportOptions: Array,
         highlightList: Array,
         childrenExpanded: {
             type: Boolean,
@@ -658,6 +654,9 @@ export default {
         }
     },
     methods: {
+        clickShowDetails() {
+            this.$store.commit('app/showModal', this.thingAsPropertyModalObject);
+        },
         goToCompetencyWithinThisFramework: function() {
             // Scroll to competency
             this.$scrollTo("#scroll-" + this.uri.split('/').pop());
@@ -707,80 +706,6 @@ export default {
         },
         emitExpandEvent: function(e) {
             this.$emit('expand-event');
-        },
-        /*
-             * initialize modal with params this depends on
-             * ./plugins/modalPlugin.js;
-             * can possibly be moved to a mixin
-             * and ./components/CassModal.vue;
-             * can further breakout if we decide to use vuex // plugin is global
-             * this modal depends on cass-editor repo, not sure what we
-             * should do here to future proof the LODE repo. Might be a better solution.
-             */
-        showModal(val) {
-            let params = {};
-            var me = this;
-            if (val === 'deleteObject') {
-                if (this.obj && this.shortType === "Competency") {
-                    repo.search("@type:Framework AND competency:\"" + this.obj.shortId() + "\"", function(f) {}, function(fs) {
-                        var numFrameworks = fs.length;
-                        repo.search("@type:Relation AND (source:\"" + me.obj.shortId() + "\" OR target:\"" + me.obj.shortId() + "\")", function(r) {}, function(rs) {
-                            var numRelations = rs.length;
-                            params = {
-                                type: val,
-                                title: "Delete competency",
-                                text: "Warning! This action deletes the competency in its entirety. This includes " + numRelations + " relationship(s) and " + numFrameworks +
-                                        " framework(s). If you just want to remove the competency from the framework, use the \"remove\" button.",
-                                onConfirm: () => {
-                                    return me.deleteObject();
-                                }
-                            };
-                            me.$modal.show(params);
-                        }, function() {});
-                    }, function() {});
-                } else if (this.shortType === "Level") {
-                    repo.search("@type:Framework AND level:\"" + this.originalThing.shortId() + "\"", function(level) {}, function(levels) {
-                        var numFrameworks = levels.length;
-                        params = {
-                            type: val,
-                            title: "Delete level",
-                            text: "Warning! This action deletes the level in its entirety. This includes " + numFrameworks + " framework(s).",
-                            onConfirm: () => {
-                                return me.deleteObject();
-                            }
-                        };
-                        me.$modal.show(params);
-                    }, function() {});
-                } else {
-                    return me.deleteObject();
-                }
-            } else {
-                if (val === 'removeObject') {
-                    params = {
-                        type: val,
-                        title: "Remove competency",
-                        text: "Removing a competency safely removes it from your framework without removing it from the system.",
-                        onConfirm: () => {
-                            return this.removeObject();
-                        }
-                    };
-                }
-                if (val === 'export') {
-                    appLog("options", typeof this.exportOptions);
-                    params = {
-                        type: val,
-                        selectedExportOption: '',
-                        title: "Export Competency",
-                        exportOptions: this.exportOptions,
-                        text: "Select a file format to export your competency. Files download locally.",
-                        onConfirm: (e) => {
-                            return this.exportObject(e);
-                        }
-                    };
-                }
-                // reveal modal
-                this.$modal.show(params);
-            }
         },
         load: function() {
             var me = this;
@@ -1045,21 +970,8 @@ export default {
             }
             return types;
         },
-        deleteObject: function(thing) {
-            if (thing) {
-                // Handles delete message passed through Property
-                this.$emit('delete-object', thing);
-            } else {
-                // If not passed through, delete current thing.
-                this.$emit('delete-object', this.originalThing);
-            }
-        },
         removeObject: function() {
             this.$emit('remove-object', this.originalThing);
-        },
-        exportObject: function(type) {
-            var thing = EcRepository.getBlocking(this.expandedThing["@id"]);
-            this.$emit('export-object', thing, type);
         },
         resolveNameFromUrl: function(url) {
             var me = this;
@@ -1247,11 +1159,22 @@ export default {
                 if (this.uri) {
                     this.resolveNameFromUrl(this.uri);
                 }
-                var type = "Ec" + this.obj ? this.obj.type : this.shortType;
-                if (type && window[type]) {
-                    var thing = window[type].getBlocking(this.changedObject);
+                var type = "Ec" + (this.obj ? this.obj.type : this.shortType);
+                if (type === "EcEncryptedValue") {
+                    let encryptedType = "Ec" + this.obj.encryptedType;
+                    let encryptedThing = EcRepository.getBlocking(this.changedObject);
+                    let v = new EcEncryptedValue();
+                    v.copyFrom(encryptedThing);
+                    let returnObject = new window[encryptedType]();
+                    returnObject.copyFrom(v.decryptIntoObject());
+                    this.obj = returnObject;
+                    this.load();
+                } else if (type && window[type] && window[type].getBlocking) {
+                    let thing = window[type].getBlocking(this.changedObject);
                     this.obj = thing;
                     this.load();
+                } else if (type && window[type]) {
+                    appLog("Can't getBlocking for type: " + type);
                 }
                 this.$store.commit('editor/changedObject', null);
             }

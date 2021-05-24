@@ -45,7 +45,10 @@ const state = {
     nodeInFocus: null,
     relations: {},
     setPropertyLevel: null,
-    addAnother: false
+    addAnother: false,
+    itemToDelete: {},
+    itemToRemove: {},
+    itemToExport: {}
 };
 const mutations = {
     framework(state, f) {
@@ -175,6 +178,15 @@ const mutations = {
     },
     addAnother(state, bool) {
         state.addAnother = bool;
+    },
+    setItemToDelete(state, val) {
+        state.itemToDelete = val;
+    },
+    setItemToRemove(state, val) {
+        state.itemToRemove = val;
+    },
+    setItemToExport(state, val) {
+        state.itemToExport = val;
     }
 };
 const actions = {
@@ -291,6 +303,15 @@ const getters = {
     },
     addAnother: function(state) {
         return state.addAnother;
+    },
+    itemToDelete: function(state) {
+        return state.itemToDelete;
+    },
+    itemToRemove: function(state) {
+        return state.itemToRemove;
+    },
+    itemToExport: function(state) {
+        return state.itemToExport;
     }
 };
 

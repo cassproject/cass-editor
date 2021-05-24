@@ -1,29 +1,22 @@
 <template>
-    <div class="modal-card comment-modal">
-        <header class="modal-card-head has-background-primary">
-            <p class="modal-card-title">
-                <span class="title has-text-white">
-                    <span v-if="isCommentNew || isCommentReply">New Comment</span>
-                    <span v-if="isCommentEdit">Edit Comment</span>
-                </span>
-            </p>
-            <button
-                class="delete"
-                @click="closeModal"
-                aria-label="close" />
-        </header>
-        <section class="modal-card-body comment-modal__details">
-            <h3 class="is-size-4">
-                <span
-                    v-if="isCommentNew"
-                    class="comment-modal__details__header">Commenting on</span>
-                <span
-                    v-if="isCommentReply"
-                    class="comment-modal__details__header">Replying to comments about</span>
-                <span
-                    v-if="isCommentEdit"
-                    class="comment-modal__details__header">Editing comment on</span>
-            </h3>
+    <modal-template
+        type="info"
+        @close="closeModal"
+        :active="true">
+        <template slot="modal-header">
+            <span v-if="isCommentNew || isCommentReply">New Comment</span>
+            <span v-if="isCommentEdit">Edit Comment</span>
+        </template>
+        <template slot="modal-body">
+            <span
+                v-if="isCommentNew"
+                class="comment-modal__details__header">Commenting on</span>
+            <span
+                v-if="isCommentReply"
+                class="comment-modal__details__header">Replying to comments about</span>
+            <span
+                v-if="isCommentEdit"
+                class="comment-modal__details__header">Editing comment on</span>
             <p class="comment-modal__details__framework">
                 <b>framework: </b>{{ commentFrameworkName }}
             </p>
@@ -47,8 +40,8 @@
                     <i class="fas fa-2x fa-spinner is-info fa-pulse" />
                 </span>
             </div>
-        </section>
-        <footer class="modal-card-foot">
+        </template>
+        <template slot="modal-foot">
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
@@ -62,17 +55,21 @@
                     Save comment
                 </button>
             </div>
-        </footer>
-    </div>
+        </template>
+    </modal-template>
 </template>
 
 <script>
 
 import {cassUtil} from '../../mixins/cassUtil';
+import ModalTemplate from './ModalTemplate.vue';
 
 export default {
     mixins: [cassUtil],
     name: 'AddComment',
+    components: {
+        ModalTemplate
+    },
     data() {
         return {
             commentSubject: {},

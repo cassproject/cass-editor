@@ -11,6 +11,31 @@ TO DO MAYBE: Separate out property by editing or not.
         :class="['lode__Property lode__' + shortTypeAsClass, editingPropertyClass,
                  { 'has-value': expandedValue}
         ]">
+        <!-- remove property confirm modal -->
+        <modal-template
+            :active="removePropertyConfirmModal"
+            @close="closeModal">
+            <template slot="modal-header">
+                Confirm Remove Property
+            </template>
+            <template slot="modal-body">
+                <section>
+                    Are you sure you'd like to remove this property?
+                </section>
+            </template>
+            <template slot="modal-foot">
+                <button
+                    @click="clickConfirmRemove"
+                    class="is-danger is-outlined button">
+                    Confirm Remove Property
+                </button>
+                <button
+                    @click="closeModal"
+                    class="is-dark button">
+                    Cancel
+                </button>
+            </template>
+        </modal-template>
         <!-- begin values -->
         <template
             v-if="expandedValue && show">
@@ -42,8 +67,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         :competencyAsPropertyType="shortType"
                         :competencyAsPropertyObjectType="objectType"
                         :parentNotEditable="!canEdit"
-                        :profile="childProfile"
-                        @delete-object="deleteObject" />
+                        :profile="childProfile" />
                     <div
                         class="editing-property"
                         v-if="editingProperty">
@@ -67,8 +91,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         :competencyAsPropertyType="shortType"
                         :competencyAsPropertyObjectType="objectType"
                         :parentNotEditable="!canEdit"
-                        :profile="childProfile"
-                        @delete-object="deleteObject" />
+                        :profile="childProfile" />
                     <div
                         class="field delete-property-button"
                         v-if="editingProperty">
@@ -297,6 +320,9 @@ TO DO MAYBE: Separate out property by editing or not.
     </div>
 </template>
 <script>
+import '@/scss/property.scss';
+import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
+
 export default {
     // Property represents one property of a Thing.
     name: 'Property',
@@ -334,7 +360,9 @@ export default {
             initialValue: null,
             expandedValueNames: [],
             optionsArray: [],
-            errorValidating: null
+            errorValidating: null,
+            removePropertyConfirmModal: false,
+            propertyToRemove: null
         };
     },
     components: {
@@ -342,7 +370,8 @@ export default {
         Thing: () => import('./Thing.vue'),
         ThingEditing: () => import('./ThingEditing.vue'),
         // Property editing box for String type things. Should be one of these for each value type.
-        PropertyString: () => import('./PropertyString.vue')
+        PropertyString: () => import('./PropertyString.vue'),
+        ModalTemplate
     },
     created: function() {
         var me = this;
@@ -769,18 +798,12 @@ export default {
                 if (this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
                     if (this.expandedValue.length === 1 || (this.expandedValue["@value"] && this.expandedValue["@value"].trim().length === 1)) {
                         this.showModal("required");
+                        this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
                         return;
                     }
                 }
-                params = {
-                    type: val,
-                    title: "Remove property",
-                    text: "Remove this property?",
-                    onConfirm: () => {
-                        return this.remove(item);
-                    }
-                };
-                this.$modal.show(params);
+                this.removePropertyConfirmModal = true;
+                this.propertyToRemove = item;
             }
             if (val === 'required') {
                 params = {
@@ -818,6 +841,15 @@ export default {
                 };
             }
             this.errorValidating = params.text;
+        },
+        clickConfirmRemove: function() {
+            this.remove(this.propertyToRemove);
+            this.propertyToRemove = null;
+            this.removePropertyConfirmModal = false;
+        },
+        closeModal: function() {
+            this.propertyToRemove = null;
+            this.removePropertyConfirmModal = false;
         },
         add: function(type) {
             if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["add"]) {
@@ -932,9 +964,6 @@ export default {
             }
         },
         isObject: function(k) { return EcObject.isObject(k); },
-        deleteObject: function(thing) {
-            this.$emit('delete-object', thing);
-        },
         getURL: function(item) {
             if (item['@value']) {
                 return item['@value'];

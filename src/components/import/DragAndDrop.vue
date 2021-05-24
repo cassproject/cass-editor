@@ -150,14 +150,13 @@ export default {
 </script>
 
 <style lang="scss">
-    @import '@/scss/variables.scss';
 
 #drag-and-drop {
     height: 100%;
 }
 #drag-and-drop.is-dragged-over {
     height: 100% !important;
-    background-color: rgba($cass-primary-up, .3);
+    background-color: rgba(var(--primary-rgb), .3);
     border-radius: 15px;
     display: flex;
     flex-direction: column;
