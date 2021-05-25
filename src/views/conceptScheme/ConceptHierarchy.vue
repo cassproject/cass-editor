@@ -168,7 +168,7 @@
                         <!--  home -->
                         <router-link
                             class="button is-primary is-outlined is -pulled-right"
-                            to="/">
+                            to="/concepts">
                             <span>
                                 Done
                             </span>

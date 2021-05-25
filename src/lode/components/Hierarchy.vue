@@ -283,7 +283,7 @@
                             <router-link
                                 v-if="view === 'importLight' && (importType !== 'text' || (importType === 'text' && importStatus === 'Competency detected'))"
                                 class="button is-small is-primary is-outlined is -pulled-right"
-                                to="/">
+                                to="/frameworks">
                                 <span>
                                     Done
                                 </span>
