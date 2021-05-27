@@ -34,6 +34,7 @@
                 </h3>
                 <div
                     v-for="option in quickFilters"
+                    v-show="!hideOwnershipFilters || !option.id.includes('ByMe')"
                     :key="option"
                     class="field">
                     <template v-if="option.enabled">
@@ -153,6 +154,9 @@ export default {
         },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
+        },
+        hideOwnershipFilters: function() {
+            return this.queryParams.show === 'mine';
         },
         applySearchTo: function() {
             return this.frameworkPropertiesApplySearchTo.concat(this.competencyPropertiesApplySearchTo).concat(this.otherPropertiesApplySearchTo);

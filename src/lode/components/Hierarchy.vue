@@ -283,7 +283,7 @@
                             <router-link
                                 v-if="view === 'importLight' && (importType !== 'text' || (importType === 'text' && importStatus === 'Competency detected'))"
                                 class="button is-small is-primary is-outlined is -pulled-right"
-                                to="/">
+                                to="/frameworks">
                                 <span>
                                     Done
                                 </span>
@@ -824,7 +824,7 @@ export default {
                         if (a[this.edgeRelationProperty] === this.edgeRelationLiteral) {
                             if (a[this.edgeTargetProperty] == null) continue;
                             if (a[this.edgeSourceProperty] == null) continue;
-                            if (a[this.edgeSourceProperty] !== fromId && (this.$store.getters['editor/cutId'] && a[this.edgeTargetProperty] !== fromId)) continue;
+                            if (a[this.edgeSourceProperty] !== fromId && (this.$store.getters['editor/cutId'] ? (this.$store.getters['editor/cutId'] && a[this.edgeTargetProperty] !== fromId) : true)) continue;
                             appLog("Identified edge to remove: ", JSON.parse(a.toJson()));
                             this.container[this.containerEdgeProperty].splice(i--, 1);
                         }
