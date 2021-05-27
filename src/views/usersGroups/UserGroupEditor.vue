@@ -179,6 +179,11 @@
                                                     class="subtitle is-size-3">
                                                     {{ currentUserGroupName }}
                                                 </h3>
+                                                <p
+                                                    class="help is-danger"
+                                                    v-if="currentUserGroupName.length > 60">
+                                                    Group name length max is 60 characters.  Please choose a shorter name
+                                                </p>
                                             </div>
                                             <div class="column is-narrow">
                                                 <span
@@ -203,8 +208,14 @@
                                                         class="input"
                                                         v-model="currentUserGroupName">
                                                 </p>
+                                                <p
+                                                    class="help is-danger"
+                                                    v-if="currentUserGroupName.length > 60">
+                                                    Group name length max is 60 characters.  Please choose a shorter name
+                                                </p>
                                             </div>
                                             <span
+                                                :disabled="currentUserGroupName.length > 60"
                                                 @click="isEditingCurrentGroupName = false"
                                                 class="button is-primary is-rounded is-small is-outlined">
                                                 done editing
