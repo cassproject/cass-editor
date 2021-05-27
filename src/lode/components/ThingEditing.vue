@@ -83,7 +83,7 @@
                             :validate="validate"
                             :view="view"
                             @validated="validated"
-                            @invalid="validate=false" />
+                            @invalid="validate=false; errorValidating=true;" />
                         <slot name="frameworkTags" />
                     </template>
                     <template v-else-if="showPossibleProperties && possibleProperties[heading]">
@@ -102,7 +102,7 @@
                             :validate="validate"
                             :view="view"
                             @validated="validated"
-                            @invalid="validate=false" />
+                            @invalid="validate=false; errorValidating=true;" />
                     </template>
                     <template v-else-if="showViewProperties && viewProperties[heading]">
                         <!-- here we have the expandable / does not contain value for properties -->
@@ -120,7 +120,7 @@
                             :validate="validate"
                             :view="view"
                             @validated="validated"
-                            @invalid="validate=false" />
+                            @invalid="validate=false; errorValidating=true;" />
                     </template>
                 </div>
             </section>
@@ -210,7 +210,7 @@
                     </div>
 
                     <div
-                        v-if="!showAddPropertyContent && (view === 'framework' || view === 'concept') && hasAdditionalProperty"
+                        v-if="!showAddPropertyContent && (view === 'framework' || view === 'concept') && hasAdditionalProperty && !errorValidating"
                         @click="onClickToAddProperty"
                         class="button is-outlined is-primary">
                         <span class="icon">
@@ -368,7 +368,8 @@ export default {
             errorMessage: [],
             idsNotPermittedInSearch: [],
             addAnother: false,
-            disableDoneEditingButton: false
+            disableDoneEditingButton: false,
+            errorValidating: null
         };
     },
     created: function() {
@@ -1140,6 +1141,8 @@ export default {
         },
         // Changes a piece of data. Invoked by child components, in order to change a piece of data to something else (for reactivity reasons).
         update: function(property, index, value, callback) {
+            // reset errorValidating on change
+            this.errorValidating = null;
             if (this.profile && this.profile[property] && this.profile[property]["update"]) {
                 if (value["name"] && value["@value"]) {
                     var f = this.profile[property]["update"];
@@ -1450,6 +1453,7 @@ export default {
             // Tell child components to validate. Only emit done-editing-node-event when done.
             this.doneValidating = false;
             this.validate = true;
+            this.errorValidating = null;
             // If object needs to be saved, this will be set to false in saveThing
             this.doneSaving = true;
             if (this.addAnother && this.doneValidating) {
