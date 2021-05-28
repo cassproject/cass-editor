@@ -222,14 +222,14 @@ export default {
             }
         }
     },
-    mounted: function() {
+    mounted: async function() {
         this.displayFirst.splice(0, this.displayFirst.length);
         this.$store.commit('app/searchTerm', "");
         if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
             for (var i = 0; i < this.framework.competency.length; i++) {
                 if (this.framework.competency[i] !== this.selectedCompetency.shortId()) {
                     if (!this.idsNotPermittedInSearch || this.idsNotPermittedInSearch.length === 0 || !EcArray.has(this.idsNotPermittedInSearch, this.framework.competency[i])) {
-                        var comp = EcRepository.getBlocking(this.framework.competency[i]);
+                        var comp = await EcRepository.get(this.framework.competency[i]);
                         if (comp) {
                             this.displayFirst.push(comp);
                         }
@@ -239,7 +239,7 @@ export default {
         }
         if (this.searchType === "Level" && this.framework.level) {
             for (var i = 0; i < this.framework.level.length; i++) {
-                var comp = EcRepository.getBlocking(this.framework.level[i]);
+                var comp = await EcRepository.get(this.framework.level[i]);
                 if (comp) {
                     this.displayFirst.push(comp);
                 }
@@ -251,14 +251,14 @@ export default {
             this.$store.commit('app/closeModal');
             this.selectedIds = [];
         },
-        selectedArrayEvent: function(ary) {
+        selectedArrayEvent: async function(ary) {
             this.selectedIds = ary;
             if (!this.copyOrLink || this.searchType === "Level") {
                 this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
             }
             if (this.queryParams.selectRelations === "true" && this.framework.relation) {
                 for (var i = 0; i < this.framework.relation.length; i++) {
-                    var relation = EcAlignment.getBlocking(this.framework.relation[i]);
+                    var relation = await EcAlignment.get(this.framework.relation[i]);
                     if (EcArray.has(selectedArray, relation.target)) {
                         if (this.queryParams.selectVerbose === "true") {
                             ary.push(JSON.parse((rld).toJson()));

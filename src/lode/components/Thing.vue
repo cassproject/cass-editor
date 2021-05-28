@@ -1151,7 +1151,7 @@ export default {
             this.showAlways = true;
             this.showPossible = false;
         },
-        changedObject: function() {
+        changedObject: async function() {
             if (this.changedObject && this.view === "importLight") {
                 this.load();
                 this.$store.commit('editor/changedObject', null);
@@ -1162,19 +1162,19 @@ export default {
                 var type = "Ec" + (this.obj ? this.obj.type : this.shortType);
                 if (type === "EcEncryptedValue") {
                     let encryptedType = "Ec" + this.obj.encryptedType;
-                    let encryptedThing = EcRepository.getBlocking(this.changedObject);
+                    let encryptedThing = await EcRepository.get(this.changedObject);
                     let v = new EcEncryptedValue();
                     v.copyFrom(encryptedThing);
                     let returnObject = new window[encryptedType]();
                     returnObject.copyFrom(v.decryptIntoObject());
                     this.obj = returnObject;
                     this.load();
-                } else if (type && window[type] && window[type].getBlocking) {
-                    let thing = window[type].getBlocking(this.changedObject);
+                } else if (type && window[type] && window[type].get) {
+                    let thing = await window[type].get(this.changedObject);
                     this.obj = thing;
                     this.load();
                 } else if (type && window[type]) {
-                    appLog("Can't getBlocking for type: " + type);
+                    appLog("Can't get type: " + type);
                 }
                 this.$store.commit('editor/changedObject', null);
             }

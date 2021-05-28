@@ -596,7 +596,7 @@ export default {
                 callback();
             }
         },
-        messageListener: function(evt) {
+        messageListener: async function(evt) {
             var data = evt.data;
             var me = this;
             if (data != null && data !== "" && !EcObject.isObject(data)) {
@@ -630,7 +630,7 @@ export default {
                     parent.postMessage(message, this.queryParams.origin);
                 } else if (data.action === "set") {
                     if (data.id != null) {
-                        var d = EcRepository.getBlocking(data.id);
+                        var d = await EcRepository.get(data.id);
                     }
                     delete data.id;
                     delete data.action;
@@ -829,13 +829,13 @@ export default {
             }
             return entity;
         },
-        attachUrlProperties: function(results) {
+        attachUrlProperties: async function(results) {
             var resource = this.$store.state.editor.framework;
             if (this.$store.state.editor.selectedCompetency != null) {
                 resource = this.$store.state.editor.selectedCompetency;
             }
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcConcept().getTypes())) {
                     if (!EcArray.isArray(resource[this.$store.state.editor.selectCompetencyRelation])) {
                         resource[this.$store.state.editor.selectCompetencyRelation] = [];
@@ -856,12 +856,12 @@ export default {
                 this.appendCompetencies(selectedIds, true);
             }
         },
-        copyCompetencies: function(results) {
+        copyCompetencies: async function(results) {
             var copyDict = {};
             var framework = this.$store.state.editor.framework;
             var me = this;
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
                     var c = new EcCompetency();
                     c.copyFrom(thing);
@@ -942,7 +942,7 @@ export default {
                 }
             }
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcAlignment().getTypes())) {
                     var parent = copyDict[thing.target];
                     var child = copyDict[thing.source];
@@ -1003,7 +1003,7 @@ export default {
             }
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
                     if (selectedCompetency != null) {
                         var r = new EcAlignment();
@@ -1070,12 +1070,12 @@ export default {
                 this.repo.saveTo(framework, function() {}, appError);
             }
         },
-        appendCompetencies: function(results, newLink) {
+        appendCompetencies: async function(results, newLink) {
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             var framework = this.$store.state.editor.framework;
             var me = this;
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcCompetency().getTypes())) {
                     framework.addCompetency(thing.shortId());
                 } else if (thing.isAny(new EcLevel().getTypes())) {
@@ -1088,7 +1088,7 @@ export default {
                 }
             }
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcAlignment().getTypes())) {
                     if (EcArray.has(framework.competency, thing.source)) {
                         if (EcArray.has(framework.competency, thing.target)) {
@@ -1100,7 +1100,7 @@ export default {
             }
 
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcCompetency().getTypes())) {
                     if (selectedCompetency != null) {
                         var r = new EcAlignment();
@@ -1143,8 +1143,8 @@ export default {
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
-            this.repo.saveTo(framework, function() {
-                me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
+            this.repo.saveTo(framework, async function() {
+                me.$store.commit('editor/framework', await EcFramework.get(framework.id));
             }, appError);
         },
         importParentStyles: function() {

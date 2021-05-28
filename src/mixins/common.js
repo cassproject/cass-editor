@@ -263,10 +263,10 @@ export default {
                         appLog("ID is undefined.");
                     }
                     if (depth < 5) {
-                        EcFramework.search(window.repo, "\"" + id + "\"", function(results) {
+                        EcFramework.search(window.repo, "\"" + id + "\"", async function(results) {
                             if (results.length <= 0) {
                                 appLog("No references found for " + id + "... deleting.");
-                                let obj = EcRepository.getBlocking(id);
+                                let obj = await EcRepository.get(id);
                                 window.repo.deleteRegistered(obj, function(success) {
                                     if (obj.type === "Level") {
                                         me.$store.commit('editor/refreshLevels', true);
@@ -290,7 +290,7 @@ export default {
                 });
             })(id, depth);
         },
-        selectButton: function(selectedArray) {
+        selectButton: async function(selectedArray) {
             var ary = [];
             var async = EcRemote.async;
             EcRemote.async = false;
@@ -312,17 +312,17 @@ export default {
                             appLog(failure);
                         });
                     } else {
-                        ary.push(JSON.parse(EcCompetency.getBlocking(selectedArray[i]).toJson()));
+                        ary.push(JSON.parse(await EcCompetency.get(selectedArray[i]).toJson()));
                     }
                 } else if (this.queryParams.selectVerbose === "true") {
-                    ary.push(JSON.parse(EcConcept.getBlocking(selectedArray[i]).toJson()));
+                    ary.push(JSON.parse(await EcConcept.get(selectedArray[i]).toJson()));
                 } else {
                     ary.push(selectedArray[i]);
                 }
             }
             if (this.queryParams.selectRelations === "true" && this.framework.relation) {
                 for (var i = 0; i < this.framework.relation.length; i++) {
-                    var relation = EcAlignment.getBlocking(this.framework.relation[i]);
+                    var relation = await EcAlignment.get(this.framework.relation[i]);
                     if (EcArray.has(selectedArray, relation.target)) {
                         if (this.queryParams.selectVerbose === "true") {
                             ary.push(JSON.parse((rld).toJson()));
@@ -362,7 +362,7 @@ export default {
             parent.postMessage(message, this.queryParams.origin);
             EcRemote.async = async;
         },
-        addLevel: function(selectedCompetency, optionalLevelUrl) {
+        addLevel: async function(selectedCompetency, optionalLevelUrl) {
             var c;
             var me = this;
             var framework = this.framework ? this.framework : this.$store.getters['editor/framework'];
@@ -379,7 +379,7 @@ export default {
                 c.competency = selectedCompetency;
             } else {
                 optionalLevelUrl = optionalLevelUrl[0];
-                var c = EcRepository.getBlocking(optionalLevelUrl);
+                var c = await EcRepository.get(optionalLevelUrl);
                 if (!c.competency) {
                     c.competency = [];
                 } else if (!EcArray.isArray(c.competency)) {
@@ -408,7 +408,7 @@ export default {
                 }, appError);
             }, appError);
         },
-        saveCheckedLevels: function(selectedCompetency, checkedOptions, allOptions) {
+        saveCheckedLevels: async function(selectedCompetency, checkedOptions, allOptions) {
             let competencyId = [];
             if (EcArray.isArray(selectedCompetency)) {
                 competencyId = selectedCompetency;
@@ -425,7 +425,7 @@ export default {
                 }
                 // If selected
                 if (checkedOptions.indexOf(allOptions[i].val) !== -1) {
-                    var level = EcLevel.getBlocking(allOptions[i].val);
+                    var level = await EcLevel.get(allOptions[i].val);
                     var initialComp = JSON.parse(JSON.stringify(level.competency));
                     if (!EcArray.isArray(level.competency)) {
                         level.competency = level.competency == null ? [] : [level.competency];
@@ -449,7 +449,7 @@ export default {
                     }
                 } else {
                     // If not selected
-                    var level = EcLevel.getBlocking(allOptions[i].val);
+                    var level = await EcLevel.get(allOptions[i].val);
                     var initialComp = JSON.parse(JSON.stringify(level.competency));
                     let levelChanged = false;
                     for (let each in competencyId) {
@@ -488,10 +488,10 @@ export default {
             }
             window.repo.saveTo(framework, function() {}, appError);
         },
-        removeLevelFromFramework: function(levelId) {
+        removeLevelFromFramework: async function(levelId) {
             var initialLevels = this.framework.level ? this.framework.level.slice() : null;
             this.framework.removeLevel(levelId);
-            var level = EcRepository.getBlocking(levelId);
+            var level = await EcRepository.get(levelId);
             this.$store.commit('editor/addEditsToUndo', [
                 {operation: "delete", obj: level},
                 {operation: "update", id: this.framework.shortId(), fieldChanged: [this.framework.level], initialValue: [initialLevels], changedValue: [this.framework.level]}
@@ -500,9 +500,9 @@ export default {
             this.saveFramework();
             this.$store.commit('editor/refreshLevels', true);
         },
-        addRelationsToFramework: function(selectedCompetency, property, values) {
+        addRelationsToFramework: async function(selectedCompetency, property, values) {
             if (values.length > 0) {
-                selectedCompetency = EcRepository.getBlocking(selectedCompetency);
+                selectedCompetency = await EcRepository.get(selectedCompetency);
                 this.addAlignments(values, selectedCompetency, property);
             }
         },
@@ -542,8 +542,8 @@ export default {
                     r.source = dosedo;
                     r.relationType = "narrows";
                 }
-                if (EcIdentityManager.default.ids.length > 0) {
-                    r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                if (EcIdentityManager.ids.length > 0) {
+                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
                 }
                 if (framework.owner && framework.owner.length > 0) {
                     for (var j = 0; j < framework.owner.length; j++) {

@@ -625,14 +625,13 @@ export default {
             }
         },
         showModal(val, data) {
-            let params = {};
             if (val === 'export') {
                 this.$store.commit('editor/setItemToExport', this.container);
                 this.$store.commit('app/showModal', {title: 'Export Framework', component: 'ExportOptionsModal'});
             }
         },
-        openFramework: function() {
-            var f = EcFramework.getBlocking(this.container.shortId());
+        openFramework: async function() {
+            var f = await EcFramework.get(this.container.shortId());
             this.$store.commit('editor/framework', f);
             this.$router.push({name: "framework", params: {frameworkId: this.container.id}});
         },
@@ -666,7 +665,7 @@ export default {
                 this.$emit('done-loading-nodes');
             }, 1000);
         },
-        computeHierarchy: function() {
+        computeHierarchy: async function() {
             var me = this;
             var r = {};
             var top = {};
@@ -674,9 +673,9 @@ export default {
             if (this.container == null) { return r; }
             if (this.container[this.containerNodeProperty] !== null && this.container[this.containerNodeProperty] !== undefined) {
                 for (var i = 0; i < this.container[this.containerNodeProperty].length; i++) {
-                    let c = window[this.nodeType].getBlocking(this.container[this.containerNodeProperty][i]);
+                    let c = await window[this.nodeType].get(this.container[this.containerNodeProperty][i]);
                     if (c == null) {
-                        c = EcRepository.getBlocking(this.container[this.containerNodeProperty][i]);
+                        c = await EcRepository.get(this.container[this.containerNodeProperty][i]);
                         if (c && c.encryptedType && c.encryptedType.toLowerCase() === this.containerNodeProperty) {
                             let encryptedType = "Ec" + c.encryptedType;
                             let v = new EcEncryptedValue();
@@ -693,7 +692,7 @@ export default {
             if (this.container[this.containerEdgeProperty] != null && this.container[this.containerEdgeProperty] !== undefined) {
                 for (var i = 0; i < this.container[this.containerEdgeProperty].length; i++) {
                     var a = null;
-                    a = window[this.edgeType].getBlocking(this.container[this.containerEdgeProperty][i]);
+                    a = await window[this.edgeType].get(this.container[this.containerEdgeProperty][i]);
                     if (a != null) {
                         if (a[this.edgeRelationProperty] === this.edgeRelationLiteral) {
                             if (r[a[this.edgeTargetProperty]] == null) continue;
@@ -786,7 +785,7 @@ export default {
                 !this.controlOnStart, plusup);
         },
         // fromId is the id of the object you're moving. toId is the id of the object that will be immediately below this object after the move, at the same level of hierarchy.
-        move: function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
+        move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
             this.once = true;
             var me = this;
             var initialCompetencies = me.container[me.containerNodeProperty] ? me.container[me.containerNodeProperty].slice() : null;
@@ -815,11 +814,11 @@ export default {
                 }
             }
             if (fromContainerId !== toContainerId) {
-                var source = window[this.nodeType].getBlocking(fromId);
-                var target = window[this.nodeType].getBlocking(toContainerId);
+                var source = await window[this.nodeType].get(fromId);
+                var target = await window[this.nodeType].get(toContainerId);
                 if (removeOldRelations === true && fromId !== toContainerId) {
                     for (var i = 0; i < this.container[this.containerEdgeProperty].length; i++) {
-                        var a = window[this.edgeType].getBlocking(this.container[this.containerEdgeProperty][i]);
+                        var a = await window[this.edgeType].get(this.container[this.containerEdgeProperty][i]);
                         if (a == null) { continue; }
                         if (a[this.edgeRelationProperty] === this.edgeRelationLiteral) {
                             if (a[this.edgeTargetProperty] == null) continue;
@@ -1042,10 +1041,10 @@ export default {
         onDraggableCheck: function(checked) {
             this.isDraggable = checked;
         },
-        clickToSearch: function() {
+        clickToSearch: async function() {
             let selected = null;
             if (this.selectedArray && this.selectedArray.length === 1) {
-                selected = EcRepository.getBlocking(this.selectedArray[0]);
+                selected = await EcRepository.get(this.selectedArray[0]);
             }
             this.$store.commit('editor/selectedCompetency', selected);
             var payload = {
@@ -1071,8 +1070,8 @@ export default {
             this.add(parent, null);
             this.addingNode = false;
         },
-        deleteSelected: function() {
-            let item = EcRepository.getBlocking(this.selectedArray[0]);
+        deleteSelected: async function() {
+            let item = await EcRepository.get(this.selectedArray[0]);
             this.deleteObject(item);
             this.selectedArray.splice(0, this.selectedArray.length);
         }

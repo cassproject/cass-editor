@@ -190,10 +190,10 @@ export default {
             this.configToDelete = {};
             this.configBusy = false;
         },
-        deleteConfiguration() {
+        async deleteConfiguration() {
             this.showConfirmDeleteConfigModal = false;
             this.configBusy = true;
-            let configObj = EcRepository.getBlocking(this.configToDelete.id);
+            let configObj = await EcRepository.get(this.configToDelete.id);
             if (configObj) {
                 let repo = window.repo;
                 repo.deleteRegistered(configObj, this.handleDeleteConfigurationSuccess, this.handleDeleteConfigurationFailure);

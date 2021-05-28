@@ -933,14 +933,14 @@ export default {
                 this.$store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
             }
         },
-        setEnabledRelationshipTypesFromOtherConfig: function() {
+        setEnabledRelationshipTypesFromOtherConfig: async function() {
             if (this.frameworkSource.configuration) {
                 appLog('Using framework configuration for enabled relationship types...');
-                let c = EcRepository.getBlocking(this.frameworkSource.configuration);
+                let c = await EcRepository.get(this.frameworkSource.configuration);
                 this.setEnabledRelationshipListFromCatConfigObj(c);
             } else if (this.getDefaultBrowserConfigId() && !this.getDefaultBrowserConfigId().trim().equals('')) {
                 appLog('Using browser configuration for enabled relationship types...');
-                let c = EcRepository.getBlocking(this.getDefaultBrowserConfigId());
+                let c = await EcRepository.get(this.getDefaultBrowserConfigId());
                 this.setEnabledRelationshipListFromCatConfigObj(c);
             } else {
                 let me = this;

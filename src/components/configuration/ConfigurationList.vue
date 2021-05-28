@@ -146,17 +146,17 @@ export default {
             }
             if (f) {
                 this.frameworkConfigId = configId;
-                window.repo.saveTo(f, function() {
-                    me.$store.commit('editor/framework', EcRepository.getBlocking(f.shortId()));
+                window.repo.saveTo(f, async function() {
+                    me.$store.commit('editor/framework', await EcRepository.get(f.shortId()));
                 }, function() {});
             }
         },
-        setOwnersAndReaders(framework) {
+        async setOwnersAndReaders(framework) {
             let userIdentity = null;
             if (EcIdentityManager.default.ids.length > 0) {
                 userIdentity = EcIdentityManager.default.ids[0].ppk.toPk();
             }
-            let config = EcRepository.getBlocking(framework.configuration);
+            let config = await EcRepository.get(framework.configuration);
             let owners = config.defaultObjectOwners;
             let readers = config.defaultObjectReaders;
             if (owners.length > 0 || readers.length > 0) {

@@ -789,7 +789,7 @@ export default {
             this.errorMessage = [];
             /* TO DO - clear property to add when cancel add property */
         },
-        saveNewProperty: function() {
+        saveNewProperty: async function() {
             // Validate input
             var property = this.addingProperty;
             var value = this.addingValue;
@@ -823,7 +823,7 @@ export default {
                 }
             }
             if (value && range[0].toLowerCase().indexOf("level") !== -1) {
-                var level = EcLevel.getBlocking(value);
+                var level = await EcLevel.get(value);
                 if (!level) {
                     return this.errorMessage.push("This URL must be a Level that is already in the system.");
                 }
@@ -1187,7 +1187,7 @@ export default {
                         rld = EcEncryptedValue.toEncryptedValue(rld);
                     }
                     rld["schema:dateModified"] = new Date().toISOString();
-                    repo.saveTo(rld, function() {
+                    repo.saveTo(rld, async function() {
                         me.doneSaving = true;
                         me.saving = false;
                         me.saved = "last saved " + new Date(rld["schema:dateModified"]).toLocaleString();
@@ -1200,10 +1200,10 @@ export default {
                             me.$emit('done-editing-node-event');
                         }
                         if (rld.type === "Framework") {
-                            me.$store.commit('editor/framework', EcFramework.getBlocking(rld.shortId()));
+                            me.$store.commit('editor/framework', await EcFramework.get(rld.shortId()));
                             me.spitEvent('viewChanged');
                         } else if (rld.type === "ConceptScheme") {
-                            me.$store.commit('editor/framework', EcConceptScheme.getBlocking(rld.shortId()));
+                            me.$store.commit('editor/framework', await EcConceptScheme.get(rld.shortId()));
                             me.spitEvent('viewChanged');
                         }
                     }, function(err) {
@@ -1514,13 +1514,13 @@ export default {
             this.isSearching = false;
             this.showAddPropertyContent = false;
         },
-        attachUrlProperties: function(results) {
+        attachUrlProperties: async function(results) {
             var resource = this.$store.state.editor.framework;
             if (this.$store.state.editor.selectedCompetency != null) {
                 resource = this.$store.state.editor.selectedCompetency;
             }
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcConcept().getTypes()) || thing.isAny(new EcCompetency().getTypes())) {
                     var relation = this.$store.state.editor.selectCompetencyRelation;
                     // Check if expanded version of property
@@ -1568,12 +1568,12 @@ export default {
             this.showAlways = true;
             this.showPossible = false;
         },
-        changedObject: function() {
+        changedObject: async function() {
             if (!this.originalThing) { return; }
             if (this.shortType && this.changedObject === this.originalThing.shortId()) {
                 var type = "Ec" + this.shortType;
                 if (type) {
-                    var thing = window[type].getBlocking(this.changedObject);
+                    var thing = await window[type].get(this.changedObject);
                     this.obj = thing;
                     if (this.clickToLoad === false) { this.load(); }
                 }

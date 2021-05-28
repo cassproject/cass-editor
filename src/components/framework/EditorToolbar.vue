@@ -283,10 +283,11 @@ export default {
                 this.$store.commit('editor/setLastEditToUndo', null);
             });
         },
-        undoAdd(id) {
+        async undoAdd(id) {
             // Delete
             var me = this;
-            this.repo.deleteRegistered(EcRepository.getBlocking(id), function() {
+            let obj = await EcRepository.get(id);
+            this.repo.deleteRegistered(obj, function() {
                 me.editsFinishedCounter++;
             }, function(failure) {
                 appLog(failure);
@@ -406,9 +407,9 @@ export default {
             }
             return rld;
         },
-        getConfigurationName: function() {
+        getConfigurationName: async function() {
             if (this.$store.getters['editor/framework'].configuration) {
-                let config = EcRepository.getBlocking(this.$store.getters['editor/framework'].configuration);
+                let config = await EcRepository.get(this.$store.getters['editor/framework'].configuration);
                 if (config) {
                     this.defaultFrameworkConfigName = config.name;
                 } else {
@@ -516,13 +517,14 @@ export default {
         }
     },
     watch: {
-        editsFinishedCounter: function() {
+        editsFinishedCounter: async function() {
             if (this.editsFinishedCounter && this.editsFinishedCounter === this.totalEditsCounter) {
                 this.editsFinishedCounter = 0;
                 this.totalEditsCounter = 0;
                 // If changes were made to the framework, make sure they get into the store.
                 var framework = this.$store.getters['editor/framework'];
-                this.$store.commit('editor/framework', EcRepository.getBlocking(framework.shortId()));
+                let obj = await EcRepository.get(framework.shortId());
+                this.$store.commit('editor/framework', obj);
                 this.$store.commit('editor/recomputeHierarchy', true);
                 this.$store.commit('editor/refreshAlignments', true);
             }

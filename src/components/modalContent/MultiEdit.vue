@@ -138,7 +138,7 @@ export default {
         addErrorMessage: function(msg) {
             this.errorMessage.push(msg);
         },
-        propertyStringUpdated: function(property, value, range, index) {
+        propertyStringUpdated: async function(property, value, range, index) {
             this.addedPropertiesAndValues[index].property = property;
             this.addedPropertiesAndValues[index].value = value;
             this.addedPropertiesAndValues[index].range = range;
@@ -153,7 +153,7 @@ export default {
                 }
             }
             if (range[0].toLowerCase().indexOf("level") !== -1 && !this.checkedOptions) {
-                var level = EcLevel.getBlocking(value);
+                var level = await EcLevel.get(value);
                 if (!level) {
                     this.addedPropertiesAndValues[index].error = "This URL must be a Level that is already in the system.";
                     return;

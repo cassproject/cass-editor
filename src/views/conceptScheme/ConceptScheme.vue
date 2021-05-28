@@ -766,8 +766,8 @@ export default {
         onEditNode: function() {
             this.editingFramework = true;
         },
-        onDoneEditingNode: function() {
-            this.$store.commit('editor/framework', EcRepository.getBlocking(this.framework.shortId()));
+        onDoneEditingNode: async function() {
+            this.$store.commit('editor/framework', await EcRepository.get(this.framework.shortId()));
             this.$store.commit('editor/newFramework', null);
             this.editingFramework = false;
         },
@@ -810,14 +810,14 @@ export default {
         onSelectButtonClick: function(ids) {
             this.selectButton(ids);
         },
-        moveToTopLevel: function(id) {
+        moveToTopLevel: async function(id) {
             let me = this;
-            let concept = EcConcept.getBlocking(id);
+            let concept = await EcConcept.get(id);
             if (concept["skos:broader"]) {
                 if (!EcArray.isArray(concept["skos:broader"])) {
                     concept["skos:broader"] = [concept["skos:broader"]];
                 }
-                let parent = EcConcept.getBlocking(concept["skos:broader"][0]);
+                let parent = await EcConcept.get(concept["skos:broader"][0]);
                 let fromIndex = parent["skos:narrower"].indexOf(id);
                 parent["skos:narrower"].splice(fromIndex, 1);
                 repo.saveTo(parent, function() {}, function() {});

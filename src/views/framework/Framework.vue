@@ -680,10 +680,10 @@ export default {
         handleSearch: function(e) {
             this.$store.commit('app/showModal', e);
         },
-        getConfiguration: function() {
+        getConfiguration: async function() {
             var me = this;
             if (this.framework.configuration) {
-                var c = EcRepository.getBlocking(this.framework.configuration);
+                var c = await EcRepository.get(this.framework.configuration);
                 appLog("c is: ", c);
                 if (c) {
                     appLog("c is: ", c);
@@ -694,7 +694,7 @@ export default {
             }
             if (!this.config && localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
                 // If no framework configuration, use browser default
-                var c = EcRepository.getBlocking(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
+                var c = await EcRepository.get(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
                 if (c) {
                     this.config = c;
                 }
@@ -795,10 +795,10 @@ export default {
                 }, appError);
             }
         },
-        updateResourceAlignments: function(alignmentType, value) {
+        updateResourceAlignments: async function(alignmentType, value) {
             let me = this;
             if (value["name"] && value["@value"]) {
-                var c = EcRepository.getBlocking(value["@id"]);
+                var c = await EcRepository.get(value["@id"]);
                 let initialName = c.name;
                 let initialUrl = c.url;
                 c.name = value["name"];
@@ -810,18 +810,18 @@ export default {
                 }, appError);
             }
         },
-        removeResourceAlignment: function(resourceId) {
-            let c = EcRepository.getBlocking(resourceId);
+        removeResourceAlignment: async function(resourceId) {
+            let c = await EcRepository.get(resourceId);
             let me = this;
             this.repo.deleteRegistered(c, function() {
                 me.$store.commit('editor/addEditsToUndo', [{operation: "delete", obj: c}]);
                 me.$store.commit('editor/refreshAlignments', true);
             }, appError);
         },
-        moveToTopLevel: function(id) {
+        moveToTopLevel: async function(id) {
             var me = this;
             for (var i = 0; i < this.framework.relation.length; i++) {
-                var a = EcAlignment.getBlocking(this.framework.relation[i]);
+                var a = await EcAlignment.get(this.framework.relation[i]);
                 if (a == null) { continue; }
                 if (a.relationType === "narrows") {
                     if (a.target == null) continue;

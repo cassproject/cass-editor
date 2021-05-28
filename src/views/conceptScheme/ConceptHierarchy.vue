@@ -470,12 +470,12 @@ export default {
                 this.$emit('done-loading-nodes');
             }, 1000);
         },
-        computeHierarchy: function() {
+        computeHierarchy: async function() {
             this.structure.splice(0, this.structure.length);
             if (this.container == null) { return r; }
             if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
                 for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
-                    var c = EcConcept.getBlocking(this.container["skos:hasTopConcept"][i]);
+                    var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
                     if (c) {
                         this.structure.push({"obj": c, "children": []});
                         if (c["skos:narrower"]) {
@@ -486,9 +486,9 @@ export default {
             }
             this.once = false;
         },
-        addChildren: function(structure, c, i) {
+        addChildren: async function(structure, c, i) {
             for (var j = 0; j < c["skos:narrower"].length; j++) {
-                var subC = EcConcept.getBlocking(c["skos:narrower"][j]);
+                var subC = await EcConcept.get(c["skos:narrower"][j]);
                 structure[i].children.push({"obj": subC, "children": []});
                 if (subC && subC["skos:narrower"]) {
                     this.addChildren(structure[i].children, subC, j);
@@ -534,11 +534,11 @@ export default {
                 foo.to.id,
                 !this.controlOnStart, plusup);
         },
-        move: function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
+        move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
             this.once = true;
             var me = this;
             if (fromContainerId === toContainerId) {
-                var container = EcConcept.getBlocking(toContainerId);
+                var container = await EcConcept.get(toContainerId);
                 var property = "skos:narrower";
                 if (container === null) {
                     container = this.container;
@@ -565,11 +565,11 @@ export default {
                     me.computeHierarchy();
                 }, appError);
             } else {
-                var moveComp = EcConcept.getBlocking(fromId);
-                var fromContainer = EcConcept.getBlocking(fromContainerId);
+                var moveComp = await EcConcept.get(fromId);
+                var fromContainer = await EcConcept.get(fromContainerId);
                 var fromProperty = "skos:narrower";
                 var fromProperty2 = "skos:broader";
-                var toContainer = EcConcept.getBlocking(toContainerId);
+                var toContainer = await EcConcept.get(toContainerId);
                 var toProperty = "skos:narrower";
                 var toProperty2 = "skos:broader";
                 if (fromContainer === null) {
@@ -643,7 +643,7 @@ export default {
             }
             this.dragging = false;
         },
-        add: function(containerId, previousSibling) {
+        add: async function(containerId, previousSibling) {
             var me = this;
             var c = new EcConcept();
             if (this.queryParams.newObjectEndpoint) {
@@ -703,7 +703,7 @@ export default {
                 }, appError);
             } else {
                 c["skos:broader"] = [containerId];
-                var parent = EcConcept.getBlocking(containerId);
+                var parent = await EcConcept.get(containerId);
                 var initialValue = parent["skos:narrower"] ? parent["skos:narrower"].slice() : null;
                 if (!EcArray.isArray(parent["skos:narrower"])) {
                     parent["skos:narrower"] = [];
@@ -756,8 +756,8 @@ export default {
             this.deleteObject(this.container);
             this.$store.dispatch('app/clearImport');
         },
-        openFramework: function() {
-            var f = EcConceptScheme.getBlocking(this.container.shortId());
+        openFramework: async function() {
+            var f = await EcConceptScheme.get(this.container.shortId());
             this.$store.commit('editor/framework', f);
             this.$router.push({name: "conceptScheme", params: {frameworkId: this.container.id}});
         },

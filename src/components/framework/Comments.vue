@@ -119,8 +119,8 @@ export default {
                 }
             }
         },
-        getCompetencyName(compId) {
-            let comp = EcRepository.getBlocking(compId);
+        async getCompetencyName(compId) {
+            let comp = await EcRepository.get(compId);
             if (comp) return comp.getName();
             else return 'Unknown Competency';
         },

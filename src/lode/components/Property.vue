@@ -389,7 +389,7 @@ export default {
             this.$store.commit('lode/incrementNumPropertyComponents', EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
         }
     },
-    mounted: function() {
+    mounted: async function() {
         if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("level") !== -1 && this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
             this.checkedOptions = [];
             if (this.expandedValue.length > 0) {
@@ -415,7 +415,7 @@ export default {
         if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options'] && this.checkedOptions) {
             for (let i = 0; i < this.profile[this.expandedProperty]['options'].length; i++) {
                 let option = this.profile[this.expandedProperty]['options'][i];
-                option.name = EcRepository.getBlocking(option.val).name;
+                option.name = await EcRepository.get(option.val).name;
                 this.optionsArray.push(option);
             }
         }

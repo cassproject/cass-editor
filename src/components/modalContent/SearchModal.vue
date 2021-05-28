@@ -131,17 +131,17 @@ export default {
         selectFramework: function(val) {
             this.selectedFramework = val;
         },
-        addRelations: function() {
+        addRelations: async function() {
             if (this.searchFrameworksInCompetencySearch && this.selectedFramework.relation) {
                 for (var i = 0; i < this.selectedFramework.relation.length; i++) {
-                    var relation = EcAlignment.getBlocking(this.selectedFramework.relation[i]);
+                    var relation = await EcAlignment.get(this.selectedFramework.relation[i]);
                     if (EcArray.has(this.selectedIds, relation.target) && EcArray.has(this.selectedIds, relation.source)) {
                         this.selectedIds.push(relation.shortId());
                     }
                 }
             }
         },
-        copyCompetencies: function() {
+        copyCompetencies: async function() {
             let results = this.selectedIds;
             this.addRelations();
             var copyDict = {};
@@ -152,7 +152,7 @@ export default {
             var addedNew = [];
             var me = this;
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
                     var c = new EcCompetency();
                     c.copyFrom(thing);
@@ -235,7 +235,7 @@ export default {
                 }
             }
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcAlignment().getTypes())) {
                     var parent = copyDict[thing.target];
                     var child = copyDict[thing.source];
@@ -296,7 +296,7 @@ export default {
             }
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
                     if (selectedCompetency != null) {
                         var r = new EcAlignment();
@@ -371,7 +371,7 @@ export default {
                 this.closeModal();
             }
         },
-        appendCompetencies: function() {
+        appendCompetencies: async function() {
             let results = this.selectedIds;
             this.addRelations();
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
@@ -384,7 +384,7 @@ export default {
             var addedNew = [];
             var me = this;
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcCompetency().getTypes())) {
                     framework.addCompetency(thing.shortId());
                 } else if (thing.isAny(new EcLevel().getTypes())) {
@@ -400,7 +400,7 @@ export default {
                 }
             }
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcAlignment().getTypes())) {
                     if (EcArray.has(framework.competency, thing.source)) {
                         if (EcArray.has(framework.competency, thing.target)) {
@@ -411,7 +411,7 @@ export default {
             }
 
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcCompetency().getTypes())) {
                     if (selectedCompetency != null) {
                         var r = new EcAlignment();
@@ -466,8 +466,8 @@ export default {
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = EcEncryptedValue.toEncryptedValue(framework);
             }
-            this.repo.saveTo(framework, function() {
-                me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
+            this.repo.saveTo(framework, async function() {
+                me.$store.commit('editor/framework', await EcFramework.get(framework.id));
                 me.closeModal();
             }, appError);
         }

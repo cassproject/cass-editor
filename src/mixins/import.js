@@ -36,8 +36,8 @@ export default {
         onEditNode: function() {
             this.editingNode = true;
         },
-        onDoneEditingNode: function() {
-            this.changedObj = EcRepository.getBlocking(this.importFramework.shortId());
+        onDoneEditingNode: async function() {
+            this.changedObj = await EcRepository.get(this.importFramework.shortId());
             this.editingNode = false;
         },
         handleDoneLoading: function() {
@@ -804,7 +804,7 @@ export default {
             if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
             let me = this;
             me.$store.commit('app/importFramework', null);
-            EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, function(data) {
+            EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
                 if (data.indexOf("ctdlasn") !== -1) {
                     var data1 = data.substring(0, data.indexOf("ctdlasn"));
                     var data2 = data.substring(data.indexOf("ctdlasn") + 7);
@@ -815,9 +815,9 @@ export default {
                     delete EcRepository.cache[data];
                 }
                 if (me.conceptMode) {
-                    framework = EcConceptScheme.getBlocking(data);
+                    framework = await EcConceptScheme.get(data);
                 } else {
-                    framework = EcFramework.getBlocking(data);
+                    framework = await EcFramework.get(data);
                     me.$store.commit('app/importFramework', framework);
                 }
                 me.$store.commit('editor/framework', framework);
