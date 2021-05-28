@@ -535,13 +535,13 @@ export default {
                 search += " AND (" + this.queryParams.filter + ")";
             }
             if (this.showMine || (this.queryParams && this.queryParams.show === "mine")) {
-                if (EcIdentityManager.ids.length > 0) {
+                if (EcIdentityManager.default.ids.length > 0) {
                     search += " AND (";
-                    for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                    for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
                         if (i !== 0) {
                             search += " OR ";
                         }
-                        var id = EcIdentityManager.ids[i];
+                        var id = EcIdentityManager.default.ids[i];
                         search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
                     }
                     search += ")";

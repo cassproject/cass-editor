@@ -666,8 +666,8 @@ export default {
             if (directory.reader) {
                 f.reader = directory.reader;
             }
-            if (EcIdentityManager.ids.length > 0) {
-                f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                f.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             let name = this.getCopyFrameworkName(f);
             f.name = name;
@@ -829,8 +829,8 @@ export default {
             if (directory.reader) {
                 c.reader = directory.reader;
             }
-            if (EcIdentityManager.ids.length > 0) {
-                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             if (toSaveFromSubdirectory) {
                 toSaveFromSubdirectory.push(c);
@@ -866,8 +866,8 @@ export default {
             if (directory.reader) {
                 subdirectory.reader = directory.reader;
             }
-            if (EcIdentityManager.ids.length > 0) {
-                subdirectory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                subdirectory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             subdirectory['ceasn:derivedFrom'] = oldSubdirectory.id;
             subdirectory.name = "Copy of " + subdirectory.name;
@@ -989,7 +989,7 @@ export default {
                     for (let each of directory.owner) {
                         framework.removeOwner(EcPk.fromPem(each));
                     }
-                    framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (directory.reader) {
                     for (let each of directory.reader) {
@@ -1024,7 +1024,7 @@ export default {
                         for (let each of directory.owner) {
                             obj.removeOwner(EcPk.fromPem(each));
                         }
-                        obj.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        obj.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     if (directory.reader) {
                         for (let each of directory.reader) {
@@ -1046,7 +1046,7 @@ export default {
                     for (let each of directory.owner) {
                         me.object.removeOwner(EcPk.fromPem(each));
                     }
-                    me.object.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    me.object.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (directory.reader) {
                     for (let each of directory.reader) {
@@ -1070,7 +1070,7 @@ export default {
                     for (let each of directory.owner) {
                         subdirectory.removeOwner(EcPk.fromPem(each));
                     }
-                    subdirectory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    subdirectory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (directory.reader) {
                     for (let each of directory.reader) {
@@ -1249,13 +1249,13 @@ export default {
             }
         },
         canEditObject: function() {
-            return this.object.canEditAny(EcIdentityManager.getMyPks());
+            return this.object.canEditAny(EcIdentityManager.default.getMyPks());
         },
         canEditDirectory: function() {
             if (this.object.directory) {
-                return EcDirectory.getBlocking(this.object.directory).canEditAny(EcIdentityManager.getMyPks());
+                return EcDirectory.getBlocking(this.object.directory).canEditAny(EcIdentityManager.default.getMyPks());
             } else if (this.object.parentDirectory) {
-                return EcDirectory.getBlocking(this.object.parentDirectory).canEditAny(EcIdentityManager.getMyPks());
+                return EcDirectory.getBlocking(this.object.parentDirectory).canEditAny(EcIdentityManager.default.getMyPks());
             }
             // Object is not in a directory
             if (this.objectType === 'ConceptScheme') {
@@ -1267,7 +1267,7 @@ export default {
             return this.$store.getters['editor/queryParams'];
         },
         loggedIn: function() {
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 return true;
             }
             return false;

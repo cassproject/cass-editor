@@ -164,9 +164,9 @@ export default {
                 ss.href = this.queryParams.css;
                 document.getElementsByTagName("head")[0].appendChild(ss);
             }
-            EcIdentityManager.readContacts();
-            EcIdentityManager.readIdentities();
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            EcIdentityManager.default.readContacts();
+            EcIdentityManager.default.readIdentities();
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 this.findLinkedPersonForIdentity();
             }
             // Preload schema so large frameworks are faster
@@ -192,7 +192,7 @@ export default {
         },
         findLinkedPersonForIdentity: function() {
             appLog("Finding linked person for identity...");
-            let identFingerprint = EcIdentityManager.ids[0].ppk.toPk().fingerprint();
+            let identFingerprint = EcIdentityManager.default.ids[0].ppk.toPk().fingerprint();
             let paramObj = {};
             paramObj.size = 10000;
             window.repo.searchWithParams("@type:Person AND @id:\"" + identFingerprint + "\"", paramObj, null,
@@ -205,7 +205,7 @@ export default {
             for (let ecrld of ecRemoteLda) {
                 let ep = new EcPerson();
                 ep.copyFrom(ecrld);
-                if (ep.getGuid().equals(EcIdentityManager.ids[0].ppk.toPk().fingerprint())) {
+                if (ep.getGuid().equals(EcIdentityManager.default.ids[0].ppk.toPk().fingerprint())) {
                     matchingPersonRecordFound = true;
                     this.$store.commit('user/loggedOnPerson', ep);
                     this.linkedPerson = ep;
@@ -252,7 +252,7 @@ export default {
                     let grpIdent = new EcIdentity();
                     grpIdent.displayName = group.getName() + " - key[" + i + "]";
                     grpIdent.ppk = gPpk;
-                    EcIdentityManager.addIdentityQuietly(grpIdent);
+                    EcIdentityManager.default.addIdentityQuietly(grpIdent);
                 }
             } catch (e) {
                 // TODO Problem with EcOrganization update and creating encrypted value when only a reader...
@@ -266,8 +266,8 @@ export default {
             dir.name = e;
             // dir.description = "Test Description";
             dir.generateId(window.repo.selectedServer);
-            if (EcIdentityManager.ids.length > 0) {
-                dir.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                dir.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             dir["schema:dateCreated"] = new Date().toISOString();
             dir["schema:dateModified"] = new Date().toISOString();
@@ -480,8 +480,8 @@ export default {
                     framework.reader = optionalDirectory.reader;
                 }
             }
-            if (EcIdentityManager.ids.length > 0) {
-                framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
             this.$store.commit('editor/newFramework', framework.shortId());
@@ -508,8 +508,8 @@ export default {
             } else {
                 framework.generateId(this.repo.selectedServer);
             }
-            if (EcIdentityManager.ids.length > 0) {
-                framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             let name = "New Taxonomy";
             if (this.queryParams.ceasnDataFields === 'true') {
@@ -545,16 +545,16 @@ export default {
         loadIdentity: function(callback) {
             var identity;
             if (this.queryParams.user === "self") {
-                EcIdentityManager.readIdentities();
-                EcIdentityManager.readContacts();
-                if (EcIdentityManager.ids.length === 0) {
+                EcIdentityManager.default.readIdentities();
+                EcIdentityManager.default.readContacts();
+                if (EcIdentityManager.default.ids.length === 0) {
                     EcPpk.generateKeyAsync(
                         function(p1) {
                             identity = new EcIdentity();
                             identity.ppk = p1;
                             identity.displayName = "You";
-                            EcIdentityManager.onIdentityChanged = EcIdentityManager.saveIdentities;
-                            EcIdentityManager.addIdentity(identity);
+                            EcIdentityManager.default.onIdentityChanged = EcIdentityManager.default.saveIdentities;
+                            EcIdentityManager.default.addIdentity(identity);
                             callback();
                         }
                     );
@@ -572,7 +572,7 @@ export default {
                         identity = new EcIdentity();
                         identity.ppk = EcPpk.fromPem(data.identity);
                         identity.displayName = "You";
-                        EcIdentityManager.addIdentity(identity);
+                        EcIdentityManager.default.addIdentity(identity);
                         callback();
                         var message = {
                             action: "response",
@@ -873,8 +873,8 @@ export default {
                     c["schema:dateCreated"] = new Date().toISOString();
                     c["schema:dateModified"] = new Date().toISOString();
                     delete c.owner;
-                    if (EcIdentityManager.ids.length > 0) {
-                        c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (EcIdentityManager.default.ids.length > 0) {
+                        c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     if (framework.owner && framework.owner.length > 0) {
                         for (var j = 0; j < framework.owner.length; j++) {
@@ -960,8 +960,8 @@ export default {
                         r.target = parent.shortId();
                         r.source = child.shortId();
                         r.relationType = thing.relationType;
-                        if (EcIdentityManager.ids.length > 0) {
-                            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         if (framework.owner && framework.owner.length > 0) {
                             for (var j = 0; j < framework.owner.length; j++) {
@@ -1019,8 +1019,8 @@ export default {
                         r.target = selectedCompetency.shortId();
                         r.source = child.shortId();
                         r.relationType = Relation.NARROWS;
-                        if (EcIdentityManager.ids.length > 0) {
-                            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         if (framework.owner && framework.owner.length > 0) {
                             for (var j = 0; j < framework.owner.length; j++) {
@@ -1114,8 +1114,8 @@ export default {
                         r.target = selectedCompetency.shortId();
                         r.source = thing.shortId();
                         r.relationType = Relation.NARROWS;
-                        if (EcIdentityManager.ids.length > 0) {
-                            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         if (framework.owner && framework.owner.length > 0) {
                             for (var j = 0; j < framework.owner.length; j++) {

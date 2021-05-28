@@ -529,7 +529,7 @@ export default {
             if (this.viewOnly === true) {
                 return false;
             }
-            return this.container.canEditAny(EcIdentityManager.getMyPks());
+            return this.container.canEditAny(EcIdentityManager.default.getMyPks());
         },
         hasLargeNumberOfItems: function() {
             if (this.container == null) {
@@ -832,8 +832,8 @@ export default {
                 }
                 if (toContainerId != null && toContainerId !== "") {
                     var a = new window[this.edgeType]();
-                    if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                        a.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
+                        a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     if (this.container.owner && this.container.owner.length > 0) {
                         for (var j = 0; j < this.container.owner.length; j++) {
@@ -896,8 +896,8 @@ export default {
             } else {
                 c.generateId(this.repo.selectedServer);
             }
-            if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
+                c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             if (this.container.owner && this.container.owner.length > 0) {
                 for (var j = 0; j < this.container.owner.length; j++) {
@@ -956,8 +956,8 @@ export default {
                     }, appError);
                 } else {
                     var a = new window[me.edgeType]();
-                    if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                        a.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
+                        a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     if (me.container.owner && me.container.owner.length > 0) {
                         for (var j = 0; j < me.container.owner.length; j++) {

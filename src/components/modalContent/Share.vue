@@ -384,7 +384,7 @@ export default {
     },
     computed: {
         loggedIn: function() {
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 return true;
             }
             return false;
@@ -447,11 +447,11 @@ export default {
             }
             if (this.queryParams && this.queryParams.view === 'true') {
                 return false;
-            } else if (this.framework && !this.framework.canEditAny(EcIdentityManager.getMyPks())) {
+            } else if (this.framework && !this.framework.canEditAny(EcIdentityManager.default.getMyPks())) {
                 return false;
-            } else if (this.directory && !this.directory.canEditAny(EcIdentityManager.getMyPks())) {
+            } else if (this.directory && !this.directory.canEditAny(EcIdentityManager.default.getMyPks())) {
                 return false;
-            } else if (this.resource && !this.resource.canEditAny(EcIdentityManager.getMyPks())) {
+            } else if (this.resource && !this.resource.canEditAny(EcIdentityManager.default.getMyPks())) {
                 return false;
             }
             return true;
@@ -565,8 +565,8 @@ export default {
                     if (success) {
                         let ownerFingerprint = pk.fingerprint();
                         let currentUser = false;
-                        for (let each in EcIdentityManager.ids) {
-                            let idFingerprint = EcIdentityManager.ids[each].ppk.toPk().fingerprint();
+                        for (let each in EcIdentityManager.default.ids) {
+                            let idFingerprint = EcIdentityManager.default.ids[each].ppk.toPk().fingerprint();
                             if (ownerFingerprint.equals(idFingerprint)) {
                                 currentUser = true;
                                 me.numGroupsAsOwner++;
@@ -698,7 +698,7 @@ export default {
             }
             // Make sure current user is added as an owner if a reader is being added, otherwise framework could become uneditable
             if (this.addReader.length > 0) {
-                this.addOwner.push(EcIdentityManager.ids[0].ppk.toPk());
+                this.addOwner.push(EcIdentityManager.default.ids[0].ppk.toPk());
             }
         },
         multiput: function(toSave, callback) {
@@ -938,9 +938,9 @@ export default {
         },
         handleMakePrivateDirectory: function(directory) {
             let me = this;
-            if (directory.canEditAny(EcIdentityManager.getMyPks())) {
+            if (directory.canEditAny(EcIdentityManager.default.getMyPks())) {
                 if (!directory.owner) {
-                    directory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    directory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (this.directory.shortId() === directory.shortId()) {
                     // Make sure new owner gets into store
@@ -974,9 +974,9 @@ export default {
         },
         handleMakePrivateResource: function(resource) {
             let me = this;
-            if (resource.canEditAny(EcIdentityManager.getMyPks())) {
+            if (resource.canEditAny(EcIdentityManager.default.getMyPks())) {
                 if (!resource.owner) {
-                    resource.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    resource.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (this.resource) {
                     this.$store.commit('app/objForShareModal', resource);
@@ -993,9 +993,9 @@ export default {
             if (framework.competency && framework.competency.length > 0) {
                 new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
                     EcCompetency.get(competencyId, function(c) {
-                        if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                        if (c.canEditAny(EcIdentityManager.default.getMyPks())) {
                             if (!c.owner) {
-                                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                             }
                             c["schema:dateModified"] = new Date().toISOString();
                             EcEncryptedValue.toEncryptedValueAsync(c, false, function(ec) {
@@ -1011,7 +1011,7 @@ export default {
                         new EcAsyncHelper().each(framework.relation, function(relationId, done) {
                             EcAlignment.get(relationId, function(r) {
                                 if (!r.owner) {
-                                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                    r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                                 }
                                 EcEncryptedValue.toEncryptedValueAsync(r, false, function(er) {
                                     me.toSave.push(er);
@@ -1124,7 +1124,7 @@ export default {
                 new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
                     EcRepository.get(competencyId, function(c) {
                         var v;
-                        if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                        if (c.canEditAny(EcIdentityManager.default.getMyPks())) {
                             if (c.isAny(new EcEncryptedValue().getTypes())) {
                                 v = new EcEncryptedValue();
                                 v.copyFrom(c);
@@ -1187,7 +1187,7 @@ export default {
             var f = new EcFramework();
             f.copyFrom(framework);
             if (!f.owner) {
-                f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                f.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             if (this.framework) {
                 // Make sure new owner gets into store
@@ -1212,7 +1212,7 @@ export default {
             var cs = new EcConceptScheme();
             cs.copyFrom(framework);
             if (!cs.owner) {
-                cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                cs.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             this.$store.commit('editor/framework', cs);
             var name = cs["dcterms:title"];
@@ -1258,7 +1258,7 @@ export default {
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
                 EcRepository.get(conceptId, function(concept) {
                     if (!concept.owner) {
-                        concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        concept.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     concept["schema:dateModified"] = new Date().toISOString();
                     if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
@@ -1321,7 +1321,7 @@ export default {
         },
         makeCurrentUserDirectoryOwner: function(directory) {
             let me = this;
-            directory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            directory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             me.toSave.push(directory);
             if (this.directory.shortId() === directory.shortId()) {
                 this.$store.commit('app/selectDirectory', directory);
@@ -1346,7 +1346,7 @@ export default {
             }, appError);
         },
         makeCurrentUserResourceOwner: function(resource) {
-            resource.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            resource.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             this.toSave.push(resource);
             this.multiput(this.toSave);
         },
@@ -1355,7 +1355,7 @@ export default {
             if (framework.competency && framework.competency.length > 0) {
                 new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
                     EcCompetency.get(competencyId, function(c) {
-                        c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         me.toSave.push(c);
                         done();
                     }, done);
@@ -1363,7 +1363,7 @@ export default {
                     if (framework.relation && framework.relation.length > 0) {
                         new EcAsyncHelper().each(framework.relation, function(relationId, done) {
                             EcAlignment.get(relationId, function(r) {
-                                r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                                 me.toSave.push(r);
                                 done();
                             }, done);
@@ -1381,7 +1381,7 @@ export default {
         makeCurrentUserFrameworkOwner: function(framework) {
             let f = framework;
             let me = this;
-            f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            f.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             me.toSave.push(f);
             me.multiput(me.toSave, function() {
                 if (me.framework) {
@@ -1399,7 +1399,7 @@ export default {
             var me = this;
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
                 EcConcept.get(conceptId, function(c) {
-                    c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     if (c["skos:narrower"]) {
                         me.makeCurrentUserAnOwnerForConcepts(c["skos:narrower"]);
                     }

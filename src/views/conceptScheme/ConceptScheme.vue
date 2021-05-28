@@ -163,7 +163,7 @@ export default {
             }
         },
         loggedIn: function() {
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 return true;
             }
             return false;
@@ -697,7 +697,7 @@ export default {
             if (this.queryParams.view === 'true') {
                 return false;
             }
-            return this.framework.canEditAny(EcIdentityManager.getMyPks());
+            return this.framework.canEditAny(EcIdentityManager.default.getMyPks());
         }
     },
     components: {

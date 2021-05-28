@@ -276,7 +276,7 @@ export default {
             this.findConceptTrail(this.dynamicModalContent.uri);
         }
         EcRepository.get(this.content.uri, function(success) {
-            if (success.canEditAny(EcIdentityManager.getMyPks())) {
+            if (success.canEditAny(EcIdentityManager.default.getMyPks())) {
                 me.canEdit = true;
                 me.obj = success;
             } else {

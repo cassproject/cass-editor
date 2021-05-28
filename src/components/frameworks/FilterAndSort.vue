@@ -144,7 +144,7 @@ export default {
             }
         },
         loggedIn: function() {
-            return EcIdentityManager.ids && EcIdentityManager.ids.length;
+            return EcIdentityManager.default.ids && EcIdentityManager.default.ids.length;
         },
         searchByOwnerNameEnabled: function() {
             return this.$store.state.featuresEnabled.searchByOwnerNameEnabled;

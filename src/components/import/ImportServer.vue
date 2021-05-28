@@ -557,8 +557,8 @@ export default {
             framework.copyFrom(data);
             delete framework.owner;
             delete framework.reader;
-            if (EcIdentityManager.ids.length > 0) {
-                framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             framework.id = framework.shortId();
             framework["schema:dateModified"] = new Date().toISOString();
@@ -592,8 +592,8 @@ export default {
                         newObj.copyFrom(result);
                         delete newObj.owner;
                         delete newObj.reader;
-                        if (EcIdentityManager.ids.length > 0) {
-                            newObj.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            newObj.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         newObj.id = newObj.shortId();
                         toSave.push(newObj);
@@ -756,7 +756,7 @@ export default {
             var me = this;
             var id = data.id;
             var uuid = data.identifier;
-            var identity = EcIdentityManager.ids[0];
+            var identity = EcIdentityManager.default.ids[0];
             var formData = new FormData();
             if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
             EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.importServerUrl + "&dId=" + uuid, formData, null, function(success) {

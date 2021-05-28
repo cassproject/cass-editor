@@ -294,7 +294,7 @@ export default {
                     let grpIdent = new EcIdentity();
                     grpIdent.displayName = group.getName() + " - key[" + i + "]";
                     grpIdent.ppk = gPpk;
-                    EcIdentityManager.addIdentityQuietly(grpIdent);
+                    EcIdentityManager.default.addIdentityQuietly(grpIdent);
                 }
             } catch (e) {
                 // TODO Problem with EcOrganization update and creating encrypted value when only a reader...
@@ -353,8 +353,8 @@ export default {
             this.createAccountUsernameUnavailable = false;
             if (clearIdentityManager) {
                 this.ecRemoteIdentMgr = {};
-                EcIdentityManager.clearContacts();
-                EcIdentityManager.clearIdentities();
+                EcIdentityManager.default.clearContacts();
+                EcIdentityManager.default.clearIdentities();
                 this.identityToLinkToPerson = {};
                 this.linkedPerson = {};
             }
@@ -424,9 +424,9 @@ export default {
             let ident = new EcIdentity();
             ident.displayName = this.createLinkPersonName;
             ident.ppk = EcPpk.generateKey();
-            EcIdentityManager.addIdentity(ident);
-            EcIdentityManager.saveContacts();
-            EcIdentityManager.saveIdentities();
+            EcIdentityManager.default.addIdentity(ident);
+            EcIdentityManager.default.saveContacts();
+            EcIdentityManager.default.saveIdentities();
             this.identityToLinkToPerson = ident;
             this.ecRemoteIdentMgr.commit(this.createPersonObjectToLinkToIdentity, this.handleAttemptLoginFetchIdentityFailure);
         },
@@ -452,8 +452,8 @@ export default {
             this.createAccountOrLinkPersonDataInvalid = true;
             this.createAccountUsernameUnavailable = true;
             this.loginBusy = false;
-            EcIdentityManager.clearIdentities();
-            EcIdentityManager.clearContacts();
+            EcIdentityManager.default.clearIdentities();
+            EcIdentityManager.default.clearContacts();
         },
         handleCheckUsernameFetchIdentityFailure: function(failMsg) {
             appLog('handleCheckUsernameFetchIdentityFailure: ' + failMsg);
@@ -463,8 +463,8 @@ export default {
                 this.createAccountOrLinkPersonDataInvalid = true;
                 this.createAccountUsernameUnavailable = true;
                 this.loginBusy = false;
-                EcIdentityManager.clearIdentities();
-                EcIdentityManager.clearContacts();
+                EcIdentityManager.default.clearIdentities();
+                EcIdentityManager.default.clearContacts();
             }
         },
         handleCheckUsernameConfigureFromServerSuccess: function(obj) {
@@ -570,7 +570,7 @@ export default {
         findLinkedPersonPersonSearchSuccess(ecRemoteLda) {
             appLog("Linked person person search success: ");
             appLog(ecRemoteLda);
-            this.identityToLinkToPerson = EcIdentityManager.ids[0];
+            this.identityToLinkToPerson = EcIdentityManager.default.ids[0];
             let matchingPersonRecordFound = false;
             for (let ecrld of ecRemoteLda) {
                 let ep = new EcPerson();
@@ -581,8 +581,8 @@ export default {
                     this.linkedPerson = ep;
                     appLog('Matching person record found: ');
                     appLog(ep);
-                    EcIdentityManager.saveContacts();
-                    EcIdentityManager.saveIdentities();
+                    EcIdentityManager.default.saveContacts();
+                    EcIdentityManager.default.saveIdentities();
                 }
             }
             if (matchingPersonRecordFound) this.addGroupIdentities();
@@ -597,14 +597,14 @@ export default {
         },
         findLinkedPersonForIdentity: function() {
             appLog("Finding linked person for identity...");
-            let identFingerprint = EcIdentityManager.ids[0].ppk.toPk().fingerprint();
+            let identFingerprint = EcIdentityManager.default.ids[0].ppk.toPk().fingerprint();
             let paramObj = {};
             paramObj.size = this.PERSON_SEARCH_SIZE;
             window.repo.searchWithParams("@type:Person AND @id:\"" + identFingerprint + "\"", paramObj, null,
                 this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
         },
         handleAttemptLoginFetchIdentitySuccess: function(obj) {
-            if (!EcIdentityManager.ids || EcIdentityManager.ids.length <= 0) {
+            if (!EcIdentityManager.default.ids || EcIdentityManager.default.ids.length <= 0) {
                 this.handleAttemptLoginFetchIdentityFailure('Login credentials valid but no identity could be found.');
             } else this.findLinkedPersonForIdentity();
         },
@@ -630,8 +630,8 @@ export default {
             if (this.areLoginParamsValid()) {
                 appLog("Attempting CaSS login....");
                 this.loginBusy = true;
-                EcIdentityManager.clearContacts();
-                EcIdentityManager.clearIdentities();
+                EcIdentityManager.default.clearContacts();
+                EcIdentityManager.default.clearIdentities();
                 this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
                 this.ecRemoteIdentMgr.server = window.repo.selectedServer;
                 this.ecRemoteIdentMgr.configureFromServer(this.handleAttemptLoginConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail); // Retrieves username and password salts from the serve

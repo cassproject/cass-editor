@@ -81,9 +81,9 @@ export const cassUtil = {
         },
         addAllIdentityPksAsOwners(obj) {
             // let isEcrld = (obj instanceOf EcRemoteLinkedData);
-            if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
-                for (let i = 0; i < EcIdentityManager.ids.length; i++) {
-                    obj.addOwner(EcIdentityManager.ids[i].ppk.toPk());
+            if (EcIdentityManager && EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
+                for (let i = 0; i < EcIdentityManager.default.ids.length; i++) {
+                    obj.addOwner(EcIdentityManager.default.ids[i].ppk.toPk());
                 }
             }
         },
@@ -92,10 +92,10 @@ export const cassUtil = {
             else return false;
         },
         doesAnyIdentityOwnObject(obj) {
-            if (!EcIdentityManager || !EcIdentityManager.ids || EcIdentityManager.ids.length <= 0) return false;
+            if (!EcIdentityManager || !EcIdentityManager.default.ids || EcIdentityManager.default.ids.length <= 0) return false;
             else {
-                for (let i = 0; i < EcIdentityManager.ids.length; i++) {
-                    if (obj.hasOwner(EcIdentityManager.ids[i].ppk.toPk())) return true;
+                for (let i = 0; i < EcIdentityManager.default.ids.length; i++) {
+                    if (obj.hasOwner(EcIdentityManager.default.ids[i].ppk.toPk())) return true;
                 }
                 return false;
             }
@@ -124,9 +124,9 @@ export const cassUtil = {
         },
         areAnyIdentitiesThisPerson(personObj) {
             let personFingerprint = personObj.getFingerprint();
-            if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
-                for (let i = 0; i < EcIdentityManager.ids.length; i++) {
-                    if (EcIdentityManager.ids[i].ppk.toPk().fingerprint().equals(personFingerprint)) return true;
+            if (EcIdentityManager && EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
+                for (let i = 0; i < EcIdentityManager.default.ids.length; i++) {
+                    if (EcIdentityManager.default.ids[i].ppk.toPk().fingerprint().equals(personFingerprint)) return true;
                 }
             }
             return false;
@@ -138,8 +138,8 @@ export const cassUtil = {
         },
         getPersonalIdentityPk() {
             // assuming that the first identity is the user's personal identity
-            if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
-                return EcIdentityManager.ids[0].ppk.toPk();
+            if (EcIdentityManager && EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
+                return EcIdentityManager.default.ids[0].ppk.toPk();
             } else return null;
         },
         buildEcAlignmentsFromRemoteLinkedData(ecrlda) {
@@ -154,7 +154,7 @@ export const cassUtil = {
     },
     computed: {
         amLoggedIn: function() {
-            if (EcIdentityManager && EcIdentityManager.ids && EcIdentityManager.ids.length > 0) return true;
+            if (EcIdentityManager && EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) return true;
             else return false;
         }
     }

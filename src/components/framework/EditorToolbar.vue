@@ -465,13 +465,13 @@ export default {
         canEditFramework: function() {
             if (this.queryParams && this.queryParams.view === 'true') {
                 return false;
-            } else if (!this.framework.canEditAny(EcIdentityManager.getMyPks())) {
+            } else if (!this.framework.canEditAny(EcIdentityManager.default.getMyPks())) {
                 return false;
             }
             return true;
         },
         loggedIn: function() {
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 return true;
             }
             return false;

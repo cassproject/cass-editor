@@ -414,7 +414,7 @@ export default {
                 paramObj.start = me.start;
                 let directories = [];
                 me.repo.searchWithParams(search, paramObj, function(result) {
-                    if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.getMyPks()))) {
+                    if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
                         if (!EcArray.has(me.resultIds, result.id)) {
                             if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
                                 // Don't show subdirectories unless searching
@@ -496,7 +496,7 @@ export default {
                         paramObj = Object.assign({}, me.paramObj);
                     }
                     me.repo.searchWithParams(search, paramObj, function(result) {
-                        if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.getMyPks()))) {
+                        if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
                             if (!EcArray.has(me.resultIds, result.id)) {
                                 if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
                                     if (result.isAny(new EcEncryptedValue().getTypes())) {
@@ -568,7 +568,7 @@ export default {
                 }
                 this.buildSearch(type, function(search) {
                     me.repo.searchWithParams(search, localParamObj, function(result) {
-                        if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.getMyPks()))) {
+                        if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
                             if (me.searchingForCompetencies) {
                                 if (!EcArray.has(me.resultIds, result.id)) {
                                     if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
@@ -639,7 +639,7 @@ export default {
             var type = me.type === "Framework" ? "Competency" : "Concept";
             me.buildSearch(type, function(subSearch) {
                 me.repo.searchWithParams(subSearch, subLocalParamObj, function(subResult) {
-                    if (!me.filterToEditable || (me.filterToEditable && subResult.canEditAny(EcIdentityManager.getMyPks()))) {
+                    if (!me.filterToEditable || (me.filterToEditable && subResult.canEditAny(EcIdentityManager.default.getMyPks()))) {
                         if (!EcArray.has(me.resultIds, subResult.id)) {
                             if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, subResult.shortId())) {
                                 if (subResult.isAny(new EcEncryptedValue().getTypes())) {

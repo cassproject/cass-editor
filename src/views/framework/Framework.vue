@@ -256,7 +256,7 @@ export default {
             }
         },
         loggedIn: function() {
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 return true;
             }
             return false;
@@ -608,7 +608,7 @@ export default {
             if (this.queryParams.view === 'true') {
                 return false;
             }
-            return this.framework.canEditAny(EcIdentityManager.getMyPks());
+            return this.framework.canEditAny(EcIdentityManager.default.getMyPks());
         }
     },
     created: function() {
@@ -785,8 +785,8 @@ export default {
                 c.educationalAlignment = new AlignmentObject();
                 c.educationalAlignment.targetUrl = selectedCompetencyId;
                 c.educationalAlignment.alignmentType = alignmentType;
-                if (EcIdentityManager.ids.length > 0) {
-                    c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                if (EcIdentityManager.default.ids.length > 0) {
+                    c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 this.repo.saveTo(c, function() {
                     let edits = [{operation: "addNew", id: c.shortId()}];

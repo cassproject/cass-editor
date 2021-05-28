@@ -520,7 +520,7 @@ export default {
              * return false;
              * }
              * if (this.originalThing && this.originalThing.canEditAny) {
-             * return this.originalThing.canEditAny(EcIdentityManager.getMyPks());
+             * return this.originalThing.canEditAny(EcIdentityManager.default.getMyPks());
              *}
              */
             return true;

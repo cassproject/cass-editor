@@ -284,7 +284,7 @@ export default {
             showMine: false,
             showNotMine: false,
             filterByConfig: false,
-            numIdentities: EcIdentityManager.ids.length,
+            numIdentities: EcIdentityManager.default.ids.length,
             parentObjectClass: 'frameworks-sticky',
             sortBy: null,
             defaultConfig: "",
@@ -313,7 +313,7 @@ export default {
             return this.$store.getters['app/selectedDirectory'];
         },
         loggedIn: function() {
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 return true;
             }
             return false;
@@ -335,26 +335,26 @@ export default {
                 search += " AND (" + this.queryParams.filter + ")";
             }
             if (this.showMine || (this.queryParams && this.queryParams.show === "mine")) {
-                if (EcIdentityManager.ids.length > 0) {
+                if (EcIdentityManager.default.ids.length > 0) {
                     search += " AND (";
-                    for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                    for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
                         if (i !== 0) {
                             search += " OR ";
                         }
-                        var id = EcIdentityManager.ids[i];
+                        var id = EcIdentityManager.default.ids[i];
                         search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
                         search += " OR \\*owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                     }
                     search += ")";
                 }
             }
-            if (this.showNotMine && EcIdentityManager.ids.length > 0) {
+            if (this.showNotMine && EcIdentityManager.default.ids.length > 0) {
                 search += " AND NOT (";
-                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
                     if (i !== 0) {
                         search += " OR ";
                     }
-                    var id = EcIdentityManager.ids[i];
+                    var id = EcIdentityManager.default.ids[i];
                     search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
                     search += " OR \\*owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                 }
@@ -372,7 +372,7 @@ export default {
             obj.size = 20;
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (EcIdentityManager.ids.length > 0 && this.queryParams && this.queryParams.show === 'mine') {
+            if (EcIdentityManager.default.ids.length > 0 && this.queryParams && this.queryParams.show === 'mine') {
                 obj.ownership = 'me';
             }
             return obj;
@@ -425,7 +425,7 @@ export default {
             }
         },
         canEditItem: function(item) {
-            return item.canEditAny(EcIdentityManager.getMyPks());
+            return item.canEditAny(EcIdentityManager.default.getMyPks());
         },
         frameworkClick: function(framework) {
             this.$store.commit('app/rightAsideObject', framework);
@@ -518,8 +518,8 @@ export default {
             if (this.directory.reader) {
                 dir.reader = this.directory.reader;
             }
-            if (EcIdentityManager.ids.length > 0) {
-                dir.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                dir.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             dir["schema:dateCreated"] = new Date().toISOString();
             dir["schema:dateModified"] = new Date().toISOString();
@@ -566,8 +566,8 @@ export default {
             if (this.directory.reader) {
                 c.reader = this.directory.reader;
             }
-            if (EcIdentityManager.ids.length > 0) {
-                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             this.repo.saveTo(c, function() {
                 appLog("Resource saved: " + c.id);

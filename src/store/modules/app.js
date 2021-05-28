@@ -325,7 +325,7 @@ const actions = {
         let paramObj = {size: 10000};
         EcDirectory.search(window.repo, "", function(dirs) {
             for (let i = 0; i < dirs.length; i++) {
-                if (dirs[i].canEditAny(EcIdentityManager.getMyPks()) && !EcArray.has(directoryIds, dirs[i].id)) {
+                if (dirs[i].canEditAny(EcIdentityManager.default.getMyPks()) && !EcArray.has(directoryIds, dirs[i].id)) {
                     directories.push(dirs[i]);
                     directoryIds.push(dirs[i].id);
                 }

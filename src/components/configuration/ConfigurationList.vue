@@ -153,8 +153,8 @@ export default {
         },
         setOwnersAndReaders(framework) {
             let userIdentity = null;
-            if (EcIdentityManager.ids.length > 0) {
-                userIdentity = EcIdentityManager.ids[0].ppk.toPk();
+            if (EcIdentityManager.default.ids.length > 0) {
+                userIdentity = EcIdentityManager.default.ids[0].ppk.toPk();
             }
             let config = EcRepository.getBlocking(framework.configuration);
             let owners = config.defaultObjectOwners;

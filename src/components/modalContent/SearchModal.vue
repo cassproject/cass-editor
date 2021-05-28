@@ -165,8 +165,8 @@ export default {
                     c["schema:dateCreated"] = new Date().toISOString();
                     c["schema:dateModified"] = new Date().toISOString();
                     delete c.owner;
-                    if (EcIdentityManager.ids.length > 0) {
-                        c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (EcIdentityManager.default.ids.length > 0) {
+                        c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     if (framework.owner && framework.owner.length > 0) {
                         for (var j = 0; j < framework.owner.length; j++) {
@@ -254,8 +254,8 @@ export default {
                         r.target = parent.shortId();
                         r.source = child.shortId();
                         r.relationType = thing.relationType;
-                        if (EcIdentityManager.ids.length > 0) {
-                            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         if (framework.owner && framework.owner.length > 0) {
                             for (var j = 0; j < framework.owner.length; j++) {
@@ -313,8 +313,8 @@ export default {
                         r.target = selectedCompetency.shortId();
                         r.source = child.shortId();
                         r.relationType = Relation.NARROWS;
-                        if (EcIdentityManager.ids.length > 0) {
-                            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         if (framework.owner && framework.owner.length > 0) {
                             for (var j = 0; j < framework.owner.length; j++) {
@@ -426,8 +426,8 @@ export default {
                         r.target = selectedCompetency.shortId();
                         r.source = thing.shortId();
                         r.relationType = Relation.NARROWS;
-                        if (EcIdentityManager.ids.length > 0) {
-                            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         if (framework.owner && framework.owner.length > 0) {
                             for (var j = 0; j < framework.owner.length; j++) {

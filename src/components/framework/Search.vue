@@ -162,13 +162,13 @@ export default {
             }*/
             if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] !== true && this.queryParams.show === "mine") ||
                 (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine")) {
-                if (EcIdentityManager.ids.length > 0) {
+                if (EcIdentityManager.default.ids.length > 0) {
                     search += " AND (";
-                    for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                    for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
                         if (i !== 0) {
                             search += " OR ";
                         }
-                        var id = EcIdentityManager.ids[i];
+                        var id = EcIdentityManager.default.ids[i];
                         search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
                         search += " OR \\*owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                     }
@@ -187,7 +187,7 @@ export default {
             } else {
                 delete obj.sort;
             }
-            if (EcIdentityManager.ids.length > 0 && this.queryParams && ((this.$store.getters['editor/conceptMode'] !== true && this.queryParams.show === 'mine') ||
+            if (EcIdentityManager.default.ids.length > 0 && this.queryParams && ((this.$store.getters['editor/conceptMode'] !== true && this.queryParams.show === 'mine') ||
                 (this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }

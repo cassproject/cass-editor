@@ -550,7 +550,7 @@ export default {
                 return false;
             }
             if (this.obj && this.obj.canEditAny) {
-                return this.obj.canEditAny(EcIdentityManager.getMyPks());
+                return this.obj.canEditAny(EcIdentityManager.default.getMyPks());
             }
             return true;
         }

@@ -1552,7 +1552,7 @@ CTDLASNCSVImport = stjs.extend(CTDLASNCSVImport, null, [], function(constructor,
                             var id = new EcIdentity();
                             id.ppk = EcPpk.fromPem((e)["owner"]);
                             f.addOwner(id.ppk.toPk());
-                            EcIdentityManager.addIdentityQuietly(id);
+                            EcIdentityManager.default.addIdentityQuietly(id);
                         }
                         if (ceo != null) 
                             f.addOwner(ceo.ppk.toPk());
@@ -1618,7 +1618,7 @@ CTDLASNCSVImport = stjs.extend(CTDLASNCSVImport, null, [], function(constructor,
                             id.ppk = EcPpk.fromPem((e)["owner"]);
                             if (id.ppk != null) 
                                 f.addOwner(id.ppk.toPk());
-                            EcIdentityManager.addIdentityQuietly(id);
+                            EcIdentityManager.default.addIdentityQuietly(id);
                         }
                         if (ceo != null) 
                             f.addOwner(ceo.ppk.toPk());
@@ -1821,7 +1821,7 @@ CTDLASNCSVConceptImport = stjs.extend(CTDLASNCSVConceptImport, null, [], functio
                             var id = new EcIdentity();
                             id.ppk = EcPpk.fromPem((e)["owner"]);
                             f.addOwner(id.ppk.toPk());
-                            EcIdentityManager.addIdentityQuietly(id);
+                            EcIdentityManager.default.addIdentityQuietly(id);
                         }
                         if (ceo != null) 
                             f.addOwner(ceo.ppk.toPk());
@@ -1854,7 +1854,7 @@ CTDLASNCSVConceptImport = stjs.extend(CTDLASNCSVConceptImport, null, [], functio
                             id.ppk = EcPpk.fromPem((e)["owner"]);
                             if (id.ppk != null) 
                                 f.addOwner(id.ppk.toPk());
-                            EcIdentityManager.addIdentityQuietly(id);
+                            EcIdentityManager.default.addIdentityQuietly(id);
                         }
                         if (ceo != null) 
                             f.addOwner(ceo.ppk.toPk());

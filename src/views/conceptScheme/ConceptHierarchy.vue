@@ -334,7 +334,7 @@ export default {
             if (this.viewOnly === true) {
                 return false;
             }
-            return this.container.canEditAny(EcIdentityManager.getMyPks());
+            return this.container.canEditAny(EcIdentityManager.default.getMyPks());
         },
         recomputeHierarchy: function() {
             return this.$store.getters['editor/recomputeHierarchy'];
@@ -653,8 +653,8 @@ export default {
             }
             c["schema:dateCreated"] = new Date().toISOString();
             c["schema:dateModified"] = new Date().toISOString();
-            if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
+                c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             if (this.container.owner && this.container.owner.length > 0) {
                 for (var j = 0; j < this.container.owner.length; j++) {
