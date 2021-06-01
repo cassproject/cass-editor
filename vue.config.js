@@ -20,7 +20,22 @@ module.exports = {
         ca: fs.readFileSync('ca.pem')
     },
     configureWebpack: {
-        plugins: [new CompressionPlugin()]
+        plugins: [new CompressionPlugin()],
+        module: {
+            rules: [
+                {
+                    test: /\.m?js$/,
+                    exclude: {test: /node_modules/, // Exclude libraries in node_modules ...
+                        not: [
+                            // Except for a few of them that needs to be transpiled because they use modern syntax
+                            /cassproject/
+                        ]},
+                    use: {
+                        loader: 'babel-loader'
+                    }
+                }
+            ]
+        }
     },
     publicPath: process.env.NODE_ENV === 'production'
         ? '/cass-editor/'
