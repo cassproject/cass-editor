@@ -669,7 +669,6 @@ export default {
             var me = this;
             var r = {};
             var top = {};
-            this.structure = [];
             if (this.container == null) { return r; }
             if (this.container[this.containerNodeProperty] !== null && this.container[this.containerNodeProperty] !== undefined) {
                 for (var i = 0; i < this.container[this.containerNodeProperty].length; i++) {
