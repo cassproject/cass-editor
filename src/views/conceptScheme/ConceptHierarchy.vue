@@ -323,7 +323,7 @@ export default {
             if (precache.length > 0) {
                 this.repo.multiget(precache, function(success) {
                     me.computeHierarchy();
-                }, appError, appLog);
+                }, appError);
             } else {
                 me.computeHierarchy();
             }
