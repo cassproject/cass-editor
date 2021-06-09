@@ -1194,7 +1194,7 @@ export default {
                     [{"@language": "en", "@value": "The Credential Registry URL of the concept."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.conceptRegistryURLs; },
+                    "valuesIndexed": function() { return me.conceptRegistryURLs(); },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -1207,7 +1207,7 @@ export default {
                     [{"@language": "en", "@value": "The CTID of the concept."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.conceptCtids; },
+                    "valuesIndexed": function() { return me.conceptCtids(); },
                     "max": 1,
                     "isRequired": "true",
                     "heading": "Keys"

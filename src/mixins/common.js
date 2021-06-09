@@ -41,7 +41,9 @@ export default {
                 }
             }
             return obj;
-        },
+        }
+    },
+    methods: {
         conceptCtids: function() {
             let framework = this.framework;
             if (!framework) {
@@ -56,10 +58,10 @@ export default {
             }
             var obj = {};
             obj[framework.shortId()] = [{"@value": this.getCTID(framework.shortId())}];
-            var subCtids = function(ary) {
+            var subCtids = async function(ary) {
                 for (var i = 0; i < ary.length; i++) {
                     obj[ary[i]] = [{"@value": me.getCTID(ary[i])}];
-                    var concept = EcConcept.getBlocking(ary[i]);
+                    var concept = await EcConcept.get(ary[i]);
                     if (concept["skos:narrower"]) {
                         subCtids(concept["skos:narrower"]);
                     }
@@ -83,10 +85,10 @@ export default {
                 return null;
             }
             var obj = {};
-            var subURLs = function(ary) {
+            var subURLs = async function(ary) {
                 for (var i = 0; i < ary.length; i++) {
                     obj[ary[i]] = [{"@value": me.ceasnRegistryUriTransform(ary[i])}];
-                    var concept = EcConcept.getBlocking(ary[i]);
+                    var concept = await EcConcept.get(ary[i]);
                     if (concept["skos:narrower"]) {
                         subURLs(concept["skos:narrower"]);
                     }
@@ -96,9 +98,7 @@ export default {
                 subURLs(framework["skos:hasTopConcept"]);
             }
             return obj;
-        }
-    },
-    methods: {
+        },
         spitEvent: function(message, id, page) {
             var framework = this.framework ? this.framework : this.$store.state.editor.framework;
             var selectedCompetency = this.$store.state.editor.selectedCompetency;

@@ -1251,18 +1251,6 @@ export default {
         canEditObject: function() {
             return this.object.canEditAny(EcIdentityManager.default.getMyPks());
         },
-        canEditDirectory: function() {
-            if (this.object.directory) {
-                return EcDirectory.getBlocking(this.object.directory).canEditAny(EcIdentityManager.default.getMyPks());
-            } else if (this.object.parentDirectory) {
-                return EcDirectory.getBlocking(this.object.parentDirectory).canEditAny(EcIdentityManager.default.getMyPks());
-            }
-            // Object is not in a directory
-            if (this.objectType === 'ConceptScheme') {
-                return false;
-            }
-            return true;
-        },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
