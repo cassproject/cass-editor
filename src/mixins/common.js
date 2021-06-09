@@ -535,8 +535,8 @@ export default {
                     r.source = dosedo;
                     r.relationType = "narrows";
                 }
-                if (EcIdentityManager.ids.length > 0) {
-                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                if (EcIdentityManager.default.ids.length > 0) {
+                    r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (framework.owner && framework.owner.length > 0) {
                     for (var j = 0; j < framework.owner.length; j++) {
