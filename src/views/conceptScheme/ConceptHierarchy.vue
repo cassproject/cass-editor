@@ -471,19 +471,20 @@ export default {
             }, 1000);
         },
         computeHierarchy: async function() {
-            this.structure.splice(0, this.structure.length);
+            let structure = [];
             if (this.container == null) { return r; }
             if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
                 for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
                     var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
                     if (c) {
-                        this.structure.push({"obj": c, "children": []});
+                        structure.push({"obj": c, "children": []});
                         if (c["skos:narrower"]) {
-                            this.addChildren(this.structure, c, i);
+                            this.addChildren(structure, c, i);
                         }
                     }
                 }
             }
+            this.structure = structure;
             this.once = false;
         },
         addChildren: async function(structure, c, i) {
