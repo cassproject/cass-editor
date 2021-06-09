@@ -778,11 +778,11 @@ export default {
             let me = this;
             alignmentType = alignmentType.substring(0, alignmentType.indexOf(' '));
             for (let i = 0; i < values.length; i++) {
-                let c = new CreativeWork();
+                let c = new schema.CreativeWork();
                 c.generateId(this.repo.selectedServer);
                 c.name = values[i]["name"];
                 c.url = values[i]["@value"];
-                c.educationalAlignment = new AlignmentObject();
+                c.educationalAlignment = new schema.AlignmentObject();
                 c.educationalAlignment.targetUrl = selectedCompetencyId;
                 c.educationalAlignment.alignmentType = alignmentType;
                 if (EcIdentityManager.default.ids.length > 0) {

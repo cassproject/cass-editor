@@ -555,7 +555,7 @@ export default {
         },
         saveNewResource: function() {
             let me = this;
-            let c = new CreativeWork();
+            let c = new schema.CreativeWork();
             c.generateId(this.repo.selectedServer);
             c.name = this.resourceName;
             c.url = this.resourceUrl;

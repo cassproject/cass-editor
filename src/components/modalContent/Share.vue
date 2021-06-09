@@ -1083,7 +1083,7 @@ export default {
             }, appError);
         },
         handleMakePublicResource: function(resource) {
-            let cw = new CreativeWork();
+            let cw = new schema.CreativeWork();
             let v;
             if (resource.type === "CreativeWork") {
                 v = EcEncryptedValue.toEncryptedValue(resource);

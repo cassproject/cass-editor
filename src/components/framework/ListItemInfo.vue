@@ -814,7 +814,7 @@ export default {
         },
         copyResourceToDirectory: function(directory, resource, toSaveFromSubdirectory) {
             let me = this;
-            let c = new CreativeWork();
+            let c = new schema.CreativeWork();
             if (this.queryParams.newObjectEndpoint != null) {
                 c.generateShortId(this.queryParams.newObjectEndpoint);
             } else {
