@@ -350,7 +350,7 @@ export default {
             var xhr = null;
             if ((typeof httpStatus) === "undefined") {
                 xhr = new XMLHttpRequest();
-                xhr.open("GET", url, EcRemote.async);
+                xhr.open("GET", url, true);
                 if (headers != null) {
                     var keys = EcObject.keys(headers);
                     for (var i = 0; i < keys.length; i++) {
@@ -379,9 +379,7 @@ export default {
                 };
             }
             if (xhr != null) {
-                if (EcRemote.async) {
-                    (xhr)["timeout"] = EcRemote.timeout;
-                }
+                (xhr)["timeout"] = EcRemote.timeout;
             }
             if ((typeof httpStatus) !== "undefined") {
                 if (success != null) {

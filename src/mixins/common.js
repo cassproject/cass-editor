@@ -165,7 +165,7 @@ export default {
             var xhr = null;
             if ((typeof httpStatus) === "undefined") {
                 xhr = new XMLHttpRequest();
-                xhr.open("GET", url, EcRemote.async);
+                xhr.open("GET", url, true);
                 if (headers != null) {
                     var keys = EcObject.keys(headers);
                     for (var i = 0; i < keys.length; i++) {
@@ -194,9 +194,7 @@ export default {
                 };
             }
             if (xhr != null) {
-                if (EcRemote.async) {
-                    (xhr)["timeout"] = EcRemote.timeout;
-                }
+                (xhr)["timeout"] = EcRemote.timeout;
             }
             if ((typeof httpStatus) !== "undefined") {
                 if (success != null) {
@@ -292,8 +290,6 @@ export default {
         },
         selectButton: async function(selectedArray) {
             var ary = [];
-            var async = EcRemote.async;
-            EcRemote.async = false;
             if (!selectedArray) {
                 selectedArray = this.selectedArray;
             }
@@ -306,11 +302,10 @@ export default {
                         } else {
                             link = selectedArray[i].replace("/data/", "/ceasn/");
                         }
-                        this.get(link, null, null, function(success) {
-                            ary.push(JSON.parse(success));
-                        }, function(failure) {
-                            appLog(failure);
-                        });
+                        let success = await EcRemote.getExpectingObject(link);
+                        if (success) {
+                            ary.push(success);
+                        }
                     } else {
                         ary.push(JSON.parse(await EcCompetency.get(selectedArray[i]).toJson()));
                     }
@@ -341,14 +336,13 @@ export default {
                     } else {
                         link = this.framework.id.replace("/data/", "/ceasn/");
                     }
-                    this.get(link, null, null, function(success) {
-                        success = JSON.parse(success);
+                    let success = await EcRemote.getExpectingObject(link);
+                    if (success) {
+                        // success = JSON.parse(success);
                         if (success["@graph"]) {
                             currentFramework = success["@graph"][0];
                         }
-                    }, function(failure) {
-                        appLog(failure);
-                    });
+                    }
                 }
             }
             var message = {
@@ -360,7 +354,6 @@ export default {
             message = JSON.parse(JSON.stringify(message));
             appLog(message);
             parent.postMessage(message, this.queryParams.origin);
-            EcRemote.async = async;
         },
         addLevel: async function(selectedCompetency, optionalLevelUrl) {
             var c;
