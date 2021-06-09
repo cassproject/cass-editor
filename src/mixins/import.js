@@ -969,16 +969,6 @@ export default {
                 return;
             }
             EcRemote.getExpectingString(this.importUrl, null, function(result) {
-                try {
-                    result = JSON.parse(result);
-                } catch (ex) {
-                    error.details = ex.message;
-                    me.$store.commit('app/importStatus', ex.message);
-                    me.$store.commit('app/importTransition', 'upload');
-                    me.$store.commit('app/addImportError', ex.message);
-                    me.showModal('error', error);
-                    return;
-                }
                 var graph = result["@graph"];
                 if (graph != null) {
                     var id = graph[0]["@id"];
