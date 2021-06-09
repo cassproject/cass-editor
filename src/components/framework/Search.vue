@@ -134,7 +134,7 @@ export default {
             if (this.selectedCompetency && this.selectedCompetency.name) {
                 return this.selectedCompetency.getName();
             } else if (this.selectedCompetency) {
-                return Thing.getDisplayStringFrom(this.selectedCompetency["skos:prefLabel"]);
+                return schema.Thing.getDisplayStringFrom(this.selectedCompetency["skos:prefLabel"]);
             } else {
                 return '';
             }

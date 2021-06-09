@@ -433,9 +433,9 @@ export default {
                 return this.resource.name;
             }
             if (this.framework.name) {
-                return Thing.getDisplayStringFrom(this.framework.name);
+                return schema.Thing.getDisplayStringFrom(this.framework.name);
             } else {
-                return Thing.getDisplayStringFrom(this.framework["dcterms:title"]);
+                return schema.Thing.getDisplayStringFrom(this.framework["dcterms:title"]);
             }
         },
         queryParams: function() {

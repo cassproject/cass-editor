@@ -259,9 +259,9 @@ export default {
         exportRdfQuads: function(link) {
             let fileName;
             if (this.objType.indexOf("conceptscheme") !== -1) {
-                fileName = Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
+                fileName = schema.Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
             } else if (this.objType.indexOf("concept") !== -1) {
-                fileName = Thing.getDisplayStringFrom(this.obj["skos:prefLabel"]);
+                fileName = schema.Thing.getDisplayStringFrom(this.obj["skos:prefLabel"]);
             } else {
                 fileName = this.obj.getName();
             }
@@ -275,9 +275,9 @@ export default {
         exportRdfJson: function(link) {
             let fileName;
             if (this.objType.indexOf("conceptscheme") !== -1) {
-                fileName = Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
+                fileName = schema.Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
             } else if (this.objType.indexOf("concept") !== -1) {
-                fileName = Thing.getDisplayStringFrom(this.obj["skos:prefLabel"]);
+                fileName = schema.Thing.getDisplayStringFrom(this.obj["skos:prefLabel"]);
             } else {
                 fileName = this.obj.getName();
             }
@@ -291,9 +291,9 @@ export default {
         exportRdfXml: function(link) {
             let fileName;
             if (this.objType.indexOf("conceptscheme") !== -1) {
-                fileName = Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
+                fileName = schema.Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
             } else if (this.objType.indexOf("concept") !== -1) {
-                fileName = Thing.getDisplayStringFrom(this.obj["skos:prefLabel"]);
+                fileName = schema.Thing.getDisplayStringFrom(this.obj["skos:prefLabel"]);
             } else {
                 fileName = this.obj.getName();
             }
@@ -307,9 +307,9 @@ export default {
         exportTurtle: function(link) {
             let fileName;
             if (this.objType.indexOf("conceptscheme") !== -1) {
-                fileName = Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
+                fileName = schema.Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
             } else if (this.objType.indexOf("concept") !== -1) {
-                fileName = Thing.getDisplayStringFrom(this.obj["skos:prefLabel"]);
+                fileName = schema.Thing.getDisplayStringFrom(this.obj["skos:prefLabel"]);
             } else {
                 fileName = this.obj.getName();
             }

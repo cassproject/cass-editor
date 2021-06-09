@@ -981,7 +981,7 @@ export default {
                 if (!name) {
                     name = success["skos:prefLabel"];
                 }
-                name = Thing.getDisplayStringFrom(name);
+                name = schema.Thing.getDisplayStringFrom(name);
                 // If still object, display value
                 if (EcObject.isObject(name)) {
                     var langs = Object.keys(name);
@@ -1022,7 +1022,7 @@ export default {
                             }
                         }
                         // If it's a langstring
-                        name = Thing.getDisplayStringFrom(name);
+                        name = schema.Thing.getDisplayStringFrom(name);
                         // If still object, display value
                         if (EcObject.isObject(name)) {
                             var langs = Object.keys(name);

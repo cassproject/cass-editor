@@ -297,12 +297,12 @@ export default {
                 return object.getName();
             }
             if (this.competency.type === "Directory") {
-                return Thing.getDisplayStringFrom(object.name);
+                return schema.Thing.getDisplayStringFrom(object.name);
             }
             if (object["skos:prefLabel"]) {
-                return Thing.getDisplayStringFrom(object["skos:prefLabel"]);
+                return schema.Thing.getDisplayStringFrom(object["skos:prefLabel"]);
             } else if (object["dcterms:title"]) {
-                return Thing.getDisplayStringFrom(object["dcterms:title"]);
+                return schema.Thing.getDisplayStringFrom(object["dcterms:title"]);
             }
         }
     }

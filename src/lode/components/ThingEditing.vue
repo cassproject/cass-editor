@@ -416,13 +416,13 @@ export default {
                 if (this.selectedCompetency.getName) {
                     return this.selectedCompetency.getName();
                 } else {
-                    return Thing.getDisplayStringFrom(this.selectedCompetency.name);
+                    return schema.Thing.getDisplayStringFrom(this.selectedCompetency.name);
                 }
             } else if (this.selectedCompetency) {
                 if (this.selectedCompetency["skos:prefLabel"]) {
-                    return Thing.getDisplayStringFrom(this.selectedCompetency["skos:prefLabel"]);
+                    return schema.Thing.getDisplayStringFrom(this.selectedCompetency["skos:prefLabel"]);
                 } else {
-                    return Thing.getDisplayStringFrom(this.selectedCompetency["dcterms:title"]);
+                    return schema.Thing.getDisplayStringFrom(this.selectedCompetency["dcterms:title"]);
                 }
             } else {
                 return '';
@@ -1328,7 +1328,7 @@ export default {
                         }
                     }
                     // If it's a langstring
-                    name = Thing.getDisplayStringFrom(name);
+                    name = schema.Thing.getDisplayStringFrom(name);
                     // If still object, display value
                     if (EcObject.isObject(name)) {
                         var langs = Object.keys(name);

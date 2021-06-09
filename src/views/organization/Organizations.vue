@@ -110,10 +110,10 @@ export default {
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];
-            if (Thing.getDisplayStringFrom(name).toLowerCase().indexOf("http") !== -1) {
-                return this.resolveNameFromUrl(Thing.getDisplayStringFrom(name));
+            if (schema.Thing.getDisplayStringFrom(name).toLowerCase().indexOf("http") !== -1) {
+                return this.resolveNameFromUrl(schema.Thing.getDisplayStringFrom(name));
             } else {
-                return Thing.getDisplayStringFrom(name);
+                return schema.Thing.getDisplayStringFrom(name);
             }
         }
     }

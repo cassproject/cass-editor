@@ -553,10 +553,10 @@ export default {
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];
-            if (Thing.getDisplayStringFrom(name).toLowerCase().indexOf("http") !== -1) {
-                return this.resolveNameFromUrl(Thing.getDisplayStringFrom(name));
+            if (schema.Thing.getDisplayStringFrom(name).toLowerCase().indexOf("http") !== -1) {
+                return this.resolveNameFromUrl(schema.Thing.getDisplayStringFrom(name));
             } else {
-                return Thing.getDisplayStringFrom(name);
+                return schema.Thing.getDisplayStringFrom(name);
             }
         },
         goToParentDirectory: function() {
@@ -1144,7 +1144,7 @@ export default {
             } else if (!name && this.object["skos:prefLabel"]) {
                 name = this.object["skos:prefLabel"];
             }
-            return Thing.getDisplayStringFrom(name);
+            return schema.Thing.getDisplayStringFrom(name);
         },
         objectDescription: function() {
             let description = this.object.description;
@@ -1153,7 +1153,7 @@ export default {
             } else if (!description && this.object["skos:definition"]) {
                 description = this.object["skos:definition"];
             }
-            return Thing.getDisplayStringFrom(description);
+            return schema.Thing.getDisplayStringFrom(description);
         },
         objectShortId: function() {
             return this.object.shortId();
