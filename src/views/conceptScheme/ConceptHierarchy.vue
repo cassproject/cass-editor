@@ -539,9 +539,9 @@ export default {
             this.once = true;
             var me = this;
             if (fromContainerId === toContainerId) {
-                var container = await EcConcept.get(toContainerId);
+                var container = await EcRepository.get(toContainerId);
                 var property = "skos:narrower";
-                if (container === null) {
+                if (container.type === "ConceptScheme") {
                     container = this.container;
                     property = "skos:hasTopConcept";
                 }
@@ -567,18 +567,18 @@ export default {
                 }, appError);
             } else {
                 var moveComp = await EcConcept.get(fromId);
-                var fromContainer = await EcConcept.get(fromContainerId);
+                var fromContainer = await EcRepository.get(fromContainerId);
                 var fromProperty = "skos:narrower";
                 var fromProperty2 = "skos:broader";
-                var toContainer = await EcConcept.get(toContainerId);
+                var toContainer = await EcRepository.get(toContainerId);
                 var toProperty = "skos:narrower";
                 var toProperty2 = "skos:broader";
-                if (fromContainer === null) {
+                if (fromContainer.type === "ConceptScheme") {
                     fromContainer = this.container;
                     fromProperty = "skos:hasTopConcept";
                     fromProperty2 = "skos:topConceptOf";
                 }
-                if (toContainer === null) {
+                if (toContainer.type === "ConceptScheme") {
                     toContainer = this.container;
                     toProperty = "skos:hasTopConcept";
                     toProperty2 = "skos:topConceptOf";
