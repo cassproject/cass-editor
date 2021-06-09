@@ -70,7 +70,8 @@ const state = {
         importText: '',
         csvColumns: [],
         csvRelationColumns: [],
-        csvRelationFile: null
+        csvRelationFile: null,
+        importModalParams: null
     }
 };
 const mutations = {
@@ -171,7 +172,8 @@ const mutations = {
             importText: '',
             csvColumns: [],
             csvRelationColumns: [],
-            csvRelationFile: null
+            csvRelationFile: null,
+            importModalParams: null
         };
     },
     importTransition: function(state, value) {
@@ -254,6 +256,9 @@ const mutations = {
     },
     csvRelationFile: function(state, val) {
         state.import.csvRelationFile = val;
+    },
+    importModalParams: function(state, val) {
+        state.import.importModalParams = val;
     },
     searchTerm: function(state, value) {
         state.frameworks.searchTerm = value;
@@ -443,6 +448,9 @@ const getters = {
     },
     importTargetColumn: state => {
         return state.import.importCsv.targetColumn;
+    },
+    importModalParams: state => {
+        return state.import.importModalParams;
     },
     searchTerm: state => {
         return state.frameworks.searchTerm;

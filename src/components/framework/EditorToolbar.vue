@@ -245,7 +245,7 @@ export default {
             this.$store.commit('app/showModal', {component: 'Share'});
         },
         showManageConfigurationModal() {
-            this.$store.commit('app/showModal', {component: 'Configuration'});
+            this.$store.commit('app/showModal', {component: 'FrameworkConfiguration'});
         },
         changeProperties(type) {
             let properties = this.properties;

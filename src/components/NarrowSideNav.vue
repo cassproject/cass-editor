@@ -43,7 +43,6 @@
         </div>
         <hr>
         <!-- END OPTION TO NAVIGATE BACK -->
-
         <!-- GENERAL MENU -->
         <div
             class="menu-label has-text-weight-bold">
@@ -179,7 +178,7 @@ export default {
 <style>
 #app-side-nav-bar {
     position: fixed;
-    z-index: 1001;
+    z-index: 39;
     top: 0;
     left:0;
     height: calc(100vh - 3.25rem);

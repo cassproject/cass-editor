@@ -1,7 +1,7 @@
 <template>
     <div
         id="configuration"
-        :class="[{'modal-card': view === 'dynamic-modal'}, {'section': view !== 'dynamic-modal'}]">
+        class="'section">
         <!-- busy modal-->
         <div
             class="modal"
@@ -13,187 +13,48 @@
                 </span>
             </div>
         </div>
-        <!-- configuration deletion confirm modal-->
-        <div
-            class="modal"
-            :class="[{'is-active': showConfirmDeleteConfigModal}]">
-            <div class="modal-background" />
-            <div class="modal-card">
-                <header class="modal-card-head has-background-primary">
-                    <p class="modal-card-title">
-                        <span class="title has-text-white">
-                            Delete Configuration?
-                        </span>
-                    </p>
-                    <button
-                        class="delete"
-                        @click="cancelConfigurationDelete"
-                        aria-label="close" />
-                </header>
-                <section class="modal-card-body">
-                    Are you sure you wish to delete the configuration <b>'{{ configToDelete.name }}'</b>?
-                </section>
-                <footer class="modal-card-foot">
-                    <div class="buttons is-spaced">
-                        <button
-                            class="button is-dark is-outlined"
-                            @click="cancelConfigurationDelete">
-                            Cancel
-                        </button>
-                        <button
-                            class="button is-outlined is-primary"
-                            @click="deleteConfiguration">
-                            Delete
-                        </button>
-                    </div>
-                </footer>
-            </div>
-        </div>
-        <!-- this configuration can't be selected when not logged in modal-->
-        <div
-            class="modal"
-            :class="[{'is-active': showMustBeLoggedInModal}]">
-            <div class="modal-background" />
-            <div class="modal-card">
-                <header class="modal-card-head has-background-primary">
-                    <p class="modal-card-title">
-                        <span class="title has-text-white">
-                            Not permitted
-                        </span>
-                    </p>
-                    <button
-                        class="delete"
-                        @click="showMustBeLoggedInModal=false"
-                        aria-label="close" />
-                </header>
-                <section class="modal-card-body">
-                    This configuration has default owners and readers defined. You must be logged in to apply this configuration.
-                </section>
-                <footer class="modal-card-foot">
-                    <div class="buttons is-spaced">
-                        <button
-                            class="button is-dark is-outlined"
-                            @click="showMustBeLoggedInModal=false">
-                            OK
-                        </button>
-                    </div>
-                </footer>
-            </div>
-        </div>
+        <delete-configuration-confirm
+            v-if="showConfirmDeleteConfigModal"
+            :name="configToDelete.name"
+            @close="cancelConfigurationDelete"
+            @confirm="deleteConfiguration"
+            @cancel="cancelConfigurationDelete" />
+        <configuration-not-permitted
+            v-if="showMustBeLoggedInModal"
+            @cancel="showMustBeLoggedInModal = false"
+            @close="showMustBeLoggedInModal=false" />
         <!-- set browser commit success modal-->
-        <div
-            class="modal"
-            :class="[{'is-active': showBrowserConfigSetModal}]">
-            <div class="modal-background" />
-            <div class="modal-card">
-                <header class="modal-card-head has-background-primary">
-                    <p class="modal-card-title">
-                        <span class="title has-text-white">
-                            Configuration set as browser default
-                        </span>
-                    </p>
-                    <div
-                        class="delete is-pulled-right"
-                        aria-label="close"
-                        @click="closeBrowserConfigSetModal" />
-                </header>
-                <section class="modal-card-body">
-                    <p>'<b>{{ defaultBrowserConfigName }}</b>' has been set as your browser's default CaSS Authoring Tool configuration.</p>
-                </section>
-                <footer class="modal-card-foot">
-                    <div class="buttons is-spaced">
-                        <button
-                            class="button is-dark is-outlined"
-                            @click="closeBrowserConfigSetModal">
-                            OK
-                        </button>
-                    </div>
-                </footer>
-            </div>
-        </div>
-        <header
-            v-if="view === 'dynamic-modal'"
-            class="modal-card-head has-background-primary">
-            <p class="modal-card-title">
-                Manage configuration
-            </p>
-            <button
-                class="delete"
-                @click="$store.commit('app/closeModal')"
-                aria-label="close" />
-        </header>
+        <configuration-set-success
+            :name="defaultBrowserConfigName"
+            v-if="showBrowserConfigSetModal"
+            @ok="showBrowserConfigSetModal = false"
+            @close="showBrowserConfigSetModal = false"
+            @cancel="closeBrowserConfigSetModal" />
         <!-- configuration editor content-->
         <section
-            :class="[{ 'container': view !== 'dynamic-modal'}, { 'modal-card-body': view === 'dynamic-modal'}]"
+            class="container"
             v-if="!configBusy">
             <div class="section">
-                <template v-if="view !== 'dynamic-modal'">
-                    <h3
-                        class="title">
-                        Configuration
-                    </h3>
-                    <p v-if="configViewMode.equals('list')">
-                        Configurations control the way your frameworks appear in the editor, as well as what properties, relationships,
-                        and in some cases value types of properties and relationships you can add to your framework. If a browser configuration
-                        is not set then the system will default to your instance default. If you are the configuration administrator you will be
-                        able to manage the property settings and change which instance is the default.  Otherwise contact your CAT administrator.
-                    </p>
-                </template>
-                <p v-if="view === 'dynamic-modal'">
-                    Choose a configuration to apply to this framework below.  You can view and manage details about
-                    your available configurations in <router-link to="/config">
-                        configuration management
-                    </router-link>.
+                <h3
+                    class="title">
+                    Configuration
+                </h3>
+                <p v-if="configViewMode.equals('list')">
+                    Configurations control the way your frameworks appear in the editor, as well as what properties, relationships,
+                    and in some cases value types of properties and relationships you can add to your framework. If a browser configuration
+                    is not set then the system will default to your instance default. If you are the configuration administrator you will be
+                    able to manage the property settings and change which instance is the default.  Otherwise contact your CAT administrator.
                 </p>
             </div>
-            <div
-                v-if="configViewMode.equals('list')"
-                class="table-container">
-                <table class="table is-fullwidth">
-                    <thead>
-                        <tr>
-                            <th><abbr title="Name">name</abbr></th>
-                            <th v-if="view !=='dynamic-modal'">
-                                <abbr title="Description">description</abbr>
-                            </th>
-                            <th v-if="view !=='dynamic-modal'">
-                                <abbr title="Instance Default">instance default</abbr>
-                            </th>
-                            <th v-if="view !=='dynamic-modal'">
-                                <abbr title="Browser Default" />browser default
-                            </th>
-                            <th v-else>
-                                <abbr title="Framework Default">framework default</abbr>
-                            </th>
-                            <th v-if="view !=='dynamic-modal'">
-                                <abbr title="" />view/manage/delete
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <configuration-list-item
-                            v-for="config in configList"
-                            :id="config.id"
-                            :view="view"
-                            :key="config"
-                            :name="config.name"
-                            :isDefault="config.isDefault"
-                            :description="config.description"
-                            :isOwned="config.isOwned"
-                            :defaultBrowserConfigId="localDefaultBrowserConfigId"
-                            :defaultFrameworkConfigId="frameworkConfigId"
-                            @set-browser-default="setConfigAsBrowserDefault"
-                            @remove-browser-default-config="removeConfigAsBrowserDefault"
-                            @set-framework-default="setConfigAsFrameworkDefault"
-                            @show-details="showConfigDetails"
-                            @show-delete="showDeleteConfirm" />
-                    </tbody>
-                    <br>
-                </table>
-            </div>
+            <!-- configuration list -->
+            <configuration-list
+                view="editor"
+                @showDetails="showConfigDetails($event)"
+                :configList="configList"
+                v-if="configViewMode.equals('list')" />
             <div
                 class="button is-outlined is-primary is-pulled-right"
-                v-if="configViewMode.equals('list') && view !== 'dynamic-modal'"
+                v-if="configViewMode.equals('list')"
                 @click="createNewConfig">
                 <span class="icon">
                     <i class="fa fa-plus" />
@@ -205,6 +66,7 @@
             <div v-if="configViewMode.equals('detail')">
                 <configuration-details
                     :config="currentConfig"
+                    :configList="configList"
                     :readOnly="currentConfigIsReadOnly"
                     :defaultConfigId="defaultConfigId"
                     :defaultBrowserConfig="localDefaultBrowserConfigId"
@@ -215,38 +77,85 @@
                     @back="backFromEditCurrentConfig" />
             </div>
         </section>
-        <footer
-            v-if="view === 'dynamic-modal'"
-            class="modal-card-foot hasbackground-light">
-            <div
-                @click="closeModal"
-                class="button is-pulled-right">
-                done
-            </div>
-        </footer>
     </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import ConfigurationListItem from '../../components/configuration/ConfigurationListItem';
-import ConfigurationDetails from "../../components/configuration/ConfigurationDetails";
-import {cassUtil} from '../../mixins/cassUtil';
+import ConfigurationDetails from "@/components/configuration/ConfigurationDetails";
+import {cassUtil} from '@/mixins/cassUtil';
+import {configuration} from '@/mixins/configuration';
+import DeleteConfigurationConfirm from '@/components/modalContent/DeleteConfigurationConfirm.vue';
+import ConfigurationNotPermitted from '@/components/modalContent/ConfigurationNotPermitted.vue';
+import ConfigurationSetSuccess from '@/components/modalContent/ConfigurationSetSuccess.vue';
+import ConfigurationList from '@/components/configuration/ConfigurationList.vue';
+import {mapGetters} from 'vuex';
 
 export default {
-    mixins: [cassUtil],
-    props: {
-        view: {
-            default: '',
-            type: String
-        }
-    },
     name: 'ConfigurationEditor',
-    components: {
-        ConfigurationDetails,
-        ConfigurationListItem
-    },
+    mixins: [cassUtil, configuration],
     computed: {
+        ...mapGetters({
+            CONFIG_SEARCH_SIZE: 'configuration/CONFIG_SEARCH_SIZE',
+            DEFAULT_CONFIGURATION_TYPE: 'configuration/DEFAULT_CONFIGURATION_TYPE',
+            DEFAULT_CONFIGURATION_CONTEXT: 'configuration/DEFAULT_CONFIGURATION_CONTEXT',
+            LANG_STRING_RANGE: 'configuration/LANG_STRING_RANGE',
+            DEFAULT_HEADING: 'configuration/DEFAULT_HEADING'
+        }),
+        configViewMode() {
+            return this.$store.getters['configuration/configView'];
+        },
+        defaultBrowserConfigName: {
+            get() {
+                return this.$store.getters['configuration/defaultBrowserConfigName'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setDefaultBrowserConfigName', val);
+            }
+        },
+        showConfirmDeleteConfigModal: {
+            get() {
+                return this.$store.getters['configuration/showConfirmDeleteConfigModal'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setShowConfirmDeleteConfigModal', val);
+            }
+        },
+        showBrowserConfigSetModal: {
+            get() {
+                return this.$store.getters['configuration/showBrowserConfigSetModal'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setShowBrowserConfigSetModal', val);
+            }
+        },
+        showMustBeLoggedInModal: {
+            get() {
+                return this.$store.getters['configuration/showMustBeLoggedInModal'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setShowMustBeLoggedInModal', val);
+            }
+        },
+        configToDelete: {
+            get() {
+                return this.$store.getters['configuration/configToDelete'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setConfigToDelete', val);
+            }
+        },
+        currentConfig: {
+            get() {
+                return this.$store.getters['configuration/currentConfig'];
+            },
+            set(val) {
+                this.$store.commit('configuration/setCurrentConfig', val);
+            }
+        },
+        localDefaultBrowserConfigId() {
+            return this.$store.getters['configuration/localDefaultBrowserConfig'];
+        },
         currentConfigIsReadOnly: function() {
             if (!this.currentConfig || !this.currentConfig.isOwned) return true;
             else if (this.currentConfig.isOwned) return false;
@@ -254,36 +163,21 @@ export default {
         }
     },
     data: () => ({
-        CONFIG_SEARCH_SIZE: 10000,
-        DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
-        DEFAULT_CONFIGURATION_TYPE: 'Configuration',
-        LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
-        DEFAULT_HEADING: "General",
-        configViewMode: "list",
         configBusy: false,
-        currentConfig: {},
         configList: [],
         complexConfigObject: {},
         defaultConfigId: null,
-        showBrowserConfigSetModal: false,
-        defaultBrowserConfigName: '',
-        localDefaultBrowserConfigId: '',
         frameworkConfigId: '',
-        configToDelete: {},
-        showConfirmDeleteConfigModal: false,
-        showMustBeLoggedInModal: false,
         enforceHeadings: false
     }),
+    components: {
+        ConfigurationDetails,
+        DeleteConfigurationConfirm,
+        ConfigurationNotPermitted,
+        ConfigurationSetSuccess,
+        ConfigurationList
+    },
     methods: {
-        closeModal: function() {
-            this.$store.commit('app/closeModal');
-        },
-        showListView() {
-            this.configViewMode = "list";
-        },
-        showDetailView() {
-            this.configViewMode = "detail";
-        },
         handleDeleteConfigurationSuccess() {
             appLog("Config delete success");
             this.configToDelete = {};
@@ -309,29 +203,12 @@ export default {
             this.configToDelete = {};
             this.showConfirmDeleteConfigModal = false;
         },
-        setConfigToDelete(configId) {
-            this.configToDelete = this.getConfigById(configId);
-        },
-        showDeleteConfirm(configId) {
-            this.setConfigToDelete(configId);
-            this.showConfirmDeleteConfigModal = true;
-        },
-        showConfigDetails(configId) {
-            this.setCurrentConfig(configId);
-            this.showDetailView();
-        },
         backFromEditCurrentConfig() {
             this.showListView();
-            this.currentConfig = {};
+            this.$store.commit('configuration/setCurrentConfig', {});
         },
         generateCustomPropertyNameId(customProp) {
             return customProp.context + customProp.propertyName;
-        },
-        generateCustomPropertyContextAndNameFromId(customPropId) {
-            let retObj = {};
-            retObj.context = customPropId.substr(0, customPropId.lastIndexOf("/") + 1);
-            retObj.name = customPropId.substr(customPropId.lastIndexOf("/") + 1);
-            return retObj;
         },
         addCustomPropertiesToPriorityArray(customProperties, priorityArray, priority) {
             for (let prop of customProperties) {
@@ -738,17 +615,6 @@ export default {
             this.addDefaultPermissionConfigToObject(cco);
             this.complexConfigObject = cco;
         },
-        saveConfigToRepositorySuccess(msg) {
-            appLog("Config save success");
-            this.buildConfigList();
-            this.configBusy = false;
-            this.showListView();
-        },
-        saveConfigToRepositoryFailure(msg) {
-            appLog("Config save failure: " + msg);
-            this.configBusy = false;
-            this.showListView();
-        },
         saveCurrentConfig(enforcedLevels, defaultOwners, defaultReaders, defaultCommenters) {
             appLog("saveCurrentConfig: ");
             if (enforcedLevels && enforcedLevels.length > 0) {
@@ -764,10 +630,25 @@ export default {
             this.configBusy = true;
             EcRepository.save(this.complexConfigObject, this.saveConfigToRepositorySuccess, this.saveConfigToRepositoryFailure);
         },
+        saveConfigToRepositorySuccess(msg) {
+            appLog("Config save success");
+            this.buildConfigList();
+            this.configBusy = false;
+            this.showListView();
+        },
+        saveConfigToRepositoryFailure(msg) {
+            appLog("Config save failure: " + msg);
+            this.configBusy = false;
+            this.showListView();
+        },
         cancelEditCurrentConfig() {
             this.buildConfigList();
             this.showListView();
             this.currentConfig = {};
+        },
+        createNewConfig() {
+            this.currentConfig = this.generateNewConfigObject();
+            this.showDetailView();
         },
         generateNewConfigObject() {
             let newConfigObj = {};
@@ -872,363 +753,8 @@ export default {
             newConfigObj.defaultCommenters = [];
             return newConfigObj;
         },
-        createNewConfig() {
-            this.currentConfig = this.generateNewConfigObject();
-            this.showDetailView();
-        },
-        getConfigById(configId) {
-            for (let c of this.configList) {
-                if (c.id.equals(configId)) {
-                    return c;
-                }
-            }
-            return null;
-        },
-        setCurrentConfig(configId) {
-            this.currentConfig = this.getConfigById(configId);
-        },
-        sortConfigList() {
-            this.configList.sort(function(c1, c2) {
-                if (c1.isOwned !== c2.isOwned) {
-                    if (c2.isOwned) return 1;
-                    else return -1;
-                } else {
-                    if (c1.name > c2.name) return 1;
-                    else if (c2.name > c1.name) return -1;
-                    else return 0;
-                }
-            });
-        },
-        isCustomPropertyKey(propertyParent, propertyKey) {
-            if (propertyKey.equals('headings')) return false;
-            else if (propertyKey.equals('primaryProperties')) return false;
-            else if (propertyKey.equals('secondaryProperties')) return false;
-            else if (propertyKey.equals('tertiaryProperties')) return false;
-            else if (propertyKey.equals('@id')) return false;
-            else if (propertyKey.equals('http://schema.org/name')) return false;
-            else if (propertyKey.equals('http://schema.org/description')) return false;
-            else if (propertyParent.equalsIgnoreCase('competency') && propertyKey.equals('http://purl.org/dc/terms/type')) return false;
-            else if (propertyParent.equalsIgnoreCase('competency') && propertyKey.equals('relationshipsHeading')) return false;
-            else if (propertyParent.equalsIgnoreCase('competency') && propertyKey.equals('relationshipsPriority')) return false;
-            else return true;
-        },
-        generateSimpleCustomPropertyObject(ccpo) {
-            let scpo = {};
-            let contextNameObj = this.generateCustomPropertyContextAndNameFromId(ccpo["@id"]);
-            scpo.context = contextNameObj.context;
-            scpo.propertyName = contextNameObj.name;
-            scpo.range = ccpo["http://schema.org/rangeIncludes"][0]["@id"];
-            scpo.description = ccpo["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            scpo.label = ccpo["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-            scpo.priority = ccpo["priority"];
-            if (ccpo["heading"]) scpo.heading = ccpo["heading"];
-            else scpo.heading = "";
-            if (ccpo["max"] && (ccpo["max"] === 1 || ccpo["max"] === '1')) scpo.allowMultiple = false;
-            else scpo.allowMultiples = true;
-            if (ccpo["onePerLanguage"] && (ccpo["onePerLanguage"] === 'true' || ccpo["max"] === true)) scpo.onePerLanguage = true;
-            else scpo.onePerLanguage = false;
-            scpo.required = this.getBooleanValue(ccpo["isRequired"]);
-            scpo.permittedValues = [];
-            if (ccpo.options && ccpo.options.length > 0) {
-                for (let pv of ccpo.options) {
-                    let pvo = {};
-                    pvo.display = pv.display;
-                    pvo.value = pv.val;
-                    scpo.permittedValues.push(pvo);
-                }
-            }
-            return scpo;
-        },
-        buildSimpleConfigObjectFrameworkData(simpleConfigObj, complexConfigObj) {
-            let cfo = complexConfigObj["frameworkConfig"];
-            simpleConfigObj.fwkIdLabel = cfo["@id"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-            simpleConfigObj.fwkIdDescription = cfo["@id"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            simpleConfigObj.fwkIdPriorty = cfo["@id"]["priority"];
-            let idHeading = cfo["@id"]["heading"];
-            if (idHeading) simpleConfigObj.fwkIdHeading = idHeading.trim();
-            else simpleConfigObj.fwkIdHeading = "";
-            simpleConfigObj.fwkNameLabel = cfo["http://schema.org/name"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-            simpleConfigObj.fwkNameDescription = cfo["http://schema.org/name"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            let nameHeading = cfo["http://schema.org/name"]["heading"];
-            if (nameHeading) simpleConfigObj.fwkNameHeading = nameHeading.trim();
-            else simpleConfigObj.fwkNameHeading = "";
-            simpleConfigObj.fwkDescLabel = cfo["http://schema.org/description"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-            simpleConfigObj.fwkDescDescription = cfo["http://schema.org/description"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            simpleConfigObj.fwkDescPriority = cfo["http://schema.org/description"]["priority"];
-            simpleConfigObj.fwkDescRequired = this.getBooleanValue(cfo["http://schema.org/description"]["isRequired"]);
-            let descHeading = cfo["http://schema.org/description"]["heading"];
-            if (descHeading) simpleConfigObj.fwkDescHeading = descHeading.trim();
-            else simpleConfigObj.fwkDescHeading = "";
-            simpleConfigObj.fwkCustomProperties = [];
-            let propertyKeys = Object.keys(cfo);
-            for (let pk of propertyKeys) {
-                if (this.isCustomPropertyKey('framework', pk)) {
-                    simpleConfigObj.fwkCustomProperties.push(this.generateSimpleCustomPropertyObject(cfo[pk]));
-                }
-            }
-        },
-        buildSimpleConfigObjectCompetencyData(simpleConfigObj, complexConfigObj) {
-            let cco = complexConfigObj["competencyConfig"];
-            let relHeading = cco["relationshipsHeading"];
-            if (relHeading) simpleConfigObj.relationshipsHeading = relHeading.trim();
-            else simpleConfigObj.relationshipsHeading = "";
-            let relPriority = cco["relationshipsPriority"];
-            if (relPriority) simpleConfigObj.relationshipsPriority = relPriority;
-            else simpleConfigObj.relationshipsPriority = "tertiary";
-            simpleConfigObj.compIdLabel = cco["@id"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-            simpleConfigObj.compIdDescription = cco["@id"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            simpleConfigObj.compIdPriorty = cco["@id"]["priority"];
-            let idHeading = cco["@id"]["heading"];
-            if (idHeading) simpleConfigObj.compIdHeading = idHeading.trim();
-            else simpleConfigObj.compIdHeading = "";
-            simpleConfigObj.compNameLabel = cco["http://schema.org/name"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-            simpleConfigObj.compNameDescription = cco["http://schema.org/name"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            let nameHeading = cco["http://schema.org/name"]["heading"];
-            if (nameHeading) simpleConfigObj.compNameHeading = nameHeading.trim();
-            else simpleConfigObj.compNameHeading = "";
-            simpleConfigObj.compDescLabel = cco["http://schema.org/description"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-            simpleConfigObj.compDescDescription = cco["http://schema.org/description"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            simpleConfigObj.compDescPriority = cco["http://schema.org/description"]["priority"];
-            simpleConfigObj.compDescRequired = this.getBooleanValue(cco["http://schema.org/description"]["isRequired"]);
-            let descHeading = cco["http://schema.org/description"]["heading"];
-            if (descHeading) simpleConfigObj.compDescHeading = descHeading.trim();
-            else simpleConfigObj.compDescHeading = "";
-            let ccto = cco["http://purl.org/dc/terms/type"];
-            simpleConfigObj.compTypeLabel = ccto["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-            simpleConfigObj.compTypeDescription = ccto["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            simpleConfigObj.compTypePriority = ccto["priority"];
-            if (ccto["heading"]) simpleConfigObj.compTypeHeading = ccto["heading"];
-            else simpleConfigObj.compTypeHeading = "";
-            simpleConfigObj.compTypeRequired = this.getBooleanValue(ccto["isRequired"]);
-            simpleConfigObj.compEnforceTypes = false;
-            simpleConfigObj.compEnforcedTypes = [];
-            if (ccto.options && ccto.options.length > 0) {
-                simpleConfigObj.compEnforceTypes = true;
-                for (let et of ccto.options) {
-                    let eto = {};
-                    eto.display = et.display;
-                    eto.value = et.val;
-                    simpleConfigObj.compEnforcedTypes.push(eto);
-                }
-            }
-            simpleConfigObj.compCustomProperties = [];
-            let propertyKeys = Object.keys(cco);
-            for (let pk of propertyKeys) {
-                if (this.isCustomPropertyKey('competency', pk)) {
-                    simpleConfigObj.compCustomProperties.push(this.generateSimpleCustomPropertyObject(cco[pk]));
-                }
-            }
-        },
-        buildSimpleConfigObjectLevelData(simpleConfigObj, complexConfigObj) {
-            simpleConfigObj.compAllowLevels = false;
-            simpleConfigObj.levelLabel = '';
-            simpleConfigObj.levelDescription = '';
-            simpleConfigObj.enforceLevelValues = false;
-            simpleConfigObj.enforcedLevelValues = [];
-            simpleConfigObj.levelPriority = 'secondary';
-            simpleConfigObj.levelHeading = '';
-            if (complexConfigObj["levelsConfig"] && complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"]) {
-                let lo = complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"];
-                simpleConfigObj.compAllowLevels = true;
-                if (lo["priority"]) simpleConfigObj.levelPriority = lo["priority"];
-                else simpleConfigObj.levelPriority = "secondary";
-                if (lo["heading"]) simpleConfigObj.levelHeading = lo["heading"];
-                else simpleConfigObj.levelHeading = "";
-                simpleConfigObj.levelLabel = lo["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-                simpleConfigObj.levelDescription = lo["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-                if (complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"]["options"]) {
-                    let complexLevelsEnforced = complexConfigObj["levelsConfig"]["https://schema.cassproject.org/0.4/Level"]["options"];
-                    if (complexLevelsEnforced.length > 0) {
-                        simpleConfigObj.enforceLevelValues = true;
-                        for (let cLvl of complexLevelsEnforced) {
-                            simpleConfigObj.enforcedLevelValues.push(cLvl["val"]);
-                        }
-                    }
-                }
-            }
-        },
-        buildSimpleRelationshipConfigObject(simpleConfigObj, complexRelationshipObj, relationshipName, defaultLabel) {
-            simpleConfigObj.relationships[relationshipName] = {};
-            if (complexRelationshipObj[relationshipName]) {
-                simpleConfigObj.relationships[relationshipName].label = complexRelationshipObj[relationshipName]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-                simpleConfigObj.relationships[relationshipName].enabled = true;
-            } else {
-                simpleConfigObj.relationships[relationshipName].label = defaultLabel;
-                simpleConfigObj.relationships[relationshipName].enabled = false;
-            }
-        },
-        buildSimpleConfigObjectRelationshipData(simpleConfigObj, complexConfigObj) {
-            let cro = complexConfigObj["relationshipConfig"];
-            simpleConfigObj.relationships = {};
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isEnabledBy", "is enabled by");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "requires", "requires");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "desires", "desires");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "narrows", "narrows");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isRelatedTo", "is related to");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isEquivalentTo", "is equivalent to");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "broadens", "broadens");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "majorRelated", "is majorly related to");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "minorRelated", "is minorly related to");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isSimilarTo", "is similar to");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isPartiallySameAs", "is partially the same as");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "enables", "enables");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "hasChild", "has child");
-            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isChildOf", "is child of");
-        },
-        buildSimpleConfigObjectAlignmentData(simpleConfigObj, complexConfigObj) {
-            let caa = complexConfigObj["alignConfig"];
-            simpleConfigObj.alignments = {};
-            simpleConfigObj.alignments.teaches = caa.includes("teaches");
-            simpleConfigObj.alignments.assesses = caa.includes("assesses");
-            simpleConfigObj.alignments.requires = caa.includes("requires");
-            simpleConfigObj.alignments.desires = caa.includes("desires");
-        },
-        buildSimpleConfigDefaultPermissionData(simpleConfigObj, complexConfigObj) {
-            if (complexConfigObj["defaultObjectOwners"]) {
-                simpleConfigObj.defaultOwners = complexConfigObj["defaultObjectOwners"];
-            } else simpleConfigObj.defaultOwners = [];
-            if (complexConfigObj["defaultObjectReaders"]) {
-                simpleConfigObj.defaultReaders = complexConfigObj["defaultObjectReaders"];
-            } else simpleConfigObj.defaultReaders = [];
-            if (complexConfigObj["defaultCommenters"]) {
-                simpleConfigObj.defaultCommenters = complexConfigObj["defaultCommenters"];
-            } else simpleConfigObj.defaultCommenters = [];
-        },
-        generateSimpleConfigObject(cco) {
-            let simpleConfigObj = {};
-            simpleConfigObj.id = cco.shortId();
-            if (this.isObjectOwnerless(cco) || this.doesAnyIdentityOwnObject(cco)) simpleConfigObj.isOwned = true;
-            else simpleConfigObj.isOwned = false;
-            simpleConfigObj.isNew = false;
-            simpleConfigObj.name = cco.getName();
-            simpleConfigObj.description = cco.getDescription();
-            simpleConfigObj.isDefault = this.getBooleanValue(cco.isDefault);
-            if (simpleConfigObj.isDefault) this.defaultConfigId = simpleConfigObj.id;
-            this.buildSimpleConfigObjectFrameworkData(simpleConfigObj, cco);
-            this.buildSimpleConfigObjectCompetencyData(simpleConfigObj, cco);
-            this.buildSimpleConfigObjectLevelData(simpleConfigObj, cco);
-            this.buildSimpleConfigObjectRelationshipData(simpleConfigObj, cco);
-            this.buildSimpleConfigObjectAlignmentData(simpleConfigObj, cco);
-            this.buildSimpleConfigDefaultPermissionData(simpleConfigObj, cco);
-            return simpleConfigObj;
-        },
-        searchRepositoryForConfigsSuccess(ecRemoteLda) {
-            appLog("Config search success: ");
-            appLog(ecRemoteLda);
-            this.configList = [];
-            for (let ecrld of ecRemoteLda) {
-                let t = new Thing();
-                t.copyFrom(ecrld);
-                this.configList.push(this.generateSimpleConfigObject(t));
-            }
-            this.sortConfigList();
-            this.configBusy = false;
-        },
-        searchRepositoryForConfigsFailure(msg) {
-            appLog("Config search failure: " + msg);
-            this.configBusy = false;
-        },
-        buildConfigListFromRepository() {
-            let paramObj = {};
-            paramObj.size = this.CONFIG_SEARCH_SIZE;
-            window.repo.searchWithParams("@type:Configuration", paramObj, null, this.searchRepositoryForConfigsSuccess, this.searchRepositoryForConfigsFailure);
-        },
-        buildConfigList() {
-            this.configBusy = true;
-            this.complexConfigObject = {};
-            this.buildConfigListFromRepository();
-        },
         closeBrowserConfigSetModal() {
-            this.showBrowserConfigSetModal = false;
-        },
-        setConfigAsBrowserDefault(configId) {
-            let bdc = this.getConfigById(configId);
-            this.setDefaultBrowserConfigId(configId);
-            this.defaultBrowserConfigName = bdc.name;
-            this.localDefaultBrowserConfigId = configId;
-            this.showBrowserConfigSetModal = true;
-        },
-        removeConfigAsBrowserDefault(configId) {
-            this.removeDefaultBrowserConfig();
-            this.defaultBrowserConfigName = '';
-            this.localDefaultBrowserConfigId = '';
-            this.showBrowserConfigSetModal = false;
-        },
-        setConfigAsFrameworkDefault(configId) {
-            let me = this;
-            let f = this.$store.getters['editor/framework'];
-            let previousConfig = f.configuration;
-            f.configuration = configId;
-            if (!previousConfig) {
-                f = this.setOwnersAndReaders(f);
-            }
-            if (f) {
-                this.frameworkConfigId = configId;
-                window.repo.saveTo(f, function() {
-                    me.$store.commit('editor/framework', EcRepository.getBlocking(f.shortId()));
-                }, function() {});
-            }
-        },
-        setOwnersAndReaders(framework) {
-            let userIdentity = null;
-            if (EcIdentityManager.ids.length > 0) {
-                userIdentity = EcIdentityManager.ids[0].ppk.toPk();
-            }
-            let config = EcRepository.getBlocking(framework.configuration);
-            let owners = config.defaultObjectOwners;
-            let readers = config.defaultObjectReaders;
-            if (owners.length > 0 || readers.length > 0) {
-                if (userIdentity) {
-                    framework.addOwner(userIdentity);
-                } else {
-                    this.showMustBeLoggedInModal = true;
-                    return false;
-                }
-            }
-            for (let i = 0; i < owners.length; i++) {
-                framework.addOwner(EcPk.fromPem(owners[i]));
-            }
-            let compsAndRelations = framework.competency ? framework.competency : [];
-            if (framework.relation) {
-                compsAndRelations = compsAndRelations.concat(framework.relation);
-            }
-            new EcAsyncHelper().each(compsAndRelations, function(id, done) {
-                EcRepository.get(id, function(obj) {
-                    if (owners.length > 0 || readers.length > 0) {
-                        if (userIdentity) {
-                            obj.addOwner(userIdentity);
-                        }
-                    }
-                    for (let i = 0; i < owners.length; i++) {
-                        obj.addOwner(EcPk.fromPem(owners[i]));
-                    }
-                    if (readers.length > 0) {
-                        for (let i = 0; i < readers.length; i++) {
-                            obj.addReader(EcPk.fromPem(readers[i]));
-                        }
-                        obj = EcEncryptedValue.toEncryptedValue(obj);
-                    }
-                    window.repo.saveTo(obj, done, done);
-                }, done);
-            }, function(competencyIds) {
-            });
-            if (readers.length > 0) {
-                for (let i = 0; i < readers.length; i++) {
-                    framework.addReader(EcPk.fromPem(readers[i]));
-                }
-                framework = EcEncryptedValue.toEncryptedValue(framework);
-            }
-            return framework;
-        }
-    },
-    updated() {
-        this.localDefaultBrowserConfigId = this.getDefaultBrowserConfigId();
-    },
-    mounted() {
-        this.buildConfigList();
-        this.localDefaultBrowserConfigId = this.getDefaultBrowserConfigId();
-        if (this.$store.getters['editor/framework'] && this.$store.getters['editor/framework'].configuration) {
-            this.frameworkConfigId = this.$store.getters['editor/framework'].configuration;
+            this.$store.commit('configuration/setShowConfirmDeleteConfigModal', false);
         }
     }
 };

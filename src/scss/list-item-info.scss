@@ -1,4 +1,3 @@
-@import './variables.scss';
 
 #right-side-bar {
     overflow-y: hidden;
@@ -32,7 +31,7 @@
     z-index: 100;
     position: absolute;
     top: 0;
-    background-color: $light;
+    background-color: var(--light-color);
     border-bottom: solid 1px black;
     width: 100%;
     right: 0;
@@ -45,10 +44,6 @@
     overflow-y: auto;;
     background-color: light;
 }
-.right-aside-bar__title {
-
-}
-
 .cass--list-item-info--search-result {
     margin-top: 1rem;
 }
@@ -65,7 +60,7 @@
     height: 44px;
     font-size: .9rem;
     line-height: 44px;
-    border-bottom: solid 1px rgba($dark, .3);
+    border-bottom: solid 1px rgba(var(--dark-grey-rgb), .3);
     vertical-align: middle;
 }
 .cass--list-item-info--search-results--li-text {
@@ -75,8 +70,8 @@
     width: 280px;
 }
 .cass--list-item-info--search-result--li:hover {
-    background-color: $light;
-    color: $dark;
+    background-color: var(--light);
+    color: var(--dark-grey-color);
 }
 .cass__right-side--details-list-section {
     height: fit-content;
@@ -110,7 +105,7 @@
     font-weight: 700;
     font-size: 1rem;
     padding: .5rem;
-    border-bottom: solid 1px rgba($cass-black, .7);
+    border-bottom: solid 1px rgba(var(--dark-grey-rgb), .7);
     width: 100%;
     text-align: left;
     border: none;
@@ -119,7 +114,7 @@
 }
 .cass__right-side--accordion.active,
 .cass__right-side--accordion:hover {
-    background-color: $dark;
+    background-color: var(--dark-grey-color);
     color: white;
 }
 

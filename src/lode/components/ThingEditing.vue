@@ -80,11 +80,10 @@
                             :profile="profile"
                             @select="select"
                             :editingThing="editingThing"
-                            @delete-object="deleteObject"
                             :validate="validate"
                             :view="view"
                             @validated="validated"
-                            @invalid="validate=false" />
+                            @invalid="validate=false; errorValidating=true;" />
                         <slot name="frameworkTags" />
                     </template>
                     <template v-else-if="showPossibleProperties && possibleProperties[heading]">
@@ -100,11 +99,10 @@
                             :profile="profile"
                             @select="select"
                             :editingThing="editingThing"
-                            @delete-object="deleteObject"
                             :validate="validate"
                             :view="view"
                             @validated="validated"
-                            @invalid="validate=false" />
+                            @invalid="validate=false; errorValidating=true;" />
                     </template>
                     <template v-else-if="showViewProperties && viewProperties[heading]">
                         <!-- here we have the expandable / does not contain value for properties -->
@@ -119,11 +117,10 @@
                             :profile="profile"
                             @select="select"
                             :editingThing="editingThing"
-                            @delete-object="deleteObject"
                             :validate="validate"
                             :view="view"
                             @validated="validated"
-                            @invalid="validate=false" />
+                            @invalid="validate=false; errorValidating=true;" />
                     </template>
                 </div>
             </section>
@@ -203,7 +200,7 @@
                     </div>
                     <!-- export -->
                     <div
-                        v-if="exportOptions && !isSearching"
+                        v-if="!isSearching && shortType !== 'Level'"
                         @click.stop="showModal('export')"
                         :title="'Export ' + shortType"
                         class="button is-outlined is-info">
@@ -213,7 +210,7 @@
                     </div>
 
                     <div
-                        v-if="!showAddPropertyContent && (view === 'framework' || view === 'concept') && hasAdditionalProperty"
+                        v-if="!showAddPropertyContent && (view === 'framework' || view === 'concept') && hasAdditionalProperty && !errorValidating"
                         @click="onClickToAddProperty"
                         class="button is-outlined is-primary">
                         <span class="icon">
@@ -296,7 +293,8 @@
 import {mapState} from 'vuex';
 import Property from './Property.vue';
 import AddProperty from './AddProperty.vue';
-import Search from '@/components/competency/Search.vue';
+import Search from '@/components/framework/Search.vue';
+// import SearchModal from '@/components/modalContent/SearchModal.vue';
 import common from '@/mixins/common.js';
 export default {
     // Thing represents a JSON-LD object. Does not have to be based on http://schema.org/Thing.
@@ -315,7 +313,6 @@ export default {
         parentNotEditable: Boolean,
         // Application profile used to constrain and respecify properties that are to be made editable.
         profile: Object,
-        exportOptions: Array,
         highlightList: Array,
         childrenExpanded: {
             type: Boolean,
@@ -339,6 +336,7 @@ export default {
         Property,
         AddProperty,
         Search
+        // SearchModal
     },
     mixins: [ common ],
     data: function() {
@@ -370,7 +368,8 @@ export default {
             errorMessage: [],
             idsNotPermittedInSearch: [],
             addAnother: false,
-            disableDoneEditingButton: false
+            disableDoneEditingButton: false,
+            errorValidating: null
         };
     },
     created: function() {
@@ -926,102 +925,34 @@ export default {
             this.hoverClass = '';
         },
         /*
-         * initialize modal with params this depends on
-         * ./plugins/modalPlugin.js;
-         * can possibly be moved to a mixin
-         * and ./components/CassModal.vue;
-         * can further breakout if we decide to use vuex // plugin is global
-         * this modal depends on cass-editor repo, not sure what we
-         * should do here to future proof the LODE repo. Might be a better solution.
-         */
+        Do not use plugin modal anymore, this has been updated for
+        template based modals
+        */
         showModal(val) {
-            let params = {};
             var me = this;
             if (val === 'deleteObject') {
-                if (this.obj && this.shortType === "Competency") {
-                    repo.search("@type:Framework AND competency:\"" + this.obj.shortId() + "\"", function(f) {}, function(fs) {
-                        var numFrameworks = fs.length;
-                        repo.search("@type:Relation AND (source:\"" + me.obj.shortId() + "\" OR target:\"" + me.obj.shortId() + "\")", function(r) {}, function(rs) {
-                            var numRelations = rs.length;
-                            params = {
-                                type: val,
-                                title: "Delete competency",
-                                text: "Warning! This action deletes the competency in its entirety. This includes " + numRelations + " relationship(s) and " + numFrameworks +
-                                " framework(s). If you just want to remove the competency from the framework, use the \"remove\" button.",
-                                onConfirm: () => {
-                                    return me.deleteObject();
-                                }
-                            };
-                            me.$modal.show(params);
-                        }, function() {});
-                    }, function() {});
+                if (this.shortType === 'Competency') {
+                    this.$store.commit('app/showModal', {component: 'DeleteCompetencyConfirm'});
                 } else if (this.shortType === "Level") {
-                    repo.search("@type:Framework AND level:\"" + this.originalThing.shortId() + "\"", function(level) {}, function(levels) {
-                        var numFrameworks = levels.length;
-                        params = {
-                            type: val,
-                            title: "Delete level",
-                            text: "Warning! This action deletes the level in its entirety. This includes " + numFrameworks + " framework(s).",
-                            onConfirm: () => {
-                                return me.deleteObject();
-                            }
-                        };
-                        me.$modal.show(params);
-                    }, function() {});
-                } else if (this.shortType === "Framework" || this.shortType === "ConceptScheme" || this.shortType === "Concept") {
-                    let type = this.shortType.toLowerCase();
-                    if (type === "conceptscheme") {
-                        type = "concept scheme";
-                    }
-                    params = {
-                        type: val,
-                        title: "Delete " + type,
-                        text: "Warning! This action deletes the " + type + " in its entirety.",
-                        onConfirm: () => {
-                            return me.deleteObject();
-                        }
-                    };
-                    me.$modal.show(params);
+                    this.$store.commit('app/showModal', {component: 'DeleteLevelConfirm'});
+                } else if (this.shortType === "Concept") {
+                    this.$store.commit('app/showModal', {component: 'DeleteConceptConfirm'});
+                } else if (this.shortType === "ConceptScheme") {
+                    this.$store.commit('app/showModal', {component: 'DeleteConceptSchemeConfirm'});
+                } else if (this.shortType === "Framework") {
+                    this.$store.commit('app/showModal', {component: 'DeleteFrameworkConfirm'});
                 } else if (this.shortType === "Directory") {
-                    let type = this.shortType.toLowerCase();
-                    params = {
-                        type: val,
-                        title: "Delete " + type,
-                        text: "Warning! This action deletes the " + type + " in its entirety, along with all its contents.",
-                        onConfirm: () => {
-                            return me.deleteObject();
-                        }
-                    };
-                    me.$modal.show(params);
-                } else {
-                    return me.deleteObject();
+                    this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});
                 }
             } else {
                 if (val === 'removeObject') {
-                    params = {
-                        type: val,
-                        title: "Remove competency",
-                        text: "Removing a competency safely removes it from your framework without removing it from the system.",
-                        onConfirm: () => {
-                            return this.removeObject();
-                        }
-                    };
+                    this.$store.commit('editor/setItemToRemove', this.obj);
+                    this.$store.commit('app/showModal', {component: 'RemoveCompetencyConfirm'});
                 }
                 if (val === 'export') {
-                    appLog("options", typeof this.exportOptions);
-                    params = {
-                        type: val,
-                        selectedExportOption: '',
-                        title: "Export " + this.shortType,
-                        exportOptions: this.exportOptions,
-                        text: "Select a file format to export your " + this.shortType.toLowerCase() + ". Files download locally.",
-                        onConfirm: (e) => {
-                            return this.exportObject(e);
-                        }
-                    };
+                    this.$store.commit('editor/setItemToExport', this.obj);
+                    this.$store.commit('app/showModal', {title: 'Export ' + this.shortType, component: 'ExportOptionsModal'});
                 }
-                // reveal modal
-                this.$modal.show(params);
             }
         },
         load: function() {
@@ -1210,6 +1141,8 @@ export default {
         },
         // Changes a piece of data. Invoked by child components, in order to change a piece of data to something else (for reactivity reasons).
         update: function(property, index, value, callback) {
+            // reset errorValidating on change
+            this.errorValidating = null;
             if (this.profile && this.profile[property] && this.profile[property]["update"]) {
                 if (value["name"] && value["@value"]) {
                     var f = this.profile[property]["update"];
@@ -1357,10 +1290,6 @@ export default {
         },
         removeObject: function() {
             this.$emit('remove-object', this.originalThing);
-        },
-        exportObject: function(type) {
-            var thing = EcRepository.getBlocking(this.expandedThing["@id"]);
-            this.$emit('export-object', thing, type);
         },
         resolveNameFromUrl: function(url) {
             var me = this;
@@ -1524,6 +1453,7 @@ export default {
             // Tell child components to validate. Only emit done-editing-node-event when done.
             this.doneValidating = false;
             this.validate = true;
+            this.errorValidating = null;
             // If object needs to be saved, this will be set to false in saveThing
             this.doneSaving = true;
             if (this.addAnother && this.doneValidating) {
@@ -1618,6 +1548,7 @@ export default {
                 this.$store.commit('app/editDirectory', false);
                 this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});
             } else {
+                this.$store.commit('editor/setItemToDelete', this.obj ? this.obj : this.originalThing);
                 this.showModal('deleteObject');
             }
         }

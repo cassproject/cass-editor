@@ -168,7 +168,7 @@
                         <!--  home -->
                         <router-link
                             class="button is-primary is-outlined is -pulled-right"
-                            to="/">
+                            to="/concepts">
                             <span>
                                 Done
                             </span>
@@ -205,7 +205,6 @@
                     :canEdit="canEdit"
                     :hasChild="item.children"
                     :profile="profile"
-                    :exportOptions="exportOptions"
                     :highlightList="highlightList"
                     :selectAll="selectAll"
                     :newFramework="newFramework"
@@ -215,8 +214,6 @@
                     @add="add"
                     @begin-drag="beginDrag"
                     @move="move"
-                    @delete-object="deleteObject"
-                    @export-object="exportObject"
                     @select="select"
                     :parentStructure="hierarchy"
                     :parent="container"
@@ -233,6 +230,7 @@
 <script>
 
 import common from '@/mixins/common.js';
+import competencyEdits from '@/mixins/competencyEdits.js';
 var hierarchyTimeout;
 export default {
     name: 'ConceptHierarchy',
@@ -241,7 +239,6 @@ export default {
         containerType: String,
         repo: Object,
         profile: Object,
-        exportOptions: Array,
         highlightList: Array,
         selectMode: Boolean,
         selectAll: Boolean,
@@ -294,7 +291,7 @@ export default {
         HierarchyNode: () => import('@/lode/components/HierarchyNode.vue'),
         draggable: () => import('vuedraggable')
     },
-    mixins: [common],
+    mixins: [common, competencyEdits],
     computed: {
         canCopyOrCut: function() {
             if (this.selectedArray && this.selectedArray.length === 1) {
@@ -751,12 +748,6 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedArray, objId);
             }
-        },
-        deleteObject: function(thing) {
-            this.$emit('delete-object', thing);
-        },
-        exportObject: function(thing, type) {
-            this.$emit('export-object', thing, type);
         },
         onDraggableCheck: function(checked) {
             this.isDraggable = checked;

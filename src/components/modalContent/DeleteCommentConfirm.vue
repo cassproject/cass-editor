@@ -1,25 +1,22 @@
 <template>
-    <div class="modal-card">
-        <header class="modal-card-head has-background-primary">
-            <p class="modal-card-title">
-                <span class="title has-text-white">
-                    {{ commentDeleteConfirmTitle }}
-                </span>
-            </p>
-            <button
-                class="delete"
-                @click="closeModal"
-                aria-label="close" />
-        </header>
-        <section class="modal-card-body">
+    <modal-template
+        type="danger"
+        @close="closeModal"
+        :active="true">
+        <template slot="modal-header">
+            <span class="title has-text-white">
+                {{ commentDeleteConfirmTitle }}
+            </span>
+        </template>
+        <template slot="modal-body">
             <p v-if="commentsToDelete.length <= 1">
                 Are you sure you wish to delete this comment?
             </p>
             <p v-if="commentsToDelete.length > 1">
                 Are you sure you wish to delete this entire thread?
             </p>
-        </section>
-        <footer class="modal-card-foot">
+        </template>
+        <template slot="modal-foot">
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
@@ -32,17 +29,26 @@
                     Confirm
                 </button>
             </div>
-        </footer>
-    </div>
+        </template>
+    </modal-template>
 </template>
-
 <script>
+import ModalTemplate from './ModalTemplate.vue';
 
 export default {
     name: 'DeleteCommentConfirm',
+    props: {
+        active: {
+            type: Boolean,
+            defaut: false
+        }
+    },
     data() {
         return {
         };
+    },
+    components: {
+        ModalTemplate
     },
     methods: {
         closeModal: function() {

@@ -1,0 +1,35 @@
+.cass-editor__modal--search {
+    overflow-x: hidden;
+    .modal-card {
+        min-height: 600px;
+        max-height: 60vh;
+        overflow-x: hidden;
+        .cass--list--container.search-modal {
+            .lode__type {
+                display: none !important;
+            }
+        }
+        .lode__hierarchy .hierarchy-buttons {
+            border-bottom: solid 1px black !important;
+            margin-bottom: 1rem;
+        }
+        .lode__Framework {
+            .lode__name {
+                font-size: 1.25rem;
+                font-weight: 600;
+            }
+        }
+        .lode__Framework, .lode__Competency {
+             .hierarchy-item__buttons {
+                display: none !important;
+            }
+            .lode__type {
+                display: none !important;
+            }
+        }
+    }
+}
+.modal-card-body {
+    overflow-y: auto;
+    overflow-x: hidden;
+}

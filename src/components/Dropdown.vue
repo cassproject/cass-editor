@@ -31,7 +31,6 @@
 </template>
 
 <script>
-import CassDropdownItem from './DropdownItem';
 export default {
     name: 'CassDropdown',
     props: ['active', 'label'],

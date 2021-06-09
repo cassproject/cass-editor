@@ -3,36 +3,28 @@ Dynamic component used to display various modal content such as
 search, edit multiple competencies, view single competency, export,
 share framework settings, and more.
 
-To add content to this modal, imort the relevant compontnt and trigger it
+To add content to this modal, imort the relevant component and trigger it
 by this.$store.commit('app/showmodal', payload); Where payload at minimum
 returns an object with component: 'View' so the dynamic :is=dynamicModal
 returns content.
+
+Notes: If a modal should go on top of an existing modal - such as some delete / warning modals
+it should always be produced in its own modal as to not replace the existing modal.
 -->
 <template>
-    <div
-        class="modal competency-search"
-        :class="{'is-active': showModal}">
-        <div class="modal-background" />
+    <div>
         <Component
+            :title="title"
             @create-directory="$emit('create-directory', $event)"
-            view="dynamic-modal"
+            view="modal"
+            @close="$emit('app/closeModal')"
+            @cancel="$emit('app/closeModal')"
             :content="dynamicModalContent"
             :is="dynamicModal" />
     </div>
 </template>
 
 <script>
-import Share from '@/components/framework/Share.vue';
-import MultiEdit from '@/components/competency/MultiEdit.vue';
-import Search from '@/components/competency/Search.vue';
-import Single from '@/components/competency/Single.vue';
-import AddComment from '@/components/modalContent/AddComment.vue';
-import AddDirectory from '@/components/modalContent/AddDirectory.vue';
-import DeleteDirectoryConfirm from '@/components/modalContent/DeleteDirectoryConfirm.vue';
-import DeleteCommentConfirm from '@/components/modalContent/DeleteCommentConfirm.vue';
-import SupportedImportDetails from '@/components/import/SupportedImportDetails.vue';
-import Configuration from '@/views/configuration/ConfigurationEditor.vue';
-
 export default {
     name: 'DynamicModal',
     props: {
@@ -46,16 +38,27 @@ export default {
         }
     },
     components: {
-        Share,
-        MultiEdit,
-        Search,
-        AddComment,
-        DeleteCommentConfirm,
-        DeleteDirectoryConfirm,
-        SupportedImportDetails,
-        Single,
-        Configuration,
-        AddDirectory
+        'Share': () => import('@/components/modalContent/Share.vue'),
+        'MultiEdit': () => import('@/components/modalContent/MultiEdit.vue'),
+        'SearchModal': () => import('@/components/modalContent/SearchModal.vue'),
+        'AddComment': () => import('@/components/modalContent/AddComment.vue'),
+        'DeleteCommentConfirm': () => import('@/components/modalContent/DeleteCommentConfirm.vue'),
+        'DeleteDirectoryConfirm': () => import('@/components/modalContent/DeleteDirectoryConfirm.vue'),
+        'SupportedImportDetails': () => import('@/components/modalContent/SupportedImportDetails.vue'),
+        'Single': () => import('@/components/modalContent/Single.vue'),
+        'AddDirectory': () => import('@/components/modalContent/AddDirectory.vue'),
+        'DeleteConfigurationConfirm': () => import('@/components/modalContent/DeleteConfigurationConfirm.vue'),
+        'FrameworkConfiguration': () => import('@/components/modalContent/FrameworkConfiguration.vue'),
+        'DeleteCompetencyConfirm': () => import('@/components/modalContent/DeleteCompetencyConfirm.vue'),
+        'DeleteFrameworkConfirm': () => import('@/components/modalContent/DeleteFrameworkConfirm.vue'),
+        'DeleteLevelConfirm': () => import('@/components/modalContent/DeleteLevelConfirm.vue'),
+        'DeleteConceptConfirm': () => import('@/components/modalContent/DeleteConceptConfirm.vue'),
+        'DeleteConceptSchemeConfirm': () => import('@/components/modalContent/DeleteConceptSchemeConfirm.vue'),
+        'RemoveCompetencyConfirm': () => import('@/components/modalContent/RemoveCompetencyConfirm.vue'),
+        'ExportOptionsModal': () => import('@/components/modalContent/ExportOptionsModal.vue'),
+        'RequiredPropertyModal': () => import('@/components/modalContent/RequiredPropertyModal.vue'),
+        'DuplicateImport': () => import('@/components/modalContent/DuplicateImport.vue'),
+        'ImportError': () => import('@/components/modalContent/ImportError.vue')
     },
     data() {
         return {
@@ -75,6 +78,13 @@ export default {
         dynamicModal: function() {
             if (this.dynamicModalContent) {
                 return this.dynamicModalContent.component;
+            } else {
+                return '';
+            }
+        },
+        title: function() {
+            if (this.dynamicModalContent && this.dynamicModalContent.title) {
+                return this.dynamicModalContent.title;
             } else {
                 return '';
             }
