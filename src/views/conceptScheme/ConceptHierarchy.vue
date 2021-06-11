@@ -615,13 +615,15 @@ export default {
                         var toIndex = toContainer[toProperty].indexOf(toId);
                         toContainer[toProperty].splice(toIndex, 0, fromId);
                     }
-                    if (!EcArray.isArray(moveComp[toProperty2])) {
-                        moveComp[toProperty2] = [];
-                    }
-                    if (toContainerId) {
-                        moveComp[toProperty2].push(toContainerId);
+                    if (toContainer.type === "ConceptScheme") {
+                        moveComp[toProperty2] = toContainerId;
                     } else {
-                        moveComp[toProperty2].push(me.container.shortId());
+                        if (!EcArray.isArray(moveComp[toProperty2])) {
+                            moveComp[toProperty2] = [];
+                        }
+                        if (toContainerId) {
+                            moveComp[toProperty2].push(toContainerId);
+                        }
                     }
                     me.$store.commit('editor/addEditsToUndo', [
                         {operation: "update", id: fromContainer.shortId(), fieldChanged: [fromProperty], initialValue: [fromPropInitialValue]},
