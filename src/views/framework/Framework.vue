@@ -111,6 +111,7 @@
                                 <Hierarchy
                                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                     :container="framework"
+                                    :scrolled="scrolled"
                                     containerType="Framework"
                                     containerTypeGet="EcFramework"
                                     containerNodeProperty="competency"
@@ -175,6 +176,7 @@ export default {
     mixins: [common, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {
         return {
+            ulListClass: '',
             scrolled: false,
             hierarchyIsdoneLoading: false,
             parentObjectClass: 'parent-object',

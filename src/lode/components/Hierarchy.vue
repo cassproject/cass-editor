@@ -303,6 +303,7 @@
                 v-model="hierarchy"
                 tag="ul"
                 class="lode__hierarchy-ul"
+                :class=" scrolled ? 'ul-list-scrolled' : ''"
                 :disabled="canEdit !== true || !isDraggable"
                 :group="{ name: 'test' }"
                 @start="beginDrag"
@@ -362,6 +363,7 @@ export default {
     name: 'Hierarchy',
     mixins: [ common, competencyEdits ],
     props: {
+        scrolled: String,
         container: Object,
         containerType: String,
         containerTypeGet: String,
