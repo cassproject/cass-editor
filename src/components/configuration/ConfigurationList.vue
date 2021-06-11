@@ -136,13 +136,13 @@ export default {
         setConfigToDelete(configId) {
             this.$store.commit('configuration/setConfigToDelete', this.getConfigById(configId));
         },
-        setConfigAsFrameworkDefault(configId) {
+        async setConfigAsFrameworkDefault(configId) {
             let me = this;
             let f = this.$store.getters['editor/framework'];
             let previousConfig = f.configuration;
             f.configuration = configId;
             if (!previousConfig) {
-                f = this.setOwnersAndReaders(f);
+                f = await this.setOwnersAndReaders(f);
             }
             if (f) {
                 this.frameworkConfigId = configId;

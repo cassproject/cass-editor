@@ -143,7 +143,7 @@ export default {
         },
         copyCompetencies: async function() {
             let results = this.selectedIds;
-            this.addRelations();
+            await this.addRelations();
             var copyDict = {};
             var framework = this.$store.state.editor.framework;
             var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
@@ -373,7 +373,7 @@ export default {
         },
         appendCompetencies: async function() {
             let results = this.selectedIds;
-            this.addRelations();
+            await this.addRelations();
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             var framework = this.$store.state.editor.framework;
             var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
