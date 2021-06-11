@@ -10,7 +10,9 @@
                 class="button is-fullwidth is-large"
                 aria-haspopup="true"
                 aria-controls="dropdown-menu">
-                <span v-if="label">{{ label }}</span>
+                <span
+                    class="dropdown-menu--item"
+                    v-if="label">{{ label }}</span>
                 <span v-else>All Group Members</span>
                 <span class="icon is-small">
                     <i
@@ -51,5 +53,12 @@ export default {
     .dropdown-menu {
         width: 100%;
     }
+}
+.dropdown-menu--item {
+    width: 100%;
+    overflow: hidden;
+    white-space: wrap;
+    padding-right: 12px;
+    text-overflow: ellipsis;
 }
 </style>
