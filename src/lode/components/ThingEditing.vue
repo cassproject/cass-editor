@@ -1440,7 +1440,7 @@ export default {
             return result;
         },
         closeWithoutSaving: function() {
-            if (this.newFramework) {
+            if (this.newFramework && this.view !== "importPreview") {
                 return this.clickToDelete();
             }
             this.$emit('done-editing-node-event');
