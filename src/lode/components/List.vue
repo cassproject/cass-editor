@@ -413,7 +413,7 @@ export default {
                 }
                 paramObj.start = me.start;
                 let directories = [];
-                me.repo.searchWithParams(search, paramObj, function(result) {
+                me.repo.searchWithParams(search, paramObj, async function(result) {
                     if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
                         if (!EcArray.has(me.resultIds, result.id)) {
                             if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
@@ -425,7 +425,7 @@ export default {
                                         var v = new EcEncryptedValue();
                                         v.copyFrom(result);
                                         let obj = new window[type]();
-                                        obj.copyFrom(v.decryptIntoObject());
+                                        obj.copyFrom(await v.decryptIntoObject());
                                         result = obj;
                                     }
                                     directories.push(result);
@@ -495,7 +495,7 @@ export default {
                     if (me.paramObj) {
                         paramObj = Object.assign({}, me.paramObj);
                     }
-                    me.repo.searchWithParams(search, paramObj, function(result) {
+                    me.repo.searchWithParams(search, paramObj, async function(result) {
                         if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
                             if (!EcArray.has(me.resultIds, result.id)) {
                                 if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
@@ -505,7 +505,7 @@ export default {
                                         var v = new EcEncryptedValue();
                                         v.copyFrom(result);
                                         let obj = new window[type]();
-                                        obj.copyFrom(v.decryptIntoObject());
+                                        obj.copyFrom(await v.decryptIntoObject());
                                         result = obj;
                                     }
                                     if (result.name !== '') {
@@ -567,7 +567,7 @@ export default {
                     type = this.type;
                 }
                 this.buildSearch(type, function(search) {
-                    me.repo.searchWithParams(search, localParamObj, function(result) {
+                    me.repo.searchWithParams(search, localParamObj, async function(result) {
                         if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
                             if (me.searchingForCompetencies) {
                                 if (!EcArray.has(me.resultIds, result.id)) {
@@ -578,7 +578,7 @@ export default {
                                             var v = new EcEncryptedValue();
                                             v.copyFrom(result);
                                             let obj = new window[objType]();
-                                            obj.copyFrom(v.decryptIntoObject());
+                                            obj.copyFrom(await v.decryptIntoObject());
                                             result = obj;
                                         }
                                         me.subResults.push(result);
@@ -594,7 +594,7 @@ export default {
                                             var v = new EcEncryptedValue();
                                             v.copyFrom(result);
                                             let obj = new window[objType]();
-                                            obj.copyFrom(v.decryptIntoObject());
+                                            obj.copyFrom(await v.decryptIntoObject());
                                             result = obj;
                                         }
                                         me.results.push(result);
@@ -638,7 +638,7 @@ export default {
             }
             var type = me.type === "Framework" ? "Competency" : "Concept";
             me.buildSearch(type, function(subSearch) {
-                me.repo.searchWithParams(subSearch, subLocalParamObj, function(subResult) {
+                me.repo.searchWithParams(subSearch, subLocalParamObj, async function(subResult) {
                     if (!me.filterToEditable || (me.filterToEditable && subResult.canEditAny(EcIdentityManager.default.getMyPks()))) {
                         if (!EcArray.has(me.resultIds, subResult.id)) {
                             if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, subResult.shortId())) {
@@ -648,7 +648,7 @@ export default {
                                     var v = new EcEncryptedValue();
                                     v.copyFrom(subResult);
                                     let obj = new window[objType]();
-                                    obj.copyFrom(v.decryptIntoObject());
+                                    obj.copyFrom(await v.decryptIntoObject());
                                     subResult = obj;
                                 }
                                 me.subResults.push(subResult);

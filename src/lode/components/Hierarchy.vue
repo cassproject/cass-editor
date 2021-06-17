@@ -682,7 +682,7 @@ export default {
                             let v = new EcEncryptedValue();
                             v.copyFrom(c);
                             c = new window[encryptedType]();
-                            c.copyFrom(v.decryptIntoObject());
+                            c.copyFrom(await v.decryptIntoObject());
                         }
                     }
                     if (c !== null) {

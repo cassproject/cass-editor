@@ -1164,7 +1164,7 @@ export default {
                     let v = new EcEncryptedValue();
                     v.copyFrom(encryptedThing);
                     let returnObject = new window[encryptedType]();
-                    returnObject.copyFrom(v.decryptIntoObject());
+                    returnObject.copyFrom(await v.decryptIntoObject());
                     this.obj = returnObject;
                     this.load();
                 } else if (type && window[type] && window[type].get) {
