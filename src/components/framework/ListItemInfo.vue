@@ -1122,14 +1122,14 @@ export default {
             this.$store.commit('app/editDirectory', true);
         }
     },
-    mounted: function() {
+    mounted: async function() {
         this.setNumSubdirectoriesAndObjects();
         if (this.object.encryptedType) {
             let type = "Ec" + this.object.encryptedType;
             let v = new EcEncryptedValue();
             v.copyFrom(this.object);
             let obj = new window[type]();
-            obj.copyFrom(v.decryptIntoObject());
+            obj.copyFrom(await v.decryptIntoObject());
             this.$store.commit('app/rightAsideObject', obj);
         }
         if (this.object.type === "Directory") {

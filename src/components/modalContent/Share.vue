@@ -481,13 +481,13 @@ export default {
             return this.$store.getters['app/objForShareModal'];
         }
     },
-    mounted: function() {
+    mounted: async function() {
         if (this.objFromListItemInfo && this.objFromListItemInfo.encryptedType) {
             let type = "Ec" + this.object.encryptedType;
             let v = new EcEncryptedValue();
             v.copyFrom(this.object);
             let obj = new window[type]();
-            obj.copyFrom(v.decryptIntoObject());
+            obj.copyFrom(await v.decryptIntoObject());
             this.$store.commit('app/objForShareModal', obj);
         }
         this.getCurrentOwnersAndReaders(true);
@@ -1045,7 +1045,7 @@ export default {
                 this.handleMakePublicFramework(framework);
             }
         },
-        handleMakePublicDirectory: function(directory) {
+        handleMakePublicDirectory: async function(directory) {
             let me = this;
             let d = new EcDirectory();
             let v;
@@ -1055,7 +1055,7 @@ export default {
                 v = new EcEncryptedValue();
                 v.copyFrom(directory);
             }
-            d.copyFrom(v.decryptIntoObject());
+            d.copyFrom(await v.decryptIntoObject());
             d["schema:dateModified"] = new Date().toISOString();
             delete d.reader;
             EcEncryptedValue.encryptOnSave(d.id, false);
@@ -1082,7 +1082,7 @@ export default {
                 });
             }, appError);
         },
-        handleMakePublicResource: function(resource) {
+        handleMakePublicResource: async function(resource) {
             let cw = new schema.CreativeWork();
             let v;
             if (resource.type === "CreativeWork") {
@@ -1091,7 +1091,7 @@ export default {
                 v = new EcEncryptedValue();
                 v.copyFrom(resource);
             }
-            cw.copyFrom(v.decryptIntoObject());
+            cw.copyFrom(await v.decryptIntoObject());
             cw["schema:dateModified"] = new Date().toISOString();
             delete cw.reader;
             EcEncryptedValue.encryptOnSave(cw.id, false);
@@ -1101,7 +1101,7 @@ export default {
             }
             this.multiput(this.toSave);
         },
-        handleMakePublicFramework: function(framework) {
+        handleMakePublicFramework: async function(framework) {
             let me = this;
             let f = new EcFramework();
             let v;
@@ -1111,7 +1111,7 @@ export default {
                 v = new EcEncryptedValue();
                 v.copyFrom(framework);
             }
-            f.copyFrom(v.decryptIntoObject());
+            f.copyFrom(await v.decryptIntoObject());
             f["schema:dateModified"] = new Date().toISOString();
             delete f.reader;
             EcEncryptedValue.encryptOnSave(f.id, false);
@@ -1122,7 +1122,7 @@ export default {
             framework = f;
             if (framework.competency && framework.competency.length > 0) {
                 new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
-                    EcRepository.get(competencyId, function(c) {
+                    EcRepository.get(competencyId, async function(c) {
                         var v;
                         if (c.canEditAny(EcIdentityManager.default.getMyPks())) {
                             if (c.isAny(new EcEncryptedValue().getTypes())) {
@@ -1132,7 +1132,7 @@ export default {
                                 v = EcEncryptedValue.toEncryptedValue(c);
                             }
                             c = new EcCompetency();
-                            c.copyFrom(v.decryptIntoObject());
+                            c.copyFrom(await v.decryptIntoObject());
                             c["schema:dateModified"] = new Date().toISOString();
                             delete c.reader;
                             EcEncryptedValue.encryptOnSave(c.id, false);
@@ -1145,7 +1145,7 @@ export default {
                 }, function(competencyIds) {
                     if (framework.relation && framework.relation.length > 0) {
                         new EcAsyncHelper().each(framework.relation, function(relationId, done) {
-                            EcRepository.get(relationId, function(r) {
+                            EcRepository.get(relationId, async function(r) {
                                 var v;
                                 if (r.isAny(new EcEncryptedValue().getTypes())) {
                                     v = new EcEncryptedValue();
@@ -1154,7 +1154,7 @@ export default {
                                     v = EcEncryptedValue.toEncryptedValue(r);
                                 }
                                 r = new EcAlignment();
-                                r.copyFrom(v.decryptIntoObject());
+                                r.copyFrom(await v.decryptIntoObject());
                                 delete r.reader;
                                 EcEncryptedValue.encryptOnSave(r.id, false);
                                 me.toSave.push(r);
@@ -1230,15 +1230,15 @@ export default {
                 }, appError);
             }
         },
-        handleMakePublicConceptScheme: function() {
+        handleMakePublicConceptScheme: async function() {
             var me = this;
             var framework = this.framework;
             framework = EcEncryptedValue.toEncryptedValue(framework);
             var cs = new EcConceptScheme();
             appLog(framework);
-            appLog(framework.decryptIntoObject());
+            appLog(await framework.decryptIntoObject());
             appLog(cs);
-            cs.copyFrom(framework.decryptIntoObject());
+            cs.copyFrom(await framework.decryptIntoObject());
             delete cs.reader;
             framework = cs;
             EcEncryptedValue.encryptOnSave(cs.id, false);
@@ -1283,7 +1283,7 @@ export default {
             var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
             me.conceptsToProcess += concepts.length;
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
-                EcRepository.get(conceptId, function(concept) {
+                EcRepository.get(conceptId, async function(concept) {
                     var v;
                     if (concept.isAny(new EcEncryptedValue().getTypes())) {
                         v = new EcEncryptedValue();
@@ -1292,7 +1292,7 @@ export default {
                         v = EcEncryptedValue.toEncryptedValue(concept);
                     }
                     concept = new EcConcept();
-                    concept.copyFrom(v.decryptIntoObject());
+                    concept.copyFrom(await v.decryptIntoObject());
                     delete concept.reader;
                     EcEncryptedValue.encryptOnSave(concept.id, false);
                     if (concept["skos:narrower"]) {

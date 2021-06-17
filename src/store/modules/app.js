@@ -92,13 +92,13 @@ const mutations = {
         state.rightAsideContent = '';
         state.rightAsideObject = null;
     },
-    rightAsideObject: function(state, payload) {
+    rightAsideObject: async function(state, payload) {
         if (payload.encryptedType) {
             let type = "Ec" + payload.encryptedType;
             let v = new EcEncryptedValue();
             v.copyFrom(payload);
             let obj = new window[type]();
-            obj.copyFrom(v.decryptIntoObject());
+            obj.copyFrom(await v.decryptIntoObject());
             state.rightAsideObject = obj;
         } else {
             state.rightAsideObject = payload;

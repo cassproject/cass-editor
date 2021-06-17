@@ -613,10 +613,13 @@ export default {
             this.identityFetchFailed = true;
             this.loginBusy = false;
         },
-        handleAttemptLoginConfigureFromServerSuccess: function(obj) {
+        handleAttemptLoginConfigureFromServerSuccess: async function(obj) {
             appLog("Fetching identity...");
             this.ecRemoteIdentMgr.startLogin(this.username, this.password); // Creates the hashes for storage and retrieval of keys.
-            this.ecRemoteIdentMgr.fetch(this.handleAttemptLoginFetchIdentitySuccess, this.handleAttemptLoginFetchIdentityFailure); // Retrieves the identities and encryption keys from the server.
+            await this.ecRemoteIdentMgr.fetch(null, this.handleAttemptLoginFetchIdentityFailure).then((ident) => {
+                EcIdentityManager.default = ident;
+                this.handleAttemptLoginFetchIdentitySuccess();
+            }); // Retrieves the identities and encryption keys from the server.
         },
         handleAttemptLoginConfigureFromServerFail: function(failMsg) {
             this.configFailMsg = failMsg;

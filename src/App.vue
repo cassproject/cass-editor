@@ -453,10 +453,10 @@ export default {
                 }
             };
         },
-        decrypt: function(encryptedThing, returnObject) {
+        decrypt: async function(encryptedThing, returnObject) {
             var v = new EcEncryptedValue();
             v.copyFrom(encryptedThing);
-            returnObject.copyFrom(v.decryptIntoObject());
+            returnObject.copyFrom(await v.decryptIntoObject());
             return returnObject;
         },
         createNewFramework: function(optionalDirectory) {
