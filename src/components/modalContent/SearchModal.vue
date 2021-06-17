@@ -183,7 +183,7 @@ export default {
                     c['ceasn:derivedFrom'] = thing.id;
                     copyDict[thing.shortId()] = c;
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
-                        c = EcEncryptedValue.toEncryptedValue(c);
+                        c = await EcEncryptedValue.toEncryptedValue(c);
                     }
                     this.itemsSaving++;
                     (function(c) {
@@ -215,7 +215,7 @@ export default {
                     level['ceasn:derivedFrom'] = thing.id;
                     copyDict[thing.shortId()] = level;
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
-                        level = EcEncryptedValue.toEncryptedValue(level);
+                        level = await EcEncryptedValue.toEncryptedValue(level);
                     }
                     this.itemsSaving++;
                     (function(level) {
@@ -272,7 +272,7 @@ export default {
                         if (r.source !== r.target) {
                             framework["schema:dateModified"] = new Date().toISOString();
                             if (this.$store.state.editor.private === true) {
-                                r = EcEncryptedValue.toEncryptedValue(r);
+                                r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.itemsSaving++;
                             (function(r) {
@@ -333,7 +333,7 @@ export default {
                             framework.addRelation(r.id);
                             framework["schema:dateModified"] = new Date().toISOString();
                             if (this.$store.state.editor.private === true) {
-                                r = EcEncryptedValue.toEncryptedValue(r);
+                                r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             (function(r) {
                                 Task.asyncImmediate(function(callback) {
@@ -353,7 +353,7 @@ export default {
                 }
             }
         },
-        afterCopy: function(initialCompetencies, initialRelations, initialLevels, addedNew) {
+        afterCopy: async function(initialCompetencies, initialRelations, initialLevels, addedNew) {
             this.itemsSaving--;
             // loading(this.itemsSaving + " objects left to copy.");
             if (this.itemsSaving === 0) {
@@ -365,7 +365,7 @@ export default {
                 changes.push({operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level]});
                 this.$store.commit('editor/addEditsToUndo', changes);
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                    framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
                 this.repo.saveTo(framework, function() {}, appError);
                 this.closeModal();
@@ -445,7 +445,7 @@ export default {
                         if (r.source !== r.target) {
                             framework.addRelation(r.id);
                             if (this.$store.state.editor.private === true) {
-                                r = EcEncryptedValue.toEncryptedValue(r);
+                                r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.repo.saveTo(r, function() {}, appError);
                         }
@@ -464,7 +464,7 @@ export default {
             changes.push({operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level]});
             this.$store.commit('editor/addEditsToUndo', changes);
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                framework = EcEncryptedValue.toEncryptedValue(framework);
+                framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, async function() {
                 me.$store.commit('editor/framework', await EcFramework.get(framework.id));

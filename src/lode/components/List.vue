@@ -413,28 +413,29 @@ export default {
                 }
                 paramObj.start = me.start;
                 let directories = [];
-                me.repo.searchWithParams(search, paramObj, async function(result) {
-                    if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
-                        if (!EcArray.has(me.resultIds, result.id)) {
-                            if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
-                                // Don't show subdirectories unless searching
-                                if (!result.parentDirectory || me.searchTerm !== "") {
-                                    if (result.isAny(new EcEncryptedValue().getTypes())) {
-                                        // Decrypt and add to results list
-                                        var type = "Ec" + result.encryptedType;
-                                        var v = new EcEncryptedValue();
-                                        v.copyFrom(result);
-                                        let obj = new window[type]();
-                                        obj.copyFrom(await v.decryptIntoObject());
-                                        result = obj;
+                me.repo.searchWithParams(search, paramObj, null, async function(results) {
+                    for (let result of results) {
+                        if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
+                            if (!EcArray.has(me.resultIds, result.id)) {
+                                if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
+                                    // Don't show subdirectories unless searching
+                                    if (!result.parentDirectory || me.searchTerm !== "") {
+                                        if (result.isAny(new EcEncryptedValue().getTypes())) {
+                                            // Decrypt and add to results list
+                                            var type = "Ec" + result.encryptedType;
+                                            var v = new EcEncryptedValue();
+                                            v.copyFrom(result);
+                                            let obj = new window[type]();
+                                            obj.copyFrom(await v.decryptIntoObject());
+                                            result = obj;
+                                        }
+                                        directories.push(result);
+                                        me.resultIds.push(result.id);
                                     }
-                                    directories.push(result);
-                                    me.resultIds.push(result.id);
                                 }
                             }
                         }
                     }
-                }, function(results) {
                     me.firstSearchProcessing = false;
                     if (directories && directories.length > 0) {
                         me.results = me.results.concat(directories);

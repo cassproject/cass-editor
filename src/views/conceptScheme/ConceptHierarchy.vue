@@ -560,7 +560,7 @@ export default {
                 me.$store.commit('editor/addEditsToUndo', [{operation: "update", id: container.shortId(), fieldChanged: [property], initialValue: [initialValue]}]);
                 container["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[container.id] !== true) {
-                    container = EcEncryptedValue.toEncryptedValue(container);
+                    container = await EcEncryptedValue.toEncryptedValue(container);
                 }
                 this.repo.saveTo(container, function() {
                     me.computeHierarchy();
@@ -603,9 +603,9 @@ export default {
                 }
                 fromContainer["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[fromContainer.id] !== true) {
-                    fromContainer = EcEncryptedValue.toEncryptedValue(fromContainer);
+                    fromContainer = await EcEncryptedValue.toEncryptedValue(fromContainer);
                 }
-                this.repo.saveTo(fromContainer, function() {
+                this.repo.saveTo(fromContainer, async function() {
                     if (toId == null || toId === undefined) {
                         if (!EcArray.isArray(toContainer[toProperty])) {
                             toContainer[toProperty] = [];
@@ -633,10 +633,10 @@ export default {
                     toContainer["schema:dateModified"] = new Date().toISOString();
                     moveComp["schema:dateModified"] = new Date().toISOString();
                     if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[toContainer.id] !== true) {
-                        toContainer = EcEncryptedValue.toEncryptedValue(toContainer);
+                        toContainer = await EcEncryptedValue.toEncryptedValue(toContainer);
                     }
                     if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[moveComp.id] !== true) {
-                        moveComp = EcEncryptedValue.toEncryptedValue(moveComp);
+                        moveComp = await EcEncryptedValue.toEncryptedValue(moveComp);
                     }
                     me.repo.saveTo(toContainer, function() {
                         me.repo.saveTo(moveComp, appLog, appError);
@@ -694,9 +694,9 @@ export default {
                 this.container["schema:dateModified"] = new Date().toISOString();
                 c["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
-                    c = EcEncryptedValue.toEncryptedValue(c);
+                    c = await EcEncryptedValue.toEncryptedValue(c);
                     if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
-                        me.container = EcEncryptedValue.toEncryptedValue(me.container);
+                        me.container = await EcEncryptedValue.toEncryptedValue(me.container);
                     }
                 }
                 this.repo.saveTo(c, function() {
@@ -726,12 +726,12 @@ export default {
                 c["schema:dateModified"] = new Date().toISOString();
                 parent["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
-                    c = EcEncryptedValue.toEncryptedValue(c);
+                    c = await EcEncryptedValue.toEncryptedValue(c);
                     if (EcEncryptedValue.encryptOnSaveMap[parent.id] !== true) {
-                        parent = EcEncryptedValue.toEncryptedValue(parent);
+                        parent = await EcEncryptedValue.toEncryptedValue(parent);
                     }
                     if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
-                        me.container = EcEncryptedValue.toEncryptedValue(me.container);
+                        me.container = await EcEncryptedValue.toEncryptedValue(me.container);
                     }
                 }
                 this.repo.saveTo(c, function() {

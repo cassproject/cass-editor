@@ -381,7 +381,7 @@ export default {
                 c.competency.push(selectedCompetency);
             }
             framework["schema:dateModified"] = new Date().toISOString();
-            window.repo.saveTo(c, function() {
+            window.repo.saveTo(c, async function() {
                 framework.addLevel(c.shortId());
                 var edits = [];
                 if (!optionalLevelUrl) {
@@ -392,7 +392,7 @@ export default {
                 me.$store.commit('editor/framework', framework);
                 if (me.$store.state.editor.private === true) {
                     if (EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                        framework = EcEncryptedValue.toEncryptedValue(framework);
+                        framework = await EcEncryptedValue.toEncryptedValue(framework);
                     }
                 }
                 window.repo.saveTo(framework, function() {
@@ -472,12 +472,12 @@ export default {
             this.$store.commit('lode/setAddingChecked', []);
             this.$store.commit('lode/setIsAddingProperty', false);
         },
-        saveFramework: function() {
+        saveFramework: async function() {
             this.framework["schema:dateModified"] = new Date().toISOString();
             var framework = this.framework;
             this.$store.commit('editor/framework', framework);
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                framework = EcEncryptedValue.toEncryptedValue(framework);
+                framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             window.repo.saveTo(framework, function() {}, appError);
         },
@@ -499,7 +499,7 @@ export default {
                 this.addAlignments(values, selectedCompetency, property);
             }
         },
-        addAlignments: function(targets, thing, relationType, allowSave) {
+        addAlignments: async function(targets, thing, relationType, allowSave) {
             if (this.$store.getters['editor/queryParams'].concepts === "true") {
                 return this.addConceptAlignments(targets, thing, relationType);
             }
@@ -551,7 +551,7 @@ export default {
                     }
                 }
                 if (this.$store.state.editor.private === true) {
-                    r = EcEncryptedValue.toEncryptedValue(r);
+                    r = await EcEncryptedValue.toEncryptedValue(r);
                 }
                 window.repo.saveTo(r, function() {}, appError);
                 if (thing.type === 'Concept') {
@@ -577,11 +577,11 @@ export default {
             this.$store.commit('editor/addEditsToUndo', edits);
             this.$store.commit('editor/framework', framework);
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                framework = EcEncryptedValue.toEncryptedValue(framework);
+                framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             window.repo.saveTo(framework, function() {}, appError);
         },
-        addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
+        addRelationAsCompetencyField: async function(targets, thing, relationType, allowSave) {
             var me = this;
             var initialValue = thing[relationType] ? thing[relationType].slice() : null;
             for (var i = 0; i < targets.length; i++) {
@@ -594,7 +594,7 @@ export default {
             thing["schema:dateModified"] = new Date().toISOString();
             if (this.$store.state.editor.private === true) {
                 if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
-                    thing = EcEncryptedValue.toEncryptedValue(thing);
+                    thing = await EcEncryptedValue.toEncryptedValue(thing);
                 }
             }
             window.repo.saveTo(thing, function() {}, appError);
@@ -623,13 +623,13 @@ export default {
                         callback();
                     }
                 }, callback);
-            }, function() {
+            }, async function() {
                 var framework = me.framework;
                 edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation]});
                 me.$store.commit('editor/framework', framework);
                 me.$store.commit('editor/addEditsToUndo', edits);
                 if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                    framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
                 window.repo.saveTo(framework, function() {}, appError);
             });

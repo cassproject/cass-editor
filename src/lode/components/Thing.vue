@@ -896,7 +896,7 @@ export default {
                 }
             }
             // When we save, we need to remove all the extreneous arrays that we added to support reactivity.
-            jsonld.compact(this.stripEmptyArrays(this.expandedThing), this.$store.state.lode.rawSchemata[this.context], function(err, compacted) {
+            jsonld.compact(this.stripEmptyArrays(this.expandedThing), this.$store.state.lode.rawSchemata[this.context], async function(err, compacted) {
                 if (err != null) {
                     appError(err);
                 }
@@ -912,7 +912,7 @@ export default {
                         rld.owner = [rld.owner];
                     }
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
-                        rld = EcEncryptedValue.toEncryptedValue(rld);
+                        rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     repo.saveTo(rld, appLog, appError);
                 }

@@ -370,7 +370,7 @@ export default {
             if (expandedCompetency["@type"][0].toLowerCase().indexOf("concept") !== -1) {
                 context = "https://schema.cassproject.org/0.4/skos";
             }
-            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], function(err, compacted) {
+            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], async function(err, compacted) {
                 if (err != null) {
                     appError(err);
                 }
@@ -382,7 +382,7 @@ export default {
                     rld = me.turnFieldsBackIntoArrays(rld);
                     rld["schema:dateModified"] = new Date().toISOString();
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
-                        rld = EcEncryptedValue.toEncryptedValue(rld);
+                        rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     me.repo.saveTo(rld, function() {
                         me.editsFinishedCounter++;

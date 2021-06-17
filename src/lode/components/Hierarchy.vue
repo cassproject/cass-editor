@@ -860,7 +860,7 @@ export default {
                         addedEdges.push(a.shortId());
                         appLog("Added edge: ", JSON.parse(a.toJson()));
                         if (this.$store.state.editor && this.$store.state.editor.private === true) {
-                            a = EcEncryptedValue.toEncryptedValue(a);
+                            a = await EcEncryptedValue.toEncryptedValue(a);
                         }
                         this.repo.saveTo(a, appLog, appError);
                     }
@@ -877,12 +877,12 @@ export default {
             me.$store.commit('editor/addEditsToUndo', edits);
             stripped["schema:dateModified"] = new Date().toISOString();
             if (this.$store.state.editor && this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[stripped.id] !== true) {
-                stripped = EcEncryptedValue.toEncryptedValue(stripped);
+                stripped = await EcEncryptedValue.toEncryptedValue(stripped);
             }
             this.repo.saveTo(stripped, appLog, appError);
             this.dragging = false;
         },
-        add: function(containerId, previousSibling) {
+        add: async function(containerId, previousSibling) {
             var me = this;
             var c = new window[this.nodeType]();
             var initialCompetencies = this.container.competency ? this.container.competency.slice() : null;
@@ -942,14 +942,14 @@ export default {
                 this.$store.commit("editor/newCompetency", c.shortId());
             }
             if (this.$store.state.editor && this.$store.state.editor.private === true) {
-                c = EcEncryptedValue.toEncryptedValue(c);
+                c = await EcEncryptedValue.toEncryptedValue(c);
             }
-            this.repo.saveTo(c, function() {
+            this.repo.saveTo(c, async function() {
                 if (containerId === me.container.shortId()) {
                     var toSave = me.container;
                     toSave["schema:dateModified"] = new Date().toISOString();
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
-                        toSave = EcEncryptedValue.toEncryptedValue(me.container);
+                        toSave = await EcEncryptedValue.toEncryptedValue(me.container);
                     }
                     me.repo.saveTo(me.stripEmptyArrays(toSave), function() {
                         me.once = true;
@@ -992,9 +992,9 @@ export default {
                         var toSave = me.container;
                         toSave["schema:dateModified"] = new Date().toISOString();
                         if (me.$store.state.editor && me.$store.state.editor.private === true) {
-                            a = EcEncryptedValue.toEncryptedValue(a);
+                            a = await EcEncryptedValue.toEncryptedValue(a);
                             if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
-                                toSave = EcEncryptedValue.toEncryptedValue(me.container);
+                                toSave = await EcEncryptedValue.toEncryptedValue(me.container);
                             }
                         }
                         me.repo.saveTo(a, function() {

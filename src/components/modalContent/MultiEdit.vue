@@ -333,7 +333,7 @@ export default {
             if (this.$store.getters['editor/queryParams'].concepts === "true") {
                 context += "/skos";
             }
-            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], function(err, compacted) {
+            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], async function(err, compacted) {
                 if (err != null) {
                     appError(err);
                 }
@@ -345,7 +345,7 @@ export default {
                     delete rld["@context"];
                     rld["schema:dateModified"] = new Date().toISOString();
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
-                        rld = EcEncryptedValue.toEncryptedValue(rld);
+                        rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     me.repo.saveTo(rld, appLog, appError);
                 }

@@ -175,7 +175,7 @@ export default {
                 compsAndRelations = compsAndRelations.concat(framework.relation);
             }
             new EcAsyncHelper().each(compsAndRelations, function(id, done) {
-                EcRepository.get(id, function(obj) {
+                EcRepository.get(id, async function(obj) {
                     if (owners.length > 0 || readers.length > 0) {
                         if (userIdentity) {
                             obj.addOwner(userIdentity);
@@ -188,7 +188,7 @@ export default {
                         for (let i = 0; i < readers.length; i++) {
                             obj.addReader(EcPk.fromPem(readers[i]));
                         }
-                        obj = EcEncryptedValue.toEncryptedValue(obj);
+                        obj = await EcEncryptedValue.toEncryptedValue(obj);
                     }
                     window.repo.saveTo(obj, done, done);
                 }, done);
@@ -198,7 +198,7 @@ export default {
                 for (let i = 0; i < readers.length; i++) {
                     framework.addReader(EcPk.fromPem(readers[i]));
                 }
-                framework = EcEncryptedValue.toEncryptedValue(framework);
+                framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             return framework;
         }

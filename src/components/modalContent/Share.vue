@@ -947,7 +947,7 @@ export default {
                     this.$store.commit('app/selectDirectory', directory);
                 }
                 directory["schema:dateModified"] = new Date().toISOString();
-                EcEncryptedValue.toEncryptedValueAsync(directory, false, function(edirectory) {
+                EcEncryptedValue.toEncryptedValue(directory, false, function(edirectory) {
                     me.toSave.push(edirectory);
                     me.repo.search("(directory:\"" + directory.shortId() + "\" OR parentDirectory:\"" + directory.shortId() + "\")", function() {}, function(success) {
                         me.frameworksToProcess += success.length;
@@ -982,7 +982,7 @@ export default {
                     this.$store.commit('app/objForShareModal', resource);
                 }
                 resource["schema:dateModified"] = new Date().toISOString();
-                EcEncryptedValue.toEncryptedValueAsync(resource, false, function(eresource) {
+                EcEncryptedValue.toEncryptedValue(resource, false, function(eresource) {
                     me.toSave.push(eresource);
                     me.multiput(me.toSave);
                 }, appError);
@@ -998,7 +998,7 @@ export default {
                                 c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                             }
                             c["schema:dateModified"] = new Date().toISOString();
-                            EcEncryptedValue.toEncryptedValueAsync(c, false, function(ec) {
+                            EcEncryptedValue.toEncryptedValue(c, false, function(ec) {
                                 me.toSave.push(ec);
                                 done();
                             }, done);
@@ -1013,7 +1013,7 @@ export default {
                                 if (!r.owner) {
                                     r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                                 }
-                                EcEncryptedValue.toEncryptedValueAsync(r, false, function(er) {
+                                EcEncryptedValue.toEncryptedValue(r, false, function(er) {
                                     me.toSave.push(er);
                                     done();
                                 }, done);
@@ -1050,7 +1050,7 @@ export default {
             let d = new EcDirectory();
             let v;
             if (directory.type === "Directory") {
-                v = EcEncryptedValue.toEncryptedValue(directory);
+                v = await EcEncryptedValue.toEncryptedValue(directory);
             } else {
                 v = new EcEncryptedValue();
                 v.copyFrom(directory);
@@ -1086,7 +1086,7 @@ export default {
             let cw = new schema.CreativeWork();
             let v;
             if (resource.type === "CreativeWork") {
-                v = EcEncryptedValue.toEncryptedValue(resource);
+                v = await EcEncryptedValue.toEncryptedValue(resource);
             } else {
                 v = new EcEncryptedValue();
                 v.copyFrom(resource);
@@ -1106,7 +1106,7 @@ export default {
             let f = new EcFramework();
             let v;
             if (framework.type === "Framework") {
-                v = EcEncryptedValue.toEncryptedValue(framework);
+                v = await EcEncryptedValue.toEncryptedValue(framework);
             } else {
                 v = new EcEncryptedValue();
                 v.copyFrom(framework);
@@ -1129,7 +1129,7 @@ export default {
                                 v = new EcEncryptedValue();
                                 v.copyFrom(c);
                             } else {
-                                v = EcEncryptedValue.toEncryptedValue(c);
+                                v = await EcEncryptedValue.toEncryptedValue(c);
                             }
                             c = new EcCompetency();
                             c.copyFrom(await v.decryptIntoObject());
@@ -1151,7 +1151,7 @@ export default {
                                     v = new EcEncryptedValue();
                                     v.copyFrom(r);
                                 } else {
-                                    v = EcEncryptedValue.toEncryptedValue(r);
+                                    v = await EcEncryptedValue.toEncryptedValue(r);
                                 }
                                 r = new EcAlignment();
                                 r.copyFrom(await v.decryptIntoObject());
@@ -1194,7 +1194,7 @@ export default {
                 this.$store.commit('editor/framework', f);
             }
             f["schema:dateModified"] = new Date().toISOString();
-            EcEncryptedValue.toEncryptedValueAsync(f, false, function(ef) {
+            EcEncryptedValue.toEncryptedValue(f, false, function(ef) {
                 me.toSave.push(ef);
                 me.multiput(me.toSave, function() {
                     if (me.framework) {
@@ -1206,7 +1206,7 @@ export default {
                 });
             }, appError);
         },
-        handleMakePrivateConceptScheme: function() {
+        handleMakePrivateConceptScheme: async function() {
             var me = this;
             var framework = this.framework;
             var cs = new EcConceptScheme();
@@ -1217,7 +1217,7 @@ export default {
             this.$store.commit('editor/framework', cs);
             var name = cs["dcterms:title"];
             cs["schema:dateModified"] = new Date().toISOString();
-            cs = EcEncryptedValue.toEncryptedValue(cs);
+            cs = await EcEncryptedValue.toEncryptedValue(cs);
             cs["dcterms:title"] = name;
             this.toSave.push(cs);
             if (framework["skos:hasTopConcept"]) {
@@ -1233,7 +1233,7 @@ export default {
         handleMakePublicConceptScheme: async function() {
             var me = this;
             var framework = this.framework;
-            framework = EcEncryptedValue.toEncryptedValue(framework);
+            framework = await EcEncryptedValue.toEncryptedValue(framework);
             var cs = new EcConceptScheme();
             appLog(framework);
             appLog(await framework.decryptIntoObject());
@@ -1256,7 +1256,7 @@ export default {
             var me = this;
             var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
-                EcRepository.get(conceptId, function(concept) {
+                EcRepository.get(conceptId, async function(concept) {
                     if (!concept.owner) {
                         concept.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
@@ -1265,7 +1265,7 @@ export default {
                         me.encryptConcepts(concept);
                     }
                     if (EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
-                        concept = EcEncryptedValue.toEncryptedValue(concept);
+                        concept = await EcEncryptedValue.toEncryptedValue(concept);
                     }
                     me.toSave.push(concept);
                     done();
@@ -1289,7 +1289,7 @@ export default {
                         v = new EcEncryptedValue();
                         v.copyFrom(concept);
                     } else {
-                        v = EcEncryptedValue.toEncryptedValue(concept);
+                        v = await EcEncryptedValue.toEncryptedValue(concept);
                     }
                     concept = new EcConcept();
                     concept.copyFrom(await v.decryptIntoObject());
