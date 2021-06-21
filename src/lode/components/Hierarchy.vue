@@ -363,7 +363,7 @@ export default {
     name: 'Hierarchy',
     mixins: [ common, competencyEdits ],
     props: {
-        scrolled: String,
+        scrolled: Boolean,
         container: Object,
         containerType: String,
         containerTypeGet: String,

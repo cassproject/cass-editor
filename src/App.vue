@@ -84,7 +84,7 @@ export default {
             r.init(server, function() {
                 appLog("Repository initialized");
             }, appError);
-            r.autoDetectRepositoryAsync();
+            r.autoDetectRepositoryAsync(appLog, appError);
             window.repo = r;
             this.repo = r;
 
