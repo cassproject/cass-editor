@@ -284,10 +284,10 @@ export default {
             this.loginBusy = false;
             this.$router.push({path: '/frameworks'});
         },
-        addGroupIdentity(group) {
+        async addGroupIdentity(group) {
             try {
                 // add all available group keys to identity manager
-                let groupPpkSet = group.getOrgKeys();
+                let groupPpkSet = await group.getOrgKeys();
                 appLog("Adding group identities: " + "(" + group.shortId() + ") - " + group.getName() + " - (" + groupPpkSet.length + ") keys");
                 for (let i = 0; i < groupPpkSet.length; i++) {
                     let gPpk = groupPpkSet[i];

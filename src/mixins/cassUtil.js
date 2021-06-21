@@ -8,10 +8,10 @@ export const cassUtil = {
             let paramObj = {};
             paramObj.size = 10000;
             EcOrganization.search(window.repo, '',
-                function(ecoa) {
+                async function(ecoa) {
                     for (let o of ecoa) {
                         try {
-                            let groupPpkSet = o.getOrgKeys();
+                            let groupPpkSet = await o.getOrgKeys();
                             for (let gPpk of groupPpkSet) {
                                 if (gPpk && gPpk.toPk().toPem().equals(ecPkPem)) {
                                     successCallback(o);

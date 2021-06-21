@@ -242,10 +242,10 @@ export default {
             paramObj.size = this.GROUP_SEARCH_SIZE;
             EcOrganization.search(window.repo, '', this.searchRepositoryForGroupsSuccess, this.searchRepositoryForGroupsFailure, paramObj);
         },
-        addGroupIdentity: function(group) {
+        addGroupIdentity: async function(group) {
             try {
                 // add all available group keys to identity manager
-                let groupPpkSet = group.getOrgKeys();
+                let groupPpkSet = await group.getOrgKeys();
                 appLog("Adding group identities: " + "(" + group.shortId() + ") - " + group.getName() + " - (" + groupPpkSet.length + ") keys");
                 for (let i = 0; i < groupPpkSet.length; i++) {
                     let gPpk = groupPpkSet[i];

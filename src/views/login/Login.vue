@@ -133,10 +133,10 @@ export default {
             this.identityToLinkToPerson = null;
             this.$router.push({path: '/createAccount'});
         },
-        addGroupIdentity: function(group) {
+        addGroupIdentity: async function(group) {
             try {
                 // add all available group keys to identity manager
-                let groupPpkSet = group.getOrgKeys();
+                let groupPpkSet = await group.getOrgKeys();
                 appLog("Adding group identities: " + "(" + group.shortId() + ") - " + group.getName() + " - (" + groupPpkSet.length + ") keys");
                 for (let i = 0; i < groupPpkSet.length; i++) {
                     let gPpk = groupPpkSet[i];
