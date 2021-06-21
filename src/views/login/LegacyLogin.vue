@@ -409,7 +409,7 @@ export default {
         },
         createPersonObjectToLinkToIdentity() {
             appLog("Creating person object for identity...");
-            let p = new Person();
+            let p = new EcPerson();
             p.assignId(window.repo.selectedServer, this.identityToLinkToPerson.ppk.toPk().fingerprint());
             p.addOwner(this.identityToLinkToPerson.ppk.toPk());
             p.name = this.createLinkPersonName;
@@ -457,7 +457,7 @@ export default {
         },
         handleCheckUsernameFetchIdentityFailure: function(failMsg) {
             appLog('handleCheckUsernameFetchIdentityFailure: ' + failMsg);
-            if (failMsg && failMsg.toLowerCase().trim().equals('user does not exist.')) {
+            if (failMsg && failMsg.toString().toLowerCase().indexOf('user does not exist') !== -1) {
                 this.createNewAccountIdentityAndPerson();
             } else {
                 this.createAccountOrLinkPersonDataInvalid = true;

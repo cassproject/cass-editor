@@ -184,7 +184,7 @@ export default {
         },
         createPersonObjectForIdentity: function() {
             appLog("Creating person object for identity...");
-            let p = new Person();
+            let p = new EcPerson();
             p.assignId(window.repo.selectedServer, this.identityToLinkToPerson.ppk.toPk().fingerprint());
             p.addOwner(this.identityToLinkToPerson.ppk.toPk());
             p.name = this.loginCredentials.name;
