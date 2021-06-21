@@ -425,7 +425,8 @@ export default {
             isDraggable: true,
             shiftKey: false,
             arrowKey: null,
-            addCompetencyOrChildText: "Add Competency"
+            addCompetencyOrChildText: "Add Competency",
+            hierarchy: null
         };
     },
     components: {
@@ -456,6 +457,11 @@ export default {
             if (val) {
                 this.onClickCreateNew();
                 this.$store.commit('editor/addAnother', false);
+            }
+        },
+        once: function(val) {
+            if (val) {
+                this.computeHierarchy();
             }
         }
     },
@@ -509,23 +515,6 @@ export default {
         addAnother: function() {
             return this.$store.getters['editor/addAnother'];
         },
-        hierarchy: function() {
-            var me = this;
-            if (this.container == null) return null;
-            if (!this.once) return this.structure;
-            appLog("Computing hierarchy.");
-            var precache = [];
-            if (this.container[this.containerNodeProperty] != null) { precache = precache.concat(this.container[this.containerNodeProperty]); }
-            if (this.container[this.containerEdgeProperty] != null) { precache = precache.concat(this.container[this.containerEdgeProperty]); }
-            if (precache.length > 0) {
-                this.repo.multiget(precache, function(success) {
-                    me.computeHierarchy();
-                }, appError);
-            } else {
-                me.computeHierarchy();
-            }
-            return this.structure;
-        },
         // True if the current client can edit this object.
         canEdit: function() {
             if (this.viewOnly === true) {
@@ -541,6 +530,17 @@ export default {
         }
     },
     mounted: function() {
+        let me = this;
+        var precache = [];
+        if (this.container[this.containerNodeProperty] != null) { precache = precache.concat(this.container[this.containerNodeProperty]); }
+        if (this.container[this.containerEdgeProperty] != null) { precache = precache.concat(this.container[this.containerEdgeProperty]); }
+        if (precache.length > 0) {
+            this.repo.multiget(precache, function(success) {
+                me.computeHierarchy();
+            }, appError);
+        } else {
+            me.computeHierarchy();
+        }
         if (this.queryParams) {
             if (this.queryParams.singleSelect) {
                 this.selectButtonText = this.queryParams.singleSelect;
@@ -724,6 +724,7 @@ export default {
             this.packChildren(this.structure);
             this.deleteUnderscore(this.structure);
             this.once = false;
+            this.hierarchy = this.structure;
         },
         packChildren: function(item) {
             if (item == null) return;

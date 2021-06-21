@@ -659,8 +659,10 @@ export default {
             }
         },
         configHasLevels: function() {
-            this.gotInitialLevelsRelationsAndAlignments = false;
-            this.preloadRelations();
+            if (this.hierarchyIsdoneLoading) {
+                this.gotInitialLevelsRelationsAndAlignments = false;
+                this.preloadRelations();
+            }
         }
     },
     methods: {
