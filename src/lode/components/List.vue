@@ -340,19 +340,6 @@ export default {
                         }
                         search += ("description:" + this.searchTerm);
                         termAdded = true;
-                    } else if (type === "Framework") {
-                        if (termAdded) {
-                            search += " OR ";
-                        }
-                        // Other framework property from config
-                        search += (this.applySearchTo[i].id + ":" + this.searchTerm);
-                        termAdded = true;
-                    } else if (type === "Competency" && this.applySearchTo[i].id === "competencyLabel") {
-                        if (termAdded) {
-                            search += " OR ";
-                        }
-                        search += ("ceasn\\:competencyLabel:" + this.searchTerm);
-                        termAdded = true;
                     } else if (this.applySearchTo[i].id === "ownerName") {
                         let paramObj = {};
                         paramObj.size = 10;
@@ -390,6 +377,19 @@ export default {
                             appError(failure);
                             callback(null);
                         }, paramObj);
+                    } else if (type === "Framework") {
+                        if (termAdded) {
+                            search += " OR ";
+                        }
+                        // Other framework property from config
+                        search += (this.applySearchTo[i].id + ":" + this.searchTerm);
+                        termAdded = true;
+                    } else if (type === "Competency" && this.applySearchTo[i].id === "competencyLabel") {
+                        if (termAdded) {
+                            search += " OR ";
+                        }
+                        search += ("ceasn\\:competencyLabel:" + this.searchTerm);
+                        termAdded = true;
                     }
                 }
                 if (!this.applySearchToOwner) {
