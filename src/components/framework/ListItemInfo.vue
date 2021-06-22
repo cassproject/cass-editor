@@ -285,7 +285,7 @@
                         </div>
                     </template>
                     <!-- users -->
-                    <template v-if="loggedIn && canEditObject">
+                    <template v-if="loggedIn && canEditObject && !(objectType === 'CreativeWork' && !$store.state.featuresEnabled.userManagementEnabled)">
                         <button
                             :class="accordion === 'users' ? 'active' : ''"
                             @click="clickAccordion('users')"
