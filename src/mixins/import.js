@@ -583,15 +583,7 @@ export default {
                 "docx",
                 formData,
                 function(s) {
-                    var d = null;
-                    try {
-                        d = JSON.parse(s);
-                    } catch (ex) {
-                        me.$store.commit('app/importStatus', s);
-                        me.$store.commit('app/importTransition', 'process');
-                        me.$store.commit('app/addImportError', s);
-                        return;
-                    }
+                    var d = s;
                     if (d == null) {
                         me.$store.commit('app/importStatus', s);
                         me.$store.commit('app/importTransition', 'process');

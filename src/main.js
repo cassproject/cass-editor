@@ -12,6 +12,7 @@ import VueResource from 'vue-resource';
 
 var VueScrollTo = require('vue-scrollto');
 require("cassproject");
+global.UUID = require('pure-uuid');
 
 const options = {
     color: '#68C8DB',

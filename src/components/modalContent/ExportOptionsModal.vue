@@ -326,7 +326,7 @@ export default {
         exportCtdlasnCsv: function(link) {
             var me = this;
             EcRemote.getExpectingString(link.replace("/data/", "/ceasn/"), null, function(success) {
-                CSVExport.exportCTDLASN(JSON.parse(success), me.obj.getName());
+                CSVExport.exportCTDLASN(success, me.obj.getName());
             }, function(error) {
                 appLog(error);
             });

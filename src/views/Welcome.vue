@@ -311,7 +311,6 @@ export default {
             this.importing = true;
             this.error = null;
             EcRemote.getExpectingString(url, null, function(result) {
-                result = JSON.parse(result);
                 var graph = result["@graph"];
                 if (graph != null) {
                     me.importJsonLd(result);
