@@ -23,7 +23,7 @@
                                         Select an option
                                     </option>
                                     <option
-                                        v-for="(option, index) in options"
+                                        v-for="(option, index) in importModalParams.options"
                                         :value="option"
                                         :key="index">
                                         {{ option }}
