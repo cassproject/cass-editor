@@ -11,11 +11,11 @@ export default {
             var initialRelations = thisFramework.relation ? thisFramework.relation.slice() : null;
             var initialLevels = thisFramework.level ? thisFramework.level.slice() : null;
             thisFramework["schema:dateModified"] = new Date().toISOString();
-            thisFramework.removeCompetency(thing.shortId(), function() {
+            thisFramework.removeCompetency(thing.shortId(), async function() {
                 var framework = me.framework;
                 me.$store.commit('editor/addEditsToUndo', [{operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels]}]);
                 if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[f.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                    framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
                 window.repo.saveTo(framework, function() {
                     me.$store.commit('editor/framework', thisFramework);
@@ -61,7 +61,7 @@ export default {
                 var initialLevels = framework.level ? framework.level.slice() : null;
                 this.$store.commit('editor/selectedCompetency', thing);
                 framework["schema:dateModified"] = new Date().toISOString();
-                framework.removeCompetency(thing.shortId(), function() {
+                framework.removeCompetency(thing.shortId(), async function() {
                     framework.removeLevel(thing.shortId());
                     me.$store.commit('editor/addEditsToUndo', [
                         {operation: "delete", obj: thing},
@@ -72,7 +72,7 @@ export default {
                     me.$store.commit('editor/selectedCompetency', null);
                     var frameworkToSave = framework;
                     if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                        frameworkToSave = EcEncryptedValue.toEncryptedValue(framework);
+                        frameworkToSave = await EcEncryptedValue.toEncryptedValue(framework);
                     }
                     window.repo.saveTo(frameworkToSave, function() {
                         me.$store.commit('editor/framework', framework);

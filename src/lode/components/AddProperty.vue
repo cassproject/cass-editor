@@ -384,7 +384,7 @@ export default {
         removeValueAtIndex: function() {
             this.$store.commit('lode/removeAddingValueAtIndex', this.idx);
         },
-        search: function() {
+        search: async function() {
             this.addRelationBy = 'search';
             this.$emit('is-searching', true);
             if (this.selectedPropertyRange[0].toLowerCase().indexOf("concept") !== -1) {
@@ -398,7 +398,7 @@ export default {
                 this.$store.commit('lode/copyOrLink', false);
             }
             if (this.$store.state.editor) {
-                var selected = this.expandedThing ? EcRepository.getBlocking(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"])) : null;
+                var selected = this.expandedThing ? await EcRepository.get(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"])) : null;
                 this.$store.commit('editor/selectedCompetency', selected);
                 this.$store.commit('editor/selectCompetencyRelation', this.selectedPropertyToAdd.value);
             }
@@ -406,7 +406,7 @@ export default {
         }
     },
     watch: {
-        selectedPropertyToAdd: function() {
+        selectedPropertyToAdd: async function() {
             this.selectedPropertyToAddIsLangString = false;
             if (this.profile && this.profile[this.selectedPropertyToAdd.value]) {
                 var range = [];
@@ -430,7 +430,7 @@ export default {
             if (this.profile && this.profile[this.selectedPropertyToAdd.value] && this.profile[this.selectedPropertyToAdd.value]['options'] && this.checkedOptions) {
                 for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
                     let option = this.profile[this.selectedPropertyToAdd.value]['options'][i];
-                    option.name = EcRepository.getBlocking(option.val).name;
+                    option.name = await EcRepository.get(option.val).name;
                     this.optionsArray.push(option);
                 }
             }

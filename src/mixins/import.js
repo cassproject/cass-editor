@@ -36,8 +36,8 @@ export default {
         onEditNode: function() {
             this.editingNode = true;
         },
-        onDoneEditingNode: function() {
-            this.changedObj = EcRepository.getBlocking(this.importFramework.shortId());
+        onDoneEditingNode: async function() {
+            this.changedObj = await EcRepository.get(this.importFramework.shortId());
             this.editingNode = false;
         },
         handleDoneLoading: function() {
@@ -61,7 +61,7 @@ export default {
                     }
                 };
             } else if (val === 'duplicateOverwriteOnly') {
-                if (data[1] && (!EcIdentityManager.ids || EcIdentityManager.ids.length === 0)) {
+                if (data[1] && (!EcIdentityManager.default.ids || EcIdentityManager.default.ids.length === 0)) {
                     // An owner is attached from the server-side import so it can be overwritten, just not edited
                     params = {
                         type: val,
@@ -451,7 +451,7 @@ export default {
             reader.readAsText(file, "UTF-8");
         },
         importMedbiq: function() {
-            var identity = EcIdentityManager.ids[0];
+            var identity = EcIdentityManager.default.ids[0];
             var f = new EcFramework();
             if (identity != null) { f.addOwner(identity.ppk.toPk()); }
             if (this.queryParams.newObjectEndpoint != null && this.queryParams.newObjectEndpoint !== undefined) {
@@ -495,7 +495,7 @@ export default {
             }, me.repo);
         },
         importAsn: function() {
-            var identity = EcIdentityManager.ids[0];
+            var identity = EcIdentityManager.default.ids[0];
             let me = this;
             me.$store.commit('app/importTransition', 'process');
             ASNImport.importCompetencies(this.repo.selectedServer, identity, true, function(competencies, f) {
@@ -520,7 +520,7 @@ export default {
         },
         importCtdlAsnCsv: function() {
             let ceo = null;
-            if (EcIdentityManager.ids.length > 0) { ceo = EcIdentityManager.ids[0]; }
+            if (EcIdentityManager.default.ids.length > 0) { ceo = EcIdentityManager.default.ids[0]; }
             let me = this;
             CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies, relations) {
                 for (var i = 0; i < frameworks.length; i++) {
@@ -583,15 +583,7 @@ export default {
                 "docx",
                 formData,
                 function(s) {
-                    var d = null;
-                    try {
-                        d = JSON.parse(s);
-                    } catch (ex) {
-                        me.$store.commit('app/importStatus', s);
-                        me.$store.commit('app/importTransition', 'process');
-                        me.$store.commit('app/addImportError', s);
-                        return;
-                    }
+                    var d = s;
                     if (d == null) {
                         me.$store.commit('app/importStatus', s);
                         me.$store.commit('app/importTransition', 'process');
@@ -725,7 +717,7 @@ export default {
         importCsv: function() {
             var file = this.importFile[0];
             var relations = this.csvRelationFile;
-            var identity = EcIdentityManager.ids[0];
+            var identity = EcIdentityManager.default.ids[0];
             var endpoint = this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint;
 
             var f = new EcFramework();
@@ -800,11 +792,11 @@ export default {
                 var file = this.importFile[0];
                 formData.append('file', file);
             }
-            var identity = EcIdentityManager.ids[0];
+            var identity = EcIdentityManager.default.ids[0];
             if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
             let me = this;
             me.$store.commit('app/importFramework', null);
-            EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, function(data) {
+            EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
                 if (data.indexOf("ctdlasn") !== -1) {
                     var data1 = data.substring(0, data.indexOf("ctdlasn"));
                     var data2 = data.substring(data.indexOf("ctdlasn") + 7);
@@ -815,9 +807,9 @@ export default {
                     delete EcRepository.cache[data];
                 }
                 if (me.conceptMode) {
-                    framework = EcConceptScheme.getBlocking(data);
+                    framework = await EcConceptScheme.get(data);
                 } else {
-                    framework = EcFramework.getBlocking(data);
+                    framework = await EcFramework.get(data);
                     me.$store.commit('app/importFramework', framework);
                 }
                 me.$store.commit('editor/framework', framework);
@@ -851,8 +843,8 @@ export default {
         importCtdlAsnConceptCsv: function() {
             var me = this;
             var ceo = null;
-            if (EcIdentityManager.ids.length > 0) {
-                ceo = EcIdentityManager.ids[0];
+            if (EcIdentityManager.default.ids.length > 0) {
+                ceo = EcIdentityManager.default.ids[0];
             }
             me.$store.commit('app/importStatus', 'process');
             CTDLASNCSVConceptImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies) {
@@ -910,8 +902,8 @@ export default {
         },
         parseText: function() {
             var me = this;
-            if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                this.importFramework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
+                this.importFramework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             if (this.queryParams.newObjectEndpoint !== null && this.queryParams.newObjectEndpoint !== undefined) {
                 this.importFramework.generateShortId(this.queryParams.newObjectEndpoint);
@@ -924,16 +916,16 @@ export default {
             var toSave = [this.importFramework];
             for (var i = 0; i < this.importFramework.competency.length; i++) {
                 var comp = EcRepository.cache[this.importFramework.competency[i]];
-                if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                    comp.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
+                    comp.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 toSave.push(comp);
             }
             if (this.importFramework.relation) {
                 for (var i = 0; i < this.importFramework.relation.length; i++) {
                     var relation = EcRepository.cache[this.importFramework.relation[i]];
-                    if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                        relation.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
+                        relation.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     toSave.push(relation);
                 }
@@ -969,16 +961,6 @@ export default {
                 return;
             }
             EcRemote.getExpectingString(this.importUrl, null, function(result) {
-                try {
-                    result = JSON.parse(result);
-                } catch (ex) {
-                    error.details = ex.message;
-                    me.$store.commit('app/importStatus', ex.message);
-                    me.$store.commit('app/importTransition', 'upload');
-                    me.$store.commit('app/addImportError', ex.message);
-                    me.showModal('error', error);
-                    return;
-                }
                 var graph = result["@graph"];
                 if (graph != null) {
                     var id = graph[0]["@id"];
@@ -1071,7 +1053,7 @@ export default {
             TabStructuredImport.importCompetencies(
                 newText,
                 this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : this.repo.selectedServer,
-                EcIdentityManager.ids[0],
+                EcIdentityManager.default.ids[0],
                 function(competencies, relations) {
                     me.$store.commit('app/importTransition', 'light');
                     let feedback = competencies.length + " competencies and " + relations.length + " relations.";

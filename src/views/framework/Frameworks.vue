@@ -302,7 +302,7 @@ export default {
             showMine: false,
             showNotMine: false,
             filterByConfig: false,
-            numIdentities: EcIdentityManager.ids.length,
+            numIdentities: EcIdentityManager.default.ids.length,
             parentObjectClass: 'frameworks-sticky',
             sortBy: null,
             defaultConfig: ""
@@ -349,26 +349,26 @@ export default {
             }
             if (this.showMine || (this.queryParams && !this.conceptMode && this.queryParams.show === "mine") ||
                 (this.queryParams && this.conceptMode && this.queryParams.conceptShow === "mine")) {
-                if (EcIdentityManager.ids.length > 0) {
+                if (EcIdentityManager.default.ids.length > 0) {
                     search += " AND (";
-                    for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                    for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
                         if (i !== 0) {
                             search += " OR ";
                         }
-                        var id = EcIdentityManager.ids[i];
+                        var id = EcIdentityManager.default.ids[i];
                         search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
                         search += " OR \\*owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                     }
                     search += ")";
                 }
             }
-            if (this.showNotMine && EcIdentityManager.ids.length > 0) {
+            if (this.showNotMine && EcIdentityManager.default.ids.length > 0) {
                 search += " AND NOT (";
-                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
                     if (i !== 0) {
                         search += " OR ";
                     }
-                    var id = EcIdentityManager.ids[i];
+                    var id = EcIdentityManager.default.ids[i];
                     search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
                     search += " OR \\*owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                 }
@@ -386,7 +386,7 @@ export default {
             obj.size = 20;
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
-            if (EcIdentityManager.ids.length > 0 && this.queryParams && ((!this.conceptMode && this.queryParams.show === 'mine') ||
+            if (EcIdentityManager.default.ids.length > 0 && this.queryParams && ((!this.conceptMode && this.queryParams.show === 'mine') ||
                 (this.conceptMode && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
@@ -417,7 +417,7 @@ export default {
     },
     methods: {
         canEditItem: function(item) {
-            return item.canEditAny(EcIdentityManager.getMyPks());
+            return item.canEditAny(EcIdentityManager.default.getMyPks());
         },
         openItem: function(object) {
             var me = this;
@@ -474,10 +474,10 @@ export default {
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];
-            if (Thing.getDisplayStringFrom(name).toLowerCase().indexOf("http") !== -1) {
-                return this.resolveNameFromUrl(Thing.getDisplayStringFrom(name));
+            if (schema.Thing.getDisplayStringFrom(name).toLowerCase().indexOf("http") !== -1) {
+                return this.resolveNameFromUrl(schema.Thing.getDisplayStringFrom(name));
             } else {
-                return Thing.getDisplayStringFrom(name);
+                return schema.Thing.getDisplayStringFrom(name);
             }
         },
         addNewlinesToId: function(pem) {

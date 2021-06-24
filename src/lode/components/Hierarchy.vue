@@ -363,7 +363,7 @@ export default {
     name: 'Hierarchy',
     mixins: [ common, competencyEdits ],
     props: {
-        scrolled: String,
+        scrolled: Boolean,
         container: Object,
         containerType: String,
         containerTypeGet: String,
@@ -425,7 +425,8 @@ export default {
             isDraggable: true,
             shiftKey: false,
             arrowKey: null,
-            addCompetencyOrChildText: "Add Competency"
+            addCompetencyOrChildText: "Add Competency",
+            hierarchy: null
         };
     },
     components: {
@@ -456,6 +457,11 @@ export default {
             if (val) {
                 this.onClickCreateNew();
                 this.$store.commit('editor/addAnother', false);
+            }
+        },
+        once: function(val) {
+            if (val) {
+                this.computeHierarchy();
             }
         }
     },
@@ -509,29 +515,12 @@ export default {
         addAnother: function() {
             return this.$store.getters['editor/addAnother'];
         },
-        hierarchy: function() {
-            var me = this;
-            if (this.container == null) return null;
-            if (!this.once) return this.structure;
-            appLog("Computing hierarchy.");
-            var precache = [];
-            if (this.container[this.containerNodeProperty] != null) { precache = precache.concat(this.container[this.containerNodeProperty]); }
-            if (this.container[this.containerEdgeProperty] != null) { precache = precache.concat(this.container[this.containerEdgeProperty]); }
-            if (precache.length > 0) {
-                this.repo.multiget(precache, function(success) {
-                    me.computeHierarchy();
-                }, appError, appLog);
-            } else {
-                me.computeHierarchy();
-            }
-            return this.structure;
-        },
         // True if the current client can edit this object.
         canEdit: function() {
             if (this.viewOnly === true) {
                 return false;
             }
-            return this.container.canEditAny(EcIdentityManager.getMyPks());
+            return this.container.canEditAny(EcIdentityManager.default.getMyPks());
         },
         hasLargeNumberOfItems: function() {
             if (this.container == null) {
@@ -541,6 +530,17 @@ export default {
         }
     },
     mounted: function() {
+        let me = this;
+        var precache = [];
+        if (this.container[this.containerNodeProperty] != null) { precache = precache.concat(this.container[this.containerNodeProperty]); }
+        if (this.container[this.containerEdgeProperty] != null) { precache = precache.concat(this.container[this.containerEdgeProperty]); }
+        if (precache.length > 0) {
+            this.repo.multiget(precache, function(success) {
+                me.computeHierarchy();
+            }, appError);
+        } else {
+            me.computeHierarchy();
+        }
         if (this.queryParams) {
             if (this.queryParams.singleSelect) {
                 this.selectButtonText = this.queryParams.singleSelect;
@@ -627,14 +627,13 @@ export default {
             }
         },
         showModal(val, data) {
-            let params = {};
             if (val === 'export') {
                 this.$store.commit('editor/setItemToExport', this.container);
                 this.$store.commit('app/showModal', {title: 'Export Framework', component: 'ExportOptionsModal'});
             }
         },
-        openFramework: function() {
-            var f = EcFramework.getBlocking(this.container.shortId());
+        openFramework: async function() {
+            var f = await EcFramework.get(this.container.shortId());
             this.$store.commit('editor/framework', f);
             this.$router.push({name: "framework", params: {frameworkId: this.container.id}});
         },
@@ -668,23 +667,22 @@ export default {
                 this.$emit('done-loading-nodes');
             }, 1000);
         },
-        computeHierarchy: function() {
+        computeHierarchy: async function() {
             var me = this;
             var r = {};
             var top = {};
-            this.structure = [];
             if (this.container == null) { return r; }
             if (this.container[this.containerNodeProperty] !== null && this.container[this.containerNodeProperty] !== undefined) {
                 for (var i = 0; i < this.container[this.containerNodeProperty].length; i++) {
-                    let c = window[this.nodeType].getBlocking(this.container[this.containerNodeProperty][i]);
+                    let c = await window[this.nodeType].get(this.container[this.containerNodeProperty][i]);
                     if (c == null) {
-                        c = EcRepository.getBlocking(this.container[this.containerNodeProperty][i]);
+                        c = await EcRepository.get(this.container[this.containerNodeProperty][i]);
                         if (c && c.encryptedType && c.encryptedType.toLowerCase() === this.containerNodeProperty) {
                             let encryptedType = "Ec" + c.encryptedType;
                             let v = new EcEncryptedValue();
                             v.copyFrom(c);
                             c = new window[encryptedType]();
-                            c.copyFrom(v.decryptIntoObject());
+                            c.copyFrom(await v.decryptIntoObject());
                         }
                     }
                     if (c !== null) {
@@ -695,7 +693,7 @@ export default {
             if (this.container[this.containerEdgeProperty] != null && this.container[this.containerEdgeProperty] !== undefined) {
                 for (var i = 0; i < this.container[this.containerEdgeProperty].length; i++) {
                     var a = null;
-                    a = window[this.edgeType].getBlocking(this.container[this.containerEdgeProperty][i]);
+                    a = await window[this.edgeType].get(this.container[this.containerEdgeProperty][i]);
                     if (a != null) {
                         if (a[this.edgeRelationProperty] === this.edgeRelationLiteral) {
                             if (r[a[this.edgeTargetProperty]] == null) continue;
@@ -726,6 +724,7 @@ export default {
             this.packChildren(this.structure);
             this.deleteUnderscore(this.structure);
             this.once = false;
+            this.hierarchy = this.structure;
         },
         packChildren: function(item) {
             if (item == null) return;
@@ -788,7 +787,7 @@ export default {
                 !this.controlOnStart, plusup);
         },
         // fromId is the id of the object you're moving. toId is the id of the object that will be immediately below this object after the move, at the same level of hierarchy.
-        move: function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
+        move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
             this.once = true;
             var me = this;
             var initialCompetencies = me.container[me.containerNodeProperty] ? me.container[me.containerNodeProperty].slice() : null;
@@ -817,11 +816,11 @@ export default {
                 }
             }
             if (fromContainerId !== toContainerId) {
-                var source = window[this.nodeType].getBlocking(fromId);
-                var target = window[this.nodeType].getBlocking(toContainerId);
+                var source = await window[this.nodeType].get(fromId);
+                var target = await window[this.nodeType].get(toContainerId);
                 if (removeOldRelations === true && fromId !== toContainerId) {
                     for (var i = 0; i < this.container[this.containerEdgeProperty].length; i++) {
-                        var a = window[this.edgeType].getBlocking(this.container[this.containerEdgeProperty][i]);
+                        var a = await window[this.edgeType].get(this.container[this.containerEdgeProperty][i]);
                         if (a == null) { continue; }
                         if (a[this.edgeRelationProperty] === this.edgeRelationLiteral) {
                             if (a[this.edgeTargetProperty] == null) continue;
@@ -834,8 +833,8 @@ export default {
                 }
                 if (toContainerId != null && toContainerId !== "") {
                     var a = new window[this.edgeType]();
-                    if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                        a.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
+                        a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     if (this.container.owner && this.container.owner.length > 0) {
                         for (var j = 0; j < this.container.owner.length; j++) {
@@ -862,7 +861,7 @@ export default {
                         addedEdges.push(a.shortId());
                         appLog("Added edge: ", JSON.parse(a.toJson()));
                         if (this.$store.state.editor && this.$store.state.editor.private === true) {
-                            a = EcEncryptedValue.toEncryptedValue(a);
+                            a = await EcEncryptedValue.toEncryptedValue(a);
                         }
                         this.repo.saveTo(a, appLog, appError);
                     }
@@ -879,12 +878,12 @@ export default {
             me.$store.commit('editor/addEditsToUndo', edits);
             stripped["schema:dateModified"] = new Date().toISOString();
             if (this.$store.state.editor && this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[stripped.id] !== true) {
-                stripped = EcEncryptedValue.toEncryptedValue(stripped);
+                stripped = await EcEncryptedValue.toEncryptedValue(stripped);
             }
             this.repo.saveTo(stripped, appLog, appError);
             this.dragging = false;
         },
-        add: function(containerId, previousSibling) {
+        add: async function(containerId, previousSibling) {
             var me = this;
             var c = new window[this.nodeType]();
             var initialCompetencies = this.container.competency ? this.container.competency.slice() : null;
@@ -898,8 +897,8 @@ export default {
             } else {
                 c.generateId(this.repo.selectedServer);
             }
-            if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
+                c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             if (this.container.owner && this.container.owner.length > 0) {
                 for (var j = 0; j < this.container.owner.length; j++) {
@@ -944,22 +943,22 @@ export default {
                 this.$store.commit("editor/newCompetency", c.shortId());
             }
             if (this.$store.state.editor && this.$store.state.editor.private === true) {
-                c = EcEncryptedValue.toEncryptedValue(c);
+                c = await EcEncryptedValue.toEncryptedValue(c);
             }
-            this.repo.saveTo(c, function() {
+            this.repo.saveTo(c, async function() {
                 if (containerId === me.container.shortId()) {
                     var toSave = me.container;
                     toSave["schema:dateModified"] = new Date().toISOString();
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
-                        toSave = EcEncryptedValue.toEncryptedValue(me.container);
+                        toSave = await EcEncryptedValue.toEncryptedValue(me.container);
                     }
                     me.repo.saveTo(me.stripEmptyArrays(toSave), function() {
                         me.once = true;
                     }, appError);
                 } else {
                     var a = new window[me.edgeType]();
-                    if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                        a.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
+                        a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     if (me.container.owner && me.container.owner.length > 0) {
                         for (var j = 0; j < me.container.owner.length; j++) {
@@ -994,9 +993,9 @@ export default {
                         var toSave = me.container;
                         toSave["schema:dateModified"] = new Date().toISOString();
                         if (me.$store.state.editor && me.$store.state.editor.private === true) {
-                            a = EcEncryptedValue.toEncryptedValue(a);
+                            a = await EcEncryptedValue.toEncryptedValue(a);
                             if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
-                                toSave = EcEncryptedValue.toEncryptedValue(me.container);
+                                toSave = await EcEncryptedValue.toEncryptedValue(me.container);
                             }
                         }
                         me.repo.saveTo(a, function() {
@@ -1044,10 +1043,10 @@ export default {
         onDraggableCheck: function(checked) {
             this.isDraggable = checked;
         },
-        clickToSearch: function() {
+        clickToSearch: async function() {
             let selected = null;
             if (this.selectedArray && this.selectedArray.length === 1) {
-                selected = EcRepository.getBlocking(this.selectedArray[0]);
+                selected = await EcRepository.get(this.selectedArray[0]);
             }
             this.$store.commit('editor/selectedCompetency', selected);
             var payload = {
@@ -1073,8 +1072,8 @@ export default {
             this.add(parent, null);
             this.addingNode = false;
         },
-        deleteSelected: function() {
-            let item = EcRepository.getBlocking(this.selectedArray[0]);
+        deleteSelected: async function() {
+            let item = await EcRepository.get(this.selectedArray[0]);
             this.deleteObject(item);
             this.selectedArray.splice(0, this.selectedArray.length);
         }

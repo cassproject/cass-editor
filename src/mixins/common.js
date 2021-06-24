@@ -41,7 +41,9 @@ export default {
                 }
             }
             return obj;
-        },
+        }
+    },
+    methods: {
         conceptCtids: function() {
             let framework = this.framework;
             if (!framework) {
@@ -56,10 +58,10 @@ export default {
             }
             var obj = {};
             obj[framework.shortId()] = [{"@value": this.getCTID(framework.shortId())}];
-            var subCtids = function(ary) {
+            var subCtids = async function(ary) {
                 for (var i = 0; i < ary.length; i++) {
                     obj[ary[i]] = [{"@value": me.getCTID(ary[i])}];
-                    var concept = EcConcept.getBlocking(ary[i]);
+                    var concept = await EcConcept.get(ary[i]);
                     if (concept["skos:narrower"]) {
                         subCtids(concept["skos:narrower"]);
                     }
@@ -83,10 +85,10 @@ export default {
                 return null;
             }
             var obj = {};
-            var subURLs = function(ary) {
+            var subURLs = async function(ary) {
                 for (var i = 0; i < ary.length; i++) {
                     obj[ary[i]] = [{"@value": me.ceasnRegistryUriTransform(ary[i])}];
-                    var concept = EcConcept.getBlocking(ary[i]);
+                    var concept = await EcConcept.get(ary[i]);
                     if (concept["skos:narrower"]) {
                         subURLs(concept["skos:narrower"]);
                     }
@@ -96,9 +98,7 @@ export default {
                 subURLs(framework["skos:hasTopConcept"]);
             }
             return obj;
-        }
-    },
-    methods: {
+        },
         spitEvent: function(message, id, page) {
             var framework = this.framework ? this.framework : this.$store.state.editor.framework;
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
@@ -165,7 +165,7 @@ export default {
             var xhr = null;
             if ((typeof httpStatus) === "undefined") {
                 xhr = new XMLHttpRequest();
-                xhr.open("GET", url, EcRemote.async);
+                xhr.open("GET", url, true);
                 if (headers != null) {
                     var keys = EcObject.keys(headers);
                     for (var i = 0; i < keys.length; i++) {
@@ -194,9 +194,7 @@ export default {
                 };
             }
             if (xhr != null) {
-                if (EcRemote.async) {
-                    (xhr)["timeout"] = EcRemote.timeout;
-                }
+                (xhr)["timeout"] = EcRemote.timeout;
             }
             if ((typeof httpStatus) !== "undefined") {
                 if (success != null) {
@@ -242,7 +240,7 @@ export default {
                         }
                     }
                     // If it's a langstring
-                    name = Thing.getDisplayStringFrom(name);
+                    name = schema.Thing.getDisplayStringFrom(name);
                     // If still object, display value
                     if (EcObject.isObject(name)) {
                         var langs = Object.keys(name);
@@ -263,10 +261,10 @@ export default {
                         appLog("ID is undefined.");
                     }
                     if (depth < 5) {
-                        EcFramework.search(window.repo, "\"" + id + "\"", function(results) {
+                        EcFramework.search(window.repo, "\"" + id + "\"", async function(results) {
                             if (results.length <= 0) {
                                 appLog("No references found for " + id + "... deleting.");
-                                let obj = EcRepository.getBlocking(id);
+                                let obj = await EcRepository.get(id);
                                 window.repo.deleteRegistered(obj, function(success) {
                                     if (obj.type === "Level") {
                                         me.$store.commit('editor/refreshLevels', true);
@@ -290,10 +288,8 @@ export default {
                 });
             })(id, depth);
         },
-        selectButton: function(selectedArray) {
+        selectButton: async function(selectedArray) {
             var ary = [];
-            var async = EcRemote.async;
-            EcRemote.async = false;
             if (!selectedArray) {
                 selectedArray = this.selectedArray;
             }
@@ -306,23 +302,22 @@ export default {
                         } else {
                             link = selectedArray[i].replace("/data/", "/ceasn/");
                         }
-                        this.get(link, null, null, function(success) {
-                            ary.push(JSON.parse(success));
-                        }, function(failure) {
-                            appLog(failure);
-                        });
+                        let success = await EcRemote.getExpectingObject(link);
+                        if (success) {
+                            ary.push(success);
+                        }
                     } else {
-                        ary.push(JSON.parse(EcCompetency.getBlocking(selectedArray[i]).toJson()));
+                        ary.push(JSON.parse(await EcCompetency.get(selectedArray[i]).toJson()));
                     }
                 } else if (this.queryParams.selectVerbose === "true") {
-                    ary.push(JSON.parse(EcConcept.getBlocking(selectedArray[i]).toJson()));
+                    ary.push(JSON.parse(await EcConcept.get(selectedArray[i]).toJson()));
                 } else {
                     ary.push(selectedArray[i]);
                 }
             }
             if (this.queryParams.selectRelations === "true" && this.framework.relation) {
                 for (var i = 0; i < this.framework.relation.length; i++) {
-                    var relation = EcAlignment.getBlocking(this.framework.relation[i]);
+                    var relation = await EcAlignment.get(this.framework.relation[i]);
                     if (EcArray.has(selectedArray, relation.target)) {
                         if (this.queryParams.selectVerbose === "true") {
                             ary.push(JSON.parse((rld).toJson()));
@@ -341,14 +336,13 @@ export default {
                     } else {
                         link = this.framework.id.replace("/data/", "/ceasn/");
                     }
-                    this.get(link, null, null, function(success) {
-                        success = JSON.parse(success);
+                    let success = await EcRemote.getExpectingObject(link);
+                    if (success) {
+                        // success = JSON.parse(success);
                         if (success["@graph"]) {
                             currentFramework = success["@graph"][0];
                         }
-                    }, function(failure) {
-                        appLog(failure);
-                    });
+                    }
                 }
             }
             var message = {
@@ -360,9 +354,8 @@ export default {
             message = JSON.parse(JSON.stringify(message));
             appLog(message);
             parent.postMessage(message, this.queryParams.origin);
-            EcRemote.async = async;
         },
-        addLevel: function(selectedCompetency, optionalLevelUrl) {
+        addLevel: async function(selectedCompetency, optionalLevelUrl) {
             var c;
             var me = this;
             var framework = this.framework ? this.framework : this.$store.getters['editor/framework'];
@@ -379,7 +372,7 @@ export default {
                 c.competency = selectedCompetency;
             } else {
                 optionalLevelUrl = optionalLevelUrl[0];
-                var c = EcRepository.getBlocking(optionalLevelUrl);
+                var c = await EcRepository.get(optionalLevelUrl);
                 if (!c.competency) {
                     c.competency = [];
                 } else if (!EcArray.isArray(c.competency)) {
@@ -388,7 +381,7 @@ export default {
                 c.competency.push(selectedCompetency);
             }
             framework["schema:dateModified"] = new Date().toISOString();
-            window.repo.saveTo(c, function() {
+            window.repo.saveTo(c, async function() {
                 framework.addLevel(c.shortId());
                 var edits = [];
                 if (!optionalLevelUrl) {
@@ -399,7 +392,7 @@ export default {
                 me.$store.commit('editor/framework', framework);
                 if (me.$store.state.editor.private === true) {
                     if (EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                        framework = EcEncryptedValue.toEncryptedValue(framework);
+                        framework = await EcEncryptedValue.toEncryptedValue(framework);
                     }
                 }
                 window.repo.saveTo(framework, function() {
@@ -408,7 +401,7 @@ export default {
                 }, appError);
             }, appError);
         },
-        saveCheckedLevels: function(selectedCompetency, checkedOptions, allOptions) {
+        saveCheckedLevels: async function(selectedCompetency, checkedOptions, allOptions) {
             let competencyId = [];
             if (EcArray.isArray(selectedCompetency)) {
                 competencyId = selectedCompetency;
@@ -425,7 +418,7 @@ export default {
                 }
                 // If selected
                 if (checkedOptions.indexOf(allOptions[i].val) !== -1) {
-                    var level = EcLevel.getBlocking(allOptions[i].val);
+                    var level = await EcLevel.get(allOptions[i].val);
                     var initialComp = JSON.parse(JSON.stringify(level.competency));
                     if (!EcArray.isArray(level.competency)) {
                         level.competency = level.competency == null ? [] : [level.competency];
@@ -449,7 +442,7 @@ export default {
                     }
                 } else {
                     // If not selected
-                    var level = EcLevel.getBlocking(allOptions[i].val);
+                    var level = await EcLevel.get(allOptions[i].val);
                     var initialComp = JSON.parse(JSON.stringify(level.competency));
                     let levelChanged = false;
                     for (let each in competencyId) {
@@ -479,19 +472,19 @@ export default {
             this.$store.commit('lode/setAddingChecked', []);
             this.$store.commit('lode/setIsAddingProperty', false);
         },
-        saveFramework: function() {
+        saveFramework: async function() {
             this.framework["schema:dateModified"] = new Date().toISOString();
             var framework = this.framework;
             this.$store.commit('editor/framework', framework);
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                framework = EcEncryptedValue.toEncryptedValue(framework);
+                framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             window.repo.saveTo(framework, function() {}, appError);
         },
-        removeLevelFromFramework: function(levelId) {
+        removeLevelFromFramework: async function(levelId) {
             var initialLevels = this.framework.level ? this.framework.level.slice() : null;
             this.framework.removeLevel(levelId);
-            var level = EcRepository.getBlocking(levelId);
+            var level = await EcRepository.get(levelId);
             this.$store.commit('editor/addEditsToUndo', [
                 {operation: "delete", obj: level},
                 {operation: "update", id: this.framework.shortId(), fieldChanged: [this.framework.level], initialValue: [initialLevels], changedValue: [this.framework.level]}
@@ -500,13 +493,13 @@ export default {
             this.saveFramework();
             this.$store.commit('editor/refreshLevels', true);
         },
-        addRelationsToFramework: function(selectedCompetency, property, values) {
+        addRelationsToFramework: async function(selectedCompetency, property, values) {
             if (values.length > 0) {
-                selectedCompetency = EcRepository.getBlocking(selectedCompetency);
+                selectedCompetency = await EcRepository.get(selectedCompetency);
                 this.addAlignments(values, selectedCompetency, property);
             }
         },
-        addAlignments: function(targets, thing, relationType, allowSave) {
+        addAlignments: async function(targets, thing, relationType, allowSave) {
             if (this.$store.getters['editor/queryParams'].concepts === "true") {
                 return this.addConceptAlignments(targets, thing, relationType);
             }
@@ -542,8 +535,8 @@ export default {
                     r.source = dosedo;
                     r.relationType = "narrows";
                 }
-                if (EcIdentityManager.ids.length > 0) {
-                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                if (EcIdentityManager.default.ids.length > 0) {
+                    r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (framework.owner && framework.owner.length > 0) {
                     for (var j = 0; j < framework.owner.length; j++) {
@@ -558,7 +551,7 @@ export default {
                     }
                 }
                 if (this.$store.state.editor.private === true) {
-                    r = EcEncryptedValue.toEncryptedValue(r);
+                    r = await EcEncryptedValue.toEncryptedValue(r);
                 }
                 window.repo.saveTo(r, function() {}, appError);
                 if (thing.type === 'Concept') {
@@ -584,11 +577,11 @@ export default {
             this.$store.commit('editor/addEditsToUndo', edits);
             this.$store.commit('editor/framework', framework);
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                framework = EcEncryptedValue.toEncryptedValue(framework);
+                framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             window.repo.saveTo(framework, function() {}, appError);
         },
-        addRelationAsCompetencyField: function(targets, thing, relationType, allowSave) {
+        addRelationAsCompetencyField: async function(targets, thing, relationType, allowSave) {
             var me = this;
             var initialValue = thing[relationType] ? thing[relationType].slice() : null;
             for (var i = 0; i < targets.length; i++) {
@@ -601,7 +594,7 @@ export default {
             thing["schema:dateModified"] = new Date().toISOString();
             if (this.$store.state.editor.private === true) {
                 if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
-                    thing = EcEncryptedValue.toEncryptedValue(thing);
+                    thing = await EcEncryptedValue.toEncryptedValue(thing);
                 }
             }
             window.repo.saveTo(thing, function() {}, appError);
@@ -630,13 +623,13 @@ export default {
                         callback();
                     }
                 }, callback);
-            }, function() {
+            }, async function() {
                 var framework = me.framework;
                 edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation]});
                 me.$store.commit('editor/framework', framework);
                 me.$store.commit('editor/addEditsToUndo', edits);
                 if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                    framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
                 window.repo.saveTo(framework, function() {}, appError);
             });

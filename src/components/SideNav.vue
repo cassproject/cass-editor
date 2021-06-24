@@ -429,8 +429,8 @@ export default {
             dir.name = this.directoryName;
             // dir.description = "Test Description";
             dir.generateId(window.repo.selectedServer);
-            if (EcIdentityManager.ids.length > 0) {
-                dir.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                dir.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             dir["schema:dateCreated"] = new Date().toISOString();
             dir["schema:dateModified"] = new Date().toISOString();

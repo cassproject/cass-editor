@@ -323,7 +323,7 @@ export default {
             if (precache.length > 0) {
                 this.repo.multiget(precache, function(success) {
                     me.computeHierarchy();
-                }, appError, appLog);
+                }, appError);
             } else {
                 me.computeHierarchy();
             }
@@ -334,7 +334,7 @@ export default {
             if (this.viewOnly === true) {
                 return false;
             }
-            return this.container.canEditAny(EcIdentityManager.getMyPks());
+            return this.container.canEditAny(EcIdentityManager.default.getMyPks());
         },
         recomputeHierarchy: function() {
             return this.$store.getters['editor/recomputeHierarchy'];
@@ -470,25 +470,26 @@ export default {
                 this.$emit('done-loading-nodes');
             }, 1000);
         },
-        computeHierarchy: function() {
-            this.structure.splice(0, this.structure.length);
+        computeHierarchy: async function() {
+            let structure = [];
             if (this.container == null) { return r; }
             if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
                 for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
-                    var c = EcConcept.getBlocking(this.container["skos:hasTopConcept"][i]);
+                    var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
                     if (c) {
-                        this.structure.push({"obj": c, "children": []});
+                        structure.push({"obj": c, "children": []});
                         if (c["skos:narrower"]) {
-                            this.addChildren(this.structure, c, i);
+                            this.addChildren(structure, c, i);
                         }
                     }
                 }
             }
+            this.structure = structure;
             this.once = false;
         },
-        addChildren: function(structure, c, i) {
+        addChildren: async function(structure, c, i) {
             for (var j = 0; j < c["skos:narrower"].length; j++) {
-                var subC = EcConcept.getBlocking(c["skos:narrower"][j]);
+                var subC = await EcConcept.get(c["skos:narrower"][j]);
                 structure[i].children.push({"obj": subC, "children": []});
                 if (subC && subC["skos:narrower"]) {
                     this.addChildren(structure[i].children, subC, j);
@@ -534,13 +535,13 @@ export default {
                 foo.to.id,
                 !this.controlOnStart, plusup);
         },
-        move: function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
+        move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
             this.once = true;
             var me = this;
             if (fromContainerId === toContainerId) {
-                var container = EcConcept.getBlocking(toContainerId);
+                var container = await EcRepository.get(toContainerId);
                 var property = "skos:narrower";
-                if (container === null) {
+                if (container.type === "ConceptScheme") {
                     container = this.container;
                     property = "skos:hasTopConcept";
                 }
@@ -559,25 +560,25 @@ export default {
                 me.$store.commit('editor/addEditsToUndo', [{operation: "update", id: container.shortId(), fieldChanged: [property], initialValue: [initialValue]}]);
                 container["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[container.id] !== true) {
-                    container = EcEncryptedValue.toEncryptedValue(container);
+                    container = await EcEncryptedValue.toEncryptedValue(container);
                 }
                 this.repo.saveTo(container, function() {
                     me.computeHierarchy();
                 }, appError);
             } else {
-                var moveComp = EcConcept.getBlocking(fromId);
-                var fromContainer = EcConcept.getBlocking(fromContainerId);
+                var moveComp = await EcConcept.get(fromId);
+                var fromContainer = await EcRepository.get(fromContainerId);
                 var fromProperty = "skos:narrower";
                 var fromProperty2 = "skos:broader";
-                var toContainer = EcConcept.getBlocking(toContainerId);
+                var toContainer = await EcRepository.get(toContainerId);
                 var toProperty = "skos:narrower";
                 var toProperty2 = "skos:broader";
-                if (fromContainer === null) {
+                if (fromContainer.type === "ConceptScheme") {
                     fromContainer = this.container;
                     fromProperty = "skos:hasTopConcept";
                     fromProperty2 = "skos:topConceptOf";
                 }
-                if (toContainer === null) {
+                if (toContainer.type === "ConceptScheme") {
                     toContainer = this.container;
                     toProperty = "skos:hasTopConcept";
                     toProperty2 = "skos:topConceptOf";
@@ -602,9 +603,9 @@ export default {
                 }
                 fromContainer["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[fromContainer.id] !== true) {
-                    fromContainer = EcEncryptedValue.toEncryptedValue(fromContainer);
+                    fromContainer = await EcEncryptedValue.toEncryptedValue(fromContainer);
                 }
-                this.repo.saveTo(fromContainer, function() {
+                this.repo.saveTo(fromContainer, async function() {
                     if (toId == null || toId === undefined) {
                         if (!EcArray.isArray(toContainer[toProperty])) {
                             toContainer[toProperty] = [];
@@ -614,13 +615,15 @@ export default {
                         var toIndex = toContainer[toProperty].indexOf(toId);
                         toContainer[toProperty].splice(toIndex, 0, fromId);
                     }
-                    if (!EcArray.isArray(moveComp[toProperty2])) {
-                        moveComp[toProperty2] = [];
-                    }
-                    if (toContainerId) {
-                        moveComp[toProperty2].push(toContainerId);
+                    if (toContainer.type === "ConceptScheme") {
+                        moveComp[toProperty2] = toContainerId;
                     } else {
-                        moveComp[toProperty2].push(me.container.shortId());
+                        if (!EcArray.isArray(moveComp[toProperty2])) {
+                            moveComp[toProperty2] = [];
+                        }
+                        if (toContainerId) {
+                            moveComp[toProperty2].push(toContainerId);
+                        }
                     }
                     me.$store.commit('editor/addEditsToUndo', [
                         {operation: "update", id: fromContainer.shortId(), fieldChanged: [fromProperty], initialValue: [fromPropInitialValue]},
@@ -630,10 +633,10 @@ export default {
                     toContainer["schema:dateModified"] = new Date().toISOString();
                     moveComp["schema:dateModified"] = new Date().toISOString();
                     if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[toContainer.id] !== true) {
-                        toContainer = EcEncryptedValue.toEncryptedValue(toContainer);
+                        toContainer = await EcEncryptedValue.toEncryptedValue(toContainer);
                     }
                     if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[moveComp.id] !== true) {
-                        moveComp = EcEncryptedValue.toEncryptedValue(moveComp);
+                        moveComp = await EcEncryptedValue.toEncryptedValue(moveComp);
                     }
                     me.repo.saveTo(toContainer, function() {
                         me.repo.saveTo(moveComp, appLog, appError);
@@ -643,7 +646,7 @@ export default {
             }
             this.dragging = false;
         },
-        add: function(containerId, previousSibling) {
+        add: async function(containerId, previousSibling) {
             var me = this;
             var c = new EcConcept();
             if (this.queryParams.newObjectEndpoint) {
@@ -653,8 +656,8 @@ export default {
             }
             c["schema:dateCreated"] = new Date().toISOString();
             c["schema:dateModified"] = new Date().toISOString();
-            if (EcIdentityManager.ids != null && EcIdentityManager.ids.length > 0) {
-                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
+                c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             if (this.container.owner && this.container.owner.length > 0) {
                 for (var j = 0; j < this.container.owner.length; j++) {
@@ -691,9 +694,9 @@ export default {
                 this.container["schema:dateModified"] = new Date().toISOString();
                 c["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
-                    c = EcEncryptedValue.toEncryptedValue(c);
+                    c = await EcEncryptedValue.toEncryptedValue(c);
                     if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
-                        me.container = EcEncryptedValue.toEncryptedValue(me.container);
+                        me.container = await EcEncryptedValue.toEncryptedValue(me.container);
                     }
                 }
                 this.repo.saveTo(c, function() {
@@ -703,7 +706,7 @@ export default {
                 }, appError);
             } else {
                 c["skos:broader"] = [containerId];
-                var parent = EcConcept.getBlocking(containerId);
+                var parent = await EcConcept.get(containerId);
                 var initialValue = parent["skos:narrower"] ? parent["skos:narrower"].slice() : null;
                 if (!EcArray.isArray(parent["skos:narrower"])) {
                     parent["skos:narrower"] = [];
@@ -723,12 +726,12 @@ export default {
                 c["schema:dateModified"] = new Date().toISOString();
                 parent["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
-                    c = EcEncryptedValue.toEncryptedValue(c);
+                    c = await EcEncryptedValue.toEncryptedValue(c);
                     if (EcEncryptedValue.encryptOnSaveMap[parent.id] !== true) {
-                        parent = EcEncryptedValue.toEncryptedValue(parent);
+                        parent = await EcEncryptedValue.toEncryptedValue(parent);
                     }
                     if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
-                        me.container = EcEncryptedValue.toEncryptedValue(me.container);
+                        me.container = await EcEncryptedValue.toEncryptedValue(me.container);
                     }
                 }
                 this.repo.saveTo(c, function() {
@@ -756,8 +759,8 @@ export default {
             this.deleteObject(this.container);
             this.$store.dispatch('app/clearImport');
         },
-        openFramework: function() {
-            var f = EcConceptScheme.getBlocking(this.container.shortId());
+        openFramework: async function() {
+            var f = await EcConceptScheme.get(this.container.shortId());
             this.$store.commit('editor/framework', f);
             this.$router.push({name: "conceptScheme", params: {frameworkId: this.container.id}});
         },

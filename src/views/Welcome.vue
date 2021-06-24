@@ -297,7 +297,7 @@ export default {
             queryParams: state => state.editor.queryParams
         }),
         linkToLegacyDemos: function() {
-            return (EcIdentityManager.ids && EcIdentityManager.ids.length > 0);
+            return (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0);
         }
     },
     methods: {
@@ -311,7 +311,6 @@ export default {
             this.importing = true;
             this.error = null;
             EcRemote.getExpectingString(url, null, function(result) {
-                result = JSON.parse(result);
                 var graph = result["@graph"];
                 if (graph != null) {
                     me.importJsonLd(result);
@@ -329,17 +328,17 @@ export default {
             if (data != null && data !== undefined) {
                 formData.append('data', JSON.stringify(data));
             }
-            var identity = EcIdentityManager.ids[0];
+            var identity = EcIdentityManager.default.ids[0];
             if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
             let me = this;
             me.$store.commit('app/importFramework', null);
-            EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, function(data) {
+            EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
                 if (data.indexOf("ctdlasn") !== -1) {
                     var data1 = data.substring(0, data.indexOf("ctdlasn"));
                     var data2 = data.substring(data.indexOf("ctdlasn") + 7);
                     data = data1 + "data" + data2;
                 }
-                var framework = EcFramework.getBlocking(data);
+                var framework = await EcFramework.get(data);
                 me.$store.commit('app/importFramework', framework);
                 me.$store.commit('editor/framework', framework);
                 me.spitEvent("importFinished", framework.shortId(), "importPage");
@@ -353,7 +352,7 @@ export default {
             this.importing = true;
             this.error = null;
             let ceo = null;
-            if (EcIdentityManager.ids.length > 0) { ceo = EcIdentityManager.ids[0]; }
+            if (EcIdentityManager.default.ids.length > 0) { ceo = EcIdentityManager.default.ids[0]; }
             let me = this;
             EcRemote.getExpectingString(me.harvardFile, null, function(result) {
                 CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, result, function(frameworks, competencies, relations) {
@@ -390,7 +389,7 @@ export default {
             var serverUrl = "http://opensalt.opened.com/";
             var id = "https://frameworks.act.org/uri/73a4ee28-ceeb-11e7-bfb5-b1077cd4fffe";
             var uuid = "73a4ee28-ceeb-11e7-bfb5-b1077cd4fffe";
-            var identity = EcIdentityManager.ids[0];
+            var identity = EcIdentityManager.default.ids[0];
             var formData = new FormData();
             if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
             EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + serverUrl + "&dId=" + uuid, formData, null, function(success) {

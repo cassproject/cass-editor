@@ -65,7 +65,7 @@ export default {
             }
             if (this.queryParams && this.queryParams.view === 'true') {
                 return false;
-            } else if (!this.directory.canEditAny(EcIdentityManager.getMyPks())) {
+            } else if (!this.directory.canEditAny(EcIdentityManager.default.getMyPks())) {
                 return false;
             }
             return true;

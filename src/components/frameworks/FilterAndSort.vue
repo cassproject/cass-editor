@@ -144,7 +144,7 @@ export default {
             }
         },
         loggedIn: function() {
-            return EcIdentityManager.ids && EcIdentityManager.ids.length;
+            return EcIdentityManager.default.ids && EcIdentityManager.default.ids.length;
         },
         searchByOwnerNameEnabled: function() {
             return this.$store.state.featuresEnabled.searchByOwnerNameEnabled;
@@ -216,13 +216,13 @@ export default {
         }
     },
     methods: {
-        getFrameworkConfig: function() {
+        getFrameworkConfig: async function() {
             if (this.queryParams.ceasnDataFields === "true") {
                 this.frameworkConfig = this.ctdlAsnFrameworkProfile;
             } else if (this.queryParams.tlaProfile === "true") {
                 this.frameworkConfig = this.tlaFrameworkProfile;
             } else if (this.getDefaultBrowserConfigId() && !this.getDefaultBrowserConfigId().trim().equals('')) {
-                let c = EcRepository.getBlocking(this.getDefaultBrowserConfigId());
+                let c = await EcRepository.get(this.getDefaultBrowserConfigId());
                 this.frameworkConfig = c.frameworkConfig;
             } else {
                 let me = this;

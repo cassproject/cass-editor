@@ -384,7 +384,7 @@ export default {
     },
     computed: {
         loggedIn: function() {
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 return true;
             }
             return false;
@@ -433,9 +433,9 @@ export default {
                 return this.resource.name;
             }
             if (this.framework.name) {
-                return Thing.getDisplayStringFrom(this.framework.name);
+                return schema.Thing.getDisplayStringFrom(this.framework.name);
             } else {
-                return Thing.getDisplayStringFrom(this.framework["dcterms:title"]);
+                return schema.Thing.getDisplayStringFrom(this.framework["dcterms:title"]);
             }
         },
         queryParams: function() {
@@ -447,11 +447,11 @@ export default {
             }
             if (this.queryParams && this.queryParams.view === 'true') {
                 return false;
-            } else if (this.framework && !this.framework.canEditAny(EcIdentityManager.getMyPks())) {
+            } else if (this.framework && !this.framework.canEditAny(EcIdentityManager.default.getMyPks())) {
                 return false;
-            } else if (this.directory && !this.directory.canEditAny(EcIdentityManager.getMyPks())) {
+            } else if (this.directory && !this.directory.canEditAny(EcIdentityManager.default.getMyPks())) {
                 return false;
-            } else if (this.resource && !this.resource.canEditAny(EcIdentityManager.getMyPks())) {
+            } else if (this.resource && !this.resource.canEditAny(EcIdentityManager.default.getMyPks())) {
                 return false;
             }
             return true;
@@ -481,13 +481,13 @@ export default {
             return this.$store.getters['app/objForShareModal'];
         }
     },
-    mounted: function() {
+    mounted: async function() {
         if (this.objFromListItemInfo && this.objFromListItemInfo.encryptedType) {
             let type = "Ec" + this.object.encryptedType;
             let v = new EcEncryptedValue();
             v.copyFrom(this.object);
             let obj = new window[type]();
-            obj.copyFrom(v.decryptIntoObject());
+            obj.copyFrom(await v.decryptIntoObject());
             this.$store.commit('app/objForShareModal', obj);
         }
         this.getCurrentOwnersAndReaders(true);
@@ -565,8 +565,8 @@ export default {
                     if (success) {
                         let ownerFingerprint = pk.fingerprint();
                         let currentUser = false;
-                        for (let each in EcIdentityManager.ids) {
-                            let idFingerprint = EcIdentityManager.ids[each].ppk.toPk().fingerprint();
+                        for (let each in EcIdentityManager.default.ids) {
+                            let idFingerprint = EcIdentityManager.default.ids[each].ppk.toPk().fingerprint();
                             if (ownerFingerprint.equals(idFingerprint)) {
                                 currentUser = true;
                                 me.numGroupsAsOwner++;
@@ -698,7 +698,7 @@ export default {
             }
             // Make sure current user is added as an owner if a reader is being added, otherwise framework could become uneditable
             if (this.addReader.length > 0) {
-                this.addOwner.push(EcIdentityManager.ids[0].ppk.toPk());
+                this.addOwner.push(EcIdentityManager.default.ids[0].ppk.toPk());
             }
         },
         multiput: function(toSave, callback) {
@@ -938,16 +938,16 @@ export default {
         },
         handleMakePrivateDirectory: function(directory) {
             let me = this;
-            if (directory.canEditAny(EcIdentityManager.getMyPks())) {
+            if (directory.canEditAny(EcIdentityManager.default.getMyPks())) {
                 if (!directory.owner) {
-                    directory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    directory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (this.directory.shortId() === directory.shortId()) {
                     // Make sure new owner gets into store
                     this.$store.commit('app/selectDirectory', directory);
                 }
                 directory["schema:dateModified"] = new Date().toISOString();
-                EcEncryptedValue.toEncryptedValueAsync(directory, false, function(edirectory) {
+                EcEncryptedValue.toEncryptedValue(directory, false, function(edirectory) {
                     me.toSave.push(edirectory);
                     me.repo.search("(directory:\"" + directory.shortId() + "\" OR parentDirectory:\"" + directory.shortId() + "\")", function() {}, function(success) {
                         me.frameworksToProcess += success.length;
@@ -974,15 +974,15 @@ export default {
         },
         handleMakePrivateResource: function(resource) {
             let me = this;
-            if (resource.canEditAny(EcIdentityManager.getMyPks())) {
+            if (resource.canEditAny(EcIdentityManager.default.getMyPks())) {
                 if (!resource.owner) {
-                    resource.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    resource.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (this.resource) {
                     this.$store.commit('app/objForShareModal', resource);
                 }
                 resource["schema:dateModified"] = new Date().toISOString();
-                EcEncryptedValue.toEncryptedValueAsync(resource, false, function(eresource) {
+                EcEncryptedValue.toEncryptedValue(resource, false, function(eresource) {
                     me.toSave.push(eresource);
                     me.multiput(me.toSave);
                 }, appError);
@@ -993,12 +993,12 @@ export default {
             if (framework.competency && framework.competency.length > 0) {
                 new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
                     EcCompetency.get(competencyId, function(c) {
-                        if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                        if (c.canEditAny(EcIdentityManager.default.getMyPks())) {
                             if (!c.owner) {
-                                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                             }
                             c["schema:dateModified"] = new Date().toISOString();
-                            EcEncryptedValue.toEncryptedValueAsync(c, false, function(ec) {
+                            EcEncryptedValue.toEncryptedValue(c, false, function(ec) {
                                 me.toSave.push(ec);
                                 done();
                             }, done);
@@ -1011,9 +1011,9 @@ export default {
                         new EcAsyncHelper().each(framework.relation, function(relationId, done) {
                             EcAlignment.get(relationId, function(r) {
                                 if (!r.owner) {
-                                    r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                    r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                                 }
-                                EcEncryptedValue.toEncryptedValueAsync(r, false, function(er) {
+                                EcEncryptedValue.toEncryptedValue(r, false, function(er) {
                                     me.toSave.push(er);
                                     done();
                                 }, done);
@@ -1045,17 +1045,17 @@ export default {
                 this.handleMakePublicFramework(framework);
             }
         },
-        handleMakePublicDirectory: function(directory) {
+        handleMakePublicDirectory: async function(directory) {
             let me = this;
             let d = new EcDirectory();
             let v;
             if (directory.type === "Directory") {
-                v = EcEncryptedValue.toEncryptedValue(directory);
+                v = await EcEncryptedValue.toEncryptedValue(directory);
             } else {
                 v = new EcEncryptedValue();
                 v.copyFrom(directory);
             }
-            d.copyFrom(v.decryptIntoObject());
+            d.copyFrom(await v.decryptIntoObject());
             d["schema:dateModified"] = new Date().toISOString();
             delete d.reader;
             EcEncryptedValue.encryptOnSave(d.id, false);
@@ -1082,16 +1082,16 @@ export default {
                 });
             }, appError);
         },
-        handleMakePublicResource: function(resource) {
-            let cw = new CreativeWork();
+        handleMakePublicResource: async function(resource) {
+            let cw = new schema.CreativeWork();
             let v;
             if (resource.type === "CreativeWork") {
-                v = EcEncryptedValue.toEncryptedValue(resource);
+                v = await EcEncryptedValue.toEncryptedValue(resource);
             } else {
                 v = new EcEncryptedValue();
                 v.copyFrom(resource);
             }
-            cw.copyFrom(v.decryptIntoObject());
+            cw.copyFrom(await v.decryptIntoObject());
             cw["schema:dateModified"] = new Date().toISOString();
             delete cw.reader;
             EcEncryptedValue.encryptOnSave(cw.id, false);
@@ -1101,17 +1101,17 @@ export default {
             }
             this.multiput(this.toSave);
         },
-        handleMakePublicFramework: function(framework) {
+        handleMakePublicFramework: async function(framework) {
             let me = this;
             let f = new EcFramework();
             let v;
             if (framework.type === "Framework") {
-                v = EcEncryptedValue.toEncryptedValue(framework);
+                v = await EcEncryptedValue.toEncryptedValue(framework);
             } else {
                 v = new EcEncryptedValue();
                 v.copyFrom(framework);
             }
-            f.copyFrom(v.decryptIntoObject());
+            f.copyFrom(await v.decryptIntoObject());
             f["schema:dateModified"] = new Date().toISOString();
             delete f.reader;
             EcEncryptedValue.encryptOnSave(f.id, false);
@@ -1122,17 +1122,17 @@ export default {
             framework = f;
             if (framework.competency && framework.competency.length > 0) {
                 new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
-                    EcRepository.get(competencyId, function(c) {
+                    EcRepository.get(competencyId, async function(c) {
                         var v;
-                        if (c.canEditAny(EcIdentityManager.getMyPks())) {
+                        if (c.canEditAny(EcIdentityManager.default.getMyPks())) {
                             if (c.isAny(new EcEncryptedValue().getTypes())) {
                                 v = new EcEncryptedValue();
                                 v.copyFrom(c);
                             } else {
-                                v = EcEncryptedValue.toEncryptedValue(c);
+                                v = await EcEncryptedValue.toEncryptedValue(c);
                             }
                             c = new EcCompetency();
-                            c.copyFrom(v.decryptIntoObject());
+                            c.copyFrom(await v.decryptIntoObject());
                             c["schema:dateModified"] = new Date().toISOString();
                             delete c.reader;
                             EcEncryptedValue.encryptOnSave(c.id, false);
@@ -1145,16 +1145,16 @@ export default {
                 }, function(competencyIds) {
                     if (framework.relation && framework.relation.length > 0) {
                         new EcAsyncHelper().each(framework.relation, function(relationId, done) {
-                            EcRepository.get(relationId, function(r) {
+                            EcRepository.get(relationId, async function(r) {
                                 var v;
                                 if (r.isAny(new EcEncryptedValue().getTypes())) {
                                     v = new EcEncryptedValue();
                                     v.copyFrom(r);
                                 } else {
-                                    v = EcEncryptedValue.toEncryptedValue(r);
+                                    v = await EcEncryptedValue.toEncryptedValue(r);
                                 }
                                 r = new EcAlignment();
-                                r.copyFrom(v.decryptIntoObject());
+                                r.copyFrom(await v.decryptIntoObject());
                                 delete r.reader;
                                 EcEncryptedValue.encryptOnSave(r.id, false);
                                 me.toSave.push(r);
@@ -1187,14 +1187,14 @@ export default {
             var f = new EcFramework();
             f.copyFrom(framework);
             if (!f.owner) {
-                f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                f.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             if (this.framework) {
                 // Make sure new owner gets into store
                 this.$store.commit('editor/framework', f);
             }
             f["schema:dateModified"] = new Date().toISOString();
-            EcEncryptedValue.toEncryptedValueAsync(f, false, function(ef) {
+            EcEncryptedValue.toEncryptedValue(f, false, function(ef) {
                 me.toSave.push(ef);
                 me.multiput(me.toSave, function() {
                     if (me.framework) {
@@ -1206,18 +1206,18 @@ export default {
                 });
             }, appError);
         },
-        handleMakePrivateConceptScheme: function() {
+        handleMakePrivateConceptScheme: async function() {
             var me = this;
             var framework = this.framework;
             var cs = new EcConceptScheme();
             cs.copyFrom(framework);
             if (!cs.owner) {
-                cs.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                cs.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             this.$store.commit('editor/framework', cs);
             var name = cs["dcterms:title"];
             cs["schema:dateModified"] = new Date().toISOString();
-            cs = EcEncryptedValue.toEncryptedValue(cs);
+            cs = await EcEncryptedValue.toEncryptedValue(cs);
             cs["dcterms:title"] = name;
             this.toSave.push(cs);
             if (framework["skos:hasTopConcept"]) {
@@ -1230,15 +1230,15 @@ export default {
                 }, appError);
             }
         },
-        handleMakePublicConceptScheme: function() {
+        handleMakePublicConceptScheme: async function() {
             var me = this;
             var framework = this.framework;
-            framework = EcEncryptedValue.toEncryptedValue(framework);
+            framework = await EcEncryptedValue.toEncryptedValue(framework);
             var cs = new EcConceptScheme();
             appLog(framework);
-            appLog(framework.decryptIntoObject());
+            appLog(await framework.decryptIntoObject());
             appLog(cs);
-            cs.copyFrom(framework.decryptIntoObject());
+            cs.copyFrom(await framework.decryptIntoObject());
             delete cs.reader;
             framework = cs;
             EcEncryptedValue.encryptOnSave(cs.id, false);
@@ -1256,16 +1256,16 @@ export default {
             var me = this;
             var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
-                EcRepository.get(conceptId, function(concept) {
+                EcRepository.get(conceptId, async function(concept) {
                     if (!concept.owner) {
-                        concept.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        concept.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     concept["schema:dateModified"] = new Date().toISOString();
                     if (concept["skos:narrower"] && concept["skos:narrower"].length > 0) {
                         me.encryptConcepts(concept);
                     }
                     if (EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
-                        concept = EcEncryptedValue.toEncryptedValue(concept);
+                        concept = await EcEncryptedValue.toEncryptedValue(concept);
                     }
                     me.toSave.push(concept);
                     done();
@@ -1283,16 +1283,16 @@ export default {
             var concepts = c["skos:hasTopConcept"] ? c["skos:hasTopConcept"] : c["skos:narrower"];
             me.conceptsToProcess += concepts.length;
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
-                EcRepository.get(conceptId, function(concept) {
+                EcRepository.get(conceptId, async function(concept) {
                     var v;
                     if (concept.isAny(new EcEncryptedValue().getTypes())) {
                         v = new EcEncryptedValue();
                         v.copyFrom(concept);
                     } else {
-                        v = EcEncryptedValue.toEncryptedValue(concept);
+                        v = await EcEncryptedValue.toEncryptedValue(concept);
                     }
                     concept = new EcConcept();
-                    concept.copyFrom(v.decryptIntoObject());
+                    concept.copyFrom(await v.decryptIntoObject());
                     delete concept.reader;
                     EcEncryptedValue.encryptOnSave(concept.id, false);
                     if (concept["skos:narrower"]) {
@@ -1321,7 +1321,7 @@ export default {
         },
         makeCurrentUserDirectoryOwner: function(directory) {
             let me = this;
-            directory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            directory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             me.toSave.push(directory);
             if (this.directory.shortId() === directory.shortId()) {
                 this.$store.commit('app/selectDirectory', directory);
@@ -1346,7 +1346,7 @@ export default {
             }, appError);
         },
         makeCurrentUserResourceOwner: function(resource) {
-            resource.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            resource.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             this.toSave.push(resource);
             this.multiput(this.toSave);
         },
@@ -1355,7 +1355,7 @@ export default {
             if (framework.competency && framework.competency.length > 0) {
                 new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
                     EcCompetency.get(competencyId, function(c) {
-                        c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         me.toSave.push(c);
                         done();
                     }, done);
@@ -1363,7 +1363,7 @@ export default {
                     if (framework.relation && framework.relation.length > 0) {
                         new EcAsyncHelper().each(framework.relation, function(relationId, done) {
                             EcAlignment.get(relationId, function(r) {
-                                r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                                r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                                 me.toSave.push(r);
                                 done();
                             }, done);
@@ -1381,7 +1381,7 @@ export default {
         makeCurrentUserFrameworkOwner: function(framework) {
             let f = framework;
             let me = this;
-            f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            f.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             me.toSave.push(f);
             me.multiput(me.toSave, function() {
                 if (me.framework) {
@@ -1399,7 +1399,7 @@ export default {
             var me = this;
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
                 EcConcept.get(conceptId, function(c) {
-                    c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     if (c["skos:narrower"]) {
                         me.makeCurrentUserAnOwnerForConcepts(c["skos:narrower"]);
                     }
