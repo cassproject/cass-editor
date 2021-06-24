@@ -21,13 +21,16 @@ module.exports = {
     },
     configureWebpack: {
         plugins: [new CompressionPlugin()],
+        resolve: {
+            symlinks: false
+        },
         module: {
             rules: [
                 {
                     test: /\.m?js$/,
                     exclude: {test: /node_modules/, // Exclude libraries in node_modules ...
                         not: [
-                            // Except for a few of them that needs to be transpiled because they use modern syntax
+                            // Except for a few of them that need to be transpiled because they use modern syntax
                             /cassproject/
                         ]},
                     use: {
