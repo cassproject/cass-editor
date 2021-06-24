@@ -92,13 +92,13 @@ const mutations = {
         state.rightAsideContent = '';
         state.rightAsideObject = null;
     },
-    rightAsideObject: function(state, payload) {
+    rightAsideObject: async function(state, payload) {
         if (payload.encryptedType) {
             let type = "Ec" + payload.encryptedType;
             let v = new EcEncryptedValue();
             v.copyFrom(payload);
             let obj = new window[type]();
-            obj.copyFrom(v.decryptIntoObject());
+            obj.copyFrom(await v.decryptIntoObject());
             state.rightAsideObject = obj;
         } else {
             state.rightAsideObject = payload;
@@ -325,7 +325,7 @@ const actions = {
         let paramObj = {size: 10000};
         EcDirectory.search(window.repo, "", function(dirs) {
             for (let i = 0; i < dirs.length; i++) {
-                if (dirs[i].canEditAny(EcIdentityManager.getMyPks()) && !EcArray.has(directoryIds, dirs[i].id)) {
+                if (dirs[i].canEditAny(EcIdentityManager.default.getMyPks()) && !EcArray.has(directoryIds, dirs[i].id)) {
                     directories.push(dirs[i]);
                     directoryIds.push(dirs[i].id);
                 }

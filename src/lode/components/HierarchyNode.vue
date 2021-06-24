@@ -550,7 +550,7 @@ export default {
                 return false;
             }
             if (this.obj && this.obj.canEditAny) {
-                return this.obj.canEditAny(EcIdentityManager.getMyPks());
+                return this.obj.canEditAny(EcIdentityManager.default.getMyPks());
             }
             return true;
         }
@@ -657,7 +657,7 @@ export default {
         onEditNode: function() {
             this.editingNode = true;
         },
-        onDoneEditingNode: function() {
+        onDoneEditingNode: async function() {
             this.editingNode = false;
             if (this.obj.shortId() === this.newCompetency) {
                 if (this.view.indexOf('import') !== -1) {
@@ -697,7 +697,7 @@ export default {
                 this.$store.commit('editor/recomputeHierarchy', true);
             }
             // Update the obj prop passed to Thing/ThingEditing so edits are reflected
-            this.changedObj = EcRepository.getBlocking(this.obj.shortId());
+            this.changedObj = await EcRepository.get(this.obj.shortId());
         },
         onAddNodeEvent: function() {
             this.add(this.obj.shortId());

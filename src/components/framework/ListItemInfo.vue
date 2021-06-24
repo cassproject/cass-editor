@@ -285,7 +285,7 @@
                         </div>
                     </template>
                     <!-- users -->
-                    <template v-if="loggedIn && canEditObject">
+                    <template v-if="loggedIn && canEditObject && !(objectType === 'CreativeWork' && !$store.state.featuresEnabled.userManagementEnabled)">
                         <button
                             :class="accordion === 'users' ? 'active' : ''"
                             @click="clickAccordion('users')"
@@ -553,10 +553,10 @@ export default {
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];
-            if (Thing.getDisplayStringFrom(name).toLowerCase().indexOf("http") !== -1) {
-                return this.resolveNameFromUrl(Thing.getDisplayStringFrom(name));
+            if (schema.Thing.getDisplayStringFrom(name).toLowerCase().indexOf("http") !== -1) {
+                return this.resolveNameFromUrl(schema.Thing.getDisplayStringFrom(name));
             } else {
-                return Thing.getDisplayStringFrom(name);
+                return schema.Thing.getDisplayStringFrom(name);
             }
         },
         goToParentDirectory: function() {
@@ -666,8 +666,8 @@ export default {
             if (directory.reader) {
                 f.reader = directory.reader;
             }
-            if (EcIdentityManager.ids.length > 0) {
-                f.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                f.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             let name = this.getCopyFrameworkName(f);
             f.name = name;
@@ -814,7 +814,7 @@ export default {
         },
         copyResourceToDirectory: function(directory, resource, toSaveFromSubdirectory) {
             let me = this;
-            let c = new CreativeWork();
+            let c = new schema.CreativeWork();
             if (this.queryParams.newObjectEndpoint != null) {
                 c.generateShortId(this.queryParams.newObjectEndpoint);
             } else {
@@ -829,8 +829,8 @@ export default {
             if (directory.reader) {
                 c.reader = directory.reader;
             }
-            if (EcIdentityManager.ids.length > 0) {
-                c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             if (toSaveFromSubdirectory) {
                 toSaveFromSubdirectory.push(c);
@@ -866,8 +866,8 @@ export default {
             if (directory.reader) {
                 subdirectory.reader = directory.reader;
             }
-            if (EcIdentityManager.ids.length > 0) {
-                subdirectory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                subdirectory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             subdirectory['ceasn:derivedFrom'] = oldSubdirectory.id;
             subdirectory.name = "Copy of " + subdirectory.name;
@@ -989,7 +989,7 @@ export default {
                     for (let each of directory.owner) {
                         framework.removeOwner(EcPk.fromPem(each));
                     }
-                    framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (directory.reader) {
                     for (let each of directory.reader) {
@@ -1024,7 +1024,7 @@ export default {
                         for (let each of directory.owner) {
                             obj.removeOwner(EcPk.fromPem(each));
                         }
-                        obj.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        obj.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     if (directory.reader) {
                         for (let each of directory.reader) {
@@ -1046,7 +1046,7 @@ export default {
                     for (let each of directory.owner) {
                         me.object.removeOwner(EcPk.fromPem(each));
                     }
-                    me.object.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    me.object.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (directory.reader) {
                     for (let each of directory.reader) {
@@ -1070,7 +1070,7 @@ export default {
                     for (let each of directory.owner) {
                         subdirectory.removeOwner(EcPk.fromPem(each));
                     }
-                    subdirectory.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    subdirectory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (directory.reader) {
                     for (let each of directory.reader) {
@@ -1122,14 +1122,14 @@ export default {
             this.$store.commit('app/editDirectory', true);
         }
     },
-    mounted: function() {
+    mounted: async function() {
         this.setNumSubdirectoriesAndObjects();
         if (this.object.encryptedType) {
             let type = "Ec" + this.object.encryptedType;
             let v = new EcEncryptedValue();
             v.copyFrom(this.object);
             let obj = new window[type]();
-            obj.copyFrom(v.decryptIntoObject());
+            obj.copyFrom(await v.decryptIntoObject());
             this.$store.commit('app/rightAsideObject', obj);
         }
         if (this.object.type === "Directory") {
@@ -1144,7 +1144,7 @@ export default {
             } else if (!name && this.object["skos:prefLabel"]) {
                 name = this.object["skos:prefLabel"];
             }
-            return Thing.getDisplayStringFrom(name);
+            return schema.Thing.getDisplayStringFrom(name);
         },
         objectDescription: function() {
             let description = this.object.description;
@@ -1153,7 +1153,7 @@ export default {
             } else if (!description && this.object["skos:definition"]) {
                 description = this.object["skos:definition"];
             }
-            return Thing.getDisplayStringFrom(description);
+            return schema.Thing.getDisplayStringFrom(description);
         },
         objectShortId: function() {
             return this.object.shortId();
@@ -1249,25 +1249,13 @@ export default {
             }
         },
         canEditObject: function() {
-            return this.object.canEditAny(EcIdentityManager.getMyPks());
-        },
-        canEditDirectory: function() {
-            if (this.object.directory) {
-                return EcDirectory.getBlocking(this.object.directory).canEditAny(EcIdentityManager.getMyPks());
-            } else if (this.object.parentDirectory) {
-                return EcDirectory.getBlocking(this.object.parentDirectory).canEditAny(EcIdentityManager.getMyPks());
-            }
-            // Object is not in a directory
-            if (this.objectType === 'ConceptScheme') {
-                return false;
-            }
-            return true;
+            return this.object.canEditAny(EcIdentityManager.default.getMyPks());
         },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
         loggedIn: function() {
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 return true;
             }
             return false;

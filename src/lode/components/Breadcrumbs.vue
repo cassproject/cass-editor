@@ -219,18 +219,18 @@ export default {
                 callback();
             }
         },
-        findConceptTrail: function(concept) {
+        findConceptTrail: async function(concept) {
             if (concept["skos:topConceptOf"]) {
-                var scheme = EcConceptScheme.getBlocking(concept["skos:topConceptOf"]);
+                var scheme = await EcConceptScheme.get(concept["skos:topConceptOf"]);
                 if (scheme) {
                     this.frameworks.push(scheme);
                 }
             } else if (concept["skos:broader"]) {
                 var parent;
                 if (EcArray.isArray(concept["skos:broader"])) {
-                    parent = EcConcept.getBlocking(concept["skos:broader"][0]);
+                    parent = await EcConcept.get(concept["skos:broader"][0]);
                 } else {
-                    parent = EcConcept.getBlocking(concept["skos:broader"]);
+                    parent = await EcConcept.get(concept["skos:broader"]);
                 }
                 this.parentConcepts.unshift(parent);
                 this.findConceptTrail(parent);
@@ -297,12 +297,12 @@ export default {
                 return object.getName();
             }
             if (this.competency.type === "Directory") {
-                return Thing.getDisplayStringFrom(object.name);
+                return schema.Thing.getDisplayStringFrom(object.name);
             }
             if (object["skos:prefLabel"]) {
-                return Thing.getDisplayStringFrom(object["skos:prefLabel"]);
+                return schema.Thing.getDisplayStringFrom(object["skos:prefLabel"]);
             } else if (object["dcterms:title"]) {
-                return Thing.getDisplayStringFrom(object["dcterms:title"]);
+                return schema.Thing.getDisplayStringFrom(object["dcterms:title"]);
             }
         }
     }

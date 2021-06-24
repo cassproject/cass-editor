@@ -113,7 +113,7 @@ export default {
     z-index:10;
     position: absolute;
     right: 0;
-    width: 360px;
+    width: min(360px, calc(100vw - 64px));
     top: 100px;
     height: calc(100vh - 100px);
 

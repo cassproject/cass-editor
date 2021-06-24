@@ -136,27 +136,27 @@ export default {
         setConfigToDelete(configId) {
             this.$store.commit('configuration/setConfigToDelete', this.getConfigById(configId));
         },
-        setConfigAsFrameworkDefault(configId) {
+        async setConfigAsFrameworkDefault(configId) {
             let me = this;
             let f = this.$store.getters['editor/framework'];
             let previousConfig = f.configuration;
             f.configuration = configId;
             if (!previousConfig) {
-                f = this.setOwnersAndReaders(f);
+                f = await this.setOwnersAndReaders(f);
             }
             if (f) {
                 this.frameworkConfigId = configId;
-                window.repo.saveTo(f, function() {
-                    me.$store.commit('editor/framework', EcRepository.getBlocking(f.shortId()));
+                window.repo.saveTo(f, async function() {
+                    me.$store.commit('editor/framework', await EcRepository.get(f.shortId()));
                 }, function() {});
             }
         },
-        setOwnersAndReaders(framework) {
+        async setOwnersAndReaders(framework) {
             let userIdentity = null;
-            if (EcIdentityManager.ids.length > 0) {
-                userIdentity = EcIdentityManager.ids[0].ppk.toPk();
+            if (EcIdentityManager.default.ids.length > 0) {
+                userIdentity = EcIdentityManager.default.ids[0].ppk.toPk();
             }
-            let config = EcRepository.getBlocking(framework.configuration);
+            let config = await EcRepository.get(framework.configuration);
             let owners = config.defaultObjectOwners;
             let readers = config.defaultObjectReaders;
             if (owners.length > 0 || readers.length > 0) {
@@ -175,7 +175,7 @@ export default {
                 compsAndRelations = compsAndRelations.concat(framework.relation);
             }
             new EcAsyncHelper().each(compsAndRelations, function(id, done) {
-                EcRepository.get(id, function(obj) {
+                EcRepository.get(id, async function(obj) {
                     if (owners.length > 0 || readers.length > 0) {
                         if (userIdentity) {
                             obj.addOwner(userIdentity);
@@ -188,7 +188,7 @@ export default {
                         for (let i = 0; i < readers.length; i++) {
                             obj.addReader(EcPk.fromPem(readers[i]));
                         }
-                        obj = EcEncryptedValue.toEncryptedValue(obj);
+                        obj = await EcEncryptedValue.toEncryptedValue(obj);
                     }
                     window.repo.saveTo(obj, done, done);
                 }, done);
@@ -198,7 +198,7 @@ export default {
                 for (let i = 0; i < readers.length; i++) {
                     framework.addReader(EcPk.fromPem(readers[i]));
                 }
-                framework = EcEncryptedValue.toEncryptedValue(framework);
+                framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             return framework;
         }

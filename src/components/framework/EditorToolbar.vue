@@ -283,10 +283,11 @@ export default {
                 this.$store.commit('editor/setLastEditToUndo', null);
             });
         },
-        undoAdd(id) {
+        async undoAdd(id) {
             // Delete
             var me = this;
-            this.repo.deleteRegistered(EcRepository.getBlocking(id), function() {
+            let obj = await EcRepository.get(id);
+            this.repo.deleteRegistered(obj, function() {
                 me.editsFinishedCounter++;
             }, function(failure) {
                 appLog(failure);
@@ -369,7 +370,7 @@ export default {
             if (expandedCompetency["@type"][0].toLowerCase().indexOf("concept") !== -1) {
                 context = "https://schema.cassproject.org/0.4/skos";
             }
-            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], function(err, compacted) {
+            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], async function(err, compacted) {
                 if (err != null) {
                     appError(err);
                 }
@@ -381,7 +382,7 @@ export default {
                     rld = me.turnFieldsBackIntoArrays(rld);
                     rld["schema:dateModified"] = new Date().toISOString();
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
-                        rld = EcEncryptedValue.toEncryptedValue(rld);
+                        rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     me.repo.saveTo(rld, function() {
                         me.editsFinishedCounter++;
@@ -406,9 +407,9 @@ export default {
             }
             return rld;
         },
-        getConfigurationName: function() {
+        getConfigurationName: async function() {
             if (this.$store.getters['editor/framework'].configuration) {
-                let config = EcRepository.getBlocking(this.$store.getters['editor/framework'].configuration);
+                let config = await EcRepository.get(this.$store.getters['editor/framework'].configuration);
                 if (config) {
                     this.defaultFrameworkConfigName = config.name;
                 } else {
@@ -465,13 +466,13 @@ export default {
         canEditFramework: function() {
             if (this.queryParams && this.queryParams.view === 'true') {
                 return false;
-            } else if (!this.framework.canEditAny(EcIdentityManager.getMyPks())) {
+            } else if (!this.framework.canEditAny(EcIdentityManager.default.getMyPks())) {
                 return false;
             }
             return true;
         },
         loggedIn: function() {
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 return true;
             }
             return false;
@@ -516,13 +517,14 @@ export default {
         }
     },
     watch: {
-        editsFinishedCounter: function() {
+        editsFinishedCounter: async function() {
             if (this.editsFinishedCounter && this.editsFinishedCounter === this.totalEditsCounter) {
                 this.editsFinishedCounter = 0;
                 this.totalEditsCounter = 0;
                 // If changes were made to the framework, make sure they get into the store.
                 var framework = this.$store.getters['editor/framework'];
-                this.$store.commit('editor/framework', EcRepository.getBlocking(framework.shortId()));
+                let obj = await EcRepository.get(framework.shortId());
+                this.$store.commit('editor/framework', obj);
                 this.$store.commit('editor/recomputeHierarchy', true);
                 this.$store.commit('editor/refreshAlignments', true);
             }
