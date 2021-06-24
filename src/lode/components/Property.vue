@@ -389,7 +389,7 @@ export default {
             this.$store.commit('lode/incrementNumPropertyComponents', EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
         }
     },
-    mounted: function() {
+    mounted: async function() {
         if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("level") !== -1 && this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
             this.checkedOptions = [];
             if (this.expandedValue.length > 0) {
@@ -415,7 +415,7 @@ export default {
         if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options'] && this.checkedOptions) {
             for (let i = 0; i < this.profile[this.expandedProperty]['options'].length; i++) {
                 let option = this.profile[this.expandedProperty]['options'][i];
-                option.name = EcRepository.getBlocking(option.val).name;
+                option.name = await EcRepository.get(option.val).name;
                 this.optionsArray.push(option);
             }
         }
@@ -615,7 +615,7 @@ export default {
                 if (!name) {
                     name = success["skos:prefLabel"];
                 }
-                name = Thing.getDisplayStringFrom(name);
+                name = schema.Thing.getDisplayStringFrom(name);
                 // If still object, display value
                 if (EcObject.isObject(name)) {
                     var langs = Object.keys(name);
@@ -658,7 +658,7 @@ export default {
                             }
                         }
                         // If it's a langstring
-                        name = Thing.getDisplayStringFrom(name);
+                        name = schema.Thing.getDisplayStringFrom(name);
                         // If still object, display value
                         if (EcObject.isObject(name)) {
                             var langs = Object.keys(name);
@@ -677,7 +677,7 @@ export default {
             var xhr = null;
             if ((typeof httpStatus) === "undefined") {
                 xhr = new XMLHttpRequest();
-                xhr.open("GET", url, EcRemote.async);
+                xhr.open("GET", url, true);
                 if (headers != null) {
                     var keys = EcObject.keys(headers);
                     for (var i = 0; i < keys.length; i++) {
@@ -698,9 +698,7 @@ export default {
                 };
             }
             if (xhr != null) {
-                if (EcRemote.async) {
-                    (xhr)["timeout"] = EcRemote.timeout;
-                }
+                (xhr)["timeout"] = EcRemote.timeout;
             }
             if ((typeof httpStatus) !== "undefined") {
                 if (success != null) {

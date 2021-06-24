@@ -138,7 +138,7 @@ export default {
         addErrorMessage: function(msg) {
             this.errorMessage.push(msg);
         },
-        propertyStringUpdated: function(property, value, range, index) {
+        propertyStringUpdated: async function(property, value, range, index) {
             this.addedPropertiesAndValues[index].property = property;
             this.addedPropertiesAndValues[index].value = value;
             this.addedPropertiesAndValues[index].range = range;
@@ -153,7 +153,7 @@ export default {
                 }
             }
             if (range[0].toLowerCase().indexOf("level") !== -1 && !this.checkedOptions) {
-                var level = EcLevel.getBlocking(value);
+                var level = await EcLevel.get(value);
                 if (!level) {
                     this.addedPropertiesAndValues[index].error = "This URL must be a Level that is already in the system.";
                     return;
@@ -333,7 +333,7 @@ export default {
             if (this.$store.getters['editor/queryParams'].concepts === "true") {
                 context += "/skos";
             }
-            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], function(err, compacted) {
+            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], async function(err, compacted) {
                 if (err != null) {
                     appError(err);
                 }
@@ -345,7 +345,7 @@ export default {
                     delete rld["@context"];
                     rld["schema:dateModified"] = new Date().toISOString();
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
-                        rld = EcEncryptedValue.toEncryptedValue(rld);
+                        rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     me.repo.saveTo(rld, appLog, appError);
                 }

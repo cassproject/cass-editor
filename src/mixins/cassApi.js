@@ -83,8 +83,8 @@ export const cassApi = {
         },
         performApplicationLogout: function() {
             appLog("Performing application logout...");
-            EcIdentityManager.clearContacts();
-            EcIdentityManager.clearIdentities();
+            EcIdentityManager.default.clearContacts();
+            EcIdentityManager.default.clearIdentities();
             let clearPerson = {};
             this.$store.commit('user/loggedOnPerson', clearPerson);
             if (this.apiLoginEnabled) this.performExternalLogout();

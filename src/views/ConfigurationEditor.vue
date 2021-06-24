@@ -190,10 +190,10 @@ export default {
             this.configToDelete = {};
             this.configBusy = false;
         },
-        deleteConfiguration() {
+        async deleteConfiguration() {
             this.showConfirmDeleteConfigModal = false;
             this.configBusy = true;
-            let configObj = EcRepository.getBlocking(this.configToDelete.id);
+            let configObj = await EcRepository.get(this.configToDelete.id);
             if (configObj) {
                 let repo = window.repo;
                 repo.deleteRegistered(configObj, this.handleDeleteConfigurationSuccess, this.handleDeleteConfigurationFailure);
@@ -596,7 +596,7 @@ export default {
             if (headingsTracking.anyHeadingsPopulated && headingsTracking.anyHeadingsBlank) this.enforceHeadings = true;
         },
         generateComplexConfigObjectFromCurrentConfig() {
-            let cco = new Thing();
+            let cco = new schema.Thing();
             cco.context = this.DEFAULT_CONFIGURATION_CONTEXT;
             cco.type = this.DEFAULT_CONFIGURATION_TYPE;
             this.addAllIdentityPksAsOwners(cco);

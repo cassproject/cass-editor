@@ -308,8 +308,8 @@ export default {
             this.createAccountInvalid = true;
             this.usernameUnavailable = true;
             this.createAccountBusy = false;
-            EcIdentityManager.clearIdentities();
-            EcIdentityManager.clearContacts();
+            EcIdentityManager.default.clearIdentities();
+            EcIdentityManager.default.clearContacts();
         },
         handleCheckUsernameFetchIdentityFailure: function(failMsg) {
             if (failMsg && failMsg.toLowerCase().trim().equals('user does not exist.')) {
@@ -318,8 +318,8 @@ export default {
                 this.createAccountInvalid = true;
                 this.usernameUnavailable = true;
                 this.createAccountBusy = false;
-                EcIdentityManager.clearIdentities();
-                EcIdentityManager.clearContacts();
+                EcIdentityManager.default.clearIdentities();
+                EcIdentityManager.default.clearContacts();
             }
         },
         handleCheckUsernameConfigureFromServerSuccess: function(obj) {

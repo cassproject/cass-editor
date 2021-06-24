@@ -66,17 +66,17 @@ export default {
             this.framework["schema:dateModified"] = new Date().toISOString();
             this.$store.commit('editor/selectedCompetency', null);
         },
-        deleteConceptInner: function(c) {
+        deleteConceptInner: async function(c) {
             var me = this;
             if (c["skos:broader"] != null) {
                 for (var i = 0; i < c["skos:broader"].length; i++) {
-                    EcConcept.get(c["skos:broader"][i], function(concept) {
+                    EcConcept.get(c["skos:broader"][i], async function(concept) {
                         var initialValue = concept["skos:narrower"].slice();
                         EcArray.setRemove(concept["skos:narrower"], c.shortId());
                         concept["schema:dateModified"] = new Date().toISOString();
                         me.editsToUndo.push({operation: "update", id: concept.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]});
                         if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
-                            concept = EcEncryptedValue.toEncryptedValue(concept);
+                            concept = await EcEncryptedValue.toEncryptedValue(concept);
                         }
                         repo.saveTo(concept, function() {
                             me.$store.commit('editor/framework', me.framework);
@@ -98,7 +98,7 @@ export default {
                 var framework = this.framework;
                 framework["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                    framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
                 repo.saveTo(framework, function() {
                     me.$store.commit('editor/framework', me.framework);

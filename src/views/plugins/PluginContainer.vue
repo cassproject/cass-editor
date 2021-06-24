@@ -90,8 +90,8 @@ export default {
             let messageObj = {
                 action: this.INIT_IDENTITY_ACTION,
                 serverParm: window.repo.selectedServer,
-                nameParm: EcIdentityManager.ids[0].displayName,
-                pemParm: EcIdentityManager.ids[0].ppk.toPem()
+                nameParm: EcIdentityManager.default.ids[0].displayName,
+                pemParm: EcIdentityManager.default.ids[0].ppk.toPem()
             };
             document.getElementsByTagName('iframe')[0].contentWindow.postMessage(JSON.stringify(messageObj), origin);
         },

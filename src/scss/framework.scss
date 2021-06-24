@@ -199,6 +199,7 @@ drag, drag, and chosen states
         }
     }
 }
+
 .modal.lode__thing-editing {
     .is-id {
         width: 200px;
@@ -420,6 +421,9 @@ drag, drag, and chosen states
             }
         }
     }
+    .lode__hierarchy-ul.ul-list-scrolled {
+        margin-top: 175px;
+    }
 }
 ul.processing-list {
     height: 100%;
@@ -493,7 +497,7 @@ ul.processing-list {
     .parent-object.scrolled {
         z-index: 8;
         position: fixed;
-        width: calc(100% - 280px);
+        width: calc(100% - 80px);
         height: 58px;
         overflow: hidden;
         .tag {

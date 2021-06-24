@@ -14,11 +14,11 @@
   },
   "main": "/theme.scss",
   "dependencies": {
-    "bulma": "^0.9.2",
+    "bulma": "^0.9.3",
     "bulma-checkradio": "^1.1.1",
     "bulma-switch": "^2.0.0",
-    "cassproject": "^4.0.2",
     "core-js": "^3.14.0",
+    "cassproject": "^0.5.18",
     "dateformat": "^4.5.1",
     "file-saver": "^2.0.5",
     "jsonld": "^1.8.1",

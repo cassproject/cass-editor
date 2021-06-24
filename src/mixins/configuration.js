@@ -262,7 +262,7 @@ export const configuration = {
             appLog(ecRemoteLda);
             this.configList = [];
             for (let ecrld of ecRemoteLda) {
-                let t = new Thing();
+                let t = new schema.Thing();
                 t.copyFrom(ecrld);
                 this.configList.push(this.generateSimpleConfigObject(t));
             }

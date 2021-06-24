@@ -84,7 +84,7 @@ export default {
             r.init(server, function() {
                 appLog("Repository initialized");
             }, appError);
-            r.autoDetectRepository();
+            r.autoDetectRepositoryAsync(appLog, appError);
             window.repo = r;
             this.repo = r;
 
@@ -164,9 +164,9 @@ export default {
                 ss.href = this.queryParams.css;
                 document.getElementsByTagName("head")[0].appendChild(ss);
             }
-            EcIdentityManager.readContacts();
-            EcIdentityManager.readIdentities();
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            EcIdentityManager.default.readContacts();
+            EcIdentityManager.default.readIdentities();
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 this.findLinkedPersonForIdentity();
             }
             // Preload schema so large frameworks are faster
@@ -192,7 +192,7 @@ export default {
         },
         findLinkedPersonForIdentity: function() {
             appLog("Finding linked person for identity...");
-            let identFingerprint = EcIdentityManager.ids[0].ppk.toPk().fingerprint();
+            let identFingerprint = EcIdentityManager.default.ids[0].ppk.toPk().fingerprint();
             let paramObj = {};
             paramObj.size = 10000;
             window.repo.searchWithParams("@type:Person AND @id:\"" + identFingerprint + "\"", paramObj, null,
@@ -205,7 +205,7 @@ export default {
             for (let ecrld of ecRemoteLda) {
                 let ep = new EcPerson();
                 ep.copyFrom(ecrld);
-                if (ep.getGuid().equals(EcIdentityManager.ids[0].ppk.toPk().fingerprint())) {
+                if (ep.getGuid().equals(EcIdentityManager.default.ids[0].ppk.toPk().fingerprint())) {
                     matchingPersonRecordFound = true;
                     this.$store.commit('user/loggedOnPerson', ep);
                     this.linkedPerson = ep;
@@ -242,17 +242,17 @@ export default {
             paramObj.size = this.GROUP_SEARCH_SIZE;
             EcOrganization.search(window.repo, '', this.searchRepositoryForGroupsSuccess, this.searchRepositoryForGroupsFailure, paramObj);
         },
-        addGroupIdentity: function(group) {
+        addGroupIdentity: async function(group) {
             try {
                 // add all available group keys to identity manager
-                let groupPpkSet = group.getOrgKeys();
+                let groupPpkSet = await group.getOrgKeys();
                 appLog("Adding group identities: " + "(" + group.shortId() + ") - " + group.getName() + " - (" + groupPpkSet.length + ") keys");
                 for (let i = 0; i < groupPpkSet.length; i++) {
                     let gPpk = groupPpkSet[i];
                     let grpIdent = new EcIdentity();
                     grpIdent.displayName = group.getName() + " - key[" + i + "]";
                     grpIdent.ppk = gPpk;
-                    EcIdentityManager.addIdentityQuietly(grpIdent);
+                    EcIdentityManager.default.addIdentityQuietly(grpIdent);
                 }
             } catch (e) {
                 // TODO Problem with EcOrganization update and creating encrypted value when only a reader...
@@ -266,8 +266,8 @@ export default {
             dir.name = e;
             // dir.description = "Test Description";
             dir.generateId(window.repo.selectedServer);
-            if (EcIdentityManager.ids.length > 0) {
-                dir.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                dir.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             dir["schema:dateCreated"] = new Date().toISOString();
             dir["schema:dateModified"] = new Date().toISOString();
@@ -453,13 +453,13 @@ export default {
                 }
             };
         },
-        decrypt: function(encryptedThing, returnObject) {
+        decrypt: async function(encryptedThing, returnObject) {
             var v = new EcEncryptedValue();
             v.copyFrom(encryptedThing);
-            returnObject.copyFrom(v.decryptIntoObject());
+            returnObject.copyFrom(await v.decryptIntoObject());
             return returnObject;
         },
-        createNewFramework: function(optionalDirectory) {
+        createNewFramework: async function(optionalDirectory) {
             let me = this;
             this.$store.commit('editor/t3Profile', false);
             this.setDefaultLanguage();
@@ -480,8 +480,8 @@ export default {
                     framework.reader = optionalDirectory.reader;
                 }
             }
-            if (EcIdentityManager.ids.length > 0) {
-                framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
             this.$store.commit('editor/newFramework', framework.shortId());
@@ -490,7 +490,7 @@ export default {
             }
             var saveFramework = framework;
             if (this.queryParams.private === "true") {
-                saveFramework = EcEncryptedValue.toEncryptedValue(framework);
+                saveFramework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(saveFramework, function() {
                 me.$store.commit('editor/framework', framework);
@@ -499,7 +499,7 @@ export default {
                 }
             }, appError);
         },
-        createNewConceptScheme: function() {
+        createNewConceptScheme: async function() {
             let me = this;
             this.setDefaultLanguage();
             var framework = new EcConceptScheme();
@@ -508,8 +508,8 @@ export default {
             } else {
                 framework.generateId(this.repo.selectedServer);
             }
-            if (EcIdentityManager.ids.length > 0) {
-                framework.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             let name = "New Taxonomy";
             if (this.queryParams.ceasnDataFields === 'true') {
@@ -524,7 +524,7 @@ export default {
             this.$store.commit('editor/newFramework', framework.shortId());
             var saveFramework = framework;
             if (this.queryParams.private === "true") {
-                saveFramework = EcEncryptedValue.toEncryptedValue(framework);
+                saveFramework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(saveFramework, function() {
                 me.$store.commit('editor/framework', framework);
@@ -545,16 +545,16 @@ export default {
         loadIdentity: function(callback) {
             var identity;
             if (this.queryParams.user === "self") {
-                EcIdentityManager.readIdentities();
-                EcIdentityManager.readContacts();
-                if (EcIdentityManager.ids.length === 0) {
+                EcIdentityManager.default.readIdentities();
+                EcIdentityManager.default.readContacts();
+                if (EcIdentityManager.default.ids.length === 0) {
                     EcPpk.generateKeyAsync(
                         function(p1) {
                             identity = new EcIdentity();
                             identity.ppk = p1;
                             identity.displayName = "You";
-                            EcIdentityManager.onIdentityChanged = EcIdentityManager.saveIdentities;
-                            EcIdentityManager.addIdentity(identity);
+                            EcIdentityManager.default.onIdentityChanged = EcIdentityManager.default.saveIdentities;
+                            EcIdentityManager.default.addIdentity(identity);
                             callback();
                         }
                     );
@@ -572,7 +572,7 @@ export default {
                         identity = new EcIdentity();
                         identity.ppk = EcPpk.fromPem(data.identity);
                         identity.displayName = "You";
-                        EcIdentityManager.addIdentity(identity);
+                        EcIdentityManager.default.addIdentity(identity);
                         callback();
                         var message = {
                             action: "response",
@@ -596,7 +596,7 @@ export default {
                 callback();
             }
         },
-        messageListener: function(evt) {
+        messageListener: async function(evt) {
             var data = evt.data;
             var me = this;
             if (data != null && data !== "" && !EcObject.isObject(data)) {
@@ -630,7 +630,7 @@ export default {
                     parent.postMessage(message, this.queryParams.origin);
                 } else if (data.action === "set") {
                     if (data.id != null) {
-                        var d = EcRepository.getBlocking(data.id);
+                        var d = await EcRepository.get(data.id);
                     }
                     delete data.id;
                     delete data.action;
@@ -639,7 +639,7 @@ export default {
                     }
                     d["schema:dateModified"] = new Date().toISOString();
                     if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[d.id] !== true) {
-                        d = EcEncryptedValue.toEncryptedValue(d);
+                        d = await EcEncryptedValue.toEncryptedValue(d);
                     }
                     repo.saveTo(d, function(success) {
                         var message = {
@@ -829,13 +829,13 @@ export default {
             }
             return entity;
         },
-        attachUrlProperties: function(results) {
+        attachUrlProperties: async function(results) {
             var resource = this.$store.state.editor.framework;
             if (this.$store.state.editor.selectedCompetency != null) {
                 resource = this.$store.state.editor.selectedCompetency;
             }
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcConcept().getTypes())) {
                     if (!EcArray.isArray(resource[this.$store.state.editor.selectCompetencyRelation])) {
                         resource[this.$store.state.editor.selectCompetencyRelation] = [];
@@ -845,7 +845,7 @@ export default {
             }
             resource["schema:dateModified"] = new Date().toISOString();
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
-                resource = EcEncryptedValue.toEncryptedValue(resource);
+                resource = await EcEncryptedValue.toEncryptedValue(resource);
             }
             this.repo.saveTo(resource, function() {}, appError);
         },
@@ -856,12 +856,12 @@ export default {
                 this.appendCompetencies(selectedIds, true);
             }
         },
-        copyCompetencies: function(results) {
+        copyCompetencies: async function(results) {
             var copyDict = {};
             var framework = this.$store.state.editor.framework;
             var me = this;
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
                     var c = new EcCompetency();
                     c.copyFrom(thing);
@@ -873,8 +873,8 @@ export default {
                     c["schema:dateCreated"] = new Date().toISOString();
                     c["schema:dateModified"] = new Date().toISOString();
                     delete c.owner;
-                    if (EcIdentityManager.ids.length > 0) {
-                        c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (EcIdentityManager.default.ids.length > 0) {
+                        c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     if (framework.owner && framework.owner.length > 0) {
                         for (var j = 0; j < framework.owner.length; j++) {
@@ -891,7 +891,7 @@ export default {
                     c['ceasn:derivedFrom'] = thing.id;
                     copyDict[c['ceasn:derivedFrom']] = c;
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
-                        c = EcEncryptedValue.toEncryptedValue(c);
+                        c = await EcEncryptedValue.toEncryptedValue(c);
                     }
                     this.itemsSaving++;
                     (function(c) {
@@ -922,7 +922,7 @@ export default {
                     level['ceasn:derivedFrom'] = thing.id;
                     copyDict[level['ceasn:derivedFrom']] = level;
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
-                        level = EcEncryptedValue.toEncryptedValue(level);
+                        level = await EcEncryptedValue.toEncryptedValue(level);
                     }
                     this.itemsSaving++;
                     (function(level) {
@@ -942,7 +942,7 @@ export default {
                 }
             }
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcAlignment().getTypes())) {
                     var parent = copyDict[thing.target];
                     var child = copyDict[thing.source];
@@ -960,8 +960,8 @@ export default {
                         r.target = parent.shortId();
                         r.source = child.shortId();
                         r.relationType = thing.relationType;
-                        if (EcIdentityManager.ids.length > 0) {
-                            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         if (framework.owner && framework.owner.length > 0) {
                             for (var j = 0; j < framework.owner.length; j++) {
@@ -979,7 +979,7 @@ export default {
                             framework["schema:dateModified"] = new Date().toISOString();
                             EcArray.setRemove(results, thing.source);
                             if (this.$store.state.editor.private === true) {
-                                r = EcEncryptedValue.toEncryptedValue(r);
+                                r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.itemsSaving++;
                             (function(r) {
@@ -1003,7 +1003,7 @@ export default {
             }
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
                     if (selectedCompetency != null) {
                         var r = new EcAlignment();
@@ -1019,8 +1019,8 @@ export default {
                         r.target = selectedCompetency.shortId();
                         r.source = child.shortId();
                         r.relationType = Relation.NARROWS;
-                        if (EcIdentityManager.ids.length > 0) {
-                            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         if (framework.owner && framework.owner.length > 0) {
                             for (var j = 0; j < framework.owner.length; j++) {
@@ -1039,7 +1039,7 @@ export default {
                             framework.addRelation(r.id);
                             framework["schema:dateModified"] = new Date().toISOString();
                             if (this.$store.state.editor.private === true) {
-                                r = EcEncryptedValue.toEncryptedValue(r);
+                                r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             (function(r) {
                                 Task.asyncImmediate(function(callback) {
@@ -1059,23 +1059,23 @@ export default {
                 }
             }
         },
-        afterCopy: function() {
+        afterCopy: async function() {
             this.itemsSaving--;
             // loading(this.itemsSaving + " objects left to copy.");
             if (this.itemsSaving === 0) {
                 var framework = this.$store.state.editor.framework;
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                    framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
                 this.repo.saveTo(framework, function() {}, appError);
             }
         },
-        appendCompetencies: function(results, newLink) {
+        appendCompetencies: async function(results, newLink) {
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             var framework = this.$store.state.editor.framework;
             var me = this;
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcCompetency().getTypes())) {
                     framework.addCompetency(thing.shortId());
                 } else if (thing.isAny(new EcLevel().getTypes())) {
@@ -1088,7 +1088,7 @@ export default {
                 }
             }
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcAlignment().getTypes())) {
                     if (EcArray.has(framework.competency, thing.source)) {
                         if (EcArray.has(framework.competency, thing.target)) {
@@ -1100,7 +1100,7 @@ export default {
             }
 
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcCompetency().getTypes())) {
                     if (selectedCompetency != null) {
                         var r = new EcAlignment();
@@ -1114,8 +1114,8 @@ export default {
                         r.target = selectedCompetency.shortId();
                         r.source = thing.shortId();
                         r.relationType = Relation.NARROWS;
-                        if (EcIdentityManager.ids.length > 0) {
-                            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         if (framework.owner && framework.owner.length > 0) {
                             for (var j = 0; j < framework.owner.length; j++) {
@@ -1133,7 +1133,7 @@ export default {
                         if (r.source !== r.target) {
                             framework.addRelation(r.id);
                             if (this.$store.state.editor.private === true) {
-                                r = EcEncryptedValue.toEncryptedValue(r);
+                                r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.repo.saveTo(r, function() {}, appError);
                         }
@@ -1141,10 +1141,10 @@ export default {
                 }
             }
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                framework = EcEncryptedValue.toEncryptedValue(framework);
+                framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
-            this.repo.saveTo(framework, function() {
-                me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
+            this.repo.saveTo(framework, async function() {
+                me.$store.commit('editor/framework', await EcFramework.get(framework.id));
             }, appError);
         },
         importParentStyles: function() {

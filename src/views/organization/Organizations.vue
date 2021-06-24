@@ -76,11 +76,11 @@ export default {
             }
             if (this.queryParams && this.queryParams.show === "mine") {
                 search += " AND (";
-                for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
                     if (i !== 0) {
                         search += " OR ";
                     }
-                    var id = EcIdentityManager.ids[i];
+                    var id = EcIdentityManager.default.ids[i];
                     search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
                     search += " OR \\*owner:\"" + addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
                 }
@@ -110,10 +110,10 @@ export default {
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];
-            if (Thing.getDisplayStringFrom(name).toLowerCase().indexOf("http") !== -1) {
-                return this.resolveNameFromUrl(Thing.getDisplayStringFrom(name));
+            if (schema.Thing.getDisplayStringFrom(name).toLowerCase().indexOf("http") !== -1) {
+                return this.resolveNameFromUrl(schema.Thing.getDisplayStringFrom(name));
             } else {
-                return Thing.getDisplayStringFrom(name);
+                return schema.Thing.getDisplayStringFrom(name);
             }
         }
     }
