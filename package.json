@@ -21,7 +21,7 @@
     "cassproject": "^0.5.18",
     "dateformat": "^4.5.1",
     "file-saver": "^2.0.5",
-    "jsonld": "^1.8.1",
+    "jsonld": "^5.2.0",
     "lodash": "^4.17.21",
     "pure-uuid": "^1.6.2",
     "v-clipboard": "^2.2.3",
