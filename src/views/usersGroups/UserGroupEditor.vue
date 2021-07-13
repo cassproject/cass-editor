@@ -670,7 +670,9 @@
             </template>
         </modal-template>
         <!-- group deletion confirm modal-->
-        <modal-template :active="showConfirmDeleteUserGroupModal">
+        <modal-template
+            :active="showConfirmDeleteUserGroupModal"
+            @close="closeDeleteGroupConfirmModal">
             <template slot="modal-header">
                 Delete User Group?
             </template>
