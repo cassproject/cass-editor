@@ -433,11 +433,11 @@ export default {
         HierarchyNode: () => import('./HierarchyNode.vue'),
         draggable: () => import('vuedraggable')},
     watch: {
-        container: {
-            handler() {
-                this.once = true;
-            },
-            deep: true
+        relations: function() {
+            this.once = true;
+        },
+        competencies: function() {
+            this.once = true;
         },
         selectedArray: function() {
             if (this.selectedArray.length > 1) {
@@ -466,6 +466,12 @@ export default {
         }
     },
     computed: {
+        relations: function() {
+            return this.container.relation;
+        },
+        competencies: function() {
+            return this.container.competency;
+        },
         canCopyOrCut: function() {
             if (this.selectedArray && this.selectedArray.length === 1) {
                 return true;
