@@ -780,7 +780,7 @@ export default {
                 }
             }
             this.move(
-                this.hierarchy[foo.oldIndex].obj.shortId(),
+                this.structure[foo.oldIndex].obj.shortId(),
                 toId,
                 foo.from.id,
                 foo.to.id,
