@@ -137,7 +137,7 @@ export default {
             this.files = this.files.filter(f => {
                 return f !== file;
             });
-            this.$store.commit('');
+            this.$refs.file.value = '';
             this.$emit('clear-files');
         },
         process() {
