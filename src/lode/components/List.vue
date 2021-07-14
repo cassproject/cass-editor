@@ -499,6 +499,7 @@ export default {
                     me.repo.searchWithParams(search, paramObj, async function(result) {
                         if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
                             if (!EcArray.has(me.resultIds, result.id)) {
+                                me.resultIds.push(result.id);
                                 if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
                                     if (result.isAny(new EcEncryptedValue().getTypes())) {
                                         // Decrypt and add to results list
@@ -509,9 +510,8 @@ export default {
                                         obj.copyFrom(await v.decryptIntoObject());
                                         result = obj;
                                     }
-                                    if (result.name !== '') {
+                                    if (result.name !== '' || result['dcterms:title'] !== '') {
                                         me.results.push(result);
-                                        me.resultIds.push(result.id);
                                         me.nonDirectoryResults = true;
                                     }
                                 }

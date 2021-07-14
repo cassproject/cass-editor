@@ -293,7 +293,7 @@
         </div>
         <template>
             <draggable
-                v-show="!collapse"
+                v-if="!collapse"
                 :id="obj.shortId()"
                 v-bind="dragOptions"
                 v-model="hasChild"
