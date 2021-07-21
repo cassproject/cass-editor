@@ -628,7 +628,7 @@ export default {
             appLog("complexConfigObject: ");
             appLog(JSON.stringify(this.complexConfigObject));
             this.configBusy = true;
-            EcRepository.save(this.complexConfigObject, this.saveConfigToRepositorySuccess, this.saveConfigToRepositoryFailure);
+            window.repo.saveTo(this.complexConfigObject, this.saveConfigToRepositorySuccess, this.saveConfigToRepositoryFailure);
         },
         saveConfigToRepositorySuccess(msg) {
             appLog("Config save success");
