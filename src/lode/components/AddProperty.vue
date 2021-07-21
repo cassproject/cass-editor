@@ -430,7 +430,7 @@ export default {
             if (this.profile && this.profile[this.selectedPropertyToAdd.value] && this.profile[this.selectedPropertyToAdd.value]['options'] && this.checkedOptions) {
                 for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
                     let option = this.profile[this.selectedPropertyToAdd.value]['options'][i];
-                    option.name = await EcRepository.get(option.val).name;
+                    option.name = (await EcRepository.get(option.val)).name;
                     this.optionsArray.push(option);
                 }
             }
