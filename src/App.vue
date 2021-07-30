@@ -231,6 +231,10 @@ export default {
                         }
                     }
                 }
+                if (this.$route.name === 'frameworks' || this.$route.name === 'concepts') {
+                    this.$store.dispatch('app/refreshDirectories');
+                    this.$store.commit('app/refreshSearch', true);
+                }
             }
         },
         searchRepositoryForGroupsFailure: function(msg) {
