@@ -790,7 +790,6 @@ export default {
          * can further breakout if we decide to use vuex // plugin is global
          */
         showModal(val, item) {
-            this.$emit('invalid', true);
             let params = {};
             if (val === 'remove') {
                 if (this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
@@ -802,7 +801,9 @@ export default {
                 }
                 this.removePropertyConfirmModal = true;
                 this.propertyToRemove = item;
+                return;
             }
+            this.$emit('invalid', true);
             if (val === 'required') {
                 params = {
                     type: val,
