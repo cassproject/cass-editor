@@ -555,8 +555,11 @@ export default {
                         me.userIsOwner = true;
                     }
                     var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk, currentUser: currentUser};
-                    me.users.push(user);
-                    me.ownerCount++;
+                    // don't add user if already in array
+                    if ((me.users.filter(each => each.id === user.id)).length === 0) {
+                        me.users.push(user);
+                        me.ownerCount++;
+                    }
                 }
             }, function(failure) {
                 // If it's not a Person, check organizations
@@ -573,8 +576,10 @@ export default {
                             }
                         }
                         var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk, currentUser: currentUser};
-                        me.groups.push(org);
-                        me.ownerCount++;
+                        if ((me.groups.filter(each => each.id === org.id)).length === 0) {
+                            me.groups.push(org);
+                            me.ownerCount++;
+                        }
                     }
                 }, function(error) {
                     appError(error);
@@ -588,7 +593,9 @@ export default {
                 appLog(success);
                 if (success) {
                     var user = {header: success.name, email: success.email, view: "view", id: success.shortId(), changed: false, pk: pk};
-                    me.users.push(user);
+                    if ((me.users.filter(each => each.id === user.id)).length === 0) {
+                        me.users.push(user);
+                    }
                 }
             }, function(failure) {
                 // If it's not a Person, check organizations
@@ -596,7 +603,9 @@ export default {
                     appLog(success);
                     if (success) {
                         var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
-                        me.groups.push(org);
+                        if ((me.groups.filter(each => each.id === org.id)).length === 0) {
+                            me.groups.push(org);
+                        }
                     }
                 }, function(error) {
                     appError(error);
