@@ -223,8 +223,9 @@ export default {
             if (me.checkedOptions) {
                 this.applyCheckedOptions();
             }
-            for (var i = 0; i < this.selectedCompetencies.length; i++) {
-                var competencyId = this.selectedCompetencies[i];
+            let competencies = this.selectedCompetencies.slice();
+            for (var i = 0; i < competencies.length; i++) {
+                var competencyId = competencies[i];
                 EcRepository.get(competencyId, function(competency) {
                     me.expand(competency, function(expandedCompetency) {
                         var initialValues = [];
