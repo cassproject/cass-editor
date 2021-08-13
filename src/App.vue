@@ -231,6 +231,10 @@ export default {
                         }
                     }
                 }
+                if (this.$route.name === 'frameworks' || this.$route.name === 'concepts') {
+                    this.$store.dispatch('app/refreshDirectories');
+                    this.$store.commit('app/refreshSearch', true);
+                }
             }
         },
         searchRepositoryForGroupsFailure: function(msg) {
@@ -340,7 +344,7 @@ export default {
                 }, me.$store.state.editor.webSocketBackoff);
             };
 
-            connection.changedObject = function(wut) {
+            connection.changedObject = async function(wut) {
                 me.$store.commit('editor/changedObject', wut.shortId());
                 if (me.$route.name !== 'framework' && me.$route.name !== 'conceptScheme') {
                     return;
@@ -353,7 +357,7 @@ export default {
                         if (framework.shortId() === wut.shortId()) {
                             var f = new ConceptScheme();
                             if (wut["encryptedType"] === "ConceptScheme") {
-                                f = me.decrypt(wut, f);
+                                f = await me.decrypt(wut, f);
                             } else {
                                 f.copyFrom(wut);
                             }
@@ -368,7 +372,7 @@ export default {
                         if (framework.shortId() === wut.shortId()) {
                             var f = new EcFramework();
                             if (wut["encryptedType"] === "Framework") {
-                                f = me.decrypt(wut, f);
+                                f = await me.decrypt(wut, f);
                             } else {
                                 f.copyFrom(wut);
                             }
@@ -384,7 +388,7 @@ export default {
                             if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcConcept();
                                 if (wut["encryptedType"] === "Concept") {
-                                    com = me.decrypt(wut, com);
+                                    com = await me.decrypt(wut, com);
                                 } else {
                                     com.copyFrom(wut);
                                 }
@@ -400,7 +404,7 @@ export default {
                             if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcCompetency();
                                 if (wut["encryptedType"] === "Competency") {
-                                    com = me.decrypt(wut, com);
+                                    com = await me.decrypt(wut, com);
                                 } else {
                                     com.copyFrom(wut);
                                 }
@@ -417,7 +421,7 @@ export default {
                             if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcLevel();
                                 if (wut["encryptedType"] === "Level") {
-                                    com = me.decrypt(wut, com);
+                                    com = await me.decrypt(wut, com);
                                 } else {
                                     com.copyFrom(wut);
                                 }

@@ -416,7 +416,7 @@ export default {
             isDraggable: true,
             addingNode: false,
             editingNode: false,
-            collapse: false,
+            collapse: true,
             controlOnStart: false,
             checked: false,
             childrenExpanded: true,

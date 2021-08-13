@@ -48,6 +48,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
                 :view="view"
                 :expandInModal="true" />
             <Hierarchy
+                v-if="selectedFramework"
                 :parent="parent"
                 :container="selectedFramework"
                 view="competencySearch"

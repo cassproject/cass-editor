@@ -415,7 +415,7 @@ export default {
         if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options'] && this.checkedOptions) {
             for (let i = 0; i < this.profile[this.expandedProperty]['options'].length; i++) {
                 let option = this.profile[this.expandedProperty]['options'][i];
-                option.name = await EcRepository.get(option.val).name;
+                option.name = (await EcRepository.get(option.val)).name;
                 this.optionsArray.push(option);
             }
         }
@@ -790,7 +790,6 @@ export default {
          * can further breakout if we decide to use vuex // plugin is global
          */
         showModal(val, item) {
-            this.$emit('invalid', true);
             let params = {};
             if (val === 'remove') {
                 if (this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
@@ -802,7 +801,9 @@ export default {
                 }
                 this.removePropertyConfirmModal = true;
                 this.propertyToRemove = item;
+                return;
             }
+            this.$emit('invalid', true);
             if (val === 'required') {
                 params = {
                     type: val,

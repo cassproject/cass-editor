@@ -31,7 +31,8 @@
                 parent="search-modal"
                 :allowShowFrameworks="true"
                 :clearFramework="clearFramework"
-                @selectFramework="selectFramework" />
+                @selectFramework="selectFramework"
+                :idsNotPermittedInSearch="copyOrLink ? [framework.shortId()] : null" />
         </template>
         <template slot="modal-foot">
             <div class="buttons">
