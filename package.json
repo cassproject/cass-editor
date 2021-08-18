@@ -17,7 +17,7 @@
     "bulma": "^0.9.3",
     "bulma-checkradio": "^1.1.1",
     "bulma-switch": "^2.0.0",
-    "core-js": "^3.14.0",
+    "core-js": "^3.16.2",
     "cassproject": "^0.5.18",
     "dateformat": "^4.5.1",
     "file-saver": "^2.0.5",
