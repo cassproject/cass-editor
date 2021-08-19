@@ -69,6 +69,7 @@
                     :configList="configList"
                     :readOnly="currentConfigIsReadOnly"
                     :defaultConfigId="defaultConfigId"
+                    :customPropertyAvailableConcepts="customPropertyAvailableConcepts"
                     :defaultBrowserConfig="localDefaultBrowserConfigId"
                     @set-browser-default="setConfigAsBrowserDefault"
                     @remove-browser-default-config="removeConfigAsBrowserDefault"
@@ -160,6 +161,9 @@ export default {
             if (!this.currentConfig || !this.currentConfig.isOwned) return true;
             else if (this.currentConfig.isOwned) return false;
             else return true;
+        },
+        customPropertyAvailableConcepts() {
+            return this.$store.getters['configuration/availableConcepts'];
         }
     },
     data: () => ({
@@ -177,7 +181,32 @@ export default {
         ConfigurationSetSuccess,
         ConfigurationList
     },
+    mounted() {
+        this.generateCustomPropertyAvailableConcepts();
+    },
     methods: {
+        generateCustomPropertyAvailableConcepts() {
+            appLog("generate list of available concepts");
+            repo.searchWithParams('@type:ConceptScheme',
+                {size: 10000},
+                null,
+                null,
+                null,
+                null
+            ).then((results) => {
+                let concepts = [];
+                for (let concept = 0; concept < results.length; concept++) {
+                    concepts.push({
+                        display: EcRemoteLinkedData.getDisplayStringFrom(results[concept]["dcterms:title"]),
+                        value: results[concept].id
+                    });
+                }
+                this.$store.commit('configuration/setAvailableConcepts', concepts);
+                appLog(concepts);
+            }).catch((err) => {
+                appLog("failed to retrieve concepts: " + err);
+            });
+        },
         handleDeleteConfigurationSuccess() {
             appLog("Config delete success");
             this.configToDelete = {};

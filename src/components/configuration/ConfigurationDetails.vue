@@ -820,6 +820,106 @@
                         </button>
                     </div>
                 </div>
+                <div
+                    class="box py-4 px-4"
+                    v-if="shouldAllowCustomPropertyPermittedConcepts">
+                    <div class="field">
+                        <div class="columns">
+                            <div class="column">
+                                <label class="label">Limit concepts </label>
+                            </div>
+                            <div class="column is-narrow">
+                                <div class="control">
+                                    <input
+                                        :disabled="readOnly"
+                                        v-model="customPropertyConceptsLimited"
+                                        id="customPropertyConceptsLimited"
+                                        type="checkbox"
+                                        name="customPropertyConceptsLimited"
+                                        class="switch"
+                                        checked="checked">
+                                    <label for="customPropertyConceptsLimited" />
+                                </div>
+                            </div>
+                        </div>
+                        <p
+                            v-if="!customPropertyConceptsLimited && !readOnly"
+                            class="description">
+                            Limit concepts disabled, any concepts allowed. To limit, turn on limit concepts.
+                        </p>
+                        <p
+                            v-if="customPropertyConceptsLimited && !readOnly"
+                            class="description">
+                            Concepts limited to only the schemas listed below. To allow any, turn off limit concepts.
+                        </p>
+                    </div>
+                    <div
+                        class="table-container"
+                        v-if="customPropertyAvailableConcepts.length > 0 && customPropertyConceptsLimited">
+                        <table class="table is-hoverable is-fullwidth">
+                            <thead>
+                                <th>display label</th>
+                                <th>field value</th>
+                                <th />
+                            </thead>
+                            <tbody>
+                                <tr
+                                    v-for="(ev,idx) in customPropertyAvailableConcepts"
+                                    :key="idx">
+                                    <th>
+                                        <p
+                                            v-if="readOnly">
+                                            {{ ev.display }}
+                                        </p>
+                                        <div
+                                            v-if="!readOnly"
+                                            class="control">
+                                            <input
+                                                class="input"
+
+                                                type="text"
+                                                v-model="ev.display">
+                                        </div>
+                                    </th>
+                                    <td>
+                                        <p
+                                            v-if="readOnly">
+                                            {{ ev.value }}
+                                        </p>
+                                        <div class="control">
+                                            <input
+                                                v-if="!readOnly"
+                                                type="text"
+                                                class="input "
+                                                v-model="ev.value">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div
+                                            class="button is-outlined is-danger is-outlined "
+                                            v-if="!readOnly"
+                                            @click="deleteCustomPropertyPermittedConcept(idx)">
+                                            <span class="icon">
+                                                <i class="fa fa-trash" />
+                                            </span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="buttons is-right">
+                        <button
+                            class="button is-outlined  is-primary"
+                            v-if="!readOnly && customPropertyConceptsLimited"
+                            @click="addCustomPropertyPermittedConcept">
+                            <span class="icon">
+                                <i class="fa fa-plus" />
+                            </span>
+                            <span>add</span>
+                        </button>
+                    </div>
+                </div>
                 <br>
                 <div
                     class="field has-text-danger"
@@ -2330,7 +2430,13 @@ export default {
         defaultConfigId: {
             type: String,
             default: null
-        }
+        },
+        customPropertyAvailableConcepts: [
+            {
+                display: String,
+                value: String
+            }
+        ]
     },
     data: function() {
         return {
@@ -2344,6 +2450,7 @@ export default {
             defaultBrowserConfigId: '',
             showDefaultCommenters: false,
             customPropertyValuesLimited: false,
+            customPropertyConceptsLimited: false,
             showManageRelationshipsModal: false,
             tab: 'general',
             configDetailsBusy: false,
@@ -2381,6 +2488,7 @@ export default {
             customPropertyAllowMultiples: false,
             customPropertyOnePerLanguage: true,
             customPropertyPermittedValues: [],
+            customPropertyPermittedConcepts: [],
             customPropertyInvalid: false,
             customPropertyPropertyNameExists: false,
             customPropertyPropertyNameInvalid: false,
@@ -2685,6 +2793,8 @@ export default {
             }
         },
         validateConfigFields() {
+            console.log('saving config...');
+            console.log(this.config);
             this.setAllConfigValidationsChecksToValid();
             if (!this.config.name || this.config.name.trim().equals('')) {
                 this.configInvalid = true;
@@ -2778,6 +2888,8 @@ export default {
             newProp.onePerLanguage = this.customPropertyOnePerLanguage;
             if (this.shouldAllowCustomPropertyPermittedValues) newProp.permittedValues = this.customPropertyPermittedValues;
             else newProp.permittedValues = [];
+            if (this.shouldAllowCustomPropertyPermittedConcepts) newProp.permittedConcepts = this.customPropertyPermittedConcepts;
+            else newProp.permittedConcepts = [];
             if (this.customPropertyParent.equals('framework')) this.config.fwkCustomProperties.push(newProp);
             else if (this.customPropertyParent.equals('competency')) this.config.compCustomProperties.push(newProp);
         },
@@ -2794,6 +2906,8 @@ export default {
                 propToUpdate.onePerLanguage = this.customPropertyOnePerLanguage;
                 if (this.shouldAllowCustomPropertyPermittedValues) propToUpdate.permittedValues = this.customPropertyPermittedValues;
                 else propToUpdate.permittedValues = [];
+                if (this.shouldAllowCustomPropertyPermittedConcepts) propToUpdate.permittedConcepts = this.customPropertyPermittedConcepts;
+                else propToUpdate.permittedConcepts = [];
             }
         },
         trimCustomPropertyPermittedValues() {
@@ -2820,11 +2934,21 @@ export default {
             this.customPropertyPermittedValues =
                 this.customPropertyPermittedValues.slice(0, idx).concat(this.customPropertyPermittedValues.slice(idx + 1, this.customPropertyPermittedValues.length));
         },
+        deleteCustomPropertyPermittedConcept(idx) {
+            this.customPropertyPermittedConcepts =
+                this.customPropertyPermittedConcepts.slice(0, idx).concat(this.customPropertyPermittedConcepts.slice(idx + 1, this.customPropertyPermittedConcepts.length));
+        },
         addCustomPropertyPermittedValue() {
             let pv = {};
             pv.display = '';
             pv.value = '';
             this.customPropertyPermittedValues.push(pv);
+        },
+        addCustomPropertyPermittedConcept() {
+            let pc = {};
+            pc.display = '';
+            pc.value = '';
+            this.customPropertyPermittedConcepts.push(pc);
         },
         simplifyCustomPropertyName() {
             this.customPropertyPropertyName = this.customPropertyPropertyName.replace(/[^0-9a-z]/gi, '');
@@ -2843,6 +2967,7 @@ export default {
             this.customPropertyAllowMultiples = false;
             this.customPropertyOnePerLanguage = true;
             this.customPropertyPermittedValues = [];
+            this.customPropertyPermittedConcepts = [];
             this.customPropertyInvalid = false;
             this.customPropertyPropertyNameExists = false;
             this.customPropertyPropertyNameInvalid = false;
@@ -2902,6 +3027,8 @@ export default {
             this.customPropertyPermittedValues = this.generateCopyOfCustomPropertyPermittedValues(prop);
             if (this.customPropertyPermittedValues.length > 0) this.customPropertyValuesLimited = true;
             else this.customPropertyValuesLimited = false;
+            if (this.customPropertyPermittedVConcepts.length > 0) this.customPropertyConceptsLimited = true;
+            else this.customPropertyConceptsLimited = false;
         },
         manageCustomFrameworkProperty: function(propertyIdx) {
             this.initCustomPropertyDataHoldersAsExistingProperty('framework', this.config.fwkCustomProperties[propertyIdx]);
@@ -3189,6 +3316,10 @@ export default {
         },
         shouldAllowCustomPropertyPermittedValues: function() {
             if (this.customPropertyRange.equals('http://schema.org/Text')) return true;
+            else return false;
+        },
+        shouldAllowCustomPropertyPermittedConcepts: function() {
+            if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/skos/Concept')) return true;
             else return false;
         },
         shouldAllowOnePerLangChoice: function() {
