@@ -3012,8 +3012,10 @@ export default {
             this.customPropertyPermittedConcepts = this.generateCopyOfCustomPropertyPermittedConcepts(prop);
             if (this.customPropertyPermittedValues.length > 0) this.customPropertyValuesLimited = true;
             else this.customPropertyValuesLimited = false;
-            if (this.customPropertyPermittedConcepts.length > 0) this.customPropertyConceptsLimited = true;
-            else this.customPropertyConceptsLimited = false;
+            if (this.customPropertyPermittedConcepts.length > 0) {
+                this.customPropertyConceptsLimited = true;
+                this.search = this.customPropertyPermittedConcepts[0].display;
+            } else this.customPropertyConceptsLimited = false;
         },
         manageCustomFrameworkProperty: function(propertyIdx) {
             this.initCustomPropertyDataHoldersAsExistingProperty('framework', this.config.fwkCustomProperties[propertyIdx]);
