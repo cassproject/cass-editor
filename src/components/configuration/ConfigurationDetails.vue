@@ -856,63 +856,43 @@
                     <div
                         class="table-container"
                         v-if="customPropertyAvailableConcepts.length > 0 && customPropertyConceptsLimited">
-                        <table class="table is-hoverable is-fullwidth">
-                            <thead>
-                                <th>display label</th>
-                                <th>field value</th>
-                                <th />
-                            </thead>
-                            <tbody>
-                                <tr
-                                    v-for="(ev,idx) in customPropertyAvailableConcepts"
-                                    :key="idx">
-                                    <th>
-                                        <p
-                                            v-if="readOnly">
-                                            {{ ev.display }}
-                                        </p>
-                                        <div
-                                            v-if="!readOnly"
-                                            class="control">
-                                            <input
-                                                class="input"
-
-                                                type="text"
-                                                v-model="ev.display">
-                                        </div>
-                                    </th>
-                                    <td>
-                                        <p
-                                            v-if="readOnly">
-                                            {{ ev.value }}
-                                        </p>
-                                        <div class="control">
-                                            <input
-                                                v-if="!readOnly"
-                                                type="text"
-                                                class="input "
-                                                v-model="ev.value">
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div
-                                            class="button is-outlined is-danger is-outlined "
-                                            v-if="!readOnly"
-                                            @click="deleteCustomPropertyPermittedConcept(idx)">
-                                            <span class="icon">
-                                                <i class="fa fa-trash" />
-                                            </span>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        <div class="field is-grouped">
+                            <div class="control is-expanded share auto-complete__control">
+                                <input
+                                    @blur="closeAutoComplete"
+                                    type="search"
+                                    placeholder="search"
+                                    class="input share is-fullwidth"
+                                    v-model="search"
+                                    @input="filterConcepts">
+                                <div
+                                    v-show="isOpenAutocomplete"
+                                    class="auto">
+                                    <ul>
+                                        <li
+                                            v-for="(result, i) in filteredConcepts"
+                                            :key="i"
+                                            @mousedown="selectConcept(result)">
+                                            {{ result.display }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="control is-narrow">
+                                <div
+                                    class="button is-outlined is-primary">
+                                    <span class="icon">
+                                        <i class="fa fa-save" />
+                                    </span>
+                                    <span>Add Selection</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div class="buttons is-right">
                         <button
                             class="button is-outlined  is-primary"
-                            v-if="!readOnly && customPropertyConceptsLimited"
-                            @click="addCustomPropertyPermittedConcept">
+                            v-if="!readOnly && customPropertyConceptsLimited">
                             <span class="icon">
                                 <i class="fa fa-plus" />
                             </span>
@@ -2430,13 +2410,7 @@ export default {
         defaultConfigId: {
             type: String,
             default: null
-        },
-        customPropertyAvailableConcepts: [
-            {
-                display: String,
-                value: String
-            }
-        ]
+        }
     },
     data: function() {
         return {
@@ -2519,7 +2493,11 @@ export default {
             localDefaultCommenters: this.config.defaultCommenters,
             cassRelations: ['isEnabledBy', 'narrows', 'broadens', 'requires', 'desires', 'isEquivalentTo', 'isRelatedTo', 'enables'],
             asnRelations: ['majorRelated', 'minorRelated'],
-            gemqRelations: ['hasChild', 'isChildOf']
+            gemqRelations: ['hasChild', 'isChildOf'],
+            filteredConcepts: [],
+            search: "",
+            isOpenAutocomplete: false,
+            conceptToAdd: null
         };
     },
     components: {
@@ -2944,12 +2922,6 @@ export default {
             pv.value = '';
             this.customPropertyPermittedValues.push(pv);
         },
-        addCustomPropertyPermittedConcept() {
-            let pc = {};
-            pc.display = '';
-            pc.value = '';
-            this.customPropertyPermittedConcepts.push(pc);
-        },
         simplifyCustomPropertyName() {
             this.customPropertyPropertyName = this.customPropertyPropertyName.replace(/[^0-9a-z]/gi, '');
         },
@@ -3010,6 +2982,18 @@ export default {
             }
             return permittedValuesCopy;
         },
+        generateCopyOfCustomPropertyPermittedConcepts(prop) {
+            let permittedConceptsCopy = [];
+            if (prop.permittedConcepts && prop.permittedConcepts.length > 0) {
+                for (let pv of prop.permittedConcepts) {
+                    let cpv = {};
+                    cpv.display = pv.display;
+                    cpv.value = pv.value;
+                    permittedConceptsCopy.push(cpv);
+                }
+            }
+            return permittedConceptsCopy;
+        },
         initCustomPropertyDataHoldersAsExistingProperty(propertyParent, prop) {
             this.reInitCustomPropertyDataHolders();
             this.customPropertyParent = propertyParent;
@@ -3025,9 +3009,10 @@ export default {
             this.customPropertyAllowMultiples = prop.allowMultiples;
             this.customPropertyOnePerLanguage = prop.onePerLanguage;
             this.customPropertyPermittedValues = this.generateCopyOfCustomPropertyPermittedValues(prop);
+            this.customPropertyPermittedConcepts = this.generateCopyOfCustomPropertyPermittedConcepts(prop);
             if (this.customPropertyPermittedValues.length > 0) this.customPropertyValuesLimited = true;
             else this.customPropertyValuesLimited = false;
-            if (this.customPropertyPermittedVConcepts.length > 0) this.customPropertyConceptsLimited = true;
+            if (this.customPropertyPermittedConcepts.length > 0) this.customPropertyConceptsLimited = true;
             else this.customPropertyConceptsLimited = false;
         },
         manageCustomFrameworkProperty: function(propertyIdx) {
@@ -3255,6 +3240,19 @@ export default {
         },
         isOtherRelation: function(relType) {
             return !(this.cassRelations.includes(relType) || this.asnRelations.includes(relType) || this.gemqRelations.includes(relType));
+        },
+        filterConcepts: function() {
+            this.isOpenAutocomplete = true;
+            this.filteredConcepts = this.customPropertyAvailableConcepts.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+        },
+        selectConcept: function(concept) {
+            this.customPropertyPermittedConcepts = [];
+            this.customPropertyPermittedConcepts.push(concept);
+            this.search = concept.display;
+            this.isOpenAutocomplete = false;
+        },
+        closeAutoComplete: function() {
+            this.isOpenAutocomplete = false;
         }
     },
     computed: {
@@ -3277,6 +3275,14 @@ export default {
             },
             set(val) {
                 this.$store.commit('configuration/setCurrentConfig', val);
+            }
+        },
+        customPropertyAvailableConcepts: {
+            get() {
+                return this.$store.getters['configuration/availableConcepts'];
+            },
+            set(val) {
+                this.$store.commit('configuration/availableConcepts', val);
             }
         },
         isSetInstanceDisabled() {
