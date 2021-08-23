@@ -2771,8 +2771,6 @@ export default {
             }
         },
         validateConfigFields() {
-            console.log('saving config...');
-            console.log(this.config);
             this.setAllConfigValidationsChecksToValid();
             if (!this.config.name || this.config.name.trim().equals('')) {
                 this.configInvalid = true;

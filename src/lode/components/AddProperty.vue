@@ -447,15 +447,11 @@ export default {
             }
             if (this.profile && this.profile[this.selectedPropertyToAdd.value] && this.profile[this.selectedPropertyToAdd.value]['options']) {
                 if (this.profile[this.selectedPropertyToAdd.value]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/skos/Concept") {
-                    console.log('limited concepts');
                     for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
                         await EcConceptScheme.get(this.profile[this.selectedPropertyToAdd.value]['options'][i].val).then((scheme) => {
-                            console.log(scheme);
-                            console.log(scheme['skos:hasTopConcept']);
                             if (scheme) {
                                 scheme['skos:hasTopConcept'].forEach((conceptUri) => {
                                     EcConcept.get(conceptUri).then((concept) => {
-                                        console.log(concept);
                                         this.limitedConcepts.push({
                                             display: EcRemoteLinkedData.getDisplayStringFrom(concept['skos:prefLabel']),
                                             val: conceptUri
@@ -465,7 +461,6 @@ export default {
                             }
                         });
                     }
-                    console.log(this.limitedConcepts);
                 } else if (this.checkedOptions) {
                     for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
                         let option = this.profile[this.selectedPropertyToAdd.value]['options'][i];
