@@ -890,27 +890,8 @@
                                     </ul>
                                 </div>
                             </div>
-                            <!-- <div class="control is-narrow">
-                                <div
-                                    class="button is-outlined is-primary">
-                                    <span class="icon">
-                                        <i class="fa fa-save" />
-                                    </span>
-                                    <span>Add Selection</span>
-                                </div>
-                            </div> -->
                         </div>
                     </div>
-                    <!-- <div class="buttons is-right">
-                        <button
-                            class="button is-outlined  is-primary"
-                            v-if="!readOnly && customPropertyConceptsLimited">
-                            <span class="icon">
-                                <i class="fa fa-plus" />
-                            </span>
-                            <span>add</span>
-                        </button>
-                    </div> -->
                 </div>
                 <br>
                 <div
@@ -3264,7 +3245,6 @@ export default {
             this.isOpenAutocomplete = false;
         },
         removeConcept: function(index) {
-            // this.customPropertyPermittedConcepts.pop(concept);
             this.customPropertyPermittedConcepts.splice(index, 1);
         },
         closeAutoComplete: function() {
