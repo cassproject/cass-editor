@@ -852,6 +852,18 @@
                             class="description">
                             Concepts limited to only the schemas listed below. To allow any, turn off limit concepts.
                         </p>
+                        <div class="tags are-medium">
+                            <span
+                                v-for="(concept, index) in customPropertyPermittedConcepts"
+                                :key="index"
+                                class="tag is-light">
+                                <span :title="concept.value">{{ concept.display }}</span>
+                                <button
+                                    @click="removeConcept(index)"
+                                    title="Remove"
+                                    class="delete is-small" />
+                            </span>
+                        </div>
                     </div>
                     <div
                         class="table-container"
@@ -878,7 +890,7 @@
                                     </ul>
                                 </div>
                             </div>
-                            <div class="control is-narrow">
+                            <!-- <div class="control is-narrow">
                                 <div
                                     class="button is-outlined is-primary">
                                     <span class="icon">
@@ -886,10 +898,10 @@
                                     </span>
                                     <span>Add Selection</span>
                                 </div>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
-                    <div class="buttons is-right">
+                    <!-- <div class="buttons is-right">
                         <button
                             class="button is-outlined  is-primary"
                             v-if="!readOnly && customPropertyConceptsLimited">
@@ -898,7 +910,7 @@
                             </span>
                             <span>add</span>
                         </button>
-                    </div>
+                    </div> -->
                 </div>
                 <br>
                 <div
@@ -3246,10 +3258,14 @@ export default {
             this.filteredConcepts = this.customPropertyAvailableConcepts.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
         },
         selectConcept: function(concept) {
-            this.customPropertyPermittedConcepts = [];
+            // TODO: Check for duplicates
             this.customPropertyPermittedConcepts.push(concept);
-            this.search = concept.display;
+            this.search = '';
             this.isOpenAutocomplete = false;
+        },
+        removeConcept: function(index) {
+            // this.customPropertyPermittedConcepts.pop(concept);
+            this.customPropertyPermittedConcepts.splice(index, 1);
         },
         closeAutoComplete: function() {
             this.isOpenAutocomplete = false;
