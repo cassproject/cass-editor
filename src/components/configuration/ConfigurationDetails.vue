@@ -852,7 +852,13 @@
                             class="description">
                             Concepts limited to only the schemas listed below. To allow any, turn off limit concepts.
                         </p>
-                        <div class="tags are-medium">
+                    </div>
+                    <div
+                        class="table-container"
+                        v-if="customPropertyAvailableConcepts.length > 0 && customPropertyConceptsLimited">
+                        <div
+                            v-if="customPropertyPermittedConcepts.length > 0"
+                            class="tags are-medium">
                             <span
                                 v-for="(concept, index) in customPropertyPermittedConcepts"
                                 :key="index"
@@ -864,10 +870,6 @@
                                     class="delete is-small" />
                             </span>
                         </div>
-                    </div>
-                    <div
-                        class="table-container"
-                        v-if="customPropertyAvailableConcepts.length > 0 && customPropertyConceptsLimited">
                         <div class="field is-grouped">
                             <div class="control is-expanded share auto-complete__control">
                                 <input
@@ -3239,8 +3241,10 @@ export default {
             this.filteredConcepts = this.customPropertyAvailableConcepts.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
         },
         selectConcept: function(concept) {
-            // TODO: Check for duplicates
-            this.customPropertyPermittedConcepts.push(concept);
+            // Check for duplicates
+            if (!this.customPropertyPermittedConcepts.some(e => e.value === concept.value)) {
+                this.customPropertyPermittedConcepts.push(concept);
+            }
             this.search = '';
             this.isOpenAutocomplete = false;
         },
