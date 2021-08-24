@@ -3400,5 +3400,28 @@ export default {
         top: 0;
         position: sticky;
     }
+
+    .auto {
+        ul {
+            // z-index: 10;
+            min-height: 40px;
+            border-radius: 6px;
+            max-height: 120px;
+            background-color: white;
+            overflow-y: scroll;
+            color: $dark;
+            border: solid 1px rgba($dark, 0.2);
+            li {
+                padding: 0.125rem 0.25rem;
+                z-index: 10;
+                background-color: white;
+            }
+            li:hover {
+                background-color: $link;
+                color: white;
+                cursor: pointer;
+            }
+        }
+    }
 </style>
 
