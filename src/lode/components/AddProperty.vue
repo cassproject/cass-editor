@@ -99,7 +99,7 @@
                     </div>
                     <!-- add by limited concept -->
                     <div
-                        v-if="(limitedConcepts.length > 0) && !editingMultipleCompetencies">
+                        v-if="(limitedConcepts.length > 0)">
                         <PropertyString
                             index="null"
                             :expandedProperty="selectedPropertyToAdd.value"
@@ -113,7 +113,7 @@
                     </div>
                     <!-- add by url -->
                     <div
-                        v-if="!((limitedConcepts.length > 0) && !editingMultipleCompetencies)"
+                        v-if="!(limitedConcepts.length > 0)"
                         @click="addRelationBy = 'url'"
                         type="text"
                         class="button is-outlined is-primary">
@@ -126,7 +126,7 @@
                     </div>
                     <!-- add by search -->
                     <div
-                        v-if="!((limitedConcepts.length > 0) && !editingMultipleCompetencies)"
+                        v-if="!(limitedConcepts.length > 0)"
                         @click="search"
                         type="button"
                         class="button is-outlined is-primary">
@@ -420,6 +420,19 @@ export default {
                 this.$store.commit('editor/selectCompetencyRelation', this.selectedPropertyToAdd.value);
             }
             this.$store.commit('lode/competencySearchModalOpen', true);
+        },
+        async addConceptInner(conceptUri) {
+            EcConcept.get(conceptUri).then((concept) => {
+                this.limitedConcepts.push({
+                    display: EcRemoteLinkedData.getDisplayStringFrom(concept['skos:prefLabel']),
+                    val: conceptUri
+                });
+                if (concept['skos:narrower'] != null) {
+                    for (let i = 0; i < concept['skos:narrower'].length; i++) {
+                        this.addConceptInner(concept['skos:narrower'][i]);
+                    }
+                }
+            });
         }
     },
     watch: {
@@ -451,12 +464,7 @@ export default {
                         await EcConceptScheme.get(this.profile[this.selectedPropertyToAdd.value]['options'][i].val).then((scheme) => {
                             if (scheme) {
                                 scheme['skos:hasTopConcept'].forEach((conceptUri) => {
-                                    EcConcept.get(conceptUri).then((concept) => {
-                                        this.limitedConcepts.push({
-                                            display: EcRemoteLinkedData.getDisplayStringFrom(concept['skos:prefLabel']),
-                                            val: conceptUri
-                                        });
-                                    });
+                                    this.addConceptInner(conceptUri);
                                 });
                             }
                         });

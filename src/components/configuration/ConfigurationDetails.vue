@@ -850,7 +850,7 @@
                         <p
                             v-if="customPropertyConceptsLimited && !readOnly"
                             class="description">
-                            Concepts limited to only the schemas listed below. To allow any, turn off limit concepts.
+                            Concepts limited to only the taxonomies listed below. To allow any, turn off limit concepts.
                         </p>
                     </div>
                     <div
