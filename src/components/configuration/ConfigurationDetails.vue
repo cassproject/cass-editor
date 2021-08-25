@@ -562,7 +562,7 @@
                                         <option value="https://schema.cassproject.org/0.4/skos/Concept">
                                             SKOS Concept
                                         </option>
-                                        <option value="https://schema.cassproject.org/0.4/Competency">
+                                        <option value="https://schema.cassproject.org/0.4/DirectLink">
                                             Competency
                                         </option>
                                     </select>
@@ -3188,7 +3188,7 @@ export default {
             else if (this.customPropertyRange.equals('http://www.w3.org/2001/XMLSchema#dateTime')) return 'Date-Time';
             else if (this.customPropertyRange.equals('http://purl.org/dc/terms/date')) return 'Date';
             else if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/skos/Concept')) return 'SKOS Concept';
-            else if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/Competency')) return 'Competency';
+            else if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/DirectLink')) return 'Competency';
             else return 'Unknown';
         },
         shouldAllowCustomPropertyPermittedValues: function() {

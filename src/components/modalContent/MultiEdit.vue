@@ -145,7 +145,7 @@ export default {
             this.$set(this.addedPropertiesAndValues[index], "error", null);
             // Validate input
             if (range.length === 1 && (range[0] === "http://schema.org/URL" ||
-            range[0].toLowerCase().indexOf("concept") !== -1 || range[0].toLowerCase().indexOf("competency") !== -1 ||
+            range[0].toLowerCase().indexOf("concept") !== -1 || range[0].toLowerCase().indexOf("competency") !== -1 || range[0].toLowerCase().indexOf("directlink") !== -1 ||
             (range[0].toLowerCase().indexOf("level") !== -1 && !this.checkedOptions))) {
                 if (value.indexOf("http") === -1) {
                     this.addedPropertiesAndValues[index].error = "This property must be a URL. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.";
