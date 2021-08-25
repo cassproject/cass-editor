@@ -191,7 +191,7 @@ TO DO MAYBE: Separate out property by editing or not.
                 <!-- propertystring components -->
                 <div
                     class="property"
-                    v-else-if="editingProperty && !checkedOptions">
+                    v-else-if="editingProperty && !checkedOptions && !(limitedConcepts.length > 0)">
                     <PropertyString
                         :index="index"
                         :expandedProperty="expandedProperty"
@@ -204,6 +204,21 @@ TO DO MAYBE: Separate out property by editing or not.
                         :profile="profile"
                         @remove="remove(item)" />
                 </div>
+                <!-- concept with limited concept options -->
+                <div v-if="editingProperty && !checkedOptions && (limitedConcepts.length > 0)">
+                    <PropertyString
+                        :index="index"
+                        :expandedProperty="expandedProperty"
+                        :expandedThing="expandedThing"
+                        :expandedValue="expandedValue"
+                        :langString="langString"
+                        :range="range"
+                        :view="view"
+                        :options="limitedConcepts"
+                        :profile="profile"
+                        @remove="remove(item)" />
+                </div>
+
                 <!-- text view has language -->
                 <div
                     class="expanded-view__has-language"
@@ -268,20 +283,6 @@ TO DO MAYBE: Separate out property by editing or not.
                         {{ each.name }}
                     </label>
                 </div>
-            </template>
-            <!-- concept with limited concept options -->
-            <template v-if="editingProperty && (limitedConcepts.length > 0) && show && profile && profile[expandedProperty] && profile[expandedProperty]['options']">
-                <PropertyString
-                    :index="index"
-                    :expandedProperty="expandedProperty"
-                    :expandedThing="expandedThing"
-                    :expandedValue="expandedValue"
-                    :langString="langString"
-                    :range="range"
-                    :view="view"
-                    :options="limitedConcepts"
-                    :profile="profile"
-                    @remove="remove(item)" />
             </template>
             <p
                 class="help is-danger"
