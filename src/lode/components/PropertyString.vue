@@ -75,7 +75,7 @@
         <!-- in language field autocomplete -->
         <div
             class="field is-grouped"
-            v-if="!isDirectLink && inLanguageField">
+            v-if="inLanguageField">
             <div
                 class="control is-expanded auto-complete__control">
                 <label
@@ -161,7 +161,7 @@
         </span>
         <div
             class="field is-grouped"
-            v-if="!isDirectLink && !showLanguage && !inLanguageField">
+            v-if="!showLanguage && !inLanguageField">
             <div class="control is-expanded">
                 <label
                     v-if="isResource"

@@ -97,20 +97,6 @@
                             create new Level
                         </span>
                     </div>
-                    <!-- add by limited type -->
-                    <div
-                        v-if="(limitedTypes.length > 0)">
-                        <PropertyString
-                            index="null"
-                            :expandedProperty="selectedPropertyToAdd.value"
-                            :langString="selectedPropertyToAddIsLangString"
-                            :range="selectedPropertyRange"
-                            :newProperty="true"
-                            :profile="profile"
-                            :addSingle="true"
-                            :valueFromSearching="selectedPropertyToAddValue"
-                            :options="limitedTypes" />
-                    </div>
                     <!-- add by url -->
                     <div
                         @click="addRelationBy = 'url'"
@@ -125,7 +111,6 @@
                     </div>
                     <!-- add by search -->
                     <div
-                        v-if="!(limitedTypes.length > 0)"
                         @click="search"
                         type="button"
                         class="button is-outlined is-primary">
