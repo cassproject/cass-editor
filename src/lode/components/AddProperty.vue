@@ -434,9 +434,10 @@ export default {
             }
             if (this.profile && this.profile[this.selectedPropertyToAdd.value] && this.profile[this.selectedPropertyToAdd.value]['options']) {
                 if (this.profile[this.selectedPropertyToAdd.value]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/DirectLink") {
-                    for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
-                        this.limitedTypes.push(this.profile[this.selectedPropertyToAdd.value]['options'][i]);
-                    }
+                    const options = this.profile[this.selectedPropertyToAdd.value]['options'];
+                    options.forEach((option) => {
+                        this.limitedTypes.push(option);
+                    });
                 } else if (this.checkedOptions) {
                     for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
                         let option = this.profile[this.selectedPropertyToAdd.value]['options'][i];

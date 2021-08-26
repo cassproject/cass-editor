@@ -214,7 +214,6 @@ TO DO MAYBE: Separate out property by editing or not.
                         :langString="langString"
                         :range="range"
                         :view="view"
-                        :options="limitedTypes"
                         :profile="profile"
                         @remove="remove(item)" />
                 </div>
@@ -405,6 +404,7 @@ export default {
         }
     },
     mounted: async function() {
+        this.limitedType = [];
         if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("level") !== -1 && this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
             this.checkedOptions = [];
             if (this.expandedValue.length > 0) {
@@ -435,9 +435,10 @@ export default {
             }
         }
         if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("directlink") !== -1 && this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
-            for (let i = 0; i < this.profile[this.expandedProperty]['options'].length; i++) {
-                this.limitedTypes.push(this.profile[this.expandedProperty]['options'][i]);
-            }
+            const options = this.profile[this.expandedProperty]['options'];
+            options.forEach((option) => {
+                this.limitedTypes.push(option);
+            });
         }
     },
     destroyed: function() {

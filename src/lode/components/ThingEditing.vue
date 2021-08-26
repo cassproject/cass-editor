@@ -132,6 +132,7 @@
                 </h4>
                 <Search
                     view="thing-editing"
+                    :typesPermittedInSearch="typesPermittedInSearch"
                     :idsNotPermittedInSearch="idsNotPermittedInSearch" />
             </section>
             <section
@@ -367,6 +368,7 @@ export default {
             doneSaving: false,
             errorMessage: [],
             idsNotPermittedInSearch: [],
+            typesPermittedInSearch: [],
             addAnother: false,
             disableDoneEditingButton: false,
             errorValidating: null
@@ -1591,7 +1593,16 @@ export default {
             }
         },
         isSearching: function() {
+            this.typesPermittedInSearch = [];
             if (this.isSearching) {
+                if (this.$store.state.lode.searchType === "DirectLink") {
+                    if (this.addingProperty && this.profile && this.profile[this.addingProperty]['options']) {
+                        const options = this.profile[this.addingProperty]['options'];
+                        options.forEach((option) => {
+                            this.typesPermittedInSearch.push(option.val);
+                        });
+                    }
+                }
                 let types = ["narrows", "broadens", "hasChild", "isChildOf"];
                 if (EcArray.has(types, this.addingProperty)) {
                     let relations = this.$store.getters['editor/relations'];
