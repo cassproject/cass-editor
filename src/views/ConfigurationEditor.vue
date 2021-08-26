@@ -177,7 +177,47 @@ export default {
         ConfigurationSetSuccess,
         ConfigurationList
     },
+    mounted() {
+        this.generateCustomPropertyAvailableTypes();
+    },
     methods: {
+        generateCustomPropertyAvailableTypes() {
+            appLog("generate list of available types");
+            // repo.searchWithParams('@type:ConceptScheme',
+            //     {size: 10000},
+            //     null,
+            //     null,
+            //     null,
+            //     null
+            // ).then((results) => {
+            //     let types = [];
+            //     for (let type = 0; type < results.length; type++) {
+            //         types.push({
+            //             display: EcRemoteLinkedData.getDisplayStringFrom(results[type]["dcterms:title"]),
+            //             value: results[type].id
+            //         });
+            //     }
+            //     this.$store.commit('configuration/setAvailableTypes', types);
+            //     appLog(types);
+            // }).catch((err) => {
+            //     appLog("failed to retrieve types: " + err);
+            // });
+            let types = [
+                {
+                    value: 'typeA',
+                    display: 'Type A'
+                },
+                {
+                    value: 'typeB',
+                    display: 'Type B'
+                },
+                {
+                    value: 'typeC',
+                    display: 'Type C'
+                }
+            ];
+            this.$store.commit('configuration/setAvailableTypes', types);
+        },
         handleDeleteConfigurationSuccess() {
             appLog("Config delete success");
             this.configToDelete = {};
@@ -224,7 +264,7 @@ export default {
                 }
             }
         },
-        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues, heading, allowMultiples, onePerLanguage) {
+        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues, permittedTypes, heading, allowMultiples, onePerLanguage) {
             let propObj = {};
             propObj["@id"] = id;
             propObj["@type"] = "http://www.w3.org/2000/01/rdf-schema#Property";
@@ -260,7 +300,16 @@ export default {
                     option.val = pv.value.trim();
                     propObj.options.push(option);
                 }
+            } else if (permittedTypes && permittedTypes.length > 0) {
+                propObj.options = [];
+                for (let pv of permittedTypes) {
+                    let option = {};
+                    option.display = pv.display.trim();
+                    option.val = pv.value.trim();
+                    propObj.options.push(option);
+                }
             }
+
             if (heading && !heading.trim().equals('')) propObj.heading = heading.trim();
             else if (this.enforceHeadings) propObj.heading = this.DEFAULT_HEADING;
             return propObj;
@@ -279,6 +328,7 @@ export default {
                     false,
                     false,
                     prop.permittedValues,
+                    prop.permittedTypes,
                     prop.heading,
                     prop.allowMultiples,
                     prop.onePerLanguage);
@@ -311,6 +361,7 @@ export default {
                 true,
                 true,
                 null,
+                null,
                 this.currentConfig.fwkIdHeading,
                 false,
                 true);
@@ -327,6 +378,7 @@ export default {
                 false,
                 false,
                 null,
+                null,
                 this.currentConfig.fwkNameHeading,
                 false,
                 true);
@@ -342,6 +394,7 @@ export default {
                 this.currentConfig.fwkDescRequired,
                 false,
                 false,
+                null,
                 null,
                 this.currentConfig.fwkDescHeading,
                 false,
@@ -403,6 +456,7 @@ export default {
                 true,
                 true,
                 null,
+                null,
                 this.currentConfig.compIdHeading,
                 false,
                 true);
@@ -419,6 +473,7 @@ export default {
                 false,
                 false,
                 null,
+                null,
                 this.currentConfig.compNameHeading,
                 false,
                 true);
@@ -434,6 +489,7 @@ export default {
                 this.currentConfig.compDescRequired,
                 false,
                 false,
+                null,
                 null,
                 this.currentConfig.compDescHeading,
                 false,

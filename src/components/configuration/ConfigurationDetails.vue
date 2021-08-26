@@ -823,6 +823,81 @@
                         </button>
                     </div>
                 </div>
+                <div
+                    class="box py-4 px-4"
+                    v-if="shouldAllowCustomPropertyPermittedTypes">
+                    <div class="field">
+                        <div class="columns">
+                            <div class="column">
+                                <label class="label">Limit by type </label>
+                            </div>
+                            <div class="column is-narrow">
+                                <div class="control">
+                                    <input
+                                        :disabled="readOnly"
+                                        v-model="customPropertyTypesLimited"
+                                        id="customPropertyTypesLimited"
+                                        type="checkbox"
+                                        name="customPropertyTypesLimited"
+                                        class="switch"
+                                        checked="checked">
+                                    <label for="customPropertyTypesLimited" />
+                                </div>
+                            </div>
+                        </div>
+                        <p
+                            v-if="!customPropertyTypesLimited && !readOnly"
+                            class="description">
+                            Limit by type disabled, any type of competency allowed. To limit, turn on limit by type.
+                        </p>
+                        <p
+                            v-if="customPropertyTypesLimited && !readOnly"
+                            class="description">
+                            Competencies limited to only the type listed below. To allow any, turn off limit by type.
+                        </p>
+                    </div>
+                    <div
+                        class="table-container"
+                        v-if="customPropertyAvailableTypes.length > 0 && customPropertyTypesLimited">
+                        <div
+                            v-if="customPropertyPermittedTypes.length > 0"
+                            class="tags are-medium">
+                            <span
+                                v-for="(type, index) in customPropertyPermittedTypes"
+                                :key="index"
+                                class="tag is-light">
+                                <span :title="type.value">{{ type.display }}</span>
+                                <button
+                                    @click="removeType(index)"
+                                    title="Remove"
+                                    class="delete is-small" />
+                            </span>
+                        </div>
+                        <div class="field is-grouped">
+                            <div class="control is-expanded share auto-complete__control">
+                                <input
+                                    @blur="closeAutoComplete"
+                                    type="search"
+                                    placeholder="search"
+                                    class="input share is-fullwidth"
+                                    v-model="search"
+                                    @input="filterTypes">
+                                <div
+                                    v-show="isOpenAutocomplete"
+                                    class="auto">
+                                    <ul>
+                                        <li
+                                            v-for="(result, i) in filteredTypes"
+                                            :key="i"
+                                            @mousedown="selectType(result)">
+                                            {{ result.display }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <br>
                 <div
                     class="field has-text-danger"
@@ -2347,6 +2422,7 @@ export default {
             defaultBrowserConfigId: '',
             showDefaultCommenters: false,
             customPropertyValuesLimited: false,
+            customPropertyTypesLimited: false,
             showManageRelationshipsModal: false,
             tab: 'general',
             configDetailsBusy: false,
@@ -2384,6 +2460,7 @@ export default {
             customPropertyAllowMultiples: false,
             customPropertyOnePerLanguage: true,
             customPropertyPermittedValues: [],
+            customPropertyPermittedTypes: [],
             customPropertyInvalid: false,
             customPropertyPropertyNameExists: false,
             customPropertyPropertyNameInvalid: false,
@@ -2414,7 +2491,11 @@ export default {
             localDefaultCommenters: this.config.defaultCommenters,
             cassRelations: ['isEnabledBy', 'narrows', 'broadens', 'requires', 'desires', 'isEquivalentTo', 'isRelatedTo', 'enables'],
             asnRelations: ['majorRelated', 'minorRelated'],
-            gemqRelations: ['hasChild', 'isChildOf']
+            gemqRelations: ['hasChild', 'isChildOf'],
+            filteredTypes: [],
+            search: "",
+            isOpenAutocomplete: false,
+            typeToAdd: null
         };
     },
     components: {
@@ -2781,6 +2862,8 @@ export default {
             newProp.onePerLanguage = this.customPropertyOnePerLanguage;
             if (this.shouldAllowCustomPropertyPermittedValues) newProp.permittedValues = this.customPropertyPermittedValues;
             else newProp.permittedValues = [];
+            if (this.shouldAllowCustomPropertyPermittedTypes) newProp.permittedTypes = this.customPropertyPermittedTypes;
+            else newProp.permittedTypes = [];
             if (this.customPropertyParent.equals('framework')) this.config.fwkCustomProperties.push(newProp);
             else if (this.customPropertyParent.equals('competency')) this.config.compCustomProperties.push(newProp);
         },
@@ -2797,6 +2880,8 @@ export default {
                 propToUpdate.onePerLanguage = this.customPropertyOnePerLanguage;
                 if (this.shouldAllowCustomPropertyPermittedValues) propToUpdate.permittedValues = this.customPropertyPermittedValues;
                 else propToUpdate.permittedValues = [];
+                if (this.shouldAllowCustomPropertyPermittedTypes) propToUpdate.permittedTypes = this.customPropertyPermittedTypes;
+                else propToUpdate.permittedTypes = [];
             }
         },
         trimCustomPropertyPermittedValues() {
@@ -2823,11 +2908,21 @@ export default {
             this.customPropertyPermittedValues =
                 this.customPropertyPermittedValues.slice(0, idx).concat(this.customPropertyPermittedValues.slice(idx + 1, this.customPropertyPermittedValues.length));
         },
+        deleteCustomPropertyPermittedType(idx) {
+            this.customPropertyPermittedTypes =
+                this.customPropertyPermittedTypes.slice(0, idx).concat(this.customPropertyPermittedTypes.slice(idx + 1, this.customPropertyPermittedTypes.length));
+        },
         addCustomPropertyPermittedValue() {
             let pv = {};
             pv.display = '';
             pv.value = '';
             this.customPropertyPermittedValues.push(pv);
+        },
+        addCustomPropertyPermittedType() {
+            let pv = {};
+            pv.display = '';
+            pv.value = '';
+            this.customPropertyPermittedTypes.push(pv);
         },
         simplifyCustomPropertyName() {
             this.customPropertyPropertyName = this.customPropertyPropertyName.replace(/[^0-9a-z]/gi, '');
@@ -2846,6 +2941,7 @@ export default {
             this.customPropertyAllowMultiples = false;
             this.customPropertyOnePerLanguage = true;
             this.customPropertyPermittedValues = [];
+            this.customPropertyPermittedTypes = [];
             this.customPropertyInvalid = false;
             this.customPropertyPropertyNameExists = false;
             this.customPropertyPropertyNameInvalid = false;
@@ -2888,6 +2984,18 @@ export default {
             }
             return permittedValuesCopy;
         },
+        generateCopyOfCustomPropertyPermittedTypes(prop) {
+            let permittedTypesCopy = [];
+            if (prop.permittedTypes && prop.permittedTypes.length > 0) {
+                for (let pv of prop.permittedTypes) {
+                    let cpv = {};
+                    cpv.display = pv.display;
+                    cpv.value = pv.value;
+                    permittedTypesCopy.push(cpv);
+                }
+            }
+            return permittedTypesCopy;
+        },
         initCustomPropertyDataHoldersAsExistingProperty(propertyParent, prop) {
             this.reInitCustomPropertyDataHolders();
             this.customPropertyParent = propertyParent;
@@ -2905,6 +3013,9 @@ export default {
             this.customPropertyPermittedValues = this.generateCopyOfCustomPropertyPermittedValues(prop);
             if (this.customPropertyPermittedValues.length > 0) this.customPropertyValuesLimited = true;
             else this.customPropertyValuesLimited = false;
+            this.customPropertyPermittedTypes = this.generateCopyOfCustomPropertyPermittedTypes(prop);
+            if (this.customPropertyPermittedTypes.length > 0) this.customPropertyValuesTypes = true;
+            else this.customPropertyTypesLimited = false;
         },
         manageCustomFrameworkProperty: function(propertyIdx) {
             this.initCustomPropertyDataHoldersAsExistingProperty('framework', this.config.fwkCustomProperties[propertyIdx]);
@@ -3131,6 +3242,24 @@ export default {
         },
         isOtherRelation: function(relType) {
             return !(this.cassRelations.includes(relType) || this.asnRelations.includes(relType) || this.gemqRelations.includes(relType));
+        },
+        filterTypes: function() {
+            this.isOpenAutocomplete = true;
+            this.filteredTypes = this.customPropertyAvailableTypes.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+        },
+        selectType: function(type) {
+            // Check for duplicates
+            if (!this.customPropertyPermittedTypes.some(e => e.value === type.value)) {
+                this.customPropertyPermittedTypes.push(type);
+            }
+            this.search = '';
+            this.isOpenAutocomplete = false;
+        },
+        removeType: function(index) {
+            this.customPropertyPermittedTypes.splice(index, 1);
+        },
+        closeAutoComplete: function() {
+            this.isOpenAutocomplete = false;
         }
     },
     computed: {
@@ -3164,6 +3293,14 @@ export default {
                 return true;
             }
         },
+        customPropertyAvailableTypes: {
+            get() {
+                return this.$store.getters['configuration/availableTypes'];
+            },
+            set(val) {
+                this.$store.commit('configuration/availableTypes', val);
+            }
+        },
         isBrowserDefault: {
             get() {
                 if (this.config && (this.defaultBrowserConfigId === this.config.id)) {
@@ -3193,6 +3330,10 @@ export default {
         },
         shouldAllowCustomPropertyPermittedValues: function() {
             if (this.customPropertyRange.equals('http://schema.org/Text')) return true;
+            else return false;
+        },
+        shouldAllowCustomPropertyPermittedTypes: function() {
+            if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/DirectLink')) return true;
             else return false;
         },
         shouldAllowOnePerLangChoice: function() {
@@ -3266,6 +3407,28 @@ export default {
     .panel {
         top: 0;
         position: sticky;
+    }
+    .auto {
+        ul {
+            // z-index: 10;
+            min-height: 40px;
+            border-radius: 6px;
+            max-height: 120px;
+            background-color: white;
+            overflow-y: scroll;
+            color: $dark;
+            border: solid 1px rgba($dark, 0.2);
+            li {
+                padding: 0.125rem 0.25rem;
+                z-index: 10;
+                background-color: white;
+            }
+            li:hover {
+                background-color: $link;
+                color: white;
+                cursor: pointer;
+            }
+        }
     }
 </style>
 

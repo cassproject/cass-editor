@@ -18,12 +18,16 @@ const state = {
     showConfirmDeleteConfigModal: false,
     showMustBeLoggedInModal: false,
     showBrowserConfigSetModal: false,
-    configToDelete: {}
+    configToDelete: {},
+    availableTypes: []
 };
 
 const mutations = {
     setConfigToDelete(state, val) {
         state.configToDelete = val;
+    },
+    setAvailableTypes(state, val) {
+        state.availableTypes = val;
     },
     setShowMustBeLoggedInModal(state, val) {
         state.showMustBeLoggedInModal = val;
@@ -122,6 +126,9 @@ const getters = {
     },
     configBusy(state) {
         return state.configBusy;
+    },
+    availableTypes(state) {
+        return state.availableTypes;
     }
 };
 

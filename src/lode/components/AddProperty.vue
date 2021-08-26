@@ -97,6 +97,20 @@
                             create new Level
                         </span>
                     </div>
+                    <!-- add by limited type -->
+                    <div
+                        v-if="(limitedTypes.length > 0)">
+                        <PropertyString
+                            index="null"
+                            :expandedProperty="selectedPropertyToAdd.value"
+                            :langString="selectedPropertyToAddIsLangString"
+                            :range="selectedPropertyRange"
+                            :newProperty="true"
+                            :profile="profile"
+                            :addSingle="true"
+                            :valueFromSearching="selectedPropertyToAddValue"
+                            :options="limitedTypes" />
+                    </div>
                     <!-- add by url -->
                     <div
                         @click="addRelationBy = 'url'"
@@ -111,6 +125,7 @@
                     </div>
                     <!-- add by search -->
                     <div
+                        v-if="!(limitedTypes.length > 0)"
                         @click="search"
                         type="button"
                         class="button is-outlined is-primary">
@@ -253,7 +268,8 @@ export default {
             selectedPropertyToAddValue: null,
             checkedOptions: null,
             skipConfigProperties: ["alwaysProperties", "headings", "primaryProperties", "secondaryProperties", "tertiaryProperties", "relationshipsHeading", "relationshipsPriority"],
-            optionsArray: []
+            optionsArray: [],
+            limitedTypes: []
         };
     },
     mounted: function() {
@@ -358,7 +374,7 @@ export default {
             if (!range) {
                 return false;
             }
-            if (range.toLowerCase().indexOf("competency") !== -1 || range.toLowerCase().indexOf("concept") !== -1) {
+            if (range.toLowerCase().indexOf("competency") !== -1 || range.toLowerCase().indexOf("concept") !== -1 || range.toLowerCase().indexOf("directlink") !== -1) {
                 return false;
             }
             if (range.toLowerCase().indexOf("level") !== -1 && this.profile[property]["add"] !== "checkedOptions") {
@@ -393,6 +409,9 @@ export default {
             } else if (this.selectedPropertyRange[0].toLowerCase().indexOf("level") !== -1) {
                 this.$store.commit('lode/searchType', "Level");
                 this.$store.commit('lode/copyOrLink', true);
+            } else if (this.selectedPropertyRange[0].toLowerCase().indexOf("directlink") !== -1) {
+                this.$store.commit('lode/searchType', "DirectLink");
+                this.$store.commit('lode/copyOrLink', true);
             } else {
                 this.$store.commit('lode/searchType', "Competency");
                 this.$store.commit('lode/copyOrLink', false);
@@ -408,6 +427,7 @@ export default {
     watch: {
         selectedPropertyToAdd: async function() {
             this.selectedPropertyToAddIsLangString = false;
+            this.limitedTypes = [];
             if (this.profile && this.profile[this.selectedPropertyToAdd.value]) {
                 var range = [];
                 var ary = this.profile[this.selectedPropertyToAdd.value]["http://schema.org/rangeIncludes"];
@@ -427,11 +447,17 @@ export default {
             } else {
                 this.checkedOptions = null;
             }
-            if (this.profile && this.profile[this.selectedPropertyToAdd.value] && this.profile[this.selectedPropertyToAdd.value]['options'] && this.checkedOptions) {
-                for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
-                    let option = this.profile[this.selectedPropertyToAdd.value]['options'][i];
-                    option.name = (await EcRepository.get(option.val)).name;
-                    this.optionsArray.push(option);
+            if (this.profile && this.profile[this.selectedPropertyToAdd.value] && this.profile[this.selectedPropertyToAdd.value]['options']) {
+                if (this.profile[this.selectedPropertyToAdd.value]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/DirectLink") {
+                    for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
+                        this.limitedTypes.push(this.profile[this.selectedPropertyToAdd.value]['options'][i]);
+                    }
+                } else if (this.checkedOptions) {
+                    for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
+                        let option = this.profile[this.selectedPropertyToAdd.value]['options'][i];
+                        option.name = (await EcRepository.get(option.val)).name;
+                        this.optionsArray.push(option);
+                    }
                 }
             }
         },

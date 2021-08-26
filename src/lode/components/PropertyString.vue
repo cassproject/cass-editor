@@ -75,7 +75,7 @@
         <!-- in language field autocomplete -->
         <div
             class="field is-grouped"
-            v-if="inLanguageField">
+            v-if="!isDirectLink && inLanguageField">
             <div
                 class="control is-expanded auto-complete__control">
                 <label
@@ -161,7 +161,7 @@
         </span>
         <div
             class="field is-grouped"
-            v-if="!showLanguage && !inLanguageField">
+            v-if="!isDirectLink && !showLanguage && !inLanguageField">
             <div class="control is-expanded">
                 <label
                     v-if="isResource"
@@ -288,6 +288,13 @@ export default {
         }
     },
     computed: {
+        isDirectLink: function() {
+            if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("directlink") !== -1) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         showLanguage: function() {
             if (this.computedLanguage || this.langString) {
                 return true;

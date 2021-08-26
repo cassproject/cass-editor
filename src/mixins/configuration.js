@@ -74,7 +74,17 @@ export const configuration = {
             else scpo.onePerLanguage = false;
             scpo.required = this.getBooleanValue(ccpo["isRequired"]);
             scpo.permittedValues = [];
-            if (ccpo.options && ccpo.options.length > 0) {
+            scpo.permittedTypes = [];
+            if (scpo.range.equalsIgnoreCase('https://schema.cassproject.org/0.4/DirectLink')) {
+                if (ccpo.options && ccpo.options.length > 0) {
+                    for (let pv of ccpo.options) {
+                        let pvo = {};
+                        pvo.display = pv.display;
+                        pvo.value = pv.val;
+                        scpo.permittedTypes.push(pvo);
+                    }
+                }
+            } else if (ccpo.options && ccpo.options.length > 0) {
                 for (let pv of ccpo.options) {
                     let pvo = {};
                     pvo.display = pv.display;

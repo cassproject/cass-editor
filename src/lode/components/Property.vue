@@ -191,7 +191,7 @@ TO DO MAYBE: Separate out property by editing or not.
                 <!-- propertystring components -->
                 <div
                     class="property"
-                    v-else-if="editingProperty && !checkedOptions">
+                    v-else-if="editingProperty && !checkedOptions && !(limitedTypes.length > 0)">
                     <PropertyString
                         :index="index"
                         :expandedProperty="expandedProperty"
@@ -201,6 +201,20 @@ TO DO MAYBE: Separate out property by editing or not.
                         :range="range"
                         :view="view"
                         :options="(profile && profile[expandedProperty] && profile[expandedProperty]['options']) ? profile[expandedProperty]['options'] : null"
+                        :profile="profile"
+                        @remove="remove(item)" />
+                </div>
+                <!-- competency direct link with options limited by type -->
+                <div v-if="editingProperty && !checkedOptions && (limitedTypes.length > 0)">
+                    <PropertyString
+                        :index="index"
+                        :expandedProperty="expandedProperty"
+                        :expandedThing="expandedThing"
+                        :expandedValue="expandedValue"
+                        :langString="langString"
+                        :range="range"
+                        :view="view"
+                        :options="limitedTypes"
                         :profile="profile"
                         @remove="remove(item)" />
                 </div>
@@ -360,6 +374,7 @@ export default {
             initialValue: null,
             expandedValueNames: [],
             optionsArray: [],
+            limitedTypes: [],
             errorValidating: null,
             removePropertyConfirmModal: false,
             propertyToRemove: null
@@ -417,6 +432,11 @@ export default {
                 let option = this.profile[this.expandedProperty]['options'][i];
                 option.name = (await EcRepository.get(option.val)).name;
                 this.optionsArray.push(option);
+            }
+        }
+        if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("directlink") !== -1 && this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
+            for (let i = 0; i < this.profile[this.expandedProperty]['options'].length; i++) {
+                this.limitedTypes.push(this.profile[this.expandedProperty]['options'][i]);
             }
         }
     },
