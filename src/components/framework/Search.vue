@@ -279,7 +279,7 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedIds, competency.shortId());
             }
-            if (!this.copyOrLink || this.searchType === "Level") {
+            if (!this.copyOrLink || this.searchType === "Level" | this.searchType === "DirectLink") {
                 this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
             }
         },

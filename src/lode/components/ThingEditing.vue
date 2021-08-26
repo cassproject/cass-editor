@@ -1498,7 +1498,7 @@ export default {
         addSelected: function() {
             var ids = this.$store.getters['editor/selectedCompetenciesAsProperties'];
             var relationType = this.$store.state.editor.selectCompetencyRelation;
-            if (this.$store.state.lode.searchType === "Concept" || relationType === "https://purl.org/ctdlasn/terms/knowledgeEmbodied" ||
+            if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "DirectLink" || relationType === "https://purl.org/ctdlasn/terms/knowledgeEmbodied" ||
             relationType === "https://purl.org/ctdlasn/terms/abilityEmbodied" || relationType === "https://purl.org/ctdlasn/terms/taskEmbodied" ||
             relationType === "https://purl.org/ctdlasn/terms/skillEmbodied") {
                 this.attachUrlProperties(ids);
