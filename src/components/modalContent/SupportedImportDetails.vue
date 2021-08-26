@@ -229,26 +229,50 @@
                     <a
                         :href="ctdlAsnCsvExampleFile"
                         target="_blank"
-                        download="CTDL-ASN.ONET.example.csv"
+                        download="Example of a Mininum Data Competency Framework Upload - HIST 101, SURVEY OF AMERICAN HISTORY I.csv"
                         class="button is-small is-outlined is-primary">
                         <span
                             title=""
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span>Example</span>
+                        <span>Example - Minimum</span>
                     </a>
                     <a
                         :href="ctdlAsnCsvTemplateFile"
                         target="_blank"
-                        download="CTDL-ASN.ONET.template.csv"
+                        download="Template of a Mininum Data Competency Framework.csv"
                         class="button is-small is-outlined is-primary">
                         <span
                             title=""
                             class="icon">
                             <i class="fa fa-download" />
                         </span>
-                        <span>Template</span>
+                        <span>Template - Minimum</span>
+                    </a>
+                    <a
+                        :href="ctdlAsnCsvBenchmarkExampleFile"
+                        target="_blank"
+                        download="Example of a Benchmark Competency Framework - DOLWorkCharacteristicsDownloadfromCaSSAug25_2021.csv"
+                        class="button is-small is-outlined is-primary">
+                        <span
+                            title=""
+                            class="icon">
+                            <i class="fa fa-download" />
+                        </span>
+                        <span>Example - Benchmark</span>
+                    </a>
+                    <a
+                        :href="ctdlAsnCsvBenchmarkTemplateFile"
+                        target="_blank"
+                        download="Template of a Benchmark Competency Framework.csv"
+                        class="button is-small is-outlined is-primary">
+                        <span
+                            title=""
+                            class="icon">
+                            <i class="fa fa-download" />
+                        </span>
+                        <span>Template - Benchmark</span>
                     </a>
                 </div>
             </div>
@@ -438,8 +462,10 @@
 
 <script>
 import ModalTemplate from './ModalTemplate.vue';
-import ctdlAsnCsvExample from 'file-loader!../../../files/CTDL-ASN.ONET.example.csv';
-import ctdlAsnCsvTemplate from 'file-loader!../../../files/CTDL-ASN.ONET.template.csv';
+import ctdlAsnCsvExample from 'file-loader!../../../files/Example of a Mininum Data Competency Framework Upload - HIST 101, SURVEY OF AMERICAN HISTORY I.csv';
+import ctdlAsnCsvTemplate from 'file-loader!../../../files/Template of a Mininum Data Competency Framework.csv';
+import ctdlAsnCsvBenchmarkExample from 'file-loader!../../../files/Example of a Benchmark Competency Framework - DOLWorkCharacteristicsDownloadfromCaSSAug25_2021.csv';
+import ctdlAsnCsvBenchmarkTemplate from 'file-loader!../../../files/Template of a Benchmark Competency Framework.csv';
 import csvExampleCompetencies from 'file-loader!../../../files/CAP Software Engineering - Competencies.csv';
 import csvExampleRelations from 'file-loader!../../../files/CAP Software Engineering - Relations.csv';
 import csvTemplateCompetencies from 'file-loader!../../../files/Template - Competencies.csv';
@@ -466,6 +492,8 @@ export default {
             newTab: '',
             ctdlAsnCsvExampleFile: ctdlAsnCsvExample,
             ctdlAsnCsvTemplateFile: ctdlAsnCsvTemplate,
+            ctdlAsnCsvBenchmarkExampleFile: ctdlAsnCsvBenchmarkExample,
+            ctdlAsnCsvBenchmarkTemplateFile: ctdlAsnCsvBenchmarkTemplate,
             csvExampleCompetenciesFile: csvExampleCompetencies,
             csvExampleRelationsFile: csvExampleRelations,
             csvTemplateCompetenciesFile: csvTemplateCompetencies,
