@@ -825,6 +825,81 @@
                 </div>
                 <div
                     class="box py-4 px-4"
+                    v-if="shouldAllowCustomPropertyPermittedConcepts">
+                    <div class="field">
+                        <div class="columns">
+                            <div class="column">
+                                <label class="label">Limit concepts </label>
+                            </div>
+                            <div class="column is-narrow">
+                                <div class="control">
+                                    <input
+                                        :disabled="readOnly"
+                                        v-model="customPropertyConceptsLimited"
+                                        id="customPropertyConceptsLimited"
+                                        type="checkbox"
+                                        name="customPropertyConceptsLimited"
+                                        class="switch"
+                                        checked="checked">
+                                    <label for="customPropertyConceptsLimited" />
+                                </div>
+                            </div>
+                        </div>
+                        <p
+                            v-if="!customPropertyConceptsLimited && !readOnly"
+                            class="description">
+                            Limit concepts disabled, any concepts allowed. To limit, turn on limit concepts.
+                        </p>
+                        <p
+                            v-if="customPropertyConceptsLimited && !readOnly"
+                            class="description">
+                            Concepts limited to only the taxonomies listed below. To allow any, turn off limit concepts.
+                        </p>
+                    </div>
+                    <div
+                        class="table-container"
+                        v-if="customPropertyAvailableConcepts.length > 0 && customPropertyConceptsLimited">
+                        <div
+                            v-if="customPropertyPermittedConcepts.length > 0"
+                            class="tags are-medium">
+                            <span
+                                v-for="(concept, index) in customPropertyPermittedConcepts"
+                                :key="index"
+                                class="tag is-light">
+                                <span :title="concept.value">{{ concept.display }}</span>
+                                <button
+                                    @click="removeConcept(index)"
+                                    title="Remove"
+                                    class="delete is-small" />
+                            </span>
+                        </div>
+                        <div class="field is-grouped">
+                            <div class="control is-expanded share auto-complete__control">
+                                <input
+                                    @blur="closeAutoComplete"
+                                    type="search"
+                                    placeholder="search"
+                                    class="input share is-fullwidth"
+                                    v-model="search"
+                                    @input="filterConcepts">
+                                <div
+                                    v-show="isOpenAutocomplete"
+                                    class="auto">
+                                    <ul>
+                                        <li
+                                            v-for="(result, i) in filteredConcepts"
+                                            :key="i"
+                                            @mousedown="selectConcept(result)">
+                                            {{ result.display }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div
+                    class="box py-4 px-4"
                     v-if="shouldAllowCustomPropertyPermittedTypes">
                     <div class="field">
                         <div class="columns">
@@ -2423,6 +2498,7 @@ export default {
             showDefaultCommenters: false,
             customPropertyValuesLimited: false,
             customPropertyTypesLimited: false,
+            customPropertyConceptsLimited: false,
             showManageRelationshipsModal: false,
             tab: 'general',
             configDetailsBusy: false,
@@ -2461,6 +2537,7 @@ export default {
             customPropertyOnePerLanguage: true,
             customPropertyPermittedValues: [],
             customPropertyPermittedTypes: [],
+            customPropertyPermittedConcepts: [],
             customPropertyInvalid: false,
             customPropertyPropertyNameExists: false,
             customPropertyPropertyNameInvalid: false,
@@ -2492,9 +2569,11 @@ export default {
             cassRelations: ['isEnabledBy', 'narrows', 'broadens', 'requires', 'desires', 'isEquivalentTo', 'isRelatedTo', 'enables'],
             asnRelations: ['majorRelated', 'minorRelated'],
             gemqRelations: ['hasChild', 'isChildOf'],
+            filteredConcepts: [],
             filteredTypes: [],
             search: "",
             isOpenAutocomplete: false,
+            conceptToAdd: null,
             typeToAdd: null
         };
     },
@@ -2864,6 +2943,8 @@ export default {
             else newProp.permittedValues = [];
             if (this.shouldAllowCustomPropertyPermittedTypes) newProp.permittedTypes = this.customPropertyPermittedTypes;
             else newProp.permittedTypes = [];
+            if (this.shouldAllowCustomPropertyPermittedConcepts) newProp.permittedConcepts = this.customPropertyPermittedConcepts;
+            else newProp.permittedConcepts = [];
             if (this.customPropertyParent.equals('framework')) this.config.fwkCustomProperties.push(newProp);
             else if (this.customPropertyParent.equals('competency')) this.config.compCustomProperties.push(newProp);
         },
@@ -2882,6 +2963,8 @@ export default {
                 else propToUpdate.permittedValues = [];
                 if (this.shouldAllowCustomPropertyPermittedTypes) propToUpdate.permittedTypes = this.customPropertyPermittedTypes;
                 else propToUpdate.permittedTypes = [];
+                if (this.shouldAllowCustomPropertyPermittedConcepts) propToUpdate.permittedConcepts = this.customPropertyPermittedConcepts;
+                else propToUpdate.permittedConcepts = [];
             }
         },
         trimCustomPropertyPermittedValues() {
@@ -2911,6 +2994,10 @@ export default {
         deleteCustomPropertyPermittedType(idx) {
             this.customPropertyPermittedTypes =
                 this.customPropertyPermittedTypes.slice(0, idx).concat(this.customPropertyPermittedTypes.slice(idx + 1, this.customPropertyPermittedTypes.length));
+        },
+        deleteCustomPropertyPermittedConcept(idx) {
+            this.customPropertyPermittedConcepts =
+                this.customPropertyPermittedConcepts.slice(0, idx).concat(this.customPropertyPermittedConcepts.slice(idx + 1, this.customPropertyPermittedConcepts.length));
         },
         addCustomPropertyPermittedValue() {
             let pv = {};
@@ -2942,6 +3029,7 @@ export default {
             this.customPropertyOnePerLanguage = true;
             this.customPropertyPermittedValues = [];
             this.customPropertyPermittedTypes = [];
+            this.customPropertyPermittedConcepts = [];
             this.customPropertyInvalid = false;
             this.customPropertyPropertyNameExists = false;
             this.customPropertyPropertyNameInvalid = false;
@@ -2996,6 +3084,18 @@ export default {
             }
             return permittedTypesCopy;
         },
+        generateCopyOfCustomPropertyPermittedConcepts(prop) {
+            let permittedConceptsCopy = [];
+            if (prop.permittedConcepts && prop.permittedConcepts.length > 0) {
+                for (let pv of prop.permittedConcepts) {
+                    let cpv = {};
+                    cpv.display = pv.display;
+                    cpv.value = pv.value;
+                    permittedConceptsCopy.push(cpv);
+                }
+            }
+            return permittedConceptsCopy;
+        },
         initCustomPropertyDataHoldersAsExistingProperty(propertyParent, prop) {
             this.reInitCustomPropertyDataHolders();
             this.customPropertyParent = propertyParent;
@@ -3011,11 +3111,16 @@ export default {
             this.customPropertyAllowMultiples = prop.allowMultiples;
             this.customPropertyOnePerLanguage = prop.onePerLanguage;
             this.customPropertyPermittedValues = this.generateCopyOfCustomPropertyPermittedValues(prop);
+            this.customPropertyPermittedConcepts = this.generateCopyOfCustomPropertyPermittedConcepts(prop);
             if (this.customPropertyPermittedValues.length > 0) this.customPropertyValuesLimited = true;
             else this.customPropertyValuesLimited = false;
             this.customPropertyPermittedTypes = this.generateCopyOfCustomPropertyPermittedTypes(prop);
             if (this.customPropertyPermittedTypes.length > 0) this.customPropertyValuesTypes = true;
             else this.customPropertyTypesLimited = false;
+            if (this.customPropertyPermittedConcepts.length > 0) {
+                this.customPropertyConceptsLimited = true;
+                this.search = this.customPropertyPermittedConcepts[0].display;
+            } else this.customPropertyConceptsLimited = false;
         },
         manageCustomFrameworkProperty: function(propertyIdx) {
             this.initCustomPropertyDataHoldersAsExistingProperty('framework', this.config.fwkCustomProperties[propertyIdx]);
@@ -3255,8 +3360,23 @@ export default {
             this.search = '';
             this.isOpenAutocomplete = false;
         },
+        filterConcepts: function() {
+            this.isOpenAutocomplete = true;
+            this.filteredConcepts = this.customPropertyAvailableConcepts.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+        },
+        selectConcept: function(concept) {
+            // Check for duplicates
+            if (!this.customPropertyPermittedConcepts.some(e => e.value === concept.value)) {
+                this.customPropertyPermittedConcepts.push(concept);
+            }
+            this.search = '';
+            this.isOpenAutocomplete = false;
+        },
         removeType: function(index) {
             this.customPropertyPermittedTypes.splice(index, 1);
+        },
+        removeConcept: function(index) {
+            this.customPropertyPermittedConcepts.splice(index, 1);
         },
         closeAutoComplete: function() {
             this.isOpenAutocomplete = false;
@@ -3282,6 +3402,14 @@ export default {
             },
             set(val) {
                 this.$store.commit('configuration/setCurrentConfig', val);
+            }
+        },
+        customPropertyAvailableConcepts: {
+            get() {
+                return this.$store.getters['configuration/availableConcepts'];
+            },
+            set(val) {
+                this.$store.commit('configuration/availableConcepts', val);
             }
         },
         isSetInstanceDisabled() {
@@ -3326,6 +3454,10 @@ export default {
         },
         shouldAllowCustomPropertyPermittedTypes: function() {
             if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/DirectLink')) return true;
+            else return false;
+        },
+        shouldAllowCustomPropertyPermittedConcepts: function() {
+            if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/skos/Concept')) return true;
             else return false;
         },
         shouldAllowOnePerLangChoice: function() {

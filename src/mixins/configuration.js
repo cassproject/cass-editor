@@ -75,6 +75,7 @@ export const configuration = {
             scpo.required = this.getBooleanValue(ccpo["isRequired"]);
             scpo.permittedValues = [];
             scpo.permittedTypes = [];
+            scpo.permittedConcepts = [];
             if (scpo.range.equalsIgnoreCase('https://schema.cassproject.org/0.4/DirectLink')) {
                 if (ccpo.options && ccpo.options.length > 0) {
                     for (let pv of ccpo.options) {
@@ -82,6 +83,15 @@ export const configuration = {
                         pvo.display = pv.display;
                         pvo.value = pv.val;
                         scpo.permittedTypes.push(pvo);
+                    }
+                }
+            } else if (scpo.range.equalsIgnoreCase('https://schema.cassproject.org/0.4/skos/Concept')) {
+                if (ccpo.options && ccpo.options.length > 0) {
+                    for (let pv of ccpo.options) {
+                        let pvo = {};
+                        pvo.display = pv.display;
+                        pvo.value = pv.val;
+                        scpo.permittedConcepts.push(pvo);
                     }
                 }
             } else if (ccpo.options && ccpo.options.length > 0) {

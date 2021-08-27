@@ -18,7 +18,8 @@ const state = {
     showConfirmDeleteConfigModal: false,
     showMustBeLoggedInModal: false,
     showBrowserConfigSetModal: false,
-    configToDelete: {}
+    configToDelete: {},
+    availableConcepts: []
 };
 
 const mutations = {
@@ -54,6 +55,9 @@ const mutations = {
     },
     setLocalDefaultBrowserConfig(state, val) {
         state.localDefaultBrowserConfig = val;
+    },
+    setAvailableConcepts(state, val) {
+        state.availableConcepts = val;
     }
 };
 const actions = {
@@ -122,6 +126,9 @@ const getters = {
     },
     configBusy(state) {
         return state.configBusy;
+    },
+    availableConcepts(state) {
+        return state.availableConcepts;
     }
 };
 

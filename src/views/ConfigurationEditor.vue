@@ -177,7 +177,32 @@ export default {
         ConfigurationSetSuccess,
         ConfigurationList
     },
+    mounted() {
+        this.generateCustomPropertyAvailableConcepts();
+    },
     methods: {
+        generateCustomPropertyAvailableConcepts() {
+            appLog("generate list of available concepts");
+            repo.searchWithParams('@type:ConceptScheme',
+                {size: 10000},
+                null,
+                null,
+                null,
+                null
+            ).then((results) => {
+                let concepts = [];
+                for (let concept = 0; concept < results.length; concept++) {
+                    concepts.push({
+                        display: EcRemoteLinkedData.getDisplayStringFrom(results[concept]["dcterms:title"]),
+                        value: results[concept].id
+                    });
+                }
+                this.$store.commit('configuration/setAvailableConcepts', concepts);
+                appLog(concepts);
+            }).catch((err) => {
+                appLog("failed to retrieve concepts: " + err);
+            });
+        },
         handleDeleteConfigurationSuccess() {
             appLog("Config delete success");
             this.configToDelete = {};
@@ -224,7 +249,7 @@ export default {
                 }
             }
         },
-        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues, permittedTypes, heading, allowMultiples, onePerLanguage) {
+        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues, permittedConcepts, permittedTypes, heading, allowMultiples, onePerLanguage) {
             let propObj = {};
             propObj["@id"] = id;
             propObj["@type"] = "http://www.w3.org/2000/01/rdf-schema#Property";
@@ -260,6 +285,14 @@ export default {
                     option.val = pv.value.trim();
                     propObj.options.push(option);
                 }
+            } else if (permittedConcepts && permittedConcepts.length > 0) {
+                propObj.options = [];
+                for (let pv of permittedConcepts) {
+                    let option = {};
+                    option.display = pv.display.trim();
+                    option.val = pv.value.trim();
+                    propObj.options.push(option);
+                }
             } else if (permittedTypes && permittedTypes.length > 0) {
                 propObj.options = [];
                 for (let pv of permittedTypes) {
@@ -288,6 +321,7 @@ export default {
                     false,
                     false,
                     prop.permittedValues,
+                    prop.permittedConcepts,
                     prop.permittedTypes,
                     prop.heading,
                     prop.allowMultiples,
@@ -339,6 +373,7 @@ export default {
                 false,
                 null,
                 null,
+                null,
                 this.currentConfig.fwkNameHeading,
                 false,
                 true);
@@ -354,6 +389,7 @@ export default {
                 this.currentConfig.fwkDescRequired,
                 false,
                 false,
+                null,
                 null,
                 null,
                 this.currentConfig.fwkDescHeading,
@@ -417,6 +453,7 @@ export default {
                 true,
                 null,
                 null,
+                null,
                 this.currentConfig.compIdHeading,
                 false,
                 true);
@@ -434,6 +471,7 @@ export default {
                 false,
                 null,
                 null,
+                null,
                 this.currentConfig.compNameHeading,
                 false,
                 true);
@@ -449,6 +487,7 @@ export default {
                 this.currentConfig.compDescRequired,
                 false,
                 false,
+                null,
                 null,
                 null,
                 this.currentConfig.compDescHeading,
@@ -471,6 +510,8 @@ export default {
                 false,
                 false,
                 this.currentConfig.compEnforcedTypes,
+                null,
+                null,
                 this.currentConfig.compTypeHeading,
                 false,
                 true);
