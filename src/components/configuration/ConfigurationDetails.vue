@@ -858,7 +858,7 @@
                     </div>
                     <div
                         class="table-container"
-                        v-if="customPropertyAvailableTypes.length > 0 && customPropertyTypesLimited">
+                        v-if="config.compEnforcedTypes.length > 0 && customPropertyTypesLimited">
                         <div
                             v-if="customPropertyPermittedTypes.length > 0"
                             class="tags are-medium">
@@ -3245,7 +3245,7 @@ export default {
         },
         filterTypes: function() {
             this.isOpenAutocomplete = true;
-            this.filteredTypes = this.customPropertyAvailableTypes.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+            this.filteredTypes = this.config.compEnforcedTypes.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
         },
         selectType: function(type) {
             // Check for duplicates
@@ -3291,14 +3291,6 @@ export default {
                 return false;
             } else {
                 return true;
-            }
-        },
-        customPropertyAvailableTypes: {
-            get() {
-                return this.$store.getters['configuration/availableTypes'];
-            },
-            set(val) {
-                this.$store.commit('configuration/availableTypes', val);
             }
         },
         isBrowserDefault: {

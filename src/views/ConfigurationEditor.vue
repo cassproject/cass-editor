@@ -177,47 +177,7 @@ export default {
         ConfigurationSetSuccess,
         ConfigurationList
     },
-    mounted() {
-        this.generateCustomPropertyAvailableTypes();
-    },
     methods: {
-        generateCustomPropertyAvailableTypes() {
-            appLog("generate list of available types");
-            // repo.searchWithParams('@type:ConceptScheme',
-            //     {size: 10000},
-            //     null,
-            //     null,
-            //     null,
-            //     null
-            // ).then((results) => {
-            //     let types = [];
-            //     for (let type = 0; type < results.length; type++) {
-            //         types.push({
-            //             display: EcRemoteLinkedData.getDisplayStringFrom(results[type]["dcterms:title"]),
-            //             value: results[type].id
-            //         });
-            //     }
-            //     this.$store.commit('configuration/setAvailableTypes', types);
-            //     appLog(types);
-            // }).catch((err) => {
-            //     appLog("failed to retrieve types: " + err);
-            // });
-            let types = [
-                {
-                    value: 'typeA',
-                    display: 'Type A'
-                },
-                {
-                    value: 'typeB',
-                    display: 'Type B'
-                },
-                {
-                    value: 'typeC',
-                    display: 'Type C'
-                }
-            ];
-            this.$store.commit('configuration/setAvailableTypes', types);
-        },
         handleDeleteConfigurationSuccess() {
             appLog("Config delete success");
             this.configToDelete = {};
