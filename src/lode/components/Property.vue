@@ -191,7 +191,7 @@ TO DO MAYBE: Separate out property by editing or not.
                 <!-- propertystring components -->
                 <div
                     class="property"
-                    v-else-if="editingProperty && !checkedOptions">
+                    v-else-if="editingProperty && !checkedOptions && !(limitedConcepts.length > 0)">
                     <PropertyString
                         :index="index"
                         :expandedProperty="expandedProperty"
@@ -204,6 +204,21 @@ TO DO MAYBE: Separate out property by editing or not.
                         :profile="profile"
                         @remove="remove(item)" />
                 </div>
+                <!-- concept with limited concept options -->
+                <div v-else-if="editingProperty && !checkedOptions && (limitedConcepts.length > 0)">
+                    <PropertyString
+                        :index="index"
+                        :expandedProperty="expandedProperty"
+                        :expandedThing="expandedThing"
+                        :expandedValue="expandedValue"
+                        :langString="langString"
+                        :range="range"
+                        :view="view"
+                        :options="limitedConcepts"
+                        :profile="profile"
+                        @remove="remove(item)" />
+                </div>
+
                 <!-- text view has language -->
                 <div
                     class="expanded-view__has-language"
@@ -360,6 +375,7 @@ export default {
             initialValue: null,
             expandedValueNames: [],
             optionsArray: [],
+            limitedConcepts: [],
             errorValidating: null,
             removePropertyConfirmModal: false,
             propertyToRemove: null
@@ -396,6 +412,17 @@ export default {
                 for (var i = 0; i < this.expandedValue.length; i++) {
                     this.checkedOptions.push(this.expandedValue[i]["@id"]);
                 }
+            }
+        }
+        if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("concept") !== -1 && this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
+            for (let i = 0; i < this.profile[this.expandedProperty]['options'].length; i++) {
+                await EcConceptScheme.get(this.profile[this.expandedProperty]['options'][i].val).then((scheme) => {
+                    if (scheme) {
+                        scheme['skos:hasTopConcept'].forEach((conceptUri) => {
+                            this.addConceptInner(conceptUri);
+                        });
+                    }
+                });
             }
         }
         if (this.expandedThing[this.expandedProperty]) {
@@ -607,6 +634,19 @@ export default {
         }
     },
     methods: {
+        async addConceptInner(conceptUri) {
+            EcConcept.get(conceptUri).then((concept) => {
+                this.limitedConcepts.push({
+                    display: EcRemoteLinkedData.getDisplayStringFrom(concept['skos:prefLabel']),
+                    val: conceptUri
+                });
+                if (concept['skos:narrower'] != null) {
+                    for (let i = 0; i < concept['skos:narrower'].length; i++) {
+                        this.addConceptInner(concept['skos:narrower'][i]);
+                    }
+                }
+            });
+        },
         resolveNameFromUrl: function(url) {
             let me = this;
             // Try repo first to use cache if possible

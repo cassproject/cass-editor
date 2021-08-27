@@ -97,8 +97,23 @@
                             create new Level
                         </span>
                     </div>
+                    <!-- add by limited concept -->
+                    <div
+                        v-if="(limitedConcepts.length > 0)">
+                        <PropertyString
+                            index="null"
+                            :expandedProperty="selectedPropertyToAdd.value"
+                            :langString="selectedPropertyToAddIsLangString"
+                            :range="selectedPropertyRange"
+                            :newProperty="true"
+                            :profile="profile"
+                            :addSingle="true"
+                            :valueFromSearching="selectedPropertyToAddValue"
+                            :options="limitedConcepts" />
+                    </div>
                     <!-- add by url -->
                     <div
+                        v-if="!(limitedConcepts.length > 0)"
                         @click="addRelationBy = 'url'"
                         type="text"
                         class="button is-outlined is-primary">
@@ -111,6 +126,7 @@
                     </div>
                     <!-- add by search -->
                     <div
+                        v-if="!(limitedConcepts.length > 0)"
                         @click="search"
                         type="button"
                         class="button is-outlined is-primary">
@@ -253,7 +269,8 @@ export default {
             selectedPropertyToAddValue: null,
             checkedOptions: null,
             skipConfigProperties: ["alwaysProperties", "headings", "primaryProperties", "secondaryProperties", "tertiaryProperties", "relationshipsHeading", "relationshipsPriority"],
-            optionsArray: []
+            optionsArray: [],
+            limitedConcepts: []
         };
     },
     mounted: function() {
@@ -403,11 +420,25 @@ export default {
                 this.$store.commit('editor/selectCompetencyRelation', this.selectedPropertyToAdd.value);
             }
             this.$store.commit('lode/competencySearchModalOpen', true);
+        },
+        async addConceptInner(conceptUri) {
+            EcConcept.get(conceptUri).then((concept) => {
+                this.limitedConcepts.push({
+                    display: EcRemoteLinkedData.getDisplayStringFrom(concept['skos:prefLabel']),
+                    val: conceptUri
+                });
+                if (concept['skos:narrower'] != null) {
+                    for (let i = 0; i < concept['skos:narrower'].length; i++) {
+                        this.addConceptInner(concept['skos:narrower'][i]);
+                    }
+                }
+            });
         }
     },
     watch: {
         selectedPropertyToAdd: async function() {
             this.selectedPropertyToAddIsLangString = false;
+            this.limitedConcepts = [];
             if (this.profile && this.profile[this.selectedPropertyToAdd.value]) {
                 var range = [];
                 var ary = this.profile[this.selectedPropertyToAdd.value]["http://schema.org/rangeIncludes"];
@@ -427,11 +458,23 @@ export default {
             } else {
                 this.checkedOptions = null;
             }
-            if (this.profile && this.profile[this.selectedPropertyToAdd.value] && this.profile[this.selectedPropertyToAdd.value]['options'] && this.checkedOptions) {
-                for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
-                    let option = this.profile[this.selectedPropertyToAdd.value]['options'][i];
-                    option.name = (await EcRepository.get(option.val)).name;
-                    this.optionsArray.push(option);
+            if (this.profile && this.profile[this.selectedPropertyToAdd.value] && this.profile[this.selectedPropertyToAdd.value]['options']) {
+                if (this.profile[this.selectedPropertyToAdd.value]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/skos/Concept") {
+                    for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
+                        await EcConceptScheme.get(this.profile[this.selectedPropertyToAdd.value]['options'][i].val).then((scheme) => {
+                            if (scheme) {
+                                scheme['skos:hasTopConcept'].forEach((conceptUri) => {
+                                    this.addConceptInner(conceptUri);
+                                });
+                            }
+                        });
+                    }
+                } else if (this.checkedOptions) {
+                    for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
+                        let option = this.profile[this.selectedPropertyToAdd.value]['options'][i];
+                        option.name = (await EcRepository.get(option.val)).name;
+                        this.optionsArray.push(option);
+                    }
                 }
             }
         },

@@ -820,6 +820,81 @@
                         </button>
                     </div>
                 </div>
+                <div
+                    class="box py-4 px-4"
+                    v-if="shouldAllowCustomPropertyPermittedConcepts">
+                    <div class="field">
+                        <div class="columns">
+                            <div class="column">
+                                <label class="label">Limit concepts </label>
+                            </div>
+                            <div class="column is-narrow">
+                                <div class="control">
+                                    <input
+                                        :disabled="readOnly"
+                                        v-model="customPropertyConceptsLimited"
+                                        id="customPropertyConceptsLimited"
+                                        type="checkbox"
+                                        name="customPropertyConceptsLimited"
+                                        class="switch"
+                                        checked="checked">
+                                    <label for="customPropertyConceptsLimited" />
+                                </div>
+                            </div>
+                        </div>
+                        <p
+                            v-if="!customPropertyConceptsLimited && !readOnly"
+                            class="description">
+                            Limit concepts disabled, any concepts allowed. To limit, turn on limit concepts.
+                        </p>
+                        <p
+                            v-if="customPropertyConceptsLimited && !readOnly"
+                            class="description">
+                            Concepts limited to only the taxonomies listed below. To allow any, turn off limit concepts.
+                        </p>
+                    </div>
+                    <div
+                        class="table-container"
+                        v-if="customPropertyAvailableConcepts.length > 0 && customPropertyConceptsLimited">
+                        <div
+                            v-if="customPropertyPermittedConcepts.length > 0"
+                            class="tags are-medium">
+                            <span
+                                v-for="(concept, index) in customPropertyPermittedConcepts"
+                                :key="index"
+                                class="tag is-light">
+                                <span :title="concept.value">{{ concept.display }}</span>
+                                <button
+                                    @click="removeConcept(index)"
+                                    title="Remove"
+                                    class="delete is-small" />
+                            </span>
+                        </div>
+                        <div class="field is-grouped">
+                            <div class="control is-expanded share auto-complete__control">
+                                <input
+                                    @blur="closeAutoComplete"
+                                    type="search"
+                                    placeholder="search"
+                                    class="input share is-fullwidth"
+                                    v-model="search"
+                                    @input="filterConcepts">
+                                <div
+                                    v-show="isOpenAutocomplete"
+                                    class="auto">
+                                    <ul>
+                                        <li
+                                            v-for="(result, i) in filteredConcepts"
+                                            :key="i"
+                                            @mousedown="selectConcept(result)">
+                                            {{ result.display }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <br>
                 <div
                     class="field has-text-danger"
@@ -2344,6 +2419,7 @@ export default {
             defaultBrowserConfigId: '',
             showDefaultCommenters: false,
             customPropertyValuesLimited: false,
+            customPropertyConceptsLimited: false,
             showManageRelationshipsModal: false,
             tab: 'general',
             configDetailsBusy: false,
@@ -2381,6 +2457,7 @@ export default {
             customPropertyAllowMultiples: false,
             customPropertyOnePerLanguage: true,
             customPropertyPermittedValues: [],
+            customPropertyPermittedConcepts: [],
             customPropertyInvalid: false,
             customPropertyPropertyNameExists: false,
             customPropertyPropertyNameInvalid: false,
@@ -2411,7 +2488,11 @@ export default {
             localDefaultCommenters: this.config.defaultCommenters,
             cassRelations: ['isEnabledBy', 'narrows', 'broadens', 'requires', 'desires', 'isEquivalentTo', 'isRelatedTo', 'enables'],
             asnRelations: ['majorRelated', 'minorRelated'],
-            gemqRelations: ['hasChild', 'isChildOf']
+            gemqRelations: ['hasChild', 'isChildOf'],
+            filteredConcepts: [],
+            search: "",
+            isOpenAutocomplete: false,
+            conceptToAdd: null
         };
     },
     components: {
@@ -2778,6 +2859,8 @@ export default {
             newProp.onePerLanguage = this.customPropertyOnePerLanguage;
             if (this.shouldAllowCustomPropertyPermittedValues) newProp.permittedValues = this.customPropertyPermittedValues;
             else newProp.permittedValues = [];
+            if (this.shouldAllowCustomPropertyPermittedConcepts) newProp.permittedConcepts = this.customPropertyPermittedConcepts;
+            else newProp.permittedConcepts = [];
             if (this.customPropertyParent.equals('framework')) this.config.fwkCustomProperties.push(newProp);
             else if (this.customPropertyParent.equals('competency')) this.config.compCustomProperties.push(newProp);
         },
@@ -2794,6 +2877,8 @@ export default {
                 propToUpdate.onePerLanguage = this.customPropertyOnePerLanguage;
                 if (this.shouldAllowCustomPropertyPermittedValues) propToUpdate.permittedValues = this.customPropertyPermittedValues;
                 else propToUpdate.permittedValues = [];
+                if (this.shouldAllowCustomPropertyPermittedConcepts) propToUpdate.permittedConcepts = this.customPropertyPermittedConcepts;
+                else propToUpdate.permittedConcepts = [];
             }
         },
         trimCustomPropertyPermittedValues() {
@@ -2820,6 +2905,10 @@ export default {
             this.customPropertyPermittedValues =
                 this.customPropertyPermittedValues.slice(0, idx).concat(this.customPropertyPermittedValues.slice(idx + 1, this.customPropertyPermittedValues.length));
         },
+        deleteCustomPropertyPermittedConcept(idx) {
+            this.customPropertyPermittedConcepts =
+                this.customPropertyPermittedConcepts.slice(0, idx).concat(this.customPropertyPermittedConcepts.slice(idx + 1, this.customPropertyPermittedConcepts.length));
+        },
         addCustomPropertyPermittedValue() {
             let pv = {};
             pv.display = '';
@@ -2843,6 +2932,7 @@ export default {
             this.customPropertyAllowMultiples = false;
             this.customPropertyOnePerLanguage = true;
             this.customPropertyPermittedValues = [];
+            this.customPropertyPermittedConcepts = [];
             this.customPropertyInvalid = false;
             this.customPropertyPropertyNameExists = false;
             this.customPropertyPropertyNameInvalid = false;
@@ -2885,6 +2975,18 @@ export default {
             }
             return permittedValuesCopy;
         },
+        generateCopyOfCustomPropertyPermittedConcepts(prop) {
+            let permittedConceptsCopy = [];
+            if (prop.permittedConcepts && prop.permittedConcepts.length > 0) {
+                for (let pv of prop.permittedConcepts) {
+                    let cpv = {};
+                    cpv.display = pv.display;
+                    cpv.value = pv.value;
+                    permittedConceptsCopy.push(cpv);
+                }
+            }
+            return permittedConceptsCopy;
+        },
         initCustomPropertyDataHoldersAsExistingProperty(propertyParent, prop) {
             this.reInitCustomPropertyDataHolders();
             this.customPropertyParent = propertyParent;
@@ -2900,8 +3002,13 @@ export default {
             this.customPropertyAllowMultiples = prop.allowMultiples;
             this.customPropertyOnePerLanguage = prop.onePerLanguage;
             this.customPropertyPermittedValues = this.generateCopyOfCustomPropertyPermittedValues(prop);
+            this.customPropertyPermittedConcepts = this.generateCopyOfCustomPropertyPermittedConcepts(prop);
             if (this.customPropertyPermittedValues.length > 0) this.customPropertyValuesLimited = true;
             else this.customPropertyValuesLimited = false;
+            if (this.customPropertyPermittedConcepts.length > 0) {
+                this.customPropertyConceptsLimited = true;
+                this.search = this.customPropertyPermittedConcepts[0].display;
+            } else this.customPropertyConceptsLimited = false;
         },
         manageCustomFrameworkProperty: function(propertyIdx) {
             this.initCustomPropertyDataHoldersAsExistingProperty('framework', this.config.fwkCustomProperties[propertyIdx]);
@@ -3128,6 +3235,24 @@ export default {
         },
         isOtherRelation: function(relType) {
             return !(this.cassRelations.includes(relType) || this.asnRelations.includes(relType) || this.gemqRelations.includes(relType));
+        },
+        filterConcepts: function() {
+            this.isOpenAutocomplete = true;
+            this.filteredConcepts = this.customPropertyAvailableConcepts.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+        },
+        selectConcept: function(concept) {
+            // Check for duplicates
+            if (!this.customPropertyPermittedConcepts.some(e => e.value === concept.value)) {
+                this.customPropertyPermittedConcepts.push(concept);
+            }
+            this.search = '';
+            this.isOpenAutocomplete = false;
+        },
+        removeConcept: function(index) {
+            this.customPropertyPermittedConcepts.splice(index, 1);
+        },
+        closeAutoComplete: function() {
+            this.isOpenAutocomplete = false;
         }
     },
     computed: {
@@ -3150,6 +3275,14 @@ export default {
             },
             set(val) {
                 this.$store.commit('configuration/setCurrentConfig', val);
+            }
+        },
+        customPropertyAvailableConcepts: {
+            get() {
+                return this.$store.getters['configuration/availableConcepts'];
+            },
+            set(val) {
+                this.$store.commit('configuration/availableConcepts', val);
             }
         },
         isSetInstanceDisabled() {
@@ -3189,6 +3322,10 @@ export default {
         },
         shouldAllowCustomPropertyPermittedValues: function() {
             if (this.customPropertyRange.equals('http://schema.org/Text')) return true;
+            else return false;
+        },
+        shouldAllowCustomPropertyPermittedConcepts: function() {
+            if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/skos/Concept')) return true;
             else return false;
         },
         shouldAllowOnePerLangChoice: function() {
@@ -3262,6 +3399,29 @@ export default {
     .panel {
         top: 0;
         position: sticky;
+    }
+
+    .auto {
+        ul {
+            // z-index: 10;
+            min-height: 40px;
+            border-radius: 6px;
+            max-height: 120px;
+            background-color: white;
+            overflow-y: scroll;
+            color: $dark;
+            border: solid 1px rgba($dark, 0.2);
+            li {
+                padding: 0.125rem 0.25rem;
+                z-index: 10;
+                background-color: white;
+            }
+            li:hover {
+                background-color: $link;
+                color: white;
+                cursor: pointer;
+            }
+        }
     }
 </style>
 
