@@ -205,7 +205,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         @remove="remove(item)" />
                 </div>
                 <!-- concept with limited concept options -->
-                <div v-if="editingProperty && !checkedOptions && (limitedConcepts.length > 0)">
+                <div v-else-if="editingProperty && !checkedOptions && (limitedConcepts.length > 0)">
                     <PropertyString
                         :index="index"
                         :expandedProperty="expandedProperty"
