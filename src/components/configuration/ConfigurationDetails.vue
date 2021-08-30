@@ -928,7 +928,7 @@
                         <p
                             v-if="customPropertyTypesLimited && !readOnly"
                             class="description">
-                            Competencies limited to only the type listed below. To allow any, turn off limit by type.
+                            Competencies limited to only the types listed below. To allow any, turn off limit by type.
                         </p>
                     </div>
                     <div

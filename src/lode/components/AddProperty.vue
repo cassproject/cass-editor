@@ -99,7 +99,7 @@
                     </div>
                     <!-- add by limited concept -->
                     <div
-                        v-if="(limitedConcepts.length > 0)">
+                        v-if="(limitedConcepts.length > 0) && !(addRelationBy === 'url')">
                         <PropertyString
                             index="null"
                             :expandedProperty="selectedPropertyToAdd.value"

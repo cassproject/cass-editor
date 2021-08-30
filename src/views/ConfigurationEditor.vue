@@ -198,7 +198,6 @@ export default {
                     });
                 }
                 this.$store.commit('configuration/setAvailableConcepts', concepts);
-                appLog(concepts);
             }).catch((err) => {
                 appLog("failed to retrieve concepts: " + err);
             });
@@ -657,7 +656,6 @@ export default {
             cco.context = this.DEFAULT_CONFIGURATION_CONTEXT;
             cco.type = this.DEFAULT_CONFIGURATION_TYPE;
             this.addAllIdentityPksAsOwners(cco);
-            appLog(this.currentConfig);
             if (this.currentConfig.isNew) cco.generateId(window.repo.selectedServer);
             else cco.id = this.currentConfig.id;
             cco.setName(this.currentConfig.name.trim());

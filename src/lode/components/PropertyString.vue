@@ -144,10 +144,10 @@
             @blur="blur">
         <label
             class="label"
-            v-if="options">options</label>
+            v-if="options && !isDirectLink">options</label>
         <span
             class="select is-small"
-            v-if="options">
+            v-if="options && !isDirectLink">
             <select
                 v-model="computedText"
                 @blur="blur">

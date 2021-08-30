@@ -204,8 +204,8 @@ TO DO MAYBE: Separate out property by editing or not.
                         :profile="profile"
                         @remove="remove(item)" />
                 </div>
-                <!-- competency direct link with options limited by type -->
-                <div v-else-if="editingProperty && !checkedOptions && (limitedConcepts.length > 0) && (limitedTypes.length > 0)">
+                <!-- concept limited by taxonomy -->
+                <div v-else-if="editingProperty && !checkedOptions && (limitedConcepts.length > 0)">
                     <PropertyString
                         :index="index"
                         :expandedProperty="expandedProperty"
@@ -215,6 +215,20 @@ TO DO MAYBE: Separate out property by editing or not.
                         :range="range"
                         :view="view"
                         :options="limitedConcepts"
+                        :profile="profile"
+                        @remove="remove(item)" />
+                </div>
+                <!-- competency direct link with options limited by type -->
+                <div v-else-if="editingProperty && !checkedOptions && (limitedTypes.length > 0)">
+                    <PropertyString
+                        :index="index"
+                        :expandedProperty="expandedProperty"
+                        :expandedThing="expandedThing"
+                        :expandedValue="expandedValue"
+                        :langString="langString"
+                        :range="range"
+                        :view="view"
+                        :options="limitedTypes"
                         :profile="profile"
                         @remove="remove(item)" />
                 </div>
@@ -969,6 +983,7 @@ export default {
                 if (type["@type"][0].toLowerCase().indexOf("url") !== -1) { return true; }
                 if (type["@type"][0].toLowerCase().indexOf("concept") !== -1) { return true; }
                 if (type["@type"][0].toLowerCase().indexOf("string") !== -1) { return true; }
+                if (type["@type"][0].toLowerCase().indexOf("directLink") !== -1) { return true; }
             }
             if (type["@id"] != null && type["@id"] !== undefined) { return true; }
             return false;
