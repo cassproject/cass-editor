@@ -616,7 +616,7 @@ export default {
                     this.$store.commit('editor/paste', true);
                 }
             }
-            if (e.key.indexOf("Arrow") !== -1 && !e.shiftKey) {
+            if (e.key.indexOf("Arrow") !== -1 && !e.shiftKey && !e.ctrlKey) {
                 if (e.key === "ArrowLeft") {
                     this.expanded = false;
                 } else if (e.key === "ArrowRight") {
