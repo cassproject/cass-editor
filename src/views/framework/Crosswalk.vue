@@ -141,7 +141,7 @@
                                     <SearchBar
                                         view="crosswalk"
                                         filterSet="basic"
-                                        :ownedByMe="setSearchToOnlyShowOwned"
+                                        :ownedByMe="false"
                                         searchType="framework" />
                                 </div>
                             </div>
@@ -531,6 +531,8 @@ export default {
         },
         searchOptions: function() {
             let search = "";
+            console.log('searchOptions...');
+            console.log(this.queryParams);
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
