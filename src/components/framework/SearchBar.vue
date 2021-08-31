@@ -65,7 +65,6 @@
                     class="field"
                     v-if="loggedIn">
                     <input
-                        :disabled="ownedByMe"
                         v-model="basicFilter"
                         class="is-checkradio"
                         value="ownedByMe"
