@@ -531,8 +531,6 @@ export default {
         },
         searchOptions: function() {
             let search = "";
-            console.log('searchOptions...');
-            console.log(this.queryParams);
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
