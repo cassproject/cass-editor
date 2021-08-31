@@ -32,7 +32,7 @@
                 :allowShowFrameworks="true"
                 :clearFramework="clearFramework"
                 @selectFramework="selectFramework"
-                :idsNotPermittedInSearch="copyOrLink ? [framework.shortId()] : null" />
+                :idsNotPermittedInSearch="idsNotPermittedInSearch" />
         </template>
         <template slot="modal-foot">
             <div class="buttons">
@@ -116,6 +116,16 @@ export default {
         },
         searchFrameworksInCompetencySearch: function() {
             return this.$store.getters['app/searchFrameworksInCompetencySearch'];
+        },
+        idsNotPermittedInSearch: function() {
+            if (this.copyOrLink) {
+                let ary = [this.framework.shortId()];
+                if (this.framework.competency && this.framework.competency.length > 0) {
+                    ary = ary.concat(this.framework.competency);
+                }
+                return ary;
+            }
+            return null;
         }
     },
     methods: {
