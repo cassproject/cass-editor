@@ -118,6 +118,11 @@ export default {
                     return true;
                 }
             }
+            if (this.addedPropertiesAndValues && this.addedPropertiesAndValues[0]) {
+                if (this.addedPropertiesAndValues[0].property.length === 0 || this.addedPropertiesAndValues[0].value.length === 0) {
+                    return true;
+                }
+            }
             return false;
         },
         removeAddingValueAtIndex: function() {
