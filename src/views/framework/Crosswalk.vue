@@ -141,7 +141,7 @@
                                     <SearchBar
                                         view="crosswalk"
                                         filterSet="basic"
-                                        :ownedByMe="setSearchToOnlyShowOwned"
+                                        :ownedByMe="false"
                                         searchType="framework" />
                                 </div>
                             </div>
@@ -508,13 +508,6 @@ export default {
     computed: {
         queryParamsComputed: function() {
             return this.$store.getters['editor/queryParams'];
-        },
-        setSearchToOnlyShowOwned: function() {
-            if (this.step === 0) {
-                return true;
-            } else {
-                return false;
-            }
         },
         type: function() {
             return "Framework";
