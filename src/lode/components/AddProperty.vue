@@ -354,7 +354,9 @@ export default {
                         var description = this.profile[key]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
                         var type = "property";
                         if (this.profile[key]["http://schema.org/rangeIncludes"][0]["@id"].toLowerCase().indexOf("competency") !== -1) {
-                            type = "relationship";
+                            if (!(this.profile[key]["isDirectLink"] && (this.profile[key]["isDirectLink"] === 'true' || this.profile[key]["isDirectLink"] === true))) {
+                                type = "relationship";
+                            }
                         } else if (this.profile[key]["http://schema.org/rangeIncludes"][0]["@id"].toLowerCase().indexOf("level") !== -1) {
                             type = "level";
                         }
@@ -376,7 +378,7 @@ export default {
             if (!range) {
                 return false;
             }
-            if (range.toLowerCase().indexOf("competency") !== -1 || range.toLowerCase().indexOf("concept") !== -1 || range.toLowerCase().indexOf("directlink") !== -1) {
+            if (range.toLowerCase().indexOf("competency") !== -1 || range.toLowerCase().indexOf("concept") !== -1) {
                 return false;
             }
             if (range.toLowerCase().indexOf("level") !== -1 && this.profile[property]["add"] !== "checkedOptions") {
@@ -411,7 +413,7 @@ export default {
             } else if (this.selectedPropertyRange[0].toLowerCase().indexOf("level") !== -1) {
                 this.$store.commit('lode/searchType', "Level");
                 this.$store.commit('lode/copyOrLink', true);
-            } else if (this.selectedPropertyRange[0].toLowerCase().indexOf("directlink") !== -1) {
+            } else if (this.profile[this.selectedPropertyToAdd.value]["isDirectLink"] && (this.profile[this.selectedPropertyToAdd.value]["isDirectLink"] === 'true' || this.profile[this.selectedPropertyToAdd.value]["isDirectLink"] === true)) {
                 this.$store.commit('lode/searchType', "DirectLink");
                 this.$store.commit('lode/copyOrLink', true);
             } else {
@@ -464,7 +466,7 @@ export default {
                 this.checkedOptions = null;
             }
             if (this.profile && this.profile[this.selectedPropertyToAdd.value] && this.profile[this.selectedPropertyToAdd.value]['options']) {
-                if (this.profile[this.selectedPropertyToAdd.value]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/DirectLink") {
+                if (this.profile[this.selectedPropertyToAdd.value]["isDirectLink"] && (this.profile[this.selectedPropertyToAdd.value]["isDirectLink"] === 'true' || this.profile[this.selectedPropertyToAdd.value]["isDirectLink"] === true)) {
                     const options = this.profile[this.selectedPropertyToAdd.value]['options'];
                     options.forEach((option) => {
                         this.limitedTypes.push(option);

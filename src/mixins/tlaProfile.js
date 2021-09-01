@@ -110,6 +110,7 @@ export default {
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Terms"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdlasn/terms/derivedFrom": {
@@ -169,6 +170,7 @@ export default {
                         ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level Type"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Context"
                 },
                 "http://schema.org/validFrom": {
@@ -367,6 +369,7 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
                     "valuesIndexed": function() { return me.levels; },
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
                     "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
                     "save": function() { me.saveFramework(); },
@@ -399,6 +402,7 @@ export default {
                         ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "General"
                 },
                 "https://purl.org/ctdlasn/terms/listID": {
@@ -473,6 +477,7 @@ export default {
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Terms"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdlasn/terms/complexityLevel": {
@@ -485,6 +490,7 @@ export default {
                         [{"@language": "en", "@value": "The expected performance level of a learner or professional as defined by a competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Complexity Level"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Scales"
                 },
                 "https://purl.org/ctdlasn/terms/weight": {
@@ -506,6 +512,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrows"}],
                     "valuesIndexed": function() { return me.relations["narrows"]; },
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); },
@@ -518,6 +525,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broadens"}],
                     "valuesIndexed": function() { return me.relations["broadens"]; },
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); },
@@ -530,6 +538,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Equivalent To"}],
                     "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); },
@@ -542,6 +551,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Requires"}],
                     "valuesIndexed": function() { return me.relations["requires"]; },
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
@@ -554,6 +564,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Enabled By"}],
                     "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); },
@@ -566,6 +577,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Related To"}],
                     "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); },
@@ -578,6 +590,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Desires"}],
                     "valuesIndexed": function() { return me.relations["desires"]; },
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "desires", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },

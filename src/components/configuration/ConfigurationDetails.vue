@@ -562,7 +562,7 @@
                                         <option value="https://schema.cassproject.org/0.4/skos/Concept">
                                             SKOS Concept
                                         </option>
-                                        <option value="https://schema.cassproject.org/0.4/DirectLink">
+                                        <option value="https://schema.cassproject.org/0.4/Competency">
                                             Competency
                                         </option>
                                     </select>
@@ -2573,8 +2573,7 @@ export default {
             filteredTypes: [],
             search: "",
             isOpenAutocomplete: false,
-            conceptToAdd: null,
-            typeToAdd: null
+            conceptToAdd: null
         };
     },
     components: {
@@ -2941,8 +2940,13 @@ export default {
             newProp.onePerLanguage = this.customPropertyOnePerLanguage;
             if (this.shouldAllowCustomPropertyPermittedValues) newProp.permittedValues = this.customPropertyPermittedValues;
             else newProp.permittedValues = [];
-            if (this.shouldAllowCustomPropertyPermittedTypes) newProp.permittedTypes = this.customPropertyPermittedTypes;
-            else newProp.permittedTypes = [];
+            if (this.shouldAllowCustomPropertyPermittedTypes) {
+                newProp.isDirectLink = true;
+                newProp.permittedTypes = this.customPropertyPermittedTypes;
+            } else {
+                newProp.isDirectLink = false;
+                newProp.permittedTypes = [];
+            }
             if (this.shouldAllowCustomPropertyPermittedConcepts) newProp.permittedConcepts = this.customPropertyPermittedConcepts;
             else newProp.permittedConcepts = [];
             if (this.customPropertyParent.equals('framework')) this.config.fwkCustomProperties.push(newProp);
@@ -2961,8 +2965,13 @@ export default {
                 propToUpdate.onePerLanguage = this.customPropertyOnePerLanguage;
                 if (this.shouldAllowCustomPropertyPermittedValues) propToUpdate.permittedValues = this.customPropertyPermittedValues;
                 else propToUpdate.permittedValues = [];
-                if (this.shouldAllowCustomPropertyPermittedTypes) propToUpdate.permittedTypes = this.customPropertyPermittedTypes;
-                else propToUpdate.permittedTypes = [];
+                if (this.shouldAllowCustomPropertyPermittedTypes) {
+                    propToUpdate.permittedTypes = this.customPropertyPermittedTypes;
+                    propToUpdate.isDirectLink = true;
+                } else {
+                    propToUpdate.permittedTypes = [];
+                    propToUpdate.isDirectLink = false;
+                }
                 if (this.shouldAllowCustomPropertyPermittedConcepts) propToUpdate.permittedConcepts = this.customPropertyPermittedConcepts;
                 else propToUpdate.permittedConcepts = [];
             }
@@ -3445,7 +3454,7 @@ export default {
             else if (this.customPropertyRange.equals('http://www.w3.org/2001/XMLSchema#dateTime')) return 'Date-Time';
             else if (this.customPropertyRange.equals('http://purl.org/dc/terms/date')) return 'Date';
             else if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/skos/Concept')) return 'SKOS Concept';
-            else if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/DirectLink')) return 'Competency';
+            else if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/Competency')) return 'Competency';
             else return 'Unknown';
         },
         shouldAllowCustomPropertyPermittedValues: function() {
@@ -3453,7 +3462,7 @@ export default {
             else return false;
         },
         shouldAllowCustomPropertyPermittedTypes: function() {
-            if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/DirectLink')) return true;
+            if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/Competency')) return true;
             else return false;
         },
         shouldAllowCustomPropertyPermittedConcepts: function() {

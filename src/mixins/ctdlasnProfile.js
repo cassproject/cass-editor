@@ -140,6 +140,7 @@ export default {
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Term"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdlasn/terms/derivedFrom": {
@@ -187,6 +188,7 @@ export default {
                         ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level Type"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Context"
                 },
                 "http://schema.org/validFrom": {
@@ -452,6 +454,7 @@ export default {
                         ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Education Level"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "General"
                 },
                 "https://purl.org/ctdlasn/terms/listID": {
@@ -526,6 +529,7 @@ export default {
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Concept Term"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdlasn/terms/complexityLevel": {
@@ -538,6 +542,7 @@ export default {
                         [{"@language": "en", "@value": "The expected performance level of a learner or professional as defined by a competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Complexity Level"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Scales"
                 },
                 "https://purl.org/ctdlasn/terms/weight": {
@@ -1390,6 +1395,7 @@ export default {
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broad Match"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Connections"
                 },
                 "http://www.w3.org/2004/02/skos/core#closeMatch": {
@@ -1413,6 +1419,7 @@ export default {
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Close Match"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Connections"
                 },
                 "http://www.w3.org/2004/02/skos/core#exactMatch": {
@@ -1436,6 +1443,7 @@ export default {
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Exact Match"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Connections"
                 },
                 "http://www.w3.org/2004/02/skos/core#narrowMatch": {
@@ -1459,6 +1467,7 @@ export default {
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrow Match"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Connections"
                 },
                 "http://www.w3.org/2004/02/skos/core#related": {
@@ -1482,6 +1491,7 @@ export default {
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Related"}],
                     "noTextEditing": "true",
+                    "isDirectLink": "false",
                     "heading": "Connections"
                 },
                 "headings": ["General", "Other Labels", "Documentation", "Connections", "Keys"],

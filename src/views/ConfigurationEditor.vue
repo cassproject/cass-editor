@@ -248,7 +248,7 @@ export default {
                 }
             }
         },
-        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues, permittedConcepts, permittedTypes, heading, allowMultiples, onePerLanguage) {
+        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, isDirectLink, permittedValues, permittedConcepts, permittedTypes, heading, allowMultiples, onePerLanguage) {
             let propObj = {};
             propObj["@id"] = id;
             propObj["@type"] = "http://www.w3.org/2000/01/rdf-schema#Property";
@@ -274,6 +274,7 @@ export default {
             propObj.isRequired = required;
             propObj.readOnly = readOnly;
             propObj.noTextEditing = noTextEditing;
+            propObj.isDirectLink = isDirectLink;
             if (!allowMultiples) propObj.max = 1;
             if (range.equalsIgnoreCase(this.LANG_STRING_RANGE)) propObj.onePerLanguage = onePerLanguage;
             if (permittedValues && permittedValues.length > 0) {
@@ -319,6 +320,7 @@ export default {
                     prop.required,
                     false,
                     false,
+                    prop.isDirectLink,
                     prop.permittedValues,
                     prop.permittedConcepts,
                     prop.permittedTypes,
@@ -353,6 +355,8 @@ export default {
                 true,
                 true,
                 true,
+                false,
+                null,
                 null,
                 null,
                 this.currentConfig.fwkIdHeading,
@@ -368,6 +372,7 @@ export default {
                 this.currentConfig.fwkNameLabel,
                 "primary",
                 true,
+                false,
                 false,
                 false,
                 null,
@@ -386,6 +391,7 @@ export default {
                 this.currentConfig.fwkDescLabel,
                 this.currentConfig.fwkDescPriority,
                 this.currentConfig.fwkDescRequired,
+                false,
                 false,
                 false,
                 null,
@@ -450,6 +456,7 @@ export default {
                 true,
                 true,
                 true,
+                false,
                 null,
                 null,
                 null,
@@ -468,6 +475,7 @@ export default {
                 true,
                 false,
                 false,
+                false,
                 null,
                 null,
                 null,
@@ -484,6 +492,7 @@ export default {
                 this.currentConfig.compDescLabel,
                 this.currentConfig.compDescPriority,
                 this.currentConfig.compDescRequired,
+                false,
                 false,
                 false,
                 null,
@@ -506,6 +515,7 @@ export default {
                 this.currentConfig.compTypeLabel,
                 this.currentConfig.compTypePriority,
                 compTypeRequired,
+                false,
                 false,
                 false,
                 this.currentConfig.compEnforcedTypes,

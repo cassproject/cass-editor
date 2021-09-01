@@ -345,6 +345,9 @@ export default {
                     if (profile[key] && profile[key]["http://schema.org/rangeIncludes"] && profile[key]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/skos/Concept") {
                         profile[key]["noTextEditing"] = 'true';
                     }
+                    if (profile[key] && profile[key]["http://schema.org/rangeIncludes"] && profile[key]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/skos/Competency") {
+                        profile[key]["isDirectLink"] = 'true';
+                    }
                 }
                 if (this.config.levelsConfig) {
                     // eslint-disable-next-line vue/no-side-effects-in-computed-properties
@@ -492,6 +495,7 @@ export default {
                         "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
                         "valuesIndexed": function() { return me.levels; },
                         "noTextEditing": "true",
+                        "isDirectLink": "false",
                         "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
                         "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
                         "save": function() { me.saveFramework(); },
@@ -504,6 +508,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrows"}],
                         "valuesIndexed": function() { return me.relations["narrows"]; },
                         "noTextEditing": "true",
+                        "isDirectLink": "false",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
                         "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); },
@@ -516,6 +521,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broadens"}],
                         "valuesIndexed": function() { return me.relations["broadens"]; },
                         "noTextEditing": "true",
+                        "isDirectLink": "false",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
                         "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); },
@@ -528,6 +534,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Equivalent To"}],
                         "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
                         "noTextEditing": "true",
+                        "isDirectLink": "false",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
                         "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); },
@@ -540,6 +547,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Requires"}],
                         "valuesIndexed": function() { return me.relations["requires"]; },
                         "noTextEditing": "true",
+                        "isDirectLink": "false",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "requires", values); },
                         "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
@@ -552,6 +560,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Enabled By"}],
                         "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
                         "noTextEditing": "true",
+                        "isDirectLink": "false",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
                         "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); },
@@ -564,6 +573,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Related To"}],
                         "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
                         "noTextEditing": "true",
+                        "isDirectLink": "false",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
                         "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); },
@@ -576,6 +586,7 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Desires"}],
                         "valuesIndexed": function() { return me.relations["desires"]; },
                         "noTextEditing": "true",
+                        "isDirectLink": "false",
                         "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "desires", values); },
                         "save": function() {},
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },

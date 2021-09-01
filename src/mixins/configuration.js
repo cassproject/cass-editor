@@ -76,7 +76,7 @@ export const configuration = {
             scpo.permittedValues = [];
             scpo.permittedTypes = [];
             scpo.permittedConcepts = [];
-            if (scpo.range.equalsIgnoreCase('https://schema.cassproject.org/0.4/DirectLink')) {
+            if (scpo.range.equalsIgnoreCase('https://schema.cassproject.org/0.4/Competency')) {
                 if (ccpo.options && ccpo.options.length > 0) {
                     for (let pv of ccpo.options) {
                         let pvo = {};

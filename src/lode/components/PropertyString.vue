@@ -289,7 +289,7 @@ export default {
     },
     computed: {
         isDirectLink: function() {
-            if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("directlink") !== -1) {
+            if (this.profile[this.expandedProperty]["isDirectLink"] && (this.profile[this.expandedProperty]["isDirectLink"] === 'true' || this.profile[this.expandedProperty]["isDirectLink"] === true)) {
                 return true;
             } else {
                 return false;

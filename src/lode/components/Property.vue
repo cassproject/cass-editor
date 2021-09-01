@@ -461,11 +461,13 @@ export default {
                 this.optionsArray.push(option);
             }
         }
-        if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("directlink") !== -1 && this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
-            const options = this.profile[this.expandedProperty]['options'];
-            options.forEach((option) => {
-                this.limitedTypes.push(option);
-            });
+        if (this.profile[this.expandedProperty]["isDirectLink"] && (this.profile[this.expandedProperty]["isDirectLink"] === 'true' || this.profile[this.expandedProperty]["isDirectLink"] === true)) {
+            if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
+                const options = this.profile[this.expandedProperty]['options'];
+                options.forEach((option) => {
+                    this.limitedTypes.push(option);
+                });
+            }
         }
     },
     destroyed: function() {
@@ -983,7 +985,6 @@ export default {
                 if (type["@type"][0].toLowerCase().indexOf("url") !== -1) { return true; }
                 if (type["@type"][0].toLowerCase().indexOf("concept") !== -1) { return true; }
                 if (type["@type"][0].toLowerCase().indexOf("string") !== -1) { return true; }
-                if (type["@type"][0].toLowerCase().indexOf("directLink") !== -1) { return true; }
             }
             if (type["@id"] != null && type["@id"] !== undefined) { return true; }
             return false;
