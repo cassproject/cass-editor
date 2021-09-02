@@ -166,6 +166,7 @@ export default {
                 }
             }*/
             if (this.searchType === 'DirectLink') {
+                search += " AND @type:Competency";
                 if (this.typesPermittedInSearch && this.typesPermittedInSearch.length > 0) {
                     search += " AND ((dcterms\\:type:" + this.typesPermittedInSearch[0] + ")";
                     for (let i = 1; i < this.typesPermittedInSearch.length; i++) {

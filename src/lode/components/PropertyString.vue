@@ -163,7 +163,7 @@
             </div>
             <div
                 class="control is-narrow delete-property-button"
-                v-if="isConcept && !newProperty">
+                v-if="!newProperty">
                 <div
                     @click="showModal('remove')"
                     class="button is-small is-text has-text-danger is-pulled-right">
