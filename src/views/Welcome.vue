@@ -14,7 +14,7 @@
                         document types, and editing competency frameworks within the system.  You can navigate to the
                         <router-link
                             class="custom-link local"
-                            to="/frameworks">
+                            :to="{path: '/frameworks', query: queryParams}">
                             frameworks page
                         </router-link> and start creating
                         framework right away without following the below steps.
@@ -29,13 +29,13 @@
                             </h4>
                             <p class="is-size-6">
                                 Navigate to the <router-link
-                                    to="/login"
+                                    :to="{path: '/login', query: queryParams}"
                                     class="custom-link local"
                                     v-if="$store.getters['featuresEnabled/apiLoginEnabled']">
                                     login screen
                                 </router-link>
                                 <router-link
-                                    to="/legacyLogin"
+                                    :to="{path: '/legacyLogin', query: queryParams}"
                                     class="custom-link local"
                                     v-else>
                                     login screen
@@ -50,7 +50,7 @@
                             <p class="is-size-6">
                                 If your team members have also created their account, and you are logged in, you can navigate to
                                 the <router-link
-                                    to="/users"
+                                    :to="{path: '/users', query: queryParams}"
                                     class="custom-link local">
                                     user/groups page
                                 </router-link> and  configure a group with defined readers and authors.
@@ -63,7 +63,7 @@
                             <p class="is-size-6">
                                 The <router-link
                                     class="custom-link local"
-                                    to="/configuration">
+                                    :to="{path: '/configuration', query: queryParams}">
                                     configuration manager
                                 </router-link> allows you to have full control over the properties you can
                                 add to frameworks and competencies. This includes relationship types and resource types.
@@ -77,7 +77,7 @@
                             <p class="is-size-6">
                                 Navigate to the <router-link
                                     class="custom-link local"
-                                    to="/frameworks">
+                                    :to="{path: '/frameworks', query: queryParams}">
                                     framework page
                                 </router-link> and create a new framework. Give your framework a memorable name and save it.
                             </p>

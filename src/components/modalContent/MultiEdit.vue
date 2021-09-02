@@ -2,7 +2,7 @@
     <modal-template
         :active="true"
         type="info"
-        @close="closeModal">
+        @close="$store.commit('app/closeModal')">
         <template slot="modal-header">
             Edit Multiple Competencies
         </template>
@@ -122,6 +122,9 @@ export default {
                 if (this.addedPropertiesAndValues[0].property.length === 0 || this.addedPropertiesAndValues[0].value.length === 0) {
                     return true;
                 }
+            }
+            if (this.errorMessage && this.errorMessage.length > 0) {
+                return true;
             }
             return false;
         },

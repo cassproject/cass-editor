@@ -13,7 +13,7 @@
         <div class="section">
             <div class="buttons is-centered">
                 <router-link
-                    to="/frameworks"
+                    :to="{path: '/frameworks', query: queryParams}"
                     class="button is-primary is-centered">
                     return home
                 </router-link>
@@ -24,7 +24,12 @@
 
 <script>
 export default {
-    name: 'NotFound'
+    name: 'NotFound',
+    computed: {
+        queryParams() {
+            return this.$store.getters['editor/queryParams'];
+        }
+    }
 };
 </script>
 <style scoped>

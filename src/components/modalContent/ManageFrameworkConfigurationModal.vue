@@ -9,7 +9,7 @@
         <template slot="modal-body">
             <p>
                 Choose a configuration to apply to this framework below.  You can view and manage details about
-                your available configurations in <router-link to="/config">
+                your available configurations in <router-link :to="{path: '/config', query: queryParams}">
                     configuration management
                 </router-link>.
             </p>
@@ -43,6 +43,11 @@ export default {
         name: {
             type: String,
             default: ''
+        }
+    },
+    computed: {
+        queryParams() {
+            return this.$store.getters['editor/queryParams'];
         }
     }
 };

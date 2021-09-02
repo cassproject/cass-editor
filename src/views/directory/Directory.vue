@@ -184,7 +184,7 @@
                         <li>
                             <a
                                 href="#"
-                                @click="$router.push({name: 'frameworks'}); $store.commit('app/selectDirectory', null)">
+                                @click="$router.push({name: 'frameworks', query: queryParams}); $store.commit('app/selectDirectory', null)">
                                 CaSS
                             </a>
                         </li>

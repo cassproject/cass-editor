@@ -33,7 +33,7 @@
                     aria-label="breadcrumbs has-text-dark">
                     <ul>
                         <li>
-                            <router-link to="frameworks">
+                            <router-link :to="{path: '/frameworks', query: queryParams}">
                                 CaSS
                             </router-link>
                         </li>

@@ -226,7 +226,7 @@
             <p class="subtitle">
                 Note: Property options are determined by your <router-link
                     target="_blank"
-                    to="/configuration">
+                    :to="{path: '/configuration', query: queryParams}">
                     configuration settings.
                 </router-link> If a property is unavailable to you here, please refer to your
                 configuration settings or contact your administrator.
@@ -281,6 +281,9 @@ export default {
         }
     },
     computed: {
+        queryParams() {
+            return this.$store.getters['editor/queryParams'];
+        },
         showProperties() {
             let properties = this.allProperties;
             if (this.filterProperties === 'all') {
