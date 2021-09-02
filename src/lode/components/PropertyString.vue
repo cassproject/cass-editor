@@ -146,27 +146,28 @@
             class="label"
             v-if="options && !isDirectLink">options</label>
         <div
-            class="select is-small"
+            class="field is-grouped"
             v-if="options && !isDirectLink">
-            <select
-                v-model="computedText"
-                @blur="blur">
-                <option
-                    v-for="item in options"
-                    :key="item"
-                    :value="item.val">
-                    {{ item.display }}
-                </option>
-            </select>
             <div
-                v-if="isConcept"
-                class="control is-narrow">
+                class="select is-small">
+                <select
+                    v-model="computedText"
+                    @blur="blur">
+                    <option
+                        v-for="item in options"
+                        :key="item"
+                        :value="item.val">
+                        {{ item.display }}
+                    </option>
+                </select>
+            </div>
+            <div
+                class="control is-narrow delete-property-button"
+                v-if="isConcept && !newProperty">
                 <div
                     @click="showModal('remove')"
-                    class="button is-text has-text-danger">
-                    <span class="icon">
-                        <i class="fa fa-times" />
-                    </span>
+                    class="button is-small is-text has-text-danger is-pulled-right">
+                    <i class="fa fa-times" />
                 </div>
             </div>
         </div>
@@ -188,7 +189,6 @@
             <div
                 class="control is-narrow delete-property-button"
                 v-if="!addSingle && view !== 'single'">
-                <!--<label><br></label>-->
                 <div
                     @click="showModal('remove')"
                     class="button is-small is-text has-text-danger is-pulled-right">
