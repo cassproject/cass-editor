@@ -231,6 +231,8 @@ export default {
         searchTypeToPassToList: function() {
             if (this.searchType === "Competency" && this.searchFrameworksInCompetencySearch) {
                 return "Framework";
+            } else if (this.searchType === "DirectLink") {
+                return "Competency";
             } else {
                 return this.searchType;
             }
@@ -292,7 +294,7 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedIds, competency.shortId());
             }
-            if (!this.copyOrLink || this.searchType === "Level" | this.searchType === "DirectLink") {
+            if (!this.copyOrLink || this.searchType === "Level" || this.searchType === "DirectLink") {
                 this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
             }
         },

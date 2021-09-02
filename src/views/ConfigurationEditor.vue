@@ -319,7 +319,7 @@ export default {
                     prop.priority,
                     prop.required,
                     false,
-                    false,
+                    prop.noTextEditing,
                     prop.isDirectLink,
                     prop.permittedValues,
                     prop.permittedConcepts,

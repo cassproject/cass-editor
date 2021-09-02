@@ -3107,6 +3107,7 @@ export default {
         },
         initCustomPropertyDataHoldersAsExistingProperty(propertyParent, prop) {
             this.reInitCustomPropertyDataHolders();
+            this.search = '';
             this.customPropertyParent = propertyParent;
             this.customPropertyIsNew = false;
             this.customPropertyContext = prop.context;
@@ -3128,7 +3129,6 @@ export default {
             else this.customPropertyTypesLimited = false;
             if (this.customPropertyPermittedConcepts.length > 0) {
                 this.customPropertyConceptsLimited = true;
-                this.search = this.customPropertyPermittedConcepts[0].display;
             } else this.customPropertyConceptsLimited = false;
         },
         manageCustomFrameworkProperty: function(propertyIdx) {

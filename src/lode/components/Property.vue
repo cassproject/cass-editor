@@ -188,6 +188,107 @@ TO DO MAYBE: Separate out property by editing or not.
                         </div>
                     </div>
                 </div>
+                <!-- concept taxonomy -->
+                <div
+                    v-else-if="range && range.length > 0 && range[0].toLowerCase().indexOf('concept') !== -1">
+                    <div
+                        v-if="editingProperty && limitedConcepts.length > 0">
+                        <PropertyString
+                            :index="index"
+                            :expandedProperty="expandedProperty"
+                            :expandedThing="expandedThing"
+                            :expandedValue="expandedValue"
+                            :langString="langString"
+                            :range="range"
+                            :view="view"
+                            :options="limitedConcepts"
+                            :profile="profile"
+                            @remove="remove(item)" />
+                    </div>
+                    <div
+                        v-else>
+                        <div class="field is-grouped">
+                            <span
+                                class="tag is-size-7 is-light"
+                                v-if="!editingProperty">{{ displayLabel }}</span>
+                            <p class="control">
+                                <span
+                                    class="icon"
+                                    title="Copy URL to the clipboard."
+                                    v-clipboard="getURL(item)"
+                                    v-clipboard:success="clipboardSuccess"
+                                    v-clipboard:error="clipboardError">
+                                    <i
+                                        v-if="showClipboardSuccessMessage"
+                                        class="fa fa-check has-text-success" />
+                                    <i
+                                        v-else
+                                        class="fa fa-copy has-text-primary"
+                                        name="copyURL"
+                                        :expandedProperty="expandedProperty"
+                                        :expandedValue="expandedValue" />
+                                </span>
+                            </p>
+                            <a
+                                :title="item['@id'] || item['@value']"
+                                class="control is-expanded is-id">
+                                {{ item['@id'] || item['@value'] }}
+                            </a>
+                            <div
+                                class="control"
+                                v-if="editingProperty">
+                                <div
+                                    :disabled="shortType === 'id'"
+                                    @click="showModal('remove', index)"
+                                    class="button disabled is-text has-text-danger">
+                                    <i class="fa fa-times" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- competency direct link with options limited by type -->
+                <div
+                    v-else-if="profile && profile[expandedProperty] && profile[expandedProperty]['isDirectLink'] && (profile[expandedProperty]['isDirectLink'] === 'true' || profile[expandedProperty]['isDirectLink'] === true)">
+                    <div class="field is-grouped">
+                        <span
+                            class="tag is-size-7 is-light"
+                            v-if="!editingProperty">{{ displayLabel }}</span>
+                        <p class="control">
+                            <span
+                                class="icon"
+                                title="Copy URL to the clipboard."
+                                v-clipboard="getURL(item)"
+                                v-clipboard:success="clipboardSuccess"
+                                v-clipboard:error="clipboardError">
+                                <i
+                                    v-if="showClipboardSuccessMessage"
+                                    class="fa fa-check has-text-success" />
+                                <i
+                                    v-else
+                                    class="fa fa-copy has-text-primary"
+                                    name="copyURL"
+                                    :expandedProperty="expandedProperty"
+                                    :expandedValue="expandedValue" />
+                            </span>
+                        </p>
+                        <a
+                            :title="item['@id'] || item['@value']"
+                            class="control is-expanded is-id">
+                            {{ item['@id'] || item['@value'] }}
+                        </a>
+                        <div
+                            class="control"
+                            v-if="editingProperty">
+                            <div
+                                :disabled="shortType === 'id'"
+                                @click="showModal('remove', index)"
+                                class="button disabled is-text has-text-danger">
+                                <i class="fa fa-times" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- propertystring components -->
                 <div
                     class="property"
@@ -201,34 +302,6 @@ TO DO MAYBE: Separate out property by editing or not.
                         :range="range"
                         :view="view"
                         :options="(profile && profile[expandedProperty] && profile[expandedProperty]['options']) ? profile[expandedProperty]['options'] : null"
-                        :profile="profile"
-                        @remove="remove(item)" />
-                </div>
-                <!-- concept limited by taxonomy -->
-                <div v-else-if="editingProperty && !checkedOptions && (limitedConcepts.length > 0)">
-                    <PropertyString
-                        :index="index"
-                        :expandedProperty="expandedProperty"
-                        :expandedThing="expandedThing"
-                        :expandedValue="expandedValue"
-                        :langString="langString"
-                        :range="range"
-                        :view="view"
-                        :options="limitedConcepts"
-                        :profile="profile"
-                        @remove="remove(item)" />
-                </div>
-                <!-- competency direct link with options limited by type -->
-                <div v-else-if="editingProperty && !checkedOptions && (limitedTypes.length > 0)">
-                    <PropertyString
-                        :index="index"
-                        :expandedProperty="expandedProperty"
-                        :expandedThing="expandedThing"
-                        :expandedValue="expandedValue"
-                        :langString="langString"
-                        :range="range"
-                        :view="view"
-                        :options="limitedTypes"
                         :profile="profile"
                         @remove="remove(item)" />
                 </div>
@@ -461,8 +534,8 @@ export default {
                 this.optionsArray.push(option);
             }
         }
-        if (this.profile[this.expandedProperty]["isDirectLink"] && (this.profile[this.expandedProperty]["isDirectLink"] === 'true' || this.profile[this.expandedProperty]["isDirectLink"] === true)) {
-            if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
+        if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["isDirectLink"] && (this.profile[this.expandedProperty]["isDirectLink"] === 'true' || this.profile[this.expandedProperty]["isDirectLink"] === true)) {
+            if (this.profile[this.expandedProperty]['options']) {
                 const options = this.profile[this.expandedProperty]['options'];
                 options.forEach((option) => {
                     this.limitedTypes.push(option);

@@ -145,7 +145,7 @@
         <label
             class="label"
             v-if="options && !isDirectLink">options</label>
-        <span
+        <div
             class="select is-small"
             v-if="options && !isDirectLink">
             <select
@@ -158,10 +158,21 @@
                     {{ item.display }}
                 </option>
             </select>
-        </span>
+            <div
+                v-if="isConcept"
+                class="control is-narrow">
+                <div
+                    @click="showModal('remove')"
+                    class="button is-text has-text-danger">
+                    <span class="icon">
+                        <i class="fa fa-times" />
+                    </span>
+                </div>
+            </div>
+        </div>
         <div
             class="field is-grouped"
-            v-if="!isConcept && !showLanguage && !inLanguageField">
+            v-if="!options && !showLanguage && !inLanguageField">
             <div class="control is-expanded">
                 <label
                     v-if="isResource"

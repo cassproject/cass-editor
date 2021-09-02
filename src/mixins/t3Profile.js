@@ -72,7 +72,6 @@ export default {
                         [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/skos/Concept"}],
                     "noTextEditing": "true",
-                    "isDirectLink": "false",
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Context"}]
@@ -92,7 +91,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rubric Cell"}],
                     "valuesIndexed": function() { return me.levels; },
                     "noTextEditing": "true",
-                    "isDirectLink": "false",
                     "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
                     "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
                     "save": function() { me.saveFramework(); },
@@ -127,7 +125,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrows"}],
                     "valuesIndexed": function() { return me.relations["narrows"]; },
                     "noTextEditing": "true",
-                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "narrows", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "narrows", target); }
@@ -139,7 +136,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broadens"}],
                     "valuesIndexed": function() { return me.relations["broadens"]; },
                     "noTextEditing": "true",
-                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "broadens", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "broadens", target); }
@@ -151,7 +147,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Equivalent To"}],
                     "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
                     "noTextEditing": "true",
-                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEquivalentTo", target); }
@@ -161,7 +156,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Similar To"}],
                     "valuesIndexed": function() { return me.relations["isSimilarTo"]; },
                     "noTextEditing": "true",
-                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isSimilarTo", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isSimilarTo", target); }
@@ -171,7 +165,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Partially Same As"}],
                     "valuesIndexed": function() { return me.relations["isPartiallySameAs"]; },
                     "noTextEditing": "true",
-                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isPartiallySameAs", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isPartiallySameAs", target); }
@@ -183,7 +176,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Related To"}],
                     "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
                     "noTextEditing": "true",
-                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isRelatedTo", target); }
@@ -193,7 +185,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Enables"}],
                     "valuesIndexed": function() { return me.relations["enables"]; },
                     "noTextEditing": "true",
-                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "enables", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "enables", target); }
@@ -205,7 +196,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Enabled By"}],
                     "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
                     "noTextEditing": "true",
-                    "isDirectLink": "false",
                     "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
                     "save": function() {},
                     "remove": function(source, target) { me.removeRelationFromFramework(source, "isEnabledBy", target); }
