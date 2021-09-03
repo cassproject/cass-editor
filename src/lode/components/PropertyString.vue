@@ -173,7 +173,7 @@
         </div>
         <div
             class="field is-grouped"
-            v-if="!options && !showLanguage && !inLanguageField">
+            v-if="(!options || isDirectLink) && !showLanguage && !inLanguageField">
             <div class="control is-expanded">
                 <label
                     v-if="isResource"

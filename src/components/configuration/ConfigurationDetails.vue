@@ -972,6 +972,10 @@
                             </div>
                         </div>
                     </div>
+                    <div
+                        v-if="config.compEnforcedTypes.length <= 0 && customPropertyTypesLimited">
+                        No types available to choose from. Add restricted competency types in the configuration.
+                    </div>
                 </div>
                 <br>
                 <div
