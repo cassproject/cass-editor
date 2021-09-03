@@ -933,7 +933,7 @@
                     </div>
                     <div
                         class="table-container"
-                        v-if="config.compEnforcedTypes.length > 0 && customPropertyTypesLimited">
+                        v-if="(customPropertyAvailableTypes.length > 0) && customPropertyTypesLimited">
                         <div
                             v-if="customPropertyPermittedTypes.length > 0"
                             class="tags are-medium">
@@ -973,7 +973,7 @@
                         </div>
                     </div>
                     <div
-                        v-if="config.compEnforcedTypes.length <= 0 && customPropertyTypesLimited">
+                        v-if="(customPropertyAvailableTypes.length <= 0) && customPropertyTypesLimited">
                         No types available to choose from. Add restricted competency types in the configuration.
                     </div>
                 </div>
@@ -3362,8 +3362,9 @@ export default {
             return !(this.cassRelations.includes(relType) || this.asnRelations.includes(relType) || this.gemqRelations.includes(relType));
         },
         filterTypes: function() {
+            this.filteredTypes = [];
             this.isOpenAutocomplete = true;
-            this.filteredTypes = this.config.compEnforcedTypes.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+            this.filteredTypes = this.customPropertyAvailableTypes.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
         },
         selectType: function(type) {
             // Check for duplicates
@@ -3423,6 +3424,14 @@ export default {
             },
             set(val) {
                 this.$store.commit('configuration/availableConcepts', val);
+            }
+        },
+        customPropertyAvailableTypes: {
+            get() {
+                return this.$store.getters['configuration/availableTypes'];
+            },
+            set(val) {
+                this.$store.commit('configuration/availableTypes', val);
             }
         },
         isSetInstanceDisabled() {

@@ -58,6 +58,9 @@ const mutations = {
     },
     setAvailableConcepts(state, val) {
         state.availableConcepts = val;
+    },
+    setAvailableTypes(state, val) {
+        state.availableTypes = val;
     }
 };
 const actions = {
@@ -129,6 +132,9 @@ const getters = {
     },
     availableConcepts(state) {
         return state.availableConcepts;
+    },
+    availableTypes(state) {
+        return state.availableTypes;
     }
 };
 

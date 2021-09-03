@@ -277,6 +277,35 @@ export const configuration = {
             this.buildSimpleConfigDefaultPermissionData(simpleConfigObj, cco);
             return simpleConfigObj;
         },
+        generateCustomPropertyAvailableConcepts() {
+            repo.searchWithParams('@type:ConceptScheme',
+                {size: 10000},
+                null,
+                null,
+                null,
+                null
+            ).then((results) => {
+                let concepts = [];
+                for (let concept = 0; concept < results.length; concept++) {
+                    concepts.push({
+                        display: EcRemoteLinkedData.getDisplayStringFrom(results[concept]["dcterms:title"]),
+                        value: results[concept].id
+                    });
+                }
+                this.$store.commit('configuration/setAvailableConcepts', concepts);
+            }).catch((err) => {
+                appLog("failed to retrieve concepts: " + err);
+            });
+        },
+        generateCustomPropertyAvailableTypes() {
+            let types = [];
+            this.configList.forEach((config) => {
+                if (config.compEnforceTypes) {
+                    types.push(...config.compEnforcedTypes);
+                }
+            });
+            this.$store.commit('configuration/setAvailableTypes', types);
+        },
         searchRepositoryForConfigsSuccess(ecRemoteLda) {
             appLog("Config search success: ");
             appLog(ecRemoteLda);
@@ -287,6 +316,8 @@ export const configuration = {
                 this.configList.push(this.generateSimpleConfigObject(t));
             }
             this.sortConfigList();
+            this.generateCustomPropertyAvailableConcepts();
+            this.generateCustomPropertyAvailableTypes();
             this.configBusy = false;
         },
         searchRepositoryForConfigsFailure(msg) {

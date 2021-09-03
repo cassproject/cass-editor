@@ -177,31 +177,7 @@ export default {
         ConfigurationSetSuccess,
         ConfigurationList
     },
-    mounted() {
-        this.generateCustomPropertyAvailableConcepts();
-    },
     methods: {
-        generateCustomPropertyAvailableConcepts() {
-            appLog("generate list of available concepts");
-            repo.searchWithParams('@type:ConceptScheme',
-                {size: 10000},
-                null,
-                null,
-                null,
-                null
-            ).then((results) => {
-                let concepts = [];
-                for (let concept = 0; concept < results.length; concept++) {
-                    concepts.push({
-                        display: EcRemoteLinkedData.getDisplayStringFrom(results[concept]["dcterms:title"]),
-                        value: results[concept].id
-                    });
-                }
-                this.$store.commit('configuration/setAvailableConcepts', concepts);
-            }).catch((err) => {
-                appLog("failed to retrieve concepts: " + err);
-            });
-        },
         handleDeleteConfigurationSuccess() {
             appLog("Config delete success");
             this.configToDelete = {};
