@@ -3146,9 +3146,9 @@ export default {
                 }
             }
         },
-        addGroupsToPermissionEntityList() {
+        async addGroupsToPermissionEntityList() {
             for (let g of this.groupList) {
-                let gEcPk = this.getOrganizationEcPk(g);
+                let gEcPk = await this.getOrganizationEcPk(g);
                 if (gEcPk) {
                     let pe = {};
                     pe.pk = gEcPk.toPem();
@@ -3173,10 +3173,10 @@ export default {
                 else return 0;
             });
         },
-        fetchGroupListForPermissionEntitySuccess(ecoa) {
+        async fetchGroupListForPermissionEntitySuccess(ecoa) {
             this.groupList = ecoa;
             this.sortGroupList();
-            this.addGroupsToPermissionEntityList();
+            await this.addGroupsToPermissionEntityList();
             this.configDetailsBusy = false;
         },
         fetchGroupListForPermissionEntityFailure(msg) {

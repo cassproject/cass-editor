@@ -32,9 +32,9 @@ export const cassUtil = {
                 },
                 paramObj);
         },
-        getOrganizationEcPk(orgObj) {
+        async getOrganizationEcPk(orgObj) {
             try {
-                return orgObj.getCurrentOrgKey().toPk();
+                return (await orgObj.getCurrentOrgKey()).toPk();
                 // let orgEvPpk = new EcEncryptedValue();
                 // orgEvPpk.copyFrom(orgObj[this.GROUP_PPK_KEY]);
                 // let orgPpk = EcPpk.fromPem(orgEvPpk.decryptIntoString());

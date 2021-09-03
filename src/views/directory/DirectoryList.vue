@@ -464,10 +464,10 @@ export default {
                                         search += " OR ";
                                     }
                                 }
-                                EcOrganization.search(window.repo, 'name:' + me.searchTerm, function(success) {
+                                EcOrganization.search(window.repo, 'name:' + me.searchTerm, async function(success) {
                                     appLog(success);
                                     for (var i = 0; i < success.length; i++) {
-                                        search += "\\*owner:\"" + me.getOrganizationEcPk(success[i]).toPem() + "\"";
+                                        search += "\\*owner:\"" + (await me.getOrganizationEcPk(success[i])).toPem() + "\"";
                                         termAdded = true;
                                         if (i < success.length - 1) {
                                             search += " OR ";
