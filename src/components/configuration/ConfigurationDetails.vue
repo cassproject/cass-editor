@@ -562,6 +562,9 @@
                                         <option value="https://schema.cassproject.org/0.4/skos/Concept">
                                             SKOS Concept
                                         </option>
+                                        <option value="https://schema.cassproject.org/0.4/Competency">
+                                            Competency
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -893,6 +896,85 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+                <div
+                    class="box py-4 px-4"
+                    v-if="shouldAllowCustomPropertyPermittedTypes">
+                    <div class="field">
+                        <div class="columns">
+                            <div class="column">
+                                <label class="label">Limit by type </label>
+                            </div>
+                            <div class="column is-narrow">
+                                <div class="control">
+                                    <input
+                                        :disabled="readOnly"
+                                        v-model="customPropertyTypesLimited"
+                                        id="customPropertyTypesLimited"
+                                        type="checkbox"
+                                        name="customPropertyTypesLimited"
+                                        class="switch"
+                                        checked="checked">
+                                    <label for="customPropertyTypesLimited" />
+                                </div>
+                            </div>
+                        </div>
+                        <p
+                            v-if="!customPropertyTypesLimited && !readOnly"
+                            class="description">
+                            Limit by type disabled, any type of competency allowed. To limit, turn on limit by type.
+                        </p>
+                        <p
+                            v-if="customPropertyTypesLimited && !readOnly"
+                            class="description">
+                            Competencies limited to only the types listed below. To allow any, turn off limit by type.
+                        </p>
+                    </div>
+                    <div
+                        class="table-container"
+                        v-if="config.compEnforcedTypes.length > 0 && customPropertyTypesLimited">
+                        <div
+                            v-if="customPropertyPermittedTypes.length > 0"
+                            class="tags are-medium">
+                            <span
+                                v-for="(type, index) in customPropertyPermittedTypes"
+                                :key="index"
+                                class="tag is-light">
+                                <span :title="type.value">{{ type.display }}</span>
+                                <button
+                                    @click="removeType(index)"
+                                    title="Remove"
+                                    class="delete is-small" />
+                            </span>
+                        </div>
+                        <div class="field is-grouped">
+                            <div class="control is-expanded share auto-complete__control">
+                                <input
+                                    @blur="closeAutoComplete"
+                                    type="search"
+                                    placeholder="search"
+                                    class="input share is-fullwidth"
+                                    v-model="search"
+                                    @input="filterTypes">
+                                <div
+                                    v-show="isOpenAutocomplete"
+                                    class="auto">
+                                    <ul>
+                                        <li
+                                            v-for="(result, i) in filteredTypes"
+                                            :key="i"
+                                            @mousedown="selectType(result)">
+                                            {{ result.display }}
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div
+                        v-if="config.compEnforcedTypes.length <= 0 && customPropertyTypesLimited">
+                        No types available to choose from. Add restricted competency types in the configuration.
                     </div>
                 </div>
                 <br>
@@ -2419,6 +2501,7 @@ export default {
             defaultBrowserConfigId: '',
             showDefaultCommenters: false,
             customPropertyValuesLimited: false,
+            customPropertyTypesLimited: false,
             customPropertyConceptsLimited: false,
             showManageRelationshipsModal: false,
             tab: 'general',
@@ -2457,6 +2540,7 @@ export default {
             customPropertyAllowMultiples: false,
             customPropertyOnePerLanguage: true,
             customPropertyPermittedValues: [],
+            customPropertyPermittedTypes: [],
             customPropertyPermittedConcepts: [],
             customPropertyInvalid: false,
             customPropertyPropertyNameExists: false,
@@ -2490,6 +2574,7 @@ export default {
             asnRelations: ['majorRelated', 'minorRelated'],
             gemqRelations: ['hasChild', 'isChildOf'],
             filteredConcepts: [],
+            filteredTypes: [],
             search: "",
             isOpenAutocomplete: false,
             conceptToAdd: null
@@ -2859,6 +2944,13 @@ export default {
             newProp.onePerLanguage = this.customPropertyOnePerLanguage;
             if (this.shouldAllowCustomPropertyPermittedValues) newProp.permittedValues = this.customPropertyPermittedValues;
             else newProp.permittedValues = [];
+            if (this.shouldAllowCustomPropertyPermittedTypes) {
+                newProp.isDirectLink = true;
+                newProp.permittedTypes = this.customPropertyPermittedTypes;
+            } else {
+                newProp.isDirectLink = false;
+                newProp.permittedTypes = [];
+            }
             if (this.shouldAllowCustomPropertyPermittedConcepts) newProp.permittedConcepts = this.customPropertyPermittedConcepts;
             else newProp.permittedConcepts = [];
             if (this.customPropertyParent.equals('framework')) this.config.fwkCustomProperties.push(newProp);
@@ -2877,6 +2969,13 @@ export default {
                 propToUpdate.onePerLanguage = this.customPropertyOnePerLanguage;
                 if (this.shouldAllowCustomPropertyPermittedValues) propToUpdate.permittedValues = this.customPropertyPermittedValues;
                 else propToUpdate.permittedValues = [];
+                if (this.shouldAllowCustomPropertyPermittedTypes) {
+                    propToUpdate.permittedTypes = this.customPropertyPermittedTypes;
+                    propToUpdate.isDirectLink = true;
+                } else {
+                    propToUpdate.permittedTypes = [];
+                    propToUpdate.isDirectLink = false;
+                }
                 if (this.shouldAllowCustomPropertyPermittedConcepts) propToUpdate.permittedConcepts = this.customPropertyPermittedConcepts;
                 else propToUpdate.permittedConcepts = [];
             }
@@ -2905,6 +3004,10 @@ export default {
             this.customPropertyPermittedValues =
                 this.customPropertyPermittedValues.slice(0, idx).concat(this.customPropertyPermittedValues.slice(idx + 1, this.customPropertyPermittedValues.length));
         },
+        deleteCustomPropertyPermittedType(idx) {
+            this.customPropertyPermittedTypes =
+                this.customPropertyPermittedTypes.slice(0, idx).concat(this.customPropertyPermittedTypes.slice(idx + 1, this.customPropertyPermittedTypes.length));
+        },
         deleteCustomPropertyPermittedConcept(idx) {
             this.customPropertyPermittedConcepts =
                 this.customPropertyPermittedConcepts.slice(0, idx).concat(this.customPropertyPermittedConcepts.slice(idx + 1, this.customPropertyPermittedConcepts.length));
@@ -2914,6 +3017,12 @@ export default {
             pv.display = '';
             pv.value = '';
             this.customPropertyPermittedValues.push(pv);
+        },
+        addCustomPropertyPermittedType() {
+            let pv = {};
+            pv.display = '';
+            pv.value = '';
+            this.customPropertyPermittedTypes.push(pv);
         },
         simplifyCustomPropertyName() {
             this.customPropertyPropertyName = this.customPropertyPropertyName.replace(/[^0-9a-z]/gi, '');
@@ -2932,6 +3041,7 @@ export default {
             this.customPropertyAllowMultiples = false;
             this.customPropertyOnePerLanguage = true;
             this.customPropertyPermittedValues = [];
+            this.customPropertyPermittedTypes = [];
             this.customPropertyPermittedConcepts = [];
             this.customPropertyInvalid = false;
             this.customPropertyPropertyNameExists = false;
@@ -2975,6 +3085,18 @@ export default {
             }
             return permittedValuesCopy;
         },
+        generateCopyOfCustomPropertyPermittedTypes(prop) {
+            let permittedTypesCopy = [];
+            if (prop.permittedTypes && prop.permittedTypes.length > 0) {
+                for (let pv of prop.permittedTypes) {
+                    let cpv = {};
+                    cpv.display = pv.display;
+                    cpv.value = pv.value;
+                    permittedTypesCopy.push(cpv);
+                }
+            }
+            return permittedTypesCopy;
+        },
         generateCopyOfCustomPropertyPermittedConcepts(prop) {
             let permittedConceptsCopy = [];
             if (prop.permittedConcepts && prop.permittedConcepts.length > 0) {
@@ -2989,6 +3111,7 @@ export default {
         },
         initCustomPropertyDataHoldersAsExistingProperty(propertyParent, prop) {
             this.reInitCustomPropertyDataHolders();
+            this.search = '';
             this.customPropertyParent = propertyParent;
             this.customPropertyIsNew = false;
             this.customPropertyContext = prop.context;
@@ -3005,9 +3128,11 @@ export default {
             this.customPropertyPermittedConcepts = this.generateCopyOfCustomPropertyPermittedConcepts(prop);
             if (this.customPropertyPermittedValues.length > 0) this.customPropertyValuesLimited = true;
             else this.customPropertyValuesLimited = false;
+            this.customPropertyPermittedTypes = this.generateCopyOfCustomPropertyPermittedTypes(prop);
+            if (this.customPropertyPermittedTypes.length > 0) this.customPropertyValuesTypes = true;
+            else this.customPropertyTypesLimited = false;
             if (this.customPropertyPermittedConcepts.length > 0) {
                 this.customPropertyConceptsLimited = true;
-                this.search = this.customPropertyPermittedConcepts[0].display;
             } else this.customPropertyConceptsLimited = false;
         },
         manageCustomFrameworkProperty: function(propertyIdx) {
@@ -3236,6 +3361,18 @@ export default {
         isOtherRelation: function(relType) {
             return !(this.cassRelations.includes(relType) || this.asnRelations.includes(relType) || this.gemqRelations.includes(relType));
         },
+        filterTypes: function() {
+            this.isOpenAutocomplete = true;
+            this.filteredTypes = this.config.compEnforcedTypes.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+        },
+        selectType: function(type) {
+            // Check for duplicates
+            if (!this.customPropertyPermittedTypes.some(e => e.value === type.value)) {
+                this.customPropertyPermittedTypes.push(type);
+            }
+            this.search = '';
+            this.isOpenAutocomplete = false;
+        },
         filterConcepts: function() {
             this.isOpenAutocomplete = true;
             this.filteredConcepts = this.customPropertyAvailableConcepts.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
@@ -3247,6 +3384,9 @@ export default {
             }
             this.search = '';
             this.isOpenAutocomplete = false;
+        },
+        removeType: function(index) {
+            this.customPropertyPermittedTypes.splice(index, 1);
         },
         removeConcept: function(index) {
             this.customPropertyPermittedConcepts.splice(index, 1);
@@ -3318,10 +3458,15 @@ export default {
             else if (this.customPropertyRange.equals('http://www.w3.org/2001/XMLSchema#dateTime')) return 'Date-Time';
             else if (this.customPropertyRange.equals('http://purl.org/dc/terms/date')) return 'Date';
             else if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/skos/Concept')) return 'SKOS Concept';
+            else if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/Competency')) return 'Competency';
             else return 'Unknown';
         },
         shouldAllowCustomPropertyPermittedValues: function() {
             if (this.customPropertyRange.equals('http://schema.org/Text')) return true;
+            else return false;
+        },
+        shouldAllowCustomPropertyPermittedTypes: function() {
+            if (this.customPropertyRange.equals('https://schema.cassproject.org/0.4/Competency')) return true;
             else return false;
         },
         shouldAllowCustomPropertyPermittedConcepts: function() {
@@ -3400,7 +3545,6 @@ export default {
         top: 0;
         position: sticky;
     }
-
     .auto {
         ul {
             // z-index: 10;

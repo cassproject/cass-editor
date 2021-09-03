@@ -144,24 +144,36 @@
             @blur="blur">
         <label
             class="label"
-            v-if="options">options</label>
-        <span
-            class="select is-small"
-            v-if="options">
-            <select
-                v-model="computedText"
-                @blur="blur">
-                <option
-                    v-for="item in options"
-                    :key="item"
-                    :value="item.val">
-                    {{ item.display }}
-                </option>
-            </select>
-        </span>
+            v-if="options && !isDirectLink">options</label>
         <div
             class="field is-grouped"
-            v-if="!isConcept && !showLanguage && !inLanguageField">
+            v-if="options && !isDirectLink">
+            <div
+                class="select is-small">
+                <select
+                    v-model="computedText"
+                    @blur="blur">
+                    <option
+                        v-for="item in options"
+                        :key="item"
+                        :value="item.val">
+                        {{ item.display }}
+                    </option>
+                </select>
+            </div>
+            <div
+                class="control is-narrow delete-property-button"
+                v-if="!newProperty">
+                <div
+                    @click="showModal('remove')"
+                    class="button is-small is-text has-text-danger is-pulled-right">
+                    <i class="fa fa-times" />
+                </div>
+            </div>
+        </div>
+        <div
+            class="field is-grouped"
+            v-if="(!options || isDirectLink) && !showLanguage && !inLanguageField">
             <div class="control is-expanded">
                 <label
                     v-if="isResource"
@@ -177,7 +189,6 @@
             <div
                 class="control is-narrow delete-property-button"
                 v-if="!addSingle && view !== 'single'">
-                <!--<label><br></label>-->
                 <div
                     @click="showModal('remove')"
                     class="button is-small is-text has-text-danger is-pulled-right">
@@ -288,6 +299,13 @@ export default {
         }
     },
     computed: {
+        isDirectLink: function() {
+            if (this.profile[this.expandedProperty]["isDirectLink"] && (this.profile[this.expandedProperty]["isDirectLink"] === 'true' || this.profile[this.expandedProperty]["isDirectLink"] === true)) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         isConcept: function() {
             if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("concept") !== -1) {
                 return true;

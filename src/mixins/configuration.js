@@ -74,8 +74,18 @@ export const configuration = {
             else scpo.onePerLanguage = false;
             scpo.required = this.getBooleanValue(ccpo["isRequired"]);
             scpo.permittedValues = [];
+            scpo.permittedTypes = [];
             scpo.permittedConcepts = [];
-            if (scpo.range.equalsIgnoreCase('https://schema.cassproject.org/0.4/skos/Concept')) {
+            if (scpo.range.equalsIgnoreCase('https://schema.cassproject.org/0.4/Competency')) {
+                if (ccpo.options && ccpo.options.length > 0) {
+                    for (let pv of ccpo.options) {
+                        let pvo = {};
+                        pvo.display = pv.display;
+                        pvo.value = pv.val;
+                        scpo.permittedTypes.push(pvo);
+                    }
+                }
+            } else if (scpo.range.equalsIgnoreCase('https://schema.cassproject.org/0.4/skos/Concept')) {
                 if (ccpo.options && ccpo.options.length > 0) {
                     for (let pv of ccpo.options) {
                         let pvo = {};

@@ -342,8 +342,8 @@ export default {
                 var compKeys = EcObject.keys(profile);
                 for (var i = 0; i < compKeys.length; i++) {
                     let key = compKeys[i];
-                    if (profile[key] && profile[key]["http://schema.org/rangeIncludes"] && profile[key]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/skos/Concept") {
-                        profile[key]["noTextEditing"] = 'true';
+                    if (profile[key] && profile[key]["http://schema.org/rangeIncludes"] && profile[key]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/Competency") {
+                        profile[key]["isDirectLink"] = 'true';
                     }
                 }
                 if (this.config.levelsConfig) {
@@ -389,6 +389,7 @@ export default {
                         profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Competency"}];
                         profile[key]["valuesIndexed"] = function() { return me.relations[key]; };
                         profile[key]["noTextEditing"] = 'true';
+                        profile[key]["isDirectLink"] = 'false';
                         profile[key]["remove"] = function(source, target) { me.removeRelationFromFramework(source, key, target); };
                         profile[key]["add"] = function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, key, values); };
                         profile[key]["save"] = function() {};
