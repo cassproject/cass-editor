@@ -283,7 +283,7 @@
                             <router-link
                                 v-if="view === 'importLight' && (importType !== 'text' || (importType === 'text' && importStatus === 'Competency detected'))"
                                 class="button is-small is-primary is-outlined is -pulled-right"
-                                to="/frameworks">
+                                :to="{path: '/frameworks', query: queryParams}">
                                 <span>
                                     Done
                                 </span>
@@ -616,7 +616,7 @@ export default {
                     this.$store.commit('editor/paste', true);
                 }
             }
-            if (e.key.indexOf("Arrow") !== -1 && !e.shiftKey) {
+            if (e.key.indexOf("Arrow") !== -1 && !e.shiftKey && !e.ctrlKey) {
                 if (e.key === "ArrowLeft") {
                     this.expanded = false;
                 } else if (e.key === "ArrowRight") {

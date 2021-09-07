@@ -648,10 +648,10 @@ export default {
             }, function(failure) {
                 appError(failure);
             }, paramObj);
-            EcOrganization.search(window.repo, '', function(success) {
+            EcOrganization.search(window.repo, '', async function(success) {
                 appLog(success);
                 for (var i = 0; i < success.length; i++) {
-                    let pk = me.getOrganizationEcPk(success[i]);
+                    let pk = await me.getOrganizationEcPk(success[i]);
                     if (pk) {
                         let org = {id: success[i].shortId(), name: success[i].name, pk: pk};
                         me.possibleGroupsAndUsers.push(org);

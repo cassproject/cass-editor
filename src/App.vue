@@ -136,7 +136,7 @@ export default {
                     if ((me.queryParams.ceasnDataFields === "true" || me.queryParams.frameworksPage === "true") && (!me.queryParams.action && !me.queryParams.frameworkId)) {
                         if (me.$store.getters['editor/conceptMode'] === true) {
                             me.$router.push({name: "concepts"});
-                        } else {
+                        } else if (me.$route.name !== 'frameworks' && me.$route.name !== 'concepts') {
                             me.$router.push({name: "frameworks"});
                         }
                     }

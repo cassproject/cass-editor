@@ -168,7 +168,7 @@
                         <!--  home -->
                         <router-link
                             class="button is-primary is-outlined is -pulled-right"
-                            to="/concepts">
+                            :to="{path: '/concepts', query: queryParams}">
                             <span>
                                 Done
                             </span>

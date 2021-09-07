@@ -23,7 +23,7 @@
                     ref="text"
                     type="search"
                     v-model="searchTerm"
-                    :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
+                    :placeholder="'Search for ' + ((searchType === 'Competency' || 'DirectLink') ? 'competencie' : searchType)+ 's...'"
                     @keyup.enter="updateSearchTerm(searchTerm)">
                 <span
                     v-if="searchTerm === ''"
@@ -65,7 +65,6 @@
                     class="field"
                     v-if="loggedIn">
                     <input
-                        :disabled="ownedByMe"
                         v-model="basicFilter"
                         class="is-checkradio"
                         value="ownedByMe"

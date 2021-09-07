@@ -419,7 +419,7 @@ export default {
             collapse: true,
             controlOnStart: false,
             checked: false,
-            childrenExpanded: true,
+            childrenExpanded: false,
             // Needed to update the obj prop passed to the dynamic Thing/ThingEditing component on change to the object
             changedObj: null,
             crosswalkTargetClass: '',
@@ -559,8 +559,12 @@ export default {
     mounted() {
         this.$emit('mounting-node');
         appLog("hierarchyNode.vue is mounted");
-        if (this.largeNumberOfItems) {
-            this.collapse = this.largeNumberOfItems;
+        this.collapse = this.largeNumberOfItems;
+        if (this.expandAll) {
+            this.collapse = false;
+        }
+        if (!this.collapse) {
+            this.childrenExpanded = true;
         }
         if (this.view === 'crosswalk' && this.subview === 'crosswalkSource') {
             this.buildCrosswalkOptions();

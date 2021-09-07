@@ -33,7 +33,7 @@
                     aria-label="breadcrumbs has-text-dark">
                     <ul>
                         <li>
-                            <router-link to="frameworks">
+                            <router-link :to="{path: '/frameworks', query: queryParams}">
                                 CaSS
                             </router-link>
                         </li>
@@ -632,6 +632,19 @@
                                 </div>
                                 <div class="column is-narrow">
                                     <div
+                                        @click="showImportModal('html')"
+                                        class="button is-outlined is-warning is-small"
+                                        v-if="!conceptMode">
+                                        <span
+                                            title="HTML files are experimentally supported. Click to learn more."
+                                            class="icon is-pulled-right">
+                                            <i class="fa fa-exclamation" />
+                                        </span>
+                                        <span>HTML</span>
+                                    </div>
+                                </div>
+                                <div class="column is-narrow">
+                                    <div
                                         @click="showImportModal('csv')"
                                         class="button is-outlined is-success is-small">
                                         <span
@@ -665,19 +678,6 @@
                                             <i class="fa fa-check" />
                                         </span>
                                         <span>JSON</span>
-                                    </div>
-                                </div>
-                                <div class="column is-narrow">
-                                    <div
-                                        @click="showImportModal('html')"
-                                        class="button is-outlined is-success is-small"
-                                        v-if="!conceptMode">
-                                        <span
-                                            title="html files are fully supported at this time"
-                                            class="icon is-pulled-right">
-                                            <i class="fa fa-check" />
-                                        </span>
-                                        <span>HTML</span>
                                     </div>
                                 </div>
                             </div>

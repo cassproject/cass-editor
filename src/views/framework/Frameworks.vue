@@ -31,7 +31,7 @@
                             @toggle="createDropDownActive = !createDropDownActive"
                             :active="createDropDownActive" />
                         <router-link
-                            to="/import"
+                            :to="{path: '/import', query: queryParams}"
                             @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
                             class="button is-hidden-touch is-outlined is-primary">
                             <span class="icon">
@@ -39,7 +39,7 @@
                             </span><span>import {{ conceptSchemeStringForButton }}</span>
                         </router-link>
                         <router-link
-                            to="/import"
+                            :to="{path: '/import', query: queryParams}"
                             @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
                             class="button is-hidden-desktop is-outlined is-primary">
                             <span class="icon">
@@ -81,7 +81,7 @@
                             :active="createDropDownActive" />
                         <!-- upload -->
                         <router-link
-                            to="/import"
+                            :to="{path: '/import', query: queryParams}"
                             @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
                             class="button is-outlined is-hidden-desktop is-primary">
                             <span class="icon">
@@ -89,7 +89,7 @@
                             </span>
                         </router-link>
                         <router-link
-                            to="/import"
+                            :to="{path: '/import', query: queryParams}"
                             @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
                             class="button is-outlined is-hidden-touch is-primary">
                             <span class="icon">
@@ -98,7 +98,7 @@
                         </router-link>
                         <!-- crosswalk -->
                         <router-link
-                            to="/crosswalk"
+                            :to="{path: '/crosswalk', query: queryParams}"
                             class="button is-hidden-touch is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-network-wired" />
@@ -108,7 +108,7 @@
                             </span>
                         </router-link>
                         <router-link
-                            to="/crosswalk"
+                            :to="{path: '/crosswalk', query: queryParams}"
                             class="button is-hidden-desktop is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-network-wired" />
