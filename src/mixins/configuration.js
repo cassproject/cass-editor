@@ -66,6 +66,9 @@ export const configuration = {
             scpo.description = ccpo["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             scpo.label = ccpo["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             scpo.priority = ccpo["priority"];
+            if (ccpo["isDirectLink"]) {
+                scpo.isDirectLink = ccpo["isDirectLink"];
+            }
             if (ccpo["heading"]) scpo.heading = ccpo["heading"];
             else scpo.heading = "";
             if (ccpo["max"] && (ccpo["max"] === 1 || ccpo["max"] === '1')) scpo.allowMultiple = false;
