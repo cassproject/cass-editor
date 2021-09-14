@@ -1026,8 +1026,13 @@
                         <span class="icon">
                             <i class="fa fa-save" />
                         </span>
-                        <span>
+                        <span
+                            v-if="customPropertyIsNew">
                             apply new property
+                        </span>
+                        <span
+                            v-if="!customPropertyIsNew">
+                            update property
                         </span>
                     </button>
                 </div>
