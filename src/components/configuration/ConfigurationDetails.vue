@@ -755,7 +755,7 @@
                     </div>
                     <div
                         class="table-container"
-                        v-if="customPropertyPermittedValues.length > 0 && customPropertyValuesLimited">
+                        v-if="customPropertyValuesLimited && customPropertyPermittedValues && customPropertyPermittedValues.length > 0">
                         <table class="table is-hoverable is-fullwidth">
                             <thead>
                                 <th>display label</th>
@@ -858,9 +858,9 @@
                     </div>
                     <div
                         class="table-container"
-                        v-if="customPropertyAvailableConcepts.length > 0 && customPropertyConceptsLimited">
+                        v-if="customPropertyConceptsLimited && customPropertyAvailableConcepts && customPropertyAvailableConcepts.length > 0">
                         <div
-                            v-if="customPropertyPermittedConcepts.length > 0"
+                            v-if="customPropertyPermittedConcepts && customPropertyPermittedConcepts.length > 0"
                             class="tags are-medium">
                             <span
                                 v-for="(concept, index) in customPropertyPermittedConcepts"
@@ -933,9 +933,9 @@
                     </div>
                     <div
                         class="table-container"
-                        v-if="(customPropertyAvailableTypes.length > 0) && customPropertyTypesLimited">
+                        v-if="customPropertyTypesLimited && customPropertyAvailableTypes && customPropertyAvailableTypes.length > 0">
                         <div
-                            v-if="customPropertyPermittedTypes.length > 0"
+                            v-if="customPropertyPermittedTypes && customPropertyPermittedTypes.length > 0"
                             class="tags are-medium">
                             <span
                                 v-for="(type, index) in customPropertyPermittedTypes"
@@ -973,7 +973,7 @@
                         </div>
                     </div>
                     <div
-                        v-if="(customPropertyAvailableTypes.length <= 0) && customPropertyTypesLimited">
+                        v-if="customPropertyTypesLimited && customPropertyAvailableTypes && customPropertyAvailableTypes.length <= 0">
                         No types available to choose from. Add restricted competency types in the configuration.
                     </div>
                 </div>
@@ -1466,7 +1466,7 @@
                                     :custom="true"
                                     :readOnly="readOnly"
                                     :enforceRequired="false"
-                                    :enforceNotRequired="enforceNotRequired"
+                                    :enforceNotRequired="shouldEnforceNotRequired(prop.range)"
                                     :enforcePrimary="false"
                                     :propertyIndex="idx"
                                     @change="updateFrameworkCompetencyProperty"
@@ -1592,7 +1592,7 @@
                                     :custom="true"
                                     :readOnly="readOnly"
                                     :enforceRequired="false"
-                                    :enforceNotRequired="enforceNotRequired"
+                                    :enforceNotRequired="shouldEnforceNotRequired(prop.range)"
                                     :enforcePrimary="false"
                                     :propertyIndex="idx"
                                     @change="updateFrameworkCompetencyProperty"
@@ -2595,12 +2595,11 @@ export default {
         ModalTemplate
     },
     methods: {
-        enforceNotRequired: function() {
-            if (shouldAllowCustomPropertyPermittedConcepts || shouldAllowCustomPropertyPermittedTypes) {
+        shouldEnforceNotRequired: function(range) {
+            if (range.endsWith('/Competency') || range.endsWith('/skos/Concept')) {
                 return true;
-            } else {
-                return false;
             }
+            return false;
         },
         showManageRelations: function() {
             this.showManageRelationshipsModal = true;
@@ -3157,7 +3156,7 @@ export default {
             this.customPropertyOnePerLanguage = prop.onePerLanguage;
             this.generateCopyOfCustomPropertyPermittedValues(prop).then((values) => {
                 this.customPropertyPermittedValues = values;
-                if (values.length > 0) {
+                if (values && values.length > 0) {
                     this.customPropertyValuesLimited = true;
                 } else {
                     this.customPropertyValuesLimited = false;
@@ -3165,7 +3164,7 @@ export default {
             });
             this.generateCopyOfCustomPropertyPermittedConcepts(prop).then((concepts) => {
                 this.customPropertyPermittedConcepts = concepts;
-                if (concepts.length > 0) {
+                if (concepts && concepts.length > 0) {
                     this.customPropertyConceptsLimited = true;
                 } else {
                     this.customPropertyConceptsLimited = false;
@@ -3173,7 +3172,7 @@ export default {
             });
             this.generateCopyOfCustomPropertyPermittedTypes(prop).then((types) => {
                 this.customPropertyPermittedTypes = types;
-                if (types.length > 0) {
+                if (types && types.length > 0) {
                     this.customPropertyTypesLimited = true;
                 } else {
                     this.customPropertyTypesLimited = false;
