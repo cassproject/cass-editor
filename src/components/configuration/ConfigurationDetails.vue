@@ -2942,17 +2942,23 @@ export default {
             newProp.heading = this.customPropertyHeading;
             newProp.allowMultiples = this.customPropertyAllowMultiples;
             newProp.onePerLanguage = this.customPropertyOnePerLanguage;
-            if (this.shouldAllowCustomPropertyPermittedValues) newProp.permittedValues = this.customPropertyPermittedValues;
-            else newProp.permittedValues = [];
-            if (this.shouldAllowCustomPropertyPermittedTypes) {
-                newProp.isDirectLink = true;
-                newProp.permittedTypes = this.customPropertyPermittedTypes;
+            if (this.shouldAllowCustomPropertyPermittedValues && this.customPropertyValuesLimited) {
+                newProp.permittedValues = this.customPropertyPermittedValues;
             } else {
-                newProp.isDirectLink = false;
-                newProp.permittedTypes = [];
+                newProp.permittedValues = [];
             }
-            if (this.shouldAllowCustomPropertyPermittedConcepts) newProp.permittedConcepts = this.customPropertyPermittedConcepts;
-            else newProp.permittedConcepts = [];
+            if (this.shouldAllowCustomPropertyPermittedTypes && this.customPropertyTypesLimited) {
+                newProp.permittedTypes = this.customPropertyPermittedTypes;
+                newProp.isDirectLink = true;
+            } else {
+                newProp.permittedTypes = [];
+                newProp.isDirectLink = false;
+            }
+            if (this.shouldAllowCustomPropertyPermittedConcepts && this.customPropertyConceptsLimited) {
+                newProp.permittedConcepts = this.customPropertyPermittedConcepts;
+            } else {
+                newProp.permittedConcepts = [];
+            }
             if (this.customPropertyParent.equals('framework')) this.config.fwkCustomProperties.push(newProp);
             else if (this.customPropertyParent.equals('competency')) this.config.compCustomProperties.push(newProp);
         },
@@ -2967,17 +2973,23 @@ export default {
                 propToUpdate.heading = this.customPropertyHeading;
                 propToUpdate.allowMultiples = this.customPropertyAllowMultiples;
                 propToUpdate.onePerLanguage = this.customPropertyOnePerLanguage;
-                if (this.shouldAllowCustomPropertyPermittedValues) propToUpdate.permittedValues = this.customPropertyPermittedValues;
-                else propToUpdate.permittedValues = [];
-                if (this.shouldAllowCustomPropertyPermittedTypes) {
+                if (this.shouldAllowCustomPropertyPermittedValues && this.customPropertyValuesLimited) {
+                    propToUpdate.permittedValues = this.customPropertyPermittedValues;
+                } else {
+                    propToUpdate.permittedValues = [];
+                }
+                if (this.shouldAllowCustomPropertyPermittedTypes && this.customPropertyTypesLimited) {
                     propToUpdate.permittedTypes = this.customPropertyPermittedTypes;
                     propToUpdate.isDirectLink = true;
                 } else {
                     propToUpdate.permittedTypes = [];
                     propToUpdate.isDirectLink = false;
                 }
-                if (this.shouldAllowCustomPropertyPermittedConcepts) propToUpdate.permittedConcepts = this.customPropertyPermittedConcepts;
-                else propToUpdate.permittedConcepts = [];
+                if (this.shouldAllowCustomPropertyPermittedConcepts && this.customPropertyConceptsLimited) {
+                    propToUpdate.permittedConcepts = this.customPropertyPermittedConcepts;
+                } else {
+                    propToUpdate.permittedConcepts = [];
+                }
             }
         },
         trimCustomPropertyPermittedValues() {
@@ -3041,8 +3053,11 @@ export default {
             this.customPropertyAllowMultiples = false;
             this.customPropertyOnePerLanguage = true;
             this.customPropertyPermittedValues = [];
+            this.customPropertyValuesLimited = false;
             this.customPropertyPermittedTypes = [];
+            this.customPropertyTypesLimited = false;
             this.customPropertyPermittedConcepts = [];
+            this.customPropertyConceptsLimited = false;
             this.customPropertyInvalid = false;
             this.customPropertyPropertyNameExists = false;
             this.customPropertyPropertyNameInvalid = false;
@@ -3073,7 +3088,7 @@ export default {
             this.customPropertyParent = "competency";
             this.showCustomPropertyDetailsModal = true;
         },
-        generateCopyOfCustomPropertyPermittedValues(prop) {
+        async generateCopyOfCustomPropertyPermittedValues(prop) {
             let permittedValuesCopy = [];
             if (prop.permittedValues && prop.permittedValues.length > 0) {
                 for (let pv of prop.permittedValues) {
@@ -3085,7 +3100,7 @@ export default {
             }
             return permittedValuesCopy;
         },
-        generateCopyOfCustomPropertyPermittedTypes(prop) {
+        async generateCopyOfCustomPropertyPermittedTypes(prop) {
             let permittedTypesCopy = [];
             if (prop.permittedTypes && prop.permittedTypes.length > 0) {
                 for (let pv of prop.permittedTypes) {
@@ -3097,7 +3112,7 @@ export default {
             }
             return permittedTypesCopy;
         },
-        generateCopyOfCustomPropertyPermittedConcepts(prop) {
+        async generateCopyOfCustomPropertyPermittedConcepts(prop) {
             let permittedConceptsCopy = [];
             if (prop.permittedConcepts && prop.permittedConcepts.length > 0) {
                 for (let pv of prop.permittedConcepts) {
@@ -3124,16 +3139,30 @@ export default {
             this.customPropertyHeading = prop.heading;
             this.customPropertyAllowMultiples = prop.allowMultiples;
             this.customPropertyOnePerLanguage = prop.onePerLanguage;
-            this.customPropertyPermittedValues = this.generateCopyOfCustomPropertyPermittedValues(prop);
-            this.customPropertyPermittedConcepts = this.generateCopyOfCustomPropertyPermittedConcepts(prop);
-            if (this.customPropertyPermittedValues.length > 0) this.customPropertyValuesLimited = true;
-            else this.customPropertyValuesLimited = false;
-            this.customPropertyPermittedTypes = this.generateCopyOfCustomPropertyPermittedTypes(prop);
-            if (this.customPropertyPermittedTypes.length > 0) this.customPropertyValuesTypes = true;
-            else this.customPropertyTypesLimited = false;
-            if (this.customPropertyPermittedConcepts.length > 0) {
-                this.customPropertyConceptsLimited = true;
-            } else this.customPropertyConceptsLimited = false;
+            this.generateCopyOfCustomPropertyPermittedValues(prop).then((values) => {
+                this.customPropertyPermittedValues = values;
+                if (values.length > 0) {
+                    this.customPropertyValuesLimited = true;
+                } else {
+                    this.customPropertyValuesLimited = false;
+                }
+            });
+            this.generateCopyOfCustomPropertyPermittedConcepts(prop).then((concepts) => {
+                this.customPropertyPermittedConcepts = concepts;
+                if (concepts.length > 0) {
+                    this.customPropertyConceptsLimited = true;
+                } else {
+                    this.customPropertyConceptsLimited = false;
+                }
+            });
+            this.generateCopyOfCustomPropertyPermittedTypes(prop).then((types) => {
+                this.customPropertyPermittedTypes = types;
+                if (types.length > 0) {
+                    this.customPropertyTypesLimited = true;
+                } else {
+                    this.customPropertyTypesLimited = false;
+                }
+            });
         },
         manageCustomFrameworkProperty: function(propertyIdx) {
             this.initCustomPropertyDataHoldersAsExistingProperty('framework', this.config.fwkCustomProperties[propertyIdx]);
