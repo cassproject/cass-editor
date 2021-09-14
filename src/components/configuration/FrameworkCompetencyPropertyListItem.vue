@@ -55,7 +55,7 @@
             <div class="field">
                 <div class="control is-size-3">
                     <input
-                        :disabled="readOnly || enforceRequired"
+                        :disabled="readOnly || enforceRequired || enforceNotRequired"
                         v-model="localRequired"
                         :id="property + propertyParent"
                         type="checkbox"
@@ -165,6 +165,10 @@ export default {
         enforceRequired: {
             type: Boolean,
             default: true
+        },
+        enforceNotRequired: {
+            type: Boolean,
+            default: false
         },
         enforcePrimary: {
             type: Boolean,

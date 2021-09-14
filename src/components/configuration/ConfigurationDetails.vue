@@ -603,7 +603,7 @@
                             <label class="label">Required </label>
                             <div class="control is-size-3">
                                 <input
-                                    :disabled="readOnly"
+                                    :disabled="readOnly || shouldAllowCustomPropertyPermittedConcepts || shouldAllowCustomPropertyPermittedTypes"
                                     v-model="customPropertyRequired"
                                     id="customPropertyRequiredSwitch"
                                     type="checkbox"
@@ -1422,6 +1422,7 @@
                                     :custom="false"
                                     :readOnly="readOnly"
                                     :enforceRequired="true"
+                                    :enforceNotRequired="false"
                                     :enforcePrimary="false"
                                     @change="updateFrameworkCompetencyProperty" />
                                 <FrameworkCompetencyPropertyListItem
@@ -1435,6 +1436,7 @@
                                     :custom="false"
                                     :readOnly="readOnly"
                                     :enforceRequired="true"
+                                    :enforceNotRequired="false"
                                     :enforcePrimary="true"
                                     @change="updateFrameworkCompetencyProperty" />
                                 <FrameworkCompetencyPropertyListItem
@@ -1448,6 +1450,7 @@
                                     :custom="false"
                                     :readOnly="readOnly"
                                     :enforceRequired="false"
+                                    :enforceNotRequired="false"
                                     :enforcePrimary="false"
                                     @change="updateFrameworkCompetencyProperty" />
                                 <FrameworkCompetencyPropertyListItem
@@ -1463,6 +1466,7 @@
                                     :custom="true"
                                     :readOnly="readOnly"
                                     :enforceRequired="false"
+                                    :enforceNotRequired="enforceNotRequired"
                                     :enforcePrimary="false"
                                     :propertyIndex="idx"
                                     @change="updateFrameworkCompetencyProperty"
@@ -1530,6 +1534,7 @@
                                     :custom="false"
                                     :readOnly="readOnly"
                                     :enforceRequired="true"
+                                    :enforceNotRequired="false"
                                     :enforcePrimary="false"
                                     @change="updateFrameworkCompetencyProperty" />
                                 <FrameworkCompetencyPropertyListItem
@@ -1543,6 +1548,7 @@
                                     :custom="false"
                                     :readOnly="readOnly"
                                     :enforceRequired="true"
+                                    :enforceNotRequired="false"
                                     :enforcePrimary="true"
                                     @change="updateFrameworkCompetencyProperty" />
                                 <FrameworkCompetencyPropertyListItem
@@ -1556,6 +1562,7 @@
                                     :custom="false"
                                     :readOnly="readOnly"
                                     :enforceRequired="false"
+                                    :enforceNotRequired="false"
                                     :enforcePrimary="false"
                                     @change="updateFrameworkCompetencyProperty" />
                                 <FrameworkCompetencyPropertyListItem
@@ -1569,6 +1576,7 @@
                                     :custom="false"
                                     :readOnly="readOnly"
                                     :enforceRequired="false"
+                                    :enforceNotRequired="false"
                                     :enforcePrimary="false"
                                     @change="updateFrameworkCompetencyProperty" />
                                 <FrameworkCompetencyPropertyListItem
@@ -1584,6 +1592,7 @@
                                     :custom="true"
                                     :readOnly="readOnly"
                                     :enforceRequired="false"
+                                    :enforceNotRequired="enforceNotRequired"
                                     :enforcePrimary="false"
                                     :propertyIndex="idx"
                                     @change="updateFrameworkCompetencyProperty"
@@ -2586,6 +2595,13 @@ export default {
         ModalTemplate
     },
     methods: {
+        enforceNotRequired: function() {
+            if (shouldAllowCustomPropertyPermittedConcepts || shouldAllowCustomPropertyPermittedTypes) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         showManageRelations: function() {
             this.showManageRelationshipsModal = true;
         },
