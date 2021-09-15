@@ -66,6 +66,9 @@ export const configuration = {
             scpo.description = ccpo["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
             scpo.label = ccpo["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
             scpo.priority = ccpo["priority"];
+            if (ccpo["isDirectLink"]) {
+                scpo.isDirectLink = ccpo["isDirectLink"];
+            }
             if (ccpo["heading"]) scpo.heading = ccpo["heading"];
             else scpo.heading = "";
             if (ccpo["max"] && (ccpo["max"] === 1 || ccpo["max"] === '1')) scpo.allowMultiple = false;
@@ -74,7 +77,27 @@ export const configuration = {
             else scpo.onePerLanguage = false;
             scpo.required = this.getBooleanValue(ccpo["isRequired"]);
             scpo.permittedValues = [];
-            if (ccpo.options && ccpo.options.length > 0) {
+            scpo.permittedTypes = [];
+            scpo.permittedConcepts = [];
+            if (scpo.range.equalsIgnoreCase('https://schema.cassproject.org/0.4/Competency')) {
+                if (ccpo.options && ccpo.options.length > 0) {
+                    for (let pv of ccpo.options) {
+                        let pvo = {};
+                        pvo.display = pv.display;
+                        pvo.value = pv.val;
+                        scpo.permittedTypes.push(pvo);
+                    }
+                }
+            } else if (scpo.range.equalsIgnoreCase('https://schema.cassproject.org/0.4/skos/Concept')) {
+                if (ccpo.options && ccpo.options.length > 0) {
+                    for (let pv of ccpo.options) {
+                        let pvo = {};
+                        pvo.display = pv.display;
+                        pvo.value = pv.val;
+                        scpo.permittedConcepts.push(pvo);
+                    }
+                }
+            } else if (ccpo.options && ccpo.options.length > 0) {
                 for (let pv of ccpo.options) {
                     let pvo = {};
                     pvo.display = pv.display;
@@ -257,16 +280,47 @@ export const configuration = {
             this.buildSimpleConfigDefaultPermissionData(simpleConfigObj, cco);
             return simpleConfigObj;
         },
+        generateCustomPropertyAvailableConcepts() {
+            repo.searchWithParams('@type:ConceptScheme',
+                {size: 10000},
+                null,
+                null,
+                null,
+                null
+            ).then((results) => {
+                let concepts = [];
+                for (let concept = 0; concept < results.length; concept++) {
+                    concepts.push({
+                        display: EcRemoteLinkedData.getDisplayStringFrom(results[concept]["dcterms:title"]),
+                        value: results[concept].id
+                    });
+                }
+                this.$store.commit('configuration/setAvailableConcepts', concepts);
+            }).catch((err) => {
+                appLog("failed to retrieve concepts: " + err);
+            });
+        },
+        generateCustomPropertyAvailableTypes() {
+            let types = [];
+            this.configList.forEach((config) => {
+                if (config.compEnforceTypes) {
+                    types.push(...config.compEnforcedTypes);
+                }
+            });
+            this.$store.commit('configuration/setAvailableTypes', types);
+        },
         searchRepositoryForConfigsSuccess(ecRemoteLda) {
             appLog("Config search success: ");
             appLog(ecRemoteLda);
             this.configList = [];
             for (let ecrld of ecRemoteLda) {
-                let t = new Thing();
+                let t = new schema.Thing();
                 t.copyFrom(ecrld);
                 this.configList.push(this.generateSimpleConfigObject(t));
             }
             this.sortConfigList();
+            this.generateCustomPropertyAvailableConcepts();
+            this.generateCustomPropertyAvailableTypes();
             this.configBusy = false;
         },
         searchRepositoryForConfigsFailure(msg) {

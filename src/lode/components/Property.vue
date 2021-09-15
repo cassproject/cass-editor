@@ -188,10 +188,111 @@ TO DO MAYBE: Separate out property by editing or not.
                         </div>
                     </div>
                 </div>
+                <!-- concept taxonomy -->
+                <div
+                    v-else-if="range && range.length > 0 && range[0].toLowerCase().indexOf('concept') !== -1">
+                    <div
+                        v-if="editingProperty && limitedConcepts.length > 0">
+                        <PropertyString
+                            :index="index"
+                            :expandedProperty="expandedProperty"
+                            :expandedThing="expandedThing"
+                            :expandedValue="expandedValue"
+                            :langString="langString"
+                            :range="range"
+                            :view="view"
+                            :options="limitedConcepts"
+                            :profile="profile"
+                            @remove="remove(item)" />
+                    </div>
+                    <div
+                        v-else>
+                        <div class="field is-grouped">
+                            <span
+                                class="tag is-size-7 is-light"
+                                v-if="!editingProperty">{{ displayLabel }}</span>
+                            <p class="control">
+                                <span
+                                    class="icon"
+                                    title="Copy URL to the clipboard."
+                                    v-clipboard="getURL(item)"
+                                    v-clipboard:success="clipboardSuccess"
+                                    v-clipboard:error="clipboardError">
+                                    <i
+                                        v-if="showClipboardSuccessMessage"
+                                        class="fa fa-check has-text-success" />
+                                    <i
+                                        v-else
+                                        class="fa fa-copy has-text-primary"
+                                        name="copyURL"
+                                        :expandedProperty="expandedProperty"
+                                        :expandedValue="expandedValue" />
+                                </span>
+                            </p>
+                            <a
+                                :title="item['@id'] || item['@value']"
+                                class="control is-expanded is-id">
+                                {{ item['@id'] || item['@value'] }}
+                            </a>
+                            <div
+                                class="control"
+                                v-if="editingProperty">
+                                <div
+                                    :disabled="shortType === 'id'"
+                                    @click="showModal('remove', index)"
+                                    class="button disabled is-text has-text-danger">
+                                    <i class="fa fa-times" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- competency direct link with options limited by type -->
+                <div
+                    v-else-if="profile && profile[expandedProperty] && profile[expandedProperty]['isDirectLink'] && (profile[expandedProperty]['isDirectLink'] === 'true' || profile[expandedProperty]['isDirectLink'] === true)">
+                    <div class="field is-grouped">
+                        <span
+                            class="tag is-size-7 is-light"
+                            v-if="!editingProperty">{{ displayLabel }}</span>
+                        <p class="control">
+                            <span
+                                class="icon"
+                                title="Copy URL to the clipboard."
+                                v-clipboard="getURL(item)"
+                                v-clipboard:success="clipboardSuccess"
+                                v-clipboard:error="clipboardError">
+                                <i
+                                    v-if="showClipboardSuccessMessage"
+                                    class="fa fa-check has-text-success" />
+                                <i
+                                    v-else
+                                    class="fa fa-copy has-text-primary"
+                                    name="copyURL"
+                                    :expandedProperty="expandedProperty"
+                                    :expandedValue="expandedValue" />
+                            </span>
+                        </p>
+                        <a
+                            :title="item['@id'] || item['@value']"
+                            class="control is-expanded is-id">
+                            {{ item['@id'] || item['@value'] }}
+                        </a>
+                        <div
+                            class="control"
+                            v-if="editingProperty">
+                            <div
+                                :disabled="shortType === 'id'"
+                                @click="showModal('remove', index)"
+                                class="button disabled is-text has-text-danger">
+                                <i class="fa fa-times" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- propertystring components -->
                 <div
                     class="property"
-                    v-else-if="editingProperty && !checkedOptions">
+                    v-else-if="editingProperty && !checkedOptions && !(limitedConcepts.length > 0) && !(limitedTypes.length > 0)">
                     <PropertyString
                         :index="index"
                         :expandedProperty="expandedProperty"
@@ -360,6 +461,8 @@ export default {
             initialValue: null,
             expandedValueNames: [],
             optionsArray: [],
+            limitedTypes: [],
+            limitedConcepts: [],
             errorValidating: null,
             removePropertyConfirmModal: false,
             propertyToRemove: null
@@ -389,13 +492,25 @@ export default {
             this.$store.commit('lode/incrementNumPropertyComponents', EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
         }
     },
-    mounted: function() {
+    mounted: async function() {
+        this.limitedType = [];
         if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("level") !== -1 && this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
             this.checkedOptions = [];
             if (this.expandedValue.length > 0) {
                 for (var i = 0; i < this.expandedValue.length; i++) {
                     this.checkedOptions.push(this.expandedValue[i]["@id"]);
                 }
+            }
+        }
+        if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("concept") !== -1 && this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
+            for (let i = 0; i < this.profile[this.expandedProperty]['options'].length; i++) {
+                await EcConceptScheme.get(this.profile[this.expandedProperty]['options'][i].val).then((scheme) => {
+                    if (scheme) {
+                        scheme['skos:hasTopConcept'].forEach((conceptUri) => {
+                            this.addConceptInner(conceptUri);
+                        });
+                    }
+                });
             }
         }
         if (this.expandedThing[this.expandedProperty]) {
@@ -415,8 +530,16 @@ export default {
         if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options'] && this.checkedOptions) {
             for (let i = 0; i < this.profile[this.expandedProperty]['options'].length; i++) {
                 let option = this.profile[this.expandedProperty]['options'][i];
-                option.name = EcRepository.getBlocking(option.val).name;
+                option.name = (await EcRepository.get(option.val)).name;
                 this.optionsArray.push(option);
+            }
+        }
+        if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["isDirectLink"] && (this.profile[this.expandedProperty]["isDirectLink"] === 'true' || this.profile[this.expandedProperty]["isDirectLink"] === true)) {
+            if (this.profile[this.expandedProperty]['options']) {
+                const options = this.profile[this.expandedProperty]['options'];
+                options.forEach((option) => {
+                    this.limitedTypes.push(option);
+                });
             }
         }
     },
@@ -607,6 +730,19 @@ export default {
         }
     },
     methods: {
+        async addConceptInner(conceptUri) {
+            EcConcept.get(conceptUri).then((concept) => {
+                this.limitedConcepts.push({
+                    display: EcRemoteLinkedData.getDisplayStringFrom(concept['skos:prefLabel']),
+                    val: conceptUri
+                });
+                if (concept['skos:narrower'] != null) {
+                    for (let i = 0; i < concept['skos:narrower'].length; i++) {
+                        this.addConceptInner(concept['skos:narrower'][i]);
+                    }
+                }
+            });
+        },
         resolveNameFromUrl: function(url) {
             let me = this;
             // Try repo first to use cache if possible
@@ -615,7 +751,7 @@ export default {
                 if (!name) {
                     name = success["skos:prefLabel"];
                 }
-                name = Thing.getDisplayStringFrom(name);
+                name = schema.Thing.getDisplayStringFrom(name);
                 // If still object, display value
                 if (EcObject.isObject(name)) {
                     var langs = Object.keys(name);
@@ -658,7 +794,7 @@ export default {
                             }
                         }
                         // If it's a langstring
-                        name = Thing.getDisplayStringFrom(name);
+                        name = schema.Thing.getDisplayStringFrom(name);
                         // If still object, display value
                         if (EcObject.isObject(name)) {
                             var langs = Object.keys(name);
@@ -677,7 +813,7 @@ export default {
             var xhr = null;
             if ((typeof httpStatus) === "undefined") {
                 xhr = new XMLHttpRequest();
-                xhr.open("GET", url, EcRemote.async);
+                xhr.open("GET", url, true);
                 if (headers != null) {
                     var keys = EcObject.keys(headers);
                     for (var i = 0; i < keys.length; i++) {
@@ -698,9 +834,7 @@ export default {
                 };
             }
             if (xhr != null) {
-                if (EcRemote.async) {
-                    (xhr)["timeout"] = EcRemote.timeout;
-                }
+                (xhr)["timeout"] = EcRemote.timeout;
             }
             if ((typeof httpStatus) !== "undefined") {
                 if (success != null) {
@@ -792,7 +926,6 @@ export default {
          * can further breakout if we decide to use vuex // plugin is global
          */
         showModal(val, item) {
-            this.$emit('invalid', true);
             let params = {};
             if (val === 'remove') {
                 if (this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
@@ -804,7 +937,9 @@ export default {
                 }
                 this.removePropertyConfirmModal = true;
                 this.propertyToRemove = item;
+                return;
             }
+            this.$emit('invalid', true);
             if (val === 'required') {
                 params = {
                     type: val,

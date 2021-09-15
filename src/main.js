@@ -12,6 +12,7 @@ import VueResource from 'vue-resource';
 
 var VueScrollTo = require('vue-scrollto');
 require("cassproject");
+global.UUID = require('pure-uuid');
 
 const options = {
     color: '#68C8DB',
@@ -64,10 +65,6 @@ Vue.directive('click-outside', {
 });
 
 EcRepository.caching = true;
-
-global.jsonld = require('jsonld');
-global.base64 = require('base64-arraybuffer');
-global.UUID = require('pure-uuid');
 
 Vue.config.productionTip = false;
 // Vue.config.silent = true;

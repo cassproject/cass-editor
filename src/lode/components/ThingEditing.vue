@@ -132,6 +132,7 @@
                 </h4>
                 <Search
                     view="thing-editing"
+                    :typesPermittedInSearch="typesPermittedInSearch"
                     :idsNotPermittedInSearch="idsNotPermittedInSearch" />
             </section>
             <section
@@ -367,6 +368,7 @@ export default {
             doneSaving: false,
             errorMessage: [],
             idsNotPermittedInSearch: [],
+            typesPermittedInSearch: [],
             addAnother: false,
             disableDoneEditingButton: false,
             errorValidating: null
@@ -416,13 +418,13 @@ export default {
                 if (this.selectedCompetency.getName) {
                     return this.selectedCompetency.getName();
                 } else {
-                    return Thing.getDisplayStringFrom(this.selectedCompetency.name);
+                    return schema.Thing.getDisplayStringFrom(this.selectedCompetency.name);
                 }
             } else if (this.selectedCompetency) {
                 if (this.selectedCompetency["skos:prefLabel"]) {
-                    return Thing.getDisplayStringFrom(this.selectedCompetency["skos:prefLabel"]);
+                    return schema.Thing.getDisplayStringFrom(this.selectedCompetency["skos:prefLabel"]);
                 } else {
-                    return Thing.getDisplayStringFrom(this.selectedCompetency["dcterms:title"]);
+                    return schema.Thing.getDisplayStringFrom(this.selectedCompetency["dcterms:title"]);
                 }
             } else {
                 return '';
@@ -520,7 +522,7 @@ export default {
              * return false;
              * }
              * if (this.originalThing && this.originalThing.canEditAny) {
-             * return this.originalThing.canEditAny(EcIdentityManager.getMyPks());
+             * return this.originalThing.canEditAny(EcIdentityManager.default.getMyPks());
              *}
              */
             return true;
@@ -789,7 +791,7 @@ export default {
             this.errorMessage = [];
             /* TO DO - clear property to add when cancel add property */
         },
-        saveNewProperty: function() {
+        saveNewProperty: async function() {
             // Validate input
             var property = this.addingProperty;
             var value = this.addingValue;
@@ -816,14 +818,14 @@ export default {
                     return this.errorMessage.push("This property must be a URL. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.");
                 }
             }
-            if (value && !isResource && range.length === 1 && (range[0] === "http://schema.org/URL" || range[0].toLowerCase().indexOf("concept") !== -1 ||
+            if (value && !isResource && !this.addingChecked && range.length === 1 && (range[0] === "http://schema.org/URL" || range[0].toLowerCase().indexOf("concept") !== -1 ||
                 range[0].toLowerCase().indexOf("competency") !== -1 || range[0].toLowerCase().indexOf("level") !== -1)) {
                 if (value.indexOf("http") === -1) {
                     return this.errorMessage.push("This property must be a URL. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.");
                 }
             }
-            if (value && range[0].toLowerCase().indexOf("level") !== -1) {
-                var level = EcLevel.getBlocking(value);
+            if (value && range[0].toLowerCase().indexOf("level") !== -1 && !this.addingChecked) {
+                var level = await EcLevel.get(value);
                 if (!level) {
                     return this.errorMessage.push("This URL must be a Level that is already in the system.");
                 }
@@ -1173,7 +1175,7 @@ export default {
                 }
             }
             // When we save, we need to remove all the extreneous arrays that we added to support reactivity.
-            jsonld.compact(this.stripEmptyArrays(this.expandedThing), this.$store.state.lode.rawSchemata[this.context], function(err, compacted) {
+            jsonld.compact(this.stripEmptyArrays(this.expandedThing), this.$store.state.lode.rawSchemata[this.context], async function(err, compacted) {
                 if (err != null) {
                     appError(err);
                 }
@@ -1184,10 +1186,10 @@ export default {
                     rld.context = me.context;
                     delete rld["@context"];
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
-                        rld = EcEncryptedValue.toEncryptedValue(rld);
+                        rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     rld["schema:dateModified"] = new Date().toISOString();
-                    repo.saveTo(rld, function() {
+                    repo.saveTo(rld, async function() {
                         me.doneSaving = true;
                         me.saving = false;
                         me.saved = "last saved " + new Date(rld["schema:dateModified"]).toLocaleString();
@@ -1200,10 +1202,10 @@ export default {
                             me.$emit('done-editing-node-event');
                         }
                         if (rld.type === "Framework") {
-                            me.$store.commit('editor/framework', EcFramework.getBlocking(rld.shortId()));
+                            me.$store.commit('editor/framework', await EcFramework.get(rld.shortId()));
                             me.spitEvent('viewChanged');
                         } else if (rld.type === "ConceptScheme") {
-                            me.$store.commit('editor/framework', EcConceptScheme.getBlocking(rld.shortId()));
+                            me.$store.commit('editor/framework', await EcConceptScheme.get(rld.shortId()));
                             me.spitEvent('viewChanged');
                         }
                     }, function(err) {
@@ -1328,7 +1330,7 @@ export default {
                         }
                     }
                     // If it's a langstring
-                    name = Thing.getDisplayStringFrom(name);
+                    name = schema.Thing.getDisplayStringFrom(name);
                     // If still object, display value
                     if (EcObject.isObject(name)) {
                         var langs = Object.keys(name);
@@ -1346,7 +1348,7 @@ export default {
             var xhr = null;
             if ((typeof httpStatus) === "undefined") {
                 xhr = new XMLHttpRequest();
-                xhr.open("GET", url, EcRemote.async);
+                xhr.open("GET", url, true);
                 if (headers != null) {
                     var keys = EcObject.keys(headers);
                     for (var i = 0; i < keys.length; i++) {
@@ -1367,9 +1369,7 @@ export default {
                 };
             }
             if (xhr != null) {
-                if (EcRemote.async) {
-                    (xhr)["timeout"] = EcRemote.timeout;
-                }
+                (xhr)["timeout"] = EcRemote.timeout;
             }
             if ((typeof httpStatus) !== "undefined") {
                 if (success != null) {
@@ -1440,7 +1440,7 @@ export default {
             return result;
         },
         closeWithoutSaving: function() {
-            if (this.newFramework) {
+            if (this.newFramework && this.view !== "importPreview") {
                 return this.clickToDelete();
             }
             this.$emit('done-editing-node-event');
@@ -1500,7 +1500,7 @@ export default {
         addSelected: function() {
             var ids = this.$store.getters['editor/selectedCompetenciesAsProperties'];
             var relationType = this.$store.state.editor.selectCompetencyRelation;
-            if (this.$store.state.lode.searchType === "Concept" || relationType === "https://purl.org/ctdlasn/terms/knowledgeEmbodied" ||
+            if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "DirectLink" || relationType === "https://purl.org/ctdlasn/terms/knowledgeEmbodied" ||
             relationType === "https://purl.org/ctdlasn/terms/abilityEmbodied" || relationType === "https://purl.org/ctdlasn/terms/taskEmbodied" ||
             relationType === "https://purl.org/ctdlasn/terms/skillEmbodied") {
                 this.attachUrlProperties(ids);
@@ -1514,13 +1514,13 @@ export default {
             this.isSearching = false;
             this.showAddPropertyContent = false;
         },
-        attachUrlProperties: function(results) {
+        attachUrlProperties: async function(results) {
             var resource = this.$store.state.editor.framework;
             if (this.$store.state.editor.selectedCompetency != null) {
                 resource = this.$store.state.editor.selectedCompetency;
             }
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcConcept().getTypes()) || thing.isAny(new EcCompetency().getTypes())) {
                     var relation = this.$store.state.editor.selectCompetencyRelation;
                     // Check if expanded version of property
@@ -1539,7 +1539,7 @@ export default {
             }
             resource["schema:dateModified"] = new Date().toISOString();
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
-                resource = EcEncryptedValue.toEncryptedValue(resource);
+                resource = await EcEncryptedValue.toEncryptedValue(resource);
             }
             this.repo.saveTo(resource, function() {}, appError);
         },
@@ -1568,12 +1568,12 @@ export default {
             this.showAlways = true;
             this.showPossible = false;
         },
-        changedObject: function() {
+        changedObject: async function() {
             if (!this.originalThing) { return; }
             if (this.shortType && this.changedObject === this.originalThing.shortId()) {
                 var type = "Ec" + this.shortType;
                 if (type) {
-                    var thing = window[type].getBlocking(this.changedObject);
+                    var thing = await window[type].get(this.changedObject);
                     this.obj = thing;
                     if (this.clickToLoad === false) { this.load(); }
                 }
@@ -1593,7 +1593,16 @@ export default {
             }
         },
         isSearching: function() {
+            this.typesPermittedInSearch = [];
             if (this.isSearching) {
+                if (this.$store.state.lode.searchType === "DirectLink") {
+                    if (this.addingProperty && this.profile && this.profile[this.addingProperty]['options']) {
+                        const options = this.profile[this.addingProperty]['options'];
+                        options.forEach((option) => {
+                            this.typesPermittedInSearch.push(option.val);
+                        });
+                    }
+                }
                 let types = ["narrows", "broadens", "hasChild", "isChildOf"];
                 if (EcArray.has(types, this.addingProperty)) {
                     let relations = this.$store.getters['editor/relations'];

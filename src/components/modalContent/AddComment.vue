@@ -213,11 +213,11 @@ export default {
             return this.$store.state.user.loggedOnPerson;
         }
     },
-    mounted: function() {
+    mounted: async function() {
         if (this.commentFrameworkId.equals(this.commentAboutId)) {
             this.commentSubjectType = 'framework';
         } else {
-            let someObj = EcRepository.getBlocking(this.commentAboutId);
+            let someObj = await EcRepository.get(this.commentAboutId);
             this.commentSubject = someObj;
             this.commentSubjectType = someObj.type.toLowerCase();
         }

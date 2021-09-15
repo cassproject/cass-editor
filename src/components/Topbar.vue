@@ -21,7 +21,7 @@
                 </div>
             </div>
             <div class="navbar-item">
-                <router-link to="/frameworks">
+                <router-link :to="{path: '/frameworks', query: queryParams}">
                     <h2 class="has-text-white subtitle has-text-weight-bold">
                         CaSS
                     </h2>
@@ -46,6 +46,11 @@ export default {
             return() {
             }
         };
+    },
+    computed: {
+        queryParams() {
+            return this.$store.getters['editor/queryParams'];
+        }
     }
 };
 </script>

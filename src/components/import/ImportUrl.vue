@@ -161,7 +161,6 @@ export default {
     data() {
         return {
             importType: 'url',
-            importErrors: [],
             importUrl: '',
             repo: window.repo
         };
@@ -169,6 +168,9 @@ export default {
     computed: {
         importInfoVisible: function() {
             return this.$store.getters['app/showRightAside'];
+        },
+        importErrors: function() {
+            return this.$store.getters['app/importErrors'];
         }
     },
     props: {

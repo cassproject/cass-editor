@@ -87,7 +87,7 @@ describe('Framework.vue', () => {
 
     it('Renders Framework page when Framework.vue is mounted ', () => {
         global.EcRepository = jest.fn();
-        global.EcRepository.getBlocking = jest.fn(function() {
+        global.EcRepository.get = jest.fn(function() {
             return null;
         });
         const wrapper = shallowMount(Framework, {

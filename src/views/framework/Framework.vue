@@ -111,6 +111,7 @@
                                 <Hierarchy
                                     :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                     :container="framework"
+                                    :scrolled="scrolled"
                                     containerType="Framework"
                                     containerTypeGet="EcFramework"
                                     containerNodeProperty="competency"
@@ -175,6 +176,7 @@ export default {
     mixins: [common, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {
         return {
+            ulListClass: '',
             scrolled: false,
             hierarchyIsdoneLoading: false,
             parentObjectClass: 'parent-object',
@@ -256,7 +258,7 @@ export default {
             }
         },
         loggedIn: function() {
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 return true;
             }
             return false;
@@ -340,8 +342,8 @@ export default {
                 var compKeys = EcObject.keys(profile);
                 for (var i = 0; i < compKeys.length; i++) {
                     let key = compKeys[i];
-                    if (profile[key] && profile[key]["http://schema.org/rangeIncludes"] && profile[key]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/skos/Concept") {
-                        profile[key]["noTextEditing"] = 'true';
+                    if (profile[key] && profile[key]["http://schema.org/rangeIncludes"] && profile[key]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/Competency") {
+                        profile[key]["isDirectLink"] = 'true';
                     }
                 }
                 if (this.config.levelsConfig) {
@@ -608,7 +610,7 @@ export default {
             if (this.queryParams.view === 'true') {
                 return false;
             }
-            return this.framework.canEditAny(EcIdentityManager.getMyPks());
+            return this.framework.canEditAny(EcIdentityManager.default.getMyPks());
         }
     },
     created: function() {
@@ -657,8 +659,10 @@ export default {
             }
         },
         configHasLevels: function() {
-            this.gotInitialLevelsRelationsAndAlignments = false;
-            this.preloadRelations();
+            if (this.hierarchyIsdoneLoading) {
+                this.gotInitialLevelsRelationsAndAlignments = false;
+                this.preloadRelations();
+            }
         }
     },
     methods: {
@@ -680,10 +684,10 @@ export default {
         handleSearch: function(e) {
             this.$store.commit('app/showModal', e);
         },
-        getConfiguration: function() {
+        getConfiguration: async function() {
             var me = this;
             if (this.framework.configuration) {
-                var c = EcRepository.getBlocking(this.framework.configuration);
+                var c = await EcRepository.get(this.framework.configuration);
                 appLog("c is: ", c);
                 if (c) {
                     appLog("c is: ", c);
@@ -694,7 +698,7 @@ export default {
             }
             if (!this.config && localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
                 // If no framework configuration, use browser default
-                var c = EcRepository.getBlocking(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
+                var c = await EcRepository.get(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
                 if (c) {
                     this.config = c;
                 }
@@ -778,15 +782,15 @@ export default {
             let me = this;
             alignmentType = alignmentType.substring(0, alignmentType.indexOf(' '));
             for (let i = 0; i < values.length; i++) {
-                let c = new CreativeWork();
+                let c = new schema.CreativeWork();
                 c.generateId(this.repo.selectedServer);
                 c.name = values[i]["name"];
                 c.url = values[i]["@value"];
-                c.educationalAlignment = new AlignmentObject();
+                c.educationalAlignment = new schema.AlignmentObject();
                 c.educationalAlignment.targetUrl = selectedCompetencyId;
                 c.educationalAlignment.alignmentType = alignmentType;
-                if (EcIdentityManager.ids.length > 0) {
-                    c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                if (EcIdentityManager.default.ids.length > 0) {
+                    c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 this.repo.saveTo(c, function() {
                     let edits = [{operation: "addNew", id: c.shortId()}];
@@ -795,10 +799,10 @@ export default {
                 }, appError);
             }
         },
-        updateResourceAlignments: function(alignmentType, value) {
+        updateResourceAlignments: async function(alignmentType, value) {
             let me = this;
             if (value["name"] && value["@value"]) {
-                var c = EcRepository.getBlocking(value["@id"]);
+                var c = await EcRepository.get(value["@id"]);
                 let initialName = c.name;
                 let initialUrl = c.url;
                 c.name = value["name"];
@@ -810,18 +814,18 @@ export default {
                 }, appError);
             }
         },
-        removeResourceAlignment: function(resourceId) {
-            let c = EcRepository.getBlocking(resourceId);
+        removeResourceAlignment: async function(resourceId) {
+            let c = await EcRepository.get(resourceId);
             let me = this;
             this.repo.deleteRegistered(c, function() {
                 me.$store.commit('editor/addEditsToUndo', [{operation: "delete", obj: c}]);
                 me.$store.commit('editor/refreshAlignments', true);
             }, appError);
         },
-        moveToTopLevel: function(id) {
+        moveToTopLevel: async function(id) {
             var me = this;
             for (var i = 0; i < this.framework.relation.length; i++) {
-                var a = EcAlignment.getBlocking(this.framework.relation[i]);
+                var a = await EcAlignment.get(this.framework.relation[i]);
                 if (a == null) { continue; }
                 if (a.relationType === "narrows") {
                     if (a.target == null) continue;

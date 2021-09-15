@@ -119,17 +119,17 @@ export default {
                 }
             }
         },
-        getCompetencyName(compId) {
-            let comp = EcRepository.getBlocking(compId);
+        async getCompetencyName(compId) {
+            let comp = await EcRepository.get(compId);
             if (comp) return comp.getName();
             else return 'Unknown Competency';
         },
-        buildCompetencyCommentWrappers: function() {
+        buildCompetencyCommentWrappers: async function() {
             if (this.currentFramework.competency) {
                 for (let fwkCompId of this.currentFramework.competency) {
                     let compComments = this.commentAboutMap[fwkCompId];
                     if (compComments && compComments.length > 0) {
-                        let compName = this.getCompetencyName(fwkCompId);
+                        let compName = await this.getCompetencyName(fwkCompId);
                         for (let cc of compComments) {
                             let cw = this.buildCommentWrapper(cc, compName, true);
                             this.commentWrapperList.push(cw);
@@ -162,9 +162,9 @@ export default {
             }
             this.addRepliesToParentWrapper(replyList);
         },
-        buildCommentDisplayStructures: function() {
+        buildCommentDisplayStructures: async function() {
             this.buildFrameworkCommentWrappers();
-            this.buildCompetencyCommentWrappers();
+            await this.buildCompetencyCommentWrappers();
             this.buildReplyCommentWrappers();
         },
         buildCommentAboutMap: function() {

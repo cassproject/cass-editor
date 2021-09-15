@@ -7,7 +7,7 @@
             class="">
             <router-link
                 v-if="queryParams.ceasnDataFields !== 'true'"
-                to="/">
+                :to="{path: '/', query: queryParams}">
                 <img
                     v-if="showSideNav"
                     class="cass-logo"
@@ -137,7 +137,7 @@
         <ul
             class="menu-list">
             <li class="has-text-white">
-                <router-link to="/frameworks">
+                <router-link :to="{path: '/frameworks', query: queryParams}">
                     <span class="icon">
                         <i class="fa fa-th-list" />
                     </span>
@@ -148,7 +148,7 @@
                 class="has-text-white"
                 v-if="showSideNav">
                 <router-link
-                    to="/import"
+                    :to="{path: '/import', query: queryParams}"
                     @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');">
                     <span class="icon">
                         <i class="fa fa-upload" />
@@ -160,7 +160,7 @@
             <li
                 class="has-text-white"
                 v-if="crosswalkEnabled">
-                <router-link to="/crosswalk">
+                <router-link :to="{path: '/crosswalk', query: queryParams}">
                     <span class="icon">
                         <i class="fa fa-network-wired" />
                     </span>
@@ -194,7 +194,7 @@
                 v-for="directory in myTopLevelDirectories"
                 :key="directory.id"
                 @click="selectDirectory(directory)">
-                <router-link to="/directory">
+                <router-link :to="{path: '/directory', query: queryParams}">
                     <span
                         class="icon"
                         v-if="$store.getters['app/selectedDirectory'] && $store.getters['app/selectedDirectory'].id === directory.id">
@@ -221,7 +221,7 @@
         <ul
             class="menu-list">
             <li class="has-text-white">
-                <router-link to="/concepts">
+                <router-link :to="{path: '/concepts', query: queryParams}">
                     <span class="icon">
                         <i class="fa fa-layer-group" />
                     </span>
@@ -237,7 +237,7 @@
                 class="has-text-white"
                 v-if="showSideNav">
                 <router-link
-                    to="/import"
+                    :to="{path: '/import', query: queryParams}"
                     @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');">
                     <span class="icon">
                         <i class="fa fa-upload" />
@@ -268,21 +268,21 @@
         <ul
             class="menu-list">
             <li v-if="configurationsEnabled">
-                <router-link to="/configuration">
+                <router-link :to="{path: '/configuration', query: queryParams}">
                     <span class="icon">
                         <i class="fa fa-cog" />
                     </span><span v-if="showSideNav">Configurations</span>
                 </router-link>
             </li>
             <li v-if="pluginsEnabled">
-                <router-link to="/pluginManager">
+                <router-link :to="{path: '/pluginManager', query: queryParams}">
                     <span class="icon">
                         <i class="fa fa-charging-station" />
                     </span><span v-if="showSideNav">Plugins</span>
                 </router-link>
             </li>
             <li v-if="isLoggedOn && userManagementEnabled">
-                <router-link to="/users">
+                <router-link :to="{path: '/users', query: queryParams}">
                     <span class="icon">
                         <i class="fa fa-users" />
                     </span><span v-if="showSideNav">Users and Groups</span>
@@ -429,8 +429,8 @@ export default {
             dir.name = this.directoryName;
             // dir.description = "Test Description";
             dir.generateId(window.repo.selectedServer);
-            if (EcIdentityManager.ids.length > 0) {
-                dir.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+            if (EcIdentityManager.default.ids.length > 0) {
+                dir.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             dir["schema:dateCreated"] = new Date().toISOString();
             dir["schema:dateModified"] = new Date().toISOString();

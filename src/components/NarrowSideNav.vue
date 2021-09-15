@@ -18,7 +18,7 @@
                 <div class="buttons is-right">
                     <router-link
                         class="button is-outlined is-link"
-                        to="/login">
+                        :to="{path: '/login', query: queryParams}">
                         <span class="icon">
                             <i class="fa fa-sign-in-alt" />
                         </span>
@@ -28,7 +28,7 @@
             <template v-else>
                 <router-link
                     class="button is-outlined is-link"
-                    to="/login">
+                    :to="{path: '/login', query: queryParams}">
                     <span class="icon">
                         <i class="fa fa-sign-in-alt" />
                     </span>
@@ -51,7 +51,7 @@
         <ul
             class="menu-list">
             <li class="has-text-white">
-                <router-link to="/frameworks">
+                <router-link :to="{path: '/frameworks', query: queryParams}">
                     Frameworks
                 </router-link>
             </li>
@@ -63,13 +63,13 @@
             <!-- hidding this for now -->
             <li
                 class="has-text-white">
-                <router-link to="/crosswalk">
+                <router-link :to="{path: '/crosswalk', query: queryParams}">
                     Crosswalk Frameworks
                 </router-link>
             </li>
             <li class="has-text-white">
                 <router-link
-                    to="/import"
+                    :to="{path: '/import', query: queryParams}"
                     @click.native="$store.commit('editor/conceptMode', false)">
                     Import
                 </router-link>
@@ -83,7 +83,7 @@
         <ul
             class="menu-list">
             <li class="has-text-white">
-                <router-link to="/concepts">
+                <router-link :to="{path: '/concepts', query: queryParams}">
                     Concepts
                 </router-link>
             </li>
@@ -94,7 +94,7 @@
             </li>
             <li class="has-text-white">
                 <router-link
-                    to="/import"
+                    :to="{path: '/import', query: queryParams}"
                     @click.native="$store.commit('editor/conceptMode', true)">
                     Import
                 </router-link>
@@ -108,17 +108,17 @@
         <ul
             class="menu-list">
             <li>
-                <router-link to="/configuration">
+                <router-link :to="{path: '/configuration', query: queryParams}">
                     Configurations
                 </router-link>
             </li>
             <li>
-                <router-link to="/pluginManager">
+                <router-link :to="{path: '/pluginManager', query: queryParams}">
                     Plugins
                 </router-link>
             </li>
             <li v-if="isLoggedOn">
-                <router-link to="/users">
+                <router-link :to="{path: '/users', query: queryParams}">
                     Users/Groups
                 </router-link>
             </li>

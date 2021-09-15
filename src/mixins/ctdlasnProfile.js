@@ -158,18 +158,6 @@ export default {
                     "max": 1,
                     "heading": "Connections"
                 },
-                "https://purl.org/ctdlasn/terms/isVersionOf": {
-                    "@id": "https://purl.org/ctdlasn/terms/isVersionOf",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes":
-                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "A related competency framework of which this competency framework is a version, edition, or adaptation."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Version Of"}],
-                    "max": 1,
-                    "heading": "Connections"
-                },
                 "http://purl.org/dc/elements/1.1/source": {
                     "@id": "http://purl.org/dc/elements/1.1/source",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -336,7 +324,6 @@ export default {
                     "http://schema.org/keywords",
                     "https://purl.org/ctdlasn/terms/conceptTerm",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
-                    "https://purl.org/ctdlasn/terms/isVersionOf",
                     "http://purl.org/dc/elements/1.1/source",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://schema.cassproject.org/0.4/socList",
@@ -565,6 +552,18 @@ export default {
                     "max": 1,
                     "heading": "Scales"
                 },
+                "https://purl.org/ctdlasn/terms/isVersionOf": {
+                    "@id": "https://purl.org/ctdlasn/terms/isVersionOf",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "A related competency of which this competency is a version, edition, or adaptation."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Version Of"}],
+                    "max": 1,
+                    "heading": "Connections"
+                },
                 "narrows": {
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
@@ -746,6 +745,7 @@ export default {
                     "majorRelated",
                     "minorRelated",
                     "requires",
+                    "https://purl.org/ctdlasn/terms/isVersionOf",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
                     "http://schema.org/identifier"
@@ -1194,7 +1194,7 @@ export default {
                     [{"@language": "en", "@value": "The Credential Registry URL of the concept."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.conceptRegistryURLs; },
+                    "valuesIndexed": function() { return me.conceptRegistryURLs(); },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -1207,7 +1207,7 @@ export default {
                     [{"@language": "en", "@value": "The CTID of the concept."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.conceptCtids; },
+                    "valuesIndexed": function() { return me.conceptCtids(); },
                     "max": 1,
                     "isRequired": "true",
                     "heading": "Keys"

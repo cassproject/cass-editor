@@ -198,11 +198,11 @@ export default {
         }
     },
     methods: {
-        goToFramework: function(framework) {
+        goToFramework: async function(framework) {
             if (this.framework.shortId() === framework.url && this.dynamicModalContent.objectType !== "Level") {
                 return this.goToCompetencyWithinThisFramework();
             }
-            this.$store.commit('editor/framework', EcRepository.getBlocking(framework.url));
+            this.$store.commit('editor/framework', await EcRepository.get(framework.url));
             if (this.dynamicModalContent.objectType === "Concept") {
                 this.$store.commit('editor/conceptMode', true);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: framework.url}});
@@ -214,10 +214,10 @@ export default {
             this.$scrollTo("#scroll-" + this.dynamicModalContent.uri.split('/').pop());
             this.$store.commit('app/closeModal');
         },
-        findConceptTrail: function(conceptId) {
-            var concept = EcRepository.getBlocking(conceptId);
+        findConceptTrail: async function(conceptId) {
+            var concept = await EcRepository.get(conceptId);
             if (concept["skos:topConceptOf"]) {
-                var scheme = EcConceptScheme.getBlocking(concept["skos:topConceptOf"]);
+                var scheme = await EcConceptScheme.get(concept["skos:topConceptOf"]);
                 if (scheme) {
                     this.parentFrameworks.push({name: this.getDisplayStringFrom(scheme["dcterms:title"]), url: scheme.shortId()});
                 }
@@ -276,7 +276,7 @@ export default {
             this.findConceptTrail(this.dynamicModalContent.uri);
         }
         EcRepository.get(this.content.uri, function(success) {
-            if (success.canEditAny(EcIdentityManager.getMyPks())) {
+            if (success.canEditAny(EcIdentityManager.default.getMyPks())) {
                 me.canEdit = true;
                 me.obj = success;
             } else {

@@ -141,7 +141,7 @@
                                     <SearchBar
                                         view="crosswalk"
                                         filterSet="basic"
-                                        :ownedByMe="setSearchToOnlyShowOwned"
+                                        :ownedByMe="false"
                                         searchType="framework" />
                                 </div>
                             </div>
@@ -509,13 +509,6 @@ export default {
         queryParamsComputed: function() {
             return this.$store.getters['editor/queryParams'];
         },
-        setSearchToOnlyShowOwned: function() {
-            if (this.step === 0) {
-                return true;
-            } else {
-                return false;
-            }
-        },
         type: function() {
             return "Framework";
         },
@@ -535,13 +528,13 @@ export default {
                 search += " AND (" + this.queryParams.filter + ")";
             }
             if (this.showMine || (this.queryParams && this.queryParams.show === "mine")) {
-                if (EcIdentityManager.ids.length > 0) {
+                if (EcIdentityManager.default.ids.length > 0) {
                     search += " AND (";
-                    for (var i = 0; i < EcIdentityManager.ids.length; i++) {
+                    for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
                         if (i !== 0) {
                             search += " OR ";
                         }
-                        var id = EcIdentityManager.ids[i];
+                        var id = EcIdentityManager.default.ids[i];
                         search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
                     }
                     search += ")";
@@ -933,14 +926,14 @@ export default {
                 this.$store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
             }
         },
-        setEnabledRelationshipTypesFromOtherConfig: function() {
+        setEnabledRelationshipTypesFromOtherConfig: async function() {
             if (this.frameworkSource.configuration) {
                 appLog('Using framework configuration for enabled relationship types...');
-                let c = EcRepository.getBlocking(this.frameworkSource.configuration);
+                let c = await EcRepository.get(this.frameworkSource.configuration);
                 this.setEnabledRelationshipListFromCatConfigObj(c);
             } else if (this.getDefaultBrowserConfigId() && !this.getDefaultBrowserConfigId().trim().equals('')) {
                 appLog('Using browser configuration for enabled relationship types...');
-                let c = EcRepository.getBlocking(this.getDefaultBrowserConfigId());
+                let c = await EcRepository.get(this.getDefaultBrowserConfigId());
                 this.setEnabledRelationshipListFromCatConfigObj(c);
             } else {
                 let me = this;

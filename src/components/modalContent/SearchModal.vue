@@ -31,7 +31,8 @@
                 parent="search-modal"
                 :allowShowFrameworks="true"
                 :clearFramework="clearFramework"
-                @selectFramework="selectFramework" />
+                @selectFramework="selectFramework"
+                :idsNotPermittedInSearch="idsNotPermittedInSearch" />
         </template>
         <template slot="modal-foot">
             <div class="buttons">
@@ -115,6 +116,16 @@ export default {
         },
         searchFrameworksInCompetencySearch: function() {
             return this.$store.getters['app/searchFrameworksInCompetencySearch'];
+        },
+        idsNotPermittedInSearch: function() {
+            if (this.copyOrLink) {
+                let ary = [this.framework.shortId()];
+                if (this.framework.competency && this.framework.competency.length > 0) {
+                    ary = ary.concat(this.framework.competency);
+                }
+                return ary;
+            }
+            return null;
         }
     },
     methods: {
@@ -131,19 +142,19 @@ export default {
         selectFramework: function(val) {
             this.selectedFramework = val;
         },
-        addRelations: function() {
+        addRelations: async function() {
             if (this.searchFrameworksInCompetencySearch && this.selectedFramework.relation) {
                 for (var i = 0; i < this.selectedFramework.relation.length; i++) {
-                    var relation = EcAlignment.getBlocking(this.selectedFramework.relation[i]);
+                    var relation = await EcAlignment.get(this.selectedFramework.relation[i]);
                     if (EcArray.has(this.selectedIds, relation.target) && EcArray.has(this.selectedIds, relation.source)) {
                         this.selectedIds.push(relation.shortId());
                     }
                 }
             }
         },
-        copyCompetencies: function() {
+        copyCompetencies: async function() {
             let results = this.selectedIds;
-            this.addRelations();
+            await this.addRelations();
             var copyDict = {};
             var framework = this.$store.state.editor.framework;
             var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
@@ -152,7 +163,7 @@ export default {
             var addedNew = [];
             var me = this;
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
                     var c = new EcCompetency();
                     c.copyFrom(thing);
@@ -165,8 +176,8 @@ export default {
                     c["schema:dateCreated"] = new Date().toISOString();
                     c["schema:dateModified"] = new Date().toISOString();
                     delete c.owner;
-                    if (EcIdentityManager.ids.length > 0) {
-                        c.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                    if (EcIdentityManager.default.ids.length > 0) {
+                        c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
                     if (framework.owner && framework.owner.length > 0) {
                         for (var j = 0; j < framework.owner.length; j++) {
@@ -183,7 +194,7 @@ export default {
                     c['ceasn:derivedFrom'] = thing.id;
                     copyDict[thing.shortId()] = c;
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
-                        c = EcEncryptedValue.toEncryptedValue(c);
+                        c = await EcEncryptedValue.toEncryptedValue(c);
                     }
                     this.itemsSaving++;
                     (function(c) {
@@ -215,7 +226,7 @@ export default {
                     level['ceasn:derivedFrom'] = thing.id;
                     copyDict[thing.shortId()] = level;
                     if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
-                        level = EcEncryptedValue.toEncryptedValue(level);
+                        level = await EcEncryptedValue.toEncryptedValue(level);
                     }
                     this.itemsSaving++;
                     (function(level) {
@@ -235,7 +246,7 @@ export default {
                 }
             }
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcAlignment().getTypes())) {
                     var parent = copyDict[thing.target];
                     var child = copyDict[thing.source];
@@ -254,8 +265,8 @@ export default {
                         r.target = parent.shortId();
                         r.source = child.shortId();
                         r.relationType = thing.relationType;
-                        if (EcIdentityManager.ids.length > 0) {
-                            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         if (framework.owner && framework.owner.length > 0) {
                             for (var j = 0; j < framework.owner.length; j++) {
@@ -272,7 +283,7 @@ export default {
                         if (r.source !== r.target) {
                             framework["schema:dateModified"] = new Date().toISOString();
                             if (this.$store.state.editor.private === true) {
-                                r = EcEncryptedValue.toEncryptedValue(r);
+                                r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.itemsSaving++;
                             (function(r) {
@@ -296,7 +307,7 @@ export default {
             }
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
                     if (selectedCompetency != null) {
                         var r = new EcAlignment();
@@ -313,8 +324,8 @@ export default {
                         r.target = selectedCompetency.shortId();
                         r.source = child.shortId();
                         r.relationType = Relation.NARROWS;
-                        if (EcIdentityManager.ids.length > 0) {
-                            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         if (framework.owner && framework.owner.length > 0) {
                             for (var j = 0; j < framework.owner.length; j++) {
@@ -333,7 +344,7 @@ export default {
                             framework.addRelation(r.id);
                             framework["schema:dateModified"] = new Date().toISOString();
                             if (this.$store.state.editor.private === true) {
-                                r = EcEncryptedValue.toEncryptedValue(r);
+                                r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             (function(r) {
                                 Task.asyncImmediate(function(callback) {
@@ -353,7 +364,7 @@ export default {
                 }
             }
         },
-        afterCopy: function(initialCompetencies, initialRelations, initialLevels, addedNew) {
+        afterCopy: async function(initialCompetencies, initialRelations, initialLevels, addedNew) {
             this.itemsSaving--;
             // loading(this.itemsSaving + " objects left to copy.");
             if (this.itemsSaving === 0) {
@@ -365,15 +376,15 @@ export default {
                 changes.push({operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level]});
                 this.$store.commit('editor/addEditsToUndo', changes);
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = EcEncryptedValue.toEncryptedValue(framework);
+                    framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
                 this.repo.saveTo(framework, function() {}, appError);
                 this.closeModal();
             }
         },
-        appendCompetencies: function() {
+        appendCompetencies: async function() {
             let results = this.selectedIds;
-            this.addRelations();
+            await this.addRelations();
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             var framework = this.$store.state.editor.framework;
             var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
@@ -384,7 +395,7 @@ export default {
             var addedNew = [];
             var me = this;
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcCompetency().getTypes())) {
                     framework.addCompetency(thing.shortId());
                 } else if (thing.isAny(new EcLevel().getTypes())) {
@@ -400,7 +411,7 @@ export default {
                 }
             }
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcAlignment().getTypes())) {
                     if (EcArray.has(framework.competency, thing.source)) {
                         if (EcArray.has(framework.competency, thing.target)) {
@@ -411,7 +422,7 @@ export default {
             }
 
             for (var i = 0; i < results.length; i++) {
-                var thing = EcRepository.getBlocking(results[i]);
+                var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcCompetency().getTypes())) {
                     if (selectedCompetency != null) {
                         var r = new EcAlignment();
@@ -426,8 +437,8 @@ export default {
                         r.target = selectedCompetency.shortId();
                         r.source = thing.shortId();
                         r.relationType = Relation.NARROWS;
-                        if (EcIdentityManager.ids.length > 0) {
-                            r.addOwner(EcIdentityManager.ids[0].ppk.toPk());
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
                         if (framework.owner && framework.owner.length > 0) {
                             for (var j = 0; j < framework.owner.length; j++) {
@@ -445,7 +456,7 @@ export default {
                         if (r.source !== r.target) {
                             framework.addRelation(r.id);
                             if (this.$store.state.editor.private === true) {
-                                r = EcEncryptedValue.toEncryptedValue(r);
+                                r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.repo.saveTo(r, function() {}, appError);
                         }
@@ -464,10 +475,10 @@ export default {
             changes.push({operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level]});
             this.$store.commit('editor/addEditsToUndo', changes);
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                framework = EcEncryptedValue.toEncryptedValue(framework);
+                framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
-            this.repo.saveTo(framework, function() {
-                me.$store.commit('editor/framework', EcFramework.getBlocking(framework.id));
+            this.repo.saveTo(framework, async function() {
+                me.$store.commit('editor/framework', await EcFramework.get(framework.id));
                 me.closeModal();
             }, appError);
         }

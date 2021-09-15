@@ -190,10 +190,10 @@ export default {
             this.configToDelete = {};
             this.configBusy = false;
         },
-        deleteConfiguration() {
+        async deleteConfiguration() {
             this.showConfirmDeleteConfigModal = false;
             this.configBusy = true;
-            let configObj = EcRepository.getBlocking(this.configToDelete.id);
+            let configObj = await EcRepository.get(this.configToDelete.id);
             if (configObj) {
                 let repo = window.repo;
                 repo.deleteRegistered(configObj, this.handleDeleteConfigurationSuccess, this.handleDeleteConfigurationFailure);
@@ -224,7 +224,7 @@ export default {
                 }
             }
         },
-        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, permittedValues, heading, allowMultiples, onePerLanguage) {
+        generatePropertyConfigObject(id, domain, range, description, label, priority, required, readOnly, noTextEditing, isDirectLink, permittedValues, permittedConcepts, permittedTypes, heading, allowMultiples, onePerLanguage) {
             let propObj = {};
             propObj["@id"] = id;
             propObj["@type"] = "http://www.w3.org/2000/01/rdf-schema#Property";
@@ -250,6 +250,7 @@ export default {
             propObj.isRequired = required;
             propObj.readOnly = readOnly;
             propObj.noTextEditing = noTextEditing;
+            propObj.isDirectLink = isDirectLink;
             if (!allowMultiples) propObj.max = 1;
             if (range.equalsIgnoreCase(this.LANG_STRING_RANGE)) propObj.onePerLanguage = onePerLanguage;
             if (permittedValues && permittedValues.length > 0) {
@@ -260,7 +261,24 @@ export default {
                     option.val = pv.value.trim();
                     propObj.options.push(option);
                 }
+            } else if (permittedConcepts && permittedConcepts.length > 0) {
+                propObj.options = [];
+                for (let pv of permittedConcepts) {
+                    let option = {};
+                    option.display = pv.display.trim();
+                    option.val = pv.value.trim();
+                    propObj.options.push(option);
+                }
+            } else if (permittedTypes && permittedTypes.length > 0) {
+                propObj.options = [];
+                for (let pv of permittedTypes) {
+                    let option = {};
+                    option.display = pv.display.trim();
+                    option.val = pv.value.trim();
+                    propObj.options.push(option);
+                }
             }
+
             if (heading && !heading.trim().equals('')) propObj.heading = heading.trim();
             else if (this.enforceHeadings) propObj.heading = this.DEFAULT_HEADING;
             return propObj;
@@ -277,8 +295,11 @@ export default {
                     prop.priority,
                     prop.required,
                     false,
-                    false,
+                    prop.noTextEditing,
+                    prop.isDirectLink,
                     prop.permittedValues,
+                    prop.permittedConcepts,
+                    prop.permittedTypes,
                     prop.heading,
                     prop.allowMultiples,
                     prop.onePerLanguage);
@@ -310,6 +331,9 @@ export default {
                 true,
                 true,
                 true,
+                false,
+                null,
+                null,
                 null,
                 this.currentConfig.fwkIdHeading,
                 false,
@@ -326,6 +350,9 @@ export default {
                 true,
                 false,
                 false,
+                false,
+                null,
+                null,
                 null,
                 this.currentConfig.fwkNameHeading,
                 false,
@@ -342,6 +369,9 @@ export default {
                 this.currentConfig.fwkDescRequired,
                 false,
                 false,
+                false,
+                null,
+                null,
                 null,
                 this.currentConfig.fwkDescHeading,
                 false,
@@ -402,6 +432,9 @@ export default {
                 true,
                 true,
                 true,
+                false,
+                null,
+                null,
                 null,
                 this.currentConfig.compIdHeading,
                 false,
@@ -418,6 +451,9 @@ export default {
                 true,
                 false,
                 false,
+                false,
+                null,
+                null,
                 null,
                 this.currentConfig.compNameHeading,
                 false,
@@ -434,6 +470,9 @@ export default {
                 this.currentConfig.compDescRequired,
                 false,
                 false,
+                false,
+                null,
+                null,
                 null,
                 this.currentConfig.compDescHeading,
                 false,
@@ -454,7 +493,10 @@ export default {
                 compTypeRequired,
                 false,
                 false,
+                false,
                 this.currentConfig.compEnforcedTypes,
+                null,
+                null,
                 this.currentConfig.compTypeHeading,
                 false,
                 true);
@@ -596,11 +638,10 @@ export default {
             if (headingsTracking.anyHeadingsPopulated && headingsTracking.anyHeadingsBlank) this.enforceHeadings = true;
         },
         generateComplexConfigObjectFromCurrentConfig() {
-            let cco = new Thing();
+            let cco = new schema.Thing();
             cco.context = this.DEFAULT_CONFIGURATION_CONTEXT;
             cco.type = this.DEFAULT_CONFIGURATION_TYPE;
             this.addAllIdentityPksAsOwners(cco);
-            appLog(this.currentConfig);
             if (this.currentConfig.isNew) cco.generateId(window.repo.selectedServer);
             else cco.id = this.currentConfig.id;
             cco.setName(this.currentConfig.name.trim());
@@ -628,7 +669,7 @@ export default {
             appLog("complexConfigObject: ");
             appLog(JSON.stringify(this.complexConfigObject));
             this.configBusy = true;
-            EcRepository.save(this.complexConfigObject, this.saveConfigToRepositorySuccess, this.saveConfigToRepositoryFailure);
+            window.repo.saveTo(this.complexConfigObject, this.saveConfigToRepositorySuccess, this.saveConfigToRepositoryFailure);
         },
         saveConfigToRepositorySuccess(msg) {
             appLog("Config save success");

@@ -24,7 +24,7 @@
                 </button>
                 <button
                     class="button is-outlined is-danger"
-                    @click="$router.push('login')">
+                    @click="$router.push({name: 'login', query: queryParams})">
                     Login
                 </button>
             </div>
@@ -55,6 +55,11 @@ export default {
         }
     },
     methods: {
+    },
+    computed: {
+        queryParams() {
+            return this.$store.getters['editor/queryParams'];
+        }
     }
 };
 </script>

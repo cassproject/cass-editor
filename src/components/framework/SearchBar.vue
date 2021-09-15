@@ -23,7 +23,7 @@
                     ref="text"
                     type="search"
                     v-model="searchTerm"
-                    :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
+                    :placeholder="'Search for ' + ((searchType === 'Competency' || 'DirectLink') ? 'competencie' : searchType)+ 's...'"
                     @keyup.enter="updateSearchTerm(searchTerm)">
                 <span
                     v-if="searchTerm === ''"
@@ -65,7 +65,6 @@
                     class="field"
                     v-if="loggedIn">
                     <input
-                        :disabled="ownedByMe"
                         v-model="basicFilter"
                         class="is-checkradio"
                         value="ownedByMe"
@@ -238,7 +237,7 @@ export default {
             return this.$store.getters['app/sortResults'];
         },
         loggedIn: function() {
-            if (EcIdentityManager.ids && EcIdentityManager.ids.length > 0) {
+            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 return true;
             }
             return false;

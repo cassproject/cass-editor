@@ -464,10 +464,10 @@ export default {
                                         search += " OR ";
                                     }
                                 }
-                                EcOrganization.search(window.repo, 'name:' + me.searchTerm, function(success) {
+                                EcOrganization.search(window.repo, 'name:' + me.searchTerm, async function(success) {
                                     appLog(success);
                                     for (var i = 0; i < success.length; i++) {
-                                        search += "\\*owner:\"" + me.getOrganizationEcPk(success[i]).toPem() + "\"";
+                                        search += "\\*owner:\"" + (await me.getOrganizationEcPk(success[i])).toPem() + "\"";
                                         termAdded = true;
                                         if (i < success.length - 1) {
                                             search += " OR ";
@@ -517,13 +517,13 @@ export default {
             let arrayType = type.toLowerCase();
             me.buildSearch(type, function(search) {
                 if (search) {
-                    me.repo.searchWithParams(search, localParamObj, function(result) {
+                    me.repo.searchWithParams(search, localParamObj, async function(result) {
                         if (!EcArray.has(me.resultIds, result.id)) {
                             if (result.isAny(new EcEncryptedValue().getTypes())) {
                                 let v = new EcEncryptedValue();
                                 v.copyFrom(result);
                                 let unencrypted = new window["Ec" + type]();
-                                unencrypted.copyFrom(v.decryptIntoObject());
+                                unencrypted.copyFrom(await v.decryptIntoObject());
                                 result = unencrypted;
                             }
                             me[arrayType].push(result);
@@ -533,13 +533,13 @@ export default {
                         me.firstSearchProcessing = false;
                         if (!me.applySearchTo) {
                             me.buildSearch("EncryptedValue AND \\*encryptedType:" + type, function(search) {
-                                me.repo.searchWithParams(search, localParamObj, function(result) {
+                                me.repo.searchWithParams(search, localParamObj, async function(result) {
                                     // Decrypt and add to results list
                                     var type = "Ec" + result.encryptedType;
                                     var v = new EcEncryptedValue();
                                     v.copyFrom(result);
                                     var obj = new window[type]();
-                                    obj.copyFrom(v.decryptIntoObject());
+                                    obj.copyFrom(await v.decryptIntoObject());
                                     if (!EcArray.has(me.resultIds, obj.id)) {
                                         me[arrayType].push(obj);
                                         me.resultIds.push(obj.id);

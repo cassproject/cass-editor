@@ -429,7 +429,7 @@ export default {
                 return false;
             }
             if (this.originalThing && this.originalThing.canEditAny) {
-                return this.originalThing.canEditAny(EcIdentityManager.getMyPks());
+                return this.originalThing.canEditAny(EcIdentityManager.default.getMyPks());
             }
             return true;
         },
@@ -896,7 +896,7 @@ export default {
                 }
             }
             // When we save, we need to remove all the extreneous arrays that we added to support reactivity.
-            jsonld.compact(this.stripEmptyArrays(this.expandedThing), this.$store.state.lode.rawSchemata[this.context], function(err, compacted) {
+            jsonld.compact(this.stripEmptyArrays(this.expandedThing), this.$store.state.lode.rawSchemata[this.context], async function(err, compacted) {
                 if (err != null) {
                     appError(err);
                 }
@@ -912,7 +912,7 @@ export default {
                         rld.owner = [rld.owner];
                     }
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
-                        rld = EcEncryptedValue.toEncryptedValue(rld);
+                        rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     repo.saveTo(rld, appLog, appError);
                 }
@@ -981,7 +981,7 @@ export default {
                 if (!name) {
                     name = success["skos:prefLabel"];
                 }
-                name = Thing.getDisplayStringFrom(name);
+                name = schema.Thing.getDisplayStringFrom(name);
                 // If still object, display value
                 if (EcObject.isObject(name)) {
                     var langs = Object.keys(name);
@@ -1022,7 +1022,7 @@ export default {
                             }
                         }
                         // If it's a langstring
-                        name = Thing.getDisplayStringFrom(name);
+                        name = schema.Thing.getDisplayStringFrom(name);
                         // If still object, display value
                         if (EcObject.isObject(name)) {
                             var langs = Object.keys(name);
@@ -1041,7 +1041,7 @@ export default {
             var xhr = null;
             if ((typeof httpStatus) === "undefined") {
                 xhr = new XMLHttpRequest();
-                xhr.open("GET", url, EcRemote.async);
+                xhr.open("GET", url, true);
                 if (headers != null) {
                     var keys = EcObject.keys(headers);
                     for (var i = 0; i < keys.length; i++) {
@@ -1062,9 +1062,7 @@ export default {
                 };
             }
             if (xhr != null) {
-                if (EcRemote.async) {
-                    (xhr)["timeout"] = EcRemote.timeout;
-                }
+                (xhr)["timeout"] = EcRemote.timeout;
             }
             if ((typeof httpStatus) !== "undefined") {
                 if (success != null) {
@@ -1151,7 +1149,7 @@ export default {
             this.showAlways = true;
             this.showPossible = false;
         },
-        changedObject: function() {
+        changedObject: async function() {
             if (this.changedObject && this.view === "importLight") {
                 this.load();
                 this.$store.commit('editor/changedObject', null);
@@ -1162,19 +1160,19 @@ export default {
                 var type = "Ec" + (this.obj ? this.obj.type : this.shortType);
                 if (type === "EcEncryptedValue") {
                     let encryptedType = "Ec" + this.obj.encryptedType;
-                    let encryptedThing = EcRepository.getBlocking(this.changedObject);
+                    let encryptedThing = await EcRepository.get(this.changedObject);
                     let v = new EcEncryptedValue();
                     v.copyFrom(encryptedThing);
                     let returnObject = new window[encryptedType]();
-                    returnObject.copyFrom(v.decryptIntoObject());
+                    returnObject.copyFrom(await v.decryptIntoObject());
                     this.obj = returnObject;
                     this.load();
-                } else if (type && window[type] && window[type].getBlocking) {
-                    let thing = window[type].getBlocking(this.changedObject);
+                } else if (type && window[type] && window[type].get) {
+                    let thing = await window[type].get(this.changedObject);
                     this.obj = thing;
                     this.load();
                 } else if (type && window[type]) {
-                    appLog("Can't getBlocking for type: " + type);
+                    appLog("Can't get type: " + type);
                 }
                 this.$store.commit('editor/changedObject', null);
             }

@@ -293,7 +293,7 @@
         </div>
         <template>
             <draggable
-                v-show="!collapse"
+                v-if="!collapse"
                 :id="obj.shortId()"
                 v-bind="dragOptions"
                 v-model="hasChild"
@@ -416,10 +416,10 @@ export default {
             isDraggable: true,
             addingNode: false,
             editingNode: false,
-            collapse: false,
+            collapse: true,
             controlOnStart: false,
             checked: false,
-            childrenExpanded: true,
+            childrenExpanded: false,
             // Needed to update the obj prop passed to the dynamic Thing/ThingEditing component on change to the object
             changedObj: null,
             crosswalkTargetClass: '',
@@ -550,7 +550,7 @@ export default {
                 return false;
             }
             if (this.obj && this.obj.canEditAny) {
-                return this.obj.canEditAny(EcIdentityManager.getMyPks());
+                return this.obj.canEditAny(EcIdentityManager.default.getMyPks());
             }
             return true;
         }
@@ -559,8 +559,12 @@ export default {
     mounted() {
         this.$emit('mounting-node');
         appLog("hierarchyNode.vue is mounted");
-        if (this.largeNumberOfItems) {
-            this.collapse = this.largeNumberOfItems;
+        this.collapse = this.largeNumberOfItems;
+        if (this.expandAll) {
+            this.collapse = false;
+        }
+        if (!this.collapse) {
+            this.childrenExpanded = true;
         }
         if (this.view === 'crosswalk' && this.subview === 'crosswalkSource') {
             this.buildCrosswalkOptions();
@@ -657,7 +661,7 @@ export default {
         onEditNode: function() {
             this.editingNode = true;
         },
-        onDoneEditingNode: function() {
+        onDoneEditingNode: async function() {
             this.editingNode = false;
             if (this.obj.shortId() === this.newCompetency) {
                 if (this.view.indexOf('import') !== -1) {
@@ -697,7 +701,7 @@ export default {
                 this.$store.commit('editor/recomputeHierarchy', true);
             }
             // Update the obj prop passed to Thing/ThingEditing so edits are reflected
-            this.changedObj = EcRepository.getBlocking(this.obj.shortId());
+            this.changedObj = await EcRepository.get(this.obj.shortId());
         },
         onAddNodeEvent: function() {
             this.add(this.obj.shortId());

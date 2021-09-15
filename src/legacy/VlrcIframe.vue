@@ -36,8 +36,8 @@ export default {
                 document.getElementsByTagName('iframe')[0].contentWindow.postMessage(JSON.stringify({
                     action: "initIdentity",
                     serverParm: me.repo.selectedServer,
-                    nameParm: EcIdentityManager.ids[0].displayName,
-                    pemParm: EcIdentityManager.ids[0].ppk.toPem()
+                    nameParm: EcIdentityManager.default.ids[0].displayName,
+                    pemParm: EcIdentityManager.default.ids[0].ppk.toPem()
                 }), origin);
             }
         }
