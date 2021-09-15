@@ -29,6 +29,7 @@ jobs:
       - run: find ./docs -name '*.md' -exec sed -i 's/\/docs\//\/cass-editor\/docs\//g' {} \;
       - run: export VUE_APP_API_LOGIN_ENABLED=false
       - run: npm ci
+      - run: sed -i 's/\/forgeAsync.js\//\/cass-editor\/forgeAsync.js\//g' ./node-modules/cassproject/src/com/eduworks/ec/crypto/EcRsaOaepAsyncWorker.js
       - run: npm run docs:build
       - run: npm run build
 
