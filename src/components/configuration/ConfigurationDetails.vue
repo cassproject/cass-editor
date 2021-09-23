@@ -3413,7 +3413,9 @@ export default {
         filterTypes: function() {
             this.filteredTypes = [];
             this.isOpenAutocomplete = true;
-            this.filteredTypes = this.customPropertyAvailableTypes.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+            let types = this.customPropertyAvailableTypes.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+            types.sort((a, b) => a.display.localeCompare(b.display));
+            this.filteredTypes = [...new Set(types)];
         },
         selectType: function(type) {
             // Check for duplicates
@@ -3477,7 +3479,11 @@ export default {
         },
         customPropertyAvailableTypes: {
             get() {
-                return this.$store.getters['configuration/availableTypes'];
+                let types = this.$store.getters['configuration/availableTypes'];
+                this.currentConfig.compEnforcedTypes.forEach((type) => {
+                    types.push(type);
+                });
+                return types;
             },
             set(val) {
                 this.$store.commit('configuration/availableTypes', val);
