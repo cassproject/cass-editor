@@ -2416,9 +2416,15 @@
                     </div>
                 </div>
                 <!-- ************************************** Validation ************************************************ -->
-                <div class="section">
-                    <div v-if="configInvalid">
-                        <p>Configuration is invalid:</p>
+                <div
+                    id="config-invalid"
+                    class="section">
+                    <div
+                        class="has-text-danger"
+                        v-if="configInvalid">
+                        <p>
+                            Configuration is invalid:
+                        </p>
                         <p v-if="configNameInvalid">
                             *Configuration name is required
                         </p>
@@ -2888,6 +2894,8 @@ export default {
             this.validateConfigFields();
             if (!this.configInvalid) {
                 this.$emit('save', this.localEnforcedLevelValues, this.localDefaultOwners, this.localDefaultReaders, this.localDefaultCommenters);
+            } else {
+                this.$scrollTo('#config-invalid', '400', this.scrollOptions);
             }
         },
         deleteCompetencyEnforcedType(etIndex) {
@@ -3630,6 +3638,6 @@ export default {
                 cursor: pointer;
             }
         }
-    }
+}
 </style>
 
