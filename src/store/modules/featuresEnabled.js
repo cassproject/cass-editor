@@ -11,7 +11,7 @@ const state = {
     pluginsEnabled: true,
     loginEnabled: true,
     legacyLoginEnabled: true,
-    apiLoginEnabled: (process.env.VUE_APP_API_LOGIN_ENABLED ? (process.env.VUE_APP_API_LOGIN_ENABLED === 'true') : false),
+    apiLoginEnabled: false,
     shareEnabled: true
 };
 
@@ -33,6 +33,9 @@ const mutations = {
     },
     loginEnabled(state, bool) {
         state.loginEnabled = bool;
+    },
+    apiLoginEnabled(state, bool) {
+        state.apiLoginEnabled = bool;
     },
     legacyLoginEnabled(state, bool) {
         state.legacyLoginEnabled = bool;
