@@ -90,7 +90,13 @@ export default {
                 if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                     me.findLinkedPersonForIdentity();
                 }
-            }, appError);
+            }, appError, (loginInfo) => {
+                this.$store.commit('user/repositorySsoOptions', loginInfo);
+                if (loginInfo.ssoLogin != null) {
+                    console.log("Setting SSO login to enabled.");
+                    this.$store.commit('featuresEnabled/apiLoginEnabled', true);
+                }
+            });
             r.autoDetectRepositoryAsync(appLog, appError);
             window.repo = r;
             this.repo = r;
