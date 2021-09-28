@@ -102,6 +102,10 @@ export default {
         clearFramework: {
             type: Boolean,
             default: false
+        },
+        typesPermittedInSearch: {
+            type: Array,
+            default: null
         }
     },
     components: {List, SearchBar, Hierarchy, Thing},
@@ -161,6 +165,15 @@ export default {
                     search += " AND (name NOT \"\")";
                 }
             }*/
+            if (this.searchType === 'DirectLink') {
+                if (this.typesPermittedInSearch && this.typesPermittedInSearch.length > 0) {
+                    search += " AND ((dcterms\\:type:" + this.typesPermittedInSearch[0] + ")";
+                    for (let i = 1; i < this.typesPermittedInSearch.length; i++) {
+                        search += " OR (dcterms\\:type:" + this.typesPermittedInSearch[i] + ")";
+                    }
+                    search += ")";
+                }
+            }
             if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] !== true && this.queryParams.show === "mine") ||
                 (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine")) {
                 if (EcIdentityManager.default.ids.length > 0) {
@@ -279,7 +292,7 @@ export default {
             } else {
                 EcArray.setRemove(this.selectedIds, competency.shortId());
             }
-            if (!this.copyOrLink || this.searchType === "Level") {
+            if (!this.copyOrLink || this.searchType === "Level" | this.searchType === "DirectLink") {
                 this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
             }
         },

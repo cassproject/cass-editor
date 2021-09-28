@@ -83,6 +83,13 @@ export default {
             r.selectedServer = server;
             r.init(server, function() {
                 appLog("Repository initialized");
+                if (EcIdentityManager.default.ids.length === 0) {
+                    EcIdentityManager.default.readContacts();
+                    EcIdentityManager.default.readIdentities();
+                }
+                if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
+                    me.findLinkedPersonForIdentity();
+                }
             }, appError);
             r.autoDetectRepositoryAsync(appLog, appError);
             window.repo = r;
@@ -163,11 +170,6 @@ export default {
                 ss.rel = "stylesheet";
                 ss.href = this.queryParams.css;
                 document.getElementsByTagName("head")[0].appendChild(ss);
-            }
-            EcIdentityManager.default.readContacts();
-            EcIdentityManager.default.readIdentities();
-            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
-                this.findLinkedPersonForIdentity();
             }
             // Preload schema so large frameworks are faster
             let types = [

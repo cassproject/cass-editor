@@ -317,6 +317,9 @@ export default {
         },
         buildSearch: function(type, callback) {
             var search = "";
+            if (type === 'DirectLink') {
+                type = 'Competency';
+            }
             // Used to only add OR to query if there's already a term
             var termAdded = false;
             if (!this.applySearchTo || this.searchTerm === "") {

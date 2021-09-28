@@ -191,7 +191,7 @@ TO DO MAYBE: Separate out property by editing or not.
                 <!-- propertystring components -->
                 <div
                     class="property"
-                    v-else-if="editingProperty && !checkedOptions && !(limitedConcepts.length > 0)">
+                    v-else-if="editingProperty && !checkedOptions && !(limitedConcepts.length > 0) && !(limitedTypes.length > 0)">
                     <PropertyString
                         :index="index"
                         :expandedProperty="expandedProperty"
@@ -204,8 +204,8 @@ TO DO MAYBE: Separate out property by editing or not.
                         :profile="profile"
                         @remove="remove(item)" />
                 </div>
-                <!-- concept with limited concept options -->
-                <div v-else-if="editingProperty && !checkedOptions && (limitedConcepts.length > 0)">
+                <!-- competency direct link with options limited by type -->
+                <div v-else-if="editingProperty && !checkedOptions && (limitedConcepts.length > 0) && (limitedTypes.length > 0)">
                     <PropertyString
                         :index="index"
                         :expandedProperty="expandedProperty"
@@ -218,7 +218,6 @@ TO DO MAYBE: Separate out property by editing or not.
                         :profile="profile"
                         @remove="remove(item)" />
                 </div>
-
                 <!-- text view has language -->
                 <div
                     class="expanded-view__has-language"
@@ -375,6 +374,7 @@ export default {
             initialValue: null,
             expandedValueNames: [],
             optionsArray: [],
+            limitedTypes: [],
             limitedConcepts: [],
             errorValidating: null,
             removePropertyConfirmModal: false,
@@ -406,6 +406,7 @@ export default {
         }
     },
     mounted: async function() {
+        this.limitedType = [];
         if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("level") !== -1 && this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
             this.checkedOptions = [];
             if (this.expandedValue.length > 0) {
@@ -445,6 +446,12 @@ export default {
                 option.name = (await EcRepository.get(option.val)).name;
                 this.optionsArray.push(option);
             }
+        }
+        if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("directlink") !== -1 && this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]['options']) {
+            const options = this.profile[this.expandedProperty]['options'];
+            options.forEach((option) => {
+                this.limitedTypes.push(option);
+            });
         }
     },
     destroyed: function() {

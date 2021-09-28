@@ -270,6 +270,7 @@ export default {
             checkedOptions: null,
             skipConfigProperties: ["alwaysProperties", "headings", "primaryProperties", "secondaryProperties", "tertiaryProperties", "relationshipsHeading", "relationshipsPriority"],
             optionsArray: [],
+            limitedTypes: [],
             limitedConcepts: []
         };
     },
@@ -375,7 +376,7 @@ export default {
             if (!range) {
                 return false;
             }
-            if (range.toLowerCase().indexOf("competency") !== -1 || range.toLowerCase().indexOf("concept") !== -1) {
+            if (range.toLowerCase().indexOf("competency") !== -1 || range.toLowerCase().indexOf("concept") !== -1 || range.toLowerCase().indexOf("directlink") !== -1) {
                 return false;
             }
             if (range.toLowerCase().indexOf("level") !== -1 && this.profile[property]["add"] !== "checkedOptions") {
@@ -410,6 +411,9 @@ export default {
             } else if (this.selectedPropertyRange[0].toLowerCase().indexOf("level") !== -1) {
                 this.$store.commit('lode/searchType', "Level");
                 this.$store.commit('lode/copyOrLink', true);
+            } else if (this.selectedPropertyRange[0].toLowerCase().indexOf("directlink") !== -1) {
+                this.$store.commit('lode/searchType', "DirectLink");
+                this.$store.commit('lode/copyOrLink', true);
             } else {
                 this.$store.commit('lode/searchType', "Competency");
                 this.$store.commit('lode/copyOrLink', false);
@@ -438,6 +442,7 @@ export default {
     watch: {
         selectedPropertyToAdd: async function() {
             this.selectedPropertyToAddIsLangString = false;
+            this.limitedTypes = [];
             this.limitedConcepts = [];
             if (this.profile && this.profile[this.selectedPropertyToAdd.value]) {
                 var range = [];
@@ -459,7 +464,12 @@ export default {
                 this.checkedOptions = null;
             }
             if (this.profile && this.profile[this.selectedPropertyToAdd.value] && this.profile[this.selectedPropertyToAdd.value]['options']) {
-                if (this.profile[this.selectedPropertyToAdd.value]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/skos/Concept") {
+                if (this.profile[this.selectedPropertyToAdd.value]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/DirectLink") {
+                    const options = this.profile[this.selectedPropertyToAdd.value]['options'];
+                    options.forEach((option) => {
+                        this.limitedTypes.push(option);
+                    });
+                } else if (this.profile[this.selectedPropertyToAdd.value]["http://schema.org/rangeIncludes"][0]["@id"] === "https://schema.cassproject.org/0.4/skos/Concept") {
                     for (let i = 0; i < this.profile[this.selectedPropertyToAdd.value]['options'].length; i++) {
                         await EcConceptScheme.get(this.profile[this.selectedPropertyToAdd.value]['options'][i].val).then((scheme) => {
                             if (scheme) {

@@ -132,6 +132,7 @@
                 </h4>
                 <Search
                     view="thing-editing"
+                    :typesPermittedInSearch="typesPermittedInSearch"
                     :idsNotPermittedInSearch="idsNotPermittedInSearch" />
             </section>
             <section
@@ -367,6 +368,7 @@ export default {
             doneSaving: false,
             errorMessage: [],
             idsNotPermittedInSearch: [],
+            typesPermittedInSearch: [],
             addAnother: false,
             disableDoneEditingButton: false,
             errorValidating: null
@@ -817,7 +819,7 @@ export default {
                 }
             }
             if (value && !isResource && !this.addingChecked && range.length === 1 && (range[0] === "http://schema.org/URL" || range[0].toLowerCase().indexOf("concept") !== -1 ||
-                range[0].toLowerCase().indexOf("competency") !== -1 || range[0].toLowerCase().indexOf("level") !== -1)) {
+                range[0].toLowerCase().indexOf("directlink") !== -1 || range[0].toLowerCase().indexOf("competency") !== -1 || range[0].toLowerCase().indexOf("level") !== -1)) {
                 if (value.indexOf("http") === -1) {
                     return this.errorMessage.push("This property must be a URL. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.");
                 }
@@ -1498,7 +1500,7 @@ export default {
         addSelected: function() {
             var ids = this.$store.getters['editor/selectedCompetenciesAsProperties'];
             var relationType = this.$store.state.editor.selectCompetencyRelation;
-            if (this.$store.state.lode.searchType === "Concept" || relationType === "https://purl.org/ctdlasn/terms/knowledgeEmbodied" ||
+            if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "DirectLink" || relationType === "https://purl.org/ctdlasn/terms/knowledgeEmbodied" ||
             relationType === "https://purl.org/ctdlasn/terms/abilityEmbodied" || relationType === "https://purl.org/ctdlasn/terms/taskEmbodied" ||
             relationType === "https://purl.org/ctdlasn/terms/skillEmbodied") {
                 this.attachUrlProperties(ids);
@@ -1591,7 +1593,16 @@ export default {
             }
         },
         isSearching: function() {
+            this.typesPermittedInSearch = [];
             if (this.isSearching) {
+                if (this.$store.state.lode.searchType === "DirectLink") {
+                    if (this.addingProperty && this.profile && this.profile[this.addingProperty]['options']) {
+                        const options = this.profile[this.addingProperty]['options'];
+                        options.forEach((option) => {
+                            this.typesPermittedInSearch.push(option.val);
+                        });
+                    }
+                }
                 let types = ["narrows", "broadens", "hasChild", "isChildOf"];
                 if (EcArray.has(types, this.addingProperty)) {
                     let relations = this.$store.getters['editor/relations'];

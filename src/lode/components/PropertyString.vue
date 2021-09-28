@@ -288,6 +288,13 @@ export default {
         }
     },
     computed: {
+        isDirectLink: function() {
+            if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("directlink") !== -1) {
+                return true;
+            } else {
+                return false;
+            }
+        },
         isConcept: function() {
             if (this.range && this.range.length > 0 && this.range[0].toLowerCase().indexOf("concept") !== -1) {
                 return true;
