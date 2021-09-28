@@ -49,7 +49,7 @@ export default {
     },
     methods: {
         initializeApp: function() {
-            var server = "https://dev.api.cassproject.org/api/";
+            var server = window.origin + "/api/";
             var cassApiLocation = "https://dev.rest.api.cassproject.org/";
             this.$store.commit('environment/cassApiLocation', cassApiLocation);
             var me = this;
