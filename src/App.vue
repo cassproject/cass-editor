@@ -93,7 +93,6 @@ export default {
             }, appError, (loginInfo) => {
                 this.$store.commit('user/repositorySsoOptions', loginInfo);
                 if (loginInfo.ssoLogin != null) {
-                    console.log("Setting SSO login to enabled.");
                     this.$store.commit('featuresEnabled/apiLoginEnabled', true);
                 }
             });
