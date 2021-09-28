@@ -24,6 +24,8 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
+      - run: git pull --recurse-submodules
+      - run: git submodule update --remote --recursive
       - run: sed -i 's/\/docs\//\/cass-editor\/docs\//g' ./src/views/Welcome.vue
       - run: sed -i 's/\/docs\//\/cass-editor\/docs\//g' ./docs/.vuepress/config.js
       - run: find ./docs -name '*.md' -exec sed -i 's/\/docs\//\/cass-editor\/docs\//g' {} \;
