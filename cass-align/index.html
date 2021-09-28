@@ -1,0 +1,455 @@
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CaSS 1.2.40 Framework Explorer</title>
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/foundation.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/cass-ui-fwk-aln.css">
+</head>
+
+<body>
+
+    <div class="sticky" data-sticky data-margin-top="0">
+        <!-- FRAMEWORK MENUS -->
+        <div id="section-sub-menu">
+            <!-- FRAMEWORK ALIGNMENT MENU -->
+            <div class="grid-container full">
+                <div class="grid-x grid-padding-x grid-padding-y">
+                    <div class="cell medium-10">
+                        <h2 class="text-left">
+                            <i class="fa fa-sitemap" aria-hidden="true"></i>&nbsp;
+                            <span id="frameworkHeaderAlignmentName1"></span>
+                            <span class="subheader">
+                                <i class="fa fa-exchange" aria-hidden="true"></i>
+                                <span id="frameworkHeaderAlignmentName2"></span>
+                            </span>
+                        </h2>
+                    </div>
+                    <div class="cell medium-2">
+                        <div id="page-tools"  style="display:none">
+                            <ul id="fwkAlnOpenFwkOnlyToolset" class="dropdown menu" data-dropdown-menu>
+                                <li><a title="Align Frameworks" onclick="openFrameworkAlignSetupModal();"><i class="fa fa-align-center" aria-hidden="true"></i> Align Frameworks</a></li>
+                            </ul>
+                            <ul id="fwkAlnFullToolset" class="dropdown menu" data-dropdown-menu>
+                                <li>
+                                    <a href="#">Actions</a>
+                                    <ul class="menu vertical">
+                                        <li><a title="Align Frameworks" onclick="openAlignmentSetupModal();"><i class="fa fa-align-center" aria-hidden="true"></i> Align</a></li>
+                                    </ul>
+                                </li>
+                                <li>
+                                    <a href="#">Tools</a>
+                                    <ul class="menu vertical">
+                                        <li><a title="Auto Align Frameworks" onclick="openFrameworkAutoAlignmentModal();"><i class="fa fa-magic" aria-hidden="true"></i> Auto Align</a></li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--Alignment tool bar-->
+            <div class="grid-container full">
+                <div class="grid-x grid-padding-x">
+                    <div class="cell medium-6">
+                        <button id="showAlmVisBtn" class="secondary button" onclick="buildAndShowAlignmentVisualizationCircleGraph();">Visualize Alignments</button>
+                        <button id="showAlmEditBtn" class="secondary button" onclick="showScreen('alignment-edit-screen');">Edit Alignments</button>
+                        <!--<button id="showAlmVisBtn" class="secondary button" onclick="alert('TODO onclick VISUALIZE');">Visualize Alignments</button>-->
+                        <!--<button id="showAlmEditBtn" class="secondary button" onclick="alert('TODO onclick EDIT');">Edit Alignments</button>-->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END sticky menu container -->
+
+    <!--BUSY-->
+    <div id="cassUiMainBusyContainer" style="display:none">
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x grid-padding-y">
+                <div class="cell medium-12 text-center">
+                    <h5 id="cassUiMainBusyText"></h5>
+                    <img id="loadingAnimation" src="img/CASS-loading-128px.gif" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END BUSY-->
+
+    <!--ERROR-->
+    <div id="cassUiMainErrorContainer" style="display:none">
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x grid-padding-y">
+                <div class="cell medium-12 text-center cassUiError">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <h5 id="cassUiMainErrorText"></h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END ERROR-->
+
+    <!--WARNINGS-->
+    <!--END WARNINGS-->
+
+    <!--CONTENTS-->
+    <div id="cassUiMainContentsContainer" style="display:none">
+        <!-- ALIGNMENT VISUALIZE SCREEN -->
+        <div id="alignment-visualize-screen" class="screen" style="display: none;">
+            <div id="almVisCgDividedContainer" class="grid-container full"  style="display: none;">
+                <div class="grid-x grid-margin-x grid-padding-x">
+                    <div id="almVisCgDividedSidebar" class="cell medium-4 large-3 medium-cell-block-y">
+                        <h3>
+                            <div class="grid-x">
+                                <div class="cell medium-10">Separated Frameworks</div>
+                                <div class="cell medium-2 text-right">
+                                    <a title="Merge Frameworks" onclick="mergeAlignmentVisualizationCircleGraphs();"><img src="img/mergeAlm2.png" class="almToolIcon"/></a>
+                                </div>
+                            </div>
+                        </h3>
+                        <div id="almVisCgDividedSidebarAlmListContainer">
+                            <div id="almVisCgDividedSidebarNoAlmContainer" class="lead">
+                                <p><i class="fa fa-exclamation-triangle"></i> There are no alignments between these two frameworks.</p>
+                            </div>
+                            <div id="almVisCgDividedSidebarFw1ToFw2AlmListContainer">
+                                <div class="almListHdrCtr">
+                                    <span class="almListHdrSource almListHdrFw1"></span> <i class="fa fa-exchange"></i> <span class="almListHdrTarget almListHdrFw2"></span>
+                                </div>
+                                <ul id="almVisCgDividedSidebarFw1ToFw2AlmList" class="fa-ul"></ul>
+                            </div>
+                            <div id="almVisCgDividedSidebarFw2ToFw1AlmListContainer">
+                                <div class="almListHdrCtr">
+                                    <span class="almListHdrSource almListHdrFw2"></span> <i class="fa fa-exchange"></i> <span class="almListHdrTarget almListHdrFw1"></span>
+                                </div>
+                                <ul id="almVisCgDividedSidebarFw2ToFw1AlmList" class="fa-ul"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cell auto" style="position: relative;">
+                        <div class="almCircleGraphMerged" id="alm-circle-graph-divided-wrapper">
+                            <!-- NOTE: If you change this SVG size, please take the setAlmVisDividedCgViewboxSize function into account!!!!-->
+                            <svg id="alignmentDividedCirclePack" width="400" height="400" viewBox="0 80 500 500"></svg>
+                        </div>
+                    </div>
+                    <div id="almVisCgDividedCompDetailsSidebar" class="cell medium-4 large-3 medium-cell-block-y hide">
+                        <h4 id="almVisCgDividedCompDetailsSbName"></h4>
+                        <p id="almVisCgDividedCompDetailsSbDesc"></p>
+                        <div id="almVisCgDividedCompDetailsSbNoAlmsCtr">
+                            <p><i class="fa fa-info-circle"></i> There are no associated alignments</p>
+                        </div>
+                        <div id="almVisCgDividedCompDetailsSbAlmsCtr">
+                            <span class="compRelAlignmentHdr">Associated Alignments</span>
+                            <ul id="almVisCgDividedCompDetailsSbAlmsList" class="fa-ul"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="almVisCgMergedContainer" class="grid-container full" style="display: none;">
+                <div id="almVisCgMergedNoData" class="grid-x grid-margin-x grid-padding-x text-center">
+                    <div class="cell medium-3"></div>
+                    <div class="cell medium-6">
+                        <div class="callout primary large cassUiCallout">
+                            <h5><i class="fa fa-exclamation-triangle"></i>  Merged Framework View Unavailable</h5>
+                            <p>There are no alignments between these two frameworks.</p>
+                            <p><a title="Separate Frameworks" onclick="divideAlignmentVisualizationCircleGraphs();">Separate</a></p>
+                        </div>
+                    </div>
+                </div>
+                <div id="almVisCgMergedData" class="grid-x grid-margin-x grid-padding-x">
+                    <div id="almVisCgMergedSidebar" class="cell medium-4 large-3 medium-cell-block-y">
+                        <h3>
+                            <div class="grid-x">
+                                <div class="cell medium-9">Merged Frameworks</div>
+                                <div class="cell medium-1"><button id="mrgFwkLegendLink"><i class="fa fa-info-circle" aria-hidden="true" data-open="modal-legend-merged-cg"></i></button></div>
+                                <div class="cell medium-2 text-right">
+                                    <a title="Separate Frameworks" onclick="divideAlignmentVisualizationCircleGraphs();"><img src="img/separateAlm2.png" class="almToolIcon"/></a>
+                                </div>
+                            </div>
+                        </h3>
+                        <div id="mergFwkAlmSettingsCtr" class="grid-x">
+                            <div class="cell medium-6">
+                                <span> Hide Labels? </span>
+                            </div>
+                            <div class="cell medium-6">
+                                <div class="switch tiny">
+                                    <input onchange="changeMergedLabelVisMode();" class="switch-input" id="mergFwkAlmShowLabel" type="checkbox">
+                                    <label class="switch-paddle" for="mergFwkAlmShowLabel">
+                                        <span class="switch-active" aria-hidden="true">Yes</span>
+                                        <span class="switch-inactive" aria-hidden="true">No</span>
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="cell medium-6">
+                                <span >Hide Unaligned?</span>
+                            </div>
+                            <div class="cell medium-6">
+                                <div class="switch tiny">
+                                    <input onchange="changeMergedAlignmentVisMode();" class="switch-input" id="mergFwkAlmShowUna" type="checkbox">
+                                    <label class="switch-paddle" for="mergFwkAlmShowUna">
+                                        <span class="switch-active" aria-hidden="true">Yes</span>
+                                        <span class="switch-inactive" aria-hidden="true">No</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="almVisCgMergedSidebarAlmListContainer">
+                            <div id="almVisCgMergedSidebarFw1ToFw2AlmListContainer">
+                                <div class="almListHdrCtr">
+                                    <span class="almListHdrSource almListHdrFw1"></span> <i class="fa fa-exchange"></i> <span class="almListHdrTarget almListHdrFw2"></span>
+                                </div>
+                                <ul id="almVisCgMergedSidebarFw1ToFw2AlmList" class="fa-ul"></ul>
+                            </div>
+                            <div id="almVisCgMergedSidebarFw2ToFw1AlmListContainer">
+                                <div class="almListHdrCtr">
+                                    <span class="almListHdrSource almListHdrFw2"></span> <i class="fa fa-exchange"></i> <span class="almListHdrTarget almListHdrFw1"></span>
+                                </div>
+                                <ul id="almVisCgMergedSidebarFw2ToFw1AlmList" class="fa-ul"></ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cell auto" style="position: relative;">
+                        <div class="almCircleGraphMerged" id="alm-circle-graph-merged-wrapper">
+                            <svg id="alignmentMergedCirclePack" width="400" height="400" viewBox="-50 0 650 650"></svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- ALIGNMENT EDIT SCREEN -->
+        <div id="alignment-edit-screen" class="screen" style="display: none;">
+            <div id="alignmentScreenMainGridContainer" class="grid-container">
+                <div id="alignment-help" class="callout primary small" style="margin-top: 1em;" data-closable>
+                    <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <p class="lead text-center"><i class="fa fa-info-circle" aria-hidden="true"></i> To begin select an item in either column</p>
+                </div>
+                <div class="grid-x grid-margin-x grid-padding-x">
+                    <div id="alignment-left-column" class="cell auto alignment-fit-height">
+                        <div class="alignment-column-header">
+                            <h4><span id="frameworkAlignmentName1"></span></h4>
+                            <input id="frameworkAlignmentFwFilter1" onkeyup="filterAlignmentCompetencies('frameworkAlignmentFwFilter1','frameworkAlignmentFwList1');" class="" type="text" placeholder="Filter">
+                        </div>
+                        <div class="alignment-column-scroll">
+                            <ul class="fa-ul" id="frameworkAlignmentFwList1"></ul>
+                        </div>
+                    </div>
+                    <div id="alignment-center-column" class="cell small-4 medium-5 alignment-fit-height hide">
+                        <div class="alignment-column-header">
+                            <h4 class="text-center">Alignment</h4>
+                            <input id="frameworkAlignmentAlignFilter" onkeyup="filterAlignmentCards();" class="" type="text" placeholder="Filter">
+                        </div>
+                        <div id="alignment-matches-container" class="alignment-column-scroll">
+                            <div id="alignment-NewMatchCard" onclick="createNewAlignmentCard(null,true);" class="callout success text-center">
+                                <a><i class="fa fa-plus" aria-hidden="true"></i> New...</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="alignment-right-column" class="cell auto alignment-fit-height">
+                        <div class="alignment-column-header">
+                            <h4><span id="frameworkAlignmentName2"></span></h4>
+                            <input id="frameworkAlignmentFwFilter2" onkeyup="filterAlignmentCompetencies('frameworkAlignmentFwFilter2','frameworkAlignmentFwList2');" class="" type="text" placeholder="Filter">
+                        </div>
+                        <div class="alignment-column-scroll">
+                            <ul class="fa-ul" id="frameworkAlignmentFwList2"></ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END CONTENTS-->
+
+    <!-- MODAL WINDOWS -->
+    <div class="smaller reveal" id="modal-alignment-setup" data-reveal>
+        <h3><i class="fa fa-exchange" aria-hidden="true"></i> Framework Alignment</h3>
+        <p>Select frameworks to align</p>
+        <select id="fwAlmFw1"></select>
+        <select id="fwAlmFw2"></select>
+        <button class="button cassUiModalButton" onclick="prepFrameworkAlignment();">Align</button>
+        <button class="button secondary cassUiModalButton" data-close>Cancel</button>
+        <div class="grid-x">
+            <div class="cell cassUiModalBusyCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center">
+                            <h5 class="cassUiModalBusyText"></h5>
+                            <img class="cassUiBusyImg" src="img/CASS-loading-64px.gif" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cell cassUiModalErrorCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center cassUiError">
+                            <h5><i class="fa fa-exclamation-triangle"></i> <span class="cassUiModalErrorText"></span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="tiny reveal" id="modal-alignment-delete-confirm" data-reveal>
+        <h3><i class="fa fa-trash" aria-hidden="true"></i> Delete Alignments?</h3>
+        <p>Are you sure you wish to delete these alignments?</p>
+        <input type="hidden" id="fwkAlmDeleteConfirmCardId"/>
+        <button class="button" data-close>Cancel</button>
+        <button class="button warning" onclick="deleteAlignmentCardFromConfirmation();">Delete</button>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="tiny reveal" id="modal-alignment-invalid-state-warning" data-reveal>
+        <h3><i class="fa fa-exclamation-triangle" aria-hidden="true"></i> Invalid Alignment</h3>
+        <p>You cannot save alignments that have an empty source or target list</p>
+        <button class="button" data-close>OK</button>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="smaller reveal" id="modal-legend-merged-cg" data-reveal>
+        <h3><i class="fa fa-info-circle" aria-hidden="true"></i> Merged Frameworks</h3>
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x grid-padding-y">
+                <div class="cell small-6 text-center"><span class="boldText">Diagram</span></div>
+                <div class="cell small-6 text-center"><span class="boldText">Definition</span></div>
+                <div class="cell small-6 text-center"><img src="img/a_broadens_b.png"/></div>
+                <div class="cell small-6 text-center topOffset2Rem"><span class="almCgSbFw1 boldText">A</span> <i>Broadens</i> <span class="almCgSbFw2 boldText">B</span></div>
+                <div class="cell small-6 text-center"><img src="img/b_broadens_a.png"/></div>
+                <div class="cell small-6 text-center topOffset2Rem"><span class="almCgSbFw2 boldText">B</span> <i>Broadens</i> <span class="almCgSbFw1 boldText">A</span></div>
+                <div class="cell small-6 text-center"><img src="img/is_equivalent_to.png"/></div>
+                <div class="cell small-6 text-center topOffset2Rem"><span class="almCgSbFw1 boldText">A</span> and <span class="almCgSbFw2 boldText">B</span> are <i>Equivalent</i></div>
+                <div class="cell small-6 text-center"><img src="img/is_related_to.png"/></div>
+                <div class="cell small-6 text-center topOffset2Rem"><span class="almCgSbFw1 boldText">A</span> and <span class="almCgSbFw2 boldText">B</span> are <i>Related</i></div>
+            </div>
+        </div>
+        <button class="button" data-close>OK</button>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="small reveal" id="modal-alignment-auto" data-reveal>
+        <h3><i class="fa fa-magic" aria-hidden="true"></i> Auto Align Frameworks</h3>
+        <div id="fwkAlmAutoAlmConfirmContainer">
+            <p>
+                Do you wish to have CaSS automatically generate alignment suggestions for
+                "<span id="fwkAlmAutoAlmFwk1Name" class="boldText"></span>" and "<span id="fwkAlmAutoAlmFwk2Name" class="boldText"></span>"?
+            </p>
+            <div class="callout warning text-center boldText">
+                <i class="fa fa-exclamation-triangle"></i> This process can take several minutes to complete.
+            </div>
+            <div id="fwkAlmAutoAlmConfirmBtns" class="grid-x">
+                <div class="cell medium-12">
+                    <button class="button cassUiModalButton" onclick="performFrameworkAutoAlignment();">Suggest Alignments</button>
+                    &nbsp;&nbsp;
+                    <button class="button secondary cassUiModalButton" data-close>Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div id="fwkAlmAutoAlmResultsContainer" style="display:none">
+            <div id="fwkAlmAutoAlmResultsEmpty" style="display:none">
+                <div class="callout primary text-center boldText">
+                    <i class="fa fa-info-circle"></i> No alignment suggestions could be found.
+                </div>
+                <button class="button secondary cassUiModalButton" data-close>OK</button>
+            </div>
+            <div id="fwkAlmAutoAlmResultsDisplay" style="display:none">
+                <div id="fwkAlmAutoAlmResultsListHdrContainer">
+                    <ul class="fa-ul ">
+                        <li>
+                            <div class="grid-x">
+                                <div class="cell medium-1">&nbsp;</div>
+                                <div class="cell medium-4">
+                                    <span id="fwkAlmAutoAlmFwk1ListHdr" class="boldText"></span>
+                                    <a onclick="sortAutoAlignmentSuggestionList('fw1');" title="Sort Suggestions">
+                                        <i class="fa fa-sort"></i>
+                                    </a>
+                                </div>
+                                <div class="cell medium-3">&nbsp;</div>
+                                <div class="cell medium-4 text-right">
+                                    <span id="fwkAlmAutoAlmFwk2ListHdr" class="boldText"></span>
+                                    <a onclick="sortAutoAlignmentSuggestionList('fw2');" title="Sort Suggestions">
+                                        <i class="fa fa-sort"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div id="fwkAlmAutoAlmResultsListContainer">
+                    <ul id="fwkAlmAutoAlmResultsList" class="fa-ul"></ul>
+                </div>
+                <div id="fwkAlmAutoAlmResultsListBtnsContainer" class="grid-x">
+                    <div class="cell medium-6 itemCounter">
+                        <p>Suggestions (<span id="fwkAlmAutoAlmNumSelected"></span> of <span id="fwkAlmAutoAlmNumSuggestions"></span> accepted)</p>
+                    </div>
+                    <div class="cell medium-6 text-right">
+                        <button class="button small cassUiModalButton" onclick="selectAllAutoAlignmentSuggestions();">Select All</button>
+                        &nbsp;&nbsp;
+                        <button class="button secondary small cassUiModalButton" onclick="deselectAllAutoAlignmentSuggestions();">Deselect All</button>
+                    </div>
+                </div>
+                <div id="fwkAlmAutoAlmResultsBtnsContainer" class="grid-x">
+                    <div class="cell medium-12">
+                        <button class="button cassUiModalButton" onclick="applySelectedSuggestedAutoAlignments();">Apply Alignments</button>
+                        &nbsp;&nbsp;
+                        <button class="button secondary cassUiModalButton" data-close>Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="grid-x">
+            <div class="cell cassUiModalBusyCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center">
+                            <h5 class="cassUiModalBusyText"></h5>
+                            <img class="cassUiBusyImg" src="img/CASS-loading-64px.gif" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cell cassUiModalErrorCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center cassUiError">
+                            <h5><i class="fa fa-exclamation-triangle"></i> <span class="cassUiModalErrorText"></span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <!-- END MODAL WINDOWS -->
+
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/vendor/jquery-ui.min.js"></script>
+    <script src="js/vendor/foundation.js"></script>
+    <script src="js/vendor/d3.js"></script>
+    <script src="js/cass/cass.min.js"></script>
+    <script src="js/cass-ui-fwk-aln/cui-fa-ui-util.js"></script>
+    <script src="js/cass-ui-fwk-aln/cui-fa-tech-util.js"></script>
+    <script src="js/cass-ui-fwk-aln/cui-fa-session-util.js"></script>
+    <script src="js/cass-ui-fwk-aln/cui-fa-d3-util.js"></script>
+    <script src="js/cass-ui-fwk-aln/cui-fa-comms.js"></script>
+    <script src="js/cass-ui-fwk-aln/cui-fa-services.js"></script>
+    <script src="js/cass-ui-fwk-aln/cui-fa-main.js"></script>
+
+</body>
+</html>

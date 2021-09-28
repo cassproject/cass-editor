@@ -1,0 +1,9 @@
+
+target/
+
+.idea/
+build\.log
+
+\.DS_Store
+
+pom\.xml\.versionsBackup

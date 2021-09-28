@@ -1,0 +1,478 @@
+<!doctype html>
+<html class="no-js" lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CaSS 1.3.17 Profile Explorer</title>
+    <link rel="stylesheet" href="css/jquery-ui.min.css">
+    <link rel="stylesheet" href="css/foundation.min.css">
+    <link rel="stylesheet" href="css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/cass-ui-prf-exp.css">
+</head>
+
+<body>
+    <div id="ssmStickyCtr">
+        <div class="sticky" data-sticky data-margin-top="0">
+            <!-- PROFILE MENUS -->
+            <div id="section-sub-menu" style="display: none">
+                <!-- PROFILE EXPLORER MENU -->
+                <div class="grid-container full">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-10">
+                            <h2 id="profileHeader" onclick="goToDisplayRoot()"><i class="fa fa-id-card-o" aria-hidden="true"></i> <span id="profileName"></span></h2>
+                        </div>
+                        <div class="cell medium-2">
+                            <div id="page-tools" style="display:none">
+                                <ul class="dropdown menu" data-dropdown-menu>
+                                    <li>
+                                        <a href="#">Actions</a>
+                                        <ul class="menu vertical">
+                                            <li><a title="Open My Profile" onclick="setProfileUserAsLoggedInUserAndGo();"><i class="fa fa-user" aria-hidden="true"></i> My Profile</a></li>
+                                            <li><a title="Find Another Profile" onclick="setUpForProfileUserSearch();"><i class="fa fa-users" aria-hidden="true"></i> Find Profile</a></li>
+                                        </ul>
+                                    </li>
+                                    <li id="displayedProfileTools">
+                                        <a href="#">Tools</a>
+                                        <ul class="menu vertical">
+                                            <li><a title="Trust Networks" onclick="openAssertionTrustNetworkModal();"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Trust</a></li>
+                                            <!--<li><a title="Validate Claims" onclick="openProfileExpAssertionValidateModal();"><i class="fa fa-handshake-o" aria-hidden="true"></i> Validate</a></li>-->
+                                            <!--<li><a title="Print Framework"><i class="fa fa-print" aria-hidden="true"></i> Print</a></li>-->
+                                            <!--<li><a title="Export Framework"><i class="fa fa-download" aria-hidden="true"></i> Export</a></li>-->
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="grid-x grid-padding-x">
+                        <div class="cell medium-8">
+                            <button id="showGraphViewBtn" class="secondary button" onclick="showGraphViewMainContentsScreen();clearProfileSearchBar();">Graph View</button>
+                            <button id="showListViewBtn" class="secondary button" onclick="showListViewMainContentsScreen();clearProfileSearchBar();">List View</button>
+                        </div>
+                        <div class="cell medium-4">
+                            <div id="profileSearchContainer" class="input-group" style="display:none">
+                                <input onkeypress="checkForProfileSearchbarEnter(event)" id="profileSearchInput" class="input-group-field" type="text" placeholder="Search this profile">
+                                <div class="input-group-button">
+                                    <button class="button"><i class="fa fa-search" aria-hidden="true"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END sticky menu container -->
+
+    <!--BUSY-->
+    <div id="cassUiMainBusyContainer" style="display:none">
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x grid-padding-y">
+                <div class="cell medium-12 text-center">
+                    <h5 id="cassUiMainBusyText"></h5>
+                    <img id="loadingAnimation" src="img/CASS-loading-128px.gif" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END BUSY-->
+
+    <!--ERROR-->
+    <div id="cassUiMainErrorContainer" style="display:none">
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x grid-padding-y">
+                <div class="cell medium-12 text-center cassUiError">
+                    <i class="fa fa-exclamation-triangle"></i>
+                    <h5 id="cassUiMainErrorText"></h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END ERROR-->
+
+    <!--WARNINGS-->
+    <div id="noProfileDataContainer" class="cassUiHighLevelWarning" style="display: none;">
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x grid-padding-y">
+                <div class="cell medium-12 text-center">
+                    <div class="callout warning large cassUiCallout">
+                        <h4><i class="fa fa-exclamation-triangle"></i>  No profile data available</h4>
+                        <p> Cannot locate any of your profile data</p>
+                        <div class="grid-x">
+                            <div class="cell medium-12">
+                                <button class="button" title="Find Another Profile" onclick="setUpForProfileUserSearch();"><i class="fa fa-users" aria-hidden="true"></i> Find Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END WARNINGS-->
+
+    <!--USER SEARCH-->
+    <div id="profileUserSearchContainer" style="display: none">
+        <div class="grid-container">
+            <div class="grid-x grid-padding-x grid-padding-y">
+                <div class="cell medium-12" style="padding-bottom:0">
+                    <h4>Explore profile</h4>
+                    <p>Select a user to begin exploring their profile</p>
+                </div>
+                <div class="cell medium-12 text-center" style="padding-top:0">
+                    <div class="input-group">
+                        <input onkeypress="checkForProfileUserSearchbarEnter(event)" id="profileUserSearchInput" class="input-group-field" type="text" placeholder="Find user">
+                        <div class="input-group-button">
+                            <button class="button"><i class="fa fa-search" aria-hidden="true"></i></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="cell medium-12">
+                    <button class="button" title="Open My Profile" onclick="setProfileUserAsLoggedInUserAndGo();"><i class="fa fa-user" aria-hidden="true"></i> My Profile</button>
+                </div>
+                <div class="cell medium-12">
+                    <div id="noAssertionsFoundForProfileUserSearch" class="callout alert" data-closable>
+                        <h5><i class="fa fa-exclamation-circle" aria-hidden="true"></i> No Profile Data Available</h5>
+                        <p>No profile data for this user was available. Please verify you have permissions to view this user's profile data.</p>
+                        <button class="close-button" aria-label="Dismiss alert" type="button" data-close>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END USER SEARCH-->
+
+    <!--CONTENTS-->
+    <div id="cassUiMainContentsContainer" style="display:none">
+        <!-- GRAPH VIEW SCREEN -->
+        <div id="graph-screen" class="screen" style="">
+            <div class="grid-container full">
+                <div class="grid-y medium-grid-frame grid-padding-x">
+                    <div class="cell medium-auto medium-cell-block-container">
+                        <div class="grid-x grid-padding-x">
+                            <div id="circleFocusSummarySidebar" class="cell medium-4 large-3 medium-cell-block-y">
+                                <!--<h2 onclick="goToDisplayRoot()" id="circleFocusSummaryName"></h2>-->
+                                <h3 onclick="goToDisplayRoot()" id=""> Profile Explorer</h3>
+                                <p id="circleFocusSummaryDesc"></p>
+                                <div id="circleFocusSummaryListContainer"></div>
+                            </div>
+                            <div class="cell auto" style="position: relative;">
+                                <div class="expCircleGraph" id="exp-circle-graph-wrapper">
+                                    <svg id="explorerCirclePack" width="500" height="500" viewBox="0 0 500 500"></svg>
+                                </div>
+                            </div>
+                         
+                            <div id="circleFocusDetailsSidebar" class="cell medium-4 large-3 medium-cell-block-y hide">
+                                <div class="grid-x">
+                                    <div class="cell medium-9">
+                                        <h3 id="circleFocusDetailsSingleName"></h3>
+                                    </div>
+                                    <div id="circleFocusCompTools" class="cell medium-3">
+                                        <a>
+                                          <span id="circleFocusCompConfIcon" class="badge" title="Confidence" aria-hidden="true">
+                                          </span>
+                                        </a>&nbsp;
+                                         <a id="circleFocusCompDetailsLink">
+                                          <i class="fa fa-info-circle" title="Show more details" aria-hidden="true">
+                                          </i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <p id="circleFocusDetailsSingleDesc" class="lead"></p>
+                                <div>
+                                  <h4> Assertions </h4>
+                                </div>
+                                <div id="circleFocusDetailsAssertionListContainer"></div>
+                                <div id="circleFocusDetailsRelListContainer">
+                                  <h4> Skill Relationships </h4>
+                                    <ul id="circleFocusDetailsRelList" class="fa-ul"></ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+                <div id="compCredentialContainer" class="grid-container">
+                    <div class="grid-x grid-margin-x">
+                        <div class="cell medium-12">
+                            <h2>Credentials</h2>
+                        </div>
+                    </div>
+                    <div id="compCredentialBadgeContainer" class="grid-x grid-margin-x grid-margin-y small-up-4 medium-up-6 large-up-8"></div>
+                    <br><br>
+                    <div id="compCredentialDegreeCertsContainer" class="grid-x grid-margin-x"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIST VIEW SCREEN -->
+        <div id="list-screen" class="screen" style="display: none;">
+            <div class="grid-container">
+                <div class="cell medium-cell-block-y">
+                    <div id="filter-options">
+                        <p>View by:</p>
+                        <ul class="no-bullets">
+                            <li class="active"><a>Framework <i class="fa fa-caret-right" aria-hidden="true"></i></a></li>
+                        </ul>
+                    </div>
+                    <div id="profileListContentsContainer" class="cell">
+                        <ul class="fa-ul" id="list-screen__root"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END CONTENTS-->
+
+    <!-- MODAL WINDOWS -->
+    <div class="tiny reveal" id="modal-asr-source-trust" data-reveal>
+        <h4><i class="fa fa-thumbs-up" aria-hidden="true"></i> Trust Network</h4>
+        <div id="asrSourceTrustListCtr">
+            <ul class="fa-ul" id="asrSourceTrustList"></ul>
+        </div>
+        <button onclick="saveAsrSourceTrustNetwork();" class="button">Save</button>
+        &nbsp;&nbsp;
+        <button data-close class="button secondary">Cancel</button>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="small reveal" id="modal-competency-confidence-info" data-reveal>
+        <h3><i class="fa fa-info-circle" aria-hidden="true"></i> <span id="confDetailCompName"></span> Confidence</h3>
+        <p class="confDetailDesc">CaSS has determined a confidence of <span id="confDetailConf"></span> using the following method:</p>
+        <ul class="no-bullets confDetailListCtr">
+            <li>
+                <div class="grid-x">
+                    <div class="cell medium-3">
+                        <span class="confDetailListHdr">Source</span>
+                    </div>
+                    <div class="cell medium-3">
+                        <span class="confDetailListHdr">Claim</span>
+                    </div>
+                    <div class="cell medium-2">
+                        <span class="confDetailListHdr">Source's Confidence</span>
+                    </div>
+                    <div class="cell medium-2">
+                        <span class="confDetailListHdr">Confidence In Source</span>
+                    </div>
+                    <div class="cell medium-2">
+                        <span class="confDetailListHdr">Total Claim Confidence</span>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <ul class="no-bullets confDetailListCtr" id="confDetailList"></ul>
+        <div id="confDetailExplanationCtr">
+            <p class="confDetailExp" id="confDetailExplanation"></p>
+        </div>
+        <button class="button" data-close>Close</button>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="smaller reveal" id="modal-competency-info" data-reveal>
+        <h3><i class="fa fa-info-circle" aria-hidden="true"></i> <span id="compDetCompName"></span></h3>
+        <p><span id="compDetCompDesc"></span></p>
+        <ul class="no-bullets leftOffset25">
+            <li><strong>Framework:</strong> <a><span id="compDetFrameworkName"></span></a></li>
+            <li><strong>Confidence:</strong> <span id="compDetConfidence"></span></li>
+            <li class="divider"></li>
+            <li><strong>Assertions:</strong>
+                <div id="compDetAsrContainer"></div>
+            </li>
+        </ul>
+        <button class="button" data-close>Close</button>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="tiny reveal" id="modal-assertion-details" data-reveal>
+        <h4><i class="fa fa-info-circle" aria-hidden="true"></i> Assertion</h4>
+        <ul class="no-bullets leftOffset25">
+            <li><strong>Source:</strong> <span id="asrDetSource"></span></li>
+            <li><strong>Subject:</strong> <span id="asrDetSubject"></span></li>
+            <li><strong>Holds:</strong> <span id="asrDetHolds"></span></li>
+            <li><strong>Framework:</strong> <span id="asrDetFrameworkContainer"></span></li>
+            <li><strong>Competency:</strong> <span id="asrDetCompetency"></span></li>
+            <li id="asrDetLvlLi"><strong>Level:</strong> <span id="asrDetLvl"></span></li>
+            <li><strong>Confidence:</strong> <span id="asrDetConf"></span></li>
+            <li class="divider"></li>
+            <li><strong>Date:</strong> <span id="asrDetEvDate"></span></li>
+            <li><strong>Expiration:</strong> <span id="asrDetEvExp"></span></li>
+            <li class="divider"></li>
+            <li><strong>Link:</strong> <span id="asrDetEvUrl"></span></li>
+            <li class="divider"></li>
+            <li id="asrDetEvLi"><strong>Evidence:</strong>
+                <ul id="asrDetEvList" class="fa-ul"></ul>
+            </li>
+        </ul>
+        <button class="button" data-close>Close</button>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="smaller reveal" id="modal-evidence-details" data-reveal>
+        <h4><i class="fa fa-info-circle" aria-hidden="true"></i> <span id="evDetEvName"></span></h4>
+        <ul class="no-bullets leftOffset25">
+            <li><strong>Source:</strong> <span id="evDetEvSource"></span></li>
+            <li><strong>Type:</strong> <span id="evDetEvType"></span></li>
+            <li class="divider"></li>
+            <li><strong>Link:</strong> <span id="evDetEvUrl"></span></li>
+            <li><strong>Assertion:</strong> <span id="evDetAsrId"></span></li>
+        </ul>
+        <div id="evDetPrevContainer"></div>
+        <button class="button" data-close>Close</button>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="tiny reveal" id="modal-validate-assertions" data-reveal>
+        <h4><i class="fa fa-handshake-o" aria-hidden="true"></i> Validate Claims</span></h4>
+        <div id="asrValdSetupCtr">
+            <p><span>Select the mechanisms with which to validate claims:</span></p>
+            <select multiple id="asrValdTypes" style="height: 4rem">
+                <option value="s">Claim Source</option>
+                <option value="b">CaSS Blockchain</option>
+            </select>
+            <div class="callout warning small text-center">
+                <p><i class="fa fa-exclamation-triangle"></i>  This process can take several minutes.</p>
+            </div>
+            <div id="asrValdSetupBtnsCtr" class="grid-x">
+                <div class="cell">
+                    <button id="asrValdValdBtn" onclick="profileExpValidateAssertions();" class="button">Validate</button>
+                    &nbsp;&nbsp;
+                    <button data-close class="button secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div id="asrValdResultsCtr" style="display:none">
+            <p><strong>Validation Results:</strong></p>
+            <div id="asrValdResultsListContainer">
+                <ul id="asrValdResultsList" class="fa-ul"></ul>
+            </div>
+            <div class="grid-x">
+                <div class="cell medium-12">
+                    <button class="button" data-close>OK</button>
+                </div>
+            </div>
+        </div>
+        <div class="grid-x">
+            <div class="cell cassUiModalBusyCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center">
+                            <h5 class="cassUiModalBusyText"></h5>
+                            <img class="cassUiBusyImg" src="img/CASS-loading-64px.gif" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cell cassUiModalErrorCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center cassUiError">
+                            <h5><i class="fa fa-exclamation-triangle"></i> <span class="cassUiModalErrorText"></span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <div class="small reveal" id="modal-share-assertion" data-reveal>
+        <h4><i class="fa fa-share-alt-square" aria-hidden="true"></i> Share Claim</span></h4>
+        <p id="asrShareAssertionDesc"></p>
+        <p><span>To share a claim, it must be added to a portfolio.  Portfolios can then be shared with other people.</span></p>
+        <div id="asrShareCreatePortfolioContainer" style="display: none">
+            <input type="text" id="asrShareCreatePortfolioName" placeholder="Portfolio name">
+            <div class="grid-x">
+                <div class="cell">
+                    <button id="asrShareCreatePortfolioBtn" onclick="assertionShareCreatePortfolio();" class="button">Create Portfolio</button>
+                    &nbsp;&nbsp;
+                    <button id="asrShareCreatePortfolioCancelBtn" onclick="assertionShareCancelCreatePortfolio();" class="button secondary">Cancel</button>
+                </div>
+            </div>
+        </div>
+        <div id="asrShareAssignPortfolioContainer" style="display: none">
+            <div id="asrShareAssignPortfolioListContainer">
+                <ul id="asrShareAssignPortfolioList" class="no-bullets leftOffset25"></ul>
+            </div>
+            <div class="grid-x">
+                <div class="cell medium-8">
+                    <button id="asrShareAssignPortfolioSaveBtn" onclick="assertionShareSave();" class="button">Save and Share</button>
+                    &nbsp;&nbsp;
+                    <button id="asrShareAssignPortfolioCancelBtn" class="button secondary" data-close>Cancel</button>
+                </div>
+                <div class="cell medium-4 rightText">
+                    <button id="asrShareAssignPortfolioNewPortfolioBtn" onclick="assertionShareNewPortfolio();" class="button"><i class="fa fa-plus-circle" aria-hidden="true"></i> New Portfolio</button>
+                </div>
+            </div>
+        </div>
+        <div id="asrSharePortfolioReadersContainer" style="display: none">
+            <h5 title="Assign portfolio readers"><i class="fa fa-users" aria-hidden="true"></i> <span id="asrSharePortfolioReadersPortfolioName"></span></h5>
+            <div id="asrShareAssignPortfolioReadersListContainer">
+                <ul id="asrShareAssignPortfolioReadersList" class="no-bullets leftOffset25"></ul>
+            </div>
+            <div class="grid-x">
+                <div class="cell medium-12">
+                    <button id="asrSharePortfolioReadersApplyBtn" onclick="assertionShareApplyPortfolioReaders();" class="button">Assign</button>
+                    &nbsp;&nbsp;
+                    <button id="asrSharePortfolioReadersCancelBtn" onclick="assertionShareCancelPortfolioReadersAssignment();" class="button secondary">Cancel</button>
+                </div>
+            </div>
+            <input id="asrShareAssignPortfolioReadersPortfolioType" type="hidden">
+            <input id="asrShareAssignPortfolioReadersPortfolioTypeLookup" type="hidden">
+        </div>
+        <div class="grid-x">
+            <div class="cell cassUiModalBusyCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center">
+                            <h5 class="cassUiModalBusyText"></h5>
+                            <img class="cassUiBusyImg" src="img/CASS-loading-64px.gif" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="cell cassUiModalErrorCtr" style="display:none">
+                <div class="grid-container">
+                    <div class="grid-x grid-padding-x grid-padding-y">
+                        <div class="cell medium-12 text-center cassUiError">
+                            <h5><i class="fa fa-exclamation-triangle"></i> <span class="cassUiModalErrorText"></span></h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <button class="close-button" data-close aria-label="Close reveal" type="button">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <!-- END MODAL WINDOWS -->
+
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/vendor/jquery-ui.min.js"></script>
+    <script src="js/vendor/foundation.js"></script>
+    <script src="js/vendor/d3.js"></script>
+    <script src="js/cass/cass.min.js"></script>
+    <script src="js/cass/com.eduworks.schema.js"></script>
+    <script src="js/cass-ui-prf-exp/cui-pe-ui-util.js"></script>
+    <script src="js/cass-ui-prf-exp/cui-pe-tech-util.js"></script>
+    <script src="js/cass-ui-prf-exp/cui-pe-session-util.js"></script>
+    <script src="js/cass-ui-prf-exp/cui-pe-d3-util.js"></script>
+    <script src="js/cass-ui-prf-exp/cui-pe-comms.js"></script>
+    <script src="js/cass-ui-prf-exp/cui-pe-main.js"></script>
+
+</body>
+</html>

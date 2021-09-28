@@ -1,0 +1,24 @@
+{
+    "name": "CbVLRC",
+    "icons": [
+	],
+    "theme_color": "#ffffff",
+    "display": "standalone",
+    "scope": "https://cassproject.github.io/cass-vlrc",
+    "shortcuts":[
+      {
+        "name": "CaSS VLRC",
+        "url": "/",
+        "query_params": [
+          {
+            "name": "user",
+            "value": "wait"
+          },
+          {
+            "name": "origin",
+            "value": ":origin"
+          }
+        ]
+      }
+    ]
+}

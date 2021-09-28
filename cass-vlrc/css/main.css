@@ -1,0 +1,407 @@
+* {
+    margin: 0;
+    padding: 0;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-family: Roboto, Arial, Sans-Serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    margin-top: 1rem;
+    margin-bottom: .5rem;
+}
+
+body {
+    background: #f5f5f5;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+pre {
+    overflow: scroll;
+    width: 100%;
+}
+
+/*PAGE*/
+
+#pages {
+    display: flex;
+    flex-direction: row;
+    justify-content:center;
+}
+.page {
+    width: calc(100vw - 350px);
+    max-width:1000px;
+}
+
+ul,
+li {
+    list-style: none;
+}
+
+
+ul ul {
+    margin-left: 1.5rem;
+}
+
+.framework{
+    margin-top:1rem;
+}
+
+.competency>div>ul>li {
+    border-left: 2px solid black;
+
+}
+
+.competency>div>ul>li:before {
+    content: '';
+    height: 3rem;
+    width: 2rem;
+    border-bottom: 2px solid black;
+    top: 0rem;
+    bottom: 0;
+}
+
+.competency>div>ul>li:last-child {
+    border-left: 0px;
+}
+
+.competency>div>ul>li:last-child:before {
+    position: relative;
+    border-left: 2px solid black;
+    border-bottom: 2px solid black;
+    width: calc(3rem - 16px);
+    bottom: 0;
+}
+
+.selected {
+    color: green;
+}
+
+.profileRow {
+    margin-bottom: .5rem;
+}
+
+.frameworkTitle {
+}
+
+.frameworkNameAndDescription {
+    font-size: large;
+    padding-bottom: .5rem;
+}
+
+.competency {
+    text-size: 18px;
+    /* margin-top: .25rem; */
+    display: flex;
+    flex-direction: row;
+    width:100%;
+}
+.competency div{
+    width:100%;
+}
+
+.resource {
+    margin-bottom: .5rem;
+}
+
+.tile {
+    border: 1px gray solid;
+    background-color: white;
+    border-radius: .25rem;
+    margin-top: .25rem;
+    padding: .75rem;
+}
+
+.antitile {
+    border: 0px gray solid;
+    background-color: #f5f5f5;
+    border-radius: .25rem;
+    padding: .25rem;
+    margin-top: .50rem;
+    margin-bottom: .50rem;
+}
+
+input.antitile {
+    border: 1px gray solid;
+    background-color: #f5f5f5;
+    border-radius: .5rem;
+    padding: .50rem .75rem;
+    margin-top: .50rem;
+    margin-bottom: .50rem;
+}
+
+.frameworkSelect {
+    margin-top: .25rem;
+    padding: .5rem;
+    min-height: 30px;
+}
+
+.timelineElement {
+    margin-top: .25rem;
+    padding: .5rem;
+    min-height: 30px;
+}
+
+.frameworkSelectName {
+    margin-left: 0rem;
+}
+
+.frameworkSelectDescription {
+    display: block;
+    margin-top: .25rem;
+    margin-left: 0rem;
+}
+
+.competency .assertions {
+    font-size: small;
+}
+
+.competency .assertion img {
+    clip-path: circle(11px at center);
+    margin-right: .0rem;
+}
+
+.timeline {
+    padding: 10px 0px;
+    position: relative;
+    background-color: inherit;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    background-color: black;
+    top: 0rem;
+    bottom: 0;
+    margin-left: 3.9rem;
+}
+
+.competency > span {
+    position: relative;
+    width: 0px;
+    left: -22px;
+}
+
+.timelineElement .time {
+    content: 'aa';
+    position: relative;
+    display: block;
+    float: left;
+    padding: .5rem;
+    left: -.2rem;
+    width: 120px;
+    background-color: white;
+    border: 4px solid black;
+    text-align: center;
+    top: -.0rem;
+    z-index: 5;
+}
+
+.assertion .statement {
+    display: block;
+    margin-top: .25rem;
+}
+
+.jobPostingSelect {
+    margin-top: .5rem;
+}
+
+.timelineElement .content {
+    margin-left: 13rem;
+}
+
+.timelineElement {
+    left: 0rem;
+    min-height: 4rem;
+}
+
+.timelineElement img,.timelineElement svg {
+    float: left;
+    clip-path: circle(22px at center);
+    margin-left: .25rem;
+    margin-right: .25rem;
+}
+
+.jobPostingCreate .autoSuggest {
+    width: calc(100% - 100px)
+}
+
+/*SIDEBAR*/
+
+#sidebar {
+    width: 240px;
+    margin-right: .5rem;
+}
+
+#sidebar i {
+}
+
+#sidebar label {
+}
+
+/*HEADER*/
+
+.header {
+    height: 25px;
+    background: rgba(0, 0, 0, 1);
+    color: #fff;
+    text-align: center;
+    font: 10px/25px Helvetica, Verdana, sans-serif;
+}
+
+.header a {
+    color: #999;
+}
+
+/*SLIDES*/
+
+.processing {
+    display: block;
+    height: calc(100vh - 25px - 40px);
+    width: calc(100vw - 40px);
+    background: rgba(255, 255, 255, .95);
+    font: 12px/1.5 Helvetica, Verdana, sans-serif;
+    padding: 10px 0;
+}
+
+/*INPUT*/
+
+input[type="text"] {
+    width: 100%;
+    padding: .25rem;
+    margin: .25rem;
+}
+
+textarea {
+    width: 100%;
+    padding: .25rem;
+    margin: .25rem;
+}
+
+/*JobPosting*/
+
+.jobPostingCreate ul div {
+    padding-left: 2rem;
+    margin-bottom: 1rem;
+    display: block;
+}
+
+.jobPostingCreate ul div input {
+    font-size: 1rem;
+}
+
+.jobPostingCreate ul div li {
+    display: inline;
+}
+
+.jobPostingDetail pre {
+    margin-top: 1rem;
+    white-space: pre-wrap;
+    /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;
+    /* Mozilla, since 1999 */
+    white-space: -pre-wrap;
+    /* Opera 4-6 */
+    white-space: -o-pre-wrap;
+    /* Opera 7 */
+    word-wrap: break-word;
+    /* Internet Explorer 5.5+ */
+    overflow: hidden;
+}
+
+.btop {
+    border-top: 1px lightgray solid;
+}
+
+.bbottom {
+    border-bottom: 1px lightgray solid;
+}
+
+.ptop {
+    padding-top: .5rem;
+}
+
+.pbottom {
+    padding-bottom: .5rem;
+}
+.fright {
+    justify-content: flex-end;
+}
+
+.noptop {
+    padding-top: 0rem;
+}
+
+.nopbottom {
+    padding-bottom: 0rem;
+}
+
+.nomtop {
+    margin-top: 0rem;
+}
+
+.nombottom {
+    margin-bottom: 0rem;
+}
+
+.competency .section {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex-flow: wrap;
+}
+
+.buttons {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    flex-flow: wrap;
+}
+
+.buttons span {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.buttons ul {
+    width:100%;
+}
+
+.buttons button {
+    display: flex;
+    align-items: center;
+    width: 6.2rem;
+    padding-right: .25rem;
+}
+
+.buttons button.wider {
+    width: 8rem;
+}
+
+.buttons button i {
+    padding: .5rem;
+    padding-left: .25rem;
+}
+
+@media only screen and (max-width: 600px) {
+    #pages {
+        flex-direction: column;
+    }
+    .page{
+        width: calc(100vw - 50px);
+    }
+    #sidebar{
+        margin-bottom:1rem;
+        padding-bottom:1rem;
+        border-bottom:1px solid black;
+        width:calc(100% - 2rem);
+    }
+}

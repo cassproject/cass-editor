@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+ 
+<head>
+	<meta charset="utf-8" />
+	<title>Profile test</title>
+</head>
+
+<body>
+	<div id="iframe-wrapper">
+		<iframe id="iframe" width="100%" height="800" frameborder="0"></iframe>
+	</div>
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+	<script>
+		$("iframe").ready(function() {
+			$(window).on("message", function(event) {
+				if (event.originalEvent.data.message == "waiting") {
+					//Identity
+					$("iframe")[0].contentWindow.postMessage(JSON.stringify({
+						action: "initIdentity",
+						serverParm: "https://sandbox.cassproject.org/api/",
+						nameParm: "Samantha Smith",
+						pemParm: "-----BEGIN RSA PRIVATE KEY-----MIIEogIBAAKCAQEAogp5B7hoYRwZDjCb4NL/fNt3xTBvDMw08jLTdOcmyKVzetHgwTWRf3ojl1+EPqpgnVRxp/zk2/AQhYelJaU6JmzPBvx14FjxB3ObbYckXrBw60fQ643geAIY3lQAYH7YpBsDp/xCQlMCw7L1H70ZnRPWdxzl9ee20ZeQy367biWPbFQCBUFWHN+gXH2pGZkM8n3/ql6hQ9SFaVEkqzIFdHwTenfl5LYrGmiUuzBy4xfwXsd0NZSzOjxuZyGlupEDkqTh7bMmGJSe13+BlbQcVJ+OwYHM+RdLfk3zXia1cMrcJx/nZZUFxxQs4+V51bBbTG0ms7K9/O28U6Q5BytzNQIDAQABAoIBAH/XVV9y7N7YpSfdz81Tin/+QoMPUD2/inIfCVds2ttoNTCMDw8/7ReuzA+sKxCpqOnXaogHbKPcxZwjxXZq4fLY24j+ex1R7m9blR+XhGk0ORJXKYv99j+YH/igO1/mE5N9QKgyzC+5gC/Xq66rqV6U/RoicYdNlZ3MP09dIBCoSCd1GamgI6T665kGe+kK4o6e55t7T8KC4+KPm85MhJIhxBPut2VZxrC5hzR82l63KlxNo5yylkHnZmYx1qb3jv4GWsigJWxwfFkM6f+KTV697rEC8uUhbiPBjdb+aX247jd9KSnAXZpzQ6Pbg3lUHg53SZyzSprR9eFoAuySy8ECgYEA9tVFF8VlUG5R7bzYvJN13lFv06zzs3aIm0J3j+DEuLjQfsrTrHupaVkxZIFJwHKpACf/eMOzWPbVMQXJAg/c2FiVFkeyCPTMBjOSF7xF457sz7qx95VpTo7M2l0ckTKc8ybRfQ6/nujrJyybHsu+DwbvMGtmixBbK4cRHh9hlwUCgYEAqA8Nrn2AoJafKaAI89+0fGjQEryvwkHfmx+80/aOGhMSTTUmk7CHaXA2o5920PXXAGWjliwLCWN2ubsUejYv3TBIC/B+tvl7NKTaGotVlwTzNU4mZ7c5V5myeQJnpt5qsOM3YmDOvaIIsNZpp7469tsjqYyfzD8NGn6BVCruwnECgYBh9zVsANl8ObzkqY4wEiq26QWEMuGqecIwNQo1HZWWZyvBFwk6LP6JJHBZHoNCEYAH4tgfezTEe3sT8OLdoaQabdYGOMBtk5MiZvd12jC27c25iLS3uiJInp6pkEkVS8xFKUP96YueK32hV6/dYin11t+6DPZu/TfiJ8JgfT4DbQKBgD0DYhM0SyuCI3yoNjfbwpncL5Zt3F1pLvYReqt1ereqrt1K65t43mCANcYHkcphRlJFlDNkAAnDi4n4ioGoBI6IBdAX2tkxD/LX2rsCVOuEB4wVuEm1MmNEUJAwOFNTsmZPx3626LfeCMuyvB8DKEMQ4gyfGjC7v1UcEnXtNEtxAoGAHkRddUacftJKHqFGe9TcPzo5oDLUkjptu3DjqzQfTXTl/ELi08nA4RJ4a4AcaKOUsXRRlfAp98vo/sgwybjq/ijXyIgY732JelQbFfdT0GPuJc8lA146n/Wr8upOoJc4HGKd12Ah2swn2nTHKaHJ2u9rqlJnjLqjr+anpXyI6Zo=-----END RSA PRIVATE KEY-----"
+					}), window.location.origin);
+				};
+			});
+		});
+		document.getElementsByTagName("iframe")[0].setAttribute("src", "index.html?user=wait&origin=" + window.location.origin);
+
+		var eventMethod = window.addEventListener ? "addEventListener" : "attachEvent";
+		var eventer = window[eventMethod];
+		var messageEvent = eventMethod == "attachEvent" ? "onmessage" : "message";
+
+		eventer(messageEvent, function(e) {
+			console.log('parent received message!:  ', e.data);
+		}, false);
+
+	</script>
+</body>
+
+</html>
