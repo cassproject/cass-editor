@@ -1057,14 +1057,7 @@ export default {
         handleMakePublicDirectory: async function(directory) {
             let me = this;
             let d = new EcDirectory();
-            let v;
-            if (directory.type === "Directory") {
-                v = await EcEncryptedValue.toEncryptedValue(directory);
-            } else {
-                v = new EcEncryptedValue();
-                v.copyFrom(directory);
-            }
-            d.copyFrom(await v.decryptIntoObject());
+            d.copyFrom(await EcEncryptedValue.fromEncryptedValue(directory));
             d["schema:dateModified"] = new Date().toISOString();
             delete d.reader;
             EcEncryptedValue.encryptOnSave(d.id, false);
@@ -1093,14 +1086,7 @@ export default {
         },
         handleMakePublicResource: async function(resource) {
             let cw = new schema.CreativeWork();
-            let v;
-            if (resource.type === "CreativeWork") {
-                v = await EcEncryptedValue.toEncryptedValue(resource);
-            } else {
-                v = new EcEncryptedValue();
-                v.copyFrom(resource);
-            }
-            cw.copyFrom(await v.decryptIntoObject());
+            cw.copyFrom(await EcEncryptedValue.fromEncryptedValue(resource));
             cw["schema:dateModified"] = new Date().toISOString();
             delete cw.reader;
             EcEncryptedValue.encryptOnSave(cw.id, false);
@@ -1113,14 +1099,7 @@ export default {
         handleMakePublicFramework: async function(framework) {
             let me = this;
             let f = new EcFramework();
-            let v;
-            if (framework.type === "Framework") {
-                v = await EcEncryptedValue.toEncryptedValue(framework);
-            } else {
-                v = new EcEncryptedValue();
-                v.copyFrom(framework);
-            }
-            f.copyFrom(await v.decryptIntoObject());
+            f.copyFrom(await EcEncryptedValue.fromEncryptedValue(framework));
             f["schema:dateModified"] = new Date().toISOString();
             delete f.reader;
             EcEncryptedValue.encryptOnSave(f.id, false);
@@ -1132,20 +1111,14 @@ export default {
             if (framework.competency && framework.competency.length > 0) {
                 new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
                     EcRepository.get(competencyId, async function(c) {
-                        var v;
                         if (c.canEditAny(EcIdentityManager.default.getMyPks())) {
-                            if (c.isAny(new EcEncryptedValue().getTypes())) {
-                                v = new EcEncryptedValue();
-                                v.copyFrom(c);
-                            } else {
-                                v = await EcEncryptedValue.toEncryptedValue(c);
+                            let d = new EcCompetency();
+                            d.copyFrom(await EcEncryptedValue.fromEncryptedValue(c));
+                            d["schema:dateModified"] = new Date().toISOString();
+                            delete d.reader;
+                            EcEncryptedValue.encryptOnSave(d.id, false);
                             }
-                            c = new EcCompetency();
-                            c.copyFrom(await v.decryptIntoObject());
-                            c["schema:dateModified"] = new Date().toISOString();
-                            delete c.reader;
-                            EcEncryptedValue.encryptOnSave(c.id, false);
-                            me.toSave.push(c);
+                            me.toSave.push(d);
                             done();
                         } else {
                             done();
@@ -1155,18 +1128,12 @@ export default {
                     if (framework.relation && framework.relation.length > 0) {
                         new EcAsyncHelper().each(framework.relation, function(relationId, done) {
                             EcRepository.get(relationId, async function(r) {
-                                var v;
-                                if (r.isAny(new EcEncryptedValue().getTypes())) {
-                                    v = new EcEncryptedValue();
-                                    v.copyFrom(r);
+                                let d = new EcAlignment();
+                                d.copyFrom(await EcEncryptedValue.fromEncryptedValue(r));
+                                delete d.reader;
+                                EcEncryptedValue.encryptOnSave(d.id, false);
                                 } else {
-                                    v = await EcEncryptedValue.toEncryptedValue(r);
-                                }
-                                r = new EcAlignment();
-                                r.copyFrom(await v.decryptIntoObject());
-                                delete r.reader;
-                                EcEncryptedValue.encryptOnSave(r.id, false);
-                                me.toSave.push(r);
+                                me.toSave.push(d);
                                 done();
                             }, done);
                         }, function(relationIds) {
