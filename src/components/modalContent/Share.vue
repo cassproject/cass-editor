@@ -1117,7 +1117,6 @@ export default {
                             d["schema:dateModified"] = new Date().toISOString();
                             delete d.reader;
                             EcEncryptedValue.encryptOnSave(d.id, false);
-                            }
                             me.toSave.push(d);
                             done();
                         } else {
@@ -1132,7 +1131,6 @@ export default {
                                 d.copyFrom(await EcEncryptedValue.fromEncryptedValue(r));
                                 delete d.reader;
                                 EcEncryptedValue.encryptOnSave(d.id, false);
-                                } else {
                                 me.toSave.push(d);
                                 done();
                             }, done);
