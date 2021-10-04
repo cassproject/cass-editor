@@ -418,8 +418,6 @@ export default {
             } else {
                 this.defaultFrameworkConfigName = "No configuration";
             }
-            console.log('defaultFrameworkConfigName');
-            console.log(this.defaultFrameworkConfigName);
         },
         goToDirectory: function() {
             let me = this;
