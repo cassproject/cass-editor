@@ -173,6 +173,9 @@ label {
 .button {
     text-transform: lowercase;
 }
+.button.not-lowercase {
+    text-transform: none;
+}
 
 .lode__Property-text{
     border-radius: .25rem;
