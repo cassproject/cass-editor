@@ -1105,6 +1105,13 @@ export default {
                 return this.ctdlAsnCompetencyProfile;
             }
             return this.t3CompetencyProfile;
+        },
+        taxonomyTerminology: function() {
+            if (this.$store.getters['editor/queryParams'].ceasnDataFields === 'true') {
+                return 'concept scheme';
+            } else {
+                return 'taxonomy';
+            }
         }
     },
     created: function() {
