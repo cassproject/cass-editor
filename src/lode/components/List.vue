@@ -271,6 +271,12 @@ export default {
                 this.searchRepo();
                 this.$store.commit('app/refreshSearch', false);
             }
+        },
+        timeOffset: function() {
+            this.searchRepo();
+        },
+        numIdentities: function() {
+            this.searchRepo();
         }
     },
     computed: {
@@ -295,6 +301,12 @@ export default {
                 return this.$store.getters['app/rightAsideObject'].shortId();
             }
             return null;
+        },
+        timeOffset: function() {
+            return this.repo.timeOffset;
+        },
+        numIdentities: function() {
+            return EcIdentityManager.default.ids?.length;
         }
     },
     methods: {
