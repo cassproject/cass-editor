@@ -50,6 +50,11 @@ export default {
     methods: {
         initializeApp: function() {
             var server = window.origin + "/api/";
+            if (window.location.origin === "https://cassproject.github.io") {
+                server = "https://dev.cassproject.org/api/";
+            } else if (process.env.VUE_APP_SELECTEDSERVER) {
+                server = process.env.VUE_APP_SELECTEDSERVER;
+            }
             var cassApiLocation = "https://dev.rest.api.cassproject.org/";
             this.$store.commit('environment/cassApiLocation', cassApiLocation);
             var me = this;
