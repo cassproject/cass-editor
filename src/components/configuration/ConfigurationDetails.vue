@@ -2416,9 +2416,15 @@
                     </div>
                 </div>
                 <!-- ************************************** Validation ************************************************ -->
-                <div class="section">
-                    <div v-if="configInvalid">
-                        <p>Configuration is invalid:</p>
+                <div
+                    id="config-invalid"
+                    class="section">
+                    <div
+                        class="has-text-danger"
+                        v-if="configInvalid">
+                        <p>
+                            Configuration is invalid:
+                        </p>
                         <p v-if="configNameInvalid">
                             *Configuration name is required
                         </p>
@@ -2888,6 +2894,8 @@ export default {
             this.validateConfigFields();
             if (!this.configInvalid) {
                 this.$emit('save', this.localEnforcedLevelValues, this.localDefaultOwners, this.localDefaultReaders, this.localDefaultCommenters);
+            } else {
+                this.$scrollTo('#config-invalid', '400', this.scrollOptions);
             }
         },
         deleteCompetencyEnforcedType(etIndex) {
@@ -3413,7 +3421,9 @@ export default {
         filterTypes: function() {
             this.filteredTypes = [];
             this.isOpenAutocomplete = true;
-            this.filteredTypes = this.customPropertyAvailableTypes.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+            let types = this.customPropertyAvailableTypes.filter(item => item.display.toLowerCase().indexOf(this.search.toLowerCase()) !== -1);
+            types.sort((a, b) => a.display.localeCompare(b.display));
+            this.filteredTypes = [...new Set(types)];
         },
         selectType: function(type) {
             // Check for duplicates
@@ -3477,7 +3487,11 @@ export default {
         },
         customPropertyAvailableTypes: {
             get() {
-                return this.$store.getters['configuration/availableTypes'];
+                let types = this.$store.getters['configuration/availableTypes'];
+                this.currentConfig.compEnforcedTypes.forEach((type) => {
+                    types.push(type);
+                });
+                return types;
             },
             set(val) {
                 this.$store.commit('configuration/availableTypes', val);
@@ -3624,6 +3638,6 @@ export default {
                 cursor: pointer;
             }
         }
-    }
+}
 </style>
 

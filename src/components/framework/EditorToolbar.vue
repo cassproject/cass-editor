@@ -170,7 +170,7 @@
                     v-if="configurationsEnabled">
                     <div
                         title="Framework configuration"
-                        class="button  is-text has-text-dark is-pulled-right"
+                        class="button  is-text has-text-dark is-pulled-right not-lowercase"
                         v-if="canEditFramework && !conceptMode"
                         @click="showManageConfigurationModal(); showShareDropdown = false;">
                         <span class="icon">
