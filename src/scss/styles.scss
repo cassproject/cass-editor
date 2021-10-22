@@ -90,14 +90,11 @@ p {
     border-radius: 5px 0px 0px 5px;
 }
 .control.auto-complete__control {
-    transform: translateX(0);
     padding-right: 8px;
-    z-index: 10;
     width: 160px;
     border-radius: 5px;
     input {
         height: 44px;
-        z-index: 10;
         margin-right: 12px;
     }
     .input.input.is-small.share {
@@ -112,8 +109,7 @@ p {
     
     .auto-complete {
         width: 100%;
-        position: fixed;
-        top: 66px;
+        position: absolute;
         left: 0px;
         padding-right:.5rem;
         color: $dark;
@@ -172,6 +168,9 @@ label {
 }
 .button {
     text-transform: lowercase;
+}
+.button.not-lowercase {
+    text-transform: none;
 }
 
 .lode__Property-text{
