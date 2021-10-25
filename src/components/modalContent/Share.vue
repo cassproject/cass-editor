@@ -484,10 +484,8 @@ export default {
     mounted: async function() {
         if (this.objFromListItemInfo && this.objFromListItemInfo.encryptedType) {
             let type = "Ec" + this.object.encryptedType;
-            let v = new EcEncryptedValue();
-            v.copyFrom(this.object);
             let obj = new window[type]();
-            obj.copyFrom(await v.decryptIntoObject());
+            obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(this.object));
             this.$store.commit('app/objForShareModal', obj);
         }
         this.getCurrentOwnersAndReaders(true);
@@ -1207,14 +1205,9 @@ export default {
         handleMakePublicConceptScheme: async function() {
             var me = this;
             var framework = this.framework;
-            framework = await EcEncryptedValue.toEncryptedValue(framework);
             var cs = new EcConceptScheme();
-            appLog(framework);
-            appLog(await framework.decryptIntoObject());
-            appLog(cs);
-            cs.copyFrom(await framework.decryptIntoObject());
+            cs.copyFrom(await EcEncryptedValue.fromEncryptedValue(framework));
             delete cs.reader;
-            framework = cs;
             EcEncryptedValue.encryptOnSave(cs.id, false);
             cs["schema:dateModified"] = new Date().toISOString();
             me.decryptingConcepts = true;
@@ -1258,23 +1251,16 @@ export default {
             me.conceptsToProcess += concepts.length;
             new EcAsyncHelper().each(concepts, function(conceptId, done) {
                 EcRepository.get(conceptId, async function(concept) {
-                    var v;
-                    if (concept.isAny(new EcEncryptedValue().getTypes())) {
-                        v = new EcEncryptedValue();
-                        v.copyFrom(concept);
-                    } else {
-                        v = await EcEncryptedValue.toEncryptedValue(concept);
+                    let c = new EcConcept();
+                    c.copyFrom(await EcEncryptedValue.fromEncryptedValue(concept));
+                    delete c.reader;
+                    EcEncryptedValue.encryptOnSave(c.id, false);
+                    if (c["skos:narrower"]) {
+                        me.decryptConcepts(c);
                     }
-                    concept = new EcConcept();
-                    concept.copyFrom(await v.decryptIntoObject());
-                    delete concept.reader;
-                    EcEncryptedValue.encryptOnSave(concept.id, false);
-                    if (concept["skos:narrower"]) {
-                        me.decryptConcepts(concept);
-                    }
-                    concept["schema:dateModified"] = new Date().toISOString();
+                    c["schema:dateModified"] = new Date().toISOString();
                     me.conceptsProcessed++;
-                    me.toSave.push(concept);
+                    me.toSave.push(c);
                     done();
                 }, done);
             }, function(conceptIds) {

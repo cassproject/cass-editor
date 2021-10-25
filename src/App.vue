@@ -369,7 +369,7 @@ export default {
                         if (framework.shortId() === wut.shortId()) {
                             var f = new ConceptScheme();
                             if (wut["encryptedType"] === "ConceptScheme") {
-                                f = await me.decrypt(wut, f);
+                                f.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                             } else {
                                 f.copyFrom(wut);
                             }
@@ -384,7 +384,7 @@ export default {
                         if (framework.shortId() === wut.shortId()) {
                             var f = new EcFramework();
                             if (wut["encryptedType"] === "Framework") {
-                                f = await me.decrypt(wut, f);
+                                f.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                             } else {
                                 f.copyFrom(wut);
                             }
@@ -400,7 +400,7 @@ export default {
                             if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcConcept();
                                 if (wut["encryptedType"] === "Concept") {
-                                    com = await me.decrypt(wut, com);
+                                    com.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                                 } else {
                                     com.copyFrom(wut);
                                 }
@@ -416,7 +416,7 @@ export default {
                             if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcCompetency();
                                 if (wut["encryptedType"] === "Competency") {
-                                    com = await me.decrypt(wut, com);
+                                    com.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                                 } else {
                                     com.copyFrom(wut);
                                 }
@@ -433,7 +433,7 @@ export default {
                             if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcLevel();
                                 if (wut["encryptedType"] === "Level") {
-                                    com = await me.decrypt(wut, com);
+                                    com.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                                 } else {
                                     com.copyFrom(wut);
                                 }
@@ -468,12 +468,6 @@ export default {
                     EcRepository.get(resp, connection.changedObject, appError);
                 }
             };
-        },
-        decrypt: async function(encryptedThing, returnObject) {
-            var v = new EcEncryptedValue();
-            v.copyFrom(encryptedThing);
-            returnObject.copyFrom(await v.decryptIntoObject());
-            return returnObject;
         },
         createNewFramework: async function(optionalDirectory) {
             let me = this;

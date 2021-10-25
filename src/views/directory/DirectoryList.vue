@@ -520,10 +520,8 @@ export default {
                     me.repo.searchWithParams(search, localParamObj, async function(result) {
                         if (!EcArray.has(me.resultIds, result.id)) {
                             if (result.isAny(new EcEncryptedValue().getTypes())) {
-                                let v = new EcEncryptedValue();
-                                v.copyFrom(result);
                                 let unencrypted = new window["Ec" + type]();
-                                unencrypted.copyFrom(await v.decryptIntoObject());
+                                unencrypted.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
                                 result = unencrypted;
                             }
                             me[arrayType].push(result);
@@ -536,10 +534,8 @@ export default {
                                 me.repo.searchWithParams(search, localParamObj, async function(result) {
                                     // Decrypt and add to results list
                                     var type = "Ec" + result.encryptedType;
-                                    var v = new EcEncryptedValue();
-                                    v.copyFrom(result);
                                     var obj = new window[type]();
-                                    obj.copyFrom(await v.decryptIntoObject());
+                                    obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
                                     if (!EcArray.has(me.resultIds, obj.id)) {
                                         me[arrayType].push(obj);
                                         me.resultIds.push(obj.id);

@@ -435,10 +435,8 @@ export default {
                                         if (result.isAny(new EcEncryptedValue().getTypes())) {
                                             // Decrypt and add to results list
                                             var type = "Ec" + result.encryptedType;
-                                            var v = new EcEncryptedValue();
-                                            v.copyFrom(result);
                                             let obj = new window[type]();
-                                            obj.copyFrom(await v.decryptIntoObject());
+                                            obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
                                             result = obj;
                                         }
                                         directories.push(result);
@@ -516,10 +514,8 @@ export default {
                                     if (result.isAny(new EcEncryptedValue().getTypes())) {
                                         // Decrypt and add to results list
                                         var type = "Ec" + result.encryptedType;
-                                        var v = new EcEncryptedValue();
-                                        v.copyFrom(result);
                                         let obj = new window[type]();
-                                        obj.copyFrom(await v.decryptIntoObject());
+                                        obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
                                         result = obj;
                                     }
                                     if (result.name !== '' || result['dcterms:title'] !== '') {
@@ -588,10 +584,8 @@ export default {
                                         if (result.isAny(new EcEncryptedValue().getTypes())) {
                                             // Decrypt and add to results list
                                             var objType = "Ec" + result.encryptedType;
-                                            var v = new EcEncryptedValue();
-                                            v.copyFrom(result);
                                             let obj = new window[objType]();
-                                            obj.copyFrom(await v.decryptIntoObject());
+                                            obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
                                             result = obj;
                                         }
                                         me.subResults.push(result);
@@ -604,10 +598,8 @@ export default {
                                         if (result.isAny(new EcEncryptedValue().getTypes())) {
                                             // Decrypt and add to results list
                                             var objType = "Ec" + result.encryptedType;
-                                            var v = new EcEncryptedValue();
-                                            v.copyFrom(result);
                                             let obj = new window[objType]();
-                                            obj.copyFrom(await v.decryptIntoObject());
+                                            obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
                                             result = obj;
                                         }
                                         me.results.push(result);
@@ -658,10 +650,8 @@ export default {
                                 if (subResult.isAny(new EcEncryptedValue().getTypes())) {
                                     // Decrypt and add to results list
                                     var objType = "Ec" + subResult.encryptedType;
-                                    var v = new EcEncryptedValue();
-                                    v.copyFrom(subResult);
                                     let obj = new window[objType]();
-                                    obj.copyFrom(await v.decryptIntoObject());
+                                    obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
                                     subResult = obj;
                                 }
                                 me.subResults.push(subResult);
