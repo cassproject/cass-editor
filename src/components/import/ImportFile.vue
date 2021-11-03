@@ -403,13 +403,6 @@ export default {
         },
         csvRelationFile: function() {
             return this.$store.getters['app/csvRelationFile'];
-        },
-        taxonomyTerminology: function() {
-            if (this.$store.getters['editor/queryParams'].ceasnDataFields === 'true') {
-                return 'concept scheme';
-            } else {
-                return 'taxonomy';
-            }
         }
     },
     methods: {
