@@ -151,7 +151,7 @@ export default {
             } else if (this.framework && this.framework["schema:inLanguage"]) {
                 defaultLanguage = EcArray.isArray(this.framework["schema:inLanguage"]) ? this.framework["schema:inLanguage"][0] : this.framework["schema:inLanguage"];
             } else if (this.framework && this.framework["dcterms:language"]) {
-                defaultLanguage = this.framework["dcterms:language"];
+                defaultLanguage = EcArray.isArray(this.framework["dcterms:language"]) ? this.framework["dcterms:language"][0] : this.framework["dcterms:language"];
             } else if (navigator.language || navigator.userLanguage) {
                 defaultLanguage = navigator.language || navigator.userLanguage;
             } else {

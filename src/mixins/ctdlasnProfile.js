@@ -713,6 +713,172 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Instructional Program Type"}],
                     "heading": "General"
                 },
+                "https://purl.org/ctdl/terms/environmentalHazardType": {
+                    "@id": "https://purl.org/ctdl/terms/environmentalHazardType",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/skos/Concept"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Type of condition in the physical work performance environment that entails risk exposures requiring mitigating processes; select from an existing enumeration of such types."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Environmental Hazard Type"}],
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdl/terms/performanceLevelType": {
+                    "@id": "https://purl.org/ctdl/terms/performanceLevelType",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/skos/Concept"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Type of required or expected human performance level; select from an existing enumeration of such types."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Performance Level Type"}],
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdl/terms/physicalCapabilityType": {
+                    "@id": "https://purl.org/ctdl/terms/physicalCapabilityType",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/skos/Concept"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Type of physical activity required or expected in performance; select from an existing enumeration of such types."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Physical Capability Type"}],
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdl/terms/sensoryCapabilityType": {
+                    "@id": "https://purl.org/ctdl/terms/sensoryCapabilityType",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/skos/Concept"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Type of required or expected sensory capability; select from an existing enumeration of such types."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Sensory Capability Type"}],
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdlasn/terms/substantiatingResource": {
+                    "@id": "https://purl.org/ctdlasn/terms/substantiatingResource",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Aspects of the referenced resource provide some justification that the resource being described is useful."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Substantiating Resource"}],
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdlasn/terms/substantiatingCompetencyFramework": {
+                    "@id": "https://purl.org/ctdlasn/terms/substantiatingCompetencyFramework",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Aspects of the referenced Competency Framework provide some justification that the resource being described is useful."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Substantiating Competency Framework"}],
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdlasn/terms/substantiatingCredential": {
+                    "@id": "https://purl.org/ctdlasn/terms/substantiatingCredential",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Aspects of the referenced Credential provide some justification that the resource being described is useful."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Substantiating Credential"}],
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdlasn/terms/substantiatingJob": {
+                    "@id": "https://purl.org/ctdlasn/terms/substantiatingJob",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Aspects of the referenced Job provide some justification that the resource being described is useful."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Substantiating Job"}],
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdlasn/terms/substantiatingOccupation": {
+                    "@id": "https://purl.org/ctdlasn/terms/substantiatingOccupation",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Aspects of the referenced Occupation provide some justification that the resource being described is useful."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Substantiating Occupation"}],
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdlasn/terms/substantiatingOrganization": {
+                    "@id": "https://purl.org/ctdlasn/terms/substantiatingOrganization",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Aspects of the referenced Organization provide some justification that the resource being described is useful."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Substantiating Organization"}],
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdlasn/terms/substantiatingTask": {
+                    "@id": "https://purl.org/ctdlasn/terms/substantiatingTask",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Aspects of the referenced Task provide some justification that the resource being described is useful."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Substantiating Task"}],
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdlasn/terms/substantiatingWorkRole": {
+                    "@id": "https://purl.org/ctdlasn/terms/substantiatingResource",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Aspects of the referenced Work Role provide some justification that the resource being described is useful."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Substantiating Work Role"}],
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdlasn/terms/sourceDocumentation": {
+                    "@id": "https://purl.org/ctdlasn/terms/sourceDocumentation",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Human-readable information resource other than a competency framework from which this competency was generated or derived by humans or machines."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source Documentation"}],
+                    "heading": "Connections"
+                },
+                "https://purl.org/ctdlasn/terms/inferredCompetency": {
+                    "@id": "https://purl.org/ctdlasn/terms/inferredCompetency",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Competency deduced or arrive at by reasoning on the competency being described."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Inferred Competency"}],
+                    "heading": "Connections",
+                    "isDirectLink": 'true'
+                },
+                "https://purl.org/ctdl/terms/hasWorkforceDemand": {
+                    "@id": "https://purl.org/ctdl/terms/hasWorkforceDemand",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Indicates the level of demand for a resource via a demand level action."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Workforce Demand"}],
+                    "heading": "Connections"
+                },
                 "headings": ["General", "Context", "Tagging", "Scales", "Connections", "Keys"],
                 "primaryProperties": [
                     "https://purl.org/ctdlasn/terms/competencyLabel",
@@ -748,7 +914,22 @@ export default {
                     "https://purl.org/ctdlasn/terms/isVersionOf",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
-                    "http://schema.org/identifier"
+                    "http://schema.org/identifier",
+                    "https://purl.org/ctdl/terms/environmentalHazardType",
+                    "https://purl.org/ctdl/terms/performanceLevelType",
+                    "https://purl.org/ctdl/terms/physicalCapabilityType",
+                    "https://purl.org/ctdl/terms/sensoryCapabilityType",
+                    "https://purl.org/ctdlasn/terms/substantiatingResource",
+                    "https://purl.org/ctdlasn/terms/substantiatingCompetencyFramework",
+                    "https://purl.org/ctdlasn/terms/substantiatingCredential",
+                    "https://purl.org/ctdlasn/terms/substantiatingJob",
+                    "https://purl.org/ctdlasn/terms/substantiatingOccupation",
+                    "https://purl.org/ctdlasn/terms/substantiatingOrganization",
+                    "https://purl.org/ctdlasn/terms/substantiatingTask",
+                    "https://purl.org/ctdlasn/terms/substantiatingWorkRole",
+                    "https://purl.org/ctdlasn/terms/sourceDocumentation",
+                    "https://purl.org/ctdlasn/terms/inferredCompetency",
+                    "https://purl.org/ctdl/terms/hasWorkforceDemand"
                 ]
             };
         },
