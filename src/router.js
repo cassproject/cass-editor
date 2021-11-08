@@ -34,6 +34,15 @@ export default new Router({
             }
         },
         {
+            path: '/collections',
+            name: 'collections',
+            components: {
+                default: () => import(/* webpackChunkName: "frameworks" */ './views/framework/Frameworks.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
+            }
+        },
+        {
             path: '/concepts',
             name: 'concepts',
             components: {

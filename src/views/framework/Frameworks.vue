@@ -75,7 +75,9 @@
                         class="buttons is-right frameworks-buttons">
                         <add-new-dropdown
                             :frameworkEnabled="true"
+                            :collectionEnabled="queryParams.ceasnDataFields === 'true'"
                             @framework="$emit('create-new-framework')"
+                            @collection="$emit('create-new-collection')"
                             @close="createDropDownActive = false"
                             @toggle="createDropDownActive = !createDropDownActive"
                             :active="createDropDownActive" />
@@ -344,6 +346,13 @@ export default {
         },
         searchOptions: function() {
             let search = "";
+            if (this.queryParams.ceasnDataFields === 'true' && this.type === "Framework") {
+                if (this.collectionMode) {
+                    search += " AND (subType:\"Collection\")";
+                } else {
+                    search += " AND NOT (subType:\"Collection\")";
+                }
+            }
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
@@ -405,6 +414,9 @@ export default {
         },
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
+        },
+        collectionMode: function() {
+            return this.$store.getters['editor/collectionMode'];
         }
     },
     components: {
