@@ -188,6 +188,20 @@
                         Go to directory
                     </div>
                 </div>
+                <!-- assertions -->
+                <div
+                    v-if="canManageAssertions"
+                    class="column is-narrow"
+                    @click="manageAssertions">
+                    <div class="button is-text has-text-dark">
+                        <template v-if="managingAssertions">
+                            Stop Managing Assertions
+                        </template>
+                        <template v-else>
+                            Manage Assertions
+                        </template>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -439,6 +453,17 @@ export default {
             }, function(failure) {
                 appError(failure);
             });
+        },
+        manageAssertions: function() {
+            if (this.managingAssertions) {
+                this.$store.commit('editor/setManageAssertions', false);
+            } else {
+                this.$store.dispatch('editor/searchForAssertions', 5000).then(() => {
+                    this.$store.commit('editor/setManageAssertions', true);
+                }).catch(() => {
+                    // TODO: Handle assertion search error
+                });
+            }
         }
     },
     computed: {
@@ -514,6 +539,13 @@ export default {
         },
         directoryId: function() {
             return this.framework.directory;
+        },
+        canManageAssertions: function() {
+            // TODO
+            return true;
+        },
+        managingAssertions: function() {
+            return this.$store.getters['editor/manageAssertions'];
         }
     },
     watch: {

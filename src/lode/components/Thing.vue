@@ -149,6 +149,9 @@
                         </template>
                     </div>
                 </div>
+                <AssertionEditor
+                    v-if="managingAssertions && shortType === 'Competency'"
+                    :uri="uri || obj.id" />
                 <!-- informational sots here -->
                 <slot name="frameworkDetails" />
             </div>
@@ -215,7 +218,8 @@ export default {
         }
     },
     components: {
-        Property: () => import('./Property.vue')
+        Property: () => import('./Property.vue'),
+        AssertionEditor: () => import('./AssertionEditor.vue')
     },
     data: function() {
         return {
@@ -651,6 +655,9 @@ export default {
                 return this.$store.state.editor.changedObject;
             }
             return null;
+        },
+        managingAssertions: function() {
+            return this.$store.getters['editor/manageAssertions'];
         }
     },
     methods: {

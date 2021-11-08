@@ -179,6 +179,15 @@
                     <span v-if="showSideNav"> {{ navLink.launchName }}</span>
                 </a>
             </li>
+            <li
+                class="has-text-white">
+                <router-link :to="{path: '/timeline', query: queryParams}">
+                    <span class="icon">
+                        <i class="fa fa-history" />
+                    </span>
+                    <span v-if="showSideNav"> Assertion Timeline</span>
+                </router-link>
+            </li>
         </ul>
         <!-- DIRECTORIES -->
         <div
