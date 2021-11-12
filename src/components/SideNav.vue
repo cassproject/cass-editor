@@ -180,6 +180,7 @@
                 </a>
             </li>
             <li
+                v-if="queryParams.disableAssertions !== 'true'"
                 class="has-text-white">
                 <router-link :to="{path: '/timeline', query: queryParams}">
                     <span class="icon">

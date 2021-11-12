@@ -6,37 +6,36 @@
             <div
                 class="time"
                 v-if="timestamp">{{ timeAgo }},</div>
-            <img
-                style="vertical-align: sub;"
-                v-if="fingerprintUrlAgent"
-                :src="fingerprintUrlAgent"
-                :title="agent">
-            <svg
-                v-else
-                style="vertical-align: sub;"
-                width="44"
-                height="44"
-                :data-jdenticon-value="fingerprintAgent"
-                :title="fingerprintAgent" />
-            <img
-                style="vertical-align: sub;"
-                v-if="fingerprintUrlSubject"
-                :src="fingerprintUrlSubject"
-                :title="subject">
-            <svg
-                v-else
-                style="vertical-align: sub;"
-                width="44"
-                height="44"
-                :data-jdenticon-value="fingerprintSubject"
-                :title="fingerprintSubject" />
             <div class="content">
                 <div
                     v-if="mine"
                     @click="deleteMe"
-                    title="Delete this claim."
-                    style="float:right;cursor:pointer;">X</div>
-                {{ agent }} claimed {{ subject }}
+                    class="button is-text"
+                    title="Delete this claim.">
+                    <i class="fas fa-times" />
+                </div>
+                <img
+                    v-if="fingerprintUrlAgent"
+                    :src="fingerprintUrlAgent"
+                    :title="agent">
+                <svg
+                    v-else
+                    width="44"
+                    height="44"
+                    :data-jdenticon-value="fingerprintAgent"
+                    :title="fingerprintAgent" />
+                {{ agent }} claimed
+                <img
+                    v-if="fingerprintUrlSubject"
+                    :src="fingerprintUrlSubject"
+                    :title="subject">
+                <svg
+                    v-else
+                    width="44"
+                    height="44"
+                    :data-jdenticon-value="fingerprintSubject"
+                    :title="fingerprintSubject" />
+                {{ subject }}
                 <span v-if="negative">could not</span><span v-else>could</span>
                 demonstrate
                 <a
@@ -402,41 +401,3 @@ export default {
     }
 };
 </script>
-<style lang="scss">
-    .timelineElement {
-        margin-top: .25rem;
-        padding: .5rem;
-        min-height: 30px;
-    }
-
-    .timelineElement .time {
-        content: 'aa';
-        position: relative;
-        display: block;
-        float: left;
-        padding: .5rem;
-        left: -.2rem;
-        width: 120px;
-        background-color: white;
-        border: 4px solid black;
-        text-align: center;
-        top: -.0rem;
-        z-index: 5;
-    }
-
-    .timelineElement .content {
-        margin-left: 13rem;
-    }
-
-    .timelineElement {
-        left: 0rem;
-        min-height: 4rem;
-    }
-
-    .timelineElement img,.timelineElement svg {
-        float: left;
-        clip-path: circle(22px at center);
-        margin-left: .25rem;
-        margin-right: .25rem;
-    }
-</style>

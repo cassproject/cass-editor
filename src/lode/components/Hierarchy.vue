@@ -295,6 +295,21 @@
                     </div>
                 </div>
             </div>
+            <div
+                v-if="managingAssertions"
+                class="columns">
+                <div class="column is-narrow assertion-subject-select">
+                    <span>Manage Assertions for: </span>
+                    <select v-model="selectedSubject">
+                        <option
+                            v-for="subject in assertionSubjects"
+                            :key="subject.key"
+                            :value="subject.key">
+                            {{ subject.name }}
+                        </option>
+                    </select>
+                </div>
+            </div>
         </div>
         <template
             v-if="hierarchy">
@@ -358,7 +373,6 @@
 <script>
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
-var hierarchyTimeout;
 export default {
     name: 'Hierarchy',
     mixins: [ common, competencyEdits ],
@@ -426,7 +440,8 @@ export default {
             shiftKey: false,
             arrowKey: null,
             addCompetencyOrChildText: "Add Competency",
-            hierarchy: null
+            hierarchy: null,
+            selectedSubject: null
         };
     },
     components: {
@@ -533,6 +548,12 @@ export default {
                 return false;
             }
             return (this.container.competency && this.container.competency.length >= this.LARGE_NUMBER_OF_ITEMS);
+        },
+        managingAssertions: function() {
+            return this.$store.getters['editor/manageAssertions'];
+        },
+        assertionSubjects: function() {
+            return [{name: 'Myself', key: EcIdentityManager.default.ids[0].ppk.toPk().toPem()}]; // TODO: get more possible subjects
         }
     },
     mounted: function() {
@@ -562,6 +583,7 @@ export default {
         }
         window.addEventListener("keydown", this.keydown);
         window.addEventListener("keyup", this.keyup);
+        this.selectedSubject = this.$store.getters['editor/getSubject'];
     },
     beforeDestroy: function() {
         window.removeEventListener('keyup', this.keyup);
@@ -669,7 +691,7 @@ export default {
          * the done loading event is triggered
          */
         startTime: function() {
-            hierarchyTimeout = setTimeout(() => {
+            setTimeout(() => {
                 this.$emit('done-loading-nodes');
             }, 1000);
         },

@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h3>Timeline</h3>
         <div
             class="timeline"
             v-if="assertions">

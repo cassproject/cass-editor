@@ -541,8 +541,10 @@ export default {
             return this.framework.directory;
         },
         canManageAssertions: function() {
-            // TODO
-            return true;
+            if (this.queryParams.disableAssertions !== 'true' && this.loggedIn) {
+                return true;
+            }
+            return false;
         },
         managingAssertions: function() {
             return this.$store.getters['editor/manageAssertions'];

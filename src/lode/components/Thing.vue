@@ -3,6 +3,7 @@
         class="lode__thing"
         :class="[
             editingClass,
+            {'managing-assertions': managingAssertions},
             {'highlighted': highlighted},
             {'show-all': filter === 'showAll'},
             {'show-aligned': filter === 'showAligned'},
@@ -150,7 +151,7 @@
                     </div>
                 </div>
                 <AssertionEditor
-                    v-if="managingAssertions && shortType === 'Competency'"
+                    v-if="managingAssertions"
                     :uri="uri || obj.id" />
                 <!-- informational sots here -->
                 <slot name="frameworkDetails" />
@@ -657,7 +658,7 @@ export default {
             return null;
         },
         managingAssertions: function() {
-            return this.$store.getters['editor/manageAssertions'];
+            return this.$store.getters['editor/manageAssertions'] && this.shortType === 'Competency' && this.$route.name === 'framework';
         }
     },
     methods: {

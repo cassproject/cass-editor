@@ -2,55 +2,63 @@
     <div
         class="assertions-group">
         <div class="assertions-buttons">
-            <button
-                :disabled="loading"
-                :class="{'active': canAssertion}"
-                @click="handleCanClick">
-                I can <template v-if="canAssertion">
-                    (revoke)
-                </template>
-            </button>
-            <button
-                :disabled="loading"
-                :class="{'active': cannotAssertion}"
-                @click="handleCannotClick">
-                I can't <template v-if="cannotAssertion">
-                    (revoke)
-                </template>
-            </button>
-            <button
-                :disabled="loading"
-                v-if="canAssertion"
-                @click="handleBadgeClick">
-                Badge
-            </button>
-            <button
-                @click="viewBadge"
-                v-if="badgeExists">
-                Badge Link
-            </button>
+            <div class="left-buttons">
+                <div
+                    class="button is-text"
+                    :disabled="loading"
+                    :class="{'active': canAssertion}"
+                    @click="handleCanClick">
+                    <i :class="canButtonIcon" />
+                    {{ canButtonText }}
+                </div>
+                <div
+                    class="button is-text"
+                    :disabled="loading"
+                    :class="{'active': cannotAssertion}"
+                    @click="handleCannotClick">
+                    <i :class="cantButtonIcon" />
+                    {{ cantButtonText }}
+                </div>
+            </div>
+            <div class="right-button">
+                <div
+                    class="button is-text"
+                    :disabled="loading"
+                    v-if="canAssertion"
+                    @click="handleBadgeClick">
+                    <template v-if="badgeExists">
+                        <span class="text-icon">-</span> Remove Badge
+                    </template>
+                    <template v-else>
+                        <span class="text-icon">+</span> Add Badge
+                    </template>
+                </div>
+                <div
+                    class="button is-text"
+                    @click="viewBadge"
+                    v-if="badgeExists">
+                    View Badge
+                </div>
+            </div>
         </div>
         <div class="assertions-input">
             <input
                 :disabled="loading"
+                class="input is-narrow"
                 type="text"
                 v-if="assertionExists"
                 @keyup.enter="handleEvidenceAssertion"
-                v-model="assertionText">
+                v-model="assertionText"
+                :placeholder="reasonPlaceholder">
         </div>
         <small
-            class="buttons"
+            class="assertions-evidence"
             v-if="evidenceExplanation && (assertionExists)">
+            <hr/>
             <ul>
                 <li
-                    class="pbottom"
                     v-for="(evidenceThing, index) in evidenceExplanation"
                     :key="index">
-                    <span
-                        @click="handleUnevidenceAssertion(evidenceThing.original)"
-                        style="float:right;cursor:pointer;">
-                        X
-                    </span>
                     <a
                         v-if="evidenceThing.url"
                         :href="evidenceThing.url"
@@ -58,6 +66,11 @@
                         {{ evidenceThing.text }}
                     </a>
                     <span v-else>{{ evidenceThing.text }}</span>
+                    <div
+                        class="button is-text"
+                        @click="handleUnevidenceAssertion(evidenceThing.original)">
+                        <i class="fas fa-times" />
+                    </div>
                 </li>
             </ul>
         </small>
@@ -193,6 +206,41 @@ export default {
         },
         otherClaimsPhrase: function() {
             return "Others have made claims about " + (this.subject === this.me ? "you" : (this.subjectPerson === null ? "them" : this.subjectPerson.getName())) + ". Click to expand.";
+        },
+        reasonPlaceholder: function() {
+            if (this.me === this.subject) {
+                return 'do this because I...';
+            } else {
+                return 'do this because they...';
+            }
+        },
+        canButtonText: function() {
+            if (this.me === this.subject) {
+                return 'I can';
+            } else {
+                return 'They can';
+            }
+        },
+        cantButtonText: function() {
+            if (this.me === this.subject) {
+                return "I can't";
+            } else {
+                return "They can't";
+            }
+        },
+        canButtonIcon: function() {
+            if (this.canAssertion) {
+                return 'far fa-check-circle';
+            } else {
+                return 'far fa-circle';
+            }
+        },
+        cantButtonIcon: function() {
+            if (this.cannotAssertion) {
+                return 'far fa-check-square';
+            } else {
+                return 'far fa-square';
+            }
         }
     },
     methods: {

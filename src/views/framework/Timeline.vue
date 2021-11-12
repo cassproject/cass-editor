@@ -2,6 +2,19 @@
     <div>
         <main-layout
             :simple="true">
+            <template slot="top">
+                <div class="assertion-timeline-topbar">
+                    <div
+                        style="width: 100%;"
+                        class="columns is-spaced is-vcentered">
+                        <div class="column">
+                            <h2 class="has-text-dark has-text-weight-bold is-size-5 text-align-left">
+                                Assertion Timeline
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+            </template>
             <template slot="body">
                 <AssertionTimeline />
             </template>
@@ -41,6 +54,6 @@ export default {
 </script>
 
 <style lang="scss">
-
+    @import './../../scss/timeline.scss';
 </style>
 

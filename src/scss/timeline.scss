@@ -1,0 +1,43 @@
+.timelineElement {
+    margin-top: .25rem;
+    padding: .5rem;
+    min-height: 30px;
+}
+
+.timelineElement .time {
+    content: 'aa';
+    position: relative;
+    display: block;
+    float: left;
+    padding: .5rem;
+    left: -.2rem;
+    width: 120px;
+    background-color: white;
+    border: 4px solid black;
+    text-align: center;
+    top: -.0rem;
+    z-index: 5;
+}
+
+.timelineElement .content {
+    margin-left: 8rem;
+}
+
+.timelineElement {
+    left: 0rem;
+    min-height: 6rem;
+}
+
+.timelineElement img,.timelineElement svg {
+    clip-path: circle(22px at center);
+    margin-left: .25rem;
+    margin-right: .25rem;
+}
+
+.assertion-timeline-topbar{
+    height: 100%;
+    width: 100%;
+    line-height: 40px;
+    display: inline-flex;
+    justify-content: space-between;
+}
