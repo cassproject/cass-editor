@@ -1,0 +1,14 @@
+
+target/
+
+build\.log
+
+cass-vlrc\.iml
+
+\.idea/
+
+pom\.xml\.versionsBackup
+
+node_modules/
+
+package-lock\.json

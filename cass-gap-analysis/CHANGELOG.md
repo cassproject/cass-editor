@@ -1,0 +1,86 @@
+# Change Log
+
+## [1.2.9](https://github.com/cassproject/cass-gap-analysis/tree/1.2.9) (2019-05-17)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.2.8...1.2.9)
+
+## [1.2.8](https://github.com/cassproject/cass-gap-analysis/tree/1.2.8) (2019-05-10)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.2.7...1.2.8)
+
+## [1.2.7](https://github.com/cassproject/cass-gap-analysis/tree/1.2.7) (2019-04-26)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.2.6...1.2.7)
+
+## [1.2.6](https://github.com/cassproject/cass-gap-analysis/tree/1.2.6) (2019-04-24)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.2.5...1.2.6)
+
+## [1.2.5](https://github.com/cassproject/cass-gap-analysis/tree/1.2.5) (2019-04-24)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.2.4...1.2.5)
+
+## [1.2.4](https://github.com/cassproject/cass-gap-analysis/tree/1.2.4) (2019-04-19)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.2.3...1.2.4)
+
+## [1.2.3](https://github.com/cassproject/cass-gap-analysis/tree/1.2.3) (2019-04-15)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.2.2...1.2.3)
+
+## [1.2.2](https://github.com/cassproject/cass-gap-analysis/tree/1.2.2) (2019-04-15)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.2.1...1.2.2)
+
+## [1.2.1](https://github.com/cassproject/cass-gap-analysis/tree/1.2.1) (2019-04-15)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.2.0...1.2.1)
+
+## [1.2.0](https://github.com/cassproject/cass-gap-analysis/tree/1.2.0) (2019-04-12)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.1.2...1.2.0)
+
+## [1.1.2](https://github.com/cassproject/cass-gap-analysis/tree/1.1.2) (2019-03-27)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.1.1...1.1.2)
+
+## [1.1.1](https://github.com/cassproject/cass-gap-analysis/tree/1.1.1) (2019-03-22)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.1.0...1.1.1)
+
+## [1.1.0](https://github.com/cassproject/cass-gap-analysis/tree/1.1.0) (2019-03-15)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.0.10...1.1.0)
+
+## [1.0.10](https://github.com/cassproject/cass-gap-analysis/tree/1.0.10) (2019-03-08)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.0.9...1.0.10)
+
+## [1.0.9](https://github.com/cassproject/cass-gap-analysis/tree/1.0.9) (2019-03-01)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.0.8...1.0.9)
+
+## [1.0.8](https://github.com/cassproject/cass-gap-analysis/tree/1.0.8) (2019-02-21)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.0.7...1.0.8)
+
+## [1.0.7](https://github.com/cassproject/cass-gap-analysis/tree/1.0.7) (2019-02-15)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.0.6...1.0.7)
+
+## [1.0.6](https://github.com/cassproject/cass-gap-analysis/tree/1.0.6) (2019-02-15)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.0.5...1.0.6)
+
+**Closed issues:**
+
+- Modify gap 'groups' to use Organization.employee instead of Organization.member [\#13](https://github.com/cassproject/cass-gap-analysis/issues/13)
+
+## [1.0.5](https://github.com/cassproject/cass-gap-analysis/tree/1.0.5) (2019-02-08)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/0.4.26...1.0.5)
+
+## [0.4.26](https://github.com/cassproject/cass-gap-analysis/tree/0.4.26) (2019-01-18)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.0.3...0.4.26)
+
+## [1.0.3](https://github.com/cassproject/cass-gap-analysis/tree/1.0.3) (2019-01-17)
+[Full Changelog](https://github.com/cassproject/cass-gap-analysis/compare/1.0.4...1.0.3)
+
+## [1.0.4](https://github.com/cassproject/cass-gap-analysis/tree/1.0.4) (2019-01-17)
+**Fixed bugs:**
+
+- Build Person names based on family/given names fields if name is undefined [\#10](https://github.com/cassproject/cass-gap-analysis/issues/10)
+- Print and Edit Rules buttons don't do anything. [\#9](https://github.com/cassproject/cass-gap-analysis/issues/9)
+- Negative assertions are shown as positive assertions. [\#8](https://github.com/cassproject/cass-gap-analysis/issues/8)
+- Identities don't seem to show names in the list of profiles. \(Look in family/given names fields as well as name field\) [\#5](https://github.com/cassproject/cass-gap-analysis/issues/5)
+
+**Closed issues:**
+
+- Bug with toggleGraphProfileSummaryChild and top summary item [\#3](https://github.com/cassproject/cass-gap-analysis/issues/3)
+- Need way of creating groups via UI/UX. [\#2](https://github.com/cassproject/cass-gap-analysis/issues/2)
+- Gap Analysis should not limit individual profile selection to contacts list [\#1](https://github.com/cassproject/cass-gap-analysis/issues/1)
+
+
+
+\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*

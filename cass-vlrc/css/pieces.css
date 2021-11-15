@@ -1,0 +1,60 @@
+hr {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+#container {
+    padding-left: 20px;
+    background-color: rgba(0, 0, 0, .0);
+    height: calc(100vh - 25px);
+    width: calc(100vw);
+}
+
+button {
+    padding: 5px;
+}
+
+button.inline {
+    padding: 2px;
+    border: 0px;
+    background-color: transparent;
+}
+
+button.empty {
+    padding: 2px;
+    border: 0px;
+    background-color: transparent;
+}
+
+button.inline:hover {
+    padding: 1px;
+    border: 1px black solid;
+    background-color: rgba(0, 0, 0, .15);
+    cursor: pointer;
+}
+
+button.pressed {
+    background-color: gray;
+}
+
+.right {
+    float: right;
+}
+
+.block {
+    display: block;
+}
+
+.accslide li {
+    margin-left: 2rem;
+    list-style: none;
+}
+
+.accslide a:hover {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+ul.noIndent li {
+    margin-left: .5rem;
+}
