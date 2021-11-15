@@ -1126,10 +1126,8 @@ export default {
         this.setNumSubdirectoriesAndObjects();
         if (this.object.encryptedType) {
             let type = "Ec" + this.object.encryptedType;
-            let v = new EcEncryptedValue();
-            v.copyFrom(this.object);
             let obj = new window[type]();
-            obj.copyFrom(await v.decryptIntoObject());
+            obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(this.object));
             this.$store.commit('app/rightAsideObject', obj);
         }
         if (this.object.type === "Directory") {

@@ -330,6 +330,10 @@ With Windows/Chrome:
         * browser settings -> privacy & security -> security -> manage certificates -> trusted root certification authorities -> import
         * Select the crt file
 
+* Create an .env.local file in the project root directory. Its contents should be:
+```
+    VUE_APP_SELECTEDSERVER=https://dev.api.cassproject.org/api/
+```
 
 * Start cass-editor.
 

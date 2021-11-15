@@ -85,7 +85,7 @@
                 <div
                     v-if="showSideNav"
                     class="button  is-large is-outlined is-white"
-                    @click="performApplicationLogout">
+                    @click="performApplicationLogin">
                     <span class="icon">
                         <i class="fa fa-sign-in-alt" />
                     </span><span v-if="showSideNav">login</span>
@@ -95,7 +95,7 @@
                     class="buttons is-centered">
                     <div
                         class="button is-outlined is-white"
-                        @click="performApplicationLogout">
+                        @click="performApplicationLogin">
                         <span class="icon">
                             <i class="fa fa-sign-in-alt" />
                         </span>
