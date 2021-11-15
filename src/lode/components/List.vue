@@ -429,20 +429,18 @@ export default {
                     for (let result of results) {
                         if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
                             if (!EcArray.has(me.resultIds, result.id)) {
+                                me.resultIds.push(result.id);
                                 if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
                                     // Don't show subdirectories unless searching
                                     if (!result.parentDirectory || me.searchTerm !== "") {
                                         if (result.isAny(new EcEncryptedValue().getTypes())) {
                                             // Decrypt and add to results list
                                             var type = "Ec" + result.encryptedType;
-                                            var v = new EcEncryptedValue();
-                                            v.copyFrom(result);
                                             let obj = new window[type]();
-                                            obj.copyFrom(await v.decryptIntoObject());
+                                            obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
                                             result = obj;
                                         }
                                         directories.push(result);
-                                        me.resultIds.push(result.id);
                                     }
                                 }
                             }
@@ -508,28 +506,28 @@ export default {
                     if (me.paramObj) {
                         paramObj = Object.assign({}, me.paramObj);
                     }
-                    me.repo.searchWithParams(search, paramObj, async function(result) {
-                        if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
-                            if (!EcArray.has(me.resultIds, result.id)) {
-                                me.resultIds.push(result.id);
-                                if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
-                                    if (result.isAny(new EcEncryptedValue().getTypes())) {
-                                        // Decrypt and add to results list
-                                        var type = "Ec" + result.encryptedType;
-                                        var v = new EcEncryptedValue();
-                                        v.copyFrom(result);
-                                        let obj = new window[type]();
-                                        obj.copyFrom(await v.decryptIntoObject());
-                                        result = obj;
-                                    }
-                                    if (result.name !== '' || result['dcterms:title'] !== '') {
-                                        me.results.push(result);
-                                        me.nonDirectoryResults = true;
+                    me.repo.searchWithParams(search, paramObj, function(result) {
+                    }, async function(results) {
+                        for (let result of results) {
+                            if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
+                                if (!EcArray.has(me.resultIds, result.id)) {
+                                    me.resultIds.push(result.id);
+                                    if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
+                                        if (result.isAny(new EcEncryptedValue().getTypes())) {
+                                            // Decrypt and add to results list
+                                            var type = "Ec" + result.encryptedType;
+                                            let obj = new window[type]();
+                                            obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
+                                            result = obj;
+                                        }
+                                        if (result.name !== '' || result['dcterms:title'] !== '') {
+                                            me.results.push(result);
+                                            me.nonDirectoryResults = true;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }, function(results) {
                         me.firstSearchProcessing = false;
                         if (results.length < 10 && (me.type === "Framework" || me.type === "ConceptScheme")) {
                             if (me.searchCompetencies) {
@@ -580,43 +578,41 @@ export default {
                     type = this.type;
                 }
                 this.buildSearch(type, function(search) {
-                    me.repo.searchWithParams(search, localParamObj, async function(result) {
-                        if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
-                            if (me.searchingForCompetencies) {
-                                if (!EcArray.has(me.resultIds, result.id)) {
-                                    if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
-                                        if (result.isAny(new EcEncryptedValue().getTypes())) {
-                                            // Decrypt and add to results list
-                                            var objType = "Ec" + result.encryptedType;
-                                            var v = new EcEncryptedValue();
-                                            v.copyFrom(result);
-                                            let obj = new window[objType]();
-                                            obj.copyFrom(await v.decryptIntoObject());
-                                            result = obj;
-                                        }
-                                        me.subResults.push(result);
+                    me.repo.searchWithParams(search, localParamObj, function(result) {
+                    }, async function(results) {
+                        for (let result of results) {
+                            if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
+                                if (me.searchingForCompetencies) {
+                                    if (!EcArray.has(me.resultIds, result.id)) {
                                         me.resultIds.push(result.id);
+                                        if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
+                                            if (result.isAny(new EcEncryptedValue().getTypes())) {
+                                                // Decrypt and add to results list
+                                                var objType = "Ec" + result.encryptedType;
+                                                let obj = new window[objType]();
+                                                obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
+                                                result = obj;
+                                            }
+                                            me.subResults.push(result);
+                                        }
                                     }
-                                }
-                            } else {
-                                if (!EcArray.has(me.resultIds, result.id)) {
-                                    if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
-                                        if (result.isAny(new EcEncryptedValue().getTypes())) {
-                                            // Decrypt and add to results list
-                                            var objType = "Ec" + result.encryptedType;
-                                            var v = new EcEncryptedValue();
-                                            v.copyFrom(result);
-                                            let obj = new window[objType]();
-                                            obj.copyFrom(await v.decryptIntoObject());
-                                            result = obj;
-                                        }
-                                        me.results.push(result);
+                                } else {
+                                    if (!EcArray.has(me.resultIds, result.id)) {
                                         me.resultIds.push(result.id);
+                                        if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
+                                            if (result.isAny(new EcEncryptedValue().getTypes())) {
+                                                // Decrypt and add to results list
+                                                var objType = "Ec" + result.encryptedType;
+                                                let obj = new window[objType]();
+                                                obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
+                                                result = obj;
+                                            }
+                                            me.results.push(result);
+                                        }
                                     }
                                 }
                             }
                         }
-                    }, function(results) {
                         if (results.length === 0 && (me.type === "Framework" || me.type === "ConceptScheme")) {
                             if (me.searchCompetencies) {
                                 me.searchForSubObjects($state);
@@ -651,26 +647,26 @@ export default {
             }
             var type = me.type === "Framework" ? "Competency" : "Concept";
             me.buildSearch(type, function(subSearch) {
-                me.repo.searchWithParams(subSearch, subLocalParamObj, async function(subResult) {
-                    if (!me.filterToEditable || (me.filterToEditable && subResult.canEditAny(EcIdentityManager.default.getMyPks()))) {
-                        if (!EcArray.has(me.resultIds, subResult.id)) {
-                            if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, subResult.shortId())) {
-                                if (subResult.isAny(new EcEncryptedValue().getTypes())) {
-                                    // Decrypt and add to results list
-                                    var objType = "Ec" + subResult.encryptedType;
-                                    var v = new EcEncryptedValue();
-                                    v.copyFrom(subResult);
-                                    let obj = new window[objType]();
-                                    obj.copyFrom(await v.decryptIntoObject());
-                                    subResult = obj;
-                                }
-                                me.subResults.push(subResult);
+                me.repo.searchWithParams(subSearch, subLocalParamObj, function(subResult) {
+                }, async function(subResults) {
+                    for (let subResult of subResults) {
+                        if (!me.filterToEditable || (me.filterToEditable && subResult.canEditAny(EcIdentityManager.default.getMyPks()))) {
+                            if (!EcArray.has(me.resultIds, subResult.id)) {
                                 me.resultIds.push(subResult.id);
-                                me.nonDirectoryResults = true;
+                                if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, subResult.shortId())) {
+                                    if (subResult.isAny(new EcEncryptedValue().getTypes())) {
+                                        // Decrypt and add to results list
+                                        var objType = "Ec" + subResult.encryptedType;
+                                        let obj = new window[objType]();
+                                        obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(subResult));
+                                        subResult = obj;
+                                    }
+                                    me.subResults.push(subResult);
+                                    me.nonDirectoryResults = true;
+                                }
                             }
                         }
                     }
-                }, function(subResults) {
                     if (subResults.length > 0 && $state) {
                         $state.loaded();
                     } else if ($state) {

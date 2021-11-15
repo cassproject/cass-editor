@@ -685,10 +685,9 @@ export default {
                         c = await EcRepository.get(this.container[this.containerNodeProperty][i]);
                         if (c && c.encryptedType && c.encryptedType.toLowerCase() === this.containerNodeProperty) {
                             let encryptedType = "Ec" + c.encryptedType;
-                            let v = new EcEncryptedValue();
-                            v.copyFrom(c);
-                            c = new window[encryptedType]();
-                            c.copyFrom(await v.decryptIntoObject());
+                            let comp = new window[encryptedType]();
+                            comp.copyFrom(await EcEncryptedValue.fromEncryptedValue(c));
+                            c = comp;
                         }
                     }
                     if (c !== null) {

@@ -49,7 +49,12 @@ export default {
     },
     methods: {
         initializeApp: function() {
-            var server = "https://dev.api.cassproject.org/api/";
+            var server = window.origin + "/api/";
+            if (window.location.origin === "https://cassproject.github.io") {
+                server = "https://dev.cassproject.org/api/";
+            } else if (process.env.VUE_APP_SELECTEDSERVER) {
+                server = process.env.VUE_APP_SELECTEDSERVER;
+            }
             var cassApiLocation = "https://dev.rest.api.cassproject.org/";
             this.$store.commit('environment/cassApiLocation', cassApiLocation);
             var me = this;
@@ -83,7 +88,19 @@ export default {
             r.selectedServer = server;
             r.init(server, function() {
                 appLog("Repository initialized");
-            }, appError);
+                if (EcIdentityManager.default.ids.length === 0) {
+                    EcIdentityManager.default.readContacts();
+                    EcIdentityManager.default.readIdentities();
+                }
+                if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
+                    me.findLinkedPersonForIdentity();
+                }
+            }, appError, (loginInfo) => {
+                this.$store.commit('user/repositorySsoOptions', loginInfo);
+                if (loginInfo.ssoLogin != null) {
+                    this.$store.commit('featuresEnabled/apiLoginEnabled', true);
+                }
+            });
             r.autoDetectRepositoryAsync(appLog, appError);
             window.repo = r;
             this.repo = r;
@@ -163,11 +180,6 @@ export default {
                 ss.rel = "stylesheet";
                 ss.href = this.queryParams.css;
                 document.getElementsByTagName("head")[0].appendChild(ss);
-            }
-            EcIdentityManager.default.readContacts();
-            EcIdentityManager.default.readIdentities();
-            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
-                this.findLinkedPersonForIdentity();
             }
             // Preload schema so large frameworks are faster
             let types = [
@@ -357,7 +369,7 @@ export default {
                         if (framework.shortId() === wut.shortId()) {
                             var f = new ConceptScheme();
                             if (wut["encryptedType"] === "ConceptScheme") {
-                                f = await me.decrypt(wut, f);
+                                f.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                             } else {
                                 f.copyFrom(wut);
                             }
@@ -372,7 +384,7 @@ export default {
                         if (framework.shortId() === wut.shortId()) {
                             var f = new EcFramework();
                             if (wut["encryptedType"] === "Framework") {
-                                f = await me.decrypt(wut, f);
+                                f.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                             } else {
                                 f.copyFrom(wut);
                             }
@@ -388,7 +400,7 @@ export default {
                             if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcConcept();
                                 if (wut["encryptedType"] === "Concept") {
-                                    com = await me.decrypt(wut, com);
+                                    com.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                                 } else {
                                     com.copyFrom(wut);
                                 }
@@ -404,7 +416,7 @@ export default {
                             if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcCompetency();
                                 if (wut["encryptedType"] === "Competency") {
-                                    com = await me.decrypt(wut, com);
+                                    com.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                                 } else {
                                     com.copyFrom(wut);
                                 }
@@ -421,7 +433,7 @@ export default {
                             if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcLevel();
                                 if (wut["encryptedType"] === "Level") {
-                                    com = await me.decrypt(wut, com);
+                                    com.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                                 } else {
                                     com.copyFrom(wut);
                                 }
@@ -456,12 +468,6 @@ export default {
                     EcRepository.get(resp, connection.changedObject, appError);
                 }
             };
-        },
-        decrypt: async function(encryptedThing, returnObject) {
-            var v = new EcEncryptedValue();
-            v.copyFrom(encryptedThing);
-            returnObject.copyFrom(await v.decryptIntoObject());
-            return returnObject;
         },
         createNewFramework: async function(optionalDirectory) {
             let me = this;
