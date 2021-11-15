@@ -50,15 +50,14 @@ export const cassApi = {
             oReq.open("GET", serviceEndpoint);
             oReq.send();
         },
-        redirectToExternalLoginPage: function() {
+        redirectToExternalLogin: function() {
             appLog("Redirecting to external login...");
-            window.location = this.cassApiLocation + this.USER_LOGIN_SERVICE + "?redirectUrl=" + encodeURIComponent(window.location);
+            window.location = this.repositorySsoOptions.ssoLogin + "?redirectUrl=" + encodeURIComponent(window.location);
         },
-        // OLD Logout
-        // redirectToExternalLogout: function() {
-        //     appLog("Redirecting to external logout...");
-        //     window.location = this.cassApiLocation + this.USER_LOGOUT_SERVICE + "?redirectUrl=" + encodeURIComponent(this.LOGOUT_REDIRECT_URL + this.addQueryParams());
-        // },
+        redirectToExternalLogout: function() {
+            appLog("Redirecting to external logout...");
+            window.location = this.repositorySsoOptions.ssoLogout + "?redirectUrl=" + encodeURIComponent(window.location);
+        },
         goToLogin: function() {
             if (this.apiLoginEnabled) {
                 this.$router.push({path: '/login'});
@@ -87,7 +86,16 @@ export const cassApi = {
             EcIdentityManager.default.clearIdentities();
             let clearPerson = {};
             this.$store.commit('user/loggedOnPerson', clearPerson);
-            if (this.apiLoginEnabled) this.performExternalLogout();
+            if (this.apiLoginEnabled) this.redirectToExternalLogout();
+            else this.goToLogin();
+        },
+        performApplicationLogin: function() {
+            appLog("Performing application login...");
+            EcIdentityManager.default.clearContacts();
+            EcIdentityManager.default.clearIdentities();
+            let clearPerson = {};
+            this.$store.commit('user/loggedOnPerson', clearPerson);
+            if (this.apiLoginEnabled) this.redirectToExternalLogin();
             else this.goToLogin();
         },
         addQueryParams: function() {
@@ -121,6 +129,9 @@ export const cassApi = {
     computed: {
         cassApiLocation: function() {
             return this.$store.getters['environment/cassApiLocation'];
+        },
+        repositorySsoOptions: function() {
+            return this.$store.getters['user/repositorySsoOptions'];
         },
         apiLoginEnabled: function() {
             return this.$store.getters['featuresEnabled/apiLoginEnabled'];

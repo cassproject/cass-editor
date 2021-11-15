@@ -4,11 +4,19 @@ Vue.use(Vuex);
 
 
 const state = {
-    loggedOnPerson: {}
+    loggedOnPerson: {},
+    repoInit: {
+        ssoLogin: null,
+        ssoLogout: null
+    }
 };
 const mutations = {
     loggedOnPerson(state, personObj) {
         state.loggedOnPerson = personObj;
+    },
+    repositorySsoOptions(state, repoInit) {
+        state.repoInit.ssoLogin = repoInit.ssoLogin;
+        state.repoInit.ssoLogout = repoInit.ssoLogout;
     }
 };
 const actions = {
@@ -17,6 +25,9 @@ const actions = {
 const getters = {
     loggedOnPerson: function(state) {
         return state.loggedOnPerson;
+    },
+    repositorySsoOptions: function(state) {
+        return state.repoInit;
     }
 };
 

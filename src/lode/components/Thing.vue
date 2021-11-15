@@ -1161,10 +1161,8 @@ export default {
                 if (type === "EcEncryptedValue") {
                     let encryptedType = "Ec" + this.obj.encryptedType;
                     let encryptedThing = await EcRepository.get(this.changedObject);
-                    let v = new EcEncryptedValue();
-                    v.copyFrom(encryptedThing);
                     let returnObject = new window[encryptedType]();
-                    returnObject.copyFrom(await v.decryptIntoObject());
+                    returnObject.copyFrom(await EcEncryptedValue.fromEncryptedValue(encryptedThing));
                     this.obj = returnObject;
                     this.load();
                 } else if (type && window[type] && window[type].get) {
