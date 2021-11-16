@@ -1,0 +1,264 @@
+<template>
+    <modal-template
+        @close="closeModal; $emit('close')"
+        :active="true"
+        type="primary">
+        <template slot="modal-header">
+            <span class="title has-text-white">Share Assertions</span>
+        </template>
+        <!-- processing -->
+        <template
+            v-if="isProcessing"
+            slot="modal-body">
+            <h2 class="header has-text-centered">
+                Processing request...
+            </h2>
+            <div class="section has-background-white has-text-centered">
+                <span class="icon is-large">
+                    <i class="fa fa-spinner fa-2x fa-pulse" />
+                </span>
+            </div>
+        </template>
+        <template
+            slot="modal-body">
+            <div class="assertion-share-container">
+                <div>
+                    <h4 class="header is-size-3">
+                        Share assertions about {{ Object.keys(shareSubjects).length }} {{ Object.keys(shareSubjects).length === 1 ? 'user' : 'users' }}
+                    </h4>
+                    <div
+                        class="field">
+                        <input
+                            type="text"
+                            class="input"
+                            v-model="subjectFilter"
+                            placeholder="search for person...">
+                    </div>
+                    <div v-if="filteredAvailableSubjects.length === 0 && subjectFilter === ''">
+                        <i class="fa fa-info-circle" /> No users found
+                    </div>
+                    <div v-if="filteredAvailableSubjects.length > 0">
+                        <div class="table-container">
+                            <table class="table is-hoverable is-fullwidth">
+                                <thead>
+                                    <tr>
+                                        <th title="Add as member">
+                                            <i class="fa fa-user" />
+                                        </th>
+                                        <th title="Add as manager">
+                                            <i class="fa fa-user-shield" />
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        :class="{'active': shareSubjects[prs.owner[0]]}"
+                                        style="cursor: pointer;"
+                                        @click="setSubject(prs.owner[0])"
+                                        v-for="(prs, index) in filteredAvailableSubjects"
+                                        :key="index">
+                                        <td> {{ prs.getName() }} </td>
+                                        <td> {{ prs.email }} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="assertion-share-icon">
+                    <i class="fa fa-2x fa-angle-double-right" />
+                </div>
+                <div>
+                    <h4 class="header is-size-3">
+                        with {{ Object.keys(shareTargets).length }} {{ Object.keys(shareTargets).length === 1 ? 'user' : 'users' }}
+                    </h4>
+                    <div
+                        class="field">
+                        <input
+                            type="text"
+                            class="input"
+                            v-model="targetFilter"
+                            placeholder="search for person...">
+                    </div>
+                    <div v-if="filteredAvailableTargets.length === 0 && targetFilter === ''">
+                        <i class="fa fa-info-circle" /> No users found
+                    </div>
+                    <div v-if="filteredAvailableTargets.length > 0">
+                        <div class="table-container">
+                            <table class="table is-hoverable is-fullwidth">
+                                <thead>
+                                    <tr>
+                                        <th title="Add as member">
+                                            <i class="fa fa-user" />
+                                        </th>
+                                        <th title="Add as manager">
+                                            <i class="fa fa-user-shield" />
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr
+                                        :class="{'active': shareTargets[prs.owner[0]]}"
+                                        style="cursor: pointer;"
+                                        @click="setTarget(prs.owner[0])"
+                                        v-for="(prs, index) in filteredAvailableTargets"
+                                        :key="index">
+                                        <td> {{ prs.getName() }} </td>
+                                        <td> {{ prs.email }} </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+        <template slot="modal-foot">
+            <div
+                class="buttons is-spaced">
+                <button
+                    :disabled="isProcessing"
+                    class="button is-secondary is-outlined"
+                    @click="$store.commit('app/closeModal')">
+                    <span>Cancel</span>
+                    <span class="icon">
+                        <i class="fa fa-times-circle" />
+                    </span>
+                </button>
+                <button
+                    :disabled="isProcessing || notSelected"
+                    class="button is-primary is-outlined"
+                    @click="shareAssertions">
+                    <span>Share</span>
+                    <span class="icon">
+                        <i class="fa fa-share" />
+                    </span>
+                </button>
+            </div>
+        </template>
+    </modal-template>
+</template>
+
+<script>
+import ModalTemplate from './ModalTemplate.vue';
+export default {
+    name: 'ShareAssertionsModal',
+    props: {
+        isActive: Boolean
+    },
+    components: {
+        ModalTemplate
+    },
+    data() {
+        return {
+            isProcessing: false,
+            shareSubjects: {},
+            shareTargets: {},
+            availablePersons: [],
+            subjectFilter: '',
+            targetFilter: ''
+        };
+    },
+    computed: {
+        filteredAvailableSubjects: function() {
+            return this.availablePersons.filter(person => {
+                return (((person.getName() && person.getName().toLowerCase().indexOf(this.subjectFilter.toLowerCase()) > -1) ||
+                        (person.email && person.email.toLowerCase().indexOf(this.subjectFilter.toLowerCase()) > -1))
+                );
+            });
+        },
+        filteredAvailableTargets: function() {
+            let myKey = EcIdentityManager.default.ids[0].ppk.toPk().toPem();
+            return this.availablePersons.filter(person => {
+                if (myKey === person.owner[0]) {
+                    return false;
+                }
+                return (((person.getName() && person.getName().toLowerCase().indexOf(this.targetFilter.toLowerCase()) > -1) ||
+                        (person.email && person.email.toLowerCase().indexOf(this.targetFilter.toLowerCase()) > -1))
+                );
+            });
+        },
+        notSelected: function() {
+            return Object.keys(this.shareSubjects).length === 0 || Object.keys(this.shareTargets).length === 0;
+        }
+    },
+    mounted: async function() {
+        EcPerson.search(window.repo, '*').then((people) => {
+            this.availablePersons = people;
+        });
+    },
+    methods: {
+        setSubject: function(subject) {
+            if (this.shareSubjects[subject]) {
+                this.$delete(this.shareSubjects, subject);
+            } else {
+                this.$set(this.shareSubjects, subject, 1);
+            }
+        },
+        setTarget: function(target) {
+            if (this.shareTargets[target]) {
+                this.$delete(this.shareTargets, target);
+            } else {
+                this.$set(this.shareTargets, target, 1);
+            }
+        },
+        shareAssertions: function() {
+            this.processing = true;
+            let searchQuery = '';
+            let subjects = Object.keys(this.shareSubjects);
+            for (let i = 0; i < subjects.length; i++) {
+                searchQuery += `\\*reader:"${subjects[i]}"`;
+                if (i !== subjects.length - 1) {
+                    searchQuery += ' OR ';
+                }
+            }
+            EcAssertion.search(window.repo,
+                `\\*owner:"${this.$store.getters['editor/getMe']}" AND (${searchQuery})`,
+                (assertions) => {
+                    let eah = new EcAsyncHelper();
+                    eah.each(assertions, (assertion, after) => {
+                        assertion.getSubjectAsync((subject) => {
+                            if (subjects.includes(subject.toPem())) {
+                                assertion.getAgentAsync(async(agent) => {
+                                    if (this.$store.getters['editor/getMe'] === agent.toPem()) {
+                                        for (let target of Object.keys(this.shareTargets)) {
+                                            await assertion.addReader(EcPk.fromPem(target));
+                                        }
+                                        await EcRepository.save(assertion);
+                                        after();
+                                    } else {
+                                        after();
+                                    }
+                                }, console.error);
+                            } else {
+                                after();
+                            }
+                        }, console.error);
+                    }, () => {
+                        this.processing = false;
+                    });
+                }, console.error, {
+                    size: 5000
+                });
+        }
+    },
+    watch: {}
+};
+</script>
+
+
+<style lang="scss">
+    @import '@/scss/variables.scss';
+    .assertion-share-container {
+        display: flex;
+        justify-content: space-between;
+        .active {
+            background: $primary-color;
+            color: white;
+        }
+    }
+    .assertion-share-icon {
+        display: flex;
+        align-items: center;
+    }
+</style>

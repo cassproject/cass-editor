@@ -179,17 +179,35 @@
                     <span v-if="showSideNav"> {{ navLink.launchName }}</span>
                 </a>
             </li>
-            <li
-                v-if="queryParams.disableAssertions !== 'true'"
-                class="has-text-white">
-                <router-link :to="{path: '/timeline', query: queryParams}">
-                    <span class="icon">
-                        <i class="fa fa-history" />
-                    </span>
-                    <span v-if="showSideNav"> Assertion Timeline</span>
-                </router-link>
-            </li>
         </ul>
+        <template v-if="queryParams.disableAssertions !== 'true' && isLoggedOn">
+            <div
+                v-if="showSideNav"
+                class="menu-label has-text-weight-bold">
+                Assertions
+            </div>
+            <ul
+                class="menu-list">
+                <li
+                    class="has-text-white">
+                    <router-link :to="{path: '/timeline', query: queryParams}">
+                        <span class="icon">
+                            <i class="fa fa-history" />
+                        </span>
+                        <span v-if="showSideNav"> Assertion Timeline</span>
+                    </router-link>
+                </li>
+                <li
+                    class="has-text-white">
+                    <a @click="shareAssertions">
+                        <span class="icon">
+                            <i class="fa fa-share" />
+                        </span>
+                        <span v-if="showSideNav"> Share Assertions</span>
+                    </a>
+                </li>
+            </ul>
+        </template>
         <!-- DIRECTORIES -->
         <div
             v-if="showSideNav"
@@ -356,7 +374,8 @@ export default {
     name: 'SideNav',
     props: {
         method: {
-            default: ''
+            default: '',
+            type: String
         },
         showSideNav: {
             default: false,
@@ -451,6 +470,9 @@ export default {
                 me.$store.dispatch('app/refreshDirectories');
                 me.selectDirectory(dir);
             }, appError, window.repo);
+        },
+        shareAssertions: function() {
+            this.$store.commit('app/showModal', {component: 'ShareAssertions'});
         }
     },
     watch: {

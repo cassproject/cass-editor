@@ -52,7 +52,8 @@ const state = {
     assertions: [],
     badgePk: null,
     me: null,
-    subject: null
+    subject: null,
+    people: []
 };
 const mutations = {
     framework(state, f) {
@@ -215,6 +216,9 @@ const mutations = {
     },
     setSubject(state, val) {
         state.subject = val;
+    },
+    setPeople(state, val) {
+        state.people = val;
     }
 };
 const actions = {
@@ -460,6 +464,9 @@ const getters = {
     },
     getSubject: function(state) {
         return state.subject;
+    },
+    people: function(state) {
+        return state.people;
     }
 };
 

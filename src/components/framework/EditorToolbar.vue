@@ -458,6 +458,11 @@ export default {
             if (this.managingAssertions) {
                 this.$store.commit('editor/setManageAssertions', false);
             } else {
+                EcPerson.search(window.repo, '*').then((people) => {
+                    this.$store.commit('editor/setPeople', people.map((x) => {
+                        return {name: x.name, key: x.owner[0]};
+                    }));
+                });
                 this.$store.dispatch('editor/searchForAssertions', 5000).then(() => {
                     this.$store.commit('editor/setManageAssertions', true);
                 }).catch(() => {

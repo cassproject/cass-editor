@@ -353,6 +353,8 @@ iframe {
 
   .assertion-subject-select {
       margin: 1rem 2rem;
+      display: flex;
+      align-items: center;
   }
 
   .managing-assertions.lode__thing {

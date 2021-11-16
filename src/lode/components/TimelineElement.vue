@@ -7,13 +7,13 @@
                 class="time"
                 v-if="timestamp">{{ timeAgo }},</div>
             <div class="content">
-                <div
+                <!-- <div
                     v-if="mine"
                     @click="deleteMe"
                     class="button is-text"
                     title="Delete this claim.">
                     <i class="fas fa-times" />
-                </div>
+                </div> -->
                 <img
                     v-if="fingerprintUrlAgent"
                     :src="fingerprintUrlAgent"

@@ -300,14 +300,12 @@
                 class="columns">
                 <div class="column is-narrow assertion-subject-select">
                     <span>Manage Assertions for: </span>
-                    <select v-model="selectedSubject">
-                        <option
-                            v-for="subject in assertionSubjects"
-                            :key="subject.key"
-                            :value="subject.key">
-                            {{ subject.name }}
-                        </option>
-                    </select>
+                    <button
+                        v-if="selectedSubject"
+                        class="button is-outlined is-primary"
+                        @click="openSelectSubjectModal">
+                        {{ selectedSubject }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -368,11 +366,74 @@
             <!--</transition-group>-->
             </draggable>
         </template>
+        <modal-template :active="showSelectSubjectModal">
+            <template slot="modal-header">
+                <p class="is-size-3 modal-card-title has-text-white">
+                    Select Subject
+                </p>
+            </template>
+            <template slot="modal-body">
+                <div
+                    class="field">
+                    <input
+                        type="text"
+                        class="input"
+                        v-model="personFilter"
+                        placeholder="search for person...">
+                </div>
+                <div v-if="filteredAvailablePersons.length === 0 && personFilter === ''">
+                    <i class="fa fa-info-circle" /> No users found
+                </div>
+                <div v-if="filteredAvailablePersons.length > 0">
+                    <h4 class="header is-size-3">
+                        Available users
+                    </h4>
+                    <div class="table-container">
+                        <table class="table is-hoverable is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th title="Add as member">
+                                        <i class="fa fa-user" />
+                                    </th>
+                                    <th title="Add as manager">
+                                        <i class="fa fa-user-shield" />
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr
+                                    style="cursor: pointer;"
+                                    @click="setSubject(prs.owner[0])"
+                                    v-for="(prs, index) in filteredAvailablePersons"
+                                    :key="index">
+                                    <td> {{ prs.getName() }} </td>
+                                    <td> {{ prs.email }} </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </template>
+            <template slot="modal-foot">
+                <div
+                    class="button is-outlined is-small"
+                    @click="closeSelectSubjectModal"
+                    title="Cancel">
+                    <span class="icon">
+                        <i class="fa fa-times" />
+                    </span>
+                    <span>
+                        cancel
+                    </span>
+                </div>
+            </template>
+        </modal-template>
     </div>
 </template>
 <script>
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
+import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 export default {
     name: 'Hierarchy',
     mixins: [ common, competencyEdits ],
@@ -441,12 +502,16 @@ export default {
             arrowKey: null,
             addCompetencyOrChildText: "Add Competency",
             hierarchy: null,
-            selectedSubject: null
+            selectedSubject: null,
+            availablePersons: [],
+            personFilter: ''
         };
     },
     components: {
         HierarchyNode: () => import('./HierarchyNode.vue'),
-        draggable: () => import('vuedraggable')},
+        draggable: () => import('vuedraggable'),
+        ModalTemplate
+    },
     watch: {
         relations: function() {
             this.once = true;
@@ -478,9 +543,22 @@ export default {
             if (val) {
                 this.computeHierarchy();
             }
+        },
+        currentSubject: function() {
+            this.getSubjectInfo();
         }
     },
     computed: {
+        showSelectSubjectModal: function() {
+            return this.$store.getters['app/showModal'] && this.$store.getters['app/dynamicModalContent'] === 'Subject';
+        },
+        filteredAvailablePersons: function() {
+            return this.availablePersons.filter(person => {
+                return (((person.getName() && person.getName().toLowerCase().indexOf(this.personFilter.toLowerCase()) > -1) ||
+                        (person.email && person.email.toLowerCase().indexOf(this.personFilter.toLowerCase()) > -1))
+                );
+            });
+        },
         relations: function() {
             return this.container.relation;
         },
@@ -552,8 +630,8 @@ export default {
         managingAssertions: function() {
             return this.$store.getters['editor/manageAssertions'];
         },
-        assertionSubjects: function() {
-            return [{name: 'Myself', key: EcIdentityManager.default.ids[0].ppk.toPk().toPem()}]; // TODO: get more possible subjects
+        currentSubject: function() {
+            return this.$store.getters['editor/getSubject'];
         }
     },
     mounted: function() {
@@ -583,7 +661,7 @@ export default {
         }
         window.addEventListener("keydown", this.keydown);
         window.addEventListener("keyup", this.keyup);
-        this.selectedSubject = this.$store.getters['editor/getSubject'];
+        this.getSubjectInfo();
     },
     beforeDestroy: function() {
         window.removeEventListener('keyup', this.keyup);
@@ -658,6 +736,8 @@ export default {
             if (val === 'export') {
                 this.$store.commit('editor/setItemToExport', this.container);
                 this.$store.commit('app/showModal', {title: 'Export Framework', component: 'ExportOptionsModal'});
+            } else if (val === 'subject') {
+                this.$store.commit('app/showModal', 'Subject');
             }
         },
         openFramework: async function() {
@@ -1104,6 +1184,28 @@ export default {
             let item = await EcRepository.get(this.selectedArray[0]);
             this.deleteObject(item);
             this.selectedArray.splice(0, this.selectedArray.length);
+        },
+        setSubject: function(subject) {
+            this.$store.commit('editor/setSubject', subject);
+            this.closeSelectSubjectModal();
+        },
+        openSelectSubjectModal: function() {
+            EcPerson.search(window.repo, '*').then((people) => {
+                this.availablePersons = people;
+                this.showModal('subject');
+            });
+        },
+        closeSelectSubjectModal: function() {
+            this.$store.commit('app/closeModal');
+        },
+        getSubjectInfo: function() {
+            EcPerson.getByPk(window.repo, EcPk.fromPem(this.$store.getters['editor/getSubject'])).then((person) => {
+                let name = person.name;
+                if (EcIdentityManager.default.ids[0].ppk.toPk().toPem() === person.owner[0]) {
+                    name = 'Myself';
+                }
+                this.selectedSubject = name;
+            });
         }
     }
 };

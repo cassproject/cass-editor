@@ -54,7 +54,7 @@
         <small
             class="assertions-evidence"
             v-if="evidenceExplanation && (assertionExists)">
-            <hr/>
+            <hr>
             <ul>
                 <li
                     v-for="(evidenceThing, index) in evidenceExplanation"
@@ -124,66 +124,7 @@ export default {
     created: function() {},
     mounted: function() {
         console.log('ASSERTIONS: ', this.assertions);
-        if (this.competentStateEah != null) {
-            this.competentStateEah.stop();
-        }
-        this.competentStateEah = new EcAsyncHelper();
-        this.competentStateEah.each(this.assertions, (assertion, callback) => {
-            if (assertion !== null) {
-                assertion.getSubjectAsync((subject) => {
-                    if (this.subject === subject.toPem()) {
-                        assertion.getAgentAsync((agent) => {
-                            if (this.me === agent.toPem()) {
-                                var negativeCallback = () => {
-                                    if (assertion.negative != null) {
-                                        assertion.getNegativeAsync((negative) => {
-                                            if (negative) {
-                                                this.canAssertion = false;
-                                                this.cannotAssertion = true;
-                                                this.badge = false;
-                                            } else {
-                                                this.badge = assertion.hasReader(this.$store.getters['editor/badgePk']);
-                                                this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
-                                                this.canAssertion = true;
-                                                this.cannotAssertion = false;
-                                            }
-                                            callback();
-                                        }, callback);
-                                    } else {
-                                        this.canAssertion = true;
-                                        this.cannotAssertion = false;
-                                        this.badge = assertion.hasReader(this.$store.getters['editor/badgePk']);
-                                        this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
-                                        callback();
-                                    }
-                                };
-                                if (assertion.evidence != null) {
-                                    assertion.getEvidencesAsync((evidences) => {
-                                        this.evidence = evidences;
-                                        this.$store.dispatch('editor/computeBecause', this.evidence).then((because) => {
-                                            this.evidenceExplanation = because;
-                                        });
-                                        negativeCallback();
-                                    }, callback);
-                                } else {
-                                    this.evidence = null;
-                                    this.evidenceExplanation = null;
-                                    negativeCallback();
-                                }
-                            } else {
-                                callback();
-                            }
-                        }, callback);
-                    } else {
-                        callback();
-                    }
-                }, callback);
-            } else {
-                callback();
-            }
-        }, () => {
-            // TODO
-        });
+        this.initAssertions();
     },
     computed: {
         badgeExists: function() {
@@ -244,6 +185,82 @@ export default {
         }
     },
     methods: {
+        initAssertions: function() {
+            this.canAssertion = false;
+            this.cannotAssertion = false;
+            this.assertionText = '';
+            this.badge = false;
+            this.badgeLink = null;
+            this.competentStateEah = null;
+            this.evidence = null;
+            this.evidenceExplanation = null;
+            this.assertionsByOthers = [];
+            this.iconAssertion = true;
+            this.subjectPerson = null; // TODO
+
+            if (this.competentStateEah != null) {
+                this.competentStateEah.stop();
+            }
+            this.competentStateEah = new EcAsyncHelper();
+            this.competentStateEah.each(this.assertions, (assertion, callback) => {
+                if (assertion !== null) {
+                    assertion.getSubjectAsync((subject) => {
+                        console.log(this.subject);
+                        console.log(subject.toPem());
+                        if (this.subject === subject.toPem()) {
+                            assertion.getAgentAsync((agent) => {
+                                if (this.me === agent.toPem()) {
+                                    var negativeCallback = () => {
+                                        if (assertion.negative != null) {
+                                            assertion.getNegativeAsync((negative) => {
+                                                if (negative) {
+                                                    this.canAssertion = false;
+                                                    this.cannotAssertion = true;
+                                                    this.badge = false;
+                                                } else {
+                                                    this.badge = assertion.hasReader(this.$store.getters['editor/badgePk']);
+                                                    this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
+                                                    this.canAssertion = true;
+                                                    this.cannotAssertion = false;
+                                                }
+                                                callback();
+                                            }, callback);
+                                        } else {
+                                            this.canAssertion = true;
+                                            this.cannotAssertion = false;
+                                            this.badge = assertion.hasReader(this.$store.getters['editor/badgePk']);
+                                            this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
+                                            callback();
+                                        }
+                                    };
+                                    if (assertion.evidence != null) {
+                                        assertion.getEvidencesAsync((evidences) => {
+                                            this.evidence = evidences;
+                                            this.$store.dispatch('editor/computeBecause', this.evidence).then((because) => {
+                                                this.evidenceExplanation = because;
+                                            });
+                                            negativeCallback();
+                                        }, callback);
+                                    } else {
+                                        this.evidence = null;
+                                        this.evidenceExplanation = null;
+                                        negativeCallback();
+                                    }
+                                } else {
+                                    callback();
+                                }
+                            }, callback);
+                        } else {
+                            callback();
+                        }
+                    }, callback);
+                } else {
+                    callback();
+                }
+            }, () => {
+                // TODO
+            });
+        },
         handleEvidenceAssertion: async function() {
             this.loading = true;
             try {
@@ -569,6 +586,11 @@ export default {
                                         },
                                         console.error
                                     );
+                                } else {
+                                    EcRepository.save(a, () => {
+                                        this.$store.commit('editor/addAssertion', a);
+                                        this.canAssertion = true;
+                                    }, console.error);
                                 }
                             }, console.error); // This is an assertion that an individual *can* do something, not that they *cannot*.
                         }, console.error); // UTC Milliseconds, 365 days in the future.
@@ -684,6 +706,10 @@ export default {
             });
         }
     },
-    watch: {}
+    watch: {
+        subject: function() {
+            this.initAssertions();
+        }
+    }
 };
 </script>
