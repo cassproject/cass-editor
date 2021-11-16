@@ -1,6 +1,6 @@
 // .vuepress/config.js
 module.exports = {
-    base: '/docs/',
+    base: 'docs/',
     dest: 'public/docs',
     head: [ ['script', {}, `
         window.onload = function() {
