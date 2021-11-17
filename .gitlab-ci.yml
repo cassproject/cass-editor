@@ -32,7 +32,11 @@ buildDev:
   - npm install
   - npm run lint
   - npm run docs:build
-  - find public/docs -type f -exec sed -i "s/\/docs\//docs\//g" {} \;
+#  - find public/docs -type f -exec sed -i "s/\/docs\//docs\//g" {} \;
+  - find public/docs -type f -exec sed -i "s/\/docs/..\/..\/docs/g" {} \;
+  - find public/docs/assets/css -type f -exec sed -i "s/\/docs//g" {} \;
+#  - find public/docs/assets/js -type f -exec sed -i "s/..\/docs/docs/g" {} \;
+  - sed -i "s/..\/docs/docs/g" ./public/docs/index.html
   - npm run buildDev
   artifacts:
     paths:
