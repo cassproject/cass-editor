@@ -29,6 +29,10 @@ jobs:
       - run: export VUE_APP_API_LOGIN_ENABLED=false
       - run: npm ci
       - run: npm run docs:build
+      - run: find public/docs -type f -exec sed -i "s/\/docs/..\/..\/docs/g" {} \;
+      - run: find public/docs/assets/css -type f -exec sed -i "s/\/docs//g" {} \;
+      - run: find public/docs/assets/js -type f -exec sed -i "s/..\/..\/docs/\/docs/g" {} \;
+      - run: sed -i "s/..\/docs/docs/g" ./public/docs/index.html
       - run: npm run build
 
       - name: deploy
