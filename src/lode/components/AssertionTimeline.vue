@@ -38,20 +38,3 @@ export default {
     methods: {}
 };
 </script>
-<style lang="scss">
-    .timeline {
-        padding: 10px 0px;
-        position: relative;
-        background-color: inherit;
-    }
-
-    .timeline::before {
-        content: '';
-        position: absolute;
-        width: 6px;
-        background-color: black;
-        top: 0rem;
-        bottom: 0;
-        margin-left: 3.9rem;
-    }
-</style>

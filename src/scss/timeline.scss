@@ -1,21 +1,41 @@
+@import './variables.scss';
+
+.timeline {
+    padding: 10px 0px;
+    position: relative;
+    background-color: inherit;
+}
+
+.timeline::before {
+    content: "";
+    position: absolute;
+    width: 2px;
+    background-color: black;
+    top: 30px;
+    bottom: 0;
+    margin-left: 3.9rem;
+}
+
 .timelineElement {
     margin-top: .25rem;
     padding: .5rem;
     min-height: 30px;
 }
 
-.timelineElement .time {
-    content: 'aa';
+.timelineElement .assertionTimelineIcon {
+    content: "aa";
     position: relative;
     display: block;
     float: left;
-    padding: .5rem;
-    left: -.2rem;
-    width: 120px;
-    background-color: white;
-    border: 4px solid black;
+    padding: 7px;
+    left: 42px;
+    width: 40px;
+    height: 40px;
+    background-color: $primary-color;
+    border-radius: 20px;
+    color: white;
     text-align: center;
-    top: -.0rem;
+    top: 0rem;
     z-index: 5;
 }
 

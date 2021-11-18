@@ -40,6 +40,16 @@ export default {
         MainLayout,
         AssertionTimeline
     },
+    computed: {
+        me: function() {
+            return this.$store.getters['editor/getMe'];
+        }
+    },
+    watch: {
+        me: function() {
+            this.$store.dispatch('editor/searchForAssertions', 5000);
+        }
+    },
     mounted() {
         this.$store.commit('app/searchTerm', "");
         this.$store.dispatch('editor/searchForAssertions', 5000);
@@ -48,7 +58,6 @@ export default {
         this.$store.commit('app/clearSearchFilters');
         this.$store.commit('app/searchTerm', "");
     },
-    watch: {},
     methods: {}
 };
 </script>

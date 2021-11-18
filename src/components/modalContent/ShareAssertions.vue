@@ -20,6 +20,7 @@
             </div>
         </template>
         <template
+            v-else
             slot="modal-body">
             <div class="assertion-share-container">
                 <div>
@@ -203,7 +204,7 @@ export default {
             }
         },
         shareAssertions: function() {
-            this.processing = true;
+            this.isProcessing = true;
             let searchQuery = '';
             let subjects = Object.keys(this.shareSubjects);
             for (let i = 0; i < subjects.length; i++) {
@@ -235,7 +236,7 @@ export default {
                             }
                         }, console.error);
                     }, () => {
-                        this.processing = false;
+                        this.isProcessing = false;
                     });
                 }, console.error, {
                     size: 5000

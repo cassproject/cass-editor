@@ -4,8 +4,20 @@
         v-observe-visibility="{callback: initialize}">
         <span v-if="ok">
             <div
-                class="time"
-                v-if="timestamp">{{ timeAgo }},</div>
+                class="assertionTimelineIcon"
+                v-if="negative">
+                <i class="fa fa-times" />
+            </div>
+            <div
+                class="assertionTimelineIcon"
+                v-else-if="badged">
+                <i class="fa fa-shield-alt" />
+            </div>
+            <div
+                class="assertionTimelineIcon"
+                v-else>
+                <i class="fa fa-check" />
+            </div>
             <div class="content">
                 <!-- <div
                     v-if="mine"
@@ -14,7 +26,7 @@
                     title="Delete this claim.">
                     <i class="fas fa-times" />
                 </div> -->
-                <img
+                <!-- <img
                     v-if="fingerprintUrlAgent"
                     :src="fingerprintUrlAgent"
                     :title="agent">
@@ -23,9 +35,9 @@
                     width="44"
                     height="44"
                     :data-jdenticon-value="fingerprintAgent"
-                    :title="fingerprintAgent" />
-                {{ agent }} claimed
-                <img
+                    :title="fingerprintAgent" /> -->
+                <strong>{{ agent }}</strong> claimed
+                <!-- <img
                     v-if="fingerprintUrlSubject"
                     :src="fingerprintUrlSubject"
                     :title="subject">
@@ -34,8 +46,8 @@
                     width="44"
                     height="44"
                     :data-jdenticon-value="fingerprintSubject"
-                    :title="fingerprintSubject" />
-                {{ subject }}
+                    :title="fingerprintSubject" /> -->
+                <strong>{{ subject }} </strong>
                 <span v-if="negative">could not</span><span v-else>could</span>
                 demonstrate
                 <a
@@ -64,6 +76,9 @@
                 </span>.
                 <br>
                 <small>{{ competencyDescription }}</small>
+                <div
+                    class="time"
+                    v-if="timestamp"><strong>{{ timeAgo }}</strong></div>
             </div>
         </span>
         <div
@@ -74,12 +89,13 @@
     </div>
 </template>
 <script>
-
+import common from '@/mixins/common.js';
 export default {
     name: 'TimelineElement',
     props: {
         uri: String
     },
+    mixins: [common],
     data: function() {
         return {
             assertion: null,
@@ -245,7 +261,6 @@ export default {
                     if (assertion.subject === null) {
                         this.subject = "nobody";
                     } else {
-                        // TODO
                         assertion.getSubjectName(window.repo).then((name) => {
                             this.subject = name;
                         });
@@ -313,25 +328,15 @@ export default {
             }
         },
         gotoCompetency: function() {
-            // TODO
-            // var me = this;
-            // EcFramework.search(repo, "competency:\"" + this.assertion.competency + "\"", function (frameworks) {
-            //     if (frameworks.length > 0) {
-            //         app.selectedFramework = frameworks[0];
-            //         app.selectedCompetency = EcCompetency.getBlocking(me.assertion.competency);
-            //         app.subject = me.subjectPk;
-            //         app.$nextTick(
-            //             function () {
-            //                 $("#rad2").click();
-            //                 app.$nextTick(
-            //                     function () {
-            //                         $("[id=\"" + app.selectedCompetency.id + "\"]").each(function () {
-            //                             $(this)[0].scrollIntoView();
-            //                         })
-            //                     });
-            //             });
-            //     }
-            // }, console.error);
+            EcFramework.search(window.repo, "competency:\"" + this.assertion.competency + "\"").then((success) => {
+                if (success.length > 0) {
+                    this.$store.commit('editor/framework', success[0]);
+                    this.$store.commit('editor/clearFrameworkCommentData');
+                    this.$store.commit('app/setCanViewComments', this.canViewCommentsCurrentFramework());
+                    this.$store.commit('app/setCanAddComments', this.canAddCommentsCurrentFramework());
+                    this.$router.push({name: "framework", params: {frameworkId: success[0].id}});
+                }
+            }).catch(appError);
         },
         getAgent: function() {
             this.agentPerson = null;
