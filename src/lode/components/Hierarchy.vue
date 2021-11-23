@@ -302,7 +302,7 @@
                     <span>Manage Assertions for: </span>
                     <button
                         v-if="selectedSubject"
-                        class="button is-outlined is-primary"
+                        class="button is-outlined is-primary assertion-subject-select-button"
                         @click="openSelectSubjectModal">
                         {{ selectedSubject }}
                     </button>
@@ -1215,5 +1215,7 @@ export default {
 <style lang="scss">
     @import '@/scss/variables.scss';
 
-
+    .assertion-subject-select-button {
+        margin-left: 1rem;
+    }
 </style>

@@ -23,9 +23,9 @@
             v-else
             slot="modal-body">
             <div class="assertion-share-container">
-                <div>
+                <div class="assertion-share-block">
                     <h4 class="header is-size-3">
-                        Share assertions about {{ Object.keys(shareSubjects).length }} {{ Object.keys(shareSubjects).length === 1 ? 'user' : 'users' }}
+                        Share assertions about:
                     </h4>
                     <div
                         class="field">
@@ -43,6 +43,11 @@
                             <table class="table is-hoverable is-fullwidth">
                                 <thead>
                                     <tr>
+                                        <th title="Select">
+                                            <input
+                                                type="checkbox"
+                                                @change="selectAllSubjects" />
+                                        </th>
                                         <th title="Add as member">
                                             <i class="fa fa-user" />
                                         </th>
@@ -53,11 +58,15 @@
                                 </thead>
                                 <tbody>
                                     <tr
-                                        :class="{'active': shareSubjects[prs.owner[0]]}"
                                         style="cursor: pointer;"
                                         @click="setSubject(prs.owner[0])"
                                         v-for="(prs, index) in filteredAvailableSubjects"
                                         :key="index">
+                                        <td>
+                                            <input
+                                                type="checkbox"
+                                                @click.stop="setSubject(prs.owner[0])"
+                                                :checked="shareSubjects[prs.owner[0]]" /></td>
                                         <td> {{ prs.getName() }} </td>
                                         <td> {{ prs.email }} </td>
                                     </tr>
@@ -66,12 +75,10 @@
                         </div>
                     </div>
                 </div>
-                <div class="assertion-share-icon">
-                    <i class="fa fa-2x fa-angle-double-right" />
-                </div>
-                <div>
+                <div class="assertion-share-icon"></div>
+                <div class="assertion-share-block">
                     <h4 class="header is-size-3">
-                        with {{ Object.keys(shareTargets).length }} {{ Object.keys(shareTargets).length === 1 ? 'user' : 'users' }}
+                        Send to:
                     </h4>
                     <div
                         class="field">
@@ -89,6 +96,11 @@
                             <table class="table is-hoverable is-fullwidth">
                                 <thead>
                                     <tr>
+                                        <th title="Select">
+                                            <input
+                                                type="checkbox"
+                                                @change="selectAllTargets" />
+                                        </th>
                                         <th title="Add as member">
                                             <i class="fa fa-user" />
                                         </th>
@@ -99,11 +111,15 @@
                                 </thead>
                                 <tbody>
                                     <tr
-                                        :class="{'active': shareTargets[prs.owner[0]]}"
                                         style="cursor: pointer;"
                                         @click="setTarget(prs.owner[0])"
                                         v-for="(prs, index) in filteredAvailableTargets"
                                         :key="index">
+                                        <td>
+                                            <input
+                                                type="checkbox"
+                                                @click.stop="setTarget(prs.owner[0])"
+                                                :checked="shareTargets[prs.owner[0]]" /></td>
                                         <td> {{ prs.getName() }} </td>
                                         <td> {{ prs.email }} </td>
                                     </tr>
@@ -111,6 +127,14 @@
                             </table>
                         </div>
                     </div>
+                </div>
+            </div>
+            <div class="assertion-share-count-container">
+                <div class="assertion-share-count">
+                    <strong>{{ Object.keys(shareSubjects).length }} selected</strong>
+                </div>
+                <div class="assertion-share-count">
+                    <strong>{{ Object.keys(shareTargets).length }} selected</strong>
                 </div>
             </div>
         </template>
@@ -189,6 +213,26 @@ export default {
         });
     },
     methods: {
+        selectAllSubjects: function(evt) {
+            let checked = evt.target.checked;
+            if (checked) {
+                for (let prs of this.filteredAvailableSubjects) {
+                    this.$set(this.shareSubjects, prs.owner[0], 1);
+                }
+            } else {
+                this.shareSubjects = {};
+            }
+        },
+        selectAllTargets: function(evt) {
+            let checked = evt.target.checked;
+            if (checked) {
+                for (let prs of this.filteredAvailableTargets) {
+                    this.$set(this.shareTargets, prs.owner[0], 1);
+                }
+            } else {
+                this.shareTargets = {};
+            }
+        },
         setSubject: function(subject) {
             if (this.shareSubjects[subject]) {
                 this.$delete(this.shareSubjects, subject);
@@ -257,9 +301,21 @@ export default {
             background: $primary-color;
             color: white;
         }
+        .assertion-share-block {
+            width: 48%;
+        }
     }
     .assertion-share-icon {
         display: flex;
         align-items: center;
+        border: 1px solid $light-color;
+    }
+    .assertion-share-count-container {
+        display: flex;
+    }
+    .assertion-share-count {
+        text-align: right;
+        margin-top: 1rem;
+        width: 50%;
     }
 </style>
