@@ -200,7 +200,7 @@ export default {
             }
             EcRemote.getExpectingString(window.repo.selectedServer, "badge/pk", (badgePk) => {
                 this.$store.commit('editor/setBadgePk', EcPk.fromPem(badgePk));
-            }, console.error);
+            }, appError);
         },
         onSidebarEvent: function() {
             this.showSideNav = !this.showSideNav;
