@@ -10,6 +10,8 @@ import store from './store/index.js';
 import InfiniteLoading from 'vue-infinite-loading';
 import VueResource from 'vue-resource';
 
+import VueObserveVisibility from 'vue-observe-visibility';
+
 var VueScrollTo = require('vue-scrollto');
 require("cassproject");
 global.UUID = require('pure-uuid');
@@ -47,6 +49,7 @@ Vue.use(VueScrollTo, {
 });
 Vue.use(InfiniteLoading);
 Vue.use(VueResource);
+Vue.use(VueObserveVisibility);
 
 // directive for clicking outside elements and performing an action
 // add v-click-outside="method" to parent element to do something

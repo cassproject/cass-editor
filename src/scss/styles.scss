@@ -350,3 +350,52 @@ iframe {
     
   }
 
+  .assertion-subject-select {
+      margin: 1rem 2rem;
+      display: flex;
+      align-items: center;
+  }
+
+  .managing-assertions.lode__thing {
+      .headings-group {
+           padding: .5rem;
+      }
+      .assertions-group {
+        background: $light-color;
+        padding: .5rem;
+        padding-right: 1rem;
+        padding-left: 1rem;
+        border-bottom-left-radius: $border-radius;
+        border-bottom-right-radius: $border-radius;
+        input {
+            margin-top: 1rem;
+        }
+        .button.is-text:hover {
+            background-color: $light-grey-color;
+        }
+        .assertions-buttons {
+            display: flex;
+            justify-content: space-between;
+            i {
+                color: $primary-color;
+                margin-right: .5rem;
+            }
+        }
+        .text-icon {
+            color: $primary-color;
+            margin-right: .5rem;
+        }
+        .assertions-evidence {
+            i {
+                color: $primary-color;
+            }
+            li {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+            }
+        }
+      }
+  }
+
+

@@ -198,6 +198,9 @@ export default {
                     }, function() {});
                 }
             }
+            EcRemote.getExpectingString(window.repo.selectedServer, "badge/pk", (badgePk) => {
+                this.$store.commit('editor/setBadgePk', EcPk.fromPem(badgePk));
+            }, console.error);
         },
         onSidebarEvent: function() {
             this.showSideNav = !this.showSideNav;
@@ -1241,6 +1244,10 @@ export default {
             if (to.name === 'frameworks') {
                 this.$store.commit('editor/conceptMode', false);
             }
+        },
+        loggedInPerson: function() {
+            this.$store.commit('editor/setMe', EcIdentityManager.default.ids[0].ppk.toPk().toPem());
+            this.$store.commit('editor/setSubject', EcIdentityManager.default.ids[0].ppk.toPk().toPem());
         }
     }
 };

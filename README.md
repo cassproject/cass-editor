@@ -219,6 +219,11 @@ The cass-editor can orient towards either a basic CASS schema or a Credential En
 
 -  `ceasnDataFields=true` enables and renames fields to accompany the CTDL-ASN fields. Many of these fields map to schema.org properties, but some map only to CTDL-ASN properties. In 1.3, this parameter also hides some components from view, such as configuration management and user/group management.
 
+# Disable Assertion Management
+The cass-editor can be configured to hide the assertion management functionality if it is not needed.
+
+- `disabledAssertions=true` will hide the assertion timeline, assertion sharing, and assertion creation/edititing features.
+
 # Overrides
 The cass-editor can be overridden to assist in cross domain, iframe, and web socket connection issues.
 
