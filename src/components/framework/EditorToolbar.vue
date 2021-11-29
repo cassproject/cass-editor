@@ -188,6 +188,20 @@
                         Go to directory
                     </div>
                 </div>
+                <!-- assertions -->
+                <div
+                    v-if="canManageAssertions"
+                    class="column is-narrow"
+                    @click="manageAssertions">
+                    <div class="button is-text has-text-dark">
+                        <template v-if="managingAssertions">
+                            Stop Managing Assertions
+                        </template>
+                        <template v-else>
+                            Manage Assertions
+                        </template>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -439,6 +453,22 @@ export default {
             }, function(failure) {
                 appError(failure);
             });
+        },
+        manageAssertions: function() {
+            if (this.managingAssertions) {
+                this.$store.commit('editor/setManageAssertions', false);
+            } else {
+                EcPerson.search(window.repo, '*').then((people) => {
+                    this.$store.commit('editor/setPeople', people.map((x) => {
+                        return {name: x.name, key: x.owner[0]};
+                    }));
+                });
+                this.$store.dispatch('editor/searchForAssertions', 5000).then(() => {
+                    this.$store.commit('editor/setManageAssertions', true);
+                }).catch(() => {
+                    // TODO: Handle assertion search error
+                });
+            }
         }
     },
     computed: {
@@ -514,6 +544,15 @@ export default {
         },
         directoryId: function() {
             return this.framework.directory;
+        },
+        canManageAssertions: function() {
+            if (this.queryParams.disableAssertions !== 'true' && this.loggedIn) {
+                return true;
+            }
+            return false;
+        },
+        managingAssertions: function() {
+            return this.$store.getters['editor/manageAssertions'];
         }
     },
     watch: {

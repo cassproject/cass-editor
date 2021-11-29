@@ -58,7 +58,8 @@ export default {
         'ExportOptionsModal': () => import('@/components/modalContent/ExportOptionsModal.vue'),
         'RequiredPropertyModal': () => import('@/components/modalContent/RequiredPropertyModal.vue'),
         'DuplicateImport': () => import('@/components/modalContent/DuplicateImport.vue'),
-        'ImportError': () => import('@/components/modalContent/ImportError.vue')
+        'ImportError': () => import('@/components/modalContent/ImportError.vue'),
+        'ShareAssertions': () => import('@/components/modalContent/ShareAssertions.vue')
     },
     data() {
         return {
