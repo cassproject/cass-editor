@@ -202,36 +202,36 @@ export default {
                     } else {
                         assertion.getSubjectNameAsync((name) => {
                             this.subject = name;
-                        }, console.error);
+                        }, appError);
                         assertion.getSubjectAsync((pk) => {
                             this.subjectPk = pk.toPem();
-                        }, console.error);
+                        }, appError);
                     }
                     if (assertion.agent == null) {
                         this.agent = "nobody";
                     } else {
                         assertion.getAgentNameAsync((name) => {
                             this.agent = name;
-                        }, console.error);
+                        }, appError);
                     }
                     assertion.getAgentAsync((pk) => {
                         this.agentPk = pk.toPem();
                         this.getAgent();
-                    }, console.error);
+                    }, appError);
                     if (assertion.assertionDate != null) {
                         assertion.getAssertionDateAsync((assertionDate) => {
                             this.timestamp = assertionDate;
-                        }, console.error);
+                        }, appError);
                     }
                     if (assertion.expirationDate != null) {
                         assertion.getExpirationDateAsync((expirationDate) => {
                             this.expiry = expirationDate;
-                        }, console.error);
+                        }, appError);
                     }
                     if (assertion.negative != null) {
                         assertion.getNegativeAsync((negative) => {
                             this.negative = negative;
-                        }, console.error);
+                        }, appError);
                     } else {
                         this.negative = false;
                     }
@@ -244,14 +244,14 @@ export default {
                                     }
                                     this.evidence.push(evidence);
                                     this.evidenceExplanation = null;
-                                }, console.error);
+                                }, appError);
                             })(i);
                         }
                     }
                     EcCompetency.get(assertion.competency, (competency) => {
                         this.competency = competency;
-                    }, console.error);
-                }, console.error);
+                    }, appError);
+                }, appError);
             }
         },
         gotoCompetency: function() {
@@ -269,7 +269,7 @@ export default {
             //                 })
             //             }, 1000);
             //     }
-            // }, console.error);
+            // }, appError);
         },
         getAgent: function() {
             this.agentPerson = null;
@@ -281,7 +281,7 @@ export default {
                         var p = new Person();
                         p.copyFrom(person);
                         this.agentPerson = p;
-                    }, console.error);
+                    }, appError);
                 } else {
                     var p = new Person();
                     p.copyFrom(person);

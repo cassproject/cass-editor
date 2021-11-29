@@ -244,7 +244,6 @@ const actions = {
                     assertions = assertions.sort((a, b) => {
                         return b.assertionDateDecrypted - a.assertionDateDecrypted;
                     });
-                    console.log('FOUND ASSERTIONS', assertions);
                     instance.state.assertions = assertions;
                     resolve();
                 });

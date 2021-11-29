@@ -123,7 +123,6 @@ export default {
     },
     created: function() {},
     mounted: function() {
-        console.log('ASSERTIONS: ', this.assertions);
         this.initAssertions();
     },
     computed: {
@@ -205,8 +204,6 @@ export default {
             this.competentStateEah.each(this.assertions, (assertion, callback) => {
                 if (assertion !== null) {
                     assertion.getSubjectAsync((subject) => {
-                        console.log(this.subject);
-                        console.log(subject.toPem());
                         if (this.subject === subject.toPem()) {
                             assertion.getAgentAsync((agent) => {
                                 if (this.me === agent.toPem()) {
@@ -266,7 +263,7 @@ export default {
             try {
                 await this.evidenceAssertion();
             } catch (e) {
-                console.error(e);
+                appError(e);
             } finally {
                 this.loading = false;
             }
@@ -276,7 +273,7 @@ export default {
             try {
                 await this.unevidenceAssertion(url);
             } catch (e) {
-                console.error(e);
+                appError(e);
             } finally {
                 this.loading = false;
             }
@@ -290,7 +287,7 @@ export default {
                     await this.generateBadge();
                 }
             } catch (e) {
-                console.error(e);
+                appError(e);
             } finally {
                 this.loading = false;
             }
@@ -308,7 +305,7 @@ export default {
                     await this.generateCanAssertion();
                 }
             } catch (e) {
-                console.error(e);
+                appError(e);
             } finally {
                 this.loading = false;
             }
@@ -326,7 +323,7 @@ export default {
                     await this.generateCannotAssertion();
                 }
             } catch (e) {
-                console.error(e);
+                appError(e);
             } finally {
                 this.loading = false;
             }
@@ -536,7 +533,6 @@ export default {
             for (var i = 0; i < EcIdentityManager.default.contacts.length; i++) {
                 a.addReader(EcIdentityManager.default.contacts[i].pk);
             }
-            console.log(this.subject, this.me);
             a.setSubjectAsync(EcPk.fromPem(this.subject), () => {
                 a.setAgentAsync(EcPk.fromPem(this.me), () => {
                     a.setCompetency(EcRemoteLinkedData.trimVersionFromUrl(this.uri));
@@ -573,30 +569,30 @@ export default {
                                                             EcRepository.save(a, () => {
                                                                 this.$store.commit('editor/addAssertion', a);
                                                                 this.canAssertion = true;
-                                                            }, console.error);
-                                                        }, console.error);
+                                                            }, appError);
+                                                        }, appError);
                                                     } else {
                                                         EcRepository.save(a, () => {
                                                             this.$store.commit('editor/addAssertion', a);
                                                             this.canAssertion = true;
-                                                        }, console.error);
+                                                        }, appError);
                                                     }
                                                 }
                                             );
                                         },
-                                        console.error
+                                        appError
                                     );
                                 } else {
                                     EcRepository.save(a, () => {
                                         this.$store.commit('editor/addAssertion', a);
                                         this.canAssertion = true;
-                                    }, console.error);
+                                    }, appError);
                                 }
-                            }, console.error); // This is an assertion that an individual *can* do something, not that they *cannot*.
-                        }, console.error); // UTC Milliseconds, 365 days in the future.
-                    }, console.error); // UTC Milliseconds
-                }, console.error);
-            }, console.error);
+                            }, appError); // This is an assertion that an individual *can* do something, not that they *cannot*.
+                        }, appError); // UTC Milliseconds, 365 days in the future.
+                    }, appError); // UTC Milliseconds
+                }, appError);
+            }, appError);
         },
         generateCannotAssertion: function() {
             var a = new EcAssertion();
@@ -615,12 +611,12 @@ export default {
                                 EcRepository.save(a, () => {
                                     this.$store.commit('editor/addAssertion', a);
                                     this.cannotAssertion = true;
-                                }, console.error);
-                            }, console.error); // This is an assertion that an individual *cannot* do something, not that they *can*.
-                        }, console.error); // UTC Milliseconds, 365 days in the future.
-                    }, console.error); // UTC Milliseconds
-                }, console.error);
-            }, console.error);
+                                }, appError);
+                            }, appError); // This is an assertion that an individual *cannot* do something, not that they *can*.
+                        }, appError); // UTC Milliseconds, 365 days in the future.
+                    }, appError); // UTC Milliseconds
+                }, appError);
+            }, appError);
         },
         evidenceAssertion: async function() {
             return new Promise((resolve, reject) => {

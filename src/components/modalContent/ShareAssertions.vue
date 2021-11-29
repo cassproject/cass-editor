@@ -46,7 +46,7 @@
                                         <th title="Select">
                                             <input
                                                 type="checkbox"
-                                                @change="selectAllSubjects" />
+                                                @change="selectAllSubjects">
                                         </th>
                                         <th title="Add as member">
                                             <i class="fa fa-user" />
@@ -66,7 +66,8 @@
                                             <input
                                                 type="checkbox"
                                                 @click.stop="setSubject(prs.owner[0])"
-                                                :checked="shareSubjects[prs.owner[0]]" /></td>
+                                                :checked="shareSubjects[prs.owner[0]]">
+                                        </td>
                                         <td> {{ prs.getName() }} </td>
                                         <td> {{ prs.email }} </td>
                                     </tr>
@@ -99,7 +100,7 @@
                                         <th title="Select">
                                             <input
                                                 type="checkbox"
-                                                @change="selectAllTargets" />
+                                                @change="selectAllTargets">
                                         </th>
                                         <th title="Add as member">
                                             <i class="fa fa-user" />
@@ -119,7 +120,8 @@
                                             <input
                                                 type="checkbox"
                                                 @click.stop="setTarget(prs.owner[0])"
-                                                :checked="shareTargets[prs.owner[0]]" /></td>
+                                                :checked="shareTargets[prs.owner[0]]">
+                                        </td>
                                         <td> {{ prs.getName() }} </td>
                                         <td> {{ prs.email }} </td>
                                     </tr>
@@ -274,15 +276,15 @@ export default {
                                     } else {
                                         after();
                                     }
-                                }, console.error);
+                                }, appError);
                             } else {
                                 after();
                             }
-                        }, console.error);
+                        }, appError);
                     }, () => {
                         this.isProcessing = false;
                     });
-                }, console.error, {
+                }, appError, {
                     size: 5000
                 });
         }
