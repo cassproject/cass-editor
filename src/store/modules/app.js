@@ -95,10 +95,8 @@ const mutations = {
     rightAsideObject: async function(state, payload) {
         if (payload.encryptedType) {
             let type = "Ec" + payload.encryptedType;
-            let v = new EcEncryptedValue();
-            v.copyFrom(payload);
             let obj = new window[type]();
-            obj.copyFrom(await v.decryptIntoObject());
+            obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(payload));
             state.rightAsideObject = obj;
         } else {
             state.rightAsideObject = payload;

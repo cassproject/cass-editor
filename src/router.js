@@ -112,6 +112,15 @@ export default new Router({
             }
         },
         {
+            path: '/timeline',
+            name: 'timeline',
+            components: {
+                default: () => import(/* webpackChunkName: "timeline" */ './views/framework/Timeline'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
+            }
+        },
+        {
             path: '/about',
             name: 'about',
             components: {

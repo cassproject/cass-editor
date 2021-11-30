@@ -28,9 +28,14 @@ buildDev:
   - sed -i 's/cass-editor//g' vue.config.js
   - sed -i 's/cass-editor\///g' ./src/mixins/cassApi.js
   - export VUE_APP_API_LOGIN_ENABLED=false
+  - export VUE_APP_SELECTEDSERVER=https://dev.api.cassproject.org/api/
   - npm install
   - npm run lint
   - npm run docs:build
+  - find public/docs -type f -exec sed -i "s/\/docs/..\/..\/docs/g" {} \;
+  - find public/docs/assets/css -type f -exec sed -i "s/\/docs//g" {} \;
+  - find public/docs/assets/js -type f -exec sed -i "s/..\/..\/docs/\/docs/g" {} \;
+  - sed -i "s/..\/docs/docs/g" ./public/docs/index.html
   - npm run buildDev
   artifacts:
     paths:
@@ -50,13 +55,16 @@ buildQA:
   - sed -i 's/cass-editor//g' vue.config.js
   - sed -i 's/cass-editor\///g' ./src/mixins/cassApi.js
 
-  - sed -i 's/https:\/\/dev.api.cassproject.org\/api\//https:\/\/qa.api.cassproject.org\/api\//g' ./src/main.js
-  - sed -i 's/https:\/\/dev.api.cassproject.org\/api\//https:\/\/qa.api.cassproject.org\/api\//g' ./src/App.vue
   - export VUE_APP_API_LOGIN_ENABLED=false
+  - export VUE_APP_SELECTEDSERVER=https://qa.api.cassproject.org/api/
 
   - npm install
   - npm run lint
   - npm run docs:build
+  - find public/docs -type f -exec sed -i "s/\/docs/..\/..\/docs/g" {} \;
+  - find public/docs/assets/css -type f -exec sed -i "s/\/docs//g" {} \;
+  - find public/docs/assets/js -type f -exec sed -i "s/..\/..\/docs/\/docs/g" {} \;
+  - sed -i "s/..\/docs/docs/g" ./public/docs/index.html
   - npm run build
   artifacts:
     paths:
@@ -75,8 +83,7 @@ buildT3:
   - sed -i 's/cass-editor//g' vue.config.js
   - sed -i 's/cass-editor//g' ./src/mixins/cassApi.js
 
-  - sed -i 's/https:\/\/dev.api.cassproject.org\/api\//https:\/\/t3.api.cassproject.org\/api\//g' ./src/main.js
-  - sed -i 's/https:\/\/dev.api.cassproject.org\/api\//https:\/\/t3.api.cassproject.org\/api\//g' ./src/App.vue
+  - export VUE_APP_SELECTEDSERVER=https://t3.api.cassproject.org/api/
 
   - npm install
   - npm run lint

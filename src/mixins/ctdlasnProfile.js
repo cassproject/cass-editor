@@ -107,6 +107,17 @@ export default {
                     "isRequired": "true",
                     "heading": "General"
                 },
+                "https://purl.org/ctdlasn/terms/author": {
+                    "@id": "https://purl.org/ctdlasn/terms/author",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "A person or organization chiefly responsible for the intellectual or artistic content of this competency framework or competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Author"}],
+                    "heading": "General"
+                },
                 "http://schema.org/inLanguage": {
                     "@id": "http://schema.org/inLanguage",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -311,6 +322,40 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Industry Type"}],
                     "heading": "General"
                 },
+                "https://schema.cassproject.org/0.4/cipList": {
+                    "@id": "https://schema.cassproject.org/0.4/cipList",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Type of instructional program; select from an existing enumeration of such types. See https://nces.ed.gov/ipeds/cipcode."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Instructional Program Type"}],
+                    "heading": "Tagging"
+                },
+                "https://purl.org/ctdlasn/terms/localSubject": {
+                    "@id": "https://purl.org/ctdlasn/terms/localSubject",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The text string denoting the subject of the competency framework or competency as designated by the promulgating agency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Local Subject"}],
+                    "heading": "Tagging"
+                },
+                "http://purl.org/asn/schema/core/hasProgressionModel": {
+                    "@id": "http://purl.org/asn/schema/core/hasProgressionModel",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Reference to a progression model used."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Progression Model"}],
+                    "max": 1,
+                    "heading": "Connections"
+                },
                 "headings": ["General", "Tagging", "Connections", "Context", "Rights", "Keys"],
                 "primaryProperties": [
                     "http://schema.org/name",
@@ -327,7 +372,8 @@ export default {
                     "http://purl.org/dc/elements/1.1/source",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://schema.cassproject.org/0.4/socList",
-                    "https://schema.cassproject.org/0.4/naicsList"
+                    "https://schema.cassproject.org/0.4/naicsList",
+                    "http://purl.org/asn/schema/core/hasProgressionModel"
                 ],
                 "tertiaryProperties": [
                     "@id",
@@ -340,7 +386,10 @@ export default {
                     "http://schema.org/copyrightYear",
                     "http://schema.org/license",
                     "http://purl.org/dc/elements/1.1/rights",
-                    "http://schema.org/copyrightHolder"
+                    "http://schema.org/copyrightHolder",
+                    "https://purl.org/ctdlasn/terms/author",
+                    "https://purl.org/ctdlasn/terms/localSubject",
+                    "https://schema.cassproject.org/0.4/cipList"
                 ]
             };
         },
@@ -1124,6 +1173,32 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Workforce Demand"}],
                     "heading": "Connections"
                 },
+                "http://schema.org/creator": {
+                    "@id": "http://schema.org/creator",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `The primary entity responsible for making this competency or competency framework. For example: 
+                            https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Creator"}],
+                    "heading": "General"
+                },
+                "http://purl.org/asn/schema/core/hasProgressionLevel": {
+                    "@id": "http://purl.org/asn/schema/core/hasProgressionLevel",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Reference to a specific point in a progression model."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Progression Level"}],
+                    "heading": "Connections"
+                },
                 "headings": ["General", "Context", "Tagging", "Scales", "Connections", "Keys"],
                 "primaryProperties": [
                     "https://purl.org/ctdlasn/terms/competencyLabel",
@@ -1174,7 +1249,9 @@ export default {
                     "https://purl.org/ctdlasn/terms/substantiatingWorkRole",
                     "https://purl.org/ctdlasn/terms/sourceDocumentation",
                     "https://purl.org/ctdlasn/terms/inferredCompetency",
-                    "https://purl.org/ctdl/terms/hasWorkforceDemand"
+                    "https://purl.org/ctdl/terms/hasWorkforceDemand",
+                    "http://schema.org/creator",
+                    "http://purl.org/asn/schema/core/hasProgressionLevel"
                 ]
             };
         },
