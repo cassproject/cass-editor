@@ -54,7 +54,7 @@
                         <div
                             class="check-radio-column column is-narrow is-vcentered">
                             <div
-                                v-if="(canEdit && view !== 'crosswalk' && view !== 'importPreview' && view !== 'importLight') || queryParams.select || view === 'competencySearch'"
+                                v-if="(canEdit && view !== 'crosswalk' && view !== 'importPreview' && view !== 'importLight' && hierarchyEnabled) || queryParams.select || view === 'competencySearch'"
                                 class="field">
                                 <input
                                     class="is-checkradio"
@@ -115,7 +115,7 @@
                                         </div>
                                     </div>
                                     <div
-                                        v-if="canEdit && view !== 'crosswalk'"
+                                        v-if="canEdit && view !== 'crosswalk' && hierarchyEnabled"
                                         class="handle-button button is-text  is-small has-text-primary">
                                         <span class="icon">
                                             <i class="fas handle fa-arrows-alt" />
@@ -293,7 +293,7 @@
         </div>
         <template>
             <draggable
-                v-if="!collapse"
+                v-if="!collapse && hierarchyEnabled"
                 :id="obj.shortId()"
                 v-bind="dragOptions"
                 v-model="hasChild"
@@ -386,7 +386,11 @@ export default {
             default: false
         },
         arrowKey: String,
-        largeNumberOfItems: Boolean
+        largeNumberOfItems: Boolean,
+        hierarchyEnabled: {
+            type: Boolean,
+            default: true
+        }
     },
     components: {
         ThingEditing: () => import('./ThingEditing.vue'),
