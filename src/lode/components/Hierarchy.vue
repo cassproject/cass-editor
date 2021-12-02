@@ -1189,7 +1189,7 @@ export default {
             this.closeSelectSubjectModal();
         },
         openSelectSubjectModal: function() {
-            EcPerson.search(window.repo, '*').then((people) => {
+            EcPerson.search(window.repo, '*', null, null, {size: 10000}).then((people) => {
                 this.availablePersons = people;
                 this.showModal('subject');
             });
