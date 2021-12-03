@@ -115,10 +115,10 @@
             v-if="showSideNav"
             @click="addFrameworkOrDirectory = true;">
             <add-new-dropdown
-                :frameworkEnabled="true"
-                :directoryEnabled="true"
+                :frameworkEnabled="showFrameworks"
+                :directoryEnabled="showFrameworks"
                 @close="addFrameworkOrDirectory = false"
-                :conceptEnabled="true"
+                :conceptEnabled="showConcepts"
                 @toggle="addFrameworkOrDirectory = !addFrameworkOrDirectory"
                 align="left"
                 color="light"
@@ -130,12 +130,13 @@
         <!-- GENERAL MENU -->
         <!-- COMPETENCIES AND FRAMEWORKS -->
         <div
-            v-if="showSideNav"
+            v-if="showSideNav && showFrameworks"
             class="menu-label has-text-weight-bold">
             Competencies & Frameworks
         </div>
         <ul
-            class="menu-list">
+            class="menu-list"
+            v-if="showFrameworks">
             <li class="has-text-white">
                 <router-link :to="{path: '/frameworks', query: queryParams}">
                     <span class="icon">
@@ -210,12 +211,12 @@
         </template>
         <!-- DIRECTORIES -->
         <div
-            v-if="showSideNav"
+            v-if="showSideNav && showFrameworks"
             class="menu-label has-text-weight-bold">
             My Directories
         </div>
         <ul
-            v-if="showSideNav"
+            v-if="showSideNav && showFrameworks"
             class="menu-list">
             <li
                 class="has-text-white cass--main-nav--list-item "
@@ -241,13 +242,14 @@
         </ul>
         <!-- CONCEPT SCHEMES -->
         <div
-            v-if="showSideNav"
+            v-if="showSideNav && showConcepts"
             class="menu-label has-text-weight-bold">
             <span v-if="queryParams.ceasnDataFields === 'true'">Concept Schemes</span>
             <span v-else>Taxonomy</span>
         </div>
         <ul
-            class="menu-list">
+            class="menu-list"
+            v-if="showConcepts">
             <li class="has-text-white">
                 <router-link :to="{path: '/concepts', query: queryParams}">
                     <span class="icon">
@@ -530,6 +532,19 @@ export default {
             return this.directoryList.filter(directory => {
                 return !directory.parentDirectory;
             });
+        },
+        showFrameworks() {
+            // temporarily hide frameworks when in concept mode on CE instance & vice versa
+            if (this.queryParams && this.queryParams.ceasnDataFields === 'true' && this.queryParams.concepts === 'true') {
+                return false;
+            }
+            return true;
+        },
+        showConcepts() {
+            if (this.queryParams && this.queryParams.ceasnDataFields === 'true' && this.queryParams.concepts !== 'true') {
+                return false;
+            }
+            return true;
         }
     },
     mounted() {

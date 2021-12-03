@@ -101,7 +101,6 @@ export default {
                     this.$store.commit('featuresEnabled/apiLoginEnabled', true);
                 }
             });
-            r.autoDetectRepositoryAsync(appLog, appError);
             window.repo = r;
             this.repo = r;
 
