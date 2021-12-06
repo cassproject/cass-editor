@@ -104,7 +104,8 @@
                                 :cantMoveDown="cantMoveDown"
                                 :cantMoveRight="cantMoveRight"
                                 :cantMoveLeft="cantMoveLeft"
-                                :properties="properties">
+                                :properties="properties"
+                                :containerSubType="containerSubType">
                                 <div class="hierarchy-item__buttons">
                                     <div
                                         v-if="view !== 'crosswalk' && canEditThing"
@@ -340,7 +341,8 @@
                     :shiftKey="shiftKey"
                     :arrowKey="arrowKey"
                     :largeNumberOfItems="largeNumberOfItems"
-                    :expandAll="expandAll" />
+                    :expandAll="expandAll"
+                    :containerSubType="containerSubType" />
                 <!--</transition-group>-->
             </draggable>
         </template>
@@ -390,7 +392,8 @@ export default {
         hierarchyEnabled: {
             type: Boolean,
             default: true
-        }
+        },
+        containerSubType: String
     },
     components: {
         ThingEditing: () => import('./ThingEditing.vue'),
@@ -431,7 +434,8 @@ export default {
             isItemFocused: false,
             isItemCut: false,
             isItemCopied: false,
-            canPaste: false // needs trigger that something has been copied or cut
+            canPaste: false, // needs trigger that something has been copied or cut
+            canEditInCollection: false
         };
     },
     computed: {
@@ -553,6 +557,9 @@ export default {
             if (this.canEdit === false) {
                 return false;
             }
+            if (this.containerSubType === 'Collection') {
+                return this.canEditInCollection;
+            }
             if (this.obj && this.obj.canEditAny) {
                 return this.obj.canEditAny(EcIdentityManager.default.getMyPks());
             }
@@ -584,6 +591,9 @@ export default {
             if (EcArray.has(this.selectedArray, this.obj.shortId())) {
                 this.checked = true;
             }
+        }
+        if (this.containerSubType === 'Collection') {
+            this.getCanEditInCollection();
         }
     },
     methods: {
@@ -825,6 +835,14 @@ export default {
             this.$store.commit('lode/copyOrLink', true);
             if (this.$store.state.editor) {
                 this.$store.commit('editor/selectedCompetency', this.obj);
+            }
+        },
+        async getCanEditInCollection() {
+            let frameworks = await EcFramework.search(repo, 'competency:"' + this.obj.shortId() + '" AND NOT subType:Collection');
+            if (frameworks && frameworks.length > 0) {
+                this.canEditInCollection = false;
+            } else {
+                this.canEditInCollection = true;
             }
         }
     },

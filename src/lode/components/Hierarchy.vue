@@ -362,7 +362,8 @@
                     :shiftKey="shiftKey"
                     :arrowKey="arrowKey"
                     :largeNumberOfItems="hasLargeNumberOfItems"
-                    :hierarchyEnabled="hierarchyEnabled" />
+                    :hierarchyEnabled="hierarchyEnabled"
+                    :containerSubType="container.subType" />
 
             <!--</transition-group>-->
             </draggable>
