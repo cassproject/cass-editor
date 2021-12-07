@@ -183,6 +183,7 @@
         <template v-if="queryParams.disableAssertions !== 'true' && isLoggedOn">
             <div
                 v-if="showSideNav"
+                data-id="side-nav-assertions-section"
                 class="menu-label has-text-weight-bold">
                 Assertions
             </div>
@@ -199,7 +200,9 @@
                 </li>
                 <li
                     class="has-text-white">
-                    <a @click="shareAssertions">
+                    <a
+                        data-id="share-assertions-button"
+                        @click="shareAssertions">
                         <span class="icon">
                             <i class="fa fa-share" />
                         </span>

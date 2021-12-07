@@ -7,9 +7,15 @@
                 v-for="item in assertions"
                 :key="item.id"
                 :uri="item.id" />
-            <span v-if="assertions.length === 0">None.</span>
+            <span
+                id="noAssertionsMessage"
+                v-if="assertions.length === 0">
+                None.
+            </span>
         </div>
-        <div v-else>
+        <div
+            id="loadingAssertionTimeline"
+            v-else>
             <br>Loading Timeline...
         </div>
     </div>
