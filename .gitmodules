@@ -22,3 +22,6 @@
 	path = public/cass-align
 #	url = https://github.com/cassproject/cass-align.git
     url = ../cass-align.git
+[submodule "schema.cassproject.org"]
+	path = public/schema.cassproject.org
+	url = https://github.com/cassproject/schema.cassproject.org
