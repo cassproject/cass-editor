@@ -2,7 +2,8 @@
     <div
         class="timelineElement"
         v-observe-visibility="{callback: initialize}">
-        <span v-if="ok">
+        <span
+            v-if="ok">
             <div
                 class="assertionTimelineIcon negative"
                 v-if="negative">
@@ -48,7 +49,12 @@
                     :data-jdenticon-value="fingerprintSubject"
                     :title="fingerprintSubject" /> -->
                 <strong class="subjectName">{{ subject }} </strong>
-                <span class="negativeClaim" v-if="negative">could not</span><span class="positiveClaim" v-else>could</span>
+                <span
+                    class="negativeClaim"
+                    v-if="negative">could not</span>
+                <span
+                    class="positiveClaim"
+                    v-else>could</span>
                 demonstrate
                 <a
                     href="#"
@@ -56,9 +62,12 @@
                     @click="gotoCompetency"
                     :title="assertion.competency">
                     {{ competencyName }}
-                    <span v-if="frameworkName"> in the subject area {{ frameworkName }}</span>
+                    <span
+                        v-if="frameworkName"> in the subject area {{ frameworkName }}</span>
                 </a>
-                <span class="evidenceText" v-if="evidenceText"> because they
+                <span
+                    class="evidenceText"
+                    v-if="evidenceText"> because they
                     <span
                         v-for="(evidenceThing, index) in evidenceText"
                         :key="index">
@@ -70,7 +79,9 @@
                         <span v-else> {{ evidenceThing.text }}</span>
                     </span>
                 </span>
-                <span class="badge" v-if="badged"> and has issued a
+                <span
+                    class="badge"
+                    v-if="badged"> and has issued a
                     <a
                         target="_blank"
                         :href="badgeUrl"> badge</a>

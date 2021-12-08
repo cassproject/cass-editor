@@ -68,12 +68,13 @@
                                     </span>
                                     <span v-else>Import a framework</span>
                                     <span
+
                                         @click="showRightAside"
                                         class="button is-outlined is-primary is-pulled-right">
                                         <span class="icon">
                                             <i class="fa fa-exclamation-circle" />
                                         </span>
-                                        <span>
+                                        <span tabindex="0">
                                             info
                                         </span>
                                     </span>
@@ -83,10 +84,12 @@
                             <template slot="import-framework">
                                 <!-- import details -->
                                 <ImportDetails
+
                                     :detailsDetected="detailsDetected"
                                     v-if="importTransition === 'detail'" />
                                 <!-- import preview -->
                                 <div
+
                                     v-if="importFramework && importTransition === 'preview'"
                                     class="import-preview">
                                     <!-- loading section -- dummy content to show while loading dome elemnts -->

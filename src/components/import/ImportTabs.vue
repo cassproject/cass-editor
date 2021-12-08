@@ -20,6 +20,7 @@
                         <!-- file -->
                         <div class="column">
                             <div
+                                tabindex="0"
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'file'}">
                                 <a @click="$store.commit('app/importType', 'file')">
@@ -37,6 +38,7 @@
                             class="column"
                             v-if="!conceptMode">
                             <div
+                                tabindex="0"
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'server'}">
                                 <a @click="$store.commit('app/importType', 'server')">
@@ -54,6 +56,7 @@
                             class="column"
                             v-if="!conceptMode">
                             <div
+                                tabindex="0"
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'text'}">
                                 <a @click="$store.commit('app/importType', 'text')">
@@ -72,6 +75,7 @@
                             v-if="!conceptMode">
                             <div
                                 class="import-tab"
+                                tabindex="0"
                                 :class="{ 'is-active-tab': importType === 'url'}">
                                 <a @click="$store.commit('app/importType', 'url')">
                                     <i

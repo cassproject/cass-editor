@@ -306,7 +306,7 @@ const actions = {
                             url: e,
                             original: eoriginal
                         });
-                    }
+                    };
                     EcRepository.get(e, (success) => {
                         try {
                             if (success.isAny(new ChooseAction().getTypes())) {
@@ -323,7 +323,7 @@ const actions = {
                                 callback();
                             }
                         } catch (e) {
-                            failureFunc()
+                            failureFunc();
                             callback();
                         }
                     }, (failure) => {
