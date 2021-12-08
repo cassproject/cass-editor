@@ -63,10 +63,11 @@ export default {
             } else if (val === 'duplicateOverwriteOnly') {
                 if (data[1] && (!EcIdentityManager.default.ids || EcIdentityManager.default.ids.length === 0)) {
                     // An owner is attached from the server-side import so it can be overwritten, just not edited
+                    let type = data[1].subType === "Collection" ? "collection" : "framework";
                     params = {
                         type: val,
-                        title: "Duplicate framework",
-                        text: (data[0].name ? ("The framework " + data[0].name) : "This framework") + " has already been imported. You can overwrite it but will not be able to edit it since you're not logged in. Do you want to overwrite it?",
+                        title: "Duplicate " + type,
+                        text: (data[0].name ? ("The " + type + " " + data[0].name) : "This " + type) + " has already been imported. You can overwrite it but will not be able to edit it since you're not logged in. Do you want to overwrite it?",
                         onConfirm: () => {
                             if (this.importType === "url") {
                                 return this.importJsonLd(data[0]);
@@ -88,10 +89,11 @@ export default {
                         }
                     };
                 } else {
+                    let type = data[1] && data[1].subType === "Collection" ? "collection" : "framework";
                     params = {
                         type: val,
-                        title: "Duplicate framework",
-                        text: (data[0].name ? ("The framework " + data[0].name) : "This framework") + " has already been imported. If you're a framework admin you can overwrite it. Do you want to overwrite it?",
+                        title: "Duplicate " + type,
+                        text: (data[0].name ? ("The " + type + " " + data[0].name) : "This " + type) + " has already been imported. If you're a " + type + " admin you can overwrite it. Do you want to overwrite it?",
                         onConfirm: () => {
                             if (this.importType === "url") {
                                 return this.importJsonLd(data[0]);
@@ -269,8 +271,13 @@ export default {
                         }
                     } else {
                         if (!me.conceptMode) {
-                            me.$store.commit('app/importFileType', 'ctdlasnjsonld');
-                            feedback = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
+                            if (ctdlasn === 'ctdlasnCollection') {
+                                me.$store.commit('app/importFileType', 'ctdlasnjsonldcollection');
+                                feedback = "1 Collection and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
+                            } else {
+                                me.$store.commit('app/importFileType', 'ctdlasnjsonld');
+                                feedback = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
+                            }
                             me.$store.commit('app/importStatus', feedback);
                             me.$store.commit('app/importTransition', 'info');
                         } else {
@@ -281,7 +288,7 @@ export default {
                         }
                     }
                     me.competencyCount = EcObject.keys(data).length;
-                    if (!invalid && (ctdlasn === "ctdlasn" || ctdlasn === "ctdlasnConcept")) {
+                    if (!invalid && (ctdlasn === "ctdlasn" || ctdlasn === "ctdlasnConcept" || ctdlasn === "ctdlasnCollection")) {
                         // Do nothing
                     } else if (!invalid) {
                         let error = "Context is not CTDL-ASN";
@@ -438,6 +445,8 @@ export default {
                         jsonObj["@context"] === "https://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] === "https://credreg.net/ctdl/schema/context/json") {
                         if (jsonObj["@graph"][0]["@type"].indexOf("Concept") !== -1) {
                             success(jsonObj["@graph"], "ctdlasnConcept");
+                        } else if (jsonObj["@graph"][0]["@type"].indexOf("Collection") !== -1) {
+                            success(jsonObj["@graph"], "ctdlasnCollection");
                         } else {
                             success(jsonObj["@graph"], "ctdlasn");
                         }
@@ -837,7 +846,11 @@ export default {
                     me.$store.commit('app/importStatus', "Importing Taxonomy");
                 }
             } else {
-                me.$store.commit('app/importStatus', 'Importing Framework');
+                if (me.importFileType === 'ctdlasnjsonldcollection') {
+                    me.$store.commit('app/importStatus', 'Importing Collection');
+                } else {
+                    me.$store.commit('app/importStatus', 'Importing Framework');
+                }
             }
         },
         importCtdlAsnConceptCsv: function() {
@@ -886,7 +899,7 @@ export default {
                 me.importCtdlAsnCsv();
             } else if (me.importFileType === "conceptcsv") {
                 me.importCtdlAsnConceptCsv();
-            } else if (me.importFileType === "ctdlasnjsonld") {
+            } else if (me.importFileType === "ctdlasnjsonld" || me.importFileType === "ctdlasnjsonldcollection") {
                 me.importJsonLd();
             } else if (me.importFileType === "asn") {
                 me.importAsn();
