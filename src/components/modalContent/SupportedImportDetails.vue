@@ -49,7 +49,7 @@
                 class="section">
                 <h3 class="title has-text-weight-bold is-size-2">
                     WORD/DOCX
-                    <span class="icon is-pulled-right has-text-link">
+                    <span class="icon is-pulled-right has-text-warning has-text-link">
                         <i class="fa fa-exclamation-circle" />
                     </span>
                 </h3>
@@ -83,7 +83,7 @@
                 class="section">
                 <h3 class="title has-text-weight-bold is-size-2">
                     HTML
-                    <span class="icon is-pulled-right has-text-link">
+                    <span class="icon is-pulled-right has-text-warning has-text-link">
                         <i class="fa fa-exclamation-circle" />
                     </span>
                 </h3>
@@ -117,7 +117,7 @@
                 class="section">
                 <h3 class="title has-text-weight-bold is-size-2">
                     PDF
-                    <span class="icon is-pulled-right has-text-link">
+                    <span class="icon is-pulled-right has-text-warning has-text-link">
                         <i class="fa fa-exclamation-circle" />
                     </span>
                 </h3>

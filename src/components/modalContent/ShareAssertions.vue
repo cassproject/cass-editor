@@ -30,6 +30,7 @@
                     <div
                         class="field">
                         <input
+                            data-id="share-assertions-subject-search"
                             type="text"
                             class="input"
                             v-model="subjectFilter"
@@ -45,6 +46,7 @@
                                     <tr>
                                         <th title="Select">
                                             <input
+                                                data-id="share-assertions-select-all-subjects"
                                                 type="checkbox"
                                                 @change="selectAllSubjects">
                                         </th>
@@ -58,6 +60,7 @@
                                 </thead>
                                 <tbody>
                                     <tr
+                                        data-id="share-assertions-subject-option"
                                         style="cursor: pointer;"
                                         @click="setSubject(prs.owner[0])"
                                         v-for="(prs, index) in filteredAvailableSubjects"
@@ -84,6 +87,7 @@
                     <div
                         class="field">
                         <input
+                            data-id="share-assertions-target-search"
                             type="text"
                             class="input"
                             v-model="targetFilter"
@@ -99,6 +103,7 @@
                                     <tr>
                                         <th title="Select">
                                             <input
+                                                data-id="share-assertions-select-all-targets"
                                                 type="checkbox"
                                                 @change="selectAllTargets">
                                         </th>
@@ -112,6 +117,7 @@
                                 </thead>
                                 <tbody>
                                     <tr
+                                        data-id="share-assertions-target-option"
                                         style="cursor: pointer;"
                                         @click="setTarget(prs.owner[0])"
                                         v-for="(prs, index) in filteredAvailableTargets"
@@ -153,6 +159,7 @@
                     </span>
                 </button>
                 <button
+                    data-id="share-assertions-button"
                     :disabled="isProcessing || notSelected"
                     class="button is-primary is-outlined"
                     @click="shareAssertions">
@@ -210,7 +217,7 @@ export default {
         }
     },
     mounted: async function() {
-        EcPerson.search(window.repo, '*').then((people) => {
+        EcPerson.search(window.repo, '*', null, null, {size: 10000}).then((people) => {
             this.availablePersons = people;
         });
     },

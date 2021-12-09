@@ -2,19 +2,20 @@
     <div
         class="timelineElement"
         v-observe-visibility="{callback: initialize}">
-        <span v-if="ok">
+        <span
+            v-if="ok">
             <div
-                class="assertionTimelineIcon"
+                class="assertionTimelineIcon negative"
                 v-if="negative">
                 <i class="fa fa-times" />
             </div>
             <div
-                class="assertionTimelineIcon"
+                class="assertionTimelineIcon badged"
                 v-else-if="badged">
                 <i class="fa fa-shield-alt" />
             </div>
             <div
-                class="assertionTimelineIcon"
+                class="assertionTimelineIcon positive"
                 v-else>
                 <i class="fa fa-check" />
             </div>
@@ -36,7 +37,7 @@
                     height="44"
                     :data-jdenticon-value="fingerprintAgent"
                     :title="fingerprintAgent" /> -->
-                <strong>{{ agent }}</strong> claimed
+                <strong class="agentName">{{ agent }}</strong> claimed
                 <!-- <img
                     v-if="fingerprintUrlSubject"
                     :src="fingerprintUrlSubject"
@@ -47,17 +48,26 @@
                     height="44"
                     :data-jdenticon-value="fingerprintSubject"
                     :title="fingerprintSubject" /> -->
-                <strong>{{ subject }} </strong>
-                <span v-if="negative">could not</span><span v-else>could</span>
+                <strong class="subjectName">{{ subject }} </strong>
+                <span
+                    class="negativeClaim"
+                    v-if="negative">could not</span>
+                <span
+                    class="positiveClaim"
+                    v-else>could</span>
                 demonstrate
                 <a
                     href="#"
+                    class="competencyLink"
                     @click="gotoCompetency"
                     :title="assertion.competency">
                     {{ competencyName }}
-                    <span v-if="frameworkName"> in the subject area {{ frameworkName }}</span>
+                    <span
+                        v-if="frameworkName"> in the subject area {{ frameworkName }}</span>
                 </a>
-                <span v-if="evidenceText"> because they
+                <span
+                    class="evidenceText"
+                    v-if="evidenceText"> because they
                     <span
                         v-for="(evidenceThing, index) in evidenceText"
                         :key="index">
@@ -69,7 +79,9 @@
                         <span v-else> {{ evidenceThing.text }}</span>
                     </span>
                 </span>
-                <span v-if="badged"> and has issued a
+                <span
+                    class="badge"
+                    v-if="badged"> and has issued a
                     <a
                         target="_blank"
                         :href="badgeUrl"> badge</a>
@@ -92,10 +104,10 @@
 import common from '@/mixins/common.js';
 export default {
     name: 'TimelineElement',
+    mixins: [common],
     props: {
         uri: String
     },
-    mixins: [common],
     data: function() {
         return {
             assertion: null,
@@ -254,77 +266,76 @@ export default {
                 this.getAssertion(isVisible, entry);
             }
         },
-        getAssertion: function(isVisible, entry) {
+        getAssertion: async function(isVisible, entry) {
             if (isVisible) {
-                EcAssertion.get(this.uri, (assertion) => {
-                    this.assertion = assertion;
-                    if (assertion.subject === null) {
-                        this.subject = "nobody";
-                    } else {
-                        assertion.getSubjectName(window.repo).then((name) => {
-                            this.subject = name;
-                        });
-                        assertion.getSubjectAsync((pk) => {
-                            this.subjectPk = pk.toPem();
-                            this.getSubject();
-                        }, appError);
-                    }
-                    if (assertion.agent === null) {
-                        this.agent = "nobody";
-                    } else {
-                        assertion.getAgentName(window.repo).then((name) => {
-                            this.agent = name;
-                        });
-                    }
-                    assertion.getAgentAsync((pk) => {
-                        this.agentPk = pk.toPem();
-                        this.getAgent();
-                    }, appError);
-                    if (assertion.assertionDate != null) {
-                        assertion.getAssertionDateAsync((assertionDate) => {
-                            this.timestamp = assertionDate;
-                        }, appError);
-                    }
-                    if (assertion.expirationDate != null) {
-                        assertion.getExpirationDateAsync((expirationDate) => {
-                            this.expiry = expirationDate;
-                        }, appError);
-                    }
-                    if (assertion.negative != null) {
-                        assertion.getNegativeAsync((negative) => {
-                            this.negative = negative;
-                        }, appError);
-                    } else {
-                        this.negative = false;
-                    }
-                    if (assertion.evidence != null) {
-                        for (var i = 0; i < assertion.getEvidenceCount(); i++) {
-                            ((i) => {
-                                assertion.getEvidenceAsync(i, (evidence) => {
-                                    if (this.evidence == null) {
-                                        this.evidence = [];
-                                    }
-                                    this.evidence.push(evidence);
-                                    this.evidenceExplanation = null;
-                                }, appError);
-                            })(i);
-                        }
-                    }
-                    if (assertion.framework != null) {
-                        EcFramework.get(assertion.framework, (framework) => {
-                            this.framework = framework;
-                        }, appError);
-                    }
-                    EcCompetency.get(assertion.competency, (competency) => {
-                        this.competency = competency;
-                    }, () => {
-                        for (var i = 0; i < this.assertions.length; i++) {
-                            while (this.assertions[i].id === assertion.id) {
-                                this.$store.commit('editor/removeAssertionAtIndex', i);
-                            }
-                        }
+                let assertion = await EcAssertion.get(this.uri);
+                this.assertion = assertion;
+                if (assertion.subject === null) {
+                    this.subject = "nobody";
+                } else {
+                    assertion.getSubjectName(window.repo).then((name) => {
+                        this.subject = name;
                     });
+                    assertion.getSubjectAsync((pk) => {
+                        this.subjectPk = pk.toPem();
+                        this.getSubject();
+                    }, appError);
+                }
+                if (assertion.agent === null) {
+                    this.agent = "nobody";
+                } else {
+                    assertion.getAgentName(window.repo).then((name) => {
+                        this.agent = name;
+                    });
+                }
+                assertion.getAgentAsync((pk) => {
+                    this.agentPk = pk.toPem();
+                    this.getAgent();
                 }, appError);
+                if (assertion.assertionDate != null) {
+                    assertion.getAssertionDateAsync((assertionDate) => {
+                        this.timestamp = assertionDate;
+                    }, appError);
+                }
+                if (assertion.expirationDate != null) {
+                    assertion.getExpirationDateAsync((expirationDate) => {
+                        this.expiry = expirationDate;
+                    }, appError);
+                }
+                if (assertion.negative != null) {
+                    assertion.getNegativeAsync((negative) => {
+                        this.negative = negative;
+                    }, appError);
+                } else {
+                    this.negative = false;
+                }
+                if (assertion.evidence != null) {
+                    for (var i = 0; i < assertion.getEvidenceCount(); i++) {
+                        ((i) => {
+                            assertion.getEvidenceAsync(i, (evidence) => {
+                                if (this.evidence == null) {
+                                    this.evidence = [];
+                                }
+                                this.evidence.push(evidence);
+                                this.evidenceExplanation = null;
+                            }, appError);
+                        })(i);
+                    }
+                }
+                if (assertion.framework != null) {
+                    EcFramework.get(assertion.framework, (framework) => {
+                        this.framework = framework;
+                    }, appError);
+                }
+                EcCompetency.get(assertion.competency, (competency) => {
+                    this.competency = competency;
+                }, () => {
+                    for (var i = 0; i < this.assertions.length; i++) {
+                        while (this.assertions[i].id === assertion.id) {
+                            this.$store.commit('editor/removeAssertionAtIndex', i);
+                        }
+                    }
+                });
             }
         },
         gotoCompetency: function() {

@@ -21,6 +21,7 @@
                     </p>
                 </div>
                 <div
+                    tabindex="0"
                     v-if="files.length === 0"
                     class="column is-12">
                     <p class="is-size-6">

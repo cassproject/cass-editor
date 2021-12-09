@@ -1197,11 +1197,10 @@ export default {
             this.$store.commit('editor/setSubject', subject);
             this.closeSelectSubjectModal();
         },
-        openSelectSubjectModal: function() {
-            EcPerson.search(window.repo, '*').then((people) => {
-                this.availablePersons = people;
-                this.showModal('subject');
-            });
+        openSelectSubjectModal: async function() {
+            let people = await EcPerson.search(window.repo, '*', null, null, {size: 10000});
+            this.availablePersons = people;
+            this.showModal('subject');
         },
         closeSelectSubjectModal: function() {
             this.$store.commit('app/closeModal');

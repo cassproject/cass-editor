@@ -4,6 +4,7 @@
         <div class="assertions-buttons">
             <div class="left-buttons">
                 <div
+                    data-id="positiveAssertionButton"
                     class="button is-text"
                     :disabled="loading"
                     :class="{'active': canAssertion}"
@@ -12,6 +13,7 @@
                     {{ canButtonText }}
                 </div>
                 <div
+                    data-id="negativeAssertionButton"
                     class="button is-text"
                     :disabled="loading"
                     :class="{'active': cannotAssertion}"
@@ -22,6 +24,7 @@
             </div>
             <div class="right-button">
                 <div
+                    data-id="badgeButton"
                     class="button is-text"
                     :disabled="loading"
                     v-if="canAssertion"
@@ -34,6 +37,7 @@
                     </template>
                 </div>
                 <div
+                    data-id="viewBadgeButton"
                     class="button is-text"
                     @click="viewBadge"
                     v-if="badgeExists">
@@ -57,6 +61,7 @@
             <hr>
             <ul>
                 <li
+                    data-id="evidenceElement"
                     v-for="(evidenceThing, index) in evidenceExplanation"
                     :key="index">
                     <a
@@ -67,6 +72,7 @@
                     </a>
                     <span v-else>{{ evidenceThing.text }}</span>
                     <div
+                        data-id="removeEvidenceButton"
                         class="button is-text"
                         @click="handleUnevidenceAssertion(evidenceThing.original)">
                         <i class="fas fa-times" />
