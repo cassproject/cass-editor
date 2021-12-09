@@ -84,7 +84,6 @@
                             <template slot="import-framework">
                                 <!-- import details -->
                                 <ImportDetails
-
                                     :detailsDetected="detailsDetected"
                                     v-if="importTransition === 'detail'" />
                                 <!-- import preview -->
@@ -610,7 +609,7 @@
                                 <div class="column is-narrow">
                                     <div
                                         @click="showImportModal('pdf')"
-                                        class="button is-outlined is-warning is-small"
+                                        class="button  is-warning is-light is-outlined is-small"
                                         v-if="!conceptMode">
                                         <span
                                             title="PDF files are experimentally supported. Click to learn more."
@@ -623,7 +622,7 @@
                                 <div class="column is-narrow">
                                     <div
                                         @click="showImportModal('docx')"
-                                        class="button is-outlined is-warning is-small"
+                                        class="button  is-warning is-light is-outlined is-small"
                                         v-if="!conceptMode">
                                         <span
                                             title="Word documents and Docx files are experimental. Click to learn more."
@@ -636,7 +635,7 @@
                                 <div class="column is-narrow">
                                     <div
                                         @click="showImportModal('html')"
-                                        class="button is-outlined is-warning is-small"
+                                        class="button  is-warning is-light is-outlined is-small"
                                         v-if="!conceptMode">
                                         <span
                                             title="HTML files are experimentally supported. Click to learn more."
@@ -649,7 +648,7 @@
                                 <div class="column is-narrow">
                                     <div
                                         @click="showImportModal('csv')"
-                                        class="button is-outlined is-success is-small">
+                                        class="button  is-success is-light is-outlined is-small">
                                         <span
                                             title="CSV files are supported, click to learn more."
                                             class="icon is-pulled-right">
@@ -661,7 +660,7 @@
                                 <div class="column is-narrow">
                                     <div
                                         @click="showImportModal('xml')"
-                                        class="button is-outlined is-success is-small"
+                                        class="button  is-success is-light is-outlined is-small"
                                         v-if="!conceptMode">
                                         <span
                                             title="XML files are supported, click to learn more."
@@ -674,7 +673,7 @@
                                 <div class="column is-narrow">
                                     <div
                                         @click="showImportModal('json')"
-                                        class="button is-outlined is-success is-small">
+                                        class="button  is-success is-light is-outlined is-small">
                                         <span
                                             title="JSON files are supported, click to learn more."
                                             class="icon is-pulled-right">
