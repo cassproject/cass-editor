@@ -1,7 +1,35 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import axios from 'axios';
+
 Vue.use(Vuex);
 
+
+const MAX_REQUESTS_COUNT = 10;
+const INTERVAL_MS = 10;
+let PENDING_REQUESTS = 0;
+
+const limitApi = axios.create({});
+
+limitApi.interceptors.request.use(function(config) {
+    return new Promise((resolve, reject) => {
+        let interval = setInterval(() => {
+            if (PENDING_REQUESTS < MAX_REQUESTS_COUNT) {
+                PENDING_REQUESTS++;
+                clearInterval(interval);
+                resolve(config);
+            }
+        }, INTERVAL_MS);
+    });
+});
+
+limitApi.interceptors.response.use(function(response) {
+    PENDING_REQUESTS = Math.max(0, PENDING_REQUESTS - 1);
+    return Promise.resolve(response);
+}, function(error) {
+    PENDING_REQUESTS = Math.max(0, PENDING_REQUESTS - 1);
+    return Promise.reject(error);
+});
 
 const state = {
     framework: null,
@@ -225,6 +253,17 @@ const actions = {
     lastEditToUndo: function(context) {
         context.commit('setLastEditToUndo', context.state.editsToUndo.pop());
         return context.state.lastEditToUndo;
+    },
+    getThing: (instance, payload) => {
+        var url = EcRemote.urlAppend(payload.server, payload.service);
+        url = EcRemote.upgradeHttpToHttps(url);
+        limitApi.get(url, {
+            headers: payload.headers
+        }).then((resp) => {
+            payload.success(resp.data);
+        }).catch((err) => {
+            payload.failure(err);
+        });
     },
     searchForAssertions: (instance, count) => {
         return new Promise((resolve, reject) => {

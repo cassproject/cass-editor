@@ -1044,41 +1044,13 @@ export default {
             });
         },
         get: function(server, service, headers, success, failure) {
-            var url = EcRemote.urlAppend(server, service);
-            url = EcRemote.upgradeHttpToHttps(url);
-            var xhr = null;
-            if ((typeof httpStatus) === "undefined") {
-                xhr = new XMLHttpRequest();
-                xhr.open("GET", url, true);
-                if (headers != null) {
-                    var keys = EcObject.keys(headers);
-                    for (var i = 0; i < keys.length; i++) {
-                        xhr.setRequestHeader(keys[i], headers[keys[i]]);
-                    }
-                }
-                var xhrx = xhr;
-                xhr.onreadystatechange = function() {
-                    if (xhrx.readyState === 4 && xhrx.status === 200) {
-                        if (success != null) {
-                            success(xhrx.responseText);
-                        } else if (xhrx.readyState === 4) {
-                            if (failure != null) {
-                                failure(xhrx.responseText);
-                            }
-                        }
-                    }
-                };
-            }
-            if (xhr != null) {
-                (xhr)["timeout"] = EcRemote.timeout;
-            }
-            if ((typeof httpStatus) !== "undefined") {
-                if (success != null) {
-                    success(JSON.stringify(httpGet(url)));
-                }
-            } else {
-                xhr.send();
-            }
+            this.$store.dispatch('editor/getThing', {
+                server: server,
+                service: service,
+                headers: headers,
+                success: success,
+                failure: failure
+            });
         },
         allowPropertyEdits: function(key) {
             if (key === "@id" || key === "ctid" || key === "registryURL") {
