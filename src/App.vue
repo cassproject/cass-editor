@@ -49,8 +49,7 @@ export default {
     },
     methods: {
         initializeApp: function() {
-            // var server = window.origin + "/api/";
-            var server = 'http://localhost:80/api/';
+            var server = window.origin + "/api/";
             if (window.location.origin === "https://cassproject.github.io") {
                 server = "https://dev.cassproject.org/api/";
             } else if (process.env.VUE_APP_SELECTEDSERVER) {
