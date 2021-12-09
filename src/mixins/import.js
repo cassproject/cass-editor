@@ -204,9 +204,14 @@ export default {
                         me.$store.commit('app/importTransition', 'process');
                     });
                 } else {
-                    CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount) {
-                        me.$store.commit('app/importFileType', 'ctdlasncsv');
-                        feedback = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
+                    CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount, collectionCount) {
+                        if (frameworkCount) {
+                            me.$store.commit('app/importFileType', 'ctdlasncsv');
+                            feedback = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
+                        } else if (collectionCount) {
+                            me.$store.commit('app/importFileType', 'collectioncsv');
+                            feedback = "Import " + collectionCount + " collections and " + competencyCount + " competencies.";
+                        }
                         me.$store.commit('app/importStatus', feedback);
                         me.$store.commit('app/importTransition', 'info');
                     }, function(errorMsg) {
@@ -567,7 +572,11 @@ export default {
                                 id: 'dateCreated',
                                 label: 'created date'
                             });
-                            me.$router.push({name: "frameworks"});
+                            if (me.importFileType === 'ctdlasncsv') {
+                                me.$router.push({name: "frameworks"});
+                            } else {
+                                me.$router.push({name: "collections"});
+                            }
                         }
                     }
                 }, function(failure) {
@@ -579,7 +588,7 @@ export default {
                 me.$store.commit('app/importStatus', failure);
                 me.$store.commit('app/importTransition', 'process');
                 me.$store.commit('app/addImportError', failure);
-            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null));
+            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'collectioncsv');
         },
         importPdf: function() {
             var me = this;
@@ -895,7 +904,7 @@ export default {
             me.$store.commit('app/importTransition', 'process');
             if (me.importFileType === "csv") {
                 me.importCsv();
-            } else if (me.importFileType === "ctdlasncsv") {
+            } else if (me.importFileType === "ctdlasncsv" || me.importFileType === "collectioncsv") {
                 me.importCtdlAsnCsv();
             } else if (me.importFileType === "conceptcsv") {
                 me.importCtdlAsnConceptCsv();
