@@ -579,7 +579,7 @@ export default {
                 } else {
                     callback();
                 }
-            } else if (this.queryParams.user === "wait") {
+            } else if (this.queryParams.user === "wait" && this.inIframe()) {
                 var me = this;
                 var fun = function(evt) {
                     var data = evt.data;
@@ -1187,6 +1187,13 @@ export default {
                 // style.styleSheet.cssText = cssString; // IE8 and earlier
             }
             document.getElementsByTagName("head")[0].appendChild(style);
+        },
+        inIframe: function() {
+            try {
+                return window.self !== window.top;
+            } catch (e) {
+                return true;
+            }
         }
     },
     computed: {
