@@ -190,6 +190,7 @@
                 </div>
                 <!-- assertions -->
                 <div
+                    id="manageAssertionsButton"
                     v-if="canManageAssertions"
                     class="column is-narrow"
                     @click="manageAssertions">
@@ -454,7 +455,7 @@ export default {
                 appError(failure);
             });
         },
-        manageAssertions: function() {
+        manageAssertions: async function() {
             if (this.managingAssertions) {
                 this.$store.commit('editor/setManageAssertions', false);
             } else {
@@ -463,11 +464,8 @@ export default {
                         return {name: x.name, key: x.owner[0]};
                     }));
                 });
-                this.$store.dispatch('editor/searchForAssertions', 5000).then(() => {
-                    this.$store.commit('editor/setManageAssertions', true);
-                }).catch(() => {
-                    // TODO: Handle assertion search error
-                });
+                await this.$store.dispatch('editor/searchForAssertions', 5000);
+                this.$store.commit('editor/setManageAssertions', true);
             }
         }
     },

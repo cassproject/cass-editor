@@ -222,7 +222,7 @@ The cass-editor can orient towards either a basic CASS schema or a Credential En
 # Disable Assertion Management
 The cass-editor can be configured to hide the assertion management functionality if it is not needed.
 
-- `disabledAssertions=true` will hide the assertion timeline, assertion sharing, and assertion creation/edititing features.
+- `disableAssertions=true` will hide the assertion timeline, assertion sharing, and assertion creation/edititing features.
 
 # Overrides
 The cass-editor can be overridden to assist in cross domain, iframe, and web socket connection issues.

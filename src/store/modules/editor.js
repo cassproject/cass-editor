@@ -300,25 +300,34 @@ const actions = {
                     }
                     callback();
                 } else if (e.startsWith != null && e.startsWith("http")) {
-                    EcRepository.get(e, (success) => {
-                        if (success.isAny(new ChooseAction().getTypes())) {
-                            EcRepository.get(success.object, (creativeWork) => {
-                                explanations.push({
-                                    text: "viewed " + creativeWork.name,
-                                    url: creativeWork.url,
-                                    original: eoriginal
-                                });
-                                callback();
-                            }, callback);
-                        } else {
-                            callback();
-                        }
-                    }, (failure) => {
+                    let failureFunc = function() {
                         explanations.push({
                             text: "did this",
                             url: e,
                             original: eoriginal
                         });
+                    };
+                    EcRepository.get(e, (success) => {
+                        try {
+                            if (success.isAny(new ChooseAction().getTypes())) {
+                                EcRepository.get(success.object, (creativeWork) => {
+                                    explanations.push({
+                                        text: "viewed " + creativeWork.name,
+                                        url: creativeWork.url,
+                                        original: eoriginal
+                                    });
+                                    callback();
+                                }, callback);
+                            } else {
+                                failureFunc();
+                                callback();
+                            }
+                        } catch (e) {
+                            failureFunc();
+                            callback();
+                        }
+                    }, (failure) => {
+                        failureFunc();
                         callback();
                     });
                 } else {

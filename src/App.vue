@@ -101,7 +101,6 @@ export default {
                     this.$store.commit('featuresEnabled/apiLoginEnabled', true);
                 }
             });
-            r.autoDetectRepositoryAsync(appLog, appError);
             window.repo = r;
             this.repo = r;
 
@@ -188,7 +187,13 @@ export default {
             ];
             for (let type of types) {
                 if (this.$store.state.lode.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
-                    EcRemote.getExpectingObject("", type, function(context) {
+                    let index = type.indexOf('schema.cassproject.org');
+                    let url = type;
+                    if (index !== -1) {
+                        url = url.substring(index);
+                        url = window.location.origin + "/" + url + "/index.json-ld";
+                    }
+                    EcRemote.getExpectingObject("", url, function(context) {
                         me.$store.commit('lode/rawSchemata', {id: type, obj: context});
                         jsonld.expand(context, function(err, expanded) {
                             if (err == null) {
@@ -574,7 +579,7 @@ export default {
                 } else {
                     callback();
                 }
-            } else if (this.queryParams.user === "wait") {
+            } else if (this.queryParams.user === "wait" && this.inIframe()) {
                 var me = this;
                 var fun = function(evt) {
                     var data = evt.data;
@@ -1182,6 +1187,13 @@ export default {
                 // style.styleSheet.cssText = cssString; // IE8 and earlier
             }
             document.getElementsByTagName("head")[0].appendChild(style);
+        },
+        inIframe: function() {
+            try {
+                return window.self !== window.top;
+            } catch (e) {
+                return true;
+            }
         }
     },
     computed: {

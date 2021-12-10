@@ -163,9 +163,15 @@ jsonld.documentLoader = function(url, callback) {
         xmlhttp.onreadystatechange = function() {
             if (this.readyState === 4 && this.status === 200) {
                 context = JSON.parse(this.responseText);
-                state.rawSchemata[url] = context;
+                state.rawSchemata[originalUrl] = context;
             }
         };
+        let originalUrl = url;
+        let index = url.indexOf('schema.cassproject.org');
+        if (index !== -1) {
+            url = url.substring(index);
+            url = window.location.origin + "/" + url + "/index.json-ld";
+        }
         xmlhttp.open("GET", url, false);
         xmlhttp.setRequestHeader("Accept", "application/json");
         xmlhttp.send();
@@ -173,7 +179,7 @@ jsonld.documentLoader = function(url, callback) {
             null, {
                 contextUrl: null, // this is for a context via a link header
                 document: context, // this is the actual document that was loaded
-                documentUrl: url // this is the actual context URL after redirects
+                documentUrl: originalUrl // this is the actual context URL after redirects
             });
     }
 };
