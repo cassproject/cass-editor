@@ -1,0 +1,210 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="apple-mobile-web-app-title" content="CASS Schema">
+    <meta name="application-name" content="CASS Schema">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CASS Schema</title>
+    <link rel="stylesheet" href="css/foundation.css" />
+    <link rel="stylesheet" href="css/app.css" />
+</head>
+
+<body>
+
+    <div style="background-color: #2199e8; margin-bottom: 2em;">
+        <div class="row">
+            <div class="large-12 columns">
+                <a href="index.html"><img style="height:100px;" src="http://www.cassproject.org/img/CASS-Logo-website-white.png"></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <a style="float:right;" href="http://linter.structured-data.org/?url=http:%2F%2Fschema.cassproject.org"><img width="100px" src="img/2000px-Valid_XHTML+RDFa.svg.png">
+            <br>
+            <center>Parse Me</center>
+        </a>
+        <a style="float:right;" href="http://schema.cassproject.org/0.3/"><img width="100px" src="img/json-ld-1468496834.jpg">
+            <br>
+            <center>Schema</center>
+        </a>
+        <h1>
+        	CASS Mappings
+        </h1>
+        <p class="lead">This is a computed live view of what terms map to what other terms in CaSS.</p>
+    </div>
+    <div class="row">
+        <table>
+            <tr>
+                <th>@type</th>
+                <th>@id</th>
+                <th>Exactly Maps To:</th>
+                <th></th>
+                <th></th>
+                <th></th>
+                <th></th>
+            </tr>
+        </table>
+        <hr/>
+    </div>
+
+    <div class="row">
+        <div class="columns large-6" style="text-align: center;">
+            <p>Visit the <a href="http://cassproject.org">CASS Project</a> for more information.</p>
+        </div>
+        <div class="columns large-6" style="text-align: center;">
+            <p>Join the conversation via Slack. <a href="https://cassproject.slack.com/">Login</a> or <a href="https://docs.google.com/a/eduworks.com/forms/viewform?bc=transparent&embedded=true&f=Arial%252C%2BVerdana%252C%2Bsans-serif&hl=en&htc=%2523666666&id=1BMaboapV0IaS8iGnCJut2obPZ9y3CWkxXuvy-7krcgE&lc=%2523003965&pli=1&tc=%2523444444&ttl=0">Request Account</a></p>
+        </div>
+    </div>
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/foundation.min.js"></script>
+
+    <script>
+        $(document).foundation();
+        $("a[data-open]").click(function(ev) {
+            ev.preventDefault();
+        });
+        if (location.hash != null && location.hash != "")
+            $(location.hash).trigger('click');
+
+        var d = {};
+        var t = {};
+
+        var join = function(a){
+            var s = "";
+            for (var i = 0;i < a.length;i++)
+            {
+                if (i > 0)
+                s += ", ";
+                s += a[i];
+            }
+            return s;
+        }
+
+        var spitOut = function(){
+            var sort = [];
+            for (var key in d)
+            sort.push(key);
+            sort.sort();
+            for (var j = 0;j < sort.length;j++)
+            {
+                var key = sort[j];
+                var h = $("<tr/>");
+                if (t[key] != null)
+                    h.append("<td/>").children().last().text(join(t[key]));
+                else
+                    h.append("<td/>");
+                h.append("<td/>").children().last().text(key).css("font-weight","bold");
+                for (var i = 0;i < d[key].length;i++)
+                    h.append("<td/>").children().last().text(d[key][i]);
+                $("table").append(h);
+            }
+        }
+
+        var bringIn = function(s){
+            for (var key in s)
+            {
+                if (key.startsWith("@")) continue;
+                var val = s[key];
+                if (typeof val !== 'object') continue;
+                if (key.indexOf(":") == -1 && s["@vocab"] != null && s["@vocab"].indexOf("cass") != -1)
+                    key = "cass:"+key;
+                if (key.indexOf(":") == -1 && s["@vocab"] != null && s["@vocab"].indexOf("http://schema.eduworks.com/ims/case/v1p0/") != -1)
+                    key = "case:"+key;
+                if (key.indexOf(":") == -1)
+                    key = "cass:"+key;
+                key = key.replace("cass3","cass");
+
+                if (key.indexOf(":") == -1)
+                    continue;
+                var k = key;
+                var v = val["@id"];
+                var type = val["@type"];
+
+                k = k.replace("http://schema.eduworks.com/ims/case/v1p0/","case:");
+                v = v.replace("http://schema.eduworks.com/ims/case/v1p0/","case:");
+
+                if (d[k] == null)
+                    d[k] = [];
+                if (k != v)
+                if (d[k].indexOf(v) == -1)
+                    d[k].push(v);
+                if (d[v] == null)
+                    d[v] = [];
+                if (k != v)
+                if (d[v].indexOf(k) == -1)
+                    d[v].push(k);
+                if (type != null && type !== undefined)
+                {
+                    if (t[k] == null)
+                        t[k] = [];
+                    if (t[k].indexOf(type) == -1)
+                        t[k].push(type);
+                    if (t[v] == null)
+                        t[v] = [];
+                    if (t[v].indexOf(type) == -1)
+                        t[v].push(type);
+                }
+            }
+        }
+
+        $.getJSON("https://schema.cassproject.org/0.3/index.json-ld",function(data,textStatus,xhr){
+            var s = data["@context"];
+            bringIn(s);
+            $.getJSON("https://schema.cassproject.org/0.3/cass2ceasn",function(data,textStatus,xhr){
+                var s = data["@context"];
+                bringIn(s);
+                $.getJSON("https://schema.cassproject.org/0.3/ceasn2cass",function(data,textStatus,xhr){
+                    var s = data["@context"];
+                    bringIn(s);
+                    $.getJSON("https://schema.cassproject.org/0.3/cass2case",function(data,textStatus,xhr){
+                        var s = data["@context"];
+                        bringIn(s);
+                        $.getJSON("https://schema.cassproject.org/0.3/case2cass",function(data,textStatus,xhr){
+                            var s = data["@context"];
+                            bringIn(s);
+                            $.getJSON("https://schema.cassproject.org/0.3/cass2asn",function(data,textStatus,xhr){
+                                var s = data["@context"];
+                                bringIn(s);
+                                $.getJSON("https://schema.cassproject.org/0.3/cass2ceasnConcepts",function(data,textStatus,xhr){
+                                    var s = data["@context"];
+                                    bringIn(s);
+                                    $.getJSON("https://schema.cassproject.org/0.3/ceasn2cassConcepts",function(data,textStatus,xhr){
+                                        var s = data["@context"];
+                                        bringIn(s);
+                                        console.log(d);
+                                        console.log(t);
+                                        spitOut();
+                                    });
+                                });
+                            });
+                        });
+                    });
+                });
+            });
+        });
+
+        $(document).ready(function(){
+        	$("#versionSelect").change(function(){
+        		var version = $("#versionSelect").val();
+        		
+        		if(version == "0.2"){
+        			window.location.href = "http://schema.cassproject.org/0.2/display.html";
+        		}
+        	});
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,534 @@
+<!doctype html>
+<html class="no-js" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <link rel="apple-touch-icon" sizes="120x120" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <meta name="apple-mobile-web-app-title" content="CASS Schema">
+    <meta name="application-name" content="CASS Schema">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CASS Schema</title>
+    <link rel="stylesheet" href="css/foundation.css" />
+    <link rel="stylesheet" href="css/app.css" />
+</head>
+
+<body>
+
+    <div style="background-color: #2199e8; margin-bottom: 2em;">
+        <div class="row">
+            <div class="large-12 columns">
+                <img style="height:100px;" src="http://www.cassproject.org/img/CASS-Logo-website-white.png">
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <a style="float:right;" href="http://linter.structured-data.org/?url=http:%2F%2Fschema.cassproject.org%2F0.4%2Findex.html"><img width="100px" src="img/2000px-Valid_XHTML+RDFa.svg.png">
+            <br>
+            <center>Parse Me</center>
+        </a>
+        <h1>
+            CASS Schema
+            <select id="versionSelect" style="width:15rem; vertical-align:bottom;">
+        		<option value="0.4" selected>Version 0.4 (unstable)</option>
+        		<option value="0.3">Version 0.3</option>
+        		<option value="0.2">Version 0.2</option>
+        	</select>
+        </h1>
+        <p class="lead">Looking to understand the CASS Object Model? You came to the right place.</p>
+    </div>
+    <div class="row">
+        <hr>
+        <a style="float:right;" href="https://schema.cassproject.org/0.4/"><img width="100px" src="img/json-ld-1468496834.jpg">
+            <br>
+            <center>Schema</center>
+        </a>
+        <h2>
+            <a href="https://schema.cassproject.org/0.4/">https://schema.cassproject.org/0.4/</a>
+        </h2>
+        <hr>
+    </div>
+    <div class="row">
+        <div class="large-4 columns" vocab="http://schema.org/" typeof="rdfs:Class" resource="https://schema.cassproject.org/0.4/Framework">
+            <h3><span property="rdfs:label">Framework</span>
+                <h5><small>https://schema.cassproject.org/0.4/Framework</small></h5>
+            </h3>
+            <p class="lead">Organize and scope competencies and other objects.</p>
+            <p property="rdfs:comment">A Competency Framework or simply Framework is a collection of competencies and relations between competencies in the framework and potentially between competencies in the framework and competencies in other frameworks. In practice, a Framework represents competencies related to a specific job, task, organization, career, knowledge domain, etc.</p>
+            <a class="button small" id="Framework" data-open="Framework02">View Schema</a>
+            <div class="large reveal" id="Framework02" data-reveal>
+                <h1>Framework</h1>
+                <pre>Context:    https://schema.cassproject.org/0.4/</pre>
+                <pre>Type:       Framework</pre>
+                <pre>Extends:    <a property="rdfs:subClassOf" href="http://schema.org/CreativeWork">http://schema.org/CreativeWork</a></pre>
+                <pre>Properties: </pre>
+                <hr style="margin:0px;">
+                <div class="row">
+                    <div class="columns large-3"><b>Name</b></div>
+                    <div class="columns large-3"><a href="http://schema.org/Text">Data Type</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/name">Intent</a></div>
+                    <div class="columns large-12">Description</div>
+                </div>
+                <hr style="margin:0px;">
+                <pre>from <a>https://schema.cassproject.org/0.4/Framework</a></pre>
+                <hr style="margin:0px;">
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Framework/competency">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Framework" />
+                    <div class="columns large-3" property="rdfs:label">competency</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-6"><a property="rangeIncludes" href="https://schema.cassproject.org/0.4/Competency" data-open="Competency02">https://schema.cassproject.org/0.4/Competency</a></div>
+                    <div class="columns large-12" property="rdfs:comment">URLs of competencies included in the framework.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Framework/relation">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Framework" />
+                    <div class="columns large-3" property="rdfs:label">relation</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-6"><a property="rangeIncludes" href="https://schema.cassproject.org/0.4/Relation" data-open="Relation02">https://schema.cassproject.org/0.4/Relation</a></div>
+                    <div class="columns large-12" property="rdfs:comment">URLs of relations included in the framework. May include relations to competencies outside the framework.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Framework/level">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Framework" />
+                    <div class="columns large-3" property="rdfs:label">level</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-6"><a property="rangeIncludes" href="https://schema.cassproject.org/0.4/Level" data-open="Level02">https://schema.cassproject.org/0.4/Level</a></div>
+                    <div class="columns large-12" property="rdfs:comment">URLs of levels included in the framework.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Framework/rollupRule">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Framework" />
+                    <div class="columns large-3" property="rdfs:label">rollupRule</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-6"><a property="rangeIncludes" href="https://schema.cassproject.org/0.4/RollupRule" data-open="RollupRule02">https://schema.cassproject.org/0.4/RollupRule</a></div>
+                    <div class="columns large-12" property="rdfs:comment">URLs of rollup rules included in the framework.</div>
+                </div>
+                <hr style="margin:0px;">
+                <pre>from <a href="http://schema.org/Thing">http://schema.org/Thing</a></pre>
+                <hr style="margin:0px;">
+                <div class="row" typeof="rdfs:Property" resource="http://schema.org/name">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Framework" />
+                    <div class="columns large-3" property="rdfs:label">name</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/name">http://schema.org/name</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Name of the competency framework.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="http://schema.org/description">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Framework" />
+                    <div class="columns large-3" property="rdfs:label">description</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/description">http://schema.org/description</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Description of the framework.</div>
+                </div>
+                <pre><a href="http://schema.org/Thing">...</a></pre>
+            </div>
+        </div>
+        <div class="large-4 columns" vocab="http://schema.org/" typeof="rdfs:Class" resource="https://schema.cassproject.org/0.4/Competency">
+            <h3><span property="rdfs:label">Competency</span>
+                <h5><small>https://schema.cassproject.org/0.4/Competency</small></h5>
+            </h3>
+            <p class="lead">Skills, Knowledge, Abilities, etc.</p>
+            <p property="rdfs:comment">Competencies include skills, knowledge, abilities, traits, and combinations thereof that are needed to perform a task or job. In CASS, competencies are identified and located using a globally unique ID. Competencies can be further described using titles, descriptions, levels, indicators (coming soon), roll-up rules, and relationships to other competencies.</p>
+            <a class="button small" id="Competency" data-open="Competency02">View Schema</a>
+            <div class="large reveal" id="Competency02" data-reveal>
+                <h1>Competency</h1>
+                <pre>Context:    https://schema.cassproject.org/0.4/</pre>
+                <pre>Type:       Competency</pre>
+                <pre>Extends:    <a property="rdfs:subClassOf" href="http://schema.org/CreativeWork">http://schema.org/CreativeWork</a></pre>
+                <pre>Properties: </pre>
+                <hr style="margin:0px;">
+                <div class="row">
+                    <div class="columns large-3"><b>Name</b></div>
+                    <div class="columns large-3"><a href="http://schema.org/Text">Data Type</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/name">Intent</a></div>
+                    <div class="columns large-12">Description</div>
+                </div>
+                <hr style="margin:0px;">
+                <pre>from <a>https://schema.cassproject.org/0.4/Competency</a></pre>
+                <hr style="margin:0px;">
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Competency/scope">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Competency" />
+                    <div class="columns large-3" property="rdfs:label">scope</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-6"></div>
+                    <div class="columns large-12" property="rdfs:comment">Scope in which the competency may be applied. e.g. Underwater.</div>
+                </div>
+                <hr style="margin:0px;">
+                <pre>from <a href="http://schema.org/Thing">http://schema.org/Thing</a></pre>
+                <hr style="margin:0px;">
+                <div class="row" typeof="rdfs:Property" resource="http://schema.org/name">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Competency" />
+                    <div class="columns large-3" property="rdfs:label">name</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/name">http://schema.org/name</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Name of the competency.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="http://schema.org/description">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Competency" />
+                    <div class="columns large-3" property="rdfs:label">description</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/description">http://schema.org/description</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Description of the competency.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="http://schema.org/url">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Competency" />
+                    <div class="columns large-3" property="rdfs:label">url</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/url">http://schema.org/url</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Canonical URL of the competency.</div>
+                </div>
+                <pre><a href="http://schema.org/Thing">...</a></pre>
+            </div>
+        </div>
+        <div class="large-4 columns" vocab="http://schema.org/" typeof="rdfs:Class" resource="https://schema.cassproject.org/0.4/Assertion">
+            <h3><span property="rdfs:label">Assertion</span>
+                <h5><small>https://schema.cassproject.org/0.4/Assertion</small></h5>
+            </h3>
+            <p class="lead">Make claims of competence about individuals.</p>
+            <p property="rdfs:comment">A claim of competence in CASS is called an Assertion. It states with some confidence that an individual has mastered a competency at a given level, provides evidence of such mastery, and records data such as the time of assertion and the party making the assertion.</p>
+            <a class="button small" id="Assertion" data-open="Assertion02">View Schema</a>
+            <div class="large reveal" id="Assertion02" data-reveal>
+                <h1>Assertion</h1>
+                <pre>Context:    https://schema.cassproject.org/0.4/</pre>
+                <pre>Type:       Assertion</pre>
+                <pre>Extends:    <a property="rdfs:subClassOf" href="http://schema.org/CreativeWork">http://schema.org/CreativeWork</a></pre>
+                <pre>Properties: </pre>
+                <hr style="margin:0px;">
+                <div class="row">
+                    <div class="columns large-2"><b>Name</b></div>
+                    <div class="columns large-5"><a href="http://schema.org/Text">Data Type</a></div>
+                    <div class="columns large-5"><a href="http://schema.org/name">Intent</a></div>
+                    <div class="columns large-12">Description</div>
+                </div>
+                <hr style="margin:0px;">
+                <pre>from <a>https://schema.cassproject.org/0.4/Assertion</a></pre>
+                <hr style="margin:0px;">
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Assertion/subject">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Assertion" />
+                    <div class="columns large-2" property="rdfs:label">subject</div>
+                    <div class="columns large-5"><a style="font-size:small;" property="rangeIncludes" href="https://schema.eduworks.com/ebac/0.4/EncryptedValue">https://schema.eduworks.com/ebac/0.4/EncryptedValue</a></div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="https://purl.org/signature#publicKeyPem">https://purl.org/signature#publicKeyPem</a></div>
+                    <div class="columns large-12" property="rdfs:comment">An encrypted identifier of the individual whom the assertion is being made about.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Assertion/agent">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Assertion" />
+                    <div class="columns large-2" property="rdfs:label">agent</div>
+                    <div class="columns large-5"><a style="font-size:small;" property="rangeIncludes" href="https://schema.eduworks.com/ebac/0.4/EncryptedValue">https://schema.eduworks.com/ebac/0.4/EncryptedValue</a></div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="https://purl.org/signature#publicKeyPem">https://purl.org/signature#publicKeyPem</a></div>
+                    <div class="columns large-12" property="rdfs:comment">An encrypted identifier of the individual who is making the assertion.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Assertion/competency">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Assertion" />
+                    <div class="columns large-2" property="rdfs:label">competency</div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="https://schema.cassproject.org/0.4/Competency" data-open="Competency02">https://schema.cassproject.org/0.4/Competency</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Specifies the URL of the competency the subject holds.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Assertion/credential">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Assertion" />
+                    <div class="columns large-2" property="rdfs:label">credential</div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-5">
+                        <a property="rangeIncludes" href="http://purl.org/ctdl/terms/Credential">http://purl.org/ctdl/terms/Credential</a><br>
+                        <a property="rangeIncludes" href="https://w3id.org/openbadges/v2/BadgeClass">https://w3id.org/openbadges/v2/BadgeClass</a>
+                    </div>
+                    <div class="columns large-12" property="rdfs:comment">Specifies the URL of a credential, badge, or other award definition the subject holds.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Assertion/framework">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Assertion" />
+                    <div class="columns large-2" property="rdfs:label">framework</div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="https://schema.cassproject.org/0.4/Framework" data-open="Framework02">https://schema.cassproject.org/0.4/Framework</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Specifies the URL of the framework the assertion was made in.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Assertion/level">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Assertion" />
+                    <div class="columns large-2" property="rdfs:label">level</div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="https://schema.cassproject.org/0.4/Level" data-open="Level02">https://schema.cassproject.org/0.4/Level</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Specifies the URL of the level of performance the assertion is made at.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Assertion/negative">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Assertion" />
+                    <div class="columns large-2" property="rdfs:label">negative</div>
+                    <div class="columns large-5"><a style="font-size:small;" property="rangeIncludes" href="http://schema.eduworks.com/ebac/0.4/EncryptedValue">http://schema.eduworks.com/ebac/0.4/EncryptedValue</a></div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="https://schema.org/Boolean">https://schema.org/Boolean</a></div>
+                    <div class="columns large-12" property="rdfs:comment">True if the assertion is a claim that the subject cannot demonstrate the competency.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Assertion/confidence">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Assertion" />
+                    <div class="columns large-2" property="rdfs:label">confidence</div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/Float">http://schema.org/Float</a></div>
+                    <div class="columns large-5"><span>[0,1]</span></div>
+                    <div class="columns large-12" property="rdfs:comment">The agent's confidence in the assertion.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Assertion/evidence">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Assertion" />
+                    <div class="columns large-2" property="rdfs:label">evidence</div>
+                    <div class="columns large-5"><a style="font-size:small;" property="rangeIncludes" href="http://schema.eduworks.com/ebac/0.4/EncryptedValue">http://schema.eduworks.com/ebac/0.4/EncryptedValue</a></div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-7">&nbsp;</div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-7">&nbsp;</div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/Thing">http://schema.org/Thing</a></div>
+                    <div class="columns large-7">&nbsp;</div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/Thing">application/*</a></div>
+                    <div class="columns large-7">&nbsp;</div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/Thing">image/*</a></div>
+                    <div class="columns large-7">&nbsp;</div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/Thing">video/*</a></div>
+                    <div class="columns large-7">&nbsp;</div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/Thing">text/*</a></div>
+                    <div class="columns large-7">&nbsp;</div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/Thing">audio/*</a></div>
+                    <div class="columns large-12" property="rdfs:comment">An encrypted piece of evidence or reference to evidence.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Assertion/assertionDate">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Assertion" />
+                    <div class="columns large-2" property="rdfs:label">assertionDate</div>
+                    <div class="columns large-5"><a style="font-size:small;" property="rangeIncludes" href="http://schema.eduworks.com/ebac/0.4/EncryptedValue">http://schema.eduworks.com/ebac/0.4/EncryptedValue</a></div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/Integer">http://schema.org/Integer</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Milliseconds since the epoch before the assertion was made.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Assertion/expirationDate">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Assertion" />
+                    <div class="columns large-2" property="rdfs:label">expirationDate</div>
+                    <div class="columns large-5"><a style="font-size:small;" property="rangeIncludes" href="http://schema.eduworks.com/ebac/0.4/EncryptedValue">http://schema.eduworks.com/ebac/0.4/EncryptedValue</a></div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/Integer">http://schema.org/Integer</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Milliseconds since the epoch before the assertion expires.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Assertion/decayFunction">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Assertion" />
+                    <div class="columns large-2" property="rdfs:label">decayFunction</div>
+                    <div class="columns large-5"><a style="font-size:small;" property="rangeIncludes" href="http://schema.eduworks.com/ebac/0.4/EncryptedValue">http://schema.eduworks.com/ebac/0.4/EncryptedValue</a></div>
+                    <div class="columns large-5"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Describes the slope of the line from the initial confidence at the assertion date and the expiration date. t is a number between [0,1] representing the percentage of time that has elapsed. Examples include t^2 and ln(t).</div>
+                </div>
+                <hr style="margin:0px;">
+                <pre>from <a href="http://schema.org/Thing">http://schema.org/Thing</a></pre>
+                <hr style="margin:0px;">
+                <pre><a href="http://schema.org/Thing">...</a></pre>
+            </div>
+        </div>
+        <hr/>
+    </div>
+    <div class="row">
+        <div class="large-4 columns" vocab="http://schema.org/" typeof="rdfs:Class" resource="https://schema.cassproject.org/0.4/Relation">
+            <h3><span property="rdfs:label">Relation</span>
+                <h5><small>https://schema.cassproject.org/0.4/Relation</small></h5>
+            </h3>
+            <p class="lead">Structure and relate competencies within a framework.</p>
+            <p property="rdfs:comment">A relation specifies an relationship between two competencies. With it, one can express super-sub relationships through the 'narrows' relation, pre-requisite relationships through the 'requires' relation, equivalence, and many more.</p>
+            <a class="button small" id="Relation" data-open="Relation02">View Schema</a>
+            <div class="large reveal" id="Relation02" data-reveal>
+                <h1>Relation</h1>
+                <pre>Context:    https://schema.cassproject.org/0.4/</pre>
+                <pre>Type:       Relation</pre>
+                <pre>Extends:    <a property="rdfs:subClassOf" href="http://schema.org/CreativeWork">http://schema.org/CreativeWork</a></pre>
+                <pre>Properties: </pre>
+                <hr style="margin:0px;">
+                <div class="row">
+                    <div class="columns large-3"><b>Name</b></div>
+                    <div class="columns large-3"><a href="http://schema.org/Text">Data Type</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/name">Intent</a></div>
+                    <div class="columns large-12">Description</div>
+                </div>
+                <hr style="margin:0px;">
+                <pre>from <a>https://schema.cassproject.org/0.4/Relation</a></pre>
+                <hr style="margin:0px;">
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Relation/source">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Relation" />
+                    <div class="columns large-3" property="rdfs:label">source</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-6"><a property="rangeIncludes" href="https://schema.cassproject.org/0.4/Competency" data-open="Competency02">https://schema.cassproject.org/0.4/Competency</a></div>
+                    <div class="columns large-12" property="rdfs:comment">URL of the competency at the beginning of the relation.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Relation/target">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Relation" />
+                    <div class="columns large-3" property="rdfs:label">target</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-6"><a property="rangeIncludes" href="https://schema.cassproject.org/0.4/Competency" data-open="Competency02">https://schema.cassproject.org/0.4/Competency</a></div>
+                    <div class="columns large-12" property="rdfs:comment">URL of the competency at the end of the relation.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Relation/relationType">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Relation" />
+                    <div class="columns large-3" property="rdfs:label">relationType</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-6"><a property="rangeIncludes" href="https://schema.cassproject.org/0.4/RelationType">https://schema.cassproject.org/0.4/RelationType</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Enumerated string describing the relation. May be: 'narrows', 'desires', 'requires', 'isEnabledBy', 'isRelatedTo', or 'isEquivalentTo'.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="http://schema.org/validFrom">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Relation" />
+                    <div class="columns large-3" property="rdfs:label">validFrom</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/DateTime">http://schema.org/DateTime</a></div>
+                    <div class="columns large-6"><a property="rangeIncludes" href="http://schema.org/validFrom">http://schema.org/validFrom</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Date time in ISO 8601 format at which the relation may be observed.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="http://schema.org/validThrough">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Relation" />
+                    <div class="columns large-3" property="rdfs:label">validThrough</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/DateTime">http://schema.org/DateTime</a></div>
+                    <div class="columns large-6"><a property="rangeIncludes" href="http://schema.org/validThrough">http://schema.org/validThrough</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Date time in ISO 8601 format at which the relation may no longer be observed.</div>
+                </div>
+                <hr style="margin:0px;">
+                <pre>from <a href="http://schema.org/Thing">http://schema.org/Thing</a></pre>
+                <hr style="margin:0px;">
+                <pre><a href="http://schema.org/Thing">...</a></pre>
+            </div>
+        </div>
+        <div class="large-4 columns" vocab="http://schema.org/" typeof="rdfs:Class" resource="https://schema.cassproject.org/0.4/Level">
+            <h3><span property="rdfs:label">Level</span>
+                <h5><small>https://schema.cassproject.org/0.4/Level</small></h5>
+            </h3>
+            <p class="lead">Specify the performance levels of a competency.</p>
+            <p property="rdfs:comment">When an individual's performance in a competency can be measured, a level specifies milestones that an individual can reach, creating fine-grained distinction between the proficient and the adept.</p>
+            <a class="button small" id="Level" data-open="Level02">View Schema</a>
+            <div class="large reveal" id="Level02" data-reveal>
+                <h1>Level</h1>
+                <pre>Context:    https://schema.cassproject.org/0.4/</pre>
+                <pre>Type:       Level</pre>
+                <pre>Extends:    <a property="rdfs:subClassOf" href="http://schema.org/CreativeWork">http://schema.org/CreativeWork</a></pre>
+                <pre>Properties: </pre>
+                <hr style="margin:0px;">
+                <div class="row">
+                    <div class="columns large-3"><b>Name</b></div>
+                    <div class="columns large-3"><a href="http://schema.org/Text">Data Type</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/name">Intent</a></div>
+                    <div class="columns large-12">Description</div>
+                </div>
+                <hr style="margin:0px;">
+                <pre>from <a>https://schema.cassproject.org/0.4/Level</a></pre>
+                <hr style="margin:0px;">
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Level/competency">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Level" />
+                    <div class="columns large-3" property="rdfs:label">competency</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-6"><a property="rangeIncludes" href="https://schema.cassproject.org/0.4/Competency" data-open="Competency02">https://schema.cassproject.org/0.4/Competency</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Specifies the URL of the competency the level relates to.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/Level/title">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Level" />
+                    <div class="columns large-3" property="rdfs:label">title</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-6"><a property="rangeIncludes" href="http://schema.org/title">http://schema.org/title</a></div>
+                    <div class="columns large-12" property="rdfs:comment">The title that one who holds this performance level may assume. e.g. "Fast"</div>
+                </div>
+                <hr style="margin:0px;">
+                <pre>from <a href="http://schema.org/Thing">http://schema.org/Thing</a></pre>
+                <hr style="margin:0px;">
+                <div class="row" typeof="rdfs:Property" resource="http://schema.org/name">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Level" />
+                    <div class="columns large-3" property="rdfs:label">name</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/name">http://schema.org/name</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Name of the level.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="http://schema.org/description">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/Level" />
+                    <div class="columns large-3" property="rdfs:label">description</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/description">http://schema.org/description</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Description of the performance that the level describes.</div>
+                </div>
+                <pre><a href="http://schema.org/Thing">...</a></pre>
+            </div>
+        </div>
+        <div class="large-4 columns" vocab="http://schema.org/" typeof="rdfs:Class" resource="https://schema.cassproject.org/0.4/RollupRule">
+            <h3><span property="rdfs:label">RollupRule</span>
+                <h5><small>https://schema.cassproject.org/0.4/RollupRule</small></h5>
+            </h3>
+            <p class="lead">Encode inferential rules used to determine rollup.</p>
+            <p property="rdfs:comment">When no direct evidence of an individual's competence is available, CASS uses assertion processing to estimate competence. Rollup Rules provide a means of encoding rules that govern when competence is warranted in the absence of direct evidence.</p>
+            <a class="button small" id="RollupRule" data-open="RollupRule02">View Schema</a>
+            <div class="large reveal" id="RollupRule02" data-reveal>
+                <h1>RollupRule</h1>
+                <pre>Context:    https://schema.cassproject.org/0.4/</pre>
+                <pre>Type:       RollupRule</pre>
+                <pre>Extends:    <a property="rdfs:subClassOf" href="http://schema.org/CreativeWork">http://schema.org/CreativeWork</a></pre>
+                <pre>Properties: </pre>
+                <hr style="margin:0px;">
+                <div class="row">
+                    <div class="columns large-3"><b>Name</b></div>
+                    <div class="columns large-3"><a href="http://schema.org/Text">Data Type</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/name">Intent</a></div>
+                    <div class="columns large-12">Description</div>
+                </div>
+                <hr style="margin:0px;">
+                <pre>from <a>https://schema.cassproject.org/0.4/RollupRule</a></pre>
+                <hr style="margin:0px;">
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/RollupRule/competency">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/RollupRule" />
+                    <div class="columns large-3" property="rdfs:label">competency</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/URL">http://schema.org/URL</a></div>
+                    <div class="columns large-6"><a property="rangeIncludes" href="https://schema.cassproject.org/0.4/Competency" data-open="Competency02">https://schema.cassproject.org/0.4/Competency</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Specifies the URL of the competency the rollup rule will determine.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="https://schema.cassproject.org/0.4/RollupRule/rule">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/RollupRule" />
+                    <div class="columns large-3" property="rdfs:label">rule</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-6"><a href="https://docs.google.com/document/d/1S6sI5jqQCAm6pap9ATx6grVj01sVcywx3DtFlopxYk8">Manual here.</a></div>
+                    <div class="columns large-12" property="rdfs:comment">The rollup rule, encoded as source code understandable to the assertion processor.</div>
+                </div>
+                <hr style="margin:0px;">
+                <pre>from <a href="http://schema.org/Thing">http://schema.org/Thing</a></pre>
+                <hr style="margin:0px;">
+                <div class="row" typeof="rdfs:Property" resource="http://schema.org/name">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/RollupRule" />
+                    <div class="columns large-3" property="rdfs:label">name</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/name">http://schema.org/name</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Name of the rollup rule.</div>
+                </div>
+                <div class="row" typeof="rdfs:Property" resource="http://schema.org/description">
+                    <link property="domainIncludes" href="https://schema.cassproject.org/0.4/RollupRule" />
+                    <div class="columns large-3" property="rdfs:label">description</div>
+                    <div class="columns large-3"><a property="rangeIncludes" href="http://schema.org/Text">http://schema.org/Text</a></div>
+                    <div class="columns large-6"><a href="http://schema.org/description">http://schema.org/description</a></div>
+                    <div class="columns large-12" property="rdfs:comment">Description of the rollup rule.</div>
+                </div>
+                <pre><a href="http://schema.org/Thing">...</a></pre>
+            </div>
+        </div>
+        <hr/>
+    </div>
+
+    <div class="row">
+        <div class="columns large-6" style="text-align: center;">
+            <p>Visit the <a href="http://cassproject.org">CASS Project</a> for more information.</p>
+        </div>
+        <div class="columns large-6" style="text-align: center;">
+            <p>Join the conversation via Slack. <a href="https://cassproject.slack.com/">Login</a> or <a href="https://docs.google.com/a/eduworks.com/forms/viewform?bc=transparent&embedded=true&f=Arial%252C%2BVerdana%252C%2Bsans-serif&hl=en&htc=%2523666666&id=1BMaboapV0IaS8iGnCJut2obPZ9y3CWkxXuvy-7krcgE&lc=%2523003965&pli=1&tc=%2523444444&ttl=0">Request Account</a></p>
+        </div>
+    </div>
+
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/foundation.min.js"></script>
+    <script>
+        $(document).foundation();
+        $("a[data-open]").click(function(ev) {
+            ev.preventDefault();
+        });
+        if (location.hash != null && location.hash != "")
+            $(location.hash).trigger('click');
+
+
+        $(document).ready(function() {
+            $("#versionSelect").change(function() {
+                var version = $("#versionSelect").val();
+
+                if (version == "0.2") {
+                    window.location.href = "http://schema.cassproject.org/0.2/display.html";
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>

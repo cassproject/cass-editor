@@ -1,0 +1,17 @@
+{
+	"@context":{
+		"rsa":"https://openssl.org/docs/manmaster/apps/rsa.html#",
+		"base64":"https://tools.ietf.org/html/rfc4648#",
+		"@owner":{
+			"@id":"http://schema.cassproject.org/kbac/0.2/owner",
+			"@type":"rsa:pemPublicKey"
+		},
+		"@signature":{
+			"@id":"http://schema.cassproject.org/kbac/0.2/signature",
+			"@type":"base64:base64"
+		}
+	},
+	"@type":"http://schema.cassproject.org/kbac/0.2/signed",
+	"@signature":"SHA1 with RSA encrypted signature of the alphabetical JSON encoding of this object, Base64 encoded.",
+	"@owner":"RSA Public Key used to verify the signature."
+}

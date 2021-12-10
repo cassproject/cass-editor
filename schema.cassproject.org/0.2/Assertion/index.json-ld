@@ -1,0 +1,283 @@
+{
+    "@context": {
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    "@graph": [
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion/level",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.2/Assertion"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/URL"
+                },
+                {
+                    "@id": "http://schema.cassproject.org/0.2/Level"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Specifies the URL of the level of performance the assertion is made at."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "level"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion/negative",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.2/Assertion"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "https://schema.org/Boolean"
+                },
+                {
+                    "@id": "http://schema.eduworks.com/ebac/0.2/EncryptedValue"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "True if the assertion is a claim that the subject cannot demonstrate the competency."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "negative"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion/confidence",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.2/Assertion"
+            },
+            "http://schema.org/rangeIncludes": {
+                "@id": "http://schema.org/Float"
+            },
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "The agent's confidence in the assertion."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "confidence"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion/decayFunction",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.2/Assertion"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.eduworks.com/ebac/0.2/EncryptedValue"
+                },
+                {
+                    "@id": "http://schema.org/Text"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Describes the slope of the line from the initial confidence at the assertion date and the expiration date. t is a number between [0,1] representing the percentage of time that has elapsed. Examples include t^2 and ln(t)."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "decayFunction"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion/competency",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.2/Assertion"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.cassproject.org/0.2/Competency"
+                },
+                {
+                    "@id": "http://schema.org/URL"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Specifies the URL of the competency the assertion is made about."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "competency"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion",
+            "@type": "rdfs:Class",
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "A claim of competence in CASS is called an Assertion. It states with some confidence that an individual has mastered a competency at a given level, provides evidence of such mastery, and records data such as the time of assertion and the party making the assertion."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Assertion"
+            },
+            "rdfs:subClassOf": {
+                "@id": "http://schema.org/Intangible"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion/subject",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.2/Assertion"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.eduworks.com/ebac/0.2/EncryptedValue"
+                },
+                {
+                    "@id": "https://purl.org/signature#publicKeyPem"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "An encrypted identifier of the individual whom the assertion is being made about."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "subject"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion/assertionDate",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.2/Assertion"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.eduworks.com/ebac/0.2/EncryptedValue"
+                },
+                {
+                    "@id": "http://schema.org/Integer"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Milliseconds since the epoch before the assertion was made."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "assertionDate"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/",
+            "http://www.w3.org/ns/rdfa#usesVocabulary": {
+                "@id": "http://schema.org/"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion/framework",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.2/Assertion"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/URL"
+                },
+                {
+                    "@id": "http://schema.cassproject.org/0.2/Framework"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Specifies the URL of the framework the assertion was made in."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "framework"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion/expirationDate",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.2/Assertion"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.eduworks.com/ebac/0.2/EncryptedValue"
+                },
+                {
+                    "@id": "http://schema.org/Integer"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Milliseconds since the epoch before the assertion expires."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "expirationDate"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion/evidence",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.2/Assertion"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/Thing"
+                },
+                {
+                    "@id": "http://schema.eduworks.com/ebac/0.2/EncryptedValue"
+                },
+                {
+                    "@id": "http://schema.org/Text"
+                },
+                {
+                    "@id": "http://schema.org/URL"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "An encrypted piece of evidence or reference to evidence."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "evidence"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion/agent",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.2/Assertion"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.eduworks.com/ebac/0.2/EncryptedValue"
+                },
+                {
+                    "@id": "https://purl.org/signature#publicKeyPem"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "An encrypted identifier of the individual who is making the assertion."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "agent"
+            }
+        }
+    ]
+}

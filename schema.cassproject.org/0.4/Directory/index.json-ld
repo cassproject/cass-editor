@@ -1,0 +1,96 @@
+{
+    "@context": {
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    "@graph": [
+        {
+            "@id": "http://schema.org/name",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": [
+                {
+                    "@id": "https://schema.cassproject.org/0.4/Directory"
+                }
+            ],
+            "http://schema.org/rangeIncludes": {
+                "@id": "http://schema.org/Text"
+            },
+            "rdfs:comment": [
+                {
+                    "@language": "en",
+                    "@value": "Name of the directory."
+                }
+            ],
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "name"
+            }
+        },
+        {
+            "@id": "http://schema.org/description",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": [
+                {
+                    "@id": "https://schema.cassproject.org/0.4/Directory"
+                }
+            ],
+            "http://schema.org/rangeIncludes": {
+                "@id": "http://schema.org/Text"
+            },
+            "rdfs:comment": [
+                {
+                    "@language": "en",
+                    "@value": "Description of the directory."
+                }
+            ],
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "description"
+            }
+        },
+        {
+            "@id": "https://schema.cassproject.org/",
+            "http://www.w3.org/ns/rdfa#usesVocabulary": {
+                "@id": "http://schema.org/"
+            }
+        },
+        {
+            "@id": "https://schema.cassproject.org/0.4/Directory",
+            "@type": "rdfs:Class",
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "A Directory represents a grouping of frameworks and resources."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Directory"
+            },
+            "rdfs:subClassOf": {
+                "@id": "http://schema.org/CreativeWork"
+            }
+        },
+        {
+            "@id": "https://schema.cassproject.org/0.4/Directory/parentDirectory",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "https://schema.cassproject.org/0.4/Directory"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "https://schema.cassproject.org/0.4/Directory"
+                },
+                {
+                    "@id": "http://schema.org/URL"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "URL of the parent directory of this subdirectory."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "parentDirectory"
+            }
+        }
+    ]
+}
