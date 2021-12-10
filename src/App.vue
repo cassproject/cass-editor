@@ -191,7 +191,7 @@ export default {
                     let url = type;
                     if (index !== -1) {
                         url = url.substring(index);
-                        url = window.location.origin + "/" + url + "/index.json-ld";
+                        url = window.location.origin + window.location.pathname + url + "/index.json-ld";
                     }
                     EcRemote.getExpectingObject("", url, function(context) {
                         me.$store.commit('lode/rawSchemata', {id: type, obj: context});
