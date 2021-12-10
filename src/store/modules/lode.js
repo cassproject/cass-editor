@@ -170,7 +170,7 @@ jsonld.documentLoader = function(url, callback) {
         let index = url.indexOf('schema.cassproject.org');
         if (index !== -1) {
             url = url.substring(index);
-            url = window.location.origin + "/" + url + "/index.json-ld";
+            url = window.location.origin + window.location.pathname + url + "/index.json-ld";
         }
         xmlhttp.open("GET", url, false);
         xmlhttp.setRequestHeader("Accept", "application/json");
