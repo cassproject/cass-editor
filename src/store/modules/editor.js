@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import {stat} from 'fs';
 Vue.use(Vuex);
 
 
@@ -48,7 +47,13 @@ const state = {
     addAnother: false,
     itemToDelete: {},
     itemToRemove: {},
-    itemToExport: {}
+    itemToExport: {},
+    manageAssertions: false,
+    assertions: [],
+    badgePk: null,
+    me: null,
+    subject: null,
+    people: []
 };
 const mutations = {
     framework(state, f) {
@@ -187,12 +192,152 @@ const mutations = {
     },
     setItemToExport(state, val) {
         state.itemToExport = val;
+    },
+    setManageAssertions(state, val) {
+        state.manageAssertions = val;
+    },
+    setAssertions(state, val) {
+        state.assertions = val;
+    },
+    removeAssertion(state, val) {
+        EcArray.setRemove(state.assertions, val);
+    },
+    removeAssertionAtIndex(state, val) {
+        state.assertions.splice(val, 1);
+    },
+    addAssertion(state, val) {
+        EcArray.setAdd(state.assertions, val);
+    },
+    setBadgePk(state, val) {
+        state.badgePk = val;
+    },
+    setMe(state, val) {
+        state.me = val;
+    },
+    setSubject(state, val) {
+        state.subject = val;
+    },
+    setPeople(state, val) {
+        state.people = val;
     }
 };
 const actions = {
     lastEditToUndo: function(context) {
         context.commit('setLastEditToUndo', context.state.editsToUndo.pop());
         return context.state.lastEditToUndo;
+    },
+    searchForAssertions: (instance, count) => {
+        return new Promise((resolve, reject) => {
+            EcAssertion.search(window.repo, "\"" + instance.state.me + "\"", (assertions) => {
+                var eah = new EcAsyncHelper();
+                eah.each(assertions, (assertion, callback) => {
+                    if (assertion.assertionDateDecrypted != null) {
+                        callback();
+                    } else {
+                        assertion.getAssertionDateAsync((date) => {
+                            assertion.assertionDateDecrypted = date;
+                            callback();
+                        }, callback);
+                    }
+                },
+                (assertions) => {
+                    assertions = assertions.sort((a, b) => {
+                        return b.assertionDateDecrypted - a.assertionDateDecrypted;
+                    });
+                    instance.state.assertions = assertions;
+                    resolve();
+                });
+            }, reject, {
+                sort: '[ { "@version": {"order" : "desc" , "missing" : "_last"}} ]',
+                size: count
+            });
+        });
+    },
+    computeBecause: (instance, evidences) => {
+        return new Promise((resolve, reject) => {
+            var explanations = [];
+            new EcAsyncHelper().each(evidences, (e, callback) => {
+                var evidenceString = "";
+                var eoriginal = e;
+                if (e.startsWith != null && e.startsWith("{")) {
+                    e = JSON.parse(e);
+                }
+                if (EcObject.isObject(e)) {
+                    if (e.verb != null) {
+                        if (e.verb.display != null) {
+                            if (e.verb.display.en != null) {
+                                evidenceString += e.verb.display.en + " ";
+                            }
+                        }
+                    }
+                    if (e.object != null) {
+                        if (e.object.definition != null) {
+                            if (e.object.definition.type === "http://adlnet.gov/expapi/activities/assessment") {
+                                evidenceString += "\"" + e.object.definition.name.en + "\" quiz with a ";
+                                if (e.result != null) {
+                                    if (e.result.success != null) {
+                                        evidenceString += e.result.success ? " passing " : " not passing ";
+                                        evidenceString += Math.round(e.result.score.scaled * 100.0) + "%";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (e.object != null) {
+                        if (e.object.definition != null) {
+                            if (e.object.definition.interactionType != null) {
+                                evidenceString += "\"" + e.object.definition.name.en + "\" ";
+                                if (e.result != null) {
+                                    if (e.result.success != null) {
+                                        evidenceString += e.result.success ? " correctly" : " incorrectly";
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (evidenceString !== "") {
+                        explanations.push({text: evidenceString, original: eoriginal});
+                    }
+                    callback();
+                } else if (e.startsWith != null && e.startsWith("http")) {
+                    let failureFunc = function() {
+                        explanations.push({
+                            text: "did this",
+                            url: e,
+                            original: eoriginal
+                        });
+                    };
+                    EcRepository.get(e, (success) => {
+                        try {
+                            if (success.isAny(new ChooseAction().getTypes())) {
+                                EcRepository.get(success.object, (creativeWork) => {
+                                    explanations.push({
+                                        text: "viewed " + creativeWork.name,
+                                        url: creativeWork.url,
+                                        original: eoriginal
+                                    });
+                                    callback();
+                                }, callback);
+                            } else {
+                                failureFunc();
+                                callback();
+                            }
+                        } catch (e) {
+                            failureFunc();
+                            callback();
+                        }
+                    }, (failure) => {
+                        failureFunc();
+                        callback();
+                    });
+                } else {
+                    explanations.push({text: "\"" + e + "\"", original: eoriginal});
+                    callback();
+                }
+            }, (evidences) => {
+                resolve(explanations);
+            });
+        });
     }
 };
 const getters = {
@@ -312,6 +457,24 @@ const getters = {
     },
     itemToExport: function(state) {
         return state.itemToExport;
+    },
+    manageAssertions: function(state) {
+        return state.manageAssertions;
+    },
+    assertions: function(state) {
+        return state.assertions;
+    },
+    badgePk: function(state) {
+        return state.badgePk;
+    },
+    getMe: function(state) {
+        return state.me;
+    },
+    getSubject: function(state) {
+        return state.subject;
+    },
+    people: function(state) {
+        return state.people;
     }
 };
 
