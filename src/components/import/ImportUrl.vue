@@ -41,7 +41,8 @@
                                         <span class="file-icon">
                                             <i class="fas fa-upload" />
                                         </span>
-                                        <span>
+                                        <span
+                                            tabindex="0">
                                             Import framework
                                         </span>
                                     </span>
@@ -54,6 +55,7 @@
                                 <ul class="cat__bullet-list">
                                     <li>
                                         <span
+                                            tabindex="0"
                                             class="custom-link local"
                                             @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c257d6-9119-11e8-b852-782bcb5df6ac'">
                                             Abilities Competency Framework
@@ -61,6 +63,7 @@
                                     </li>
                                     <li>
                                         <span
+                                            tabindex="0"
                                             class="custom-link local"
                                             @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c25f74-9119-11e8-b852-782bcb5df6ac'">
                                             Basic Skills Competency Framework
@@ -68,6 +71,7 @@
                                     </li>
                                     <li>
                                         <span
+                                            tabindex="0"
                                             class="custom-link local"
                                             @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c264d7-9119-11e8-b852-782bcb5df6ac'">
                                             Cross-Functional Skills Competency Framework
@@ -75,6 +79,7 @@
                                     </li>
                                     <li>
                                         <span
+                                            tabindex="0"
                                             class="custom-link local"
                                             @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c27a0f-9119-11e8-b852-782bcb5df6ac'">
                                             Knowledge Competency Framework
@@ -82,6 +87,7 @@
                                     </li>
                                     <li>
                                         <span
+                                            tabindex="0"
                                             class="custom-link local"
                                             @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-9fab4187-d8e7-11e9-8250-782bcb5df6ac'">
                                             Technology Skills Competency Framework
