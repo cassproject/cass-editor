@@ -79,7 +79,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="assertion-share-icon"></div>
+                <div class="assertion-share-icon" />
                 <div class="assertion-share-block">
                     <h4 class="header is-size-3">
                         Send to:

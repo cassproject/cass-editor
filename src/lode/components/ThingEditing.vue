@@ -66,9 +66,7 @@
                     </label>
                     <!-- this is the primary / required properties -->
                     <template
-                        v-if="showAlwaysProperties && alwaysProperties[heading]"
-                        class=""
-                        :class="{highlighted: highlighted}">
+                        v-if="showAlwaysProperties && alwaysProperties[heading]">
                         <Property
                             v-for="(value,key) in alwaysProperties[heading]"
                             :key="key"

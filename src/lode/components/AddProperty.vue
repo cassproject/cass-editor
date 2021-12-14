@@ -187,8 +187,7 @@
                 </div>
             </div>
             <template
-                v-if="selectedPropertyToAdd === ''"
-                class="">
+                v-if="selectedPropertyToAdd === ''">
                 <div class="columns is-multiline property-columns px-1">
                     <div
                         class="column is-12 slide px-4"
