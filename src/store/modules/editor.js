@@ -255,14 +255,22 @@ const actions = {
         return context.state.lastEditToUndo;
     },
     getThing: (instance, payload) => {
-        var url = EcRemote.urlAppend(payload.server, payload.service);
-        url = EcRemote.upgradeHttpToHttps(url);
-        limitApi.get(url, {
-            headers: payload.headers
-        }).then((resp) => {
-            payload.success(resp.data);
-        }).catch((err) => {
-            payload.failure(err);
+        return new Promise((resolve, reject) => {
+            var url = EcRemote.urlAppend(payload.server, payload.service);
+            url = EcRemote.upgradeHttpToHttps(url);
+            limitApi.get(url, {
+                headers: payload.headers
+            }).then((resp) => {
+                if (payload.success) {
+                    payload.success(resp.data);
+                }
+                resolve(resp.data);
+            }).catch((err) => {
+                if (payload.failure) {
+                    payload.failure(err);
+                }
+                reject(err);
+            });
         });
     },
     searchForAssertions: (instance, count) => {
