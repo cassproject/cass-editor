@@ -31,7 +31,8 @@ module.exports = {
                     exclude: {test: /node_modules/, // Exclude libraries in node_modules ...
                         not: [
                             // Except for a few of them that need to be transpiled because they use modern syntax
-                            /cassproject/
+                            /cassproject/,
+                            /yocto-queue/
                         ]},
                     use: {
                         loader: 'babel-loader'

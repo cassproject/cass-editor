@@ -14,6 +14,7 @@
   },
   "main": "/theme.scss",
   "dependencies": {
+    "axios": "^0.24.0",
     "bulma": "^0.9.3",
     "bulma-checkradio": "^1.1.1",
     "bulma-switch": "^2.0.0",
@@ -23,6 +24,7 @@
     "file-saver": "^2.0.5",
     "jsonld": "^1.8.1",
     "lodash": "^4.17.21",
+    "p-limit": "^4.0.0",
     "pure-uuid": "^1.6.2",
     "v-clipboard": "^2.2.3",
     "vue": "^2.6.14",

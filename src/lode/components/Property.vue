@@ -7,6 +7,7 @@ TO DO MAYBE: Separate out property by editing or not.
 -->
 <template>
     <div
+        v-observe-visibility="visibilityChanged"
         v-if="expandedThing"
         :class="['lode__Property lode__' + shortTypeAsClass, editingPropertyClass,
                  { 'has-value': expandedValue}
@@ -465,7 +466,8 @@ export default {
             limitedConcepts: [],
             errorValidating: null,
             removePropertyConfirmModal: false,
-            propertyToRemove: null
+            propertyToRemove: null,
+            expandedValue: []
         };
     },
     components: {
@@ -666,30 +668,6 @@ export default {
             }
             return results;
         },
-        // The current value(s) of the property based on the expanded thing.
-        expandedValue: {
-            get: function() {
-                var expanded = this.expandedThing[this.expandedProperty];
-                if (this.expandedProperty.indexOf("@") === 0) {
-                    if (this.expandedProperty === "@id") {
-                        expanded = [{"@value": EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing[this.expandedProperty])}];
-                    } else {
-                        expanded = [{"@value": this.expandedThing[this.expandedProperty]}];
-                    }
-                }
-                if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["valuesIndexed"]) {
-                    expanded = [];
-                    var f = this.profile[this.expandedProperty]["valuesIndexed"];
-                    f = f();
-                    var shortId = EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]);
-                    if (f && f[shortId]) {
-                        return f[shortId];
-                    }
-                    return [];
-                }
-                return expanded;
-            }
-        },
         // Checks cardinality of the property and doesn't allow user to add more than one value when max is 1
         canAdd: function() {
             if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["max"] === 1) {
@@ -765,7 +743,6 @@ export default {
                         if (data[0] === "<") {
                             return;
                         }
-                        data = JSON.parse(data);
                         if (data['ceterms:name']) {
                             name = data['ceterms:name'];
                         } else if (data['ceasn:competencyText']) {
@@ -808,41 +785,13 @@ export default {
             });
         },
         get: function(server, service, headers, success, failure) {
-            var url = EcRemote.urlAppend(server, service);
-            url = EcRemote.upgradeHttpToHttps(url);
-            var xhr = null;
-            if ((typeof httpStatus) === "undefined") {
-                xhr = new XMLHttpRequest();
-                xhr.open("GET", url, true);
-                if (headers != null) {
-                    var keys = EcObject.keys(headers);
-                    for (var i = 0; i < keys.length; i++) {
-                        xhr.setRequestHeader(keys[i], headers[keys[i]]);
-                    }
-                }
-                var xhrx = xhr;
-                xhr.onreadystatechange = function() {
-                    if (xhrx.readyState === 4 && xhrx.status === 200) {
-                        if (success != null) {
-                            success(xhrx.responseText);
-                        } else if (xhrx.readyState === 4) {
-                            if (failure != null) {
-                                failure(xhrx.responseText);
-                            }
-                        }
-                    }
-                };
-            }
-            if (xhr != null) {
-                (xhr)["timeout"] = EcRemote.timeout;
-            }
-            if ((typeof httpStatus) !== "undefined") {
-                if (success != null) {
-                    success(JSON.stringify(httpGet(url)));
-                }
-            } else {
-                xhr.send();
-            }
+            this.$store.dispatch('editor/getThing', {
+                server: server,
+                service: service,
+                headers: headers,
+                success: success,
+                failure: failure
+            });
         },
         clipboardSuccess: function() {
             let self = this;
@@ -1104,6 +1053,34 @@ export default {
                 return item['@value'];
             } else if (item['@id']) {
                 return item['@id'];
+            }
+        },
+        getExpandedValue: async function() {
+            var expanded = this.expandedThing[this.expandedProperty];
+            if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["valuesIndexed"]) {
+                expanded = [];
+                var f = this.profile[this.expandedProperty]["valuesIndexed"];
+                f = f();
+                var shortId = EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]);
+                if (f && f[shortId]) {
+                    this.expandedValue = f[shortId];
+                    return;
+                }
+                this.expandedValue = [];
+                return;
+            }
+            if (this.expandedProperty.charAt(0) === '@') {
+                if (this.expandedProperty === "@id") {
+                    expanded = [{"@value": EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing[this.expandedProperty])}];
+                } else {
+                    expanded = [{"@value": this.expandedThing[this.expandedProperty]}];
+                }
+            }
+            this.expandedValue = expanded;
+        },
+        visibilityChanged: function(isVisible, entry) {
+            if (isVisible) {
+                this.getExpandedValue();
             }
         }
     },

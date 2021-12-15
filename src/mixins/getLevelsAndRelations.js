@@ -1,3 +1,7 @@
+import pLimit from 'p-limit';
+
+const limit = pLimit(50);
+
 export default {
     data() {
         return {
@@ -126,7 +130,7 @@ export default {
                 me.$store.commit('editor/relations', me.relations);
             });
         },
-        updateAlignments: function() {
+        updateAlignments: async function() {
             var me = this;
             if (this.$store.getters['editor/refreshAlignments'] === true) {
                 this.$store.commit('editor/refreshAlignments', false);
@@ -138,28 +142,30 @@ export default {
                 return;
             }
             var alignments = {};
-            new EcAsyncHelper().each(this.framework.competency, function(compId, done) {
-                var search = "@type:CreativeWork AND educationalAlignment.targetUrl:\"" + compId + "\"";
-                me.repo.searchWithParams(search, {
-                    size: 25
-                },
-                null,
-                function(resources) {
-                    for (var i = 0; i < resources.length; i++) {
-                        let resourceType = resources[i].educationalAlignment.alignmentType + " (resource)";
-                        if (!alignments[resourceType]) {
-                            alignments[resourceType] = {};
-                        }
-                        if (!alignments[resourceType][compId]) {
-                            alignments[resourceType][compId] = [];
-                        }
-                        alignments[resourceType][compId].push({"@id": resources[i].shortId(), "name": resources[i].name, "@value": resources[i].url});
-                    }
-                    done();
-                }, done);
-            }, function(compIds) {
-                me.alignments = alignments;
-            });
+
+            let promises = [];
+            for (let compId of this.framework.competency) {
+                promises.push(limit(() => {
+                    return new Promise((resolve) => {
+                        var search = "@type:CreativeWork AND educationalAlignment.targetUrl:\"" + compId + "\"";
+                        me.repo.searchWithParams(search, {size: 25}).then((resources) => {
+                            for (var i = 0; i < resources.length; i++) {
+                                let resourceType = resources[i].educationalAlignment.alignmentType + " (resource)";
+                                if (!alignments[resourceType]) {
+                                    alignments[resourceType] = {};
+                                }
+                                if (!alignments[resourceType][compId]) {
+                                    alignments[resourceType][compId] = [];
+                                }
+                                alignments[resourceType][compId].push({"@id": resources[i].shortId(), "name": resources[i].name, "@value": resources[i].url});
+                            }
+                            resolve();
+                        });
+                    });
+                }));
+            }
+
+            await Promise.all(promises);
         }
     }
 };
