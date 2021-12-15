@@ -4,7 +4,7 @@ import axios from 'axios';
 
 Vue.use(Vuex);
 
-
+// Rate Limit axios requests
 const MAX_REQUESTS_COUNT = 10;
 const INTERVAL_MS = 10;
 let PENDING_REQUESTS = 0;

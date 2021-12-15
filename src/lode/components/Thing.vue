@@ -259,8 +259,6 @@ export default {
     },
     computed: {
         thingAsPropertyModalObject: function() {
-            appLog("this parent", this.$parent.$parent.obj.name);
-            appLog("Expanded thing: ", this.expandedThing);
             var name = this.$parent.$parent.obj.name;
             if (!name) {
                 name = this.$parent.$parent.obj["skos:prefLabel"];
@@ -1001,7 +999,6 @@ export default {
                 me.get(url, null, null, function(data) {
                     var name = null;
                     if (data && data[0] !== "<") {
-                        data = JSON.parse(data);
                         if (data['ceterms:name']) {
                             name = data['ceterms:name'];
                         } else if (data['ceasn:competencyText']) {
