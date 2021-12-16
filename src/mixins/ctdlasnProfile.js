@@ -344,8 +344,8 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Local Subject"}],
                     "heading": "Tagging"
                 },
-                "http://purl.org/asn/schema/core/hasProgressionModel": {
-                    "@id": "http://purl.org/asn/schema/core/hasProgressionModel",
+                "http://purl.org/ASN/schema/core/hasProgressionModel": {
+                    "@id": "http://purl.org/ASN/schema/core/hasProgressionModel",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
@@ -373,7 +373,7 @@ export default {
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://schema.cassproject.org/0.4/socList",
                     "https://schema.cassproject.org/0.4/naicsList",
-                    "http://purl.org/asn/schema/core/hasProgressionModel"
+                    "http://purl.org/ASN/schema/core/hasProgressionModel"
                 ],
                 "tertiaryProperties": [
                     "@id",
@@ -943,8 +943,8 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Creator"}],
                     "heading": "General"
                 },
-                "http://purl.org/asn/schema/core/hasProgressionLevel": {
-                    "@id": "http://purl.org/asn/schema/core/hasProgressionLevel",
+                "http://purl.org/ASN/schema/core/hasProgressionLevel": {
+                    "@id": "http://purl.org/ASN/schema/core/hasProgressionLevel",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
@@ -1006,7 +1006,7 @@ export default {
                     "https://purl.org/ctdlasn/terms/inferredCompetency",
                     "https://purl.org/ctdl/terms/hasWorkforceDemand",
                     "http://schema.org/creator",
-                    "http://purl.org/asn/schema/core/hasProgressionLevel"
+                    "http://purl.org/ASN/schema/core/hasProgressionLevel"
                 ]
             };
         },

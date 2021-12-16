@@ -23,10 +23,7 @@ module.exports = {
         ],
         'vue/max-attributes-per-line': [ 'error', {
             "singleline": 1,
-            "multiline": {
-              "max": 1,
-              "allowFirstLine": false
-            }
+            "multiline": 1
           }
         ],
         'vue/no-mutating-props': 1,
@@ -366,7 +363,8 @@ module.exports = {
          * 'template-tag-spacing': 0,
          * 'unicode-bom': 0,
          * 'wrap-regex': 0,
-         */
+         */,
+         'vue/multi-word-component-names': 1
 
     },
     parserOptions: {

@@ -44,6 +44,7 @@
             </button>
             <button
                 class="export-confirm button is-outlined is-info"
+                :disabled="working"
                 @click="confirm">
                 <span>
                     Export file
@@ -72,7 +73,8 @@ export default {
     data() {
         return {
             selectedExportOption: '',
-            repo: window.repo
+            repo: window.repo,
+            working: false
         };
     },
     computed: {
@@ -131,24 +133,26 @@ export default {
     mounted() {
     },
     methods: {
-        confirm() {
-            this.exportObject();
+        async confirm() {
+            this.working = true;
+            await this.exportObject();
+            this.working = false;
         },
         closeModal() {
             this.$store.commit('app/closeModal');
         },
-        exportObject: function() {
+        exportObject: async function() {
             if (this.objType.indexOf("conceptscheme") !== -1) {
-                this.exportScheme();
+                await this.exportScheme();
             } else if (this.objType.indexOf("concept") !== -1) {
-                this.exportConcept();
+                await this.exportConcept();
             } else if (this.objType.indexOf("framework") !== -1) {
-                this.exportFramework();
+                await this.exportFramework();
             } else if (this.objType.indexOf("competency") !== -1) {
-                this.exportCompetency();
+                await this.exportCompetency();
             }
         },
-        exportConcept: function() {
+        exportConcept: async function() {
             let exportType = this.selectedExportOption;
             let concept = this.obj;
             var guid;
@@ -159,18 +163,18 @@ export default {
             }
             var link = this.repo.selectedServer + "data/" + guid;
             if (exportType === "jsonld") {
-                this.exportJsonld(link);
+                await this.exportJsonld(link);
             } else if (exportType === "rdfQuads") {
-                this.exportRdfQuads(link);
+                await this.exportRdfQuads(link);
             } else if (exportType === "rdfJson") {
-                this.exportRdfJson(link);
+                await this.exportRdfJson(link);
             } else if (exportType === "rdfXml") {
-                this.exportRdfXml(link);
+                await this.exportRdfXml(link);
             } else if (exportType === "turtle") {
-                this.exportTurtle(link);
+                await this.exportTurtle(link);
             }
         },
-        exportScheme: function() {
+        exportScheme: async function() {
             let schemeExportGuid = null;
             if (EcRepository.shouldTryUrl(this.obj.id) === false && this.obj.id.indexOf(this.repo.selectedServer) === -1) {
                 schemeExportGuid = EcCrypto.md5(this.obj.shortId());
@@ -180,20 +184,20 @@ export default {
             let schemeExportLink = this.repo.selectedServer + "data/" + schemeExportGuid;
             let exportType = this.selectedExportOption;
             if (exportType === "jsonld") {
-                this.exportJsonld(schemeExportLink);
+                await this.exportJsonld(schemeExportLink);
             } else if (exportType === "rdfQuads") {
-                this.exportRdfQuads(schemeExportLink);
+                await this.exportRdfQuads(schemeExportLink);
             } else if (exportType === "rdfJson") {
-                this.exportRdfJson(schemeExportLink);
+                await this.exportRdfJson(schemeExportLink);
             } else if (exportType === "rdfXml") {
-                this.exportRdfXml(schemeExportLink);
+                await this.exportRdfXml(schemeExportLink);
             } else if (exportType === "turtle") {
-                this.exportTurtle(schemeExportLink);
+                await this.exportTurtle(schemeExportLink);
             } else if (exportType === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld(schemeExportLink);
+                await this.exportCtdlasnJsonld(schemeExportLink);
             }
         },
-        exportCompetency: function() {
+        exportCompetency: async function() {
             let exportType = this.selectedExportOption;
             let selectedCompetency = this.obj;
             var guid;
@@ -204,22 +208,22 @@ export default {
             }
             var link = this.repo.selectedServer + "data/" + guid;
             if (exportType === "jsonld") {
-                this.exportJsonld(link);
+                await this.exportJsonld(link);
             } else if (exportType === "rdfQuads") {
-                this.exportRdfQuads(link);
+                await this.exportRdfQuads(link);
             } else if (exportType === "rdfJson") {
-                this.exportRdfJson(link);
+                await this.exportRdfJson(link);
             } else if (exportType === "rdfXml") {
-                this.exportRdfXml(link);
+                await this.exportRdfXml(link);
             } else if (exportType === "turtle") {
-                this.exportTurtle(link);
+                await this.exportTurtle(link);
             } else if (exportType === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld(link);
+                await this.exportCtdlasnJsonld(link);
             } else if (exportType === "case") {
-                this.exportCaseItems(guid);
+                await this.exportCaseItems(guid);
             }
         },
-        exportFramework: function() {
+        exportFramework: async function() {
             let exportType = this.selectedExportOption;
             let frameworkExportGuid = null;
             if (EcRepository.shouldTryUrl(this.obj.id) === false && this.obj.id.indexOf(this.repo.selectedServer) === -1) {
@@ -229,34 +233,34 @@ export default {
             }
             let frameworkExportLink = this.repo.selectedServer + "data/" + frameworkExportGuid;
             if (exportType === "asn") {
-                this.exportAsn(frameworkExportLink);
+                await this.exportAsn(frameworkExportLink);
             } else if (exportType === "jsonld") {
-                this.exportJsonld(frameworkExportLink);
+                await this.exportJsonld(frameworkExportLink);
             } else if (exportType === "rdfQuads") {
-                this.exportRdfQuads(frameworkExportLink);
+                await this.exportRdfQuads(frameworkExportLink);
             } else if (exportType === "rdfJson") {
-                this.exportRdfJson(frameworkExportLink);
+                await this.exportRdfJson(frameworkExportLink);
             } else if (exportType === "rdfXml") {
-                this.exportRdfXml(frameworkExportLink);
+                await this.exportRdfXml(frameworkExportLink);
             } else if (exportType === "turtle") {
-                this.exportTurtle(frameworkExportLink);
+                await this.exportTurtle(frameworkExportLink);
             } else if (exportType === "ctdlasnJsonld") {
-                this.exportCtdlasnJsonld(frameworkExportLink);
+                await this.exportCtdlasnJsonld(frameworkExportLink);
             } else if (exportType === "ctdlasnCsv") {
-                this.exportCtdlasnCsv(frameworkExportLink);
+                await this.exportCtdlasnCsv(frameworkExportLink);
             } else if (exportType === "csv") {
-                this.exportCsv();
+                await this.exportCsv();
             } else if (exportType === "case") {
-                this.exportCasePackages(frameworkExportGuid);
+                await this.exportCasePackages(frameworkExportGuid);
             }
         },
-        exportAsn: function(link) {
+        exportAsn: async function(link) {
             window.open(link.replace("/data/", "/asn/"), '_blank');
         },
-        exportJsonld: function(link) {
+        exportJsonld: async function(link) {
             window.open(link, '_blank');
         },
-        exportRdfQuads: function(link) {
+        exportRdfQuads: async function(link) {
             let fileName;
             if (this.objType.indexOf("conceptscheme") !== -1) {
                 fileName = schema.Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
@@ -265,14 +269,14 @@ export default {
             } else {
                 fileName = this.obj.getName();
             }
-            let me = this;
-            this.get(link, null, {"Accept": "text/n4"}, function(success) {
-                me.download(fileName + ".n4", success);
-            }, function(failure) {
-                appLog(failure);
-            });
+            try {
+                let success = await this.get(link, null, {"Accept": "text/n4"});
+                await this.download(fileName + ".n4", success);
+            } catch (e) {
+                appLog(e);
+            }
         },
-        exportRdfJson: function(link) {
+        exportRdfJson: async function(link) {
             let fileName;
             if (this.objType.indexOf("conceptscheme") !== -1) {
                 fileName = schema.Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
@@ -281,14 +285,14 @@ export default {
             } else {
                 fileName = this.obj.getName();
             }
-            let me = this;
-            this.get(link, null, {"Accept": "application/rdf+json"}, function(success) {
-                me.download(fileName + ".rdf.json", success);
-            }, function(failure) {
-                appLog(failure);
-            });
+            try {
+                let success = await this.get(link, null, {"Accept": "application/rdf+json"});
+                this.download(fileName + ".rdf.json", success);
+            } catch (e) {
+                appLog(e);
+            }
         },
-        exportRdfXml: function(link) {
+        exportRdfXml: async function(link) {
             let fileName;
             if (this.objType.indexOf("conceptscheme") !== -1) {
                 fileName = schema.Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
@@ -297,14 +301,14 @@ export default {
             } else {
                 fileName = this.obj.getName();
             }
-            let me = this;
-            this.get(link, null, {"Accept": "application/rdf+xml"}, function(success) {
-                me.download(fileName + ".rdf.xml", success);
-            }, function(failure) {
-                appLog(failure);
-            });
+            try {
+                let success = await this.get(link, null, {"Accept": "application/rdf+xml"});
+                await this.download(fileName + ".rdf.xml", success);
+            } catch (e) {
+                appLog(e);
+            }
         },
-        exportTurtle: function(link) {
+        exportTurtle: async function(link) {
             let fileName;
             if (this.objType.indexOf("conceptscheme") !== -1) {
                 fileName = schema.Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
@@ -313,23 +317,24 @@ export default {
             } else {
                 fileName = this.obj.getName();
             }
-            var me = this;
-            this.get(link, null, {"Accept": "text/turtle"}, function(success) {
-                me.download(fileName + ".turtle", success);
-            }, function(failure) {
-                appLog(failure);
-            });
+            try {
+                let success = await this.get(link, null, {"Accept": "text/turtle"});
+                await this.download(fileName + ".turtle", success);
+            } catch (e) {
+                appLog(e);
+            }
         },
         exportCtdlasnJsonld: function(link) {
             window.open(link.replace("/data/", "/ceasn/"), '_blank');
         },
-        exportCtdlasnCsv: function(link) {
+        exportCtdlasnCsv: async function(link) {
             var me = this;
-            EcRemote.getExpectingString(link.replace("/data/", "/ceasn/"), null, function(success) {
+            try {
+                let success = await EcRemote.getExpectingString(link.replace("/data/", "/ceasn/"), null);
                 CSVExport.exportCTDLASN(success, me.obj.getName());
-            }, function(error) {
-                appLog(error);
-            });
+            } catch (e) {
+                appLog(e);
+            }
         },
         exportCsv: function() {
             CSVExport.exportFramework(this.obj.id, appLog, appLog);
@@ -344,50 +349,14 @@ export default {
             var blob = new Blob([data], {type: "text/plain;charset=utf-8"});
             saveAs(blob, fileName);
         },
-        get: function(server, service, headers, success, failure) {
-            var url = EcRemote.urlAppend(server, service);
-            url = EcRemote.upgradeHttpToHttps(url);
-            var xhr = null;
-            if ((typeof httpStatus) === "undefined") {
-                xhr = new XMLHttpRequest();
-                xhr.open("GET", url, true);
-                if (headers != null) {
-                    var keys = EcObject.keys(headers);
-                    for (var i = 0; i < keys.length; i++) {
-                        xhr.setRequestHeader(keys[i], headers[keys[i]]);
-                    }
-                }
-                var xhrx = xhr;
-                xhr.onreadystatechange = function() {
-                    if (xhrx.readyState === 4 && xhrx.status === 200) {
-                        if (success != null) {
-                            success(xhrx.responseText);
-                        } else if (xhrx.readyState === 4) {
-                            if (failure != null) {
-                                failure(xhrx.status + " " + xhrx.responseText);
-                            }
-                        }
-                    }
-                };
-                xhr.onload = function() {
-                    if (xhr.status !== 200) {
-                        failure(xhr.status);
-                    }
-                };
-                xhr.onerror = function() {
-                    failure("Failed while sending request.");
-                };
-            }
-            if (xhr != null) {
-                (xhr)["timeout"] = EcRemote.timeout;
-            }
-            if ((typeof httpStatus) !== "undefined") {
-                if (success != null) {
-                    success(JSON.stringify(httpGet(url)));
-                }
-            } else {
-                xhr.send();
-            }
+        get: async function(server, service, headers, success, failure) {
+            return this.$store.dispatch('editor/getThing', {
+                server: server,
+                service: service,
+                headers: headers,
+                success: success,
+                failure: failure
+            });
         }
     }
 };

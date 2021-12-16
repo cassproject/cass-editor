@@ -222,7 +222,9 @@ export default {
                     this.parentFrameworks.push({name: this.getDisplayStringFrom(scheme["dcterms:title"]), url: scheme.shortId()});
                 }
             } else if (concept["skos:broader"]) {
-                this.findConceptTrail(concept["skos:broader"]);
+                for (let thing of concept["skos:broader"]) {
+                    this.findConceptTrail(thing);
+                }
             }
         },
         getDisplayStringFrom: function(n) {
