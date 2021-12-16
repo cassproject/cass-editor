@@ -168,9 +168,13 @@ jsonld.documentLoader = function(url, callback) {
         };
         let originalUrl = url;
         let index = url.indexOf('schema.cassproject.org');
+        let ending = "";
+        if (url.substring(url.lastIndexOf('/')).indexOf('2') === -1) {
+            ending = "/index.json-ld";
+        }
         if (index !== -1) {
             url = url.substring(index);
-            url = window.location.origin + window.location.pathname + url + "/index.json-ld";
+            url = window.location.origin + window.location.pathname + url + ending;
         }
         xmlhttp.open("GET", url, false);
         xmlhttp.setRequestHeader("Accept", "application/json");
