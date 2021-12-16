@@ -240,7 +240,11 @@ export default {
     },
     data() {
         return {
-            medbiqDetails: {
+        };
+    },
+    computed: {
+        medbiqDetails: function() {
+            return {
                 name: {
                     label: 'Name the framework',
                     value: this.importFrameworkName,
@@ -251,8 +255,10 @@ export default {
                     value: this.importFrameworkDescription,
                     type: 'string'
                 }
-            },
-            csvImportDetails: {
+            };
+        },
+        csvImportDetails: function() {
+            return {
                 name: {
                     label: 'Name the framework',
                     value: this.importFrameworkName,
@@ -292,8 +298,10 @@ export default {
                     value: '',
                     type: 'file'
                 }
-            },
-            csvRelationDetails: {
+            };
+        },
+        csvRelationDetails: function() {
+            return {
                 sourceColumn: {
                     label: 'Select the Source column',
                     type: 'column',
@@ -309,10 +317,8 @@ export default {
                     type: 'column',
                     value: this.importTargetColumn
                 }
-            }
-        };
-    },
-    computed: {
+            };
+        },
         importInfoVisible: function() {
             return this.$store.getters['app/showRightAside'];
         },
