@@ -207,6 +207,12 @@
 		},
 		"ceterms:inLanguage": {
 			"@id": "schema:inLanguage"
+		},
+		"asn:hasProgressionModel": {
+			"@id": "asn:hasProgressionModel"
+		},
+		"asn:hasProgressionLevel": {
+			"@id": "asn:hasProgressionLevel"
 		}
 	}
 }

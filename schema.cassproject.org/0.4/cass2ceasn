@@ -1,6 +1,6 @@
 {
 	"@context": {
-		"asn": "http://purl.org/asn/schema/core/",
+		"asn": "http://purl.org/ASN/schema/core/",
 		"asnPublicationStatus": "http://purl.org/asn/scheme/ASNPublicationStatus/",
 		"asnscheme": "http://purl.org/asn/scheme/",
 		"case": "http://schema.imsglobal.org/ims/case/v1p0/",
@@ -319,6 +319,14 @@
 		"ceasn:author": {
 			"@id": "ceasn:author",
 			"@type": "xsd:string"
+		},
+		"asn:hasProgressionModel": {
+			"@id": "asn:hasProgressionModel",
+			"@type": "@id"
+		},
+		"asn:hasProgressionLevel": {
+			"@id": "asn:hasProgressionLevel",
+			"@type": "@id"
 		},
 		"ceterms:environmentalHazardType": {
 			"@id": "ceterms:environmentalHazardType",
