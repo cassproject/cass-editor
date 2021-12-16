@@ -523,6 +523,7 @@
         <!-- confirm lose changes -->
         <modal-template
             size="small"
+            @close="cancelLoseChanges"
             :active="showConfirmLoseChangesModal">
             <template slot="modal-header">
                 Discard Unsaved Changes?
@@ -566,14 +567,12 @@
             </template>
         </modal-template>
         <!-- add member search modal -->
-        <modal-template :active="showAddMemberModal">
+        <modal-template
+            @close="closeAddGroupMemberModal"
+            :active="showAddMemberModal">
             <template slot="modal-header">
                 <p class="is-size-3 modal-card-title has-text-white">
                     Add members to '{{ currentUserGroupName }}'
-                    <button
-                        class="delete is-pulled-right"
-                        aria-label="close"
-                        @click="closeAddGroupMemberModal" />
                 </p>
             </template>
             <template slot="modal-body">

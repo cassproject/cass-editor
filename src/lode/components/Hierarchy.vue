@@ -1,5 +1,7 @@
 <template>
-    <div class="lode__hierarchy">
+    <div
+        class="lode__hierarchy"
+        :class="{'is-dragging': dragging}">
         <div
             class="hierarchy-buttons">
             <div class="columns is-gapless is-paddingless is-mobile is-marginless is-paddingless">
@@ -924,7 +926,7 @@ export default {
             }
             if (fromContainerId !== toContainerId) {
                 var source = await window[this.nodeType].get(fromId);
-                var target = await window[this.nodeType].get(toContainerId);
+                var target = toContainerId ? await window[this.nodeType].get(toContainerId) : null;
                 if (removeOldRelations === true && fromId !== toContainerId) {
                     for (var i = 0; i < this.container[this.containerEdgeProperty].length; i++) {
                         var a = await window[this.edgeType].get(this.container[this.containerEdgeProperty][i]);
