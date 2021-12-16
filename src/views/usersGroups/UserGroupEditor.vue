@@ -64,7 +64,7 @@
                                 key="all-members" />
                             <cass-dropdown-item
                                 :depth="0"
-                                :label="group.name"
+                                :label="truncateString(group.name,40)"
                                 :nodes="group.subGroups"
                                 :id="group.id"
                                 v-for="group in userGroupDisplayList"
@@ -1201,6 +1201,12 @@ export default {
         showConfirmLoseChanges(val) {
             this.toId = val;
             this.showConfirmLoseChangesModal = true;
+        },
+        truncateString(str, num) {
+            if (str.length <= num) {
+                return str;
+            }
+            return str.slice(0, num) + '...';
         },
         confirmLoseChanges() {
             this.switchUserGroupDetailsById(this.toId);
