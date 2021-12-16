@@ -840,4 +840,19 @@ ul.processing-list {
         }
     }
 }
+
+.lode__hierarchy.is-dragging :not(.chosen-drag) {
+    li.lode__hierarchy-li,
+    li.lode__hierarchy-sub-li {
+        margin-bottom: 10px;
+        border: 2px dashed;
+        ul.lode__hierarchy-sub-ul {
+            border: 2px dashed;
+            margin-bottom: 10px;
+            padding: 20px;
+            margin-left: 20px;
+            margin-right: 20px;
+        }
+    }
+}
 }
