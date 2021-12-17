@@ -141,7 +141,7 @@
                                     <SearchBar
                                         view="crosswalk"
                                         filterSet="basic"
-                                        :ownedByMe="false"
+                                        :ownedByMe="true"
                                         searchType="framework" />
                                 </div>
                             </div>

@@ -14,16 +14,16 @@
 <template>
     <div class="cass--search-bar">
         <div
-            class="field is-grouped is-block">
+            class="field is-grouped">
             <p
-                class="control is-expanded is-block"
+                class="control is-expanded"
                 :class="{'has-icons-right': searchTerm === ''}">
                 <input
                     class="input"
                     ref="text"
                     type="search"
                     v-model="searchTerm"
-                    :placeholder="'Search for ' + ((searchType === 'Competency' || 'DirectLink') ? 'competencie' : searchType)+ 's...'"
+                    :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
                     @keyup.enter="updateSearchTerm(searchTerm)">
                 <span
                     v-if="searchTerm === ''"
@@ -57,63 +57,62 @@
                     </span>
                 </div>
             </div>
-            <div
-                v-if="filterSet === 'basic'">
-                <div class="field is-grouped mt-2">
-                    <div
-                        class="field is-block"
-                        v-if="loggedIn">
-                        <input
-                            v-model="basicFilter"
-                            class="is-checkradio"
-                            value="ownedByMe"
-                            id="ownedByMe"
-                            type="checkbox"
-                            name="filterOwnedByMe">
-                        <label for="ownedByMe">
-                            Owned by me
-                        </label>
-                    </div>
-                    <div class="field">
-                        <input
-                            v-model="basicSort"
-                            class="is-checkradio"
-                            value=""
-                            id="alphabeticalSort"
-                            type="radio"
-                            name="alphabeticalSort"
-                            checked="checked">
-                        <label for="alphabeticalSort">
-                            Alphabetical
-                        </label>
-                        <input
-                            v-model="basicSort"
-                            class="is-checkradio"
-                            value="lastEdited"
-                            id="lastDateModifiedSort"
-                            type="radio"
-                            name="lastDateModifiedSort">
-                        <label for="lastDateModifiedSort">
-                            Date modified
-                        </label>
-                    </div>
-                    <div
-                        class="field"
-                        v-if="allowShowFrameworks">
-                        <input
-                            v-model="searchFrameworks"
-                            class="is-checkradio"
-                            value="searchFrameworks"
-                            id="searchFrameworks"
-                            type="checkbox"
-                            name="filtersearchFrameworks">
-                        <label for="searchFrameworks">
-                            Show Frameworks
-                        </label>
-                    </div>
+        </div>
+        <!-- to do connect basic filters to list results -->
+        <div v-if="filterSet === 'basic'">
+            <div class="field is-grouped">
+                <div
+                    class="field"
+                    v-if="loggedIn">
+                    <input
+                        v-model="basicFilter"
+                        class="is-checkradio"
+                        value="ownedByMe"
+                        id="ownedByMe"
+                        type="checkbox"
+                        name="filterOwnedByMe">
+                    <label for="ownedByMe">
+                        Owned by me
+                    </label>
+                </div>
+                <div class="field">
+                    <input
+                        v-model="basicSort"
+                        class="is-checkradio"
+                        value=""
+                        id="alphabeticalSort"
+                        type="radio"
+                        name="alphabeticalSort"
+                        checked="checked">
+                    <label for="alphabeticalSort">
+                        Alphabetical
+                    </label>
+                    <input
+                        v-model="basicSort"
+                        class="is-checkradio"
+                        value="lastEdited"
+                        id="lastDateModifiedSort"
+                        type="radio"
+                        name="lastDateModifiedSort">
+                    <label for="lastDateModifiedSort">
+                        Date modified
+                    </label>
+                </div>
+                <div
+                    class="field"
+                    v-if="allowShowFrameworks">
+                    <input
+                        v-model="searchFrameworks"
+                        class="is-checkradio"
+                        value="searchFrameworks"
+                        id="searchFrameworks"
+                        type="checkbox"
+                        name="filtersearchFrameworks">
+                    <label for="searchFrameworks">
+                        Show Frameworks
+                    </label>
                 </div>
             </div>
-        <!-- to do connect basic filters to list results -->
         </div>
     </div>
 </template>
