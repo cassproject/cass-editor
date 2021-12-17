@@ -74,10 +74,9 @@
                                         <span class="icon">
                                             <i class="fa fa-exclamation-circle" />
                                         </span>
-                                        <span tabindex="0">
+                                        <button>
                                             info
-                                        </span>
-                                    </span>
+                                        </button></span>
                                 </h1>
                             </template>
                             <!-- import from file gets three parts, details, preview, and light view -->
@@ -607,7 +606,7 @@
                             <div
                                 class="columns pt-4 is-multiline">
                                 <div class="column is-narrow">
-                                    <div
+                                    <button
                                         @click="showImportModal('pdf')"
                                         class="button  is-warning is-light is-outlined is-small"
                                         v-if="!conceptMode">
@@ -617,10 +616,10 @@
                                             <i class="fa fa-exclamation" />
                                         </span>
                                         <span>PDF</span>
-                                    </div>
+                                    </button>
                                 </div>
                                 <div class="column is-narrow">
-                                    <div
+                                    <button
                                         @click="showImportModal('docx')"
                                         class="button  is-warning is-light is-outlined is-small"
                                         v-if="!conceptMode">
@@ -630,10 +629,10 @@
                                             <i class="fa fa-exclamation" />
                                         </span>
                                         <span>DOCX/WORD</span>
-                                    </div>
+                                    </button>
                                 </div>
                                 <div class="column is-narrow">
-                                    <div
+                                    <button
                                         @click="showImportModal('html')"
                                         class="button  is-warning is-light is-outlined is-small"
                                         v-if="!conceptMode">
@@ -643,10 +642,10 @@
                                             <i class="fa fa-exclamation" />
                                         </span>
                                         <span>HTML</span>
-                                    </div>
+                                    </button>
                                 </div>
                                 <div class="column is-narrow">
-                                    <div
+                                    <button
                                         @click="showImportModal('csv')"
                                         class="button  is-success is-light is-outlined is-small">
                                         <span
@@ -655,10 +654,10 @@
                                             <i class="fa fa-check" />
                                         </span>
                                         <span>CSV</span>
-                                    </div>
+                                    </button>
                                 </div>
                                 <div class="column is-narrow">
-                                    <div
+                                    <button
                                         @click="showImportModal('xml')"
                                         class="button  is-success is-light is-outlined is-small"
                                         v-if="!conceptMode">
@@ -668,10 +667,10 @@
                                             <i class="fa fa-check" />
                                         </span>
                                         <span>XML</span>
-                                    </div>
+                                    </button>
                                 </div>
                                 <div class="column is-narrow">
-                                    <div
+                                    <button
                                         @click="showImportModal('json')"
                                         class="button  is-success is-light is-outlined is-small">
                                         <span
@@ -680,7 +679,7 @@
                                             <i class="fa fa-check" />
                                         </span>
                                         <span>JSON</span>
-                                    </div>
+                                    </button>
                                 </div>
                             </div>
                             <br>

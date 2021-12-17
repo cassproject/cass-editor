@@ -4,6 +4,12 @@
 textarea {
     resize: vertical !important;
 }
+
+button {
+    background-color: transparent;
+    border: none;
+    text-transform: capitalize;
+}
 .import-text-textarea {
     max-height: 75vh !important; 
     resize: vertical !important;
@@ -215,8 +221,11 @@ ul.processing-list {
         align-items: center;
         font-size: .7rem;
         background-color: transparent;
-        a { 
+        border:none;
+        button { 
             color: $dark;
+            border: none;
+            background-color: transparent;
         }
         div {
             color: $dark;
@@ -225,20 +234,21 @@ ul.processing-list {
     }
     .is-active-tab{
         color: $link;
-        a {
+        button {
             height: 140px;
             width: 140px;
-            padding-top: 40px;
             border-radius: 100px;
             color: $secondary;
             z-index: 2;
+            background-color: transparent;
+            border: none;
         }
-        a::before {
+        button::before {
             height: 140px;
             margin-top: -50px;
             border-radius: 50%;
             width: 140px;
-            transform: translateX(50%, 50%);
+            transform: translateX(-66px);
             z-index: -2;
             position: absolute;
             background-color: $light;
