@@ -178,9 +178,13 @@ ul.processing-list {
             margin: 0px;
             padding: 0px;
             width: auto;
+            cursor: pointer;
             .column {
                 height: auto;
             }
+        }
+        #drop-area:hover {
+            background-color:rgba($light, .5)
         }
         #add-node-section:hover .add-new-node {
             visibility: visible;
