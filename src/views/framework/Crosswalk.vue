@@ -18,7 +18,7 @@
                 <div class="crosswalk-topbar">
                     <div
                         style="width: 100%;"
-                        class="columns is-spaced is-vcentered">
+                        class="columns is-spaced is-vcentered is-multiline is-mobile">
                         <div class="column">
                             <h2 class="has-text-dark has-text-weight-bold is-size-5 text-align-left">
                                 Crosswalk
@@ -141,7 +141,7 @@
                                     <SearchBar
                                         view="crosswalk"
                                         filterSet="basic"
-                                        :ownedByMe="false"
+                                        :ownedByMe="true"
                                         searchType="framework" />
                                 </div>
                             </div>
@@ -152,7 +152,7 @@
                             <div
                                 v-if="step === 0"
                                 class="column is-12 crosswalk__list">
-                                <div class="container">
+                                <div class="container mt-4">
                                     <List
                                         :type="type"
                                         :repo="repo"

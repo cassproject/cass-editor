@@ -36,13 +36,13 @@
                             <div class="field">
                                 <div class="buttons is-right">
                                     <span
+                                        tabindex="0"
                                         class="button is-outlined is-centered is-large is-primary"
                                         @click="importFromUrl">
                                         <span class="file-icon">
                                             <i class="fas fa-upload" />
                                         </span>
-                                        <span
-                                            tabindex="0">
+                                        <span>
                                             Import framework
                                         </span>
                                     </span>
