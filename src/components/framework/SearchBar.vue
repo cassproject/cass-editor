@@ -23,7 +23,7 @@
                     ref="text"
                     type="search"
                     v-model="searchTerm"
-                    :placeholder="'Search for ' + ((searchType === 'Competency' || 'DirectLink') ? 'competencie' : searchType)+ 's...'"
+                    :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
                     @keyup.enter="updateSearchTerm(searchTerm)">
                 <span
                     v-if="searchTerm === ''"

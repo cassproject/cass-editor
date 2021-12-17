@@ -20,17 +20,18 @@
                         <!-- file -->
                         <div class="column">
                             <div
-                                tabindex="0"
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'file'}">
-                                <a @click="$store.commit('app/importType', 'file')">
+                                <button
+
+                                    @click="$store.commit('app/importType', 'file')">
                                     <i
                                         class="fa fa-2x fa-file has-text-centered is-block"
                                         aria-hidden="true" />
                                     <div class="is-hidden-mobile is-block has-text-centered">
                                         File Import
                                     </div>
-                                </a>
+                                </button>
                             </div>
                         </div>
                         <!-- server tab -->
@@ -38,17 +39,18 @@
                             class="column"
                             v-if="!conceptMode">
                             <div
-                                tabindex="0"
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'server'}">
-                                <a @click="$store.commit('app/importType', 'server')">
+                                <button
+
+                                    @click="$store.commit('app/importType', 'server')">
                                     <i
                                         class="fa fa-2x fa-server is-block has-text-centered"
                                         aria-hidden="true" />
                                     <div class="is-hidden-mobile is-block has-text-centered">
                                         Remote Server
                                     </div>
-                                </a>
+                                </button>
                             </div>
                         </div>
                         <!-- text tab -->
@@ -56,17 +58,18 @@
                             class="column"
                             v-if="!conceptMode">
                             <div
-                                tabindex="0"
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'text'}">
-                                <a @click="$store.commit('app/importType', 'text')">
+                                <button
+
+                                    @click="$store.commit('app/importType', 'text')">
                                     <i
                                         class="fa fa-2x fa-paste has-text-centered is-block"
                                         aria-hidden="true" />
                                     <div class="is-hidden-mobile is-block has-text-centered">
                                         Paste Text
                                     </div>
-                                </a>
+                                </button>
                             </div>
                         </div>
                         <!-- url tab -->
@@ -75,16 +78,17 @@
                             v-if="!conceptMode">
                             <div
                                 class="import-tab"
-                                tabindex="0"
                                 :class="{ 'is-active-tab': importType === 'url'}">
-                                <a @click="$store.commit('app/importType', 'url')">
+                                <button
+
+                                    @click="$store.commit('app/importType', 'url')">
                                     <i
                                         class="fa fa-link has-text-centered is-block fa-2x"
                                         aria-hidden="true" />
                                     <div class="is-hidden-mobile is-block has-text-centered">
                                         URL Source
                                     </div>
-                                </a>
+                                </button>
                             </div>
                         </div>
                     </div>

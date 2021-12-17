@@ -8,38 +8,46 @@
             <div class="tabs">
                 <ul>
                     <li
-                        @click="newTab = 'csv'"
                         :class="[tab === 'csv' ? 'is-active' : '', '']">
-                        <a>CSV</a>
+                        <button @click="newTab = 'csv'">
+                            CSV
+                        </button>
                     </li>
                     <li
-                        @click="newTab = 'html'"
                         v-if="!conceptMode"
                         :class="[tab === 'html' ? 'is-active' : '', '']">
-                        <a>HTML</a>
+                        <button @click="newTab = 'html'">
+                            HTML
+                        </button>
                     </li>
                     <li
-                        @click="newTab = 'xml'"
                         v-if="!conceptMode"
                         :class="[tab === 'xml' ? 'is-active' : '', '']">
-                        <a>XML</a>
+                        <button @click="newTab = 'xml'">
+                            XML
+                        </button>
                     </li>
                     <li
-                        @click="newTab = 'json'"
+
                         :class="[tab === 'json' ? 'is-active' : '', '']">
-                        <a>JSON</a>
+                        <button @click="newTab = 'json'">
+                            JSON
+                        </button>
                     </li>
                     <li
-                        @click="newTab = 'pdf'"
                         v-if="!conceptMode"
                         :class="[tab === 'pdf' ? 'is-active' : '', '']">
-                        <a>PDF</a>
+                        <button @click="newTab = 'pdf'">
+                            PDF
+                        </button>
                     </li>
                     <li
-                        @click="newTab = 'docx'"
+
                         v-if="!conceptMode"
                         :class="[tab === 'docx' ? 'is-active' : '', '']">
-                        <a>DOCX</a>
+                        <button @click="newTab = 'docx'">
+                            DOCX
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -452,9 +460,9 @@
             <div
                 @click="$store.commit('app/closeModal')"
                 class="buttons is-right">
-                <div class="button is-primary is-large is-outlined">
+                <button class="button is-primary is-large is-outlined">
                     Back to import screen
-                </div>
+                </button>
             </div>
         </template>
     </modal-template>
