@@ -287,7 +287,7 @@ export default {
             }
             try {
                 let success = await this.get(link, null, {"Accept": "application/rdf+json"});
-                this.download(fileName + ".rdf.json", success);
+                this.download(fileName + ".rdf.json", JSON.stringify(success, null, 2));
             } catch (e) {
                 appLog(e);
             }
