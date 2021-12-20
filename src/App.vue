@@ -193,13 +193,15 @@ export default {
                         url = url.substring(index);
                         url = window.location.origin + window.location.pathname + url + "/index.json-ld";
                     }
-                    EcRemote.getExpectingObject("", url, function(context) {
+                    EcRemote.getExpectingObject("", url, async function(context) {
                         me.$store.commit('lode/rawSchemata', {id: type, obj: context});
-                        jsonld.expand(context, function(err, expanded) {
-                            if (err == null) {
-                                me.$store.dispatch('lode/schemata', {id: type, obj: expanded});
-                            }
-                        });
+                        let expanded;
+                        try {
+                            expanded = await jsonld.expand(context);
+                        } catch (err) {
+                            appError(err);
+                        }
+                        me.$store.dispatch('lode/schemata', {id: type, obj: expanded});
                     }, function() {});
                 }
             }
