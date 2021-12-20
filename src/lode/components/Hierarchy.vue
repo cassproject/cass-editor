@@ -663,7 +663,9 @@ export default {
         }
         window.addEventListener("keydown", this.keydown);
         window.addEventListener("keyup", this.keyup);
-        this.getSubjectInfo();
+        if (this.$store.getters['editor/getSubject']) {
+            this.getSubjectInfo();
+        }
     },
     beforeDestroy: function() {
         window.removeEventListener('keyup', this.keyup);
