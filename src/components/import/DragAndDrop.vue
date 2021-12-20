@@ -15,19 +15,25 @@
             style="display: none;">
         <div class="section">
             <div class="columns is-centered is-multiline">
-                <div class="column is-12">
-                    <p class="is-size-5">
-                        Files to Upload
-                    </p>
+                <div class="has-text-centered">
+                    <i class="fas fa-file fa-3x has-text-primary mb-2" />
                 </div>
                 <div
-                    tabindex="0"
                     v-if="files.length === 0"
                     class="column is-12">
-                    <p class="is-size-6">
-                        Drag and drop, or click to upload.
-                    </p>
+                    <div class="is-size-5">
+                        Drag and drop a file
+                        <div class="is-size-6 pt-1 pb-2">
+                            - or -
+                        </div>
+                        <button
+                            class="is-primary button is-outlined">
+                            Browse
+                        </button>
+                    </div>
                 </div>
+
+
                 <div class="column is-12">
                     <ul>
                         <li
@@ -157,6 +163,7 @@ export default {
 }
 #drag-and-drop.is-dragged-over {
     height: 100% !important;
+    width: 100% !important;
     background-color: rgba(var(--primary-rgb), .3);
     border-radius: 15px;
     display: flex;
