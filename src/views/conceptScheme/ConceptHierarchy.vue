@@ -1,5 +1,7 @@
 <template>
-    <div class="lode__hierarchy">
+    <div
+        class="lode__hierarchy"
+        :class="{'is-dragging': dragging}">
         <div
             class="hierarchy-buttons columns is-gapless is-paddingless is-mobile is-marginless is-paddingless">
             <!-- CONTROLS FOR SELECT: ENABLED MULTI EDIT  -->
