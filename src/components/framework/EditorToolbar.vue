@@ -464,8 +464,11 @@ export default {
                         return {name: x.name, key: x.owner[0]};
                     }));
                 });
-                await this.$store.dispatch('editor/searchForAssertions', 5000);
-                this.$store.commit('editor/setManageAssertions', true);
+                this.$store.dispatch('editor/searchForAssertions', 500).then(() => {
+                    this.$store.commit('editor/setManageAssertions', true);
+                }).catch(() => {
+                    // TODO: Handle assertion search error
+                });
             }
         }
     },
