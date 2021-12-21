@@ -351,22 +351,24 @@ export default {
         },
         getAgent: function() {
             this.agentPerson = null;
-            EcRepository.get(window.repo.selectedServer + "data/schema.org.Person/" + EcPk.fromPem(this.agentPk).fingerprint(), (person) => {
-                var e = new EcEncryptedValue();
-                if (person.isAny(e.getTypes())) {
-                    e.copyFrom(person);
-                    e.decryptIntoObjectAsync((person) => {
-                        var p = new EcPerson();
-                        p.copyFrom(person);
-                        this.agentPerson = p;
-                    }, appError);
-                } else {
+            let me = this;
+            EcPerson.search(window.repo, EcPk.fromPem(me.agentPk).fingerprint(), (persons) => {
+                if (persons.length === 0) {
+                    var pk = EcPk.fromPem(me.agentPk);
                     var p = new EcPerson();
-                    p.copyFrom(person);
+                    p.assignId(window.repo.selectedServer, pk.fingerprint());
+                    p.addOwner(pk);
+                    if (this.displayName === null) {
+                        p.name = "Unknown Person.";
+                    } else {
+                        p.name = this.displayName;
+                    }
                     this.agentPerson = p;
+                } else {
+                    this.agentPerson = persons[0];
                 }
             }, (failure) => {
-                var pk = EcPk.fromPem(this.agentPk);
+                var pk = EcPk.fromPem(me.agentPk);
                 var p = new EcPerson();
                 p.assignId(window.repo.selectedServer, pk.fingerprint());
                 p.addOwner(pk);
@@ -379,27 +381,29 @@ export default {
             });
         },
         getSubject: function() {
-            this.subjectPerson = null;
-            EcRepository.get(window.repo.selectedServer + "data/schema.org.Person/" + EcPk.fromPem(this.subjectPk).fingerprint(), (person) => {
-                var e = new EcEncryptedValue();
-                if (person.isAny(e.getTypes())) {
-                    e.copyFrom(person);
-                    e.decryptIntoObjectAsync((person) => {
-                        var p = new EcPerson();
-                        p.copyFrom(person);
-                        this.subjectPerson = p;
-                    }, appError);
-                } else {
+            this.agentPerson = null;
+            let me = this;
+            EcPerson.search(window.repo, EcPk.fromPem(me.subjectPk).fingerprint(), (persons) => {
+                if (persons.length === 0) {
+                    var pk = EcPk.fromPem(me.subjectPk);
                     var p = new EcPerson();
-                    p.copyFrom(person);
+                    p.assignId(window.repo.selectedServer, pk.fingerprint());
+                    p.addOwner(pk);
+                    if (this.displayName === null) {
+                        p.name = "Unknown Person.";
+                    } else {
+                        p.name = this.displayName;
+                    }
                     this.subjectPerson = p;
+                } else {
+                    this.subjectPerson = persons[0];
                 }
             }, (failure) => {
-                var pk = EcPk.fromPem(this.agentPk);
+                var pk = EcPk.fromPem(me.subjectPk);
                 var p = new EcPerson();
                 p.assignId(window.repo.selectedServer, pk.fingerprint());
                 p.addOwner(pk);
-                if (this.displayName == null) {
+                if (this.displayName === null) {
                     p.name = "Unknown Person.";
                 } else {
                     p.name = this.displayName;

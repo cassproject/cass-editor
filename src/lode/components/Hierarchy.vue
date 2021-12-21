@@ -663,7 +663,9 @@ export default {
         }
         window.addEventListener("keydown", this.keydown);
         window.addEventListener("keyup", this.keyup);
-        this.getSubjectInfo();
+        if (this.$store.getters['editor/getSubject']) {
+            this.getSubjectInfo();
+        }
     },
     beforeDestroy: function() {
         window.removeEventListener('keyup', this.keyup);
@@ -870,15 +872,16 @@ export default {
             }
             appLog(foo.oldIndex, foo.newIndex);
             var toId = null;
-            var plusup = 0;
+            var toLast = false;
             if (this.shiftKey) {
                 this.controlOnStart = true;
             }
             if (foo.from.id === foo.to.id) {
-                if (foo.newIndex < this.hierarchy.length) {
-                    toId = this.hierarchy[foo.newIndex].obj.shortId();
+                if (foo.newIndex + 1 < this.hierarchy.length) {
+                    toId = this.hierarchy[foo.newIndex + 1].obj.shortId();
+                } else if (foo.newIndex === this.hierarchy.length - 1) {
+                    toLast = true;
                 }
-                plusup = 1;
             } else {
                 if (foo.to.children[foo.newIndex] === undefined) {
                     toId = foo.to.id;
@@ -893,10 +896,10 @@ export default {
                 toId,
                 foo.from.id,
                 foo.to.id,
-                !this.controlOnStart, plusup);
+                !this.controlOnStart, toLast);
         },
         // fromId is the id of the object you're moving. toId is the id of the object that will be immediately below this object after the move, at the same level of hierarchy.
-        move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
+        move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, toLast) {
             this.once = true;
             var me = this;
             var initialCompetencies = me.container[me.containerNodeProperty] ? me.container[me.containerNodeProperty].slice() : null;
@@ -916,9 +919,7 @@ export default {
                     toIndex = this.container[this.containerNodeProperty].indexOf(toId);
                 }
                 appLog(toIndex);
-                if (plusup > 0 && fromIndex <= toIndex) { toIndex += plusup; }
-                if (plusup < 0 && fromIndex < toIndex) { toIndex += plusup; }
-                if (toIndex === -1) {
+                if (toLast) {
                     this.container[this.containerNodeProperty].push(fromId);
                 } else {
                     this.container[this.containerNodeProperty].splice(toIndex, 0, fromId);

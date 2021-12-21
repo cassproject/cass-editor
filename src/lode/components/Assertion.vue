@@ -90,6 +90,7 @@ export default {
             competency: null,
             negative: null,
             agentPerson: null,
+            subjectPerson: null,
             evidence: null,
             evidenceExplanation: null
         };
@@ -273,19 +274,21 @@ export default {
         },
         getAgent: function() {
             this.agentPerson = null;
-            EcRepository.get(window.repo.selectedServer + "data/schema.org.Person/" + EcPk.fromPem(me.agentPk).fingerprint(), (person) => {
-                var e = new EcEncryptedValue();
-                if (person.isAny(e.getTypes())) {
-                    e.copyFrom(person);
-                    e.decryptIntoObjectAsync((person) => {
-                        var p = new Person();
-                        p.copyFrom(person);
-                        this.agentPerson = p;
-                    }, appError);
-                } else {
+            let me = this;
+            EcPerson.search(window.repo, EcPk.fromPem(me.agentPk).fingerprint(), (persons) => {
+                if (persons.length === 0) {
+                    var pk = EcPk.fromPem(me.agentPk);
                     var p = new Person();
-                    p.copyFrom(person);
+                    p.assignId(window.repo.selectedServer, pk.fingerprint());
+                    p.addOwner(pk);
+                    if (this.displayName === null) {
+                        p.name = "Unknown Person.";
+                    } else {
+                        p.name = this.displayName;
+                    }
                     this.agentPerson = p;
+                } else {
+                    this.agentPerson = persons[0];
                 }
             }, (failure) => {
                 var pk = EcPk.fromPem(me.agentPk);
@@ -298,6 +301,37 @@ export default {
                     p.name = this.displayName;
                 }
                 this.agentPerson = p;
+            });
+        },
+        getSubject: function() {
+            this.agentPerson = null;
+            let me = this;
+            EcPerson.search(window.repo, EcPk.fromPem(me.subjectPk).fingerprint(), (persons) => {
+                if (persons.length === 0) {
+                    var pk = EcPk.fromPem(me.subjectPk);
+                    var p = new Person();
+                    p.assignId(window.repo.selectedServer, pk.fingerprint());
+                    p.addOwner(pk);
+                    if (this.displayName === null) {
+                        p.name = "Unknown Person.";
+                    } else {
+                        p.name = this.displayName;
+                    }
+                    this.subjectPerson = p;
+                } else {
+                    this.subjectPerson = persons[0];
+                }
+            }, (failure) => {
+                var pk = EcPk.fromPem(me.subjectPk);
+                var p = new Person();
+                p.assignId(window.repo.selectedServer, pk.fingerprint());
+                p.addOwner(pk);
+                if (this.displayName === null) {
+                    p.name = "Unknown Person.";
+                } else {
+                    p.name = this.displayName;
+                }
+                this.subjectPerson = p;
             });
         }
     }
