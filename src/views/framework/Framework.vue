@@ -270,6 +270,9 @@ export default {
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3FrameworkProfile;
             }
+            if (this.queryParams.ceasnDataFields === 'true' && this.framework.subType === 'Collection') {
+                return this.ctdlAsnCollectionProfile;
+            }
             if (this.queryParams.ceasnDataFields === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
                 return this.ctdlAsnFrameworkProfile;
             }

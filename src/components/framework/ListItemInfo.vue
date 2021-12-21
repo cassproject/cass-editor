@@ -1173,6 +1173,9 @@ export default {
                     return "Taxonomy";
                 }
             }
+            if (this.objectType === "Framework" && this.object.subType === "Collection") {
+                return "Collection";
+            }
             return this.objectType;
         },
         lastModified: function() {

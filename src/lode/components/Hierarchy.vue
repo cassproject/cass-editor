@@ -8,13 +8,13 @@
                 <!-- CONTROLS FOR EXPAND  -->
                 <div class="column is-narrow">
                     <div
-                        v-if="expanded"
+                        v-if="expanded && hierarchyEnabled"
                         class="icon is-vcentered"
                         @click="expanded=false">
                         <i class="fa fa-caret-down has-text-primary is-size-2" />
                     </div>
                     <div
-                        v-else-if="!expanded"
+                        v-else-if="!expanded && hierarchyEnabled"
                         class="icon is-vcentered"
                         @click="expanded=true">
                         <i class="fa fa-caret-right has-text-primary is-size-2" />
@@ -34,7 +34,7 @@
                 <!-- CONTROLS FOR SELECT: ENABLED MULTI EDIT  -->
                 <div class="column is-narrow">
                     <div
-                        v-if="(canEdit && view !== 'importPreview' && view !== 'importLight' && view !== 'crosswalk') || queryParams.select || view === 'competencySearch'"
+                        v-if="(canEdit && view !== 'importPreview' && view !== 'importLight' && view !== 'crosswalk' && hierarchyEnabled) || queryParams.select || view === 'competencySearch'"
                         class="pl-2 check-radio-all-column">
                         <div
                             class="field">
@@ -171,7 +171,7 @@
                             <span>search competencies</span>
                         </div>
                         <div
-                            v-if="view === 'framework' || view === 'concept'"
+                            v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             :disabled="!canCopyOrCut"
                             title="Copy competency"
                             :class="canCopyOrCut ? 'is-primary' : 'is-disabled'"
@@ -182,7 +182,7 @@
                             </span>
                         </div>
                         <div
-                            v-if="view === 'framework' || view === 'concept'"
+                            v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             title="Cut competency"
                             :disabled="!canCopyOrCut"
                             class="button is-outlined"
@@ -193,7 +193,7 @@
                             </span>
                         </div>
                         <div
-                            v-if="view === 'framework' || view === 'concept'"
+                            v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             :disabled="!canPaste"
                             class="button is-outlined "
                             @click="pasteClick"
@@ -204,7 +204,7 @@
                             </span>
                         </div>
                         <div
-                            v-if="view === 'framework' || view === 'concept'"
+                            v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             :disabled="!clipboardContainsItem"
                             class="button is-outlined "
                             @click="clearClipboard"
@@ -319,7 +319,7 @@
                 tag="ul"
                 class="lode__hierarchy-ul"
                 :class=" scrolled ? 'ul-list-scrolled' : ''"
-                :disabled="canEdit !== true || !isDraggable"
+                :disabled="canEdit !== true || !isDraggable || !hierarchyEnabled"
                 :group="{ name: 'test' }"
                 @start="beginDrag"
                 handle=".handle"
@@ -363,7 +363,9 @@
                     :parentChecked="false"
                     :shiftKey="shiftKey"
                     :arrowKey="arrowKey"
-                    :largeNumberOfItems="hasLargeNumberOfItems" />
+                    :largeNumberOfItems="hasLargeNumberOfItems"
+                    :hierarchyEnabled="hierarchyEnabled"
+                    :containerSubType="container.subType" />
 
             <!--</transition-group>-->
             </draggable>
@@ -553,6 +555,13 @@ export default {
     computed: {
         showSelectSubjectModal: function() {
             return this.$store.getters['app/showModal'] && this.$store.getters['app/dynamicModalContent'] === 'Subject';
+        },
+        hierarchyEnabled: function() {
+            if (this.container.subType === 'Collection') {
+                return false;
+            } else {
+                return true;
+            }
         },
         filteredAvailablePersons: function() {
             return this.availablePersons.filter(person => {
