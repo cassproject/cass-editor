@@ -720,6 +720,10 @@ export default {
         }
         let documentBody = document.getElementById('concept');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
+        if (this.queryParams.ceasnDataFields === 'true') {
+            this.getConceptCtids();
+            this.getConceptRegistryUrls();
+        }
     },
     beforeDestroy() {
     },
