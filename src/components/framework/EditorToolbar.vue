@@ -546,7 +546,7 @@ export default {
             return this.framework.directory;
         },
         canManageAssertions: function() {
-            if (this.queryParams.disableAssertions !== 'true' && this.loggedIn) {
+            if (this.queryParams.disableAssertions !== 'true' && this.loggedIn && !this.conceptMode) {
                 return true;
             }
             return false;

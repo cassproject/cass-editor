@@ -117,6 +117,7 @@
             <add-new-dropdown
                 :frameworkEnabled="showFrameworks"
                 :directoryEnabled="showFrameworks"
+                :collectionEnabled="queryParams.ceasnDataFields === 'true'"
                 @close="addFrameworkOrDirectory = false"
                 :conceptEnabled="showConcepts"
                 @toggle="addFrameworkOrDirectory = !addFrameworkOrDirectory"
@@ -125,6 +126,7 @@
                 @directory="$store.commit('app/showModal', {component: 'AddDirectory'});"
                 @concept="$emit('create-new-concept-scheme')"
                 @framework="$emit('create-new-framework')"
+                @collection="$emit('create-new-collection')"
                 :active="addFrameworkOrDirectory" />
         </div>
         <!-- GENERAL MENU -->
@@ -138,11 +140,25 @@
             class="menu-list"
             v-if="showFrameworks">
             <li class="has-text-white">
-                <router-link :to="{path: '/frameworks', query: queryParams}">
+                <router-link
+                    :to="{path: '/frameworks', query: queryParams}"
+                    @click.native="$store.commit('editor/collectionMode', false)">
                     <span class="icon">
                         <i class="fa fa-th-list" />
                     </span>
                     <span v-if="showSideNav"> Frameworks</span>
+                </router-link>
+            </li>
+            <li
+                class="has-text-white"
+                v-if="queryParams.ceasnDataFields === 'true' && showSideNav">
+                <router-link
+                    :to="{path: '/collections', query: queryParams}"
+                    @click.native="$store.commit('editor/collectionMode', true)">
+                    <span class="icon">
+                        <i class="fa fa-th-list" />
+                    </span>
+                    <span v-if="showSideNav"> Collections</span>
                 </router-link>
             </li>
             <li

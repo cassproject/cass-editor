@@ -49,6 +49,12 @@
                     Framework
                 </a>
                 <a
+                    v-if="collectionEnabled"
+                    @click="$emit('collection')"
+                    class="dropdown-item">
+                    Collection
+                </a>
+                <a
                     v-if="subdirectoryEnabled"
                     @click="$emit('subdirectory')"
                     class="dropdown-item">
@@ -118,6 +124,10 @@ export default {
             default: false
         },
         subdirectoryEnabled: {
+            type: Boolean,
+            default: false
+        },
+        collectionEnabled: {
             type: Boolean,
             default: false
         }

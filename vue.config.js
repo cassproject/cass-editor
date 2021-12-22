@@ -14,7 +14,7 @@ module.exports = {
     },
     devServer: {
         host: 'localhost',
-        https: false,
+        https: true,
         key: fs.readFileSync('localhost.key'),
         cert: fs.readFileSync('localhost.crt'),
         ca: fs.readFileSync('ca.pem')
