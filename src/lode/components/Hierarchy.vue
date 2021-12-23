@@ -605,7 +605,7 @@ export default {
             }
         },
         showAddComments() {
-            if (this.$store.getters['editor/queryParams'].concepts === "true") {
+            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true) {
                 return false;
             }
             return this.$store.state.app.canAddComments;

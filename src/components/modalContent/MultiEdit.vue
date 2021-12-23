@@ -338,7 +338,7 @@ export default {
         save: async function(expandedCompetency) {
             var me = this;
             var context = "https://schema.cassproject.org/0.4";
-            if (this.$store.getters['editor/queryParams'].concepts === "true") {
+            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true) {
                 context += "/skos";
             }
             try {

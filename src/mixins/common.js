@@ -509,7 +509,7 @@ export default {
             }
         },
         addAlignments: async function(targets, thing, relationType, allowSave) {
-            if (this.$store.getters['editor/queryParams'].concepts === "true") {
+            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true) {
                 return this.addConceptAlignments(targets, thing, relationType);
             }
             if (relationType === "ceasn:skillEmbodied" || relationType === "ceasn:abilityEmbodied" || relationType === "ceasn:knowledgeEmbodied" || relationType === "ceasn:taskEmbodied") {
