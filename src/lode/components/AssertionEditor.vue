@@ -82,19 +82,10 @@
         </small>
         <div
             v-if="assertionsByOthers && assertionsByOthers.length > 0"
-            @click="iconAssertion = !iconAssertion"
-            class="assertions section btop ptop">
-            <span
-                v-if="iconAssertion && assertionsByOthers && assertionsByOthers.length > 0"
-                :title="otherClaimsPhrase">
-                <i
-                    class="mdi mdi-account-group mdi-18px"
-                    aria-hidden="true" />: </span>
+            class="assertions-others">
             <Assertion
-                :icon="iconAssertion"
                 v-for="item in assertionsByOthers"
                 :key="uri+item.id"
-                :short="true"
                 :uri="item.id"
                 title="Assertion from elsewhere" />
         </div>
@@ -123,8 +114,7 @@ export default {
             evidence: null,
             evidenceExplanation: null,
             assertionsByOthers: [],
-            iconAssertion: true,
-            subjectPerson: null // TODO
+            iconAssertion: true
         };
     },
     created: function() {},
@@ -151,7 +141,7 @@ export default {
             return this.$store.getters['editor/getSubject'];
         },
         otherClaimsPhrase: function() {
-            return "Others have made claims about " + (this.subject === this.me ? "you" : (this.subjectPerson === null ? "them" : this.subjectPerson.getName())) + ". Click to expand.";
+            return "Others have made claims about " + (this.subject === this.me ? "you" : (this.subjectPerson === null ? "them" : this.subjectPerson)) + ". Click to expand.";
         },
         reasonPlaceholder: function() {
             if (this.me === this.subject) {
@@ -187,6 +177,9 @@ export default {
             } else {
                 return 'far fa-square';
             }
+        },
+        subjectPerson: function() {
+            return this.$store.getters['editor/getSubjectName'];
         }
     },
     methods: {
@@ -201,7 +194,6 @@ export default {
             this.evidenceExplanation = null;
             this.assertionsByOthers = [];
             this.iconAssertion = true;
-            this.subjectPerson = null; // TODO
 
             if (this.competentStateEah != null) {
                 this.competentStateEah.stop();
@@ -250,6 +242,7 @@ export default {
                                         negativeCallback();
                                     }
                                 } else {
+                                    this.assertionsByOthers.push(assertion);
                                     callback();
                                 }
                             }, callback);
