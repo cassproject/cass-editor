@@ -2,29 +2,13 @@
     <span
         class="assertion"
         v-observe-visibility="{callback: initialize,once: true}">
-        <span v-if="icon">
-            <i
-                v-if="negative"
-                class="mdi mdi-18px mdi-close-box-outline"
-                aria-hidden="true"
-                :title="statement" />
-            <i
-                v-else
-                class="mdi mdi-18px mdi-checkbox-marked-circle-outline"
-                aria-hidden="true"
-                :title="statement" />
-        </span>
-        <span v-else-if="short">
+        <span>
             <li v-if="ok">
-                <img
-                    style="vertical-align: sub;"
-                    v-if="fingerprintUrl"
-                    :src="fingerprintUrl"
-                    :title="agent"> <span style="color:blue">{{ agent }}</span>
-                <span v-if="timestamp">claimed {{ timeAgo }}:</span>
+                <strong>{{ agent }}</strong>
+                <span v-if="timestamp"> claimed {{ timeAgo }}:</span>
                 <span class="statement antitile">
-                    <span v-if="negative">{{ subject }} can't do this</span>
-                    <span v-else>{{ subject }} can do this</span>
+                    <span v-if="negative"><strong> {{ subject }}</strong> can't do this</span>
+                    <span v-else><strong> {{ subject }}</strong> can do this</span>
                     <span v-if="evidenceText"> because they
                         <span
                             v-for="(evidenceThing, index) in evidenceText"
@@ -41,32 +25,6 @@
                 </span>
             </li>
         </span>
-        <span v-else>
-            <li v-if="ok">
-                <span v-if="timestamp">{{ timeAgo }}, </span>
-                {{ agent }} claimed {{ subject }}
-                <span v-if="negative">could not</span><span v-else>could</span>
-                demonstrate <a
-                    href="#"
-                    @click="gotoCompetency"
-                    :title="assertion.competency">{{ competencyText }}</a>
-                <span v-if="evidenceText"> because they
-                    <span
-                        v-for="(evidenceThing, index) in evidenceText"
-                        :key="index">
-                        <span v-if="index != 0"> and they </span>
-                        <a
-                            v-if="evidenceThing.url"
-                            :href="evidenceThing.url"
-                            target="_blank">{{ evidenceThing.text }}</a>
-                        <span v-else>{{ evidenceThing.text }}</span>
-                    </span>
-                </span>
-                <a
-                    v-if="badged"
-                    :href="badgeUrl">Badge</a>
-            </li>
-        </span>
     </span>
 </template>
 <script>
@@ -75,13 +33,11 @@ export default {
     name: 'Assertion',
     props: {
         uri: String,
-        icon: Boolean,
-        short: Boolean
+        icon: Boolean
     },
     data: function() {
         return {
             assertion: null,
-            subject: null,
             subjectPk: null,
             agentPk: null,
             agent: null,
@@ -92,7 +48,8 @@ export default {
             agentPerson: null,
             subjectPerson: null,
             evidence: null,
-            evidenceExplanation: null
+            evidenceExplanation: null,
+            subject: null
         };
     },
     computed: {
@@ -126,7 +83,7 @@ export default {
 
             var statement = "";
             if (this.timestamp != null) {
-                statement += moment(this.timestamp).fromNow() + ", ";
+                statement += this.$moment(this.timestamp).fromNow() + ", ";
             }
 
             statement += this.agent + " claimed " + this.subject;
@@ -144,7 +101,7 @@ export default {
             if (this.timestamp == null) {
                 return null;
             }
-            return moment(this.timestamp).fromNow();
+            return this.$moment(this.timestamp).fromNow();
         },
         competencyText: function() {
             if (this.competency == null) {
@@ -181,7 +138,7 @@ export default {
     },
     watch: {
         evidence: function(oldEvidence, newEvidence) {
-            evidenceExplanation = null;
+            this.evidenceExplanation = null;
             if (this.evidence != null) {
                 if (this.evidence.length > 0) {
                     this.$store.dispatch('editor/computeBecause', this.evidence).then((because) => {
@@ -201,9 +158,9 @@ export default {
                     if (assertion.subject == null) {
                         this.subject = "nobody";
                     } else {
-                        assertion.getSubjectNameAsync((name) => {
+                        assertion.getSubjectName(window.repo).then((name) => {
                             this.subject = name;
-                        }, appError);
+                        }).catch(appError);
                         assertion.getSubjectAsync((pk) => {
                             this.subjectPk = pk.toPem();
                         }, appError);
@@ -211,9 +168,9 @@ export default {
                     if (assertion.agent == null) {
                         this.agent = "nobody";
                     } else {
-                        assertion.getAgentNameAsync((name) => {
+                        assertion.getAgentName(window.repo).then((name) => {
                             this.agent = name;
-                        }, appError);
+                        }).catch(appError);
                     }
                     assertion.getAgentAsync((pk) => {
                         this.agentPk = pk.toPem();
