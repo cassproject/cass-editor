@@ -24,7 +24,7 @@
                     type="search"
                     v-model="searchTerm"
                     :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
-                    @keyup.enter="updateSearchTerm(searchTerm)">
+                    @input="updateSearchTerm(searchTerm)">
                 <span
                     v-if="searchTerm === ''"
                     class="icon is-small is-right">
@@ -118,6 +118,7 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
 export default {
     name: 'SearchBar',
     props: {
@@ -150,11 +151,6 @@ export default {
         };
     },
     watch: {
-        searchTerm: function(val) {
-            if (val.length === 0) {
-                this.updateSearchTerm(val);
-            }
-        },
         storeSearchTerm: function() {
             this.searchTerm = this.storeSearchTerm;
         },
@@ -206,9 +202,9 @@ export default {
             filterArray[objIndex].checked = false;
             this.$store.commit(storeCaller, filterArray);
         },
-        updateSearchTerm: function(e) {
+        updateSearchTerm: debounce(function(e) {
             this.$store.commit('app/searchTerm', e);
-        }
+        }, 500)
     },
     computed: {
         queryParams: function() {
