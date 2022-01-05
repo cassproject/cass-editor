@@ -409,12 +409,13 @@ drag, drag, and chosen states
             }
             ul.lode__hierarchy-sub-ul {
                 padding: 0rem 0rem;
+                margin-left: 1.5rem;
                 li.lode__hierarchy-sub-li {
                     border: solid 2px transparent;
                     .lode__name {
                         font-size: 1rem; // top level competencies
                         color: rgba($text, .95);
-                        font-weight: 700;   
+                        font-weight: 400;   
                     }
                     
                 }
