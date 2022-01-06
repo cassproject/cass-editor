@@ -285,7 +285,7 @@
                         </div>
                     </template>
                     <!-- users -->
-                    <template v-if="loggedIn && canEditObject && !(objectType === 'CreativeWork' && !$store.state.featuresEnabled.userManagementEnabled)">
+                    <template v-if="loggedInPerson && loggedInPerson.name && canEditObject && !(objectType === 'CreativeWork' && !$store.state.featuresEnabled.userManagementEnabled)">
                         <button
                             :class="accordion === 'users' ? 'active' : ''"
                             @click="clickAccordion('users')"
@@ -1255,11 +1255,8 @@ export default {
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
-        loggedIn: function() {
-            if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
-                return true;
-            }
-            return false;
+        loggedInPerson: function() {
+            return this.$store.getters['user/loggedOnPerson'];
         },
         selectedDirectoryId: function() {
             if (this.$store.getters['app/selectedDirectory']) {

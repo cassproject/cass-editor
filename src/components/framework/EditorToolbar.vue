@@ -507,6 +507,9 @@ export default {
             }
             return false;
         },
+        loggedInPerson: function() {
+            return this.$store.getters['user/loggedOnPerson'];
+        },
         configuration: function() {
             return this.$store.getters['editor/framework'].configuration;
         },
@@ -546,7 +549,7 @@ export default {
             return this.framework.directory;
         },
         canManageAssertions: function() {
-            if (this.queryParams.disableAssertions !== 'true' && this.loggedIn && !this.conceptMode) {
+            if (this.queryParams.disableAssertions !== 'true' && this.loggedInPerson && this.loggedInPerson.name && !this.conceptMode) {
                 return true;
             }
             return false;

@@ -802,60 +802,64 @@ export default {
                 }, false, me.repo);
         },
         importJsonLd: function(data) {
-            this.$store.commit('app/importTransition', 'process');
-            var formData = new FormData();
-            if (data != null && data !== undefined) {
-                formData.append('data', JSON.stringify(data));
-            } else {
-                var file = this.importFile[0];
-                formData.append('file', file);
-            }
-            var identity = EcIdentityManager.default.ids[0];
-            if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
-            let me = this;
-            me.$store.commit('app/importFramework', null);
-            EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
-                var framework;
-                if (EcRepository.cache) {
-                    delete EcRepository.cache[data];
-                }
-                if (me.conceptMode) {
-                    framework = await EcConceptScheme.get(data);
+            return new Promise((resolve, reject) => {
+                this.$store.commit('app/importTransition', 'process');
+                var formData = new FormData();
+                if (data != null && data !== undefined) {
+                    formData.append('data', JSON.stringify(data));
                 } else {
-                    framework = await EcFramework.get(data);
+                    var file = this.importFile[0];
+                    formData.append('file', file);
+                }
+                var identity = EcIdentityManager.default.ids[0];
+                if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
+                let me = this;
+                me.$store.commit('app/importFramework', null);
+                EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
+                    var framework;
+                    if (EcRepository.cache) {
+                        delete EcRepository.cache[data];
+                    }
+                    if (me.conceptMode) {
+                        framework = await EcConceptScheme.get(data);
+                    } else {
+                        framework = await EcFramework.get(data);
+                        me.$store.commit('app/importFramework', framework);
+                    }
+                    me.$store.commit('editor/framework', framework);
                     me.$store.commit('app/importFramework', framework);
-                }
-                me.$store.commit('editor/framework', framework);
-                me.$store.commit('app/importFramework', framework);
-                me.spitEvent("importFinished", framework.shortId(), "importPage");
-                if (me.importFile != null) {
-                    me.importFile.splice(0, 1);
-                }
-                if (me.importFile && me.importFile.length > 0) {
-                    me.firstImport = false;
-                    me.analyzeImportFile();
+                    me.spitEvent("importFinished", framework.shortId(), "importPage");
+                    if (me.importFile != null) {
+                        me.importFile.splice(0, 1);
+                    }
+                    if (me.importFile && me.importFile.length > 0) {
+                        me.firstImport = false;
+                        me.analyzeImportFile();
+                    } else {
+                        me.importSuccess();
+                        resolve();
+                    }
+                }, function(failure) {
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
+                    appLog(failure.statusText);
+                    me.$store.commit('app/addImportError', failure);
+                    reject(failure.statusText);
+                });
+                if (me.conceptMode) {
+                    if (me.queryParams.ceasnDataFields === 'true') {
+                        me.$store.commit('app/importStatus', "Importing Concept Scheme");
+                    } else {
+                        me.$store.commit('app/importStatus', "Importing Taxonomy");
+                    }
                 } else {
-                    me.importSuccess();
+                    if (me.importFileType === 'ctdlasnjsonldcollection') {
+                        me.$store.commit('app/importStatus', 'Importing Collection');
+                    } else {
+                        me.$store.commit('app/importStatus', 'Importing Framework');
+                    }
                 }
-            }, function(failure) {
-                me.$store.commit('app/importTransition', 'process');
-                me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
-                appLog(failure.statusText);
-                me.$store.commit('app/addImportError', failure);
             });
-            if (me.conceptMode) {
-                if (me.queryParams.ceasnDataFields === 'true') {
-                    me.$store.commit('app/importStatus', "Importing Concept Scheme");
-                } else {
-                    me.$store.commit('app/importStatus', "Importing Taxonomy");
-                }
-            } else {
-                if (me.importFileType === 'ctdlasnjsonldcollection') {
-                    me.$store.commit('app/importStatus', 'Importing Collection');
-                } else {
-                    me.$store.commit('app/importStatus', 'Importing Framework');
-                }
-            }
         },
         importCtdlAsnConceptCsv: function() {
             var me = this;
@@ -965,72 +969,80 @@ export default {
             this.$store.commit('app/showModal', modalObject);
         },
         importFromUrl: function() {
-            let me = this;
-            let error = {
-                message: "Unable to import from the URL source provided.",
-                details: ""
-            };
-            if (!this.isValidUrl(this.importUrl)) {
-                error.details = "The URL provided is not valid.";
-                me.$store.commit('app/addImportError', error.details);
-                me.$store.commit('app/importTransition', 'upload');
-                me.showModal('error', error);
-                return;
-            }
-            EcRemote.getExpectingString(this.importUrl, null, function(result) {
-                var graph = result["@graph"];
-                if (graph != null) {
-                    var id = graph[0]["@id"];
-                    if (id) {
-                        me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
-                            appLog(frameworks);
-                            if (frameworks.length > 0) {
-                                me.$store.commit('app/importStatus', 'framework found...');
-                                if (me.importType === 'url') {
-                                    me.showModal('duplicateOverwriteOnly', [result, frameworks[0]]);
-                                }
-                            } else {
-                                me.$store.commit('app/importStatus', 'no match, saving new framework...');
-                                me.importJsonLd(result);
-                            } /* TO DO - ERROR HANDLING HERE */
-                        }, function(failure) {
-                            error.details = failure;
-                            me.$store.commit('app/importStatus', failure);
-                            me.$store.commit('app/importTransition', 'process');
-                            me.$store.commit('app/addImportError', failure);
-                            me.showModal('error', error);
-                        });
-                    } else {
-                        me.importJsonLd(result);
-                    }
-                } else {
-                    error.details = "URL must have an '@graph' field at the top level.";
+            return new Promise((resolve, reject) => {
+                let me = this;
+                let error = {
+                    message: "Unable to import from the URL source provided.",
+                    details: ""
+                };
+                if (!this.isValidUrl(this.importUrl)) {
+                    error.details = "The URL provided is not valid.";
                     me.$store.commit('app/addImportError', error.details);
-                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/importTransition', 'upload');
                     me.showModal('error', error);
+                    reject(error.details);
                     return;
                 }
-                if (graph[0]["@type"].indexOf("Concept") !== -1) {
-                    if (me.ceasnDataFields === 'true') {
-                        error.details = "Competency Editor cannot be used to import concept schemes.";
+                EcRemote.getExpectingString(this.importUrl, null, function(result) {
+                    var graph = result["@graph"];
+                    if (graph != null) {
+                        var id = graph[0]["@id"];
+                        if (id) {
+                            me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
+                                appLog(frameworks);
+                                if (frameworks.length > 0) {
+                                    me.$store.commit('app/importStatus', 'framework found...');
+                                    if (me.importType === 'url') {
+                                        me.showModal('duplicateOverwriteOnly', [result, frameworks[0]]);
+                                        resolve();
+                                    }
+                                } else {
+                                    me.$store.commit('app/importStatus', 'no match, saving new framework...');
+                                    me.importJsonLd(result).then(resolve).catch(reject);
+                                } /* TO DO - ERROR HANDLING HERE */
+                            }, function(failure) {
+                                error.details = failure;
+                                me.$store.commit('app/importStatus', failure);
+                                me.$store.commit('app/importTransition', 'process');
+                                me.$store.commit('app/addImportError', failure);
+                                me.showModal('error', error);
+                                reject(error.details);
+                            });
+                        } else {
+                            me.importJsonLd(result).then(resolve).catch(reject);
+                        }
                     } else {
-                        error.details = "Competency Editor cannot be used to import taxonomies.";
+                        error.details = "URL must have an '@graph' field at the top level.";
+                        me.$store.commit('app/addImportError', error.details);
+                        me.$store.commit('app/importTransition', 'process');
+                        me.showModal('error', error);
+                        reject(error.details);
+                        return;
                     }
-                    me.$store.commit('app/addImportError', error.details);
-                    me.$store.commit('app/importTransition', 'process');
-                    me.showModal('error', error);
-                }
-            }, function(failure) {
-                if (!failure) {
-                    me.$store.commit('app/addImportError', error.message);
-                    me.$store.commit('app/importTransition', 'upload');
-                    me.showModal('error', error);
-                } else {
-                    error.details = failure;
-                    me.$store.commit('app/addImportError', failure);
-                    me.$store.commit('app/importTransition', 'upload');
-                    me.showModal('error', error);
-                }
+                    if (graph[0]["@type"].indexOf("Concept") !== -1) {
+                        if (me.ceasnDataFields === 'true') {
+                            error.details = "Competency Editor cannot be used to import concept schemes.";
+                        } else {
+                            error.details = "Competency Editor cannot be used to import taxonomies.";
+                        }
+                        me.$store.commit('app/addImportError', error.details);
+                        me.$store.commit('app/importTransition', 'process');
+                        me.showModal('error', error);
+                        reject(error.details);
+                    }
+                }, function(failure) {
+                    if (!failure) {
+                        me.$store.commit('app/addImportError', error.message);
+                        me.$store.commit('app/importTransition', 'upload');
+                        me.showModal('error', error);
+                    } else {
+                        error.details = failure;
+                        me.$store.commit('app/addImportError', failure);
+                        me.$store.commit('app/importTransition', 'upload');
+                        me.showModal('error', error);
+                    }
+                    reject(error.message || error.failure);
+                });
             });
         },
         isValidUrl(s) {

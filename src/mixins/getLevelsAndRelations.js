@@ -99,6 +99,16 @@ export default {
                         }
                         if (relationType === "narrows") {
                             reciprocalRelation = "broadens";
+                        } else if (relationType === "broadens") {
+                            reciprocalRelation = "narrows";
+                        } else if (relationType === "isEquivalentTo") {
+                            reciprocalRelation = "isEquivalentTo";
+                        } else if (relationType === "requires") {
+                            reciprocalRelation = "isRequiredBy";
+                        } else if (relationType === "desires") {
+                            reciprocalRelation = "isDesiredBy";
+                        } else if (relationType === "isRelatedTo") {
+                            reciprocalRelation = "isRelatedTo";
                         }
                         relation.type = relationType;
                         relation.source = a.source;
