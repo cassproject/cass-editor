@@ -355,7 +355,7 @@ export default {
                         var label = this.profile[key]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
                         var description = this.profile[key]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
                         var type = "property";
-                        if (this.profile[key]["http://schema.org/rangeIncludes"][0]["@id"].toLowerCase().indexOf("competency") !== -1) {
+                        if (this.profile[key]["http://schema.org/rangeIncludes"][0]["@id"].toLowerCase().indexOf("competency") !== -1 || this.profile[key]["http://schema.org/rangeIncludes"][0]["@id"].toLowerCase().indexOf("concept") !== -1) {
                             if (!(this.profile[key]["isDirectLink"] && (this.profile[key]["isDirectLink"] === 'true' || this.profile[key]["isDirectLink"] === true))) {
                                 type = "relationship";
                             }

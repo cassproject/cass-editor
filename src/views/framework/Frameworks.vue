@@ -75,7 +75,9 @@
                         class="buttons is-right frameworks-buttons">
                         <add-new-dropdown
                             :frameworkEnabled="true"
+                            :collectionEnabled="queryParams.ceasnDataFields === 'true'"
                             @framework="$emit('create-new-framework')"
+                            @collection="$emit('create-new-collection')"
                             @close="createDropDownActive = false"
                             @toggle="createDropDownActive = !createDropDownActive"
                             :active="createDropDownActive" />
@@ -344,6 +346,13 @@ export default {
         },
         searchOptions: function() {
             let search = "";
+            if (this.queryParams.ceasnDataFields === 'true' && this.type === "Framework") {
+                if (this.collectionMode) {
+                    search += " AND (subType:\"Collection\")";
+                } else {
+                    search += " AND NOT (subType:\"Collection\")";
+                }
+            }
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
@@ -385,7 +394,8 @@ export default {
             let obj = {};
             obj.size = 20;
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
-            obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
+            let type = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "text" : "date";
+            obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
             if (EcIdentityManager.default.ids.length > 0 && this.queryParams && ((!this.conceptMode && this.queryParams.show === 'mine') ||
                 (this.conceptMode && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
@@ -405,6 +415,9 @@ export default {
         },
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
+        },
+        collectionMode: function() {
+            return this.$store.getters['editor/collectionMode'];
         }
     },
     components: {

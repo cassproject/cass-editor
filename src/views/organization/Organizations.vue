@@ -92,7 +92,8 @@ export default {
             let obj = {};
             obj.size = 20;
             var order = (this.sortBy === "name.keyword") ? "asc" : "desc";
-            obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "long",  "missing" : "_last"}} ]';
+            let type = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "text" : "date";
+            obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
             if (this.queryParams && this.queryParams.show != null && this.queryParams.show === 'mine') {
                 obj.ownership = 'me';
             }

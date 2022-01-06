@@ -192,7 +192,7 @@
                                         <div class="select is-small is-primary">
                                             <select
                                                 v-model="group.view"
-                                                @change="group.changed=true">
+                                                @change="group.changed=true;saveSettings()">
                                                 <option
                                                     :value="option.value"
                                                     v-for="option in viewOptions"

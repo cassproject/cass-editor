@@ -1,5 +1,7 @@
 <template>
-    <div class="lode__hierarchy">
+    <div
+        class="lode__hierarchy"
+        :class="{'is-dragging': dragging}">
         <div
             class="hierarchy-buttons columns is-gapless is-paddingless is-mobile is-marginless is-paddingless">
             <!-- CONTROLS FOR SELECT: ENABLED MULTI EDIT  -->
@@ -193,6 +195,7 @@
                 handle=".handle"
                 @end="endDrag">
                 <HierarchyNode
+                    :depth="1"
                     :view="view"
                     @create-new-node-event="onCreateNewNode"
                     :subview="subview"
@@ -510,15 +513,16 @@ export default {
             }
             appLog(foo.oldIndex, foo.newIndex);
             var toId = null;
-            var plusup = 0;
+            var toLast = false;
             if (this.shiftKey) {
                 this.controlOnStart = true;
             }
             if (foo.from.id === foo.to.id) {
-                if (foo.newIndex < this.hierarchy.length) {
-                    toId = this.hierarchy[foo.newIndex].obj.shortId();
+                if (foo.newIndex + 1 < this.hierarchy.length) {
+                    toId = this.hierarchy[foo.newIndex + 1].obj.shortId();
+                } else if (foo.newIndex === this.hierarchy.length - 1) {
+                    toLast = true;
                 }
-                plusup = 1;
             } else {
                 if (foo.to.children[foo.newIndex] === undefined) {
                     toId = foo.to.id;
@@ -533,13 +537,13 @@ export default {
                 toId,
                 foo.from.id,
                 foo.to.id,
-                !this.controlOnStart, plusup);
+                !this.controlOnStart, toLast);
         },
-        move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
+        move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, toLast) {
             this.once = true;
             var me = this;
             if (fromContainerId === toContainerId) {
-                var container = await EcRepository.get(toContainerId);
+                var container = toContainerId ? await EcRepository.get(toContainerId) : this.container;
                 var property = "skos:narrower";
                 if (container.type === "ConceptScheme") {
                     container = this.container;
@@ -554,8 +558,12 @@ export default {
                     }
                     container[property].push(fromId);
                 } else {
-                    var toIndex = container[property].indexOf(toId);
-                    container[property].splice(toIndex, 0, fromId);
+                    if (toLast) {
+                        container[property].push(fromId);
+                    } else {
+                        var toIndex = container[property].indexOf(toId);
+                        container[property].splice(toIndex, 0, fromId);
+                    }
                 }
                 me.$store.commit('editor/addEditsToUndo', [{operation: "update", id: container.shortId(), fieldChanged: [property], initialValue: [initialValue]}]);
                 container["schema:dateModified"] = new Date().toISOString();
@@ -567,10 +575,10 @@ export default {
                 }, appError);
             } else {
                 var moveComp = await EcConcept.get(fromId);
-                var fromContainer = await EcRepository.get(fromContainerId);
+                var fromContainer = fromContainerId ? await EcRepository.get(fromContainerId) : this.container;
                 var fromProperty = "skos:narrower";
                 var fromProperty2 = "skos:broader";
-                var toContainer = await EcRepository.get(toContainerId);
+                var toContainer = toContainerId ? await EcRepository.get(toContainerId) : this.container;
                 var toProperty = "skos:narrower";
                 var toProperty2 = "skos:broader";
                 if (fromContainer.type === "ConceptScheme") {

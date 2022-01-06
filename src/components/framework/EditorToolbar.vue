@@ -363,7 +363,7 @@ export default {
                 }
             });
         },
-        expand: function(o, after) {
+        expand: async function(o, after) {
             var toExpand = JSON.parse(o.toJson());
             if (toExpand["@context"] != null && toExpand["@context"].startsWith("http://")) {
                 toExpand["@context"] = toExpand["@context"].replace("http://", "https://");
@@ -371,24 +371,21 @@ export default {
             if (toExpand["@context"] != null && toExpand["@context"].indexOf("skos") !== -1) {
                 toExpand["@context"] = "https://schema.cassproject.org/0.4/skos/";
             }
-            jsonld.expand(toExpand, function(err, expanded) {
-                if (err == null) {
-                    after(expanded[0]);
-                } else {
-                    after(null);
-                }
-            });
+            try {
+                let expanded = await jsonld.expand(toExpand);
+                after(expanded[0]);
+            } catch (err) {
+                after(null);
+            }
         },
-        saveExpanded: function(expandedCompetency) {
+        saveExpanded: async function(expandedCompetency) {
             var me = this;
             var context = "https://schema.cassproject.org/0.4";
             if (expandedCompetency["@type"][0].toLowerCase().indexOf("concept") !== -1) {
                 context = "https://schema.cassproject.org/0.4/skos";
             }
-            jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context], async function(err, compacted) {
-                if (err != null) {
-                    appError(err);
-                }
+            try {
+                let compacted = await jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context]);
                 if (compacted) {
                     var rld = new EcRemoteLinkedData();
                     rld.copyFrom(compacted);
@@ -406,7 +403,9 @@ export default {
                         me.editsFinishedCounter++;
                     });
                 }
-            });
+            } catch (err) {
+                appError(err);
+            }
         },
         // Compact operation removes arrays when length is 1, but some fields need to be arrays in the data that's saved
         turnFieldsBackIntoArrays: function(rld) {
@@ -464,8 +463,11 @@ export default {
                         return {name: x.name, key: x.owner[0]};
                     }));
                 });
-                await this.$store.dispatch('editor/searchForAssertions', 5000);
-                this.$store.commit('editor/setManageAssertions', true);
+                this.$store.dispatch('editor/searchForAssertions', 500).then(() => {
+                    this.$store.commit('editor/setManageAssertions', true);
+                }).catch(() => {
+                    // TODO: Handle assertion search error
+                });
             }
         }
     },
@@ -504,6 +506,9 @@ export default {
                 return true;
             }
             return false;
+        },
+        loggedInPerson: function() {
+            return this.$store.getters['user/loggedOnPerson'];
         },
         configuration: function() {
             return this.$store.getters['editor/framework'].configuration;
@@ -544,7 +549,7 @@ export default {
             return this.framework.directory;
         },
         canManageAssertions: function() {
-            if (this.queryParams.disableAssertions !== 'true' && this.loggedIn) {
+            if (this.queryParams.disableAssertions !== 'true' && this.loggedInPerson && this.loggedInPerson.name && !this.conceptMode) {
                 return true;
             }
             return false;

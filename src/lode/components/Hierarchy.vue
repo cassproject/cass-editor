@@ -8,13 +8,13 @@
                 <!-- CONTROLS FOR EXPAND  -->
                 <div class="column is-narrow">
                     <div
-                        v-if="expanded"
+                        v-if="expanded && hierarchyEnabled"
                         class="icon is-vcentered"
                         @click="expanded=false">
                         <i class="fa fa-caret-down has-text-primary is-size-2" />
                     </div>
                     <div
-                        v-else-if="!expanded"
+                        v-else-if="!expanded && hierarchyEnabled"
                         class="icon is-vcentered"
                         @click="expanded=true">
                         <i class="fa fa-caret-right has-text-primary is-size-2" />
@@ -34,7 +34,7 @@
                 <!-- CONTROLS FOR SELECT: ENABLED MULTI EDIT  -->
                 <div class="column is-narrow">
                     <div
-                        v-if="(canEdit && view !== 'importPreview' && view !== 'importLight' && view !== 'crosswalk') || queryParams.select || view === 'competencySearch'"
+                        v-if="(canEdit && view !== 'importPreview' && view !== 'importLight' && view !== 'crosswalk' && hierarchyEnabled) || queryParams.select || view === 'competencySearch'"
                         class="pl-2 check-radio-all-column">
                         <div
                             class="field">
@@ -171,7 +171,7 @@
                             <span>search competencies</span>
                         </div>
                         <div
-                            v-if="view === 'framework' || view === 'concept'"
+                            v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             :disabled="!canCopyOrCut"
                             title="Copy competency"
                             :class="canCopyOrCut ? 'is-primary' : 'is-disabled'"
@@ -182,7 +182,7 @@
                             </span>
                         </div>
                         <div
-                            v-if="view === 'framework' || view === 'concept'"
+                            v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             title="Cut competency"
                             :disabled="!canCopyOrCut"
                             class="button is-outlined"
@@ -193,7 +193,7 @@
                             </span>
                         </div>
                         <div
-                            v-if="view === 'framework' || view === 'concept'"
+                            v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             :disabled="!canPaste"
                             class="button is-outlined "
                             @click="pasteClick"
@@ -204,7 +204,7 @@
                             </span>
                         </div>
                         <div
-                            v-if="view === 'framework' || view === 'concept'"
+                            v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             :disabled="!clipboardContainsItem"
                             class="button is-outlined "
                             @click="clearClipboard"
@@ -319,7 +319,7 @@
                 tag="ul"
                 class="lode__hierarchy-ul"
                 :class=" scrolled ? 'ul-list-scrolled' : ''"
-                :disabled="canEdit !== true || !isDraggable"
+                :disabled="canEdit !== true || !isDraggable || !hierarchyEnabled"
                 :group="{ name: 'test' }"
                 @start="beginDrag"
                 handle=".handle"
@@ -363,7 +363,9 @@
                     :parentChecked="false"
                     :shiftKey="shiftKey"
                     :arrowKey="arrowKey"
-                    :largeNumberOfItems="hasLargeNumberOfItems" />
+                    :largeNumberOfItems="hasLargeNumberOfItems"
+                    :hierarchyEnabled="hierarchyEnabled"
+                    :containerSubType="container.subType" />
 
             <!--</transition-group>-->
             </draggable>
@@ -554,6 +556,13 @@ export default {
         showSelectSubjectModal: function() {
             return this.$store.getters['app/showModal'] && this.$store.getters['app/dynamicModalContent'] === 'Subject';
         },
+        hierarchyEnabled: function() {
+            if (this.container.subType === 'Collection') {
+                return false;
+            } else {
+                return true;
+            }
+        },
         filteredAvailablePersons: function() {
             return this.availablePersons.filter(person => {
                 return (((person.getName() && person.getName().toLowerCase().indexOf(this.personFilter.toLowerCase()) > -1) ||
@@ -596,7 +605,7 @@ export default {
             }
         },
         showAddComments() {
-            if (this.$store.getters['editor/queryParams'].concepts === "true") {
+            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true) {
                 return false;
             }
             return this.$store.state.app.canAddComments;
@@ -663,7 +672,9 @@ export default {
         }
         window.addEventListener("keydown", this.keydown);
         window.addEventListener("keyup", this.keyup);
-        this.getSubjectInfo();
+        if (this.$store.getters['editor/getSubject']) {
+            this.getSubjectInfo();
+        }
     },
     beforeDestroy: function() {
         window.removeEventListener('keyup', this.keyup);
@@ -870,15 +881,16 @@ export default {
             }
             appLog(foo.oldIndex, foo.newIndex);
             var toId = null;
-            var plusup = 0;
+            var toLast = false;
             if (this.shiftKey) {
                 this.controlOnStart = true;
             }
             if (foo.from.id === foo.to.id) {
-                if (foo.newIndex < this.hierarchy.length) {
-                    toId = this.hierarchy[foo.newIndex].obj.shortId();
+                if (foo.newIndex + 1 < this.hierarchy.length) {
+                    toId = this.hierarchy[foo.newIndex + 1].obj.shortId();
+                } else if (foo.newIndex === this.hierarchy.length - 1) {
+                    toLast = true;
                 }
-                plusup = 1;
             } else {
                 if (foo.to.children[foo.newIndex] === undefined) {
                     toId = foo.to.id;
@@ -893,10 +905,10 @@ export default {
                 toId,
                 foo.from.id,
                 foo.to.id,
-                !this.controlOnStart, plusup);
+                !this.controlOnStart, toLast);
         },
         // fromId is the id of the object you're moving. toId is the id of the object that will be immediately below this object after the move, at the same level of hierarchy.
-        move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, plusup) {
+        move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, toLast) {
             this.once = true;
             var me = this;
             var initialCompetencies = me.container[me.containerNodeProperty] ? me.container[me.containerNodeProperty].slice() : null;
@@ -916,9 +928,7 @@ export default {
                     toIndex = this.container[this.containerNodeProperty].indexOf(toId);
                 }
                 appLog(toIndex);
-                if (plusup > 0 && fromIndex <= toIndex) { toIndex += plusup; }
-                if (plusup < 0 && fromIndex < toIndex) { toIndex += plusup; }
-                if (toIndex === -1) {
+                if (toLast) {
                     this.container[this.containerNodeProperty].push(fromId);
                 } else {
                     this.container[this.containerNodeProperty].splice(toIndex, 0, fromId);

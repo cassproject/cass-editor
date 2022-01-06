@@ -7,11 +7,13 @@
         <router-view
             @create-new-framework="createNewFramework"
             @create-new-concept-scheme="createNewConceptScheme"
+            @create-new-collection="createNewCollection"
             :class="[{ 'clear-side-bar': showSideNav}, { 'clear-narrow-side-bar': !showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
             @create-new-framework="createNewFramework"
             @create-new-concept-scheme="createNewConceptScheme"
+            @create-new-collection="createNewCollection"
             name="sidebar" />
         <vue-progress-bar />
     </div>
@@ -193,13 +195,15 @@ export default {
                         url = url.substring(index);
                         url = window.location.origin + window.location.pathname + url + "/index.json-ld";
                     }
-                    EcRemote.getExpectingObject("", url, function(context) {
+                    EcRemote.getExpectingObject("", url, async function(context) {
                         me.$store.commit('lode/rawSchemata', {id: type, obj: context});
-                        jsonld.expand(context, function(err, expanded) {
-                            if (err == null) {
-                                me.$store.dispatch('lode/schemata', {id: type, obj: expanded});
-                            }
-                        });
+                        let expanded;
+                        try {
+                            expanded = await jsonld.expand(context);
+                        } catch (err) {
+                            appError(err);
+                        }
+                        me.$store.dispatch('lode/schemata', {id: type, obj: expanded});
                     }, function() {});
                 }
             }
@@ -506,6 +510,38 @@ export default {
             if (this.queryParams.ceasnDataFields === "true") {
                 framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
             }
+            var saveFramework = framework;
+            if (this.queryParams.private === "true") {
+                saveFramework = await EcEncryptedValue.toEncryptedValue(framework);
+            }
+            this.repo.saveTo(saveFramework, function() {
+                me.$store.commit('editor/framework', framework);
+                if (me.$route.name !== 'framework') {
+                    me.$router.push({name: "framework"});
+                }
+            }, appError);
+        },
+        createNewCollection: async function() {
+            let me = this;
+            this.$store.commit('editor/t3Profile', false);
+            this.setDefaultLanguage();
+            var framework = new EcFramework();
+            if (this.queryParams.newObjectEndpoint != null) {
+                framework.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                framework.generateId(this.repo.selectedServer);
+            }
+            framework["schema:dateCreated"] = new Date().toISOString();
+            framework["schema:dateModified"] = new Date().toISOString();
+            if (EcIdentityManager.default.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+            }
+            framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
+            this.$store.commit('editor/newFramework', framework.shortId());
+            if (this.queryParams.ceasnDataFields === "true") {
+                framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
+            }
+            framework.subType = "Collection";
             var saveFramework = framework;
             if (this.queryParams.private === "true") {
                 saveFramework = await EcEncryptedValue.toEncryptedValue(framework);

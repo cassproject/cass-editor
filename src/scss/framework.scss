@@ -370,7 +370,7 @@ drag, drag, and chosen states
                         }
                     }
                     .lode__name, .lode__competencyLabel {
-                        font-size: 1.1rem; // top level competencies
+                        font-size: 1.2rem; // top level competencies
                         font-weight: 700;
                         color: rgba($text, .95);   
                     }
@@ -409,6 +409,7 @@ drag, drag, and chosen states
             }
             ul.lode__hierarchy-sub-ul {
                 padding: 0rem 0rem;
+                margin-left: 1.2rem;
                 li.lode__hierarchy-sub-li {
                     border: solid 2px transparent;
                     .lode__name {

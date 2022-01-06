@@ -38,7 +38,8 @@
                                     <span
                                         tabindex="0"
                                         class="button is-outlined is-centered is-large is-primary"
-                                        @click="importFromUrl">
+                                        :class="{'is-loading': processing}"
+                                        @click="doImportFromUrl">
                                         <span class="file-icon">
                                             <i class="fas fa-upload" />
                                         </span>
@@ -168,7 +169,8 @@ export default {
         return {
             importType: 'url',
             importUrl: '',
-            repo: window.repo
+            repo: window.repo,
+            processing: false
         };
     },
     computed: {
@@ -186,6 +188,15 @@ export default {
         }
     },
     methods: {
+        doImportFromUrl: async function() {
+            this.processing = true;
+            try {
+                await this.importFromUrl();
+            } catch (e) {
+                appError(e);
+            }
+            this.processing = false;
+        }
     },
     watch: {
     }

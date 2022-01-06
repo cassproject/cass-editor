@@ -1,6 +1,12 @@
 import dateFormat from 'dateformat';
 
 export default {
+    data() {
+        return {
+            conceptCtids: null,
+            conceptRegistryUrls: null
+        };
+    },
     computed: {
         ctids: function() {
             let framework = this.framework;
@@ -44,17 +50,18 @@ export default {
         }
     },
     methods: {
-        conceptCtids: function() {
+        getConceptCtids: async function() {
+            this.conceptCtids = null;
             let framework = this.framework;
             if (!framework) {
                 framework = this.$store.getters['editor/framework'];
             }
             if (!framework || !framework.id) {
-                return null;
+                return;
             }
             var me = this;
             if (this.queryParams.ceasnDataFields !== "true") {
-                return null;
+                return;
             }
             var obj = {};
             obj[framework.shortId()] = [{"@value": this.getCTID(framework.shortId())}];
@@ -63,41 +70,43 @@ export default {
                     obj[ary[i]] = [{"@value": me.getCTID(ary[i])}];
                     var concept = await EcConcept.get(ary[i]);
                     if (concept["skos:narrower"]) {
-                        subCtids(concept["skos:narrower"]);
+                        await subCtids(concept["skos:narrower"]);
                     }
                 }
             };
             if (framework["skos:hasTopConcept"]) {
-                subCtids(framework["skos:hasTopConcept"]);
+                await subCtids(framework["skos:hasTopConcept"]);
             }
-            return obj;
+            this.conceptCtids = obj;
         },
-        conceptRegistryURLs: function() {
+        getConceptRegistryUrls: async function() {
+            this.conceptRegistryUrls = null;
             let framework = this.framework;
             if (!framework) {
                 framework = this.$store.getters['editor/framework'];
             }
             if (!framework || !framework.id) {
-                return null;
+                return;
             }
             var me = this;
             if (this.queryParams.ceasnDataFields !== "true") {
-                return null;
+                return;
             }
             var obj = {};
+            obj[framework.shortId()] = [{"@id": this.ceasnRegistryUriTransform(framework.shortId())}];
             var subURLs = async function(ary) {
                 for (var i = 0; i < ary.length; i++) {
                     obj[ary[i]] = [{"@value": me.ceasnRegistryUriTransform(ary[i])}];
                     var concept = await EcConcept.get(ary[i]);
                     if (concept["skos:narrower"]) {
-                        subURLs(concept["skos:narrower"]);
+                        await subURLs(concept["skos:narrower"]);
                     }
                 }
             };
             if (framework["skos:hasTopConcept"]) {
-                subURLs(framework["skos:hasTopConcept"]);
+                await subURLs(framework["skos:hasTopConcept"]);
             }
-            return obj;
+            this.conceptRegistryUrls = obj;
         },
         spitEvent: function(message, id, page) {
             var framework = this.framework ? this.framework : this.$store.state.editor.framework;
@@ -500,7 +509,7 @@ export default {
             }
         },
         addAlignments: async function(targets, thing, relationType, allowSave) {
-            if (this.$store.getters['editor/queryParams'].concepts === "true") {
+            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true) {
                 return this.addConceptAlignments(targets, thing, relationType);
             }
             if (relationType === "ceasn:skillEmbodied" || relationType === "ceasn:abilityEmbodied" || relationType === "ceasn:knowledgeEmbodied" || relationType === "ceasn:taskEmbodied") {

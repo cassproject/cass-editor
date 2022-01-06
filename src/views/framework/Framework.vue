@@ -270,6 +270,9 @@ export default {
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3FrameworkProfile;
             }
+            if (this.queryParams.ceasnDataFields === 'true' && this.framework.subType === 'Collection') {
+                return this.ctdlAsnCollectionProfile;
+            }
             if (this.queryParams.ceasnDataFields === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
                 return this.ctdlAsnFrameworkProfile;
             }
@@ -545,6 +548,18 @@ export default {
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "requires", target); },
                         "heading": "Connections"
                     },
+                    "isRequiredBy": {
+                        "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "This is a prerequisite for another competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Required By"}],
+                        "valuesIndexed": function() { return me.relations["isRequiredBy"]; },
+                        "noTextEditing": "true",
+                        "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isRequiredBy", values); },
+                        "save": function() {},
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isRequiredBy", target); },
+                        "heading": "Connections"
+                    },
                     "isEnabledBy": {
                         "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
@@ -581,6 +596,18 @@ export default {
                         "remove": function(source, target) { me.removeRelationFromFramework(source, "desires", target); },
                         "heading": "Connections"
                     },
+                    "isDesiredBy": {
+                        "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "This is recommended, assumed, or expected but not essential to acquisition of another competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Desired By"}],
+                        "valuesIndexed": function() { return me.relations["isDesiredBy"]; },
+                        "noTextEditing": "true",
+                        "add": function(selectedCompetency, values) { me.addRelationsToFramework(selectedCompetency, "isDesiredBy", values); },
+                        "save": function() {},
+                        "remove": function(source, target) { me.removeRelationFromFramework(source, "isDesiredBy", target); },
+                        "heading": "Connections"
+                    },
                     "headings": ["General", "Connections", "Keys"],
                     "primaryProperties": [
                         "http://schema.org/name",
@@ -598,7 +625,9 @@ export default {
                         "requires",
                         "isEnabledBy",
                         "isRelatedTo",
-                        "desires"
+                        "desires",
+                        "isDesiredBy",
+                        "isRequiredBy"
                     ]
                 };
             }

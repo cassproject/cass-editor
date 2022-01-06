@@ -164,7 +164,7 @@ export default {
 #drag-and-drop.is-dragged-over {
     height: 100% !important;
     width: 100% !important;
-    background-color: rgba(var(--primary-rgb), .3);
+    background-color: rgba(var(--primary-rgb), .2);
     border-radius: 15px;
     display: flex;
     flex-direction: column;

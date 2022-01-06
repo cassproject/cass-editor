@@ -144,6 +144,15 @@
             @blur="blur">
         <label
             class="label"
+            v-if="range[0] === 'http://www.w3.org/2001/XMLSchema#date'">date</label>
+        <input
+            v-if="range[0] === 'http://www.w3.org/2001/XMLSchema#date'"
+            class="input is-small is-fullwidth date-time"
+            v-model="computedText"
+            type="date"
+            @blur="blur">
+        <label
+            class="label"
             v-if="options && !isDirectLink">options</label>
         <div
             class="field is-grouped"
@@ -173,7 +182,7 @@
         </div>
         <div
             class="field is-grouped"
-            v-if="(!options || isDirectLink) && !showLanguage && !inLanguageField">
+            v-if="(!options || isDirectLink) && !showLanguage && !inLanguageField && !isDateType">
             <div class="control is-expanded">
                 <label
                     v-if="isResource"
@@ -327,6 +336,12 @@ export default {
                 return false;
             }
         },
+        isDateType: function() {
+            if (this.range[0] === 'http://www.w3.org/2001/XMLSchema#dateTime' || this.range[0] === 'http://www.w3.org/2001/XMLSchema#date') {
+                return true;
+            }
+            return false;
+        },
         computedText: {
             get: function() {
                 if (EcObject.isObject(this.text)) {
@@ -342,7 +357,7 @@ export default {
             },
             set: function(value) {
                 if (EcObject.isObject(this.text)) {
-                    this.text["@value"] = value.trim();
+                    this.$set(this.text, "@value", value.trim());
                 } else {
                     this.text = value.trim();
                 }
@@ -360,7 +375,7 @@ export default {
             },
             set: function(value) {
                 if (EcObject.isObject(this.text)) {
-                    this.text["@language"] = value;
+                    this.$set(this.text, "@language", value);
                 }
             }
         },
@@ -376,7 +391,7 @@ export default {
             },
             set: function(value) {
                 if (EcObject.isObject(this.text)) {
-                    this.text["name"] = value;
+                    this.$set(this.text, "name", value);
                 }
             }
         },
