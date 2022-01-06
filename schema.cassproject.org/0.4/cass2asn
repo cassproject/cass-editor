@@ -2,6 +2,7 @@
     "@context": {
     	"asn":"http://purl.org/ASN/schema/core/",
     	"cc":"http://creativecommons.org/ns#",
+	"ceterms":"https://purl.org/ctdl/terms/",
 	"ceasn":"https://purl.org/ctdlasn/terms/",
     	"dc":"http://purl.org/dc/elements/1.1/",
     	"dcterms":"http://purl.org/dc/terms/",
