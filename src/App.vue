@@ -1296,6 +1296,7 @@ export default {
         loggedInPerson: function() {
             this.$store.commit('editor/setMe', EcIdentityManager.default.ids[0].ppk.toPk().toPem());
             this.$store.commit('editor/setSubject', EcIdentityManager.default.ids[0].ppk.toPk().toPem());
+            this.$store.commit('editor/setManageAssertions', false); // Turn off managing assertions when logging in / switching users
         }
     }
 };
