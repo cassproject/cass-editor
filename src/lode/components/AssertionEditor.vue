@@ -338,10 +338,10 @@ export default {
                         if (c.isId(assertion.competency)) {
                             assertion.getSubjectAsync((subject) => {
                                 if (this.subject === subject.toPem()) {
-                                    assertion.getAgentAsync((agent) => {
+                                    assertion.getAgentAsync(async (agent) => {
                                         if (this.me === agent.toPem()) {
                                             if (assertion.negative == null) {
-                                                assertion.addReader(this.$store.getters['editor/badgePk']);
+                                                await assertion.addReader(this.$store.getters['editor/badgePk']);
                                                 EcRepository.save(assertion, () => {
                                                     this.$store.commit('editor/addAssertion', assertion);
                                                     this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
@@ -349,9 +349,9 @@ export default {
                                                     callback();
                                                 }, callback);
                                             } else {
-                                                assertion.getNegativeAsync((negative) => {
+                                                assertion.getNegativeAsync(async (negative) => {
                                                     if (!negative) {
-                                                        assertion.addReader(this.$store.getters['editor/badgePk']);
+                                                        await assertion.addReader(this.$store.getters['editor/badgePk']);
                                                         EcRepository.save(assertion, () => {
                                                             this.$store.commit('editor/addAssertion', assertion);
                                                             this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
@@ -528,10 +528,6 @@ export default {
             var a = new EcAssertion();
             a.generateId(this.repo.selectedServer);
             a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
-            // a.addReader(EcPk.fromPem("-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAixq5WEp+F5HEJZj12N791JATM+vkVJuolfOq0KbqtZwiygPao12fnpTwZdRCmb/4O1n6PXkJJ1XbufAx6k7hGNyM1kTngbs743QuyzP15SmYcP9l9FluL9ISvIECt1eHo4sSKdaKxLRguOj79HjZXtFg3UDIhvvLBVqPQm5d5OQ1OPgu4WzL4GN7hYwK6PYJf2zJjxs9vEQ6agrvpAZI+Rm1DT5x3i4xtcB+Mip473Xe+6IPoRmJ/NqzcP3c0xBf6xV1GDBBIQIaRRkIJgoAb/k0fb+Hl0uXnKxcSm86nYk4Kq5GSbeZ+G+B3rrnQfXbLZnle6nTj1YdAOErOKKi2wIDAQAB-----END PUBLIC KEY-----")); //Eduworks Researcher
-            for (var i = 0; i < EcIdentityManager.default.contacts.length; i++) {
-                a.addReader(EcIdentityManager.default.contacts[i].pk);
-            }
             a.setSubjectAsync(EcPk.fromPem(this.subject), () => {
                 a.setAgentAsync(EcPk.fromPem(this.me), () => {
                     a.setCompetency(EcRemoteLinkedData.trimVersionFromUrl(this.uri));
@@ -597,9 +593,6 @@ export default {
             var a = new EcAssertion();
             a.generateId(this.repo.selectedServer);
             a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
-            for (var i = 0; i < EcIdentityManager.default.contacts.length; i++) {
-                a.addReader(EcIdentityManager.default.contacts[i].pk);
-            }
             a.setSubjectAsync(EcPk.fromPem(this.subject), () => {
                 a.setAgentAsync(EcPk.fromPem(this.me), () => {
                     a.setCompetency(EcRemoteLinkedData.trimVersionFromUrl(this.uri));
