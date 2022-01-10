@@ -127,6 +127,7 @@
                                     :highlightList="highlightCompetency"
                                     :profile="competencyProfile"
                                     :newFramework="newFramework"
+                                    :canEditAssertions="true"
                                     @edit-multiple-event="onEditMultiple"
                                     @remove-object="removeObject"
                                     @search-things="handleSearch($event)"

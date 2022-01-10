@@ -105,7 +105,8 @@
                                 :cantMoveRight="cantMoveRight"
                                 :cantMoveLeft="cantMoveLeft"
                                 :properties="properties"
-                                :containerSubType="containerSubType">
+                                :containerSubType="containerSubType"
+                                :canEditAssertions="canEditAssertions">
                                 <div class="hierarchy-item__buttons">
                                     <div
                                         v-if="view !== 'crosswalk' && canEditThing"
@@ -342,7 +343,8 @@
                     :arrowKey="arrowKey"
                     :largeNumberOfItems="largeNumberOfItems"
                     :expandAll="expandAll"
-                    :containerSubType="containerSubType" />
+                    :containerSubType="containerSubType"
+                    :canEditAssertions="canEditAssertions" />
                 <!--</transition-group>-->
             </draggable>
         </template>
@@ -393,7 +395,8 @@ export default {
             type: Boolean,
             default: true
         },
-        containerSubType: String
+        containerSubType: String,
+        canEditAssertions: Boolean
     },
     components: {
         ThingEditing: () => import('./ThingEditing.vue'),

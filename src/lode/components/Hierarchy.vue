@@ -365,7 +365,8 @@
                     :arrowKey="arrowKey"
                     :largeNumberOfItems="hasLargeNumberOfItems"
                     :hierarchyEnabled="hierarchyEnabled"
-                    :containerSubType="container.subType" />
+                    :containerSubType="container.subType"
+                    :canEditAssertions="canEditAssertions" />
 
             <!--</transition-group>-->
             </draggable>
@@ -467,7 +468,8 @@ export default {
         subview: {
             type: String,
             default: ''
-        }
+        },
+        canEditAssertions: Boolean
     },
     data: function() {
         return {

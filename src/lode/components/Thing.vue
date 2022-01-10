@@ -151,7 +151,7 @@
                     </div>
                 </div>
                 <AssertionEditor
-                    v-if="managingAssertions"
+                    v-if="canEditAssertions && managingAssertions"
                     :uri="uri || obj.id" />
                 <!-- informational sots here -->
                 <slot name="frameworkDetails" />
@@ -216,7 +216,8 @@ export default {
         filter: {
             type: String,
             default: 'showAll'
-        }
+        },
+        canEditAssertions: Boolean
     },
     components: {
         Property: () => import('./Property.vue'),
