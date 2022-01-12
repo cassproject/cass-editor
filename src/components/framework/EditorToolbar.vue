@@ -203,6 +203,26 @@
                         </template>
                     </div>
                 </div>
+                <div
+                    v-if="ceasnDataFields || ceasnDataFields === false"
+                    class="column">
+                    <div
+
+                        class="buttons is-pulled-right">
+                        <a
+                            href="docs/competency-and-framework-management/#creating-a-new-competency-framework"
+                            target="_blank"
+                            title="Go to documentation on creating a new competency framework"
+                            class="button is-primary is-outlined">
+                            <span class="icon">
+                                <i class="far fa-question-circle" />
+                            </span>
+                            <span>
+                                Help
+                            </span>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -589,7 +609,7 @@ export default {
 <style lang="scss">
     @import './../../scss/variables.scss';
 #framework-editor-toolbar {
-    width: calc(100% - 4rem);
+    width: 100%;
     z-index: 10;
     background-color: white;
     .fet__wrapper {
