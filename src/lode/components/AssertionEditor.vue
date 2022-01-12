@@ -264,7 +264,9 @@ export default {
             } catch (e) {
                 appError(e);
             } finally {
-                this.loading = false;
+                this.$nextTick(() => {
+                    this.loading = false;
+                });
             }
         },
         handleUnevidenceAssertion: async function(url) {
@@ -274,7 +276,9 @@ export default {
             } catch (e) {
                 appError(e);
             } finally {
-                this.loading = false;
+                this.$nextTick(() => {
+                    this.loading = false;
+                });
             }
         },
         handleBadgeClick: async function() {
@@ -288,10 +292,15 @@ export default {
             } catch (e) {
                 appError(e);
             } finally {
-                this.loading = false;
+                this.$nextTick(() => {
+                    this.loading = false;
+                });
             }
         },
         handleCanClick: async function() {
+            if (this.loading) {
+                return;
+            }
             this.loading = true;
             try {
                 if (this.canAssertion) {
@@ -306,10 +315,16 @@ export default {
             } catch (e) {
                 appError(e);
             } finally {
-                this.loading = false;
+                this.$nextTick(() => {
+                    this.loading = false;
+                });
             }
         },
         handleCannotClick: async function() {
+            if (this.loading) {
+                return;
+            }
+
             this.loading = true;
             try {
                 if (this.cannotAssertion) {
@@ -324,7 +339,9 @@ export default {
             } catch (e) {
                 appError(e);
             } finally {
-                this.loading = false;
+                this.$nextTick(() => {
+                    this.loading = false;
+                });
             }
         },
         generateBadge: async function() {
@@ -338,10 +355,10 @@ export default {
                         if (c.isId(assertion.competency)) {
                             assertion.getSubjectAsync((subject) => {
                                 if (this.subject === subject.toPem()) {
-                                    assertion.getAgentAsync((agent) => {
+                                    assertion.getAgentAsync(async(agent) => {
                                         if (this.me === agent.toPem()) {
                                             if (assertion.negative == null) {
-                                                assertion.addReader(this.$store.getters['editor/badgePk']);
+                                                await assertion.addReader(this.$store.getters['editor/badgePk']);
                                                 EcRepository.save(assertion, () => {
                                                     this.$store.commit('editor/addAssertion', assertion);
                                                     this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
@@ -349,9 +366,9 @@ export default {
                                                     callback();
                                                 }, callback);
                                             } else {
-                                                assertion.getNegativeAsync((negative) => {
+                                                assertion.getNegativeAsync(async(negative) => {
                                                     if (!negative) {
-                                                        assertion.addReader(this.$store.getters['editor/badgePk']);
+                                                        await assertion.addReader(this.$store.getters['editor/badgePk']);
                                                         EcRepository.save(assertion, () => {
                                                             this.$store.commit('editor/addAssertion', assertion);
                                                             this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
@@ -525,97 +542,98 @@ export default {
             });
         },
         generateCanAssertion: function() {
-            var a = new EcAssertion();
-            a.generateId(this.repo.selectedServer);
-            a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
-            // a.addReader(EcPk.fromPem("-----BEGIN PUBLIC KEY-----MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAixq5WEp+F5HEJZj12N791JATM+vkVJuolfOq0KbqtZwiygPao12fnpTwZdRCmb/4O1n6PXkJJ1XbufAx6k7hGNyM1kTngbs743QuyzP15SmYcP9l9FluL9ISvIECt1eHo4sSKdaKxLRguOj79HjZXtFg3UDIhvvLBVqPQm5d5OQ1OPgu4WzL4GN7hYwK6PYJf2zJjxs9vEQ6agrvpAZI+Rm1DT5x3i4xtcB+Mip473Xe+6IPoRmJ/NqzcP3c0xBf6xV1GDBBIQIaRRkIJgoAb/k0fb+Hl0uXnKxcSm86nYk4Kq5GSbeZ+G+B3rrnQfXbLZnle6nTj1YdAOErOKKi2wIDAQAB-----END PUBLIC KEY-----")); //Eduworks Researcher
-            for (var i = 0; i < EcIdentityManager.default.contacts.length; i++) {
-                a.addReader(EcIdentityManager.default.contacts[i].pk);
-            }
-            a.setSubjectAsync(EcPk.fromPem(this.subject), () => {
-                a.setAgentAsync(EcPk.fromPem(this.me), () => {
-                    a.setCompetency(EcRemoteLinkedData.trimVersionFromUrl(this.uri));
-                    a.setAssertionDateAsync(Date.now(), () => {
-                        a.setExpirationDateAsync(Date.now() + 1000 * 60 * 60 * 24 * 365, () => {
-                            a.setNegativeAsync(false, () => {
-                                a.setConfidence(1.0);
-                                var evidences = [];
-                                // Go find viewActions on related resources to attach to the assertion.
-                                if (this.me === this.subject) {
-                                    repo.searchWithParams(
-                                        "@type:CreativeWork AND educationalAlignment.targetUrl:\"" + EcRemoteLinkedData.trimVersionFromUrl(this.uri) + "\"",
-                                        {size: 5000},
-                                        null,
-                                        (resources) => {
-                                            new EcAsyncHelper().each(
-                                                resources,
-                                                (resource, resourceCallback) => {
-                                                    repo.searchWithParams(
-                                                        "@type:ChooseAction AND object:\"" + resource.shortId() + "\" AND \\*owner:\"" + this.subject + "\"",
-                                                        {size: 5000},
-                                                        null,
-                                                        (views) => {
-                                                            for (var i = 0; i < views.length; i++) {
-                                                                evidences.push(views[i].shortId());
-                                                            }
-                                                            resourceCallback();
-                                                        },
-                                                        resourceCallback
-                                                    );
-                                                }, (resources) => {
-                                                    if (evidences.length > 0) {
-                                                        a.setEvidenceAsync(evidences, () => {
+            return new Promise((resolve, reject) => {
+                var a = new EcAssertion();
+                a.generateId(this.repo.selectedServer);
+                a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                a.setSubjectAsync(EcPk.fromPem(this.subject), () => {
+                    a.setAgentAsync(EcPk.fromPem(this.me), () => {
+                        a.setCompetency(EcRemoteLinkedData.trimVersionFromUrl(this.uri));
+                        a.setAssertionDateAsync(Date.now(), () => {
+                            a.setExpirationDateAsync(Date.now() + 1000 * 60 * 60 * 24 * 365, () => {
+                                a.setNegativeAsync(false, () => {
+                                    a.setConfidence(1.0);
+                                    var evidences = [];
+                                    // Go find viewActions on related resources to attach to the assertion.
+                                    if (this.me === this.subject) {
+                                        repo.searchWithParams(
+                                            "@type:CreativeWork AND educationalAlignment.targetUrl:\"" + EcRemoteLinkedData.trimVersionFromUrl(this.uri) + "\"",
+                                            {size: 5000},
+                                            null,
+                                            (resources) => {
+                                                new EcAsyncHelper().each(
+                                                    resources,
+                                                    (resource, resourceCallback) => {
+                                                        repo.searchWithParams(
+                                                            "@type:ChooseAction AND object:\"" + resource.shortId() + "\" AND \\*owner:\"" + this.subject + "\"",
+                                                            {size: 5000},
+                                                            null,
+                                                            (views) => {
+                                                                for (var i = 0; i < views.length; i++) {
+                                                                    evidences.push(views[i].shortId());
+                                                                }
+                                                                resourceCallback();
+                                                            },
+                                                            resourceCallback
+                                                        );
+                                                    }, (resources) => {
+                                                        if (evidences.length > 0) {
+                                                            a.setEvidenceAsync(evidences, () => {
+                                                                EcRepository.save(a, () => {
+                                                                    this.$store.commit('editor/addAssertion', a);
+                                                                    this.canAssertion = true;
+                                                                    resolve();
+                                                                }, reject);
+                                                            }, reject);
+                                                        } else {
                                                             EcRepository.save(a, () => {
                                                                 this.$store.commit('editor/addAssertion', a);
                                                                 this.canAssertion = true;
-                                                            }, appError);
-                                                        }, appError);
-                                                    } else {
-                                                        EcRepository.save(a, () => {
-                                                            this.$store.commit('editor/addAssertion', a);
-                                                            this.canAssertion = true;
-                                                        }, appError);
+                                                                resolve();
+                                                            }, reject);
+                                                        }
                                                     }
-                                                }
-                                            );
-                                        },
-                                        appError
-                                    );
-                                } else {
-                                    EcRepository.save(a, () => {
-                                        this.$store.commit('editor/addAssertion', a);
-                                        this.canAssertion = true;
-                                    }, appError);
-                                }
-                            }, appError); // This is an assertion that an individual *can* do something, not that they *cannot*.
-                        }, appError); // UTC Milliseconds, 365 days in the future.
-                    }, appError); // UTC Milliseconds
-                }, appError);
-            }, appError);
+                                                );
+                                            },
+                                            reject
+                                        );
+                                    } else {
+                                        EcRepository.save(a, () => {
+                                            this.$store.commit('editor/addAssertion', a);
+                                            this.canAssertion = true;
+                                            resolve();
+                                        }, reject);
+                                    }
+                                }, reject); // This is an assertion that an individual *can* do something, not that they *cannot*.
+                            }, reject); // UTC Milliseconds, 365 days in the future.
+                        }, reject); // UTC Milliseconds
+                    }, reject);
+                }, reject);
+            });
         },
         generateCannotAssertion: function() {
-            var a = new EcAssertion();
-            a.generateId(this.repo.selectedServer);
-            a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
-            for (var i = 0; i < EcIdentityManager.default.contacts.length; i++) {
-                a.addReader(EcIdentityManager.default.contacts[i].pk);
-            }
-            a.setSubjectAsync(EcPk.fromPem(this.subject), () => {
-                a.setAgentAsync(EcPk.fromPem(this.me), () => {
-                    a.setCompetency(EcRemoteLinkedData.trimVersionFromUrl(this.uri));
-                    a.setAssertionDateAsync(Date.now(), () => {
-                        a.setExpirationDateAsync(Date.now() + 1000 * 60 * 60 * 24 * 365, () => {
-                            a.setNegativeAsync(true, () => {
-                                a.setConfidence(1.0);
-                                EcRepository.save(a, () => {
-                                    this.$store.commit('editor/addAssertion', a);
-                                    this.cannotAssertion = true;
-                                }, appError);
-                            }, appError); // This is an assertion that an individual *cannot* do something, not that they *can*.
-                        }, appError); // UTC Milliseconds, 365 days in the future.
-                    }, appError); // UTC Milliseconds
-                }, appError);
-            }, appError);
+            return new Promise((resolve, reject) => {
+                var a = new EcAssertion();
+                a.generateId(this.repo.selectedServer);
+                a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                a.setSubjectAsync(EcPk.fromPem(this.subject), () => {
+                    a.setAgentAsync(EcPk.fromPem(this.me), () => {
+                        a.setCompetency(EcRemoteLinkedData.trimVersionFromUrl(this.uri));
+                        a.setAssertionDateAsync(Date.now(), () => {
+                            a.setExpirationDateAsync(Date.now() + 1000 * 60 * 60 * 24 * 365, () => {
+                                a.setNegativeAsync(true, () => {
+                                    a.setConfidence(1.0);
+                                    EcRepository.save(a, () => {
+                                        this.$store.commit('editor/addAssertion', a);
+                                        this.cannotAssertion = true;
+                                        resolve();
+                                    }, reject);
+                                }, reject); // This is an assertion that an individual *cannot* do something, not that they *can*.
+                            }, reject); // UTC Milliseconds, 365 days in the future.
+                        }, reject); // UTC Milliseconds
+                    }, reject);
+                }, reject);
+            });
         },
         evidenceAssertion: async function() {
             return new Promise((resolve, reject) => {

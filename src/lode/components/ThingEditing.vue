@@ -253,7 +253,7 @@
                     </div>
                     <div
                         v-if="!showAddPropertyContent"
-                        @click="doneEditing"
+                        @click="saveOnce"
                         :disabled="disableDoneEditingButton"
                         title="Done editing"
                         class="button is-outlined is-dark">
@@ -1442,6 +1442,11 @@ export default {
                 return this.clickToDelete();
             }
             this.$emit('done-editing-node-event');
+        },
+        saveOnce: function() {
+            this.$store.commit('editor/addAnother', false);
+            this.addAnother = false;
+            this.doneEditing();
         },
         doneEditing: function() {
             this.disableDoneEditingButton = true;

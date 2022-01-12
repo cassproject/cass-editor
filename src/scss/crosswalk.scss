@@ -70,10 +70,11 @@
         width: 2.5rem;
     }
     .crosswalk-column {
-        overflow:hidden;
+        overflow:auto;
         display: flex;
         height: calc(100vh - 48px);
         flex-direction: column;
+        padding-bottom: 2rem;
     }
     .crosswalk__title {
         flex:1;

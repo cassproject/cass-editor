@@ -20,6 +20,15 @@
             </div>
         </template>
         <template
+            v-else-if="isDone"
+            slot="modal-body">
+            <div class="section has-background-white has-text-centered">
+                <p>
+                    <strong>Success!</strong>
+                </p>
+            </div>
+        </template>
+        <template
             v-else
             slot="modal-body">
             <div class="assertion-share-container">
@@ -159,6 +168,14 @@
                     </span>
                 </button>
                 <button
+                    v-if="isDone"
+                    data-id="share-more-assertions-button"
+                    class="button is-primary is-outlined"
+                    @click="isDone = false;">
+                    Share More
+                </button>
+                <button
+                    v-else
                     data-id="share-assertions-button"
                     :disabled="isProcessing || notSelected"
                     class="button is-primary is-outlined"
@@ -190,7 +207,8 @@ export default {
             shareTargets: {},
             availablePersons: [],
             subjectFilter: '',
-            targetFilter: ''
+            targetFilter: '',
+            isDone: false
         };
     },
     computed: {
@@ -290,6 +308,7 @@ export default {
                         }, appError);
                     }, () => {
                         this.isProcessing = false;
+                        this.isDone = true;
                     });
                 }, appError, {
                     size: 5000
