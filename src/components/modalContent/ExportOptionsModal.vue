@@ -86,7 +86,6 @@ export default {
                 return [
                     {name: "CASS (JSON-LD)", value: "jsonld"},
                     {name: "CaSS (RDF Quads)", value: "rdfQuads"},
-                    {name: "CaSS (RDF+JSON)", value: "rdfJson"},
                     {name: "CaSS (RDF+XML)", value: "rdfXml"},
                     {name: "CaSS (Turtle)", value: "turtle"},
                     {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"}
@@ -95,16 +94,14 @@ export default {
                 return [
                     {name: "SKOS (JSON-LD)", value: "jsonld"},
                     {name: "SKOS (RDF Quads)", value: "rdfQuads"},
-                    {name: "SKOS (RDF+JSON)", value: "rdfJson"},
                     {name: "SKOS (RDF+XML)", value: "rdfXml"},
                     {name: "SKOS (Turtle)", value: "turtle"}
                 ];
             } else if (this.objType.indexOf("framework") !== -1) {
                 return [
-                    {name: "Achievement Standards Network (RDF+JSON)", value: "asn"},
+                    {name: "Achievement Standards Network (RDF+XML)", value: "asn"},
                     {name: "CASS (JSON-LD)", value: "jsonld"},
                     {name: "CASS (RDF Quads)", value: "rdfQuads"},
-                    {name: "CASS (RDF+JSON)", value: "rdfJson"},
                     {name: "CASS (RDF+XML)", value: "rdfXml"},
                     {name: "CASS (Turtle)", value: "turtle"},
                     {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
@@ -116,7 +113,6 @@ export default {
                 return [
                     {name: "CASS (JSON-LD)", value: "jsonld"},
                     {name: "CASS (RDF Quads)", value: "rdfQuads"},
-                    {name: "CASS (RDF+JSON)", value: "rdfJson"},
                     {name: "CASS (RDF+XML)", value: "rdfXml"},
                     {name: "CASS (Turtle)", value: "turtle"},
                     {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
@@ -166,8 +162,6 @@ export default {
                 await this.exportJsonld(link);
             } else if (exportType === "rdfQuads") {
                 await this.exportRdfQuads(link);
-            } else if (exportType === "rdfJson") {
-                await this.exportRdfJson(link);
             } else if (exportType === "rdfXml") {
                 await this.exportRdfXml(link);
             } else if (exportType === "turtle") {
@@ -187,8 +181,6 @@ export default {
                 await this.exportJsonld(schemeExportLink);
             } else if (exportType === "rdfQuads") {
                 await this.exportRdfQuads(schemeExportLink);
-            } else if (exportType === "rdfJson") {
-                await this.exportRdfJson(schemeExportLink);
             } else if (exportType === "rdfXml") {
                 await this.exportRdfXml(schemeExportLink);
             } else if (exportType === "turtle") {
@@ -211,8 +203,6 @@ export default {
                 await this.exportJsonld(link);
             } else if (exportType === "rdfQuads") {
                 await this.exportRdfQuads(link);
-            } else if (exportType === "rdfJson") {
-                await this.exportRdfJson(link);
             } else if (exportType === "rdfXml") {
                 await this.exportRdfXml(link);
             } else if (exportType === "turtle") {
@@ -238,8 +228,6 @@ export default {
                 await this.exportJsonld(frameworkExportLink);
             } else if (exportType === "rdfQuads") {
                 await this.exportRdfQuads(frameworkExportLink);
-            } else if (exportType === "rdfJson") {
-                await this.exportRdfJson(frameworkExportLink);
             } else if (exportType === "rdfXml") {
                 await this.exportRdfXml(frameworkExportLink);
             } else if (exportType === "turtle") {
@@ -272,22 +260,6 @@ export default {
             try {
                 let success = await this.get(link, null, {"Accept": "text/n4"});
                 await this.download(fileName + ".n4", success);
-            } catch (e) {
-                appLog(e);
-            }
-        },
-        exportRdfJson: async function(link) {
-            let fileName;
-            if (this.objType.indexOf("conceptscheme") !== -1) {
-                fileName = schema.Thing.getDisplayStringFrom(this.obj["dcterms:title"]);
-            } else if (this.objType.indexOf("concept") !== -1) {
-                fileName = schema.Thing.getDisplayStringFrom(this.obj["skos:prefLabel"]);
-            } else {
-                fileName = this.obj.getName();
-            }
-            try {
-                let success = await this.get(link, null, {"Accept": "application/rdf+json"});
-                this.download(fileName + ".rdf.json", JSON.stringify(success, null, 2));
             } catch (e) {
                 appLog(e);
             }
