@@ -745,7 +745,7 @@ export default {
                                 action: "response",
                                 message: "export",
                                 schema: "asn",
-                                format: "rdf+json",
+                                format: "rdf+xml",
                                 data: data
                             }, me.queryParams.origin);
                         });
@@ -768,19 +768,6 @@ export default {
                                 message: "export",
                                 schema: "cass",
                                 format: "text/n4",
-                                data: data
-                            }, me.queryParams.origin);
-                        }, function(failure) {
-                            appLog(failure);
-                        });
-                    } else if (v === "cassrdfjson") {
-                        this.get(link, null, {"Accept": "application/rdf+json"}, function(success) {
-                            var data = JSON.parse(success);
-                            parent.postMessage({
-                                action: "response",
-                                message: "export",
-                                schema: "cass",
-                                format: "application/rdf+json",
                                 data: data
                             }, me.queryParams.origin);
                         }, function(failure) {
