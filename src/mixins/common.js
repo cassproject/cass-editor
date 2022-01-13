@@ -316,10 +316,10 @@ export default {
                             ary.push(success);
                         }
                     } else {
-                        ary.push(JSON.parse(await EcCompetency.get(selectedArray[i]).toJson()));
+                        ary.push(JSON.parse((await EcCompetency.get(selectedArray[i])).toJson()));
                     }
                 } else if (this.queryParams.selectVerbose === "true") {
-                    ary.push(JSON.parse(await EcConcept.get(selectedArray[i]).toJson()));
+                    ary.push(JSON.parse((await EcConcept.get(selectedArray[i])).toJson()));
                 } else {
                     ary.push(selectedArray[i]);
                 }
@@ -329,7 +329,7 @@ export default {
                     var relation = await EcAlignment.get(this.framework.relation[i]);
                     if (EcArray.has(selectedArray, relation.target)) {
                         if (this.queryParams.selectVerbose === "true") {
-                            ary.push(JSON.parse((rld).toJson()));
+                            ary.push(JSON.parse((relation).toJson()));
                         } else {
                             ary.push(relation.shortId());
                         }

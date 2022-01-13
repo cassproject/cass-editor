@@ -938,36 +938,36 @@ export default {
                 this.setEnabledRelationshipListFromCatConfigObj(c);
             } else {
                 let me = this;
-                window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null,
-                    function(ca) {
-                        let found = false;
-                        for (let c of ca) {
-                            if (c.isDefault === "true") {
-                                appLog('Using instance default configuration for enabled relationship types');
-                                me.setEnabledRelationshipListFromCatConfigObj(c);
-                                found = true;
-                                break;
-                            }
+                try {
+                    let ca = await window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null);
+                    let found = false;
+                    for (let c of ca) {
+                        if (c.isDefault === "true") {
+                            appLog('Using instance default configuration for enabled relationship types');
+                            me.setEnabledRelationshipListFromCatConfigObj(c);
+                            found = true;
+                            break;
                         }
-                        if (!found) me.setEnabledRelationshipListFromCatConfigObj(null);
-                    }, function() {
-                        me.setEnabledRelationshipListFromCatConfigObj(null);
-                    });
+                    }
+                    if (!found) me.setEnabledRelationshipListFromCatConfigObj(null);
+                } catch (e) {
+                    me.setEnabledRelationshipListFromCatConfigObj(null);
+                }
             }
         },
-        determineEnabledRelationshipTypesFromSourceConfiguration: function() {
+        determineEnabledRelationshipTypesFromSourceConfiguration: async function() {
             if (this.$store.state.editor.t3Profile === true) this.setEnabledRelationshipTypesFromT3ProfileConfig();
             else if (this.queryParamsComputed.ceasnDataFields === "true") this.setEnabledRelationshipTypesFromCeasnProfileConfig();
             else if (this.queryParamsComputed.tlaProfile === "true") this.setEnabledRelationshipTypesFromTlaProfileConfig();
-            else this.setEnabledRelationshipTypesFromOtherConfig();
+            else await this.setEnabledRelationshipTypesFromOtherConfig();
         },
-        frameworkClickSource: function(framework) {
+        frameworkClickSource: async function(framework) {
             let me = this;
             this.$store.commit('crosswalk/resetFrameworkSourceRelationships');
             /* Should we exclude framework A from framework B options */
-            EcFramework.get(framework.id, function(success) {
+            EcFramework.get(framework.id, async function(success) {
                 me.$store.commit('crosswalk/frameworkSource', success);
-                me.determineEnabledRelationshipTypesFromSourceConfiguration();
+                await me.determineEnabledRelationshipTypesFromSourceConfiguration();
                 me.buildFrameworkSourceRelationships();
             }, appError);
             this.$store.commit('app/searchTerm', '');
