@@ -1,0 +1,18 @@
+{
+	"Framework": "ceterms:Collection",
+	"Competency": "ceasn:Competency",
+	"cass3:Framework": "ceterms:Collection",
+	"cass3:Competency": "ceasn:Competency",
+	"@owner": "ebac:@owner",
+	"@reader": "ebac:@reader",
+	"@signature": "ebac:@signature",
+	"name": "ceterms:name",
+	"title": "ceterms:name",
+	"description": "ceterms:description",
+	"schema:dateCreated": "ceasn:dateCreated",
+	"schema:dateModified": "ceasn:dateModified",
+	"schema:license": "ceasn:license",
+	"competency": "ceterms:hasMember",
+	"schema:inLanguage": "ceterms:inLanguage",
+	"schema:keywords": "ceterms:keyword"
+}

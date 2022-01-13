@@ -1,0 +1,23 @@
+{
+	"skos:ConceptScheme": "cass:skos/ConceptScheme",
+	"skos:Concept": "cass:skos/Concept",
+	"@owner": "ebac:@owner",
+	"@reader": "ebac:@reader",
+	"@signature": "ebac:@signature",
+	"privateEncrypted": "ebac:privateEncrypted",
+	"ceasn:creator": "dcterms:creator",
+	"ceasn:dateCopyrighted": "dcterms:dateCopyrighted",
+	"ceasn:description": "dcterms:description",
+	"rdfs:comment": "dcterms:description",
+	"dct:description": "dcterms:description",
+	"ceasn:inLanguage": "dcterms:language",
+	"ceasn:license": "dcterms:license",
+	"ceasn:publisher": "dcterms:publisher",
+	"ceasn:rights": "dcterms:rights",
+	"ceasn:rightsHolder": "dcterms:rightsHolder",
+	"ceasn:name": "dcterms:title",
+	"rdfs:label": "dcterms:title",
+	"ceasn:source": "dc:source",
+	"ceasn:dateCreated": "schema:dateCreated",
+	"ceasn:dateModified": "schema:dateModified"
+}
