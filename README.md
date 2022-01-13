@@ -65,7 +65,7 @@ By default, the cass-editor provides a framework browser to select and edit fram
     https://cassproject.github.io/cass-editor/?view=true
       
 ## Concept mode
-By default, the cass-editor edits competency frameworks. To instead edit concept schemes, use `concepts=true`. Starting in version 1.3, you can select Concepts from the menu in the sidebar to edit concept schemes. 
+By default, the cass-editor prior to version 1.3 edits competency frameworks. To instead edit concept schemes, use `concepts=true`. Starting in version 1.3, you can select Concepts from the menu in the sidebar to edit concept schemes. If you want to bypass the welcome page and link directly to the list of concept schemes, this parameter can be used in conjunction with `frameworksPage=true`.
 
     ex:
     https://cassproject.github.io/cass-editor/?concepts=true
@@ -98,7 +98,7 @@ If your app needs the ability to select a single competency from a framework, us
 If your app needs the ability to select a single competency and the relations associated, use `selectRelations=true` along with `select`.
 
     ex:
-    https://cassproject.github.io/cass-editor/?select=Add&selectRelation=true
+    https://cassproject.github.io/cass-editor/?select=Add&selectRelations=true
 
 ## Trigger select functionality from the parent frame
 If your app needs the ability trigger the select action from outside of the cass-editor iframe, send the iframe the postMessage `{"message":"select"}`. Additionally, if you wish to hide the select button and use one on your page instead, use `select=` without a value.
@@ -212,7 +212,7 @@ Additionally:
 -  This option operates across imports where canonical @ids are not defined, CSV imports, etc.
 
 ## Bypass the welcome page and go directly to the frameworks list (1.3 and up)
-The base URL for version 1.3 takes the user to a welcome page. If you wish to bypass this page and have the framework list be the first thing your users see, use the URL parameter `frameworksPage=true`.
+The base URL for version 1.3 takes the user to a welcome page. If you wish to bypass this page and have the framework list be the first thing your users see, use the URL parameter `frameworksPage=true`. If you want to go directly to the concept scheme list, this parameter can be used in conjunction with `concepts=true`.
 
 # Alternate Schema
 The cass-editor can orient towards either a basic CASS schema or a Credential Engine CTDL-ASN schema.
