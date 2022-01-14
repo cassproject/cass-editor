@@ -298,7 +298,7 @@
                 </div>
             </div>
             <div
-                v-if="managingAssertions"
+                v-if="canEditAssertions && managingAssertions"
                 class="columns">
                 <div class="column is-narrow assertion-subject-select">
                     <span>Manage Assertions for: </span>

@@ -111,6 +111,23 @@ export default {
         spitEvent: function(message, id, page) {
             var framework = this.framework ? this.framework : this.$store.state.editor.framework;
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
+            let frameworkName = null;
+            if (framework) {
+                if (framework["dcterms:title"]) {
+                    frameworkName = schema.Thing.getDisplayStringFrom(framework["dcterms:title"]);
+                } else {
+                    frameworkName = framework.getName();
+                }
+            }
+            let compName = null;
+            if (selectedCompetency) {
+                console.log(selectedCompetency["skos:prefLabel"]);
+                if (selectedCompetency["skos:prefLabel"]) {
+                    compName = schema.Thing.getDisplayStringFrom(selectedCompetency["skos:prefLabel"]);
+                } else {
+                    compName = selectedCompetency.getName();
+                }
+            }
             var evt = {
                 message: message,
                 changed: id,
@@ -118,8 +135,8 @@ export default {
                 selectedCompetency: selectedCompetency == null ? null : selectedCompetency.shortId(),
                 selectedFrameworkObject: framework == null ? null : JSON.parse(framework.toJson()),
                 selectedCompetencyObject: selectedCompetency == null ? null : JSON.parse(selectedCompetency.toJson()),
-                selectedFrameworkName: framework == null ? null : (framework.getName == null ? framework["dcterms:title"] : framework.getName()),
-                selectedCompetencyName: selectedCompetency == null ? null : (selectedCompetency.getName == null ? selectedCompetency["skos:prefLabel"] : selectedCompetency.getName()),
+                selectedFrameworkName: frameworkName,
+                selectedCompetencyName: compName,
                 visiblePage: page
             };
             if (this.queryParams && this.queryParams.ceasnDataFields === "true") {

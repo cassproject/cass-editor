@@ -40,7 +40,7 @@
                 <section class="modal-card-body">
                     <div
                         class="section"
-                        v-if="amCreatingAccount || amCreatingLinkedPerson">
+                        v-if="amCreatingLinkedPerson">
                         <p v-if="amCreatingLinkedPerson">
                             No matching user record could be found that matched your login information. Please provide the following:
                         </p>
@@ -617,8 +617,10 @@ export default {
             appLog("Fetching identity...");
             this.ecRemoteIdentMgr.startLogin(this.username, this.password); // Creates the hashes for storage and retrieval of keys.
             await this.ecRemoteIdentMgr.fetch(null, this.handleAttemptLoginFetchIdentityFailure).then((ident) => {
-                EcIdentityManager.default = ident;
-                this.handleAttemptLoginFetchIdentitySuccess();
+                if (ident) {
+                    EcIdentityManager.default = ident;
+                    this.handleAttemptLoginFetchIdentitySuccess();
+                }
             }); // Retrieves the identities and encryption keys from the server.
         },
         handleAttemptLoginConfigureFromServerFail: function(failMsg) {
