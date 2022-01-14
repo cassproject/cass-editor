@@ -121,7 +121,6 @@ export default {
             }
             let compName = null;
             if (selectedCompetency) {
-                console.log(selectedCompetency["skos:prefLabel"]);
                 if (selectedCompetency["skos:prefLabel"]) {
                     compName = schema.Thing.getDisplayStringFrom(selectedCompetency["skos:prefLabel"]);
                 } else {
@@ -608,7 +607,6 @@ export default {
             window.repo.saveTo(framework, function() {}, appError);
         },
         addRelationAsCompetencyField: async function(targets, thing, relationType, allowSave) {
-            var me = this;
             var initialValue = thing[relationType] ? thing[relationType].slice() : null;
             for (var i = 0; i < targets.length; i++) {
                 if (thing[relationType] == null) {
