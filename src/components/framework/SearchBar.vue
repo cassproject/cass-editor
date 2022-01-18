@@ -23,6 +23,7 @@
                     ref="text"
                     type="search"
                     v-model="searchTerm"
+                    :disabled="isFirstSearchProcessing"
                     :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
                     @input="updateSearchTerm(searchTerm)">
                 <span
@@ -66,6 +67,7 @@
                     v-if="loggedIn">
                     <input
                         v-model="basicFilter"
+                        :disabled="isFirstSearchProcessing"
                         class="is-checkradio"
                         value="ownedByMe"
                         id="ownedByMe"
@@ -78,6 +80,7 @@
                 <div class="field">
                     <input
                         v-model="basicSort"
+                        :disabled="isFirstSearchProcessing"
                         class="is-checkradio"
                         value=""
                         id="alphabeticalSort"
@@ -89,6 +92,7 @@
                     </label>
                     <input
                         v-model="basicSort"
+                        :disabled="isFirstSearchProcessing"
                         class="is-checkradio"
                         value="lastEdited"
                         id="lastDateModifiedSort"
@@ -103,6 +107,7 @@
                     v-if="allowShowFrameworks">
                     <input
                         v-model="searchFrameworks"
+                        :disabled="isFirstSearchProcessing"
                         class="is-checkradio"
                         value="searchFrameworks"
                         id="searchFrameworks"
@@ -118,7 +123,6 @@
 </template>
 
 <script>
-import debounce from 'lodash/debounce';
 export default {
     name: 'SearchBar',
     props: {
@@ -202,9 +206,9 @@ export default {
             filterArray[objIndex].checked = false;
             this.$store.commit(storeCaller, filterArray);
         },
-        updateSearchTerm: debounce(function(e) {
+        updateSearchTerm: function(e) {
             this.$store.commit('app/searchTerm', e);
-        }, 500)
+        }
     },
     computed: {
         queryParams: function() {
@@ -248,6 +252,9 @@ export default {
             set(val) {
                 this.$store.commit("app/searchFrameworksInCompetencySearch", val);
             }
+        },
+        isFirstSearchProcessing: function() {
+            return this.$store.getters['editor/firstSearchProcessing'];
         }
     }
 };

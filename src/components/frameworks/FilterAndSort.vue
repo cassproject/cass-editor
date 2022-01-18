@@ -15,6 +15,7 @@
                     <template v-if="option.enabled">
                         <input
                             class="is-checkradio"
+                            :disabled="isFirstSearchProcessing"
                             :id="option.id"
                             type="radio"
                             v-model="sortBy"
@@ -40,6 +41,7 @@
                     <template v-if="option.enabled">
                         <input
                             class="is-checkradio"
+                            :disabled="isFirstSearchProcessing"
                             :id="option.id"
                             type="checkbox"
                             v-model="option.checked"
@@ -63,6 +65,7 @@
                     <template v-if="option.enabled">
                         <input
                             class="is-checkradio"
+                            :disabled="isFirstSearchProcessing"
                             :id="option.id"
                             v-model="option.checked"
                             type="checkbox"
@@ -163,6 +166,9 @@ export default {
         },
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
+        },
+        isFirstSearchProcessing: function() {
+            return this.$store.getters['editor/firstSearchProcessing'];
         }
     },
     mounted: function() {

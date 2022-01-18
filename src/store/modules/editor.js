@@ -82,7 +82,8 @@ const state = {
     badgePk: null,
     me: null,
     subject: null,
-    people: []
+    people: [],
+    firstSearchProcessing: true
 };
 const mutations = {
     framework(state, f) {
@@ -251,6 +252,9 @@ const mutations = {
     },
     setPeople(state, val) {
         state.people = val;
+    },
+    setFirstSearchProcessing(state, val) {
+        state.firstSearchProcessing = val;
     }
 };
 const actions = {
@@ -529,6 +533,9 @@ const getters = {
     },
     people: function(state) {
         return state.people;
+    },
+    firstSearchProcessing: function(state) {
+        return state.firstSearchProcessing;
     }
 };
 
