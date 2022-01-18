@@ -14,7 +14,7 @@
   },
   "main": "/theme.scss",
   "dependencies": {
-    "axios": "^0.24.0",
+    "axios": "^0.25.0",
     "bulma": "^0.9.3",
     "bulma-checkradio": "^1.1.1",
     "bulma-switch": "^2.0.0",
