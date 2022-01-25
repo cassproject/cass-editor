@@ -160,6 +160,7 @@
 import Thing from './Thing.vue';
 import Breadcrumbs from './Breadcrumbs.vue';
 import {cassUtil} from '@/mixins/cassUtil.js';
+import debounce from 'lodash/debounce';
 export default {
     name: 'List',
     props: {
@@ -207,7 +208,6 @@ export default {
             searchingForCompetencies: false,
             searchingForDirectories: false,
             applySearchToOwner: false,
-            firstSearchProcessing: true,
             // To avoid duplicates
             resultIds: [],
             nonDirectoryResults: false
@@ -307,6 +307,9 @@ export default {
         },
         numIdentities: function() {
             return EcIdentityManager.default.ids?.length;
+        },
+        firstSearchProcessing: function() {
+            return this.$store.getters['editor/firstSearchProcessing'];
         }
     },
     methods: {
@@ -446,7 +449,7 @@ export default {
                             }
                         }
                     }
-                    me.firstSearchProcessing = false;
+                    me.$store.commit('editor/setFirstSearchProcessing', false);
                     if (directories && directories.length > 0) {
                         me.results = me.results.concat(directories);
                         if ($state) {
@@ -464,18 +467,18 @@ export default {
                     }
                 }, function(err) {
                     appError(err);
-                    me.firstSearchProcessing = false;
+                    me.$store.commit('editor/setFirstSearchProcessing', false);
                     if ($state) {
                         $state.complete();
                     }
                 });
             });
         },
-        searchRepo: function() {
+        searchRepo: debounce(function() {
             var me = this;
             this.start = 0;
             this.subStart = 0;
-            this.firstSearchProcessing = true;
+            me.$store.commit('editor/setFirstSearchProcessing', true);
             this.results.splice(0, this.results.length);
             this.subResults.splice(0, this.subResults.length);
             this.resultIds.splice(0, this.resultIds.length);
@@ -528,7 +531,7 @@ export default {
                                 }
                             }
                         }
-                        me.firstSearchProcessing = false;
+                        me.$store.commit('editor/setFirstSearchProcessing', false);
                         if (results.length < 10 && (me.type === "Framework" || me.type === "ConceptScheme")) {
                             if (me.searchCompetencies) {
                                 me.searchForSubObjects();
@@ -536,17 +539,17 @@ export default {
                         }
                     }, function(err) {
                         appError(err);
-                        me.firstSearchProcessing = false;
+                        me.$store.commit('editor/setFirstSearchProcessing', false);
                     });
                 });
             } else {
-                me.firstSearchProcessing = false;
+                me.$store.commit('editor/setFirstSearchProcessing', false);
             }
             if (!this.searchFrameworks && !this.searchDirectories && (this.searchTerm !== "" || !this.displayFirst || this.displayFirst.length === 0)) {
                 // Only competency fields were selected
                 return this.searchForSubObjects();
             }
-        },
+        }, 500),
         loadMore: function($state) {
             if (this.searchTerm === "" && this.displayFirst && this.displayFirst.length > 0) {
                 for (var i = 0; i < 20; i++) {
