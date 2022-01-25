@@ -1595,6 +1595,13 @@ export default {
                 }
             }
         },
+        shortType() {
+            if (this.originalThing && this.shortType) {
+                if (this.shortType === "Competency" || this.shortType === "Concept" || this.shortType === "Level") {
+                    this.$store.commit('editor/selectedCompetency', this.originalThing);
+                }
+            }
+        },
         isSearching: function() {
             this.typesPermittedInSearch = [];
             if (this.isSearching) {
