@@ -152,6 +152,10 @@ export default {
                         me.createNew();
                     }
                     if ((me.queryParams.ceasnDataFields === "true" || me.queryParams.frameworksPage === "true") && (!me.queryParams.action && !me.queryParams.frameworkId)) {
+                        if (me.queryParams.collections === "true") {
+                            me.$store.commit('editor/collectionMode', true);
+                            me.$router.push("collections");
+                        }
                         if (me.$store.getters['editor/conceptMode'] === true) {
                             me.$router.push({name: "concepts"});
                         } else if (me.$route.name !== 'frameworks' && me.$route.name !== 'concepts') {
