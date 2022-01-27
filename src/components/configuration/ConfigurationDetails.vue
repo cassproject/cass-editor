@@ -3500,7 +3500,7 @@ export default {
         isSetInstanceDisabled() {
             if (!this.defaultConfigId) { // if there is no default instance set
                 return false;
-            } else if (this.defaultConfigId === this.config.is && !this.readOnly) {
+            } else if (this.defaultConfigId === this.config.id && !this.readOnly) {
                 return false;
             } else {
                 return true;
