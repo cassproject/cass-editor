@@ -482,6 +482,7 @@ export default {
         var me = this;
         if (this.editingThing) {
             if (this.range.length === 1 && this.range[0].toLowerCase().indexOf("langstring") !== -1) {
+                this.getExpandedValue();
                 this.langString = true;
                 for (var i = 0; i < this.expandedValue.length; i++) {
                     if (!this.expandedValue[i]["@language"]) {

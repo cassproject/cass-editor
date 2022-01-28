@@ -648,7 +648,7 @@ export default {
                                 if (this.subject === subject.toPem()) {
                                     assertion.getAgentAsync((agent) => {
                                         if (this.me === agent.toPem()) {
-                                            assertion.getEvidencesAsync(async (evidences) => {
+                                            assertion.getEvidencesAsync(async(evidences) => {
                                                 EcArray.setAdd(evidences, this.assertionText);
                                                 this.assertionText = "";
                                                 await assertion.setEvidence(evidences);
@@ -690,7 +690,7 @@ export default {
                                 if (this.subject === subject.toPem()) {
                                     assertion.getAgentAsync((agent) => {
                                         if (this.me === agent.toPem()) {
-                                            assertion.getEvidencesAsync(async (evidences) => {
+                                            assertion.getEvidencesAsync(async(evidences) => {
                                                 EcArray.setRemove(evidences, url);
                                                 await assertion.setEvidence(evidences);
                                                 EcRepository.save(assertion, () => {
