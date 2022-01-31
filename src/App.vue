@@ -154,9 +154,8 @@ export default {
                     if ((me.queryParams.ceasnDataFields === "true" || me.queryParams.frameworksPage === "true") && (!me.queryParams.action && !me.queryParams.frameworkId)) {
                         if (me.queryParams.collections === "true") {
                             me.$store.commit('editor/collectionMode', true);
-                            me.$router.push("collections");
-                        }
-                        if (me.$store.getters['editor/conceptMode'] === true) {
+                            me.$router.push({name: "collections"});
+                        } else if (me.$store.getters['editor/conceptMode'] === true) {
                             me.$router.push({name: "concepts"});
                         } else if (me.$route.name !== 'frameworks' && me.$route.name !== 'concepts') {
                             me.$router.push({name: "frameworks"});
@@ -540,7 +539,7 @@ export default {
             if (EcIdentityManager.default.ids.length > 0) {
                 framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
-            framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
+            framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Collection"};
             this.$store.commit('editor/newFramework', framework.shortId());
             if (this.queryParams.ceasnDataFields === "true") {
                 framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];

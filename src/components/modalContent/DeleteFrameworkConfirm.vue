@@ -5,7 +5,7 @@
         size="small"
         :active="true">
         <template slot="modal-header">
-            Confirm Delete Framework
+            Confirm Delete {{ obj.subType === 'Collection' ? "Collection" : "Framework" }}
         </template>
         <template slot="modal-body">
             <section>
@@ -21,7 +21,7 @@
             <button
                 @click="deleteItem()"
                 class="is-danger is-outlined button">
-                Delete Framework
+                Delete {{ obj.subType === 'Collection' ? "Collection" : "Framework" }}
             </button>
             <button
                 @click="closeModal()"
