@@ -1352,6 +1352,7 @@
                                 <div class="control is-expanded">
                                     <input
                                         v-model="isBrowserDefault"
+                                        :disabled="config.isNew"
                                         id="browserDefaultSwitch"
                                         type="checkbox"
                                         name="browserDefaultSwitch"
