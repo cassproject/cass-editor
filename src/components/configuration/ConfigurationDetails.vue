@@ -1352,6 +1352,7 @@
                                 <div class="control is-expanded">
                                     <input
                                         v-model="isBrowserDefault"
+                                        :disabled="config.isNew"
                                         id="browserDefaultSwitch"
                                         type="checkbox"
                                         name="browserDefaultSwitch"
@@ -3500,7 +3501,7 @@ export default {
         isSetInstanceDisabled() {
             if (!this.defaultConfigId) { // if there is no default instance set
                 return false;
-            } else if (this.defaultConfigId === this.config.is && !this.readOnly) {
+            } else if (this.defaultConfigId === this.config.id && !this.readOnly) {
                 return false;
             } else {
                 return true;
