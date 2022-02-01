@@ -11,6 +11,9 @@
                         v-if="newFramework && shortType === 'Framework'">Create framework</span>
                     <span
                         class="pr-2"
+                        v-else-if="newFramework && shortType === 'Collection'">Create collection</span>
+                    <span
+                        class="pr-2"
                         v-else-if="newFramework && shortType === 'ConceptScheme'">
                         <span v-if="queryParams.ceasnDataFields === 'true'">
                             Create Concept Scheme
@@ -160,6 +163,15 @@
                                     aria-hidden="true" />
                             </span>
                             <span>Cancel create new framework</span>
+                        </template>
+                        <template v-else-if="newFramework && shortType === 'Collection'">
+                            <span
+                                class="icon delete-thing">
+                                <i
+                                    class="fa fa-times"
+                                    aria-hidden="true" />
+                            </span>
+                            <span>Cancel create new collection</span>
                         </template>
                         <template v-else-if="newFramework && shortType === 'ConceptScheme'">
                             <span
@@ -498,7 +510,12 @@ export default {
             if (this.expandedThing == null) {
                 return null;
             }
-            return this.expandedThing["@type"][0].split("/").pop();
+            let type = this.expandedThing["@type"][0].split("/").pop();
+            if (type === "Framework" && this.expandedThing["https://schema.cassproject.org/0.4/subType"] && this.expandedThing["https://schema.cassproject.org/0.4/subType"][0] &&
+                this.expandedThing["https://schema.cassproject.org/0.4/subType"][0]["@value"] === "Collection") {
+                type = "Collection";
+            }
+            return type;
         },
         // Get the canonical namespace/context prefix of the type. eg: http://schema.org/ -- WARNING: This is not the @context as specified by the Thing.
         context: function() {
@@ -942,7 +959,7 @@ export default {
                     this.$store.commit('app/showModal', {component: 'DeleteConceptConfirm'});
                 } else if (this.shortType === "ConceptScheme") {
                     this.$store.commit('app/showModal', {component: 'DeleteConceptSchemeConfirm'});
-                } else if (this.shortType === "Framework") {
+                } else if (this.shortType === "Framework" || this.shortType === "Collection") {
                     this.$store.commit('app/showModal', {component: 'DeleteFrameworkConfirm'});
                 } else if (this.shortType === "Directory") {
                     this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});

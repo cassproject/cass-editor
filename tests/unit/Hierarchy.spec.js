@@ -78,7 +78,8 @@ describe('Hierarchy', () => {
             scrolled:false,
             subview:"",
             view:"framework",
-            viewOnly:false
+            viewOnly:false,
+            canEditAssertions:true
         }
 
         state = {

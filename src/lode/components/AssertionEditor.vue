@@ -648,10 +648,10 @@ export default {
                                 if (this.subject === subject.toPem()) {
                                     assertion.getAgentAsync((agent) => {
                                         if (this.me === agent.toPem()) {
-                                            assertion.getEvidencesAsync((evidences) => {
+                                            assertion.getEvidencesAsync(async(evidences) => {
                                                 EcArray.setAdd(evidences, this.assertionText);
                                                 this.assertionText = "";
-                                                assertion.setEvidence(evidences);
+                                                await assertion.setEvidence(evidences);
                                                 EcRepository.save(assertion, () => {
                                                     this.$store.commit('editor/addAssertion', assertion);
                                                     this.$store.dispatch('editor/computeBecause', evidences).then((because) => {
@@ -690,9 +690,9 @@ export default {
                                 if (this.subject === subject.toPem()) {
                                     assertion.getAgentAsync((agent) => {
                                         if (this.me === agent.toPem()) {
-                                            assertion.getEvidencesAsync((evidences) => {
+                                            assertion.getEvidencesAsync(async(evidences) => {
                                                 EcArray.setRemove(evidences, url);
-                                                assertion.setEvidence(evidences);
+                                                await assertion.setEvidence(evidences);
                                                 EcRepository.save(assertion, () => {
                                                     this.$store.commit('editor/addAssertion', assertion);
                                                     this.$store.dispatch('editor/computeBecause', evidences).then((because) => {

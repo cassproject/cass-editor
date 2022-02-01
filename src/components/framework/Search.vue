@@ -122,7 +122,7 @@ export default {
         };
     },
     created: function() {
-        this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "dcterms:title.keyword" : "name.keyword";
+        this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "skos:prefLabel.keyword" : "name.keyword";
         this.$store.commit('app/searchTerm', "");
     },
     beforeDestroy: function() {
@@ -197,8 +197,8 @@ export default {
             obj.size = 20;
             var searchTerm = this.$store.getters['app/searchTerm'];
             if (!searchTerm || searchTerm.length === 0) {
-                var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
-                let type = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "text" : "date";
+                var order = (this.sortBy === "name.keyword" || this.sortBy === "skos:prefLabel.keyword") ? "asc" : "desc";
+                let type = (this.sortBy === "name.keyword" || this.sortBy === "skos:prefLabel.keyword") ? "text" : "date";
                 obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
             } else {
                 delete obj.sort;
@@ -325,7 +325,7 @@ export default {
                 this.sortBy = "schema:dateModified";
                 this.displayFirst.splice(0, this.displayFirst.length);
             } else {
-                this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "dcterms:title.keyword" : "name.keyword";
+                this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "skos:prefLabel.keyword" : "name.keyword";
                 this.displayFirst.splice(0, this.displayFirst.length);
             }
         },
