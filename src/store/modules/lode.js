@@ -18,7 +18,8 @@ const state = {
     competencySearchModalOpen: false,
     copyOrLink: false,
     numPropertyComponentsVisible: {},
-    searchType: null
+    searchType: null,
+    includeRelations: true
 };
 const actions = {
     schemata({state, commit}, schema) {
@@ -120,6 +121,9 @@ const mutations = {
     },
     searchType(state, type) {
         state.searchType = type;
+    },
+    includeRelations(state, bool) {
+        state.includeRelations = bool;
     }
 };
 const getters = {
@@ -146,6 +150,9 @@ const getters = {
     },
     removeAddingValueAtIndex(state) {
         return state.removeAddingValueAtIndex;
+    },
+    includeRelations(state) {
+        return state.includeRelations;
     }
 };
 
