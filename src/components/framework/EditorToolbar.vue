@@ -489,10 +489,11 @@ export default {
                 }
             } else {
                 if (localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
-                    let id = localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId");
-                    let ca = await window.repo.searchWithParams("@type:Configuration AND @id:\"" + id + "\"", {'size': 1}, null);
-                    for (let c of ca) {
-                        return c.name;
+                    let config = await EcRepository.get(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
+                    if (config) {
+                        return config.name;
+                    } else {
+                        return "No configuration";
                     }
                 } else {
                     let ca = await window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null);
