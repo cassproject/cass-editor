@@ -12,6 +12,7 @@ import VueResource from 'vue-resource';
 import DOMPurify from 'dompurify';
 
 import VueObserveVisibility from 'vue-observe-visibility';
+import AsyncComputed from 'vue-async-computed';
 
 var VueScrollTo = require('vue-scrollto');
 require("cassproject");
@@ -51,6 +52,7 @@ Vue.use(VueScrollTo, {
 Vue.use(InfiniteLoading);
 Vue.use(VueResource);
 Vue.use(VueObserveVisibility);
+Vue.use(AsyncComputed);
 
 // directive for clicking outside elements and performing an action
 // add v-click-outside="method" to parent element to do something

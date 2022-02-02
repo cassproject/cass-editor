@@ -176,7 +176,7 @@
                         <span class="icon">
                             <i class="fas fa-cog" />
                         </span>
-                        <span class="is-hidden-touch">{{ defaultFrameworkConfigName }}</span>
+                        <span class="is-hidden-touch">{{ getConfigurationName || "No Configuration" }}</span>
                     </div>
                 </div>
                 <!-- directory -->
@@ -247,7 +247,6 @@ export default {
             repo: window.repo,
             editsFinishedCounter: 0,
             totalEditsCounter: 0,
-            defaultFrameworkConfigName: null,
             privateFramework: false
         };
     },
@@ -441,18 +440,6 @@ export default {
             }
             return rld;
         },
-        getConfigurationName: async function() {
-            if (this.$store.getters['editor/framework'].configuration) {
-                let config = await EcRepository.get(this.$store.getters['editor/framework'].configuration);
-                if (config) {
-                    this.defaultFrameworkConfigName = config.name;
-                } else {
-                    this.defaultFrameworkConfigName = "No configuration";
-                }
-            } else {
-                this.defaultFrameworkConfigName = "No configuration";
-            }
-        },
         goToDirectory: function() {
             let me = this;
             EcDirectory.get(this.directoryId, function(success) {
@@ -488,6 +475,35 @@ export default {
                 }).catch(() => {
                     // TODO: Handle assertion search error
                 });
+            }
+        }
+    },
+    asyncComputed: {
+        getConfigurationName: async function() {
+            if (this.$store.getters['editor/framework'].configuration) {
+                let config = await EcRepository.get(this.$store.getters['editor/framework'].configuration);
+                if (config) {
+                    return config.name;
+                } else {
+                    return "No configuration";
+                }
+            } else {
+                if (localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
+                    let id = localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId");
+                    let ca = await window.repo.searchWithParams("@type:Configuration AND @id:\"" + id + "\"", {'size': 1}, null);
+                    for (let c of ca) {
+                        return c.name;
+                    }
+                } else {
+                    let ca = await window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null);
+                    console.log(ca);
+                    for (let c of ca) {
+                        if (c.isDefault === true) {
+                            return c.name;
+                        }
+                    }
+                    return "No Configuration";
+                }
             }
         }
     },
@@ -590,9 +606,6 @@ export default {
                 this.$store.commit('editor/recomputeHierarchy', true);
                 this.$store.commit('editor/refreshAlignments', true);
             }
-        },
-        configuration: function() {
-            this.getConfigurationName();
         }
     },
     mounted: function() {
@@ -601,7 +614,6 @@ export default {
             this.$store.commit('editor/setPropertyLevel', null);
         }
         this.checkIsPrivate();
-        this.getConfigurationName();
     }
 };
 </script>
