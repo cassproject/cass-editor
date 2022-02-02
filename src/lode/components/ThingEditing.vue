@@ -1630,15 +1630,19 @@ export default {
                         });
                     }
                 }
-                let types = ["narrows", "broadens", "hasChild", "isChildOf"];
-                if (EcArray.has(types, this.addingProperty)) {
-                    let relations = this.$store.getters['editor/relations'];
-                    for (let j = 0; j < types.length; j++) {
-                        if (relations[types[j]] && relations[types[j]][this.obj.shortId()]) {
-                            let ids = relations[types[j]][this.obj.shortId()];
-                            if (ids) {
-                                for (let i = 0; i < ids.length; i++) {
-                                    this.idsNotPermittedInSearch.push(ids[i]["@id"]);
+                if (this.framework.subType === 'Collection') {
+                    this.idsNotPermittedInSearch = this.framework.competency;
+                } else {
+                    let types = ["narrows", "broadens", "hasChild", "isChildOf"];
+                    if (EcArray.has(types, this.addingProperty)) {
+                        let relations = this.$store.getters['editor/relations'];
+                        for (let j = 0; j < types.length; j++) {
+                            if (relations[types[j]] && relations[types[j]][this.obj.shortId()]) {
+                                let ids = relations[types[j]][this.obj.shortId()];
+                                if (ids) {
+                                    for (let i = 0; i < ids.length; i++) {
+                                        this.idsNotPermittedInSearch.push(ids[i]["@id"]);
+                                    }
                                 }
                             }
                         }
