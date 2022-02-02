@@ -497,7 +497,6 @@ export default {
                     }
                 } else {
                     let ca = await window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null);
-                    console.log(ca);
                     for (let c of ca) {
                         if (c.isDefault === true) {
                             return c.name;
