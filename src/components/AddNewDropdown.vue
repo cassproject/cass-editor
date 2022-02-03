@@ -70,7 +70,7 @@
                     v-if="conceptEnabled && queryParams.ceasnDataFields === 'true'"
                     @click="$emit('concept')"
                     class="dropdown-item">
-                    Concept
+                    Concept Scheme
                 </a>
                 <a
                     v-else-if="conceptEnabled"

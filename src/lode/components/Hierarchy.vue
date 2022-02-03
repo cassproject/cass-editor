@@ -1180,6 +1180,7 @@ export default {
             this.$store.commit('lode/competencySearchModalOpen', true);
             this.$store.commit('lode/searchType', "Competency");
             this.$store.commit('lode/copyOrLink', true);
+            this.$store.commit('lode/includeRelations', this.container.subType !== "Collection");
         },
         cancelImport: function() {
             this.deleteObject(this.container);

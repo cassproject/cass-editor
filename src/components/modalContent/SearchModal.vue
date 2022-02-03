@@ -99,7 +99,8 @@ export default {
         ...mapState({
             selectedCompetency: state => state.editor.selectedCompetency,
             framework: state => state.editor.framework,
-            queryParams: state => state.editor.queryParams
+            queryParams: state => state.editor.queryParams,
+            includeRelations: state => state.lode.includeRelations
         }),
         copyOrLink: function() {
             return this.$store.state.lode.copyOrLink;
@@ -154,7 +155,9 @@ export default {
         },
         copyCompetencies: async function() {
             let results = this.selectedIds;
-            await this.addRelations();
+            if (this.includeRelations) {
+                await this.addRelations();
+            }
             var copyDict = {};
             var framework = this.$store.state.editor.framework;
             var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
@@ -384,7 +387,9 @@ export default {
         },
         appendCompetencies: async function() {
             let results = this.selectedIds;
-            await this.addRelations();
+            if (this.includeRelations) {
+                await this.addRelations();
+            }
             var selectedCompetency = this.$store.state.editor.selectedCompetency;
             var framework = this.$store.state.editor.framework;
             var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
