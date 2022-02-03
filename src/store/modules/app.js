@@ -72,6 +72,11 @@ const state = {
         csvRelationColumns: [],
         csvRelationFile: null,
         importModalParams: null
+    },
+    banner: {
+        message: '',
+        color: '',
+        background: ''
     }
 };
 const mutations = {
@@ -305,6 +310,17 @@ const mutations = {
     },
     searchFrameworksInCompetencySearch: function(state, bool) {
         state.frameworks.searchFrameworksInCompetencySearch = bool;
+    },
+    setBanner: function(state, payload) {
+        if (payload.message) {
+            state.banner.message = payload.message;
+        }
+        if (payload.color) {
+            state.banner.color = payload.color;
+        }
+        if (payload.background) {
+            state.banner.background = payload.background;
+        }
     }
 };
 const actions = {
@@ -497,6 +513,15 @@ const getters = {
     },
     searchFrameworksInCompetencySearch: state => {
         return state.frameworks.searchFrameworksInCompetencySearch;
+    },
+    bannerMessage: state => {
+        return state.banner.message;
+    },
+    bannerColor: state => {
+        return state.banner.color;
+    },
+    bannerBackground: state => {
+        return state.banner.background;
     }
 };
 

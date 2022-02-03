@@ -53,7 +53,13 @@
     bottom: 0;
     overflow-y: auto;
 }
-
+.has-banner {
+    #app-side-nav-bar {
+        top: 15px;
+        height: calc(100vh - 30px);
+        bottom: 15px;
+    }
+}
 .menu.is-narrow {
     margin: auto !important;
     padding: .25rem !important;

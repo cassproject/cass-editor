@@ -2,6 +2,12 @@
     <div
         id="app"
         :class="editorClass">
+        <div
+            v-if="bannerMessage"
+            :style="bannerStyle"
+            class="banner">
+            <span>{{ bannerMessage }}</span>
+        </div>
         <DynamicModal
             @create-directory="saveDirectory" />
         <router-view
@@ -16,6 +22,12 @@
             @create-new-collection="createNewCollection"
             name="sidebar" />
         <vue-progress-bar />
+        <div
+            v-if="bannerMessage"
+            :style="bannerStyle"
+            class="banner banner-bot">
+            <span>{{ bannerMessage }}</span>
+        </div>
     </div>
 </template>
 
@@ -101,6 +113,9 @@ export default {
                 this.$store.commit('user/repositorySsoOptions', loginInfo);
                 if (loginInfo.ssoLogin != null) {
                     this.$store.commit('featuresEnabled/apiLoginEnabled', true);
+                }
+                if (loginInfo.banner) {
+                    this.$store.commit('app/setBanner', loginInfo.banner);
                 }
             });
             window.repo = r;
@@ -1223,12 +1238,20 @@ export default {
         }
     },
     computed: {
+        bannerMessage: function() {
+            return this.$store.getters['app/bannerMessage'];
+        },
+        bannerStyle: function() {
+            return {
+                'color': this.$store.getters['app/bannerColor'],
+                'background-color': this.$store.getters['app/bannerBackground']
+            };
+        },
         editorClass: function() {
-            if (this.queryParams.ceasnDataFields === 'true') {
-                return 'ceasn-editor';
-            } else {
-                return '';
-            }
+            return {
+                'ceasn-editor': this.queryParams.ceasnDataFields === 'true',
+                'has-banner': this.$store.getters['app/bannerMessage']
+            };
         },
         showRightAside: function() {
             return this.$store.getters['app/showRightAside'];
@@ -1295,6 +1318,19 @@ export default {
 
 <style lang="scss">
  @import './scss/variables.scss';
+ .banner {
+    height: 15px;
+    color: $light-color;
+    display: flex;
+    background-color: $primary-color;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+ }
+ .banner-bot {
+     position: fixed;
+     bottom: 0;
+ }
 .pagesFull {
     margin-top:40px;
 }

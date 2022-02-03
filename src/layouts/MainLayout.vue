@@ -122,5 +122,20 @@ export default {
     top: 48px;
     height: calc(100vh - 48px);
 }
-
+.has-banner {
+    .cass--main-layout--primary-top {
+        top: 15px;
+    }
+    .cass--main-layout--secondary-top {
+        top: 75px;
+    }
+    .cass--main-layout--body {
+        height: calc(100vh - 115px);
+        margin-top: 100px;
+    }
+    .cass--main-layout--right {
+        top: 115px;
+        height: calc(100vh - 130px);
+    }
+}
 </style>
