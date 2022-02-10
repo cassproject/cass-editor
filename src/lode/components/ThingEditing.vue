@@ -1486,6 +1486,7 @@ export default {
             this.doneEditing();
         },
         validated: function() {
+            let me = this;
             this.validateCount++;
             if (this.validateCount === this.$store.state.lode.numPropertyComponentsVisible[EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"])]) {
                 this.doneValidating = true;
@@ -1495,7 +1496,9 @@ export default {
                         this.$store.commit('editor/addAnother', true);
                         this.addAnother = false;
                     }
-                    this.$emit('done-editing-node-event');
+                    setTimeout(function() {
+                        me.$emit('done-editing-node-event');
+                    }, 500);
                 }
             }
         },
