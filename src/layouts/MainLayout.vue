@@ -130,12 +130,20 @@ export default {
         top: 75px;
     }
     .cass--main-layout--body {
-        height: calc(100vh - 115px);
+        height: calc(100vh - 130px);
         margin-top: 100px;
+    }
+    .cass--main-layout--body.has-simple-top-bar {
+        height: calc(100vh - 78px);
+        margin-top: 48px;
     }
     .cass--main-layout--right {
         top: 115px;
         height: calc(100vh - 130px);
+    }
+    .cass--main-layout--right.has-simple-top-bar {
+        top: 63px;
+        height: calc(100vh - 78px);
     }
 }
 </style>

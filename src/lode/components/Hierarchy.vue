@@ -1033,20 +1033,6 @@ export default {
                     c.addReader(EcPk.fromPem(reader));
                 }
             }
-            if (!EcArray.isArray(me.container[me.containerNodeProperty])) {
-                me.container[me.containerNodeProperty] = [];
-            }
-            if (previousSibling == null || previousSibling === undefined) {
-                this.container[this.containerNodeProperty].push(c.shortId());
-            } else {
-                // Insert immediately after the sibling
-                var index = this.container[this.containerNodeProperty].indexOf(previousSibling);
-                this.container[this.containerNodeProperty].splice(index + 1, 0, c.shortId());
-            }
-            me.$store.commit('editor/addEditsToUndo', [
-                {operation: "addNew", id: c.shortId()},
-                {operation: "update", id: me.container.shortId(), fieldChanged: ["competency"], initialValue: [initialCompetencies], changedValue: [this.container.competency]}
-            ]);
             var nodeType = this.nodeType;
             if (this.nodeType.indexOf("Ec") === 0) {
                 nodeType = this.nodeType.substring(2);
@@ -1067,6 +1053,20 @@ export default {
                 c = await EcEncryptedValue.toEncryptedValue(c);
             }
             this.repo.saveTo(c, async function() {
+                if (!EcArray.isArray(me.container[me.containerNodeProperty])) {
+                    me.container[me.containerNodeProperty] = [];
+                }
+                if (previousSibling == null || previousSibling === undefined) {
+                    me.container[me.containerNodeProperty].push(c.shortId());
+                } else {
+                    // Insert immediately after the sibling
+                    var index = me.container[me.containerNodeProperty].indexOf(previousSibling);
+                    me.container[me.containerNodeProperty].splice(index + 1, 0, c.shortId());
+                }
+                me.$store.commit('editor/addEditsToUndo', [
+                    {operation: "addNew", id: c.shortId()},
+                    {operation: "update", id: me.container.shortId(), fieldChanged: ["competency"], initialValue: [initialCompetencies], changedValue: [this.container.competency]}
+                ]);
                 if (containerId === me.container.shortId()) {
                     var toSave = me.container;
                     toSave["schema:dateModified"] = new Date().toISOString();
