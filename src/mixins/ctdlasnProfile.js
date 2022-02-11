@@ -40,7 +40,6 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
-                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "http://schema.org/name": {
@@ -433,7 +432,6 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
-                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "http://schema.org/name": {
@@ -680,7 +678,6 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
-                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "https://purl.org/ctdlasn/terms/competencyLabel": {
@@ -1295,7 +1292,6 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
-                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "http://purl.org/dc/terms/title": {
@@ -1712,7 +1708,6 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.conceptCtids; },
                     "max": 1,
-                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "http://www.w3.org/2004/02/skos/core#prefLabel": {
