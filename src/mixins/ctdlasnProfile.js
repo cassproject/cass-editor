@@ -607,6 +607,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Webpage that describes this entity."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Subject Webpage"}],
+                    "max": 1,
                     "heading": "General"
                 },
                 "headings": ["General", "Tagging", "Keys"],
