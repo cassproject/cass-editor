@@ -40,7 +40,6 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
-                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "http://schema.org/name": {
@@ -433,7 +432,6 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
-                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "http://schema.org/name": {
@@ -609,6 +607,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Webpage that describes this entity."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Subject Webpage"}],
+                    "max": 1,
                     "heading": "General"
                 },
                 "headings": ["General", "Tagging", "Keys"],
@@ -680,7 +679,6 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
-                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "https://purl.org/ctdlasn/terms/competencyLabel": {
@@ -1295,7 +1293,6 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.ctids; },
                     "max": 1,
-                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "http://purl.org/dc/terms/title": {
@@ -1712,7 +1709,6 @@ export default {
                     "readOnly": "true",
                     "valuesIndexed": function() { return me.conceptCtids; },
                     "max": 1,
-                    "isRequired": "true",
                     "heading": "Keys"
                 },
                 "http://www.w3.org/2004/02/skos/core#prefLabel": {
