@@ -1065,7 +1065,7 @@ export default {
                 }
                 me.$store.commit('editor/addEditsToUndo', [
                     {operation: "addNew", id: c.shortId()},
-                    {operation: "update", id: me.container.shortId(), fieldChanged: ["competency"], initialValue: [initialCompetencies], changedValue: [this.container.competency]}
+                    {operation: "update", id: me.container.shortId(), fieldChanged: ["competency"], initialValue: [initialCompetencies], changedValue: [me.container.competency]}
                 ]);
                 if (containerId === me.container.shortId()) {
                     var toSave = me.container;
