@@ -65,7 +65,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         :uri="item['@id'] || item['@value']"
                         :clickToLoad="true"
                         class="lode__property"
-                        :competencyAsPropertyType="shortType"
+                        :competencyAsPropertyType="displayLabel"
                         :competencyAsPropertyObjectType="objectType"
                         :parentNotEditable="!canEdit"
                         :profile="childProfile" />
