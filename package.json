@@ -17,7 +17,7 @@
     "axios": "^0.24.0",
     "bulma": "^0.9.3",
     "bulma-checkradio": "^1.1.1",
-    "bulma-switch": "^2.0.0",
+    "bulma-switch": "^2.0.4",
     "cassproject": "^1.5.2",
     "core-js": "^3.19.3",
     "dateformat": "^5.0.2",
