@@ -1,7 +1,9 @@
 <template>
     <div id="directory">
         <!-- name directory modal -->
-        <modal-template :active="createSubdirectory">
+        <modal-template
+            :active="createSubdirectory"
+            @close="createSubdirectory = false">
             <template slot="modal-header">
                 Create directory
             </template>
@@ -36,6 +38,13 @@
                             :disabled="subdirectoryName.length === 0"
                             @click="saveNewSubdirectory">
                             Create
+                        </div>
+                        <div
+                            class="button is-primary"
+                            :class="subdirectoryName.length === 0 ? 'is-disabled' : ''"
+                            :disabled="subdirectoryName.length === 0"
+                            @click="saveNewSubdirectoryAndAddAnother">
+                            Create and add another
                         </div>
                     </div>
                 </div>
@@ -295,7 +304,8 @@ export default {
             resource: null,
             resourceName: '',
             resourceUrl: '',
-            directoryTrail: []
+            directoryTrail: [],
+            addAnother: false
         };
     },
     created: function() {
@@ -528,11 +538,20 @@ export default {
             // To do: add parentDirectory if button is being used to add a subdirectory
             dir.save(function(success) {
                 appLog("Directory saved: " + dir.id);
-                me.createSubdirectory = false;
                 me.subdirectoryName = '';
-                me.$store.commit('app/selectDirectory', dir);
-                me.$store.commit('app/rightAsideObject', dir);
+                if (me.addAnother) {
+                    me.addAnother = false;
+                    me.$store.commit('app/refreshSearch', true);
+                } else {
+                    me.createSubdirectory = false;
+                    me.$store.commit('app/selectDirectory', dir);
+                    me.$store.commit('app/rightAsideObject', dir);
+                }
             }, appError, this.repo);
+        },
+        saveNewSubdirectoryAndAddAnother: function() {
+            this.addAnother = true;
+            this.saveNewSubdirectory();
         },
         successfulClip({value, event}) {
             appLog('success', value);
