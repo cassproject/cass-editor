@@ -955,6 +955,9 @@ export default {
                 }
                 directory["schema:dateModified"] = new Date().toISOString();
                 EcEncryptedValue.toEncryptedValue(directory, false, function(edirectory) {
+                    if (directory.parentDirectory) {
+                        edirectory.parentDirectory = directory.parentDirectory; // Add parent directory to encrypted directory to be searchable
+                    }
                     me.toSave.push(edirectory);
                     me.repo.search("(directory:\"" + directory.shortId() + "\" OR parentDirectory:\"" + directory.shortId() + "\")", function() {}, function(success) {
                         me.frameworksToProcess += success.length;
@@ -1167,6 +1170,9 @@ export default {
             }
             f["schema:dateModified"] = new Date().toISOString();
             EcEncryptedValue.toEncryptedValue(f, false, function(ef) {
+                if (f.directory) {
+                    ef.directory = f.directory; // Add directory to encrypted framework to be searchable
+                }
                 me.toSave.push(ef);
                 me.multiput(me.toSave, function() {
                     if (me.framework) {
