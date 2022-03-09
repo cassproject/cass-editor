@@ -1076,10 +1076,7 @@ export default {
             try {
                 let expanded = await jsonld.expand(toExpand);
                 me.expandedThing = me.reactify(expanded[0]);
-                if (me.$store.state.editor && (EcRemoteLinkedData.trimVersionFromUrl(me.expandedThing["@id"]) === me.$store.state.editor.newCompetency ||
-                EcRemoteLinkedData.trimVersionFromUrl(me.expandedThing["@id"]) === me.$store.state.editor.newFramework)) {
-                    me.populateRequiredFields();
-                }
+                me.populateRequiredFields();
             } catch (err) {
                 appError(err);
             }

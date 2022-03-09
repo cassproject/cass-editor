@@ -35,6 +35,13 @@
                         @click="$emit('create-directory', directoryName)">
                         Create
                     </div>
+                    <div
+                        class="button is-primary"
+                        :class="directoryName.length === 0 ? 'is-disabled' : ''"
+                        :disabled="directoryName.length === 0"
+                        @click="$emit('create-another-directory', directoryName)">
+                        Create and add another
+                    </div>
                 </div>
             </div>
         </template>

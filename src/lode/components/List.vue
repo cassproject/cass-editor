@@ -461,7 +461,7 @@ export default {
                         me.loadMore($state);
                     } else if (results.length > 0 && $state) {
                         // $state references are for vue-infinite-loading component
-                        $state.loaded();
+                        me.loadMore($state);
                     } else if ($state) {
                         $state.complete();
                     }

@@ -16,6 +16,7 @@ it should always be produced in its own modal as to not replace the existing mod
         <Component
             :title="title"
             @create-directory="$emit('create-directory', $event)"
+            @create-another-directory="$emit('create-another-directory', $event)"
             view="modal"
             @close="$emit('app/closeModal')"
             @cancel="$emit('app/closeModal')"
