@@ -134,6 +134,7 @@ export default {
                     if (me.showRightAside && dir.shortId() === me.$store.getters['app/rightAsideObject'].shortId()) {
                         me.$store.commit('app/rightAsideObject', dir);
                     }
+                    me.$store.dispatch('app/refreshDirectories');
                 }, appError);
                 this.$store.commit('editor/changedObject', null);
             }

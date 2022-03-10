@@ -9,7 +9,8 @@
             <span>{{ bannerMessage }}</span>
         </div>
         <DynamicModal
-            @create-directory="saveDirectory" />
+            @create-directory="saveDirectory"
+            @create-another-directory="saveDirectoryAndAddAnother" />
         <router-view
             @create-new-framework="createNewFramework"
             @create-new-concept-scheme="createNewConceptScheme"
@@ -49,7 +50,8 @@ export default {
             itemsSaving: 0,
             showNav: true,
             GROUP_SEARCH_SIZE: 10000,
-            linkedPerson: null
+            linkedPerson: null,
+            addAnotherDirectory: false
         };
     },
     $router: function(to, from) {
@@ -322,8 +324,19 @@ export default {
                 appLog("Directory saved: " + dir.id);
                 me.$store.commit('app/closeModal');
                 me.$store.dispatch('app/refreshDirectories');
-                me.selectDirectory(dir);
+                if (me.addAnotherDirectory) {
+                    me.addAnotherDirectory = false;
+                    me.$nextTick(() => {
+                        me.$store.commit('app/showModal', {component: 'AddDirectory'});
+                    });
+                } else {
+                    me.selectDirectory(dir);
+                }
             }, appError, window.repo);
+        },
+        saveDirectoryAndAddAnother: function(e) {
+            this.addAnotherDirectory = true;
+            this.saveDirectory(e);
         },
         selectDirectory: function(directory) {
             this.$store.commit('app/selectDirectory', directory);
