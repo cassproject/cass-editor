@@ -1012,7 +1012,7 @@ export default {
                 if (subobjects.length > 0) {
                     me.removeSubobjectsFromDirectory(subobjects, directory, toSave);
                 } else {
-                    this.multiput(toSave, true);
+                    me.multiput(toSave, true);
                 }
             }, appError);
         },

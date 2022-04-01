@@ -549,7 +549,7 @@ export default {
                 // Only competency fields were selected
                 return this.searchForSubObjects();
             }
-        }, 500),
+        }, 1000),
         loadMore: function($state) {
             if (this.searchTerm === "" && this.displayFirst && this.displayFirst.length > 0) {
                 for (var i = 0; i < 20; i++) {
