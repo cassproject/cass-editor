@@ -111,6 +111,17 @@ export default {
                 if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                     me.findLinkedPersonForIdentity();
                 }
+                if (EcRepository.defaultPlugins && EcRepository.defaultPlugins.length > 0) {
+                    let plugins = [];
+                    for (let each in EcRepository.defaultPlugins) {
+                        let url = EcRepository.defaultPlugins[each];
+                        if (url.startsWith('/')) {
+                            url = window.location.origin + url;
+                        }
+                        plugins.push({"id": each, "url": url});
+                    }
+                    me.$store.commit('app/setCuratedPlugins', plugins);
+                }
             }, appError, (loginInfo) => {
                 this.$store.commit('user/repositorySsoOptions', loginInfo);
                 if (loginInfo.ssoLogin != null) {
