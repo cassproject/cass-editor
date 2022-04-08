@@ -17,6 +17,7 @@
                 <div class="column">
                     <SearchBar
                         filterSet="all"
+                        :setFocus="setFocus"
                         :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
                 </div>
                 <div class="column is-1" />
@@ -161,6 +162,7 @@
                         :repo="repo"
                         :click="frameworkClick"
                         @dblclick="openItem"
+                        @search-updated="refocusSearch"
                         :searchOptions="searchOptions"
                         :paramObj="paramObj"
                         view="frameworks"
@@ -307,7 +309,8 @@ export default {
             numIdentities: EcIdentityManager.default.ids.length,
             parentObjectClass: 'frameworks-sticky',
             sortBy: null,
-            defaultConfig: ""
+            defaultConfig: "",
+            setFocus: 0
         };
     },
     created: function() {
@@ -429,6 +432,9 @@ export default {
         ThingEditing: () => import('@/lode/components/ThingEditing.vue')
     },
     methods: {
+        refocusSearch: function() {
+            this.setFocus++;
+        },
         canEditItem: function(item) {
             return item.canEditAny(EcIdentityManager.default.getMyPks());
         },
@@ -558,6 +564,11 @@ export default {
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
     },
     watch: {
+        setFocus: function() {
+            if (this.setFocus > 100) {
+                this.setFocus = 0;
+            }
+        },
         sortResults: function() {
             if (this.sortResults.id === "lastEdited") {
                 this.sortBy = "schema:dateModified";
