@@ -51,6 +51,7 @@
                     </span>
                 </p>
                 <button
+                    v-if="errorValidating"
                     @click="closeWithoutSaving"
                     class="delete"
                     aria-label="close" />
