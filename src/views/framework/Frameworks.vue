@@ -310,7 +310,7 @@ export default {
             parentObjectClass: 'frameworks-sticky',
             sortBy: null,
             defaultConfig: "",
-            setFocus: 0
+            setFocus: false
         };
     },
     created: function() {
@@ -433,7 +433,7 @@ export default {
     },
     methods: {
         refocusSearch: function() {
-            this.setFocus++;
+            this.setFocus = !this.setFocus;
         },
         canEditItem: function(item) {
             return item.canEditAny(EcIdentityManager.default.getMyPks());
@@ -564,11 +564,6 @@ export default {
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
     },
     watch: {
-        setFocus: function() {
-            if (this.setFocus > 100) {
-                this.setFocus = 0;
-            }
-        },
         sortResults: function() {
             if (this.sortResults.id === "lastEdited") {
                 this.sortBy = "schema:dateModified";
