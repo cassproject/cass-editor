@@ -36,6 +36,7 @@
 import {mapState} from 'vuex';
 import common from '@/mixins/common.js';
 import DynamicModal from './components/modals/DynamicModal.vue';
+import {version} from '../package.json';
 
 export default {
     mixins: [common],
@@ -51,7 +52,8 @@ export default {
             showNav: true,
             GROUP_SEARCH_SIZE: 10000,
             linkedPerson: null,
-            addAnotherDirectory: false
+            addAnotherDirectory: false,
+            appVersion: version
         };
     },
     $router: function(to, from) {
@@ -65,6 +67,9 @@ export default {
     },
     methods: {
         initializeApp: function() {
+            if (this.appVersion) {
+                document.title = "CaSS Editor " + this.appVersion;
+            }
             var server = window.origin + "/api/";
             if (window.location.origin === "https://cassproject.github.io") {
                 server = "https://dev.cassproject.org/api/";
