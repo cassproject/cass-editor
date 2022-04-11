@@ -145,6 +145,10 @@ export default {
         allowShowFrameworks: {
             type: Boolean,
             default: false
+        },
+        setFocus: {
+            type: Number,
+            default: 0
         }
     },
     data() {
@@ -155,6 +159,9 @@ export default {
         };
     },
     watch: {
+        setFocus: function() {
+            this.$nextTick(() => this.$refs['text'].focus());
+        },
         storeSearchTerm: function() {
             this.searchTerm = this.storeSearchTerm;
         },
