@@ -387,11 +387,10 @@ import casslogoSquare from '@/assets/cass-logo-square.png';
 import {cassUtil} from './../mixins/cassUtil';
 import {cassApi} from './../mixins/cassApi';
 import {pluginUtil} from './../mixins/pluginUtil';
-import {curatedPlugins} from './../mixins/curatedPlugins';
 import AddNewDropdown from './AddNewDropdown.vue';
 
 export default {
-    mixins: [cassUtil, cassApi, pluginUtil, curatedPlugins],
+    mixins: [cassUtil, cassApi, pluginUtil],
     name: 'SideNav',
     props: {
         method: {

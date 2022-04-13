@@ -77,7 +77,13 @@ const state = {
         message: '',
         color: '',
         background: ''
-    }
+    },
+    curatedPlugins: [
+        {
+            "id": "vlrcTestPlugin3",
+            "url": "https://raw.githubusercontent.com/cassproject/cass-vlrc/master/"
+        }
+    ]
 };
 const mutations = {
     showSideNav: function() {
@@ -321,6 +327,9 @@ const mutations = {
         if (payload.background) {
             state.banner.background = payload.background;
         }
+    },
+    setCuratedPlugins: function(state, payload) {
+        state.curatedPlugins = payload;
     }
 };
 const actions = {
@@ -522,6 +531,9 @@ const getters = {
     },
     bannerBackground: state => {
         return state.banner.background;
+    },
+    curatedPlugins: state => {
+        return state.curatedPlugins;
     }
 };
 

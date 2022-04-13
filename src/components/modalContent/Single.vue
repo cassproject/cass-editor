@@ -7,17 +7,25 @@
         <template slot="modal-body">
             <div class="container">
                 <h3
-                    v-if="numberOfParentFrameworks === 0"
+                    v-if="numberOfParentFrameworks === 0 && inCassInstance"
                     class="title">
                     Orphan {{ dynamicModalContent.objectType }}
                 </h3>
-                <template v-else-if="dynamicModalContent.type === 'Level'">
+                <template v-else-if="dynamicModalContent.objectType === 'Level'">
                     <h3 class="title">
                         Level
                     </h3>
                     <p class="subtitle">
                         This competency has a level associated with it. Levels can be
                         referenced in more than one framework. You can edit the level from here.
+                    </p>
+                </template>
+                <template v-else-if="dynamicModalContent.objectType === 'Concept'">
+                    <h3 class="title">
+                        Concept
+                    </h3>
+                    <p class="subtitle">
+                        This competency has a concept associated with it. Navigate to its {{ queryParams && queryParams.ceasnDataFields === 'true' ? "concept scheme" : "taxonomy" }} to view more details.
                     </p>
                 </template>
                 <template v-else>
@@ -64,14 +72,19 @@
                 <h4
                     class="header has-text-weight-normal pl-3"
                     v-if="numberOfParentFrameworks !== 0">
-                    This <b>{{ dynamicModalContent.type }}</b> item is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? "concept scheme" : "framework" }}<span v-if="numberOfParentFrameworks > 1 || numberOfParentFrameworks === 0">s, including this framework.</span>
+                    This <b>{{ dynamicModalContent.type }}</b> item is listed in <b>{{ numberOfParentFrameworks }}</b> {{ dynamicModalContent.objectType === "Concept" ? (queryParams && queryParams.ceasnDataFields === 'true' ? "concept scheme" : "taxonomy") : "framework" }}<span v-if="numberOfParentFrameworks > 1 || numberOfParentFrameworks === 0">s, including this framework.</span>
                 </h4>
                 <p
                     class="is-size-6"
-                    v-else>
+                    v-else-if="inCassInstance">
                     This item isn't listed in any frameworks.  This is usually because someone added it to a framework, and then removed
-                    it rather than deleting it.  You can add this competency to an existing framework by navigating to your framework
+                    it rather than deleting it.  You can add this competency to an existing framework by navigating to your framework,
                     selecting 'add competency' and searching for this name in the search list.
+                </p>
+                <p
+                    class="is-size-6"
+                    v-else>
+                    This item is not stored in your CaSS instance.
                 </p>
                 <!-- list of parent frameworks -->
                 <ul class="single__list">
@@ -151,7 +164,8 @@ export default {
             repo: window.repo,
             canEdit: false,
             error: null,
-            obj: null
+            obj: null,
+            inCassInstance: false
         };
     },
     props: {
@@ -163,7 +177,8 @@ export default {
     computed: {
         ...mapState({
             framework: state => state.editor.framework,
-            dynamicModalContent: state => state.app.modal.dynamicModalContent
+            dynamicModalContent: state => state.app.modal.dynamicModalContent,
+            queryParams: state => state.editor.queryParams
         }),
         dynamicThing: function() {
             if (this.edit) {
@@ -278,9 +293,12 @@ export default {
             this.findConceptTrail(this.dynamicModalContent.uri);
         }
         EcRepository.get(this.content.uri, function(success) {
-            if (success.canEditAny(EcIdentityManager.default.getMyPks())) {
-                me.canEdit = true;
-                me.obj = success;
+            if (success) {
+                me.inCassInstance = true;
+                if (success.canEditAny(EcIdentityManager.default.getMyPks())) {
+                    me.canEdit = true;
+                    me.obj = success;
+                }
             } else {
                 me.canEdit = false;
             }

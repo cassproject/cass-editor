@@ -51,6 +51,7 @@
                     </span>
                 </p>
                 <button
+                    v-if="errorValidating"
                     @click="closeWithoutSaving"
                     class="delete"
                     aria-label="close" />
@@ -1452,7 +1453,7 @@ export default {
             return result;
         },
         closeWithoutSaving: function() {
-            if (this.newFramework && this.view !== "importPreview") {
+            if ((this.newFramework || this.$store.state.editor.newCompetency) && this.view !== "importPreview") {
                 return this.clickToDelete();
             }
             this.$emit('done-editing-node-event');
