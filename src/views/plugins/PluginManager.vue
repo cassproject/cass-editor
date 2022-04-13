@@ -147,10 +147,9 @@ import PluginListItem from '../../components/plugins/PluginListItem';
 import PluginDetails from '../../components/plugins/PluginDetails';
 import {cassUtil} from '../../mixins/cassUtil';
 import {pluginUtil} from '../../mixins/pluginUtil';
-import {curatedPlugins} from '../../mixins/curatedPlugins';
 
 export default {
-    mixins: [cassUtil, pluginUtil, curatedPlugins],
+    mixins: [cassUtil, pluginUtil],
     props: {
         view: {
             default: '',
@@ -174,6 +173,9 @@ export default {
             if (!this.currentPlugin || !this.currentPlugin.isOwned) return true;
             else if (this.currentPlugin.isOwned) return false;
             else return true;
+        },
+        curatedPlugins: function() {
+            return this.$store.getters['app/curatedPlugins'];
         }
     },
     methods: {
@@ -271,6 +273,11 @@ export default {
     },
     mounted() {
         this.buildManagerPluginList();
+    },
+    watch: {
+        curatedPlugins() {
+            this.buildManagerPluginList();
+        }
     }
 };
 </script>

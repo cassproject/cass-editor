@@ -36,6 +36,7 @@
 import {mapState} from 'vuex';
 import common from '@/mixins/common.js';
 import DynamicModal from './components/modals/DynamicModal.vue';
+import {version} from '../package.json';
 
 export default {
     mixins: [common],
@@ -51,7 +52,8 @@ export default {
             showNav: true,
             GROUP_SEARCH_SIZE: 10000,
             linkedPerson: null,
-            addAnotherDirectory: false
+            addAnotherDirectory: false,
+            appVersion: version
         };
     },
     $router: function(to, from) {
@@ -65,6 +67,9 @@ export default {
     },
     methods: {
         initializeApp: function() {
+            if (this.appVersion) {
+                document.title = "CaSS Editor " + this.appVersion;
+            }
             var server = window.origin + "/api/";
             if (window.location.origin === "https://cassproject.github.io") {
                 server = "https://dev.cassproject.org/api/";
@@ -110,6 +115,17 @@ export default {
                 }
                 if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                     me.findLinkedPersonForIdentity();
+                }
+                if (EcRepository.defaultPlugins && EcRepository.defaultPlugins.length > 0) {
+                    let plugins = [];
+                    for (let each in EcRepository.defaultPlugins) {
+                        let url = EcRepository.defaultPlugins[each];
+                        if (url.startsWith('/')) {
+                            url = window.location.origin + url;
+                        }
+                        plugins.push({"id": each, "url": url});
+                    }
+                    me.$store.commit('app/setCuratedPlugins', plugins);
                 }
             }, appError, (loginInfo) => {
                 this.$store.commit('user/repositorySsoOptions', loginInfo);
