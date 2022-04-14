@@ -246,6 +246,12 @@ export default {
             EcRemote.getExpectingString(window.repo.selectedServer, "badge/pk", (badgePk) => {
                 this.$store.commit('editor/setBadgePk', EcPk.fromPem(badgePk));
             }, appError);
+            setTimeout(() => {
+                // If crypto workers haven't loaded forgeAsync.js at repo init, need to try again to load the identity.
+                if (this.linkedPerson == null && EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
+                    me.findLinkedPersonForIdentity();
+                }
+            }, 1000);
         },
         onSidebarEvent: function() {
             this.showSideNav = !this.showSideNav;
