@@ -147,8 +147,8 @@ export default {
             default: false
         },
         setFocus: {
-            type: Number,
-            default: 0
+            type: Boolean,
+            default: false
         }
     },
     data() {
