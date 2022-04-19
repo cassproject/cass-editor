@@ -47,12 +47,12 @@ export default {
     },
     watch: {
         me: function() {
-            this.$store.dispatch('editor/searchForAssertions', 500);
+            this.$store.dispatch('editor/searchForAssertions');
         }
     },
     mounted() {
         this.$store.commit('app/searchTerm', "");
-        this.$store.dispatch('editor/searchForAssertions', 500);
+        this.$store.dispatch('editor/searchForAssertions');
     },
     beforeDestroy: function() {
         this.$store.commit('app/clearSearchFilters');

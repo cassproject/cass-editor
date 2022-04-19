@@ -19,41 +19,48 @@ describe('SideNav', () => {
 
         jest.restoreAllMocks();
 
-        state = {
-
-        };
-
-        mutations = {
-            framework: jest.fn(),
-            organization: jest.fn(),
-            selectedCompetency: jest.fn(),
-            defaultLanguage: jest.fn(),
-            webSocketBackoffIncrease: jest.fn(),
-            private: jest.fn(),
-            selectCompetencyRelation: jest.fn(),
-            selectingCompetencies: jest.fn(),
-            newCompetency: jest.fn(),
-            t3Profile: jest.fn(),
-            changedObject: jest.fn(),
-            loggedOnPerson: jest.fn(),
-        };
-
-        getters = {
-
-        }
-
-        actions = {
-            refreshDirectories: jest.fn()
-        }
-
         store = new Vuex.Store({
             modules: {
                 editor: {
                     namespaced: true,
-                    mutations,
-                    getters,
-                    actions,
-                    state
+                    mutations: {
+                        framework: jest.fn(),
+                        organization: jest.fn(),
+                        selectedCompetency: jest.fn(),
+                        defaultLanguage: jest.fn(),
+                        webSocketBackoffIncrease: jest.fn(),
+                        private: jest.fn(),
+                        selectCompetencyRelation: jest.fn(),
+                        selectingCompetencies: jest.fn(),
+                        newCompetency: jest.fn(),
+                        t3Profile: jest.fn(),
+                        changedObject: jest.fn(),
+                        loggedOnPerson: jest.fn(),
+                    },
+                    getters: {
+
+                    },
+                    actions: {
+                        refreshDirectories: jest.fn()
+                    },
+                    state: {
+                        
+                    }
+                },
+                app: {
+                    namespaced: true,
+                    mutations: {
+                        
+                    },
+                    getters: {
+                        curatedPlugins: jest.fn(() => [])
+                    },
+                    actions: {
+
+                    },
+                    state: {
+
+                    }
                 }
             }
         });
