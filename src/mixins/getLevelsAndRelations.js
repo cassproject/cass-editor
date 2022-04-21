@@ -176,6 +176,7 @@ export default {
             }
 
             await Promise.all(promises);
+            me.alignments = alignments;
         }
     }
 };
