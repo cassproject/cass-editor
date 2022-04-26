@@ -519,7 +519,7 @@ export default {
                 this.defaultConfig = localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId");
             } else {
                 this.repo.searchWithParams("@type:Configuration", {'size': 10000}, function(c) {
-                    if (c.isDefault === "true") {
+                    if (c.isDefault === "true" || c.isDefault === true) {
                         me.defaultConfig = c.shortId();
                     }
                 }, function() {

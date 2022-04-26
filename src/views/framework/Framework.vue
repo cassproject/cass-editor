@@ -735,7 +735,7 @@ export default {
             }
             if (!this.config) {
                 this.repo.searchWithParams("@type:Configuration", {'size': 10000}, function(c) {
-                    if (c.isDefault === "true") {
+                    if (c.isDefault === "true" || c.isDefault === true) {
                         me.config = c;
                     }
                 }, function() {}, function() {});
