@@ -231,7 +231,7 @@ export default {
                     "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Publication status of the source competency framework. The original framework may be drafted, published, or depreciated outside of this system."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source Publication Status"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publication Status"}],
                     "options": [
                         {display: "Draft", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Draft"},
                         {display: "Published", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Published"},
