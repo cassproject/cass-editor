@@ -236,7 +236,7 @@ export default {
                     function(ca) {
                         let found = false;
                         for (let c of ca) {
-                            if (c.isDefault === "true") {
+                            if (c.isDefault === "true" || c.isDefault === true) {
                                 me.frameworkConfig = c.frameworkConfig;
                                 found = true;
                                 break;
