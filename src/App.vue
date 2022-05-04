@@ -423,6 +423,13 @@ export default {
 
             connection.changedObject = async function(wut) {
                 me.$store.commit('editor/changedObject', wut.shortId());
+                // Add new assertions as they come in
+                if (wut.type === 'Assertion') {
+                    let a = new EcAssertion();
+                    Object.assign(a, wut);
+                    a.assertionDateDecrypted = await a.getAssertionDate();
+                    me.$store.commit('editor/addAssertion', a);
+                }
                 if (me.$route.name !== 'framework' && me.$route.name !== 'conceptScheme') {
                     return;
                 }

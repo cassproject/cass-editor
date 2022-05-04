@@ -2,7 +2,7 @@
     <div>
         <div
             class="timeline"
-            v-if="assertions">
+            v-if="!loading">
             <TimelineElement
                 v-for="item in assertions"
                 :key="item.id"
@@ -14,9 +14,11 @@
             </span>
         </div>
         <div
-            id="loadingAssertionTimeline"
-            v-else>
-            <br>Loading Timeline...
+            v-else
+            id="loadingAssertionTimeline">
+            <progress
+                class="progress is-large is-primary"
+                max="100" />
         </div>
     </div>
 </template>
@@ -38,6 +40,9 @@ export default {
     computed: {
         assertions: function() {
             return this.$store.getters['editor/assertions'];
+        },
+        loading: function() {
+            return this.$store.getters['editor/searchingAssertions'];
         }
     },
     watch: {},

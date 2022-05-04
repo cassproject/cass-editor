@@ -83,7 +83,8 @@ const state = {
     me: null,
     subject: null,
     people: [],
-    firstSearchProcessing: true
+    firstSearchProcessing: true,
+    searchingAssertions: false
 };
 const mutations = {
     framework(state, f) {
@@ -255,6 +256,9 @@ const mutations = {
     },
     setFirstSearchProcessing(state, val) {
         state.firstSearchProcessing = val;
+    },
+    setSearchingAssertions(state, val) {
+        state.searchingAssertions = val;
     }
 };
 const actions = {
@@ -283,6 +287,7 @@ const actions = {
     },
     searchForAssertions: (instance) => {
         return new Promise((resolve, reject) => {
+            instance.state.searchingAssertions = true;
             var assertions = [];
             let doSearch = async function(start, count) {
                 let results = await window.repo.searchWithParams("@type:Assertion", {size: count, start: start});
@@ -311,10 +316,8 @@ const actions = {
                     }
                 },
                 (assertions) => {
-                    assertions = assertions.sort((a, b) => {
-                        return b.assertionDateDecrypted - a.assertionDateDecrypted;
-                    });
                     instance.state.assertions = assertions;
+                    instance.state.searchingAssertions = false;
                     resolve();
                 });
             });
@@ -532,7 +535,9 @@ const getters = {
         return state.manageAssertions;
     },
     assertions: function(state) {
-        return state.assertions;
+        return state.assertions.sort((a, b) => {
+            return b.assertionDateDecrypted - a.assertionDateDecrypted;
+        });
     },
     badgePk: function(state) {
         return state.badgePk;
@@ -548,6 +553,9 @@ const getters = {
     },
     firstSearchProcessing: function(state) {
         return state.firstSearchProcessing;
+    },
+    searchingAssertions: function(state) {
+        return state.searchingAssertions;
     }
 };
 

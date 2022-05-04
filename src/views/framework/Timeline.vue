@@ -27,7 +27,7 @@ import MainLayout from '@/layouts/MainLayout.vue';
 import AssertionTimeline from '@/lode/components/AssertionTimeline.vue';
 
 export default {
-    name: 'FrameworkCrosswalk',
+    name: 'Timeline',
     data: () => ({}),
     mixins: [],
     props: {
@@ -50,7 +50,8 @@ export default {
             this.$store.dispatch('editor/searchForAssertions');
         }
     },
-    mounted() {
+    created() {
+        this.$store.commit('editor/setSearchingAssertions', true);
         this.$store.commit('app/searchTerm', "");
         this.$store.dispatch('editor/searchForAssertions');
     },
