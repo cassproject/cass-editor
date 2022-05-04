@@ -2,7 +2,7 @@
     <div>
         <div
             class="timeline"
-            v-if="!loading">
+            v-if="assertions && !loading">
             <TimelineElement
                 v-for="item in assertions"
                 :key="item.id"
