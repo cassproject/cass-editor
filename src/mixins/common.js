@@ -521,7 +521,7 @@ export default {
         addRelationsToFramework: async function(selectedCompetency, property, values) {
             if (values.length > 0) {
                 selectedCompetency = await EcRepository.get(selectedCompetency);
-                this.addAlignments(values, selectedCompetency, property);
+                await this.addAlignments(values, selectedCompetency, property);
             }
         },
         addAlignments: async function(targets, thing, relationType, allowSave) {
@@ -532,105 +532,120 @@ export default {
                 // This property is attached to competency, not a relation attached to framework
                 return this.addRelationAsCompetencyField(targets, thing, relationType, allowSave);
             }
-            var framework = this.$store.state.editor.framework;
-            var edits = [];
-            var initialRelations = framework.relation ? framework.relation.slice() : null;
-            for (var i = 0; i < targets.length; i++) {
-                var r = new EcAlignment();
-                if (this.$store.getters['editor/queryParams'].newObjectEndpoint != null) {
-                    r.generateShortId(this.$store.getters['editor/queryParams'].newObjectEndpoint);
-                } else {
-                    r.generateId(window.repo.selectedServer);
-                }
-                edits.push({operation: "addNew", id: r.shortId()});
-                r["schema:dateCreated"] = new Date().toISOString();
-                r.target = EcRemoteLinkedData.trimVersionFromUrl(targets[i]);
-                if (thing.id) {
-                    r.source = thing.shortId();
-                } else {
-                    r.source = EcRemoteLinkedData.trimVersionFromUrl(thing["@id"]);
-                }
-                if (r.target === r.source) {
-                    return;
-                }
-                r.relationType = relationType;
-                if (r.relationType === "broadens") {
-                    var dosedo = r.target;
-                    r.target = r.source;
-                    r.source = dosedo;
-                    r.relationType = "narrows";
-                }
-                if (EcIdentityManager.default.ids.length > 0) {
-                    r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
-                }
-                if (framework.owner && framework.owner.length > 0) {
-                    for (var j = 0; j < framework.owner.length; j++) {
-                        var owner = framework.owner[j];
-                        r.addOwner(EcPk.fromPem(owner));
+            return new Promise(async(resolve, reject) => {
+                var framework = this.$store.state.editor.framework;
+                var edits = [];
+                var initialRelations = framework.relation ? framework.relation.slice() : null;
+                for (var i = 0; i < targets.length; i++) {
+                    var r = new EcAlignment();
+                    if (this.$store.getters['editor/queryParams'].newObjectEndpoint != null) {
+                        r.generateShortId(this.$store.getters['editor/queryParams'].newObjectEndpoint);
+                    } else {
+                        r.generateId(window.repo.selectedServer);
                     }
-                }
-                if (framework.reader && framework.reader.length > 0) {
-                    for (var j = 0; j < framework.reader.length; j++) {
-                        var reader = framework.reader[j];
-                        r.addReader(EcPk.fromPem(reader));
+                    edits.push({operation: "addNew", id: r.shortId()});
+                    r["schema:dateCreated"] = new Date().toISOString();
+                    r.target = EcRemoteLinkedData.trimVersionFromUrl(targets[i]);
+                    if (thing.id) {
+                        r.source = thing.shortId();
+                    } else {
+                        r.source = EcRemoteLinkedData.trimVersionFromUrl(thing["@id"]);
                     }
-                }
-                if (this.$store.state.editor.private === true) {
-                    r = await EcEncryptedValue.toEncryptedValue(r);
-                }
-                window.repo.saveTo(r, function() {}, appError);
-                if (thing.type === 'Concept') {
-                    if (framework.relation == null) {
-                        framework.relation = [];
+                    if (r.target === r.source) {
+                        return;
                     }
-                    let isNew = true;
-                    let idx = 0;
-                    while (isNew && idx < framework.relation.length) {
-                        if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[idx]).equals(r.id)) {
-                            isNew = false;
+                    r.relationType = relationType;
+                    if (r.relationType === "broadens") {
+                        var dosedo = r.target;
+                        r.target = r.source;
+                        r.source = dosedo;
+                        r.relationType = "narrows";
+                    }
+                    if (EcIdentityManager.default.ids.length > 0) {
+                        r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                    }
+                    if (framework.owner && framework.owner.length > 0) {
+                        for (var j = 0; j < framework.owner.length; j++) {
+                            var owner = framework.owner[j];
+                            r.addOwner(EcPk.fromPem(owner));
                         }
-                        idx++;
                     }
-                    if (isNew) {
-                        framework.relation.push(r.id);
+                    if (framework.reader && framework.reader.length > 0) {
+                        for (var j = 0; j < framework.reader.length; j++) {
+                            var reader = framework.reader[j];
+                            r.addReader(EcPk.fromPem(reader));
+                        }
                     }
-                } else {
-                    framework.addRelation(r.id);
+                    if (this.$store.state.editor.private === true) {
+                        r = await EcEncryptedValue.toEncryptedValue(r);
+                    }
+                    await new Promise((res, rej) => {
+                        window.repo.saveTo(r, res, rej);
+                    });
+                    if (thing.type === 'Concept') {
+                        if (framework.relation == null) {
+                            framework.relation = [];
+                        }
+                        let isNew = true;
+                        let idx = 0;
+                        while (isNew && idx < framework.relation.length) {
+                            if (EcRemoteLinkedData.trimVersionFromUrl(framework.relation[idx]).equals(r.id)) {
+                                isNew = false;
+                            }
+                            idx++;
+                        }
+                        if (isNew) {
+                            framework.relation.push(r.id);
+                        }
+                    } else {
+                        framework.addRelation(r.id);
+                    }
                 }
-            }
-            edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation]});
-            this.$store.commit('editor/addEditsToUndo', edits);
-            this.$store.commit('editor/framework', framework);
-            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                framework = await EcEncryptedValue.toEncryptedValue(framework);
-            }
-            window.repo.saveTo(framework, function() {}, appError);
+                edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation]});
+                this.$store.commit('editor/addEditsToUndo', edits);
+                this.$store.commit('editor/framework', framework);
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    framework = await EcEncryptedValue.toEncryptedValue(framework);
+                }
+                window.repo.saveTo(framework, resolve, reject);
+            });
         },
         addRelationAsCompetencyField: async function(targets, thing, relationType, allowSave) {
-            var initialValue = thing[relationType] ? thing[relationType].slice() : null;
-            for (var i = 0; i < targets.length; i++) {
-                if (thing[relationType] == null) {
-                    thing[relationType] = [];
+            return new Promise(async(resolve, reject) => {
+                var initialValue = thing[relationType] ? thing[relationType].slice() : null;
+                for (var i = 0; i < targets.length; i++) {
+                    if (thing[relationType] == null) {
+                        thing[relationType] = [];
+                    }
+                    thing[relationType].push(targets[i]);
                 }
-                thing[relationType].push(targets[i]);
-            }
-            this.$store.commit('editor/addEditsToUndo', [{operation: "update", id: thing.shortId(), fieldChanged: [relationType], initialValue: [initialValue], changedValue: [thing[relationType]]}]);
-            thing["schema:dateModified"] = new Date().toISOString();
-            if (this.$store.state.editor.private === true) {
-                if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
-                    thing = await EcEncryptedValue.toEncryptedValue(thing);
+                this.$store.commit('editor/addEditsToUndo', [{operation: "update", id: thing.shortId(), fieldChanged: [relationType], initialValue: [initialValue], changedValue: [thing[relationType]]}]);
+                thing["schema:dateModified"] = new Date().toISOString();
+                if (this.$store.state.editor.private === true) {
+                    if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
+                        thing = await EcEncryptedValue.toEncryptedValue(thing);
+                    }
                 }
-            }
-            window.repo.saveTo(thing, function() {}, appError);
+                window.repo.saveTo(thing, resolve, reject);
+            });
         },
-        removeRelationFromFramework: function(source, property, target) {
-            var me = this;
-            var initialRelations = this.framework.relation ? this.framework.relation.slice() : null;
-            var edits = [];
-            new EcAsyncHelper().each(this.framework.relation, function(relation, callback) {
-                EcAlignment.get(relation, function(r) {
-                    if (property === "broadens") {
-                        if (r.target === source && r.source === target && r.relationType === "narrows") {
+        removeRelationFromFramework: async function(source, property, target) {
+            return new Promise((resolve, reject) => {
+                var me = this;
+                var initialRelations = this.framework.relation ? this.framework.relation.slice() : null;
+                var edits = [];
+                new EcAsyncHelper().each(this.framework.relation, function(relation, callback) {
+                    EcAlignment.get(relation, function(r) {
+                        if (property === "broadens") {
+                            if (r.target === source && r.source === target && r.relationType === "narrows") {
+                                me.framework.removeRelation(r.shortId());
+                                edits.push({operation: "delete", obj: r});
+                                me.conditionalDelete(r.shortId());
+                                callback();
+                            } else {
+                                callback();
+                            }
+                        } else if (r.source === source && r.target === target && r.relationType === property) {
                             me.framework.removeRelation(r.shortId());
                             edits.push({operation: "delete", obj: r});
                             me.conditionalDelete(r.shortId());
@@ -638,24 +653,17 @@ export default {
                         } else {
                             callback();
                         }
-                    } else if (r.source === source && r.target === target && r.relationType === property) {
-                        me.framework.removeRelation(r.shortId());
-                        edits.push({operation: "delete", obj: r});
-                        me.conditionalDelete(r.shortId());
-                        callback();
-                    } else {
-                        callback();
+                    }, callback);
+                }, async function() {
+                    var framework = me.framework;
+                    edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation]});
+                    me.$store.commit('editor/framework', framework);
+                    me.$store.commit('editor/addEditsToUndo', edits);
+                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                        framework = await EcEncryptedValue.toEncryptedValue(framework);
                     }
-                }, callback);
-            }, async function() {
-                var framework = me.framework;
-                edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation]});
-                me.$store.commit('editor/framework', framework);
-                me.$store.commit('editor/addEditsToUndo', edits);
-                if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = await EcEncryptedValue.toEncryptedValue(framework);
-                }
-                window.repo.saveTo(framework, function() {}, appError);
+                    window.repo.saveTo(framework, resolve, reject);
+                });
             });
         },
         ceasnRegistryUriTransform: function(uri) {

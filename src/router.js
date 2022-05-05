@@ -194,26 +194,6 @@ export default new Router({
             component: () => import(/* webpackChunkName: "internalError" */ './views/InternalError.vue')
         },
         {
-            path: '/vlrc',
-            name: 'vlrc',
-            component: () => import(/* webpackChunkName: "vlrc" */ './legacy/VlrcIframe.vue')
-        },
-        {
-            path: '/gap-analysis',
-            name: 'gap-analysis',
-            component: () => import(/* webpackChunkName: "gapAnalysis" */ './legacy/GapAnalysisIframe.vue')
-        },
-        {
-            path: '/profile',
-            name: 'profile',
-            component: () => import(/* webpackChunkName: "profile" */ './legacy/ProfileIframe.vue')
-        },
-        {
-            path: '/viewer',
-            name: 'viewer',
-            component: () => import(/* webpackChunkName: "viewer" */ './legacy/ViewerIframe.vue')
-        },
-        {
             path: '/directory',
             name: 'directory',
             components: {

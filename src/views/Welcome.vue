@@ -207,44 +207,6 @@
                                 target="_blank">ACT: Collaborative Problem Solving</a>
                         </li>
                     </ul>
-
-
-                    <h2 class="header pt-4 has-text-weight-bold is-size-5">
-                        Legacy Demo CaSS Applications
-                    </h2>
-                    <ul v-if="linkToLegacyDemos">
-                        <li>
-                            <a
-                                class="custom-link external"
-                                @click="openVlrc">
-                                Dashboards
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                class="custom-link external"
-                                @click="openGapAnalysis">
-                                Gap Analysis
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                class="custom-link external"
-                                @click="openProfileExplorer">
-                                Profile Explorer
-                            </a>
-                        </li>
-                        <li>
-                            <a
-                                class="custom-link external"
-                                @click="openFrameworkExplorer">
-                                Framework Explorer
-                            </a>
-                        </li>
-                    </ul>
-                    <p v-else>
-                        Log in to access
-                    </p>
                     <h2 class="header pt-4 has-text-weight-bold is-size-5">
                         Get in touch
                     </h2>
@@ -406,18 +368,6 @@ export default {
                 me.error = "Import Error";
                 me.importing = false;
             });
-        },
-        openVlrc: function() {
-            this.$router.push({name: "vlrc"});
-        },
-        openGapAnalysis: function() {
-            this.$router.push({name: "gap-analysis"});
-        },
-        openProfileExplorer: function() {
-            this.$router.push({name: "profile"});
-        },
-        openFrameworkExplorer: function() {
-            this.$router.push({name: "viewer"});
         }
     }
 };

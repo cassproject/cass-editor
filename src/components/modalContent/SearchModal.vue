@@ -58,7 +58,7 @@
                 </button>
                 <button
                     class="button is-outlined is-primary"
-                    v-if="copyOrLink"
+                    v-if="copyOrLink && linkEnabled"
                     :disabled="!selectedIds || selectedIds.length === 0"
                     @click="appendCompetencies">
                     <span class="icon">
@@ -127,6 +127,13 @@ export default {
                 return ary;
             }
             return null;
+        },
+        linkEnabled: function() {
+            // For CE frameworks, don't permit linking
+            if (this.framework.subType !== 'Collection' && this.queryParams.ceasnDataFields === "true") {
+                return false;
+            }
+            return true;
         }
     },
     methods: {

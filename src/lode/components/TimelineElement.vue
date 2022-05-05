@@ -20,77 +20,84 @@
                 <i class="fa fa-check" />
             </div>
             <div class="content">
-                <!-- <div
-                    v-if="mine"
-                    @click="deleteMe"
-                    class="button is-text"
-                    title="Delete this claim.">
-                    <i class="fas fa-times" />
-                </div> -->
-                <!-- <img
-                    v-if="fingerprintUrlAgent"
-                    :src="fingerprintUrlAgent"
-                    :title="agent">
-                <svg
-                    v-else
-                    width="44"
-                    height="44"
-                    :data-jdenticon-value="fingerprintAgent"
-                    :title="fingerprintAgent" /> -->
-                <strong class="agentName">{{ agent }}</strong> claimed
-                <!-- <img
-                    v-if="fingerprintUrlSubject"
-                    :src="fingerprintUrlSubject"
-                    :title="subject">
-                <svg
-                    v-else
-                    width="44"
-                    height="44"
-                    :data-jdenticon-value="fingerprintSubject"
-                    :title="fingerprintSubject" /> -->
-                <strong class="subjectName">{{ subject }} </strong>
-                <span
-                    class="negativeClaim"
-                    v-if="negative">could not</span>
-                <span
-                    class="positiveClaim"
-                    v-else>could</span>
-                demonstrate
-                <a
-                    href="#"
-                    class="competencyLink"
-                    @click="gotoCompetency"
-                    :title="assertion.competency">
-                    {{ competencyName }}
-                    <span
-                        v-if="frameworkName"> in the subject area {{ frameworkName }}</span>
-                </a>
-                <span
-                    class="evidenceText"
-                    v-if="evidenceText"> because they
-                    <span
-                        v-for="(evidenceThing, index) in evidenceText"
-                        :key="index">
-                        <span v-if="index != 0"> and they </span>
+                <div class="timelineElementTextContainer">
+                    <div>
+                        <!-- <img
+                            v-if="fingerprintUrlAgent"
+                            :src="fingerprintUrlAgent"
+                            :title="agent">
+                        <svg
+                            v-else
+                            width="44"
+                            height="44"
+                            :data-jdenticon-value="fingerprintAgent"
+                            :title="fingerprintAgent" /> -->
+                        <strong class="agentName">{{ agent }}</strong> claimed
+                        <!-- <img
+                            v-if="fingerprintUrlSubject"
+                            :src="fingerprintUrlSubject"
+                            :title="subject">
+                        <svg
+                            v-else
+                            width="44"
+                            height="44"
+                            :data-jdenticon-value="fingerprintSubject"
+                            :title="fingerprintSubject" /> -->
+                        <strong class="subjectName">{{ subject }} </strong>
+                        <span
+                            class="negativeClaim"
+                            v-if="negative">could not</span>
+                        <span
+                            class="positiveClaim"
+                            v-else>could</span>
+                        demonstrate
                         <a
-                            v-if="evidenceThing.url"
-                            :href="evidenceThing.url"
-                            target="_blank"> {{ evidenceThing.text }}</a>
-                        <span v-else> {{ evidenceThing.text }}</span>
-                    </span>
-                </span>
-                <span
-                    class="badge"
-                    v-if="badged"> and has issued a
-                    <a
-                        target="_blank"
-                        :href="badgeUrl"> badge</a>
-                </span>.
-                <br>
-                <small>{{ competencyDescription }}</small>
-                <div
-                    class="time"
-                    v-if="timestamp"><strong>{{ timeAgo }}</strong></div>
+                            href="#"
+                            class="competencyLink"
+                            @click="gotoCompetency"
+                            :title="assertion.competency">
+                            {{ competencyName }}
+                            <span
+                                v-if="frameworkName"> in the subject area {{ frameworkName }}</span>
+                        </a>
+                        <span
+                            class="evidenceText"
+                            v-if="evidenceText"> because they
+                            <span
+                                v-for="(evidenceThing, index) in evidenceText"
+                                :key="index">
+                                <span v-if="index != 0"> and they </span>
+                                <a
+                                    v-if="evidenceThing.url"
+                                    :href="evidenceThing.url"
+                                    target="_blank"> {{ evidenceThing.text }}</a>
+                                <span v-else> {{ evidenceThing.text }}</span>
+                            </span>
+                        </span>
+                        <span
+                            class="badge"
+                            v-if="badged"> and has issued a
+                            <a
+                                target="_blank"
+                                :href="badgeUrl"> badge</a>
+                        </span>.
+                    </div>
+                    <div>
+                        <div
+                            :style="invisible"
+                            @click="deleteMe"
+                            class="button is-text"
+                            title="Delete this claim.">
+                            <i class="fas fa-times" />
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <small>{{ competencyDescription }}</small>
+                    <div
+                        class="time"
+                        v-if="timestamp"><strong>{{ timeAgo }}</strong></div>
+                </div>
             </div>
         </span>
         <div
@@ -233,6 +240,17 @@ export default {
                 }
             }
             return "";
+        },
+        invisible: function() {
+            if (this.mine) {
+                return {
+                    'visibility': 'visible'
+                };
+            } else {
+                return {
+                    'visibility': 'hidden'
+                };
+            }
         }
     },
     destroyed: function() {
@@ -412,11 +430,13 @@ export default {
             });
         },
         deleteMe: function() {
-            EcRepository.get(this.uri, (resource) => {
-                EcRepository._delete(resource, () => {
-                    this.$store.commit('editor/removeAssertion', resource);
-                }, appError);
-            });
+            if (window.confirm('Are you sure you want to delete this assertion?')) {
+                EcRepository.get(this.uri, (resource) => {
+                    EcRepository._delete(resource, () => {
+                        this.$store.commit('editor/removeAssertion', resource);
+                    }, appError);
+                });
+            }
         }
     }
 };

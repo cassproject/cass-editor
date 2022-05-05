@@ -1518,7 +1518,7 @@ export default {
                 }
             }
         },
-        addSelected: function() {
+        addSelected: async function() {
             var ids = this.$store.getters['editor/selectedCompetenciesAsProperties'];
             var relationType = this.$store.state.editor.selectCompetencyRelation;
             if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "DirectLink" || relationType === "https://purl.org/ctdlasn/terms/knowledgeEmbodied" ||
@@ -1526,7 +1526,7 @@ export default {
             relationType === "https://purl.org/ctdlasn/terms/skillEmbodied") {
                 this.attachUrlProperties(ids);
             } else if (this.$store.state.lode.searchType === "Competency") {
-                this.addAlignments(ids, this.$store.state.editor.selectedCompetency, relationType);
+                await this.addAlignments(ids, this.$store.state.editor.selectedCompetency, relationType);
             } else {
                 for (var i = 0; i < ids.length; i++) {
                     this.addLevel(this.$store.getters['editor/selectedCompetency'].shortId(), [ids[i]]);
