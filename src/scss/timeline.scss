@@ -54,10 +54,26 @@
     margin-right: .25rem;
 }
 
+.timelineElementTextContainer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
 .assertion-timeline-topbar{
     height: 100%;
     width: 100%;
     line-height: 40px;
     display: inline-flex;
     justify-content: space-between;
+}
+
+#loadingAssertionTimeline {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 40vh;
+    progress {
+        width: 50%;
+    }
 }

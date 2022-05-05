@@ -194,7 +194,9 @@
                     v-if="canManageAssertions"
                     class="column is-narrow"
                     @click="manageAssertions">
-                    <div class="button is-text has-text-dark">
+                    <div
+                        :class="{'is-loading': $store.getters['editor/searchingAssertions']}"
+                        class="button is-text has-text-dark">
                         <template v-if="managingAssertions">
                             Stop Managing Assertions
                         </template>
