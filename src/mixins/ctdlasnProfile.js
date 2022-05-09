@@ -779,12 +779,12 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [
                         {"@language": "en",
-                            "@value":
-                            "The URI of a competency from which this competency has been derived. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.  One entity per line."}
+                            "@value": `A third party version of the entity being referenced that has been modified in meaning through editing, extension, or refinement.
+                            For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.`}
                     ],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Derivative Of"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Derived From"}],
                     "max": 1,
-                    "heading": "Context"
+                    "heading": "Connections"
                 },
                 "http://schema.org/identifier": {
                     "@id": "https://purl.org/ctdlasn/terms/identifier",
