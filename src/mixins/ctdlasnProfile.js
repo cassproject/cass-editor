@@ -1476,50 +1476,6 @@ export default {
                     "noTextEditing": "true",
                     "heading": "Tagging"
                 },
-                "http://www.w3.org/2004/02/skos/core#changeNote": {
-                    "@id": "http://www.w3.org/2004/02/skos/core#changeNote",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes": [
-                        {
-                            "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
-                        }
-                    ],
-                    "http://schema.org/rangeIncludes": [
-                        {
-                            "@id": "http://www.w3.org/2000/01/rdf-schema#langString"
-                        }
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#comment": [
-                        {
-                            "@language": "en",
-                            "@value": "Documents fine-grained changes to a concept scheme, for the purposes of administration and maintenance. One note per line."
-                        }
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Change Note"}],
-                    "heading": "Context"
-                },
-                "http://www.w3.org/2004/02/skos/core#historyNote": {
-                    "@id": "http://www.w3.org/2004/02/skos/core#historyNote",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes": [
-                        {
-                            "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
-                        }
-                    ],
-                    "http://schema.org/rangeIncludes": [
-                        {
-                            "@id": "http://www.w3.org/2000/01/rdf-schema#langString"
-                        }
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#comment": [
-                        {
-                            "@language": "en",
-                            "@value": "Describes significant changes to the meaning or the form of a scheme. One note per language."
-                        }
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "History Note"}],
-                    "heading": "Context"
-                },
                 "https://purl.org/ctdlasn/terms/publicationStatusType": {
                     "@id": "https://purl.org/ctdlasn/terms/publicationStatusType",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1659,8 +1615,6 @@ export default {
                     "@id",
                     "registryURL",
                     "ctid",
-                    "http://www.w3.org/2004/02/skos/core#changeNote",
-                    "http://www.w3.org/2004/02/skos/core#historyNote",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
                     "http://purl.org/dc/terms/dateCopyrighted",
                     "http://purl.org/dc/terms/license",
