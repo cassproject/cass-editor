@@ -1521,10 +1521,10 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment": [
                         {
                             "@language": "en",
-                            "@value": "Year of a statement of copyright for this resource, such as 2017."
+                            "@value": "Date of a statement of copyright for this resource."
                         }
                     ],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Year Copyrighted"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Copyrighted"}],
                     "heading": "Rights",
                     "max": 1
                 },
