@@ -289,6 +289,7 @@
                         <div
                             @click="addSelected"
                             title="Add Competency as Property"
+                            :class="{'is-loading': loading}"
                             class="button is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-check" />
@@ -382,7 +383,8 @@ export default {
             typesPermittedInSearch: [],
             addAnother: false,
             disableDoneEditingButton: false,
-            errorValidating: null
+            errorValidating: null,
+            loading: false
         };
     },
     created: function() {
@@ -950,7 +952,6 @@ export default {
         template based modals
         */
         showModal(val) {
-            var me = this;
             if (val === 'deleteObject') {
                 if (this.shortType === 'Competency') {
                     this.$store.commit('app/showModal', {component: 'DeleteCompetencyConfirm'});
@@ -1519,21 +1520,28 @@ export default {
             }
         },
         addSelected: async function() {
-            var ids = this.$store.getters['editor/selectedCompetenciesAsProperties'];
-            var relationType = this.$store.state.editor.selectCompetencyRelation;
-            if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "DirectLink" || relationType === "https://purl.org/ctdlasn/terms/knowledgeEmbodied" ||
-            relationType === "https://purl.org/ctdlasn/terms/abilityEmbodied" || relationType === "https://purl.org/ctdlasn/terms/taskEmbodied" ||
-            relationType === "https://purl.org/ctdlasn/terms/skillEmbodied") {
-                this.attachUrlProperties(ids);
-            } else if (this.$store.state.lode.searchType === "Competency") {
-                await this.addAlignments(ids, this.$store.state.editor.selectedCompetency, relationType);
-            } else {
-                for (var i = 0; i < ids.length; i++) {
-                    this.addLevel(this.$store.getters['editor/selectedCompetency'].shortId(), [ids[i]]);
+            this.loading = true;
+            try {
+                var ids = this.$store.getters['editor/selectedCompetenciesAsProperties'];
+                var relationType = this.$store.state.editor.selectCompetencyRelation;
+                if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "DirectLink" || relationType === "https://purl.org/ctdlasn/terms/knowledgeEmbodied" ||
+                relationType === "https://purl.org/ctdlasn/terms/abilityEmbodied" || relationType === "https://purl.org/ctdlasn/terms/taskEmbodied" ||
+                relationType === "https://purl.org/ctdlasn/terms/skillEmbodied") {
+                    this.attachUrlProperties(ids);
+                } else if (this.$store.state.lode.searchType === "Competency") {
+                    await this.addAlignments(ids, this.$store.state.editor.selectedCompetency, relationType);
+                } else {
+                    for (var i = 0; i < ids.length; i++) {
+                        this.addLevel(this.$store.getters['editor/selectedCompetency'].shortId(), [ids[i]]);
+                    }
                 }
+                this.isSearching = false;
+                this.showAddPropertyContent = false;
+            } catch (e) {
+                appError(e);
+            } finally {
+                this.loading = false;
             }
-            this.isSearching = false;
-            this.showAddPropertyContent = false;
         },
         attachUrlProperties: async function(results) {
             var resource = this.$store.state.editor.framework;
