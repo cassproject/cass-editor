@@ -797,6 +797,18 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Identifier"}],
                     "heading": "Context"
                 },
+                "http://schema.org/inLanguage": {
+                    "@id": "http://schema.org/inLanguage",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}],
+                    "isRequired": "true",
+                    "heading": "General"
+                },
                 "http://schema.org/keywords": {
                     "@id": "https://purl.org/ctdlasn/terms/conceptKeyword",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1211,6 +1223,7 @@ export default {
                     "https://purl.org/ctdlasn/terms/knowledgeEmbodied",
                     "https://purl.org/ctdlasn/terms/skillEmbodied",
                     "https://purl.org/ctdlasn/terms/taskEmbodied",
+                    "http://schema.org/inLanguage",
                     "http://schema.org/keywords",
                     "https://purl.org/ctdlasn/terms/conceptTerm",
                     "https://purl.org/ctdlasn/terms/complexityLevel",
