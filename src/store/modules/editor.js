@@ -290,20 +290,19 @@ const actions = {
             instance.state.searchingAssertions = true;
             var assertions = [];
             let doSearch = async function(start, count) {
-                let results = await window.repo.searchWithParams("@type:Assertion", {size: count, start: start});
-                results = results.map((x) => {
-                    let obj = new EcAssertion();
-                    Object.assign(obj, x);
-                    return obj;
+                return new Promise((resolve, reject) => {
+                    EcAssertion.search(window.repo, "\"" + instance.state.me + "\"", async(results) => {
+                        assertions.push(...results);
+                        start += count;
+                        if (results.length > 0) {
+                            await doSearch(start, count);
+                        }
+                        resolve();
+                    }, reject, {size: count, start: start});
                 });
-                assertions.push(...results);
-                start += count;
-                if (results.length > 0) {
-                    await doSearch(start, count);
-                }
             };
 
-            doSearch(0, 500).then(() => {
+            doSearch(0, 5000).then(() => {
                 var eah = new EcAsyncHelper();
                 eah.each(assertions, (assertion, callback) => {
                     if (assertion.assertionDateDecrypted != null) {
@@ -320,7 +319,7 @@ const actions = {
                     instance.state.searchingAssertions = false;
                     resolve();
                 });
-            });
+            }).catch(appError);
         });
     },
     computeBecause: (instance, evidences) => {

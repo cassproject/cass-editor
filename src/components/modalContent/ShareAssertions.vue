@@ -284,8 +284,31 @@ export default {
                     searchQuery += ' OR ';
                 }
             }
-            EcAssertion.search(window.repo,
-                `\\*owner:"${this.$store.getters['editor/getMe']}" AND (${searchQuery})`,
+            let doSearch = async function(start, count) {
+                return new Promise((resolve, reject) => {
+                    EcAssertion.search(window.repo, `\\*owner:"${this.$store.getters['editor/getMe']}" AND (${searchQuery})`, async(results) => {
+                        assertions.push(...results);
+                        start += count;
+                        if (results.length > 0) {
+                            await doSearch(start, count);
+                        }
+                        resolve();
+                    }, reject, {size: count, start: start});
+                });
+            };
+
+            doSearch(0, 5000).then(() => {
+                var eah = new EcAsyncHelper();
+                eah.each(assertions, (assertion, callback) => {
+                    if (assertion.assertionDateDecrypted != null) {
+                        callback();
+                    } else {
+                        assertion.getAssertionDateAsync((date) => {
+                            assertion.assertionDateDecrypted = date;
+                            callback();
+                        }, callback);
+                    }
+                },
                 (assertions) => {
                     let eah = new EcAsyncHelper();
                     eah.each(assertions, (assertion, after) => {
@@ -310,9 +333,8 @@ export default {
                         this.isProcessing = false;
                         this.isDone = true;
                     });
-                }, appError, {
-                    size: 5000
                 });
+            }).catch(appError);
         }
     },
     watch: {}

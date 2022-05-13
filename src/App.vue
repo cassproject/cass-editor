@@ -425,8 +425,7 @@ export default {
                 me.$store.commit('editor/changedObject', wut.shortId());
                 // Add new assertions as they come in
                 if (wut.type === 'Assertion') {
-                    let a = new EcAssertion();
-                    Object.assign(a, wut);
+                    let a = await EcAssertion.get(wut.shortId());
                     a.assertionDateDecrypted = await a.getAssertionDate();
                     me.$store.commit('editor/addAssertion', a);
                 }
