@@ -194,7 +194,9 @@
                     v-if="canManageAssertions"
                     class="column is-narrow"
                     @click="manageAssertions">
-                    <div class="button is-text has-text-dark">
+                    <div
+                        :class="{'is-loading': $store.getters['editor/searchingAssertions']}"
+                        class="button is-text has-text-dark">
                         <template v-if="managingAssertions">
                             Stop Managing Assertions
                         </template>
@@ -470,7 +472,7 @@ export default {
                         return {name: x.name, key: x.owner[0]};
                     }));
                 });
-                this.$store.dispatch('editor/searchForAssertions', 500).then(() => {
+                this.$store.dispatch('editor/searchForAssertions').then(() => {
                     this.$store.commit('editor/setManageAssertions', true);
                 }).catch(() => {
                     // TODO: Handle assertion search error
@@ -498,7 +500,7 @@ export default {
                 } else {
                     let ca = await window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null);
                     for (let c of ca) {
-                        if (c.isDefault === true) {
+                        if (c.isDefault === true || c.isDefault === "true") {
                             return c.name;
                         }
                     }

@@ -38,7 +38,8 @@ module.exports = {
          * 'for-direction': 0, // eslint:recommended
          * 'getter-return': 2, // eslint:recommended
          */
-        'no-async-promise-executor': 2,
+        'no-async-promise-executor': 1,
+        'promise/param-names': 1,
         'vue/attribute-hyphenation': 0,
         'no-await-in-loops': 0,
         /*

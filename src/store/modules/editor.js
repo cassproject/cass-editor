@@ -83,7 +83,8 @@ const state = {
     me: null,
     subject: null,
     people: [],
-    firstSearchProcessing: true
+    firstSearchProcessing: true,
+    searchingAssertions: false
 };
 const mutations = {
     framework(state, f) {
@@ -255,6 +256,9 @@ const mutations = {
     },
     setFirstSearchProcessing(state, val) {
         state.firstSearchProcessing = val;
+    },
+    setSearchingAssertions(state, val) {
+        state.searchingAssertions = val;
     }
 };
 const actions = {
@@ -281,9 +285,24 @@ const actions = {
             });
         });
     },
-    searchForAssertions: (instance, count) => {
+    searchForAssertions: (instance) => {
         return new Promise((resolve, reject) => {
-            EcAssertion.search(window.repo, "\"" + instance.state.me + "\"", (assertions) => {
+            instance.state.searchingAssertions = true;
+            var assertions = [];
+            let doSearch = async function(start, count) {
+                return new Promise((resolve, reject) => {
+                    EcAssertion.search(window.repo, "\"" + instance.state.me + "\"", async(results) => {
+                        assertions.push(...results);
+                        start += count;
+                        if (results.length > 0) {
+                            await doSearch(start, count);
+                        }
+                        resolve();
+                    }, reject, {size: count, start: start});
+                });
+            };
+
+            doSearch(0, 5000).then(() => {
                 var eah = new EcAsyncHelper();
                 eah.each(assertions, (assertion, callback) => {
                     if (assertion.assertionDateDecrypted != null) {
@@ -296,16 +315,11 @@ const actions = {
                     }
                 },
                 (assertions) => {
-                    assertions = assertions.sort((a, b) => {
-                        return b.assertionDateDecrypted - a.assertionDateDecrypted;
-                    });
                     instance.state.assertions = assertions;
+                    instance.state.searchingAssertions = false;
                     resolve();
                 });
-            }, reject, {
-                sort: '[ { "@version": {"order" : "desc" , "missing" : "_last"}} ]',
-                size: count
-            });
+            }).catch(appError);
         });
     },
     computeBecause: (instance, evidences) => {
@@ -520,7 +534,9 @@ const getters = {
         return state.manageAssertions;
     },
     assertions: function(state) {
-        return state.assertions;
+        return state.assertions.sort((a, b) => {
+            return b.assertionDateDecrypted - a.assertionDateDecrypted;
+        });
     },
     badgePk: function(state) {
         return state.badgePk;
@@ -536,6 +552,9 @@ const getters = {
     },
     firstSearchProcessing: function(state) {
         return state.firstSearchProcessing;
+    },
+    searchingAssertions: function(state) {
+        return state.searchingAssertions;
     }
 };
 

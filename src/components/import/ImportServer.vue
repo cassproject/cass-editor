@@ -283,6 +283,12 @@
                                     </div>
                                 </div>
                             </div>
+                            <div v-else-if="remoteRepo">
+                                <div class="field">
+                                    <SearchBar
+                                        searchType="framework" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="column is-12">
@@ -299,6 +305,7 @@ import ImportTabs from '@/components/import/ImportTabs';
 import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
 import SearchBar from '../framework/SearchBar.vue';
+import debounce from 'lodash/debounce';
 export default {
     name: 'ImportServer',
     components: {
@@ -407,10 +414,9 @@ export default {
             this.remoteRepo = remoteRepo;
             this.cassSearchEndpoint();
         },
-        cassSearchEndpoint: function() {
-            this.cassDirectories.splice(0, this.cassDirectories.length);
-            this.cassFrameworks.splice(0, this.cassFrameworks.length);
+        cassSearchEndpoint: debounce(function() {
             this.searchingTopLevel = true;
+            this.$store.commit('editor/setFirstSearchProcessing', true);
             let me = this;
             let paramObj = {};
             paramObj.size = 50;
@@ -420,16 +426,23 @@ export default {
                 search = this.searchTerm;
             }
             EcDirectory.search(this.remoteRepo, search, function(success) {
+                me.cassDirectories.splice(0, me.cassDirectories.length);
                 me.cassSearchSuccess(success, "directory");
-            }, appError, paramObj);
+            }, function(error) {
+                appLog(error);
+                me.cassDirectories.splice(0, me.cassDirectories.length);
+            }, paramObj);
             EcFramework.search(this.remoteRepo, search, function(success) {
+                me.cassFrameworks.splice(0, me.cassFrameworks.length);
                 me.cassSearchSuccess(success, "framework");
             }, function(error) {
+                me.cassFrameworks.splice(0, me.cassFrameworks.length);
                 appLog(error);
                 me.cassSearchError();
             }, paramObj);
-        },
+        }, 1000),
         cassSearchError: function() {
+            this.$store.commit('editor/setFirstSearchProcessing', false);
             let error = {
                 message: "Unable to search the URL Endpoint provided.",
                 details: "Make sure you entered the URL of a CaSS Repository."
@@ -439,6 +452,7 @@ export default {
             this.showModal('error', error);
         },
         cassSearchSuccess: function(success, objectType) {
+            this.$store.commit('editor/setFirstSearchProcessing', false);
             if (objectType === "framework") {
                 let message = success.length + " frameworks detected.";
                 this.$store.commit('app/importStatus', message);

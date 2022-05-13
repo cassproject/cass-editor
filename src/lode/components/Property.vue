@@ -936,7 +936,7 @@ export default {
             this.propertyToRemove = null;
             this.removePropertyConfirmModal = false;
         },
-        add: function(type) {
+        add: async function(type) {
             if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["add"]) {
                 this.addOrSearch = "add";
                 var f = this.profile[this.expandedProperty]["add"];
@@ -945,7 +945,8 @@ export default {
                     return;
                 } else {
                     var shortId = EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]);
-                    f(shortId);
+                    await f(shortId);
+                    this.getExpandedValue();
                 }
             } else if (type.toLowerCase().indexOf("langstring") !== -1) {
                 this.addOrSearch = "add";
@@ -967,7 +968,7 @@ export default {
                 this.$parent.add(this.expandedProperty, rld);
             }
         },
-        remove: function(index) {
+        remove: async function(index) {
             if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["remove"]) {
                 var f = this.profile[this.expandedProperty]["remove"];
                 var value;
@@ -976,7 +977,8 @@ export default {
                 } else {
                     value = EcObject.isObject(this.expandedValue[index]) ? this.expandedValue[index]["@id"] : this.expandedValue[index];
                 }
-                f(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), value);
+                await f(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), value);
+                this.getExpandedValue();
             } else {
                 this.$parent.remove(this.expandedProperty, index);
             }

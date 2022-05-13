@@ -360,7 +360,7 @@ export default {
                                             if (assertion.negative == null) {
                                                 await assertion.addReader(this.$store.getters['editor/badgePk']);
                                                 EcRepository.save(assertion, () => {
-                                                    this.$store.commit('editor/addAssertion', assertion);
+                                                    // this.$store.commit('editor/addAssertion', assertion);
                                                     this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
                                                     this.badge = true;
                                                     callback();
@@ -370,7 +370,7 @@ export default {
                                                     if (!negative) {
                                                         await assertion.addReader(this.$store.getters['editor/badgePk']);
                                                         EcRepository.save(assertion, () => {
-                                                            this.$store.commit('editor/addAssertion', assertion);
+                                                            // this.$store.commit('editor/addAssertion', assertion);
                                                             this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
                                                             this.badge = true;
                                                             callback();
@@ -416,7 +416,7 @@ export default {
                                             if (assertion.negative == null) {
                                                 assertion.removeReader(this.$store.getters['editor/badgePk']);
                                                 EcRepository.save(assertion, () => {
-                                                    this.$store.commit('editor/addAssertion', assertion);
+                                                    // this.$store.commit('editor/addAssertion', assertion);
                                                     this.badgeLink = null;
                                                     this.badge = false;
                                                     callback();
@@ -426,7 +426,7 @@ export default {
                                                     if (!negative) {
                                                         assertion.removeReader(this.$store.getters['editor/badgePk']);
                                                         EcRepository.save(assertion, () => {
-                                                            this.$store.commit('editor/addAssertion', assertion);
+                                                            // this.$store.commit('editor/addAssertion', assertion);
                                                             this.badgeLink = null;
                                                             this.badge = false;
                                                             callback();
@@ -580,14 +580,14 @@ export default {
                                                         if (evidences.length > 0) {
                                                             a.setEvidenceAsync(evidences, () => {
                                                                 EcRepository.save(a, () => {
-                                                                    this.$store.commit('editor/addAssertion', a);
+                                                                    // this.$store.commit('editor/addAssertion', a);
                                                                     this.canAssertion = true;
                                                                     resolve();
                                                                 }, reject);
                                                             }, reject);
                                                         } else {
                                                             EcRepository.save(a, () => {
-                                                                this.$store.commit('editor/addAssertion', a);
+                                                                // this.$store.commit('editor/addAssertion', a);
                                                                 this.canAssertion = true;
                                                                 resolve();
                                                             }, reject);
@@ -599,7 +599,7 @@ export default {
                                         );
                                     } else {
                                         EcRepository.save(a, () => {
-                                            this.$store.commit('editor/addAssertion', a);
+                                            // this.$store.commit('editor/addAssertion', a);
                                             this.canAssertion = true;
                                             resolve();
                                         }, reject);
@@ -624,7 +624,7 @@ export default {
                                 a.setNegativeAsync(true, () => {
                                     a.setConfidence(1.0);
                                     EcRepository.save(a, () => {
-                                        this.$store.commit('editor/addAssertion', a);
+                                        // this.$store.commit('editor/addAssertion', a);
                                         this.cannotAssertion = true;
                                         resolve();
                                     }, reject);
@@ -653,7 +653,7 @@ export default {
                                                 this.assertionText = "";
                                                 await assertion.setEvidence(evidences);
                                                 EcRepository.save(assertion, () => {
-                                                    this.$store.commit('editor/addAssertion', assertion);
+                                                    // this.$store.commit('editor/addAssertion', assertion);
                                                     this.$store.dispatch('editor/computeBecause', evidences).then((because) => {
                                                         this.evidenceExplanation = because;
                                                     });
@@ -694,7 +694,7 @@ export default {
                                                 EcArray.setRemove(evidences, url);
                                                 await assertion.setEvidence(evidences);
                                                 EcRepository.save(assertion, () => {
-                                                    this.$store.commit('editor/addAssertion', assertion);
+                                                    // this.$store.commit('editor/addAssertion', assertion);
                                                     this.$store.dispatch('editor/computeBecause', evidences).then((because) => {
                                                         this.evidenceExplanation = because;
                                                     });

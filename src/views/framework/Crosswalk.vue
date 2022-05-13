@@ -942,7 +942,7 @@ export default {
                     let ca = await window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null);
                     let found = false;
                     for (let c of ca) {
-                        if (c.isDefault === "true") {
+                        if (c.isDefault === "true" || c.isDefault === true) {
                             appLog('Using instance default configuration for enabled relationship types');
                             me.setEnabledRelationshipListFromCatConfigObj(c);
                             found = true;

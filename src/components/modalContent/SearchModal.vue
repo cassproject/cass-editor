@@ -58,7 +58,7 @@
                 </button>
                 <button
                     class="button is-outlined is-primary"
-                    v-if="copyOrLink"
+                    v-if="copyOrLink && linkEnabled"
                     :disabled="!selectedIds || selectedIds.length === 0"
                     @click="appendCompetencies">
                     <span class="icon">
@@ -127,6 +127,13 @@ export default {
                 return ary;
             }
             return null;
+        },
+        linkEnabled: function() {
+            // For CE frameworks, don't permit linking
+            if (this.framework.subType !== 'Collection' && this.queryParams.ceasnDataFields === "true") {
+                return false;
+            }
+            return true;
         }
     },
     methods: {
@@ -167,6 +174,12 @@ export default {
             var me = this;
             for (var i = 0; i < results.length; i++) {
                 var thing = await EcRepository.get(results[i]);
+                // Thing we're trying to copy is encrypted, turn it into a normal object first
+                if (thing != null && thing.isAny(new EcEncryptedValue().getTypes())) {
+                    let unencrypted = new window["Ec" + thing.encryptedType]();
+                    unencrypted.copyFrom(await EcEncryptedValue.fromEncryptedValue(thing));
+                    thing = unencrypted;
+                }
                 if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
                     var c = new EcCompetency();
                     c.copyFrom(thing);
@@ -401,6 +414,12 @@ export default {
             var me = this;
             for (var i = 0; i < results.length; i++) {
                 var thing = await EcRepository.get(results[i]);
+                // Thing we're trying to link is encrypted, turn it into a normal object first
+                if (thing != null && thing.isAny(new EcEncryptedValue().getTypes())) {
+                    let unencrypted = new window["Ec" + thing.encryptedType]();
+                    unencrypted.copyFrom(await EcEncryptedValue.fromEncryptedValue(thing));
+                    thing = unencrypted;
+                }
                 if (thing.isAny(new EcCompetency().getTypes())) {
                     framework.addCompetency(thing.shortId());
                 } else if (thing.isAny(new EcLevel().getTypes())) {

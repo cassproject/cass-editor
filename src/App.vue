@@ -246,6 +246,12 @@ export default {
             EcRemote.getExpectingString(window.repo.selectedServer, "badge/pk", (badgePk) => {
                 this.$store.commit('editor/setBadgePk', EcPk.fromPem(badgePk));
             }, appError);
+            setTimeout(() => {
+                // If crypto workers haven't loaded forgeAsync.js at repo init, need to try again to load the identity.
+                if (this.linkedPerson == null && EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
+                    me.findLinkedPersonForIdentity();
+                }
+            }, 1000);
         },
         onSidebarEvent: function() {
             this.showSideNav = !this.showSideNav;
@@ -417,6 +423,12 @@ export default {
 
             connection.changedObject = async function(wut) {
                 me.$store.commit('editor/changedObject', wut.shortId());
+                // Add new assertions as they come in
+                if (wut.type === 'Assertion') {
+                    let a = await EcAssertion.get(wut.shortId());
+                    a.assertionDateDecrypted = await a.getAssertionDate();
+                    me.$store.commit('editor/addAssertion', a);
+                }
                 if (me.$route.name !== 'framework' && me.$route.name !== 'conceptScheme') {
                     return;
                 }
