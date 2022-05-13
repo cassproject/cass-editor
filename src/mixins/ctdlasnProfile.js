@@ -1017,6 +1017,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Instructional Program Type"}],
                     "heading": "General"
                 },
+                "https://purl.org/ctdlasn/terms/localSubject": {
+                    "@id": "https://purl.org/ctdlasn/terms/localSubject",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The text string denoting the subject of the competency framework or competency as designated by the promulgating agency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Local Subject"}],
+                    "heading": "Tagging"
+                },
                 "https://purl.org/ctdl/terms/environmentalHazardType": {
                     "@id": "https://purl.org/ctdl/terms/environmentalHazardType",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1230,6 +1241,7 @@ export default {
                     "https://purl.org/ctdlasn/terms/weight",
                     "https://schema.cassproject.org/0.4/socList",
                     "https://schema.cassproject.org/0.4/naicsList",
+                    "https://purl.org/ctdlasn/terms/localSubject",
                     "https://schema.cassproject.org/0.4/cipList"
                 ],
                 "tertiaryProperties": [
