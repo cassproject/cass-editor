@@ -355,6 +355,7 @@ npm run serve
 * `npm audit --production` and address any dependencies with vulnerabilities
 * Increment version in package.json
 * `npm run test:unit`
+* Document code coverage output by the previous step.
 * Push changes to dev on gitlab
 * Merge into qa and master
 * Push gitlab master branch to github
