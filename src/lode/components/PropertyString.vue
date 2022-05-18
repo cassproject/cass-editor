@@ -78,8 +78,6 @@
             v-if="!isConcept && inLanguageField">
             <div
                 class="control is-expanded auto-complete__control">
-                <label
-                    class="label">Value</label>
                 <textarea
                     ref="language"
                     class="textarea is-expanded "
