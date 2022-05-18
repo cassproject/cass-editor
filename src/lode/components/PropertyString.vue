@@ -280,12 +280,13 @@ export default {
             if (this.inLanguageField && !this.newProperty) {
                 this.search = this.computedText;
             }
-            if (this.newProperty === true) {
+            if (this.newProperty === true || (this.inLanguageField && this.computedText != null && this.computedText.length === 0)) {
                 this.text = {};
                 if (this.$store.state.editor) {
                     if (this.inLanguageField) {
                         this.computedText = this.$store.state.editor.defaultLanguage;
                         this.search = this.computedText;
+                        this.blur();
                     } else {
                         this.computedLanguage = this.$store.state.editor.defaultLanguage;
                         this.search = this.computedLanguage;
