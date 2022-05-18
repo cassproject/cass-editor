@@ -1051,6 +1051,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Local Subject"}],
                     "heading": "Tagging"
                 },
+                "https://purl.org/ctdlasn/terms/crossSubjectReference": {
+                    "@id": "https://purl.org/ctdlasn/terms/crossSubjectReference",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "A relationship between this competency and a competency in a separate competency framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Cross Subject Reference"}],
+                    "heading": "Context"
+                },
                 "https://purl.org/ctdl/terms/environmentalHazardType": {
                     "@id": "https://purl.org/ctdl/terms/environmentalHazardType",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1266,6 +1277,7 @@ export default {
                     "https://schema.cassproject.org/0.4/socList",
                     "https://schema.cassproject.org/0.4/naicsList",
                     "https://purl.org/ctdlasn/terms/localSubject",
+                    "https://purl.org/ctdlasn/terms/crossSubjectReference",
                     "https://schema.cassproject.org/0.4/cipList"
                 ],
                 "tertiaryProperties": [
