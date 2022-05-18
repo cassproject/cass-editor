@@ -782,6 +782,17 @@ export default {
                     "max": 1,
                     "heading": "Context"
                 },
+                "https://purl.org/ctdlasn/terms/comprisedOf": {
+                    "@id": "https://purl.org/ctdlasn/terms/comprisedOf",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "This competency includes, comprehends or encompasses, in whole or in part, the meaning, nature or importance of the referenced competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Comprised Of"}],
+                    "heading": "Connections"
+                },
                 "https://purl.org/ctdlasn/terms/derivedFrom": {
                     "@id": "https://purl.org/ctdlasn/terms/derivedFrom",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1268,6 +1279,7 @@ export default {
                     "minorRelated",
                     "requires",
                     "https://purl.org/ctdlasn/terms/isVersionOf",
+                    "https://purl.org/ctdlasn/terms/comprisedOf",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
                     "http://schema.org/identifier",
