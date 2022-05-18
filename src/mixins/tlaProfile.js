@@ -205,9 +205,9 @@ export default {
                     [{"@language": "en", "@value": "Publication status of the source competency framework. The original framework may be drafted, published, or depreciated outside of this system."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publication Status"}],
                     "options": [
-                        {display: "Draft", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Draft"},
-                        {display: "Published", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Published"},
-                        {display: "Deprecated", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Deprecated"}
+                        {display: "Draft", val: "https://credreg.net/ctdlasn/vocabs/publicationStatus/Draft"},
+                        {display: "Published", val: "https://credreg.net/ctdlasn/vocabs/publicationStatus/Published"},
+                        {display: "Deprecated", val: "https://credreg.net/ctdlasn/vocabs/publicationStatus/Deprecated"}
                     ],
                     "max": 1,
                     "heading": "Context"
