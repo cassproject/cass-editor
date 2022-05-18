@@ -698,6 +698,9 @@ export default {
                 if (d.competencies[i]["ceasn:codedNotation"] != null) {
                     c["ceasn:codedNotation"] = d.competencies[i]["ceasn:codedNotation"];
                 }
+                if (d.competencies[i]["ceasn:altCodedNotation"] != null) {
+                    c["ceasn:altCodedNotation"] = d.competencies[i]["ceasn:altCodedNotation"];
+                }
                 f.addCompetency(c.shortId());
                 toSave.push(c);
             }

@@ -770,6 +770,18 @@ export default {
                     "max": 1,
                     "heading": "Context"
                 },
+                "https://purl.org/ctdlasn/terms/altCodedNotation": {
+                    "@id": "https://purl.org/ctdlasn/terms/altCodedNotation",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "An alphanumeric notation or ID code identifying this competency in common use among end-users."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Alternative Coded Notation"}],
+                    "max": 1,
+                    "heading": "Context"
+                },
                 "https://purl.org/ctdlasn/terms/derivedFrom": {
                     "@id": "https://purl.org/ctdlasn/terms/derivedFrom",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1227,7 +1239,8 @@ export default {
                     "http://schema.org/description",
                     "http://purl.org/dc/terms/type",
                     "https://purl.org/ctdlasn/terms/listID",
-                    "https://purl.org/ctdlasn/terms/codedNotation"
+                    "https://purl.org/ctdlasn/terms/codedNotation",
+                    "https://purl.org/ctdlasn/terms/altCodedNotation"
                 ],
                 "secondaryProperties": [
                     "https://purl.org/ctdlasn/terms/abilityEmbodied",
