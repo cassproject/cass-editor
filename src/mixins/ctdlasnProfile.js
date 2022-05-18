@@ -251,17 +251,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Identifier"}],
                     "heading": "Context"
                 },
-                "http://schema.org/copyrightYear": {
-                    "@id": "http://schema.org/copyrightYear",
+                "http://purl.org/dc/terms/dateCopyrighted": {
+                    "@id": "https://purl.org/ctdlasn/terms/dateCopyrighted",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://purl.org/dc/terms/date"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Year of a statement of copyright for this competency framework, such as 2017."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Year Copyrighted"}],
-                    "max": 1,
-                    "heading": "Rights"
+                    [{"@language": "en", "@value": "Date of a statement of copyright for this resource."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Copyrighted"}],
+                    "heading": "Rights",
+                    "max": 1
                 },
                 "http://schema.org/license": {
                     "@id": "http://schema.org/license",
@@ -382,7 +382,7 @@ export default {
                     "http://schema.org/validThrough",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
                     "http://schema.org/identifier",
-                    "http://schema.org/copyrightYear",
+                    "http://schema.org/dateCopyrighted",
                     "http://schema.org/license",
                     "http://purl.org/dc/elements/1.1/rights",
                     "http://schema.org/copyrightHolder",
