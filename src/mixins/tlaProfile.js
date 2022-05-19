@@ -230,8 +230,8 @@ export default {
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://purl.org/dc/terms/date"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Year of a statement of copyright for this competency framework, such as 2017."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Year Copyrighted"}],
+                    [{"@language": "en", "@value": "Date of a statement of copyright for this resource."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Copyrighted"}],
                     "max": 1,
                     "heading": "Rights"
                 },
