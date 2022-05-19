@@ -382,7 +382,7 @@ export default {
                     "http://schema.org/validThrough",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
                     "http://schema.org/identifier",
-                    "http://schema.org/dateCopyrighted",
+                    "http://schema.org/copyrightYear",
                     "http://schema.org/license",
                     "http://purl.org/dc/elements/1.1/rights",
                     "http://schema.org/copyrightHolder",
