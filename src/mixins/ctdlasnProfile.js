@@ -251,8 +251,8 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Identifier"}],
                     "heading": "Context"
                 },
-                "http://purl.org/dc/terms/dateCopyrighted": {
-                    "@id": "https://purl.org/ctdlasn/terms/dateCopyrighted",
+                "http://schema.org/copyrightYear": {
+                    "@id": "http://schema.org/copyrightYear",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
