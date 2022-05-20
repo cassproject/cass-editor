@@ -708,7 +708,7 @@ export default {
                 this.addOwner.push(EcIdentityManager.default.ids[0].ppk.toPk());
             }
         },
-        multiput: async function(toSave, callback) {
+        multiput: function(toSave, callback) {
             let me = this;
             this.frameworksToProcess--;
             if (this.frameworksToProcess <= 0) {
@@ -1199,7 +1199,7 @@ export default {
             if (framework["skos:hasTopConcept"]) {
                 this.encryptConcepts(framework);
             } else {
-                this.repo.multiput(toSave, function() {
+                this.repo.multiput(this.toSave, function() {
                     me.confirmMakePrivate = false;
                     me.isProcessing = false;
                     me.toSave.splice(0, me.toSave.length);

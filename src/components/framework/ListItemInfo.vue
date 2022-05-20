@@ -498,7 +498,7 @@ export default {
                 this.clipStatus = 'ready';
             }, 1000);
         },
-        setNumSubdirectoriesAndObjects: async function() {
+        setNumSubdirectoriesAndObjects: function() {
             if (this.objectType === "Directory") {
                 if (this.object.directories) {
                     this.numSubdirectories = this.object.directories.length;
@@ -637,7 +637,7 @@ export default {
             }
             return name;
         },
-        copyFrameworkToDirectory: async function(directory, framework, toSaveFromSubdirectory) {
+        copyFrameworkToDirectory: function(directory, framework, toSaveFromSubdirectory) {
             let toSave = [];
             if (toSaveFromSubdirectory) {
                 toSave = toSaveFromSubdirectory;
@@ -692,7 +692,7 @@ export default {
         copyCompetenciesToDirectory: function(framework, toSave, competencyMap) {
             let me = this;
             new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
-                EcCompetency.get(competencyId, async function(competency) {
+                EcCompetency.get(competencyId, function(competency) {
                     var c = new EcCompetency();
                     c.copyFrom(competency);
                     if (me.queryParams.newObjectEndpoint != null) {
@@ -837,7 +837,7 @@ export default {
                 me.multiput(toSave);
             });
         },
-        copyResourceToDirectory: async function(directory, resource, toSaveFromSubdirectory) {
+        copyResourceToDirectory: function(directory, resource, toSaveFromSubdirectory) {
             let me = this;
             let c = new schema.CreativeWork();
             if (this.queryParams.newObjectEndpoint != null) {
@@ -875,7 +875,7 @@ export default {
 
             me.multiput(toSave);
         },
-        copySubdirectoryToDirectory: async function(directory, oldSubdirectory, passedInToSave) {
+        copySubdirectoryToDirectory: function(directory, oldSubdirectory, passedInToSave) {
             let me = this;
             let toSave = [];
             if (passedInToSave) {
@@ -941,11 +941,17 @@ export default {
                 });
             }, appError);
         },
-        moveFrameworkToDirectory: async function(directory, framework, toSaveFromSubdirectory) {
+        moveFrameworkToDirectory: function(directory, framework, toSaveFromSubdirectory) {
             let toSave = [];
             if (toSaveFromSubdirectory) {
                 toSave = toSaveFromSubdirectory;
             }
+            if (directory.owner) {
+                for (let each of directory.owner) {
+                    framework.addOwner(EcPk.fromPem(each));
+                }
+            }
+            
             framework.reader = directory.reader;
             framework.directory = directory.shortId();
             framework["schema:dateModified"] = new Date().toISOString();
@@ -966,7 +972,7 @@ export default {
                 subobjects = subobjects.concat(framework.relation);
             }
             if (subobjects.length > 0) {
-                this.moveSubobjectsToDirectory(subobjects, directory, toSave, framework);
+                this.moveSubobjectsToDirectory(subobjects, directory, toSave);
             } else {
                 this.multiput(toSave, true);
             }
@@ -974,7 +980,12 @@ export default {
         moveSubobjectsToDirectory: function(subobjects, directory, toSave) {
             let me = this;
             new EcAsyncHelper().each(subobjects, function(id, done) {
-                EcRepository.get(id, async function(obj) {
+                EcRepository.get(id, function(obj) {
+                    if (directory.owner) {
+                        for (let each of directory.owner) {
+                            obj.addOwner(EcPk.fromPem(each));
+                        }
+                    }
                     obj.reader = directory.reader;
                     obj["schema:dateModified"] = new Date().toISOString();
                     toSave.push(obj);
@@ -984,7 +995,7 @@ export default {
                 me.multiput(toSave, true);
             });
         },
-        moveResourceToDirectory: async function(directory, resource, toSaveFromSubdirectory) {
+        moveResourceToDirectory: function(directory, resource, toSaveFromSubdirectory) {
             let me = this;
             resource.reader = directory.reader;
             resource.directory = directory.shortId();
@@ -1010,6 +1021,11 @@ export default {
             }
             subdirectory.parentDirectory = directory.shortId();
             subdirectory["schema:dateModified"] = new Date().toISOString();
+            if (directory.owner) {
+                for (let each of directory.owner) {
+                    subdirectory.addOwner(EcPk.fromPem(each));
+                }
+            }
             subdirectory.reader = directory.reader;
             // Add this directory as a child of the directory
             if (!directory.directories) {
@@ -1048,6 +1064,12 @@ export default {
             let toSave = [];
             this.$Progress.start();
             EcDirectory.get(framework.directory, async function(directory) {
+                if (directory.owner) {
+                    for (let each of directory.owner) {
+                        framework.removeOwner(EcPk.fromPem(each));
+                    }
+                    framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                }
                 if (directory.reader) {
                     for (let each of directory.reader) {
                         framework.removeReader(EcPk.fromPem(each));
@@ -1071,7 +1093,7 @@ export default {
                     subobjects = subobjects.concat(framework.relation);
                 }
                 if (subobjects.length > 0) {
-                    me.removeSubobjectsFromDirectory(subobjects, directory, toSave, framework);
+                    me.removeSubobjectsFromDirectory(subobjects, directory, toSave);
                 } else {
                     me.multiput(toSave, true);
                 }
@@ -1081,6 +1103,12 @@ export default {
             let me = this;
             new EcAsyncHelper().each(subobjects, function(id, done) {
                 EcRepository.get(id, async function(obj) {
+                    if (directory.owner) {
+                        for (let each of directory.owner) {
+                            obj.removeOwner(EcPk.fromPem(each));
+                        }
+                        obj.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                    }
                     if (directory.reader) {
                         for (let each of directory.reader) {
                             obj.removeReader(EcPk.fromPem(each));
@@ -1097,6 +1125,12 @@ export default {
         removeResourceFromDirectory: function() {
             let me = this;
             EcDirectory.get(this.object.directory, function(directory) {
+                if (directory.owner) {
+                    for (let each of directory.owner) {
+                        me.object.removeOwner(EcPk.fromPem(each));
+                    }
+                    me.object.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                }
                 if (directory.reader) {
                     for (let each of directory.reader) {
                         me.object.removeReader(EcPk.fromPem(each));
@@ -1117,6 +1151,12 @@ export default {
             let toSave = [];
             let subdirectory = this.object;
             EcDirectory.get(subdirectory.parentDirectory, async function(directory) {
+                if (directory.owner) {
+                    for (let each of directory.owner) {
+                        subdirectory.removeOwner(EcPk.fromPem(each));
+                    }
+                    subdirectory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                }
                 if (directory.reader) {
                     for (let each of directory.reader) {
                         subdirectory.removeReader(EcPk.fromPem(each));
