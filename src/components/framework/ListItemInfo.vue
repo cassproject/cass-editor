@@ -997,6 +997,11 @@ export default {
         },
         moveResourceToDirectory: function(directory, resource, toSaveFromSubdirectory) {
             let me = this;
+            if (directory.owner) {
+                for (let each of directory.owner) {
+                    resource.addOwner(EcPk.fromPem(each));
+                }
+            }
             resource.reader = directory.reader;
             resource.directory = directory.shortId();
             // Add this resource as a child of the directory
@@ -1053,7 +1058,7 @@ export default {
                     done();
                 }, function(ids) {
                     if (ids.length === 0) {
-                        me.multiput(toSave);
+                        me.multiput(toSave, true);
                     }
                 });
             }, appError);
@@ -1063,7 +1068,7 @@ export default {
             let me = this;
             let toSave = [];
             this.$Progress.start();
-            EcDirectory.get(framework.directory, async function(directory) {
+            EcDirectory.get(framework.directory, function(directory) {
                 if (directory.owner) {
                     for (let each of directory.owner) {
                         framework.removeOwner(EcPk.fromPem(each));
