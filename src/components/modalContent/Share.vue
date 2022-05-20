@@ -708,7 +708,7 @@ export default {
                 this.addOwner.push(EcIdentityManager.default.ids[0].ppk.toPk());
             }
         },
-        multiput: function(toSave, callback) {
+        multiput: async function(toSave, callback) {
             let me = this;
             this.frameworksToProcess--;
             if (this.frameworksToProcess <= 0) {
@@ -737,7 +737,7 @@ export default {
             }
             return this.addAndRemoveFromAllFrameworkObjects(this.framework);
         },
-        addAndRemoveFromAllDirectoryObjects: function(directory) {
+        addAndRemoveFromAllDirectoryObjects: async function(directory) {
             let me = this;
             for (let i = 0; i < me.removeReader.length; i++) {
                 directory.removeReader(me.removeReader[i]);
@@ -752,9 +752,10 @@ export default {
                 directory.addOwner(me.addOwner[i]);
             }
             me.toSave.push(directory);
-            this.repo.search("(directory:\"" + directory.shortId() + "\" OR parentDirectory:\"" + directory.shortId() + "\")", function() {}, function(success) {
+            let children = await this.$store.dispatch('editor/getDirectoryChildren', directory);
+            window.repo.multiget(children, function(success) {
                 me.frameworksToProcess += success.length;
-                new EcAsyncHelper().each(success, function(obj, done) {
+                new EcAsyncHelper().each(success, async function(obj, done) {
                     if (obj.type === 'Framework' || obj.encryptedType === "Framework") {
                         me.addAndRemoveFromAllFrameworkObjects(obj);
                     } else if (obj.type === 'CreativeWork' || obj.encryptedType === "CreativeWork") {
@@ -954,12 +955,10 @@ export default {
                     this.$store.commit('app/selectDirectory', directory);
                 }
                 directory["schema:dateModified"] = new Date().toISOString();
-                EcEncryptedValue.toEncryptedValue(directory, false, function(edirectory) {
-                    if (directory.parentDirectory) {
-                        edirectory.parentDirectory = directory.parentDirectory; // Add parent directory to encrypted directory to be searchable
-                    }
+                EcEncryptedValue.toEncryptedValue(directory, false, async function(edirectory) {
                     me.toSave.push(edirectory);
-                    me.repo.search("(directory:\"" + directory.shortId() + "\" OR parentDirectory:\"" + directory.shortId() + "\")", function() {}, function(success) {
+                    let children = await me.$store.dispatch('editor/getDirectoryChildren', edirectory);
+                    window.repo.multiget(children, function(success) {
                         me.frameworksToProcess += success.length;
                         new EcAsyncHelper().each(success, function(obj, done) {
                             if (obj.type === 'Framework') {
@@ -1066,7 +1065,9 @@ export default {
             if (this.directory.shortId() === d.shortId()) {
                 this.$store.commit('app/selectDirectory', d);
             }
-            this.repo.search("(directory:\"" + directory.shortId() + "\" OR parentDirectory:\"" + directory.shortId() + "\")", function() {}, function(success) {
+            let children = await this.$store.dispatch('editor/getDirectoryChildren', directory);
+
+            window.repo.multiget(children, function(success) {
                 me.frameworksToProcess += success.length;
                 new EcAsyncHelper().each(success, function(obj, done) {
                     if (obj.type === 'Framework' || obj.encryptedType === 'Framework') {
@@ -1170,9 +1171,6 @@ export default {
             }
             f["schema:dateModified"] = new Date().toISOString();
             EcEncryptedValue.toEncryptedValue(f, false, function(ef) {
-                if (f.directory) {
-                    ef.directory = f.directory; // Add directory to encrypted framework to be searchable
-                }
                 me.toSave.push(ef);
                 me.multiput(me.toSave, function() {
                     if (me.framework) {
@@ -1201,7 +1199,7 @@ export default {
             if (framework["skos:hasTopConcept"]) {
                 this.encryptConcepts(framework);
             } else {
-                this.repo.multiput(this.toSave, function() {
+                this.repo.multiput(toSave, function() {
                     me.confirmMakePrivate = false;
                     me.isProcessing = false;
                     me.toSave.splice(0, me.toSave.length);
@@ -1285,14 +1283,15 @@ export default {
             }
             this.makeCurrentUserFrameworkAndSubObjectOwner(this.framework);
         },
-        makeCurrentUserDirectoryOwner: function(directory) {
+        makeCurrentUserDirectoryOwner: async function(directory) {
             let me = this;
             directory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             me.toSave.push(directory);
             if (this.directory.shortId() === directory.shortId()) {
                 this.$store.commit('app/selectDirectory', directory);
             }
-            this.repo.search("(directory:\"" + directory.shortId() + "\" OR parentDirectory:\"" + directory.shortId() + "\")", function() {}, function(success) {
+            let children = await this.$store.dispatch('editor/getDirectoryChildren', directory);
+            window.repo.multiget(children, function(success) {
                 me.frameworksToProcess += success.length;
                 new EcAsyncHelper().each(success, function(obj, done) {
                     if (obj.type === 'Framework' || obj.encryptedType === "Framework") {
