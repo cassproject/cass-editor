@@ -262,6 +262,19 @@ const mutations = {
     }
 };
 const actions = {
+    getDirectoryChildren: function(instance, directory) {
+        let children = [];
+        if (directory.frameworks) {
+            children.push(...directory.frameworks);
+        }
+        if (directory.resources) {
+            children.push(...directory.resources);
+        }
+        if (directory.directories) {
+            children.push(...directory.directories);
+        }
+        return children;
+    },
     lastEditToUndo: function(context) {
         context.commit('setLastEditToUndo', context.state.editsToUndo.pop());
         return context.state.lastEditToUndo;
