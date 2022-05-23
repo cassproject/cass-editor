@@ -588,37 +588,42 @@ export default {
                 this.moveSubdirectoryToDirectory(directory, this.object);
             }
         },
-        removeFromDirectory: function() {
+        removeFromDirectory: async function() {
             this.$Progress.start();
             if (this.objectType === 'Framework') {
-                this.removeFrameworkFromDirectory();
+                await this.removeFrameworkFromDirectory(this.object);
             } else if (this.objectType === 'CreativeWork') {
-                this.removeResourceFromDirectory();
+                await this.removeResourceFromDirectory(this.object);
             } else if (this.objectType === 'Directory') {
-                this.removeSubdirectoryFromDirectory();
+                await this.removeSubdirectoryFromDirectory(this.object);
             }
         },
-        multiput: function(toSave, shouldRefresh) {
+        multiput: async function(toSave, shouldRefresh) {
             let me = this;
             this.frameworksToProcess--;
-            if (this.frameworksToProcess <= 0) {
-                this.repo.multiput(toSave, function(success) {
-                    me.processingCopyOrMove = false;
-                    me.$Progress.finish();
-                    me.copyingToDirectory = false;
-                    if (me.movingToDirectory) {
-                        // Remove the moved item from the right panel
-                        me.$store.commit('app/rightAsideObject', null);
-                        me.$store.commit('app/closeRightAside');
+            return new Promise((resolve, reject) => {
+                if (this.frameworksToProcess <= 0) {
+                    this.repo.multiput(toSave, function(success) {
+                        me.processingCopyOrMove = false;
                         me.$Progress.finish();
-                        me.movingToDirectory = false;
-                    }
-                    if (shouldRefresh) {
-                        // If removing or moving, need to refresh search results
-                        me.$store.commit('app/refreshSearch', true);
-                    }
-                }, appError);
-            }
+                        me.copyingToDirectory = false;
+                        if (me.movingToDirectory) {
+                            // Remove the moved item from the right panel
+                            me.$store.commit('app/rightAsideObject', null);
+                            me.$store.commit('app/closeRightAside');
+                            me.$Progress.finish();
+                            me.movingToDirectory = false;
+                        }
+                        if (shouldRefresh) {
+                            // If removing or moving, need to refresh search results
+                            me.$store.commit('app/refreshSearch', true);
+                        }
+                        resolve();
+                    }, reject);
+                } else {
+                    resolve();
+                }
+            });
         },
         getCopyFrameworkName: function(f) {
             let name = f.name;
@@ -667,7 +672,7 @@ export default {
             f.name = name;
             f['ceasn:derivedFrom'] = framework.id;
             // Original framework was encrypted, make sure the copy is too
-            if (EcEncryptedValue.encryptOnSaveMap[framework.shortId()]) {
+            if (EcEncryptedValue.encryptOnSaveMap && EcEncryptedValue.encryptOnSaveMap[framework.shortId()]) {
                 EcEncryptedValue.encryptOnSaveMap[f.shortId()] = true;
             }
             // Add this framework as a child of the directory
@@ -720,7 +725,7 @@ export default {
                     }
                     c['ceasn:derivedFrom'] = competency.id;
                     // If the original competency was encrypted, make sure the copy is too
-                    if (EcEncryptedValue.encryptOnSaveMap[competency.shortId()]) {
+                    if (EcEncryptedValue.encryptOnSaveMap && EcEncryptedValue.encryptOnSaveMap[competency.shortId()]) {
                         EcEncryptedValue.encryptOnSaveMap[c.shortId()] = true;
                     }
                     toSave.push(c);
@@ -749,7 +754,7 @@ export default {
                         c.generateId(me.repo.selectedServer);
                     }
                     // If original level was encrypted, encrypt the copy too
-                    if (EcEncryptedValue.encryptOnSaveMap[level.shortId()]) {
+                    if (EcEncryptedValue.encryptOnSaveMap && EcEncryptedValue.encryptOnSaveMap[level.shortId()]) {
                         EcEncryptedValue.encryptOnSaveMap[c.shortId()] = true;
                     }
                     let index = framework.level.indexOf(levelId);
@@ -802,7 +807,7 @@ export default {
                         c.generateId(me.repo.selectedServer);
                     }
                     // If original relation was encrypted, make sure copy is too
-                    if (EcEncryptedValue.encryptOnSaveMap[relation.shortId()]) {
+                    if (EcEncryptedValue.encryptOnSaveMap && EcEncryptedValue.encryptOnSaveMap[relation.shortId()]) {
                         EcEncryptedValue.encryptOnSaveMap[c.shortId()] = true;
                     }
                     let index = framework.relation.indexOf(relationId);
@@ -859,7 +864,7 @@ export default {
             }
 
             // If original resource is encrypted, make sure copy is too
-            if (EcEncryptedValue.encryptOnSaveMap[resource.shortId()]) {
+            if (EcEncryptedValue.encryptOnSaveMap && EcEncryptedValue.encryptOnSaveMap[resource.shortId()]) {
                 EcEncryptedValue.encryptOnSaveMap[c.shortId()] = true;
             }
             // Add resource as a child of the directory
@@ -875,8 +880,7 @@ export default {
 
             me.multiput(toSave);
         },
-        copySubdirectoryToDirectory: function(directory, oldSubdirectory, passedInToSave) {
-            let me = this;
+        copySubdirectoryToDirectory: async function(directory, oldSubdirectory, passedInToSave) {
             let toSave = [];
             if (passedInToSave) {
                 toSave = passedInToSave;
@@ -906,7 +910,7 @@ export default {
             subdirectory['ceasn:derivedFrom'] = oldSubdirectory.id;
             subdirectory.name = "Copy of " + subdirectory.name;
             // If original directory was encrypted, make sure the copy is too
-            if (EcEncryptedValue.encryptOnSaveMap[oldSubdirectory.shortId()]) {
+            if (EcEncryptedValue.encryptOnSaveMap && EcEncryptedValue.encryptOnSaveMap[oldSubdirectory.shortId()]) {
                 EcEncryptedValue.encryptOnSaveMap[subdirectory.shortId()] = true;
             }
             // Add this directory as a child of the parent
@@ -914,89 +918,115 @@ export default {
                 directory.directories = [];
             }
             EcArray.setAdd(directory.directories, subdirectory.shortId());
-            toSave.push(...[directory, subdirectory]);
 
             let children = await this.$store.dispatch('editor/getDirectoryChildren', oldSubdirectory);
-
-            window.repo.multiget(children, function(success) {
-                me.frameworksToProcess += success.length;
-
-                new EcAsyncHelper().each(success, async function(obj, done) {
+            // Remove children that do not resolve from the copy
+            let validChildren = [];
+            for (let child of children) {
+                try {
+                    let obj = await EcRepository.get(child);
                     if (obj.type === 'EncryptedValue') {
                         obj = await EcEncryptedValue.fromEncryptedValue(obj);
                     }
-                    if (obj.type === 'Framework') {
-                        me.copyFrameworkToDirectory(subdirectory, obj, toSave);
-                    } else if (obj.type === 'CreativeWork') {
-                        me.copyResourceToDirectory(subdirectory, obj, toSave);
-                    } else if (obj.type === 'Directory') {
-                        me.frameworksToProcess--;
-                        me.copySubdirectoryToDirectory(subdirectory, obj, toSave);
-                    }
-                    done();
-                }, function(ids) {
-                    if (ids.length === 0) {
-                        me.multiput(toSave);
-                    }
-                });
-            }, appError);
-        },
-        moveFrameworkToDirectory: function(directory, framework, toSaveFromSubdirectory) {
-            let toSave = [];
-            if (toSaveFromSubdirectory) {
-                toSave = toSaveFromSubdirectory;
-            }
-            if (directory.owner) {
-                for (let each of directory.owner) {
-                    framework.addOwner(EcPk.fromPem(each));
+                    validChildren.push(obj);
+                } catch (e) {
+                    EcArray.setRemove(subdirectory.directories || [], child);
+                    EcArray.setRemove(subdirectory.frameworks || [], child);
+                    EcArray.setRemove(subdirectory.resources || [], child);
                 }
             }
-            
-            framework.reader = directory.reader;
-            framework.directory = directory.shortId();
-            framework["schema:dateModified"] = new Date().toISOString();
-            // Add this framework as a child of the directory
-            if (!directory.frameworks) {
-                directory.frameworks = [];
+
+            toSave.push(...[directory, subdirectory]);
+
+            let done = [];
+            for (let obj of validChildren) {
+                try {
+                    if (obj.type === 'Framework') {
+                        await this.copyFrameworkToDirectory(subdirectory, obj, toSave);
+                    } else if (obj.type === 'CreativeWork') {
+                        await this.copyResourceToDirectory(subdirectory, obj, toSave);
+                    } else if (obj.type === 'Directory') {
+                        this.frameworksToProcess--;
+                        this.copySubdirectoryToDirectory(subdirectory, obj, toSave);
+                    }
+                    done.push(child);
+                } catch (e) {
+                    appError(e);
+                }
             }
-            EcArray.setAdd(directory.frameworks, framework.shortId());
-            toSave.push(...[framework, directory]);
-            let subobjects = [];
-            if (framework.competency && framework.competency.length > 0) {
-                subobjects = framework.competency;
-            }
-            if (framework.level && framework.level.length > 0) {
-                subobjects = subobjects.concat(framework.level);
-            }
-            if (framework.relation && framework.relation.length > 0) {
-                subobjects = subobjects.concat(framework.relation);
-            }
-            if (subobjects.length > 0) {
-                this.moveSubobjectsToDirectory(subobjects, directory, toSave);
-            } else {
-                this.multiput(toSave, true);
+            if (done.length === 0) {
+                await this.multiput(toSave, true);
             }
         },
-        moveSubobjectsToDirectory: function(subobjects, directory, toSave) {
-            let me = this;
-            new EcAsyncHelper().each(subobjects, function(id, done) {
-                EcRepository.get(id, function(obj) {
-                    if (directory.owner) {
-                        for (let each of directory.owner) {
-                            obj.addOwner(EcPk.fromPem(each));
-                        }
+        moveFrameworkToDirectory: async function(directory, framework, toSaveFromSubdirectory) {
+            try {
+                let toSave = [];
+                if (toSaveFromSubdirectory) {
+                    toSave = toSaveFromSubdirectory;
+                }
+                // If the framework was already in a directory, remove it first
+                if (framework.directory) {
+                    await this.removeFrameworkFromDirectory(framework);
+                }
+                if (directory.owner) {
+                    for (let each of directory.owner) {
+                        framework.addOwner(EcPk.fromPem(each));
                     }
-                    obj.reader = directory.reader;
-                    obj["schema:dateModified"] = new Date().toISOString();
-                    toSave.push(obj);
-                    done();
-                }, done);
-            }, function(ids) {
-                me.multiput(toSave, true);
+                }
+                framework.reader = directory.reader;
+                framework.directory = directory.shortId();
+                framework["schema:dateModified"] = new Date().toISOString();
+                // Add this framework as a child of the directory
+                if (!directory.frameworks) {
+                    directory.frameworks = [];
+                }
+                EcArray.setAdd(directory.frameworks, framework.shortId());
+                toSave.push(...[framework, directory]);
+                let subobjects = [];
+                if (framework.competency && framework.competency.length > 0) {
+                    subobjects = framework.competency;
+                }
+                if (framework.level && framework.level.length > 0) {
+                    subobjects = subobjects.concat(framework.level);
+                }
+                if (framework.relation && framework.relation.length > 0) {
+                    subobjects = subobjects.concat(framework.relation);
+                }
+                if (subobjects.length > 0) {
+                    await this.moveSubobjectsToDirectory(subobjects, directory, toSave);
+                } else {
+                    await this.multiput(toSave, true);
+                }
+            } catch (e) {
+                appError(e);
+            }
+        },
+        moveSubobjectsToDirectory: async function(subobjects, directory, toSave) {
+            let me = this;
+            return new Promise((resolve, reject) => {
+                new EcAsyncHelper().each(subobjects, function(id, done) {
+                    EcRepository.get(id, function(obj) {
+                        if (directory.owner) {
+                            for (let each of directory.owner) {
+                                obj.addOwner(EcPk.fromPem(each));
+                            }
+                        }
+                        obj.reader = directory.reader;
+                        obj["schema:dateModified"] = new Date().toISOString();
+                        toSave.push(obj);
+                        done();
+                    }, done);
+                }, function(ids) {
+                    me.multiput(toSave, true).then(resolve).catch(reject);
+                });
             });
         },
-        moveResourceToDirectory: function(directory, resource, toSaveFromSubdirectory) {
+        moveResourceToDirectory: async function(directory, resource, toSaveFromSubdirectory) {
             let me = this;
+            // If the resource was already in a directory, remove it first
+            if (resource.directory) {
+                await this.removeResourceFromDirectory(resource);
+            }
             if (directory.owner) {
                 for (let each of directory.owner) {
                     resource.addOwner(EcPk.fromPem(each));
@@ -1024,6 +1054,10 @@ export default {
             if (passedInToSave) {
                 toSave = passedInToSave;
             }
+            // If the subdirectory is already in a directory, remove it first
+            if (subdirectory.parentDirectory) {
+                await this.removeSubdirectoryFromDirectory(subdirectory);
+            }
             subdirectory.parentDirectory = directory.shortId();
             subdirectory["schema:dateModified"] = new Date().toISOString();
             if (directory.owner) {
@@ -1040,168 +1074,169 @@ export default {
             toSave.push(...[subdirectory, directory]);
 
             let children = await this.$store.dispatch('editor/getDirectoryChildren', subdirectory);
-
-            window.repo.multiget(children, function(success) {
-                me.frameworksToProcess += success.length;
+            let success = await window.repo.multiget(children);
+            this.frameworksToProcess += success.length;
+            return new Promise((resolve, reject) => {
                 new EcAsyncHelper().each(success, async function(obj, done) {
                     if (obj.type === 'EncryptedValue') {
                         obj = await EcEncryptedValue.fromEncryptedValue(obj);
                     }
                     if (obj.type === 'Framework') {
-                        me.moveFrameworkToDirectory(subdirectory, obj, toSave);
+                        await me.moveFrameworkToDirectory(subdirectory, obj, toSave);
                     } else if (obj.type === 'CreativeWork') {
-                        me.moveResourceToDirectory(subdirectory, obj, toSave);
+                        await me.moveResourceToDirectory(subdirectory, obj, toSave);
                     } else if (obj.type === "Directory") {
-                        me.frameworksToProcess--;
-                        me.moveSubdirectoryToDirectory(subdirectory, obj, toSave);
+                        await me.frameworksToProcess--;
+                        await me.moveSubdirectoryToDirectory(subdirectory, obj, toSave);
                     }
                     done();
                 }, function(ids) {
                     if (ids.length === 0) {
-                        me.multiput(toSave, true);
+                        me.multiput(toSave, true).then(resolve).catch(reject);
+                    } else {
+                        resolve();
                     }
                 });
-            }, appError);
+            });
         },
-        removeFrameworkFromDirectory: function() {
-            let framework = this.object;
+        removeFrameworkFromDirectory: async function(framework) {
             let me = this;
             let toSave = [];
             this.$Progress.start();
-            EcDirectory.get(framework.directory, function(directory) {
-                if (directory.owner) {
-                    for (let each of directory.owner) {
-                        framework.removeOwner(EcPk.fromPem(each));
-                    }
-                    framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+            let directory = await EcDirectory.ge(framework.directory);
+            if (directory.owner) {
+                for (let each of directory.owner) {
+                    framework.removeOwner(EcPk.fromPem(each));
                 }
-                if (directory.reader) {
-                    for (let each of directory.reader) {
-                        framework.removeReader(EcPk.fromPem(each));
-                    }
+                framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+            }
+            if (directory.reader) {
+                for (let each of directory.reader) {
+                    framework.removeReader(EcPk.fromPem(each));
                 }
-                delete framework.directory;
-                framework["schema:dateModified"] = new Date().toISOString();
-                // remove this framework from the list of children
-                if (directory.frameworks) {
-                    EcArray.setRemove(directory.frameworks, framework.shortId());
-                }
-                toSave.push(...[framework, directory]);
-                let subobjects = [];
-                if (framework.competency && framework.competency.length > 0) {
-                    subobjects = framework.competency;
-                }
-                if (framework.level && framework.level.length > 0) {
-                    subobjects = subobjects.concat(framework.level);
-                }
-                if (framework.relation && framework.relation.length > 0) {
-                    subobjects = subobjects.concat(framework.relation);
-                }
-                if (subobjects.length > 0) {
-                    me.removeSubobjectsFromDirectory(subobjects, directory, toSave);
-                } else {
-                    me.multiput(toSave, true);
-                }
-            }, appError);
+            }
+            delete framework.directory;
+            framework["schema:dateModified"] = new Date().toISOString();
+            // remove this framework from the list of children
+            if (directory.frameworks) {
+                EcArray.setRemove(directory.frameworks, framework.shortId());
+            }
+            toSave.push(...[framework, directory]);
+            let subobjects = [];
+            if (framework.competency && framework.competency.length > 0) {
+                subobjects = framework.competency;
+            }
+            if (framework.level && framework.level.length > 0) {
+                subobjects = subobjects.concat(framework.level);
+            }
+            if (framework.relation && framework.relation.length > 0) {
+                subobjects = subobjects.concat(framework.relation);
+            }
+            if (subobjects.length > 0) {
+                await me.removeSubobjectsFromDirectory(subobjects, directory, toSave);
+            } else {
+                await me.multiput(toSave, true);
+            }
         },
-        removeSubobjectsFromDirectory: function(subobjects, directory, toSave) {
+        removeSubobjectsFromDirectory: async function(subobjects, directory, toSave) {
             let me = this;
-            new EcAsyncHelper().each(subobjects, function(id, done) {
-                EcRepository.get(id, async function(obj) {
-                    if (directory.owner) {
-                        for (let each of directory.owner) {
-                            obj.removeOwner(EcPk.fromPem(each));
+            return new Promise((resolve, reject) => {
+                new EcAsyncHelper().each(subobjects, function(id, done) {
+                    EcRepository.get(id, async function(obj) {
+                        if (directory.owner) {
+                            for (let each of directory.owner) {
+                                obj.removeOwner(EcPk.fromPem(each));
+                            }
+                            obj.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                         }
-                        obj.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
-                    }
-                    if (directory.reader) {
-                        for (let each of directory.reader) {
-                            obj.removeReader(EcPk.fromPem(each));
+                        if (directory.reader) {
+                            for (let each of directory.reader) {
+                                obj.removeReader(EcPk.fromPem(each));
+                            }
                         }
-                    }
-                    obj["schema:dateModified"] = new Date().toISOString();
-                    toSave.push(obj);
-                    done();
-                }, done);
-            }, function(ids) {
-                me.multiput(toSave, true);
+                        obj["schema:dateModified"] = new Date().toISOString();
+                        toSave.push(obj);
+                        done();
+                    }, done);
+                }, function(ids) {
+                    me.multiput(toSave, true).then(resolve).catch(reject);
+                });
             });
         },
-        removeResourceFromDirectory: function() {
-            let me = this;
-            EcDirectory.get(this.object.directory, function(directory) {
-                if (directory.owner) {
-                    for (let each of directory.owner) {
-                        me.object.removeOwner(EcPk.fromPem(each));
-                    }
-                    me.object.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+        removeResourceFromDirectory: async function(object) {
+            let directory = await EcDirectory.get(object.directory);
+            if (directory.owner) {
+                for (let each of directory.owner) {
+                    object.removeOwner(EcPk.fromPem(each));
                 }
-                if (directory.reader) {
-                    for (let each of directory.reader) {
-                        me.object.removeReader(EcPk.fromPem(each));
-                    }
+                object.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+            }
+            if (directory.reader) {
+                for (let each of directory.reader) {
+                    object.removeReader(EcPk.fromPem(each));
                 }
-                delete me.object.directory;
-                // Remove this resource from the list of children
-                if (directory.resources) {
-                    EcArray.setRemove(directory.resources, me.object.shortId());
-                }
-                toSave = [me.object, directory];
+            }
+            delete object.directory;
+            // Remove this resource from the list of children
+            if (directory.resources) {
+                EcArray.setRemove(directory.resources, object.shortId());
+            }
+            toSave = [object, directory];
 
-                me.multiput(toSave, true);
-            }, appError);
+            await this.multiput(toSave, true);
         },
-        removeSubdirectoryFromDirectory: function() {
+        removeSubdirectoryFromDirectory: async function(subdirectory) {
             let me = this;
             let toSave = [];
-            let subdirectory = this.object;
-            EcDirectory.get(subdirectory.parentDirectory, async function(directory) {
-                if (directory.owner) {
-                    for (let each of directory.owner) {
-                        subdirectory.removeOwner(EcPk.fromPem(each));
-                    }
-                    subdirectory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+            let directory = await EcDirectory.get(subdirectory.parentDirectory);
+            if (directory.owner) {
+                for (let each of directory.owner) {
+                    subdirectory.removeOwner(EcPk.fromPem(each));
                 }
-                if (directory.reader) {
-                    for (let each of directory.reader) {
-                        subdirectory.removeReader(EcPk.fromPem(each));
-                    }
+                subdirectory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+            }
+            if (directory.reader) {
+                for (let each of directory.reader) {
+                    subdirectory.removeReader(EcPk.fromPem(each));
                 }
-                delete subdirectory.parentDirectory;
-                subdirectory["schema:dateModified"] = new Date().toISOString();
-                // Remove this directory from the list of children
-                if (directory.directories) {
-                    EcArray.setRemove(directory.directories, subdirectory.shortId());
-                }
-                toSave.push(...[subdirectory, directory]);
+            }
+            delete subdirectory.parentDirectory;
+            subdirectory["schema:dateModified"] = new Date().toISOString();
+            // Remove this directory from the list of children
+            if (directory.directories) {
+                EcArray.setRemove(directory.directories, subdirectory.shortId());
+            }
+            toSave.push(...[subdirectory, directory]);
 
-                let children = await me.$store.dispatch('editor/getDirectoryChildren', subdirectory);
+            let children = await me.$store.dispatch('editor/getDirectoryChildren', subdirectory);
+            let success = await window.repo.multiget(children);
+            this.frameworksToProcess = success.length;
 
-                window.repo.multiget(children, function(success) {
-                    me.frameworksToProcess = success.length;
+            return new Promise((resolve, reject) => {
+                new EcAsyncHelper().each(success, async function(obj, done) {
                     let subobjects = [];
-                    new EcAsyncHelper().each(success, async function(obj, done) {
-                        subobjects.push(obj.shortId());
-                        if (obj.competency && obj.competency.length > 0) {
-                            subobjects = subobjects.concat(obj.competency);
-                        }
-                        if (obj.level && obj.level.length > 0) {
-                            subobjects = subobjects.concat(obj.level);
-                        }
-                        if (obj.relation && obj.relation.length > 0) {
-                            subobjects = subobjects.concat(obj.relation);
-                        }
-                        if (subobjects.length > 0) {
-                            me.removeSubobjectsFromDirectory(subobjects, directory, toSave);
-                        }
-                        done();
-                    }, function(ids) {
-                        if (ids.length === 0) {
-                            me.multiput(toSave, true);
-                        }
-                    });
-                }, appError);
-            }, appError);
+                    subobjects.push(obj.shortId());
+                    if (obj.competency && obj.competency.length > 0) {
+                        subobjects = subobjects.concat(obj.competency);
+                    }
+                    if (obj.level && obj.level.length > 0) {
+                        subobjects = subobjects.concat(obj.level);
+                    }
+                    if (obj.relation && obj.relation.length > 0) {
+                        subobjects = subobjects.concat(obj.relation);
+                    }
+                    if (subobjects.length > 0) {
+                        await me.removeSubobjectsFromDirectory(subobjects, directory, toSave);
+                    }
+                    done();
+                }, function(ids) {
+                    if (ids.length === 0) {
+                        me.multiput(toSave, true).then(resolve).catch(reject);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
         },
         // Make sure user can't move directory into its child/grandchild/etc
         setIneligibleDirectoriesForMove: async function(obj) {

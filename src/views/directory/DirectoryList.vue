@@ -411,16 +411,17 @@ export default {
             let children = await this.$store.dispatch('editor/getDirectoryChildren', this.directoryObj);
             if (children.length === 0) {
                 callback(null);
-            }
-            let search = "(";
-            for (let i = 0; i < children.length; i++) {
-                search += '@id:"' + children[i] + '"';
-                if (i < children.length - 1) {
-                    search += ' OR ';
+            } else {
+                let search = "(";
+                for (let i = 0; i < children.length; i++) {
+                    search += '@id:"' + children[i] + '"';
+                    if (i < children.length - 1) {
+                        search += ' OR ';
+                    }
                 }
+                search += ') AND EncryptedValue AND \\*encryptedType:' + type;
+                callback(search);
             }
-            search += ') AND EncryptedValue AND \\*encryptedType:' + type;
-            callback(search);
         },
         buildSearch: function(type, callback) {
             let me = this;
