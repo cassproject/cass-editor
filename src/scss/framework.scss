@@ -842,9 +842,17 @@ ul.processing-list {
     }
 }
 
+// DRAG AND DROP
+
+li.lode__hierarchy-li,
+li.lode__hierarchy-sub-li,
+ul.lode__hierarchy-sub-ul {
+    transition: margin 0.5s ease, padding 0.5s ease;
+}
+
 .lode__hierarchy.is-dragging :not(.chosen-drag) {
-    li.lode__hierarchy-li,
-    li.lode__hierarchy-sub-li {
+    li.lode__hierarchy-li:hover,
+    li.lode__hierarchy-sub-li:hover {
         margin-bottom: 10px;
         border: 2px dashed;
         ul.lode__hierarchy-sub-ul {

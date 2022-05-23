@@ -1,9 +1,10 @@
 export default {
     methods: {
-        deleteObject: function(obj) {
+        deleteObject: async function(obj) {
             appLog("deleting " + obj.id);
             var me = this;
-            this.repo.search("(directory:\"" + obj.shortId() + "\" OR parentDirectory:\"" + obj.shortId() + "\")", function() {}, function(success) {
+            let children = await this.$store.dispatch('editor/getDirectoryChildren', obj);
+            window.repo.multiget(children, function(success) {
                 new EcAsyncHelper().each(success, function(obj, done) {
                     if (obj.type === 'Framework') {
                         me.deleteFramework(obj);
