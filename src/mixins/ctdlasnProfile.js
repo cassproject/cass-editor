@@ -1228,6 +1228,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Workforce Demand"}],
                     "heading": "Connections"
                 },
+                "https://purl.org/ctdl/terms/hasTask": {
+                    "@id": "https://purl.org/ctdl/terms/hasTask",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Task related to this resource."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Task"}],
+                    "heading": "Context"
+                },
                 "http://schema.org/creator": {
                     "@id": "http://schema.org/creator",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1310,6 +1321,7 @@ export default {
                     "https://purl.org/ctdlasn/terms/sourceDocumentation",
                     "https://purl.org/ctdlasn/terms/inferredCompetency",
                     "https://purl.org/ctdl/terms/hasWorkforceDemand",
+                    "https://purl.org/ctdl/terms/hasTask",
                     "http://schema.org/creator",
                     "http://purl.org/ASN/schema/core/hasProgressionLevel"
                 ]
