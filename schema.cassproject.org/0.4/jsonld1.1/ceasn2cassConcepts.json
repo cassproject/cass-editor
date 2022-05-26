@@ -78,10 +78,6 @@
 			"@id": "dcterms:description",
 			"@container": "@language"
 		},
-		"skos:historyNote": {
-			"@id": "skos:historyNote",
-			"@container": "@language"
-		},
 		"ceasn:publisherName": {
 			"@id": "ceasn:publisherName",
 			"@container": "@language"

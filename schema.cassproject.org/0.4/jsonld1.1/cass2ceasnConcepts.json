@@ -15,7 +15,7 @@
 		"loc": "http://www.loc.gov/loc.terms/",
 		"locr": "http://www.loc.gov/loc.terms/relators/",
 		"meta": "http://credreg.net/meta/terms/",
-		"publicationStatus": "http://credreg.net/ctdlasn/vocabs/publicationStatus/",
+		"publicationStatus": "https://credreg.net/ctdlasn/vocabs/publicationStatus/",
 		"skos": "http://www.w3.org/2004/02/skos/core#",
 		"vs": "https://www.w3.org/2003/06/sw-vocab-status/ns",
 		"xsd": "http://www.w3.org/2001/XMLSchema#",
@@ -130,10 +130,6 @@
 			"@id": "skos:hasTopConcept",
 			"@type": "@id",
 			"@container": "@list"
-		},
-		"skos:historyNote": {
-			"@id": "skos:historyNote",
-			"@language": "en-US"
 		},
 		"ceasn:license": {
 			"@id": "ceasn:license",

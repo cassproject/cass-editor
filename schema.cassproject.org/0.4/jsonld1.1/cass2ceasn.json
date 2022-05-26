@@ -15,7 +15,7 @@
 		"loc": "http://www.loc.gov/loc.terms/",
 		"locr": "http://www.loc.gov/loc.terms/relators/",
 		"meta": "http://credreg.net/meta/terms/",
-		"publicationStatus": "http://credreg.net/ctdlasn/vocabs/publicationStatus/",
+		"publicationStatus": "https://credreg.net/ctdlasn/vocabs/publicationStatus/",
 		"skos": "http://www.w3.org/2004/02/skos/core#",
 		"vs": "https://www.w3.org/2003/06/sw-vocab-status/ns",
 		"xsd": "http://www.w3.org/2001/XMLSchema#",
@@ -33,9 +33,17 @@
 			"@id": "ceasn:listID",
 			"@type": "xsd:string"
 		},
+		"ceasn:altCodedNotation": {
+			"@id": "ceasn:altCodedNotation",
+			"@type": "xsd:string"
+		},
 		"ceasn:codedNotation": {
 			"@id": "ceasn:codedNotation",
 			"@type": "xsd:string"
+		},
+		"ceasn:localSubject": {
+			"@id": "ceasn:localSubject",
+			"@language": "en-US"
 		},
 		"ceasn:competencyLabel": {
 			"@id": "ceasn:competencyLabel",
@@ -44,7 +52,7 @@
 		"ceasn:competencyCategory": {
 			"@id": "ceasn:competencyCategory",
 			"@language": "en-US"
-		},
+		},		
 		"ceasn:name": {
 			"@id": "ceasn:name",
 			"@language": "en-US"
@@ -145,8 +153,24 @@
 			"@id": "ceasn:isChildOf",
 			"@type": "@id"
 		},
+		"ceasn:crossSubjectReference": {
+			"@id": "ceasn:crossSubjectReference",
+			"@type": "@id"
+		},
+		"ceasn:comprisedOf": {
+			"@id": "ceasn:comprisedOf",
+			"@type": "@id"
+		},
 		"ceasn:derivedFrom": {
 			"@id": "ceasn:derivedFrom",
+			"@type": "@id"
+		},
+		"ceasn:alignFrom": {
+			"@id": "ceasn:alignFrom",
+			"@type": "@id"
+		},
+		"ceasn:alignTo": {
+			"@id": "ceasn:alignTo",
 			"@type": "@id"
 		},
 		"ceasn:isPartOf": {
@@ -316,6 +340,10 @@
 		},
 		"ceasn:inferredCompetency": {
 			"@id": "ceasn:inferredCompetency",
+			"@type": "@id"
+		},
+		"ceterms:hasTask": {
+			"@id": "ceterms:hasTask",
 			"@type": "@id"
 		},
 		"ceterms:hasWorkforceDemand": {
