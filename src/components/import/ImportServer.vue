@@ -631,21 +631,27 @@ export default {
                 appError(error);
             });
         },
-        openDirectory: function(directory) {
+        openDirectory: async function(directory) {
             this.directoryThatsOpen = directory;
-            let me = this;
-            let paramObj = {};
-            paramObj.size = 50;
-            paramObj.sort = '[ { "name.keyword": {"order" : "asc"}} ]';
-            EcDirectory.search(this.remoteRepo, "parentDirectory:\"" + directory.shortId() + "\"", function(success) {
-                me.cassDirectories.splice(0, me.cassDirectories.length);
-                me.searchingTopLevel = false;
-                me.cassSearchSuccess(success, "directory");
-            }, appError, paramObj);
-            EcFramework.search(this.remoteRepo, "directory:\"" + directory.shortId() + "\"", function(success) {
-                me.cassFrameworks.splice(0, me.cassFrameworks.length);
-                me.cassSearchSuccess(success, "framework");
-            }, appError, paramObj);
+            let childDirectories = [];
+            let childFrameworks = [];
+            if (directory.directories) {
+                for (let child of directory.directories) {
+                    let childObj = await EcDirectory.get(child);
+                    childDirectories.push(childObj);
+                }
+                this.cassDirectories.splice(0, this.cassDirectories.length);
+                this.searchingTopLevel = false;
+                this.cassSearchSuccess(childDirectories, "directory");
+            }
+            if (directory.frameworks) {
+                for (let child of directory.frameworks) {
+                    let childObj = await EcFramework.get(child);
+                    childFrameworks.push(childObj);
+                }
+                this.cassFrameworks.splice(0, this.cassFrameworks.length);
+                this.cassSearchSuccess(childFrameworks, "framework");
+            }
         },
         selectAllFrameworks: function() {
             for (let each in this.cassFrameworks) {

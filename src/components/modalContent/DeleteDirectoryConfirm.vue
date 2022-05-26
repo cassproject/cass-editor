@@ -75,11 +75,12 @@ export default {
         };
     },
     methods: {
-        deleteDirectory: function(obj) {
+        deleteDirectory: async function(obj) {
             appLog("deleting " + obj.id);
             var me = this;
-            this.repo.search("(directory:\"" + obj.shortId() + "\" OR parentDirectory:\"" + obj.shortId() + "\")", function() {}, function(success) {
-                new EcAsyncHelper().each(success, function(obj, done) {
+            let children = await this.$store.dispatch('editor/getDirectoryChildren', obj);
+            window.repo.multiget(children, function(success) {
+                new EcAsyncHelper().each(success, async function(obj, done) {
                     if (obj.type === 'Framework') {
                         me.deleteFramework(obj, done);
                     } else if (obj.type === 'CreativeWork') {

@@ -349,3 +349,15 @@ npm run serve
 * Connect.
 
     https://localhost:8080/cass-editor#/
+
+# Release Process
+* `npm install cassproject`
+* `npm audit --production` and address any dependencies with vulnerabilities
+* Increment version in package.json
+* `npm run test:unit`
+* Document code coverage output by the previous step.
+* Push changes to dev on gitlab
+* Merge into qa and master
+* Push gitlab master branch to github
+
+After github finishes deploying to the gh-pages branch, the cass-editor pointer can be updated in the CaSS repository.

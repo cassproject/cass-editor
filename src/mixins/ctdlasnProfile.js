@@ -233,9 +233,9 @@ export default {
                     [{"@language": "en", "@value": "Publication status of the source competency framework. The original framework may be drafted, published, or depreciated outside of this system."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publication Status"}],
                     "options": [
-                        {display: "Draft", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Draft"},
-                        {display: "Published", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Published"},
-                        {display: "Deprecated", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Deprecated"}
+                        {display: "Draft", val: "https://credreg.net/ctdlasn/vocabs/publicationStatus/Draft"},
+                        {display: "Published", val: "https://credreg.net/ctdlasn/vocabs/publicationStatus/Published"},
+                        {display: "Deprecated", val: "https://credreg.net/ctdlasn/vocabs/publicationStatus/Deprecated"}
                     ],
                     "max": 1,
                     "heading": "Context"
@@ -258,10 +258,10 @@ export default {
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
                     "http://schema.org/rangeIncludes": [{"@id": "http://purl.org/dc/terms/date"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "Year of a statement of copyright for this competency framework, such as 2017."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Year Copyrighted"}],
-                    "max": 1,
-                    "heading": "Rights"
+                    [{"@language": "en", "@value": "Date of a statement of copyright for this resource."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Copyrighted"}],
+                    "heading": "Rights",
+                    "max": 1
                 },
                 "http://schema.org/license": {
                     "@id": "http://schema.org/license",
@@ -770,6 +770,29 @@ export default {
                     "max": 1,
                     "heading": "Context"
                 },
+                "https://purl.org/ctdlasn/terms/altCodedNotation": {
+                    "@id": "https://purl.org/ctdlasn/terms/altCodedNotation",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "An alphanumeric notation or ID code identifying this competency in common use among end-users."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Alternative Coded Notation"}],
+                    "max": 1,
+                    "heading": "Context"
+                },
+                "https://purl.org/ctdlasn/terms/comprisedOf": {
+                    "@id": "https://purl.org/ctdlasn/terms/comprisedOf",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "This competency includes, comprehends or encompasses, in whole or in part, the meaning, nature or importance of the referenced competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Comprised Of"}],
+                    "heading": "Connections"
+                },
                 "https://purl.org/ctdlasn/terms/derivedFrom": {
                     "@id": "https://purl.org/ctdlasn/terms/derivedFrom",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -807,6 +830,17 @@ export default {
                     [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}],
                     "isRequired": "true",
+                    "heading": "General"
+                },
+                "https://purl.org/ctdlasn/terms/author": {
+                    "@id": "https://purl.org/ctdlasn/terms/author",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "A person or organization chiefly responsible for the intellectual or artistic content of this competency framework or competency."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Author"}],
                     "heading": "General"
                 },
                 "http://schema.org/keywords": {
@@ -1028,6 +1062,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Local Subject"}],
                     "heading": "Tagging"
                 },
+                "https://purl.org/ctdlasn/terms/crossSubjectReference": {
+                    "@id": "https://purl.org/ctdlasn/terms/crossSubjectReference",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "A relationship between this competency and a competency in a separate competency framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Cross Subject Reference"}],
+                    "heading": "Context"
+                },
                 "https://purl.org/ctdl/terms/environmentalHazardType": {
                     "@id": "https://purl.org/ctdl/terms/environmentalHazardType",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1194,6 +1239,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Workforce Demand"}],
                     "heading": "Connections"
                 },
+                "https://purl.org/ctdl/terms/hasTask": {
+                    "@id": "https://purl.org/ctdl/terms/hasTask",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Task related to this resource."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Task"}],
+                    "heading": "Context"
+                },
                 "http://schema.org/creator": {
                     "@id": "http://schema.org/creator",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1227,7 +1283,8 @@ export default {
                     "http://schema.org/description",
                     "http://purl.org/dc/terms/type",
                     "https://purl.org/ctdlasn/terms/listID",
-                    "https://purl.org/ctdlasn/terms/codedNotation"
+                    "https://purl.org/ctdlasn/terms/codedNotation",
+                    "https://purl.org/ctdlasn/terms/altCodedNotation"
                 ],
                 "secondaryProperties": [
                     "https://purl.org/ctdlasn/terms/abilityEmbodied",
@@ -1242,6 +1299,7 @@ export default {
                     "https://schema.cassproject.org/0.4/socList",
                     "https://schema.cassproject.org/0.4/naicsList",
                     "https://purl.org/ctdlasn/terms/localSubject",
+                    "https://purl.org/ctdlasn/terms/crossSubjectReference",
                     "https://schema.cassproject.org/0.4/cipList"
                 ],
                 "tertiaryProperties": [
@@ -1255,6 +1313,7 @@ export default {
                     "minorRelated",
                     "requires",
                     "https://purl.org/ctdlasn/terms/isVersionOf",
+                    "https://purl.org/ctdlasn/terms/comprisedOf",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
                     "http://schema.org/identifier",
@@ -1273,7 +1332,9 @@ export default {
                     "https://purl.org/ctdlasn/terms/sourceDocumentation",
                     "https://purl.org/ctdlasn/terms/inferredCompetency",
                     "https://purl.org/ctdl/terms/hasWorkforceDemand",
+                    "https://purl.org/ctdl/terms/hasTask",
                     "http://schema.org/creator",
+                    "https://purl.org/ctdlasn/terms/author",
                     "http://purl.org/ASN/schema/core/hasProgressionLevel"
                 ]
             };
@@ -1523,9 +1584,9 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publication Status"}],
                     "heading": "Context",
                     "options": [
-                        {display: "Draft", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Draft"},
-                        {display: "Published", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Published"},
-                        {display: "Deprecated", val: "http://credreg.net/ctdlasn/vocabs/publicationStatus/Deprecated"}
+                        {display: "Draft", val: "https://credreg.net/ctdlasn/vocabs/publicationStatus/Draft"},
+                        {display: "Published", val: "https://credreg.net/ctdlasn/vocabs/publicationStatus/Published"},
+                        {display: "Deprecated", val: "https://credreg.net/ctdlasn/vocabs/publicationStatus/Deprecated"}
                     ],
                     "isRequired": "true",
                     "max": 1

@@ -223,6 +223,7 @@
                     :searchOptions="searchOptions"
                     :paramObj="paramObj"
                     :directoryId="directory.shortId()"
+                    :directoryObj="directory"
                     view="directory"
                     :disallowEdits="true"
                     @dblclick="openObject" />
@@ -634,6 +635,7 @@ export default {
         if (this.queryParams && this.queryParams.private !== 'true') {
             this.$store.commit('editor/private', false);
         }
+        this.$store.commit('app/selectDirectory', null);
     },
     mounted: function() {
         if (!this.directory || this.directory === '') {

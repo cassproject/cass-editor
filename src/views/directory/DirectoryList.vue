@@ -184,7 +184,8 @@ export default {
             type: String,
             default: ''
         },
-        directoryId: String
+        directoryId: String,
+        directoryObj: Object
     },
     components: {Thing, Breadcrumbs},
     mixins: [ cassUtil ],
@@ -406,6 +407,22 @@ export default {
                 success(competencies);
             });
         },
+        buildEncryptedSearch: async function(type, callback) {
+            let children = await this.$store.dispatch('editor/getDirectoryChildren', this.directoryObj);
+            if (children.length === 0) {
+                callback(null);
+            } else {
+                let search = "(";
+                for (let i = 0; i < children.length; i++) {
+                    search += '@id:"' + children[i] + '"';
+                    if (i < children.length - 1) {
+                        search += ' OR ';
+                    }
+                }
+                search += ') AND EncryptedValue AND \\*encryptedType:' + type;
+                callback(search);
+            }
+        },
         buildSearch: function(type, callback) {
             let me = this;
             var search = "";
@@ -530,17 +547,30 @@ export default {
                     }, function(results) {
                         me.firstSearchProcessing = false;
                         if (!me.applySearchTo) {
-                            me.buildSearch("EncryptedValue AND \\*encryptedType:" + type, function(search) {
-                                me.repo.searchWithParams(search, localParamObj, async function(result) {
-                                    // Decrypt and add to results list
-                                    var type = "Ec" + result.encryptedType;
-                                    var obj = new window[type]();
-                                    obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
-                                    if (!EcArray.has(me.resultIds, obj.id)) {
-                                        me[arrayType].push(obj);
-                                        me.resultIds.push(obj.id);
-                                    }
-                                }, function(results2) {
+                            me.buildEncryptedSearch(type, function(search) {
+                                if (search) {
+                                    me.repo.searchWithParams(search, localParamObj, async function(result) {
+                                        // Decrypt and add to results list
+                                        var type = "Ec" + result.encryptedType;
+                                        var obj = new window[type]();
+                                        obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
+                                        if (!EcArray.has(me.resultIds, obj.id)) {
+                                            if (!me.searchTerm || (me.searchTerm && obj.getName().includes(me.searchTerm))) {
+                                                me[arrayType].push(obj);
+                                                me.resultIds.push(obj.id);
+                                            }
+                                        }
+                                    }, function(results2) {
+                                        me.start += me.paramObj.size;
+                                        if (results.length < 10) {
+                                            me.changeType($state);
+                                        } else if (results.length > 0 && $state) {
+                                            $state.loaded();
+                                        } else if ($state) {
+                                            $state.complete();
+                                        }
+                                    }, appError);
+                                } else {
                                     me.start += me.paramObj.size;
                                     if (results.length < 10) {
                                         me.changeType($state);
@@ -549,7 +579,7 @@ export default {
                                     } else if ($state) {
                                         $state.complete();
                                     }
-                                }, appError);
+                                }
                             });
                         } else {
                             me.start += me.paramObj.size;
