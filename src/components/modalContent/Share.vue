@@ -354,7 +354,7 @@ export default {
                     label: 'View',
                     value: 'view',
                     disabled: true,
-                    title: 'Make the ' + (this.$store.getters['editor/conceptMode'] ? 'concept scheme' : 'framework') + ' private to add users/groups with view access'
+                    title: 'Make the ' + (this.$store.getters['editor/conceptMode'] ? 'concept scheme' : (this.$store.getters['editor/progressionMode'] ? 'progression model' : 'framework')) + ' private to add users/groups with view access'
                 }
             ],
             groups: [],
@@ -466,7 +466,7 @@ export default {
             if (this.directory) {
                 return 'directory';
             }
-            return this.$store.getters['editor/conceptMode'] ? 'concept scheme' : 'framework';
+            return this.$store.getters['editor/conceptMode'] ? 'concept scheme' : (this.$store.getters['editor/progressionMode'] ? 'progression model' : 'framework');
         },
         shareEnabled: function() {
             if (this.resource) {
@@ -732,7 +732,7 @@ export default {
             if (this.directory) {
                 return this.addAndRemoveFromAllDirectoryObjects(this.directory);
             }
-            if (this.$store.getters['editor/conceptMode'] === true) {
+            if (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
                 return this.addAndRemoveFromAllConceptObjects();
             }
             return this.addAndRemoveFromAllFrameworkObjects(this.framework);
@@ -938,7 +938,7 @@ export default {
             if (this.directory) {
                 return this.handleMakePrivateDirectory(this.directory);
             }
-            if (this.$store.getters['editor/conceptMode'] === true) {
+            if (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
                 this.handleMakePrivateConceptScheme();
             } else {
                 this.handleMakePrivateFramework(framework);
@@ -1048,7 +1048,7 @@ export default {
             if (this.directory) {
                 return this.handleMakePublicDirectory(this.directory);
             }
-            if (this.$store.getters['editor/conceptMode'] === true) {
+            if (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
                 this.handleMakePublicConceptScheme();
             } else {
                 this.handleMakePublicFramework(framework);
@@ -1278,7 +1278,7 @@ export default {
             if (this.directory) {
                 return this.makeCurrentUserDirectoryOwner(this.directory);
             }
-            if (this.$store.getters['editor/conceptMode'] === true) {
+            if (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
                 return this.makeCurrentUserAnOwnerForConceptObjects();
             }
             this.makeCurrentUserFrameworkAndSubObjectOwner(this.framework);

@@ -311,7 +311,7 @@ export default {
             return icon;
         },
         showAddComments() {
-            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true) {
+            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
                 return false;
             }
             return this.$store.state.app.canAddComments;
@@ -1102,7 +1102,7 @@ export default {
                 if (result[heading] == null && result[heading] === undefined) {
                     result[heading] = {};
                 }
-                if (this.$store.getters['editor/conceptMode'] && (prop === "http://www.w3.org/2004/02/skos/core#broader" || prop === "http://www.w3.org/2004/02/skos/core#narrower")) {
+                if ((this.$store.getters['editor/conceptMode'] || this.$store.getters['editor/progressionMode']) && (prop === "http://www.w3.org/2004/02/skos/core#broader" || prop === "http://www.w3.org/2004/02/skos/core#narrower")) {
                     continue;
                 }
                 if (this.profile[prop]["valuesIndexed"]) {

@@ -29,7 +29,7 @@
             </div>
             <div
                 class="filter-sort-section"
-                v-if="showQuickFilterHeading && !($store.getters['editor/conceptMode'] && !loggedIn)">
+                v-if="showQuickFilterHeading && !($store.getters['editor/conceptMode'] && !loggedIn) && !($store.getters['editor/progressionMode'] && !loggedIn)">
                 <h3 class="filter-sort-header">
                     Quick Filters
                 </h3>
@@ -54,7 +54,7 @@
             </div>
             <div
                 class="filter-sort-section"
-                v-if="!$store.getters['editor/conceptMode']">
+                v-if="!$store.getters['editor/conceptMode'] && !$store.getters['editor/progressionMode']">
                 <h3 class="filter-sort-header">
                     Apply search term to
                 </h3>
@@ -167,12 +167,15 @@ export default {
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
         },
+        progressionMode: function() {
+            return this.$store.getters['editor/progressionMode'];
+        },
         isFirstSearchProcessing: function() {
             return this.$store.getters['editor/firstSearchProcessing'];
         }
     },
     mounted: function() {
-        if (!this.conceptMode) {
+        if (!this.conceptMode && !this.progressionMode) {
             this.setSearchTermsFromRawSchemata();
             this.getFrameworkConfig();
             this.setOtherPropertiesApplySearchTo();
@@ -185,7 +188,7 @@ export default {
                 }
             }
         }
-        if (this.conceptMode || !this.configurationsEnabled) {
+        if (this.conceptMode || this.progressionMode || !this.configurationsEnabled) {
             for (var i = 0; i < this.quickFilters.length; i++) {
                 if (this.quickFilters[i].id === "configMatchDefault") {
                     this.quickFilters[i].enabled = false;

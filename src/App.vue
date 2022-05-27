@@ -95,6 +95,7 @@ export default {
                 }
                 if (this.queryParams.concepts === 'true') {
                     this.$store.commit('editor/conceptMode', true);
+                    this.$store.commit('editor/progressionMode', false);
                 }
                 if (this.queryParams.ceasnDataFields === 'true') {
                     this.$store.commit('featuresEnabled/configurationsEnabled', false);
@@ -156,13 +157,21 @@ export default {
             this.loadIdentity(function() {
                 if (me.queryParams) {
                     if (me.queryParams.frameworkId) {
-                        if (me.$store.getters['editor/conceptMode'] === true) {
+                        if ((me.$store.getters['editor/conceptMode'] === true)) {
                             EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
                                 me.$store.commit('editor/framework', success);
                                 me.$store.commit('editor/clearFrameworkCommentData');
                                 me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                                 me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                                 me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
+                            }, appError);
+                        } else if ((me.$store.getters['editor/progressionMode'] === true)) {
+                            EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
+                                me.$store.commit('editor/framework', success);
+                                me.$store.commit('editor/clearFrameworkCommentData');
+                                me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                                me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                                me.$router.push({name: "progressionModel", params: {frameworkId: me.queryParams.frameworkId}});
                             }, appError);
                         } else {
                             EcFramework.get(me.queryParams.frameworkId, function(success) {
@@ -192,7 +201,9 @@ export default {
                             me.$router.push({name: "collections"});
                         } else if (me.$store.getters['editor/conceptMode'] === true) {
                             me.$router.push({name: "concepts"});
-                        } else if (me.$route.name !== 'frameworks' && me.$route.name !== 'concepts') {
+                        } else if (me.$store.getters['editor/progressionMode'] === true) {
+                            me.$router.push({name: "progressionLevels"});
+                        } else if (me.$route.name !== 'frameworks' && me.$route.name !== 'concepts' && me.$route.name !== 'progressionLevels') {
                             me.$router.push({name: "frameworks"});
                         }
                     }
@@ -299,7 +310,7 @@ export default {
                         }
                     }
                 }
-                if (this.$route.name === 'frameworks' || this.$route.name === 'concepts') {
+                if (this.$route.name === 'frameworks' || this.$route.name === 'concepts' || this.$route.name === 'progressionLevels') {
                     this.$store.dispatch('app/refreshDirectories');
                     this.$store.commit('app/refreshSearch', true);
                 }
@@ -431,7 +442,7 @@ export default {
                     a.assertionDateDecrypted = await a.getAssertionDate();
                     me.$store.commit('editor/addAssertion', a);
                 }
-                if (me.$route.name !== 'framework' && me.$route.name !== 'conceptScheme') {
+                if (me.$route.name !== 'framework' && me.$route.name !== 'conceptScheme' && me.$route.name !== 'progressionModel') {
                     return;
                 }
 
@@ -672,11 +683,11 @@ export default {
             if (this.queryParams.private === "true") {
                 saveFramework = await EcEncryptedValue.toEncryptedValue(framework);
             }
-            framework.subType = "ProgressionModel";
+            framework.subType = "Progression";
             this.repo.saveTo(saveFramework, function() {
                 me.$store.commit('editor/framework', framework);
-                if (me.$route.name !== 'conceptScheme') {
-                    me.$router.push({name: "conceptScheme"});
+                if (me.$route.name !== 'progressionModel') {
+                    me.$router.push({name: "progressionModel"});
                 }
             }, appError);
         },
@@ -685,6 +696,8 @@ export default {
             var me = this;
             if (me.$store.getters['editor/conceptMode'] === true) {
                 this.createNewConceptScheme();
+            } else if (me.$store.getters['editor/progressionMode'] === true) {
+                this.createNewProgressionModel();
             } else {
                 this.createNewFramework();
             }
@@ -1376,9 +1389,15 @@ export default {
             }
             if (to.name === 'concepts') {
                 this.$store.commit('editor/conceptMode', true);
+                this.$store.commit('editor/progressionMode', false);
+            }
+            if (to.name === 'progressionLevels') {
+                this.$store.commit('editor/progressionMode', true);
+                this.$store.commit('editor/conceptMode', false);
             }
             if (to.name === 'frameworks') {
                 this.$store.commit('editor/conceptMode', false);
+                this.$store.commit('editor/progressionMode', false);
             }
         },
         loggedInPerson: function() {

@@ -70,7 +70,7 @@
             <li class="has-text-white">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', false)">
+                    @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false)">
                     Import
                 </router-link>
             </li>
@@ -95,7 +95,32 @@
             <li class="has-text-white">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', true)">
+                    @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false)">
+                    Import
+                </router-link>
+            </li>
+        </ul>
+        <!-- PROGRESSION MODELS -->
+        <div
+            class="menu-label has-text-weight-bold">
+            Progression Models
+        </div>
+        <ul
+            class="menu-list">
+            <li class="has-text-white">
+                <router-link :to="{path: '/progressionLevels', query: queryParams}">
+                    ProgressionLevels
+                </router-link>
+            </li>
+            <li
+                class="has-text-white"
+                @click="$emit('create-new-progression-model')">
+                <a> New Progression Models</a>
+            </li>
+            <li class="has-text-white">
+                <router-link
+                    :to="{path: '/import', query: queryParams}"
+                    @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false)">
                     Import
                 </router-link>
             </li>
@@ -167,7 +192,7 @@ export default {
             return this.$route.path;
         },
         supportedFiles: function() {
-            return this.$store.getters['editor/conceptMode'] === true ? this.supportedConceptFileTypes : this.supportedFileTypes;
+            return (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) ? this.supportedConceptFileTypes : this.supportedFileTypes;
         },
         loggedOnPerson: function() {
             return this.$store.getters['user/loggedOnPerson'];

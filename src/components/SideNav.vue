@@ -167,7 +167,7 @@
                 v-if="showSideNav">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');">
+                    @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');">
                     <span class="icon">
                         <i class="fa fa-upload" />
                     </span><span v-if="showSideNav">
@@ -288,7 +288,7 @@
                 v-if="showSideNav">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');">
+                    @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');">
                     <span class="icon">
                         <i class="fa fa-upload" />
                     </span>
@@ -318,7 +318,7 @@
             class="menu-list"
             v-if="queryParams.ceasnDataFields === 'true' && showConcepts">
             <li class="has-text-white">
-                <router-link :to="{path: '/progressions', query: queryParams}">
+                <router-link :to="{path: '/progressionLevels', query: queryParams}">
                     <span class="icon">
                         <i class="fa fa-layer-group" />
                     </span>
@@ -332,7 +332,7 @@
                 v-if="showSideNav && queryParams.ceasnDataFields === 'true' && showConcepts">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');">
+                    @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');">
                     <span class="icon">
                         <i class="fa fa-upload" />
                     </span>
@@ -577,7 +577,7 @@ export default {
             return this.$route.path;
         },
         supportedFiles: function() {
-            return this.$store.getters['editor/conceptMode'] === true ? this.supportedConceptFileTypes : this.supportedFileTypes;
+            return (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) ? this.supportedConceptFileTypes : this.supportedFileTypes;
         },
         loggedOnPerson: function() {
             return this.$store.getters['user/loggedOnPerson'];

@@ -464,10 +464,11 @@ export default {
             paste: state => state.editor.paste,
             queryParams: state => state.editor.queryParams,
             newCompetency: state => state.editor.newCompetency,
-            conceptMode: state => state.editor.conceptMode
+            conceptMode: state => state.editor.conceptMode,
+            progressionMode: state => state.editor.profressionMode
         }),
         showAddComments() {
-            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true) {
+            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
                 return false;
             }
             return this.$store.state.app.canAddComments;
@@ -695,7 +696,7 @@ export default {
                         y: true
                     };
                     this.$scrollTo("#scroll-newCompetency", 500, options);
-                } else if (this.conceptMode) {
+                } else if (this.conceptMode || this.profressionMode) {
                     let options = {
                         container: "#concept",
                         easing: "ease",

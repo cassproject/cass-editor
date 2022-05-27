@@ -534,6 +534,15 @@ export default {
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: me.object.id}});
                 }, appError);
+            } else if (this.$store.getters['editor/progressionMode']) {
+                this.$store.commit('app/selectDirectory', null);
+                EcConceptScheme.get(this.object.id, function(success) {
+                    me.$store.commit('editor/framework', success);
+                    me.$store.commit('editor/clearFrameworkCommentData');
+                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    me.$router.push({name: "progressionModel", params: {frameworkId: me.object.id}});
+                }, appError);
             } else {
                 this.$store.commit('app/selectDirectory', null);
                 EcFramework.get(this.object.id, function(success) {
@@ -1300,6 +1309,9 @@ export default {
             if (this.objectType === 'CreativeWork') {
                 return "Resource";
             }
+            if (this.objectType === "ConceptScheme" && this.object.subType === "Progression") {
+                return "Progression";
+            }
             if (this.objectType === "ConceptScheme") {
                 if (this.queryParams.ceasnDataFields === 'true') {
                     return "Concept Scheme";
@@ -1353,7 +1365,7 @@ export default {
             link = link.replace('/frameworks', '').replace('/directory', '');
             if (this.objectType === "Directory") {
                 return (link + "?directoryId=" + this.objectShortId);
-            } else if (this.$store.getters['editor/conceptMode'] === true) {
+            } else if ((this.$store.getters['editor/conceptMode'] === true) || (this.$store.getters['editor/progression'] === true)) {
                 return (link + "?concepts=true&frameworkId=" + this.objectShortId);
             }
             return (link + "?frameworkId=" + this.objectShortId);

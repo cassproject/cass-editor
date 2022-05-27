@@ -122,7 +122,7 @@ export default {
         };
     },
     created: function() {
-        this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "skos:prefLabel.keyword" : "name.keyword";
+        this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true || this.searchType === "Concept") ? "skos:prefLabel.keyword" : "name.keyword";
         this.$store.commit('app/searchTerm', "");
     },
     beforeDestroy: function() {
@@ -175,8 +175,8 @@ export default {
                     search += ")";
                 }
             }
-            if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] !== true && this.queryParams.show === "mine") ||
-                (this.queryParams && this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine")) {
+            if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true && this.queryParams.show === "mine") ||
+                (this.queryParams && (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) && this.queryParams.conceptShow === "mine")) {
                 if (EcIdentityManager.default.ids.length > 0) {
                     search += " AND (";
                     for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
@@ -203,8 +203,8 @@ export default {
             } else {
                 delete obj.sort;
             }
-            if (EcIdentityManager.default.ids.length > 0 && this.queryParams && ((this.$store.getters['editor/conceptMode'] !== true && this.queryParams.show === 'mine') ||
-                (this.$store.getters['editor/conceptMode'] === true && this.queryParams.conceptShow === "mine"))) {
+            if (EcIdentityManager.default.ids.length > 0 && this.queryParams && ((this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true && this.queryParams.show === 'mine') ||
+                ((this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
             return obj;
@@ -325,7 +325,7 @@ export default {
                 this.sortBy = "schema:dateModified";
                 this.displayFirst.splice(0, this.displayFirst.length);
             } else {
-                this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.searchType === "Concept") ? "skos:prefLabel.keyword" : "name.keyword";
+                this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true || this.searchType === "Concept") ? "skos:prefLabel.keyword" : "name.keyword";
                 this.displayFirst.splice(0, this.displayFirst.length);
             }
         },

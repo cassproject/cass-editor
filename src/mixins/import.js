@@ -136,7 +136,7 @@ export default {
         },
         /* When an import is "successful" */
         importSuccess: function() {
-            if (!this.conceptMode) {
+            if (!this.conceptMode && !this.progressionMode) {
                 let feedback = "Competency detected";
                 this.$store.commit('app/importStatus', feedback);
                 if (this.isT3Import) {
@@ -144,6 +144,10 @@ export default {
                 } else {
                     this.$store.commit('app/importTransition', 'preview');
                 }
+            } else if (this.progressionMode) {
+                let name = "Progression Model";
+                this.$store.commit('app/importStatus', name + " Imported.");
+                this.$store.commit('app/importTransition', 'preview');
             } else {
                 let name = "Taxonomy";
                 if (this.queryParams.ceasnDataFields === 'true') {
@@ -196,6 +200,17 @@ export default {
                         if (me.queryParams.ceasnDataFields === 'true') {
                             name = "concept schemes";
                         }
+                        feedback = "Import " + frameworkCount + " " + name + " and " + competencyCount + " concepts.";
+                        me.$store.commit('app/importStatus', feedback);
+                        me.$store.commit('app/importTransition', 'info');
+                    }, function(errorMsg) {
+                        me.$store.commit('app/addImportError', errorMsg);
+                        me.$store.commit('app/importTransition', 'process');
+                    });
+                } else if (this.progressionMode) {
+                    CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount) {
+                        me.$store.commit('app/importFileType', 'conceptcsv');
+                        let name = "progression models";
                         feedback = "Import " + frameworkCount + " " + name + " and " + competencyCount + " concepts.";
                         me.$store.commit('app/importStatus', feedback);
                         me.$store.commit('app/importTransition', 'info');
@@ -264,6 +279,10 @@ export default {
                             }
                             me.$store.commit('app/importFileType', 'ctdlasnjsonld');
                             me.$store.commit('app/importTransition', 'info');
+                        } else if (me.progressionMode) {
+                            me.$store.commit('app/importStatus', "1 Progression Model Detected.");
+                            me.$store.commit('app/importFileType', 'ctdlasnjsonld');
+                            me.$store.commit('app/importTransition', 'info');
                         } else {
                             if (me.queryParams.ceasnDataFields === 'true') {
                                 var message = "Concept Schemes must be imported in the concept scheme editor.";
@@ -275,7 +294,7 @@ export default {
                             me.$store.commit('app/importTransition', 'process');
                         }
                     } else {
-                        if (!me.conceptMode) {
+                        if (!me.conceptMode && !me.progressionMode) {
                             if (ctdlasn === 'ctdlasnCollection') {
                                 me.$store.commit('app/importFileType', 'ctdlasnjsonldcollection');
                                 feedback = "1 Collection and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
@@ -301,7 +320,7 @@ export default {
                         me.$store.commit('app/importTransition', 'process');
                     }
                 }, function(failure) {
-                    if (file.name.endsWith(".json") && !me.conceptMode) {
+                    if (file.name.endsWith(".json") && !me.conceptMode && !me.progressionMode) {
                         // If JSON-LD doesn't work, try JSON
                         ASNImport.analyzeFile(file, function(data) {
                             me.$store.commit('app/importFileType', 'asn');
@@ -325,6 +344,9 @@ export default {
                     } else {
                         me.$store.commit('app/addImportError', "This is not a valid file format for taxonomies");
                     }
+                } else if (this.progressionMode) {
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', "This is not a valid file format for progression models");
                 } else {
                     MedbiqImport.analyzeFile(file, function(data) {
                         me.$store.commit('app/importFileType', 'medbiq');
@@ -345,6 +367,9 @@ export default {
                     } else {
                         me.$store.commit('app/addImportError', "This is not a valid file format for taxonomies");
                     }
+                } else if (this.progressionMode) {
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', "This is not a valid file format for progression models");
                 } else {
                     me.$store.commit('app/importFileType', 'pdf');
                     me.firstImport = false;
@@ -360,6 +385,9 @@ export default {
                     } else {
                         me.$store.commit('app/addImportError', "This is not a valid file format for taxonomies");
                     }
+                } else if (this.progressionMode) {
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', "This is not a valid file format for progression models");
                 } else {
                     me.$store.commit('app/importFileType', "pdf");
                     me.firstImport = false;
@@ -374,6 +402,9 @@ export default {
                     } else {
                         me.$store.commit('app/addImportError', "This is not a valid file format for taxonomies");
                     }
+                } else if (this.progressionMode) {
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', "This is not a valid file format for progression models");
                 } else {
                     me.$store.commit('app/importFileType', "pdf");
                     me.detailsDetected.fileType = "html";
@@ -823,7 +854,7 @@ export default {
                     if (EcRepository.cache) {
                         delete EcRepository.cache[data];
                     }
-                    if (me.conceptMode) {
+                    if (me.conceptMode || me.progressionMode) {
                         framework = await EcConceptScheme.get(data);
                     } else {
                         framework = await EcFramework.get(data);
@@ -855,6 +886,8 @@ export default {
                     } else {
                         me.$store.commit('app/importStatus', "Importing Taxonomy");
                     }
+                } else if (me.progressionMode) {
+                    me.$store.commit('app/importStatus', "Importing Progression Model");
                 } else {
                     if (me.importFileType === 'ctdlasnjsonldcollection') {
                         me.$store.commit('app/importStatus', 'Importing Collection');
@@ -1123,7 +1156,7 @@ export default {
             }
         },
         importFramework: function() {
-            if (this.importFramework && !this.conceptMode && (!this.importFramework.competency || this.importFramework.competency === 0)) {
+            if (this.importFramework && !this.conceptMode && !this.progressionMode && (!this.importFramework.competency || this.importFramework.competency === 0)) {
                 this.hierarchyIsdoneLoading = true;
             }
         }
