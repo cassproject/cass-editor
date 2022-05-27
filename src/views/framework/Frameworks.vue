@@ -28,6 +28,7 @@
                         <add-new-dropdown
                             :conceptEnabled="true"
                             @concept="$emit('create-new-concept-scheme')"
+                            @progression="$emit('create-new-progression-model')"
                             @close="createDropDownActive = false"
                             @toggle="createDropDownActive = !createDropDownActive"
                             :active="createDropDownActive" />

@@ -117,7 +117,7 @@
             <add-new-dropdown
                 :frameworkEnabled="showFrameworks"
                 :directoryEnabled="showFrameworks"
-                :collectionEnabled="queryParams.ceasnDataFields === 'true'"
+                :collectionEnabled="queryParams.ceasnDataFields === 'true' && this.queryParams.concepts !== 'true'"
                 @close="addFrameworkOrDirectory = false"
                 :conceptEnabled="showConcepts"
                 @toggle="addFrameworkOrDirectory = !addFrameworkOrDirectory"
@@ -127,6 +127,7 @@
                 @concept="$emit('create-new-concept-scheme')"
                 @framework="$emit('create-new-framework')"
                 @collection="$emit('create-new-collection')"
+                @progression="$emit('create-new-progression-model')"
                 :active="addFrameworkOrDirectory" />
         </div>
         <!-- GENERAL MENU -->
@@ -285,6 +286,50 @@
             <li
                 class="has-text-white"
                 v-if="showSideNav">
+                <router-link
+                    :to="{path: '/import', query: queryParams}"
+                    @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');">
+                    <span class="icon">
+                        <i class="fa fa-upload" />
+                    </span>
+                    Import
+                </router-link>
+            </li>
+            <li
+                v-for="navLink of pluginLinkMap['Taxonomy']"
+                class="has-text-white"
+                v-show="showSideNav && pluginsEnabled"
+                :key="navLink">
+                <a @click="setLaunchPluginValues(navLink)">
+                    <span class="icon">
+                        <i class="fa fa-plug" />
+                    </span>
+                    <span v-if="showSideNav"> {{ navLink.launchName }}</span>
+                </a>
+            </li>
+        </ul>
+        <!-- PROGRESSION MODELS -->
+        <div
+            v-if="queryParams.ceasnDataFields === 'true' && showSideNav && showConcepts"
+            class="menu-label has-text-weight-bold">
+            <span>Progression Models</span>
+        </div>
+        <ul
+            class="menu-list"
+            v-if="queryParams.ceasnDataFields === 'true' && showConcepts">
+            <li class="has-text-white">
+                <router-link :to="{path: '/progressions', query: queryParams}">
+                    <span class="icon">
+                        <i class="fa fa-layer-group" />
+                    </span>
+                    <span v-if="showSideNav && queryParams.ceasnDataFields === 'true'">
+                        Progression Models
+                    </span>
+                </router-link>
+            </li>
+            <li
+                class="has-text-white"
+                v-if="showSideNav && queryParams.ceasnDataFields === 'true' && showConcepts">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
                     @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');">

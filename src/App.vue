@@ -14,12 +14,14 @@
         <router-view
             @create-new-framework="createNewFramework"
             @create-new-concept-scheme="createNewConceptScheme"
+            @create-new-progression-model="createNewProgressionModel"
             @create-new-collection="createNewCollection"
             :class="[{ 'clear-side-bar': showSideNav}, { 'clear-narrow-side-bar': !showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
             @create-new-framework="createNewFramework"
             @create-new-concept-scheme="createNewConceptScheme"
+            @create-new-progression-model="createNewProgressionModel"
             @create-new-collection="createNewCollection"
             name="sidebar" />
         <vue-progress-bar />
@@ -639,6 +641,38 @@ export default {
             if (this.queryParams.private === "true") {
                 saveFramework = await EcEncryptedValue.toEncryptedValue(framework);
             }
+            this.repo.saveTo(saveFramework, function() {
+                me.$store.commit('editor/framework', framework);
+                if (me.$route.name !== 'conceptScheme') {
+                    me.$router.push({name: "conceptScheme"});
+                }
+            }, appError);
+        },
+        createNewProgressionModel: async function() {
+            let me = this;
+            this.setDefaultLanguage();
+            var framework = new EcConceptScheme();
+            if (this.queryParams.newObjectEndpoint != null) {
+                framework.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                framework.generateId(this.repo.selectedServer);
+            }
+            if (EcIdentityManager.default.ids.length > 0) {
+                framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+            }
+            let name = "New Progression Model";
+            framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": name};
+            if (this.queryParams.ceasnDataFields === "true") {
+                framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
+            }
+            framework["schema:dateCreated"] = new Date().toISOString();
+            framework["schema:dateModified"] = new Date().toISOString();
+            this.$store.commit('editor/newFramework', framework.shortId());
+            var saveFramework = framework;
+            if (this.queryParams.private === "true") {
+                saveFramework = await EcEncryptedValue.toEncryptedValue(framework);
+            }
+            framework.subType = "ProgressionModel";
             this.repo.saveTo(saveFramework, function() {
                 me.$store.commit('editor/framework', framework);
                 if (me.$route.name !== 'conceptScheme') {
