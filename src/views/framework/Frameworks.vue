@@ -365,7 +365,7 @@ export default {
         };
     },
     created: function() {
-        this.sortBy = (this.conceptMode || this.progressionMode) ? "dcterms:title.keyword" : "name.keyword";
+        this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
         this.$store.commit("editor/t3Profile", false);
         this.$store.commit('editor/framework', null);
         this.spitEvent('viewChanged');
@@ -406,6 +406,12 @@ export default {
                 } else {
                     search += " AND NOT (subType:\"Collection\")";
                 }
+            }
+            if (this.type === "ProgressionModel") {
+                search += " AND (subType:\"Progression\")";
+            } else {
+                // TODO: Should Progression Models be included as ConceptSchemes if ceasnDataFields = false?
+                search += " AND NOT (subType:\"Progression\")";
             }
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
@@ -606,7 +612,7 @@ export default {
         } else if (this.sortResults.id === "dateCreated") {
             this.sortBy = "schema:dateCreated";
         } else {
-            this.sortBy = (this.conceptMode || this.progressionMode) ? "dcterms:title.keyword" : "name.keyword";
+            this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
         }
         this.showMine = false;
         this.showNotMine = false;
@@ -632,7 +638,7 @@ export default {
             } else if (this.sortResults.id === "dateCreated") {
                 this.sortBy = "schema:dateCreated";
             } else {
-                this.sortBy = (this.conceptMode || this.progressionMode) ? "dcterms:title.keyword" : "name.keyword";
+                this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
             }
         },
         filteredQuickFilters: function() {
@@ -652,10 +658,10 @@ export default {
             }
         },
         conceptMode: function() {
-            this.sortBy = this.conceptMode ? "dcterms:title.keyword" : "name.keyword";
+            this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
         },
         progressionMode: function() {
-            this.sortBy = this.progressionMode ? "dcterms:title.keyword" : "name.keyword";
+            this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
         }
     }
 };

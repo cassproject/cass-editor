@@ -178,7 +178,7 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        :profile="ctdlAsnConceptProfile"
+                                        :profile="ctdlAsnProgressionLevelProfile"
                                         properties="tertiary" />
                                 </div>
                                 <!-- import light view -->
@@ -236,7 +236,7 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        :profile="ctdlAsnConceptProfile"
+                                        :profile="ctdlAsnProgressionLevelProfile"
                                         properties="tertiary" />
                                 </div>
                             </template>
@@ -364,7 +364,7 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        :profile="ctdlAsnConceptProfile"
+                                        :profile="ctdlAsnProgressionLevelProfile"
                                         properties="tertiary" />
                                 </div>
                                 <!-- import light view -->
@@ -422,7 +422,7 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        :profile="ctdlAsnConceptProfile"
+                                        :profile="ctdlAsnProgressionLevelProfile"
                                         properties="tertiary" />
                                 </div>
                             </template>
@@ -546,7 +546,7 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        :profile="ctdlAsnConceptProfile"
+                                        :profile="ctdlAsnProgressionLevelProfile"
                                         properties="tertiary" />
                                 </div>
                                 <!-- import light view -->
@@ -604,7 +604,7 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        :profile="ctdlAsnConceptProfile"
+                                        :profile="ctdlAsnProgressionLevelProfile"
                                         properties="tertiary" />
                                 </div>
                             </template>
@@ -698,7 +698,7 @@
                                         :repo="repo"
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
-                                        :profile="ctdlAsnConceptProfile"
+                                        :profile="ctdlAsnProgressionLevelProfile"
                                         properties="tertiary" />
                                 </div>
                             </template>
@@ -1211,7 +1211,7 @@ export default {
                 return this.ctdlAsnConceptSchemeProfile;
             }
             if (this.progressionMode) {
-                return this.ctdlAsnConceptSchemeProfile;
+                return this.ctdlAsnProgressionLevelProfile;
             }
             if (this.isT3Import) {
                 return this.t3FrameworkProfile;
@@ -1225,7 +1225,7 @@ export default {
                 return this.ctdlAsnConceptProfile;
             }
             if (this.progressionMode) {
-                return this.ctdlAsnConceptProfile;
+                return this.ctdlAsnProgressionLevelProfile;
             }
             if (this.isT3Import) {
                 return this.t3CompetencyProfile;
