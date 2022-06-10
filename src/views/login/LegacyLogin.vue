@@ -609,7 +609,6 @@ export default {
             } else this.findLinkedPersonForIdentity();
         },
         handleAttemptLoginFetchIdentityFailure: function(failMsg) {
-            console.error(failMsg);
             this.identityFailMsg = failMsg;
             this.identityFetchFailed = true;
             this.loginBusy = false;
