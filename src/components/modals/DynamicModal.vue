@@ -60,7 +60,8 @@ export default {
         'RequiredPropertyModal': () => import('@/components/modalContent/RequiredPropertyModal.vue'),
         'DuplicateImport': () => import('@/components/modalContent/DuplicateImport.vue'),
         'ImportError': () => import('@/components/modalContent/ImportError.vue'),
-        'ShareAssertions': () => import('@/components/modalContent/ShareAssertions.vue')
+        'ShareAssertions': () => import('@/components/modalContent/ShareAssertions.vue'),
+        'LogoutSuccess': () => import('@/components/modalContent/LogoutSuccess.vue')
     },
     data() {
         return {

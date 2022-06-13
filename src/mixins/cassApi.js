@@ -86,8 +86,7 @@ export const cassApi = {
             EcIdentityManager.default.clearIdentities();
             let clearPerson = {};
             this.$store.commit('user/loggedOnPerson', clearPerson);
-            if (this.apiLoginEnabled) this.redirectToExternalLogout();
-            else this.goToLogin();
+            this.$store.commit('app/showModal', {component: 'LogoutSuccess'});
         },
         performApplicationLogin: function() {
             appLog("Performing application login...");
