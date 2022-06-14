@@ -604,7 +604,6 @@ export default {
                 this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
         },
         handleAttemptLoginFetchIdentitySuccess: function(obj) {
-            console.log(obj);
             if (!EcIdentityManager.default.ids || EcIdentityManager.default.ids.length <= 0) {
                 this.handleAttemptLoginFetchIdentityFailure('Login credentials valid but no identity could be found.');
             } else this.findLinkedPersonForIdentity();
@@ -617,7 +616,6 @@ export default {
         },
         handleAttemptLoginConfigureFromServerSuccess: async function(obj) {
             appLog("Fetching identity...");
-            console.log(obj);
             this.ecRemoteIdentMgr.startLogin(this.username, this.password); // Creates the hashes for storage and retrieval of keys.
             await this.ecRemoteIdentMgr.fetch(null, this.handleAttemptLoginFetchIdentityFailure).then((ident) => {
                 if (ident) {
