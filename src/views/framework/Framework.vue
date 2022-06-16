@@ -309,6 +309,28 @@ export default {
                     "heading": "General",
                     "onePerLanguage": "true"
                 },
+                "https://schema.cassproject.org/0.4/Classification": {
+                    "@id": "https://schema.cassproject.org/0.4/Classification",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The classification of the framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Classification"}],
+                    "heading": "General"
+                },
+                "https://schema.cassproject.org/0.4/Markings": {
+                    "@id": "https://schema.cassproject.org/0.4/Markings",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The markings of the framework."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Markings"}],
+                    "heading": "General"
+                },
                 "@id": {
                     "@id": "https://schema.cassproject.org/0.4/Framework/id",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -325,7 +347,9 @@ export default {
                 "headings": ["General", "Keys"],
                 "primaryProperties": [
                     "http://schema.org/name",
-                    "http://schema.org/description"
+                    "http://schema.org/description",
+                    "https://schema.cassproject.org/0.4/Classification",
+                    "https://schema.cassproject.org/0.4/Markings"
                 ],
                 "secondaryProperties": ["@id"],
                 "tertiaryProperties": []
@@ -470,6 +494,28 @@ export default {
                         "max": 1,
                         "heading": "Keys"
                     },
+                    "https://schema.cassproject.org/0.4/Classification": {
+                        "@id": "https://schema.cassproject.org/0.4/Classification",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "The classification of the competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Classification"}],
+                        "heading": "General"
+                    },
+                    "https://schema.cassproject.org/0.4/Markings": {
+                        "@id": "https://schema.cassproject.org/0.4/Markings",
+                        "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                        "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                        "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "The markings of the competency."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Markings"}],
+                        "heading": "General"
+                    },
                     "https://schema.cassproject.org/0.4/scope": {
                         "@id": "https://schema.cassproject.org/0.4/scope",
                         "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -612,7 +658,9 @@ export default {
                     "headings": ["General", "Connections", "Keys"],
                     "primaryProperties": [
                         "http://schema.org/name",
-                        "http://schema.org/description"
+                        "http://schema.org/description",
+                        "https://schema.cassproject.org/0.4/Classification",
+                        "https://schema.cassproject.org/0.4/Markings"
                     ],
                     "secondaryProperties": [
                         "@id",

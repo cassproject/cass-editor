@@ -1460,6 +1460,34 @@
                                     :enforcePrimary="false"
                                     @change="updateFrameworkCompetencyProperty" />
                                 <FrameworkCompetencyPropertyListItem
+                                    propertyParent="framework"
+                                    property="classification"
+                                    :label="config.fwkClassLabel"
+                                    :description="config.fwkClassDescription"
+                                    :required="config.fwkClassRequired"
+                                    :priority="config.fwkClassPriority"
+                                    :heading="config.fwkClassHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="framework"
+                                    property="markings"
+                                    :label="config.fwkMarkingsLabel"
+                                    :description="config.fwkMarkingsDescription"
+                                    :required="config.fwkMarkingsRequired"
+                                    :priority="config.fwkMarkingsPriority"
+                                    :heading="config.fwkMarkingsHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
                                     v-for="(prop,idx) in config.fwkCustomProperties"
                                     :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority + '_' +prop.heading"
                                     propertyParent="framework"
@@ -1579,6 +1607,34 @@
                                     :required="config.compTypeRequired"
                                     :priority="config.compTypePriority"
                                     :heading="config.compTypeHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="competency"
+                                    property="classification"
+                                    :label="config.compClassLabel"
+                                    :description="config.compClassDescription"
+                                    :required="config.compClassRequired"
+                                    :priority="config.compClassPriority"
+                                    :heading="config.compClassHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="competency"
+                                    property="markings"
+                                    :label="config.compMarkingsLabel"
+                                    :description="config.compMarkingsDescription"
+                                    :required="config.compMarkingsRequired"
+                                    :priority="config.compMarkingsPriority"
+                                    :heading="config.compMarkingsHeading"
                                     :custom="false"
                                     :readOnly="readOnly"
                                     :enforceRequired="false"
@@ -3233,6 +3289,20 @@ export default {
             else if (field.equals("required")) this.config.fwkDescRequired = newValue;
             else if (field.equals("heading")) this.config.fwkDescHeading = newValue;
         },
+        updateFrameworkClassificationProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.fwkClassLabel = newValue;
+            else if (field.equals("description")) this.config.fwkClassDescription = newValue;
+            else if (field.equals("priority")) this.config.fwkClassPriority = newValue;
+            else if (field.equals("required")) this.config.fwkClassRequired = newValue;
+            else if (field.equals("heading")) this.config.fwkClassHeading = newValue;
+        },
+        updateFrameworkMarkingsProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.fwkMarkingsLabel = newValue;
+            else if (field.equals("description")) this.config.fwkMarkingsDescription = newValue;
+            else if (field.equals("priority")) this.config.fwkMarkingsPriority = newValue;
+            else if (field.equals("required")) this.config.fwkMarkingsRequired = newValue;
+            else if (field.equals("heading")) this.config.fwkMarkingsHeading = newValue;
+        },
         updateFrameworkCustomProperty: function(propertyName, field, newValue) {
             let propToUpdate = this.getCustomProperty('framework', propertyName);
             if (field.equals("label")) propToUpdate.label = newValue;
@@ -3245,6 +3315,8 @@ export default {
             if (propertyName.equals("id")) this.updateFrameworkIdProperty(field, newValue);
             else if (propertyName.equals("name")) this.updateFrameworkNameProperty(field, newValue);
             else if (propertyName.equals("description")) this.updateFrameworkDescriptionProperty(field, newValue);
+            else if (propertyName.equals("classification")) this.updateFrameworkClassificationProperty(field, newValue);
+            else if (propertyName.equals("markings")) this.updateFrameworkMarkingsProperty(field, newValue);
             else this.updateFrameworkCustomProperty(propertyName, field, newValue);
         },
         updateCompetencyIdProperty: function(field, newValue) {
@@ -3264,6 +3336,20 @@ export default {
             else if (field.equals("priority")) this.config.compDescPriority = newValue;
             else if (field.equals("required")) this.config.compDescRequired = newValue;
             else if (field.equals("heading")) this.config.compDescHeading = newValue;
+        },
+        updateCompetencyClassificationProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.compClassLabel = newValue;
+            else if (field.equals("description")) this.config.compClassDescription = newValue;
+            else if (field.equals("priority")) this.config.compClassPriority = newValue;
+            else if (field.equals("required")) this.config.compClassRequired = newValue;
+            else if (field.equals("heading")) this.config.compClassHeading = newValue;
+        },
+        updateCompetencyMarkingsProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.compMarkingsLabel = newValue;
+            else if (field.equals("description")) this.config.compMarkingsDescription = newValue;
+            else if (field.equals("priority")) this.config.compMarkingsPriority = newValue;
+            else if (field.equals("required")) this.config.compMarkingsRequired = newValue;
+            else if (field.equals("heading")) this.config.compMarkingsHeading = newValue;
         },
         updateCompetencyTypeProperty: function(field, newValue) {
             if (field.equals("label")) this.config.compTypeLabel = newValue;
@@ -3285,6 +3371,8 @@ export default {
             else if (propertyName.equals("name")) this.updateCompetencyNameProperty(field, newValue);
             else if (propertyName.equals("description")) this.updateCompetencyDescriptionProperty(field, newValue);
             else if (propertyName.equals("type")) this.updateCompetencyTypeProperty(field, newValue);
+            else if (propertyName.equals("classification")) this.updateCompetencyClassificationProperty(field, newValue);
+            else if (propertyName.equals("markings")) this.updateCompetencyMarkingsProperty(field, newValue);
             else this.updateCompetencyCustomProperty(propertyName, field, newValue);
         },
         updateFrameworkCompetencyProperty: function(propertyParent, propertyName, field, newValue) {
