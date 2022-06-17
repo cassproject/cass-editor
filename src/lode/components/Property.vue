@@ -302,6 +302,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         :langString="langString"
                         :range="range"
                         :view="view"
+                        :addSingle="isNotDeletable()"
                         :options="(profile && profile[expandedProperty] && profile[expandedProperty]['options']) ? profile[expandedProperty]['options'] : null"
                         :profile="profile"
                         @remove="remove(item)" />
@@ -1023,6 +1024,14 @@ export default {
                 }
             }
             return false;
+        },
+        isNotDeletable() {
+            // This property is not deletable if it is the last entry of a required field.
+            if (this.isRequired && this.expandedValue && this.expandedValue.length <= 1) {
+                return true;
+            } else {
+                return false;
+            }
         },
         save: function() {
             if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["save"]) {

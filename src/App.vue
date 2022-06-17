@@ -138,6 +138,12 @@ export default {
                 if (loginInfo.banner) {
                     this.$store.commit('app/setBanner', loginInfo.banner);
                 }
+                if (loginInfo.motd) {
+                    this.$store.commit('app/setMotd', loginInfo.motd);
+                    if (loginInfo.motd.message) {
+                        this.$store.commit('app/showModal', {component: 'MessageOfTheDay'});
+                    }
+                }
             });
             window.repo = r;
             this.repo = r;

@@ -310,14 +310,20 @@ export default {
             fwkConf.primaryProperties.push("http://schema.org/name");
             if (this.currentConfig.fwkIdPriorty.equalsIgnoreCase("primary")) fwkConf.primaryProperties.push("@id");
             if (this.currentConfig.fwkDescPriority.equalsIgnoreCase("primary")) fwkConf.primaryProperties.push("http://schema.org/description");
+            if (this.currentConfig.fwkClassPriority.equalsIgnoreCase("primary")) fwkConf.primaryProperties.push("https://schema.cassproject.org/0.4/Classification");
+            if (this.currentConfig.fwkMarkingsPriority.equalsIgnoreCase("primary")) fwkConf.primaryProperties.push(("https://schema.cassproject.org/0.4/Markings"));
             this.addCustomPropertiesToPriorityArray(this.currentConfig.fwkCustomProperties, fwkConf.primaryProperties, "primary");
             fwkConf.secondaryProperties = [];
             if (this.currentConfig.fwkIdPriorty.equalsIgnoreCase("secondary")) fwkConf.secondaryProperties.push("@id");
             if (this.currentConfig.fwkDescPriority.equalsIgnoreCase("secondary")) fwkConf.secondaryProperties.push("http://schema.org/description");
+            if (this.currentConfig.fwkClassPriority.equalsIgnoreCase("secondary")) fwkConf.secondaryProperties.push("https://schema.cassproject.org/0.4/Classification");
+            if (this.currentConfig.fwkMarkingsPriority.equalsIgnoreCase("secondary")) fwkConf.secondaryProperties.push(("https://schema.cassproject.org/0.4/Markings"));
             this.addCustomPropertiesToPriorityArray(this.currentConfig.fwkCustomProperties, fwkConf.secondaryProperties, "secondary");
             fwkConf.tertiaryProperties = [];
             if (this.currentConfig.fwkIdPriorty.equalsIgnoreCase("tertiary")) fwkConf.tertiaryProperties.push("@id");
             if (this.currentConfig.fwkDescPriority.equalsIgnoreCase("tertiary")) fwkConf.tertiaryProperties.push("http://schema.org/description");
+            if (this.currentConfig.fwkClassPriority.equalsIgnoreCase("tertiary")) fwkConf.tertiaryProperties.push("https://schema.cassproject.org/0.4/Classification");
+            if (this.currentConfig.fwkMarkingsPriority.equalsIgnoreCase("tertiary")) fwkConf.tertiaryProperties.push(("https://schema.cassproject.org/0.4/Markings"));
             this.addCustomPropertiesToPriorityArray(this.currentConfig.fwkCustomProperties, fwkConf.tertiaryProperties, "tertiary");
         },
         buildFrameworkIdConfigObject(fwkConf) {
@@ -377,11 +383,51 @@ export default {
                 false,
                 true);
         },
+        buildFrameworkClassificationConfigObject(fwkConf) {
+            fwkConf["https://schema.cassproject.org/0.4/Classification"] = this.generatePropertyConfigObject(
+                "https://schema.cassproject.org/0.4/Classification",
+                "http://schema.cassproject.org/0.3/Framework",
+                "http://schema.org/Text",
+                this.currentConfig.fwkClassDescription,
+                this.currentConfig.fwkClassLabel,
+                this.currentConfig.fwkClassPriority,
+                this.currentConfig.fwkClassRequired,
+                false,
+                false,
+                false,
+                null,
+                null,
+                null,
+                this.currentConfig.fwkClassHeading,
+                false,
+                true);
+        },
+        buildFrameworkMarkingsConfigObject(fwkConf) {
+            fwkConf["https://schema.cassproject.org/0.4/Markings"] = this.generatePropertyConfigObject(
+                "https://schema.cassproject.org/0.4/Markings",
+                "http://schema.cassproject.org/0.3/Framework",
+                "http://schema.org/Text",
+                this.currentConfig.fwkMarkingsDescription,
+                this.currentConfig.fwkMarkingsLabel,
+                this.currentConfig.fwkMarkingsPriority,
+                this.currentConfig.fwkMarkingsRequired,
+                false,
+                false,
+                false,
+                null,
+                null,
+                null,
+                this.currentConfig.fwkMarkingsHeading,
+                false,
+                true);
+        },
         getFrameworkConfigHeadings() {
             let allHeadings = [];
             if (this.currentConfig.fwkIdHeading && !this.currentConfig.fwkIdHeading.trim().equals('')) allHeadings[this.currentConfig.fwkIdHeading.trim()] = 'x';
             if (this.currentConfig.fwkNameHeading && !this.currentConfig.fwkNameHeading.trim().equals('')) allHeadings[this.currentConfig.fwkNameHeading.trim()] = 'x';
             if (this.currentConfig.fwkDescHeading && !this.currentConfig.fwkDescHeading.trim().equals('')) allHeadings[this.currentConfig.fwkDescHeading.trim()] = 'x';
+            if (this.currentConfig.fwkClassHeading && !this.currentConfig.fwkClassHeading.trim().equals('')) allHeadings[this.currentConfig.fwkClassHeading.trim()] = 'x';
+            if (this.currentConfig.fwkMarkingsHeading && !this.currentConfig.fwkMarkingsHeading.trim().equals('')) allHeadings[this.currentConfig.fwkMarkingsHeading.trim()] = 'x';
             this.addCustomPropertiesToHeadingsObj(this.currentConfig.fwkCustomProperties, allHeadings);
             return allHeadings;
         },
@@ -397,6 +443,8 @@ export default {
             this.buildFrameworkIdConfigObject(fwkConf);
             this.buildFrameworkNameConfigObject(fwkConf);
             this.buildFrameworkDescConfigObject(fwkConf);
+            this.buildFrameworkClassificationConfigObject(fwkConf);
+            this.buildFrameworkMarkingsConfigObject(fwkConf);
             this.buildCustomPropertiesConfigObjects(fwkConf, "http://schema.cassproject.org/0.3/Framework", this.currentConfig.fwkCustomProperties);
             cco.frameworkConfig = fwkConf;
         },
@@ -406,18 +454,24 @@ export default {
             if (this.currentConfig.compIdPriorty.equalsIgnoreCase("primary")) compConf.primaryProperties.push("@id");
             if (this.currentConfig.compDescPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("http://schema.org/description");
             if (this.currentConfig.compTypePriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("http://purl.org/dc/terms/type");
+            if (this.currentConfig.compClassPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("https://schema.cassproject.org/0.4/Classification");
+            if (this.currentConfig.compMarkingsPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push(("https://schema.cassproject.org/0.4/Markings"));
             if (this.currentConfig.compAllowLevels && this.currentConfig.levelPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("https://schema.cassproject.org/0.4/Level");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.primaryProperties, "primary");
             compConf.secondaryProperties = [];
             if (this.currentConfig.compIdPriorty.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("@id");
             if (this.currentConfig.compDescPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("http://schema.org/description");
             if (this.currentConfig.compTypePriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("http://purl.org/dc/terms/type");
+            if (this.currentConfig.compClassPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("https://schema.cassproject.org/0.4/Classification");
+            if (this.currentConfig.compMarkingsPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push(("https://schema.cassproject.org/0.4/Markings"));
             if (this.currentConfig.compAllowLevels && this.currentConfig.levelPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("https://schema.cassproject.org/0.4/Level");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.secondaryProperties, "secondary");
             compConf.tertiaryProperties = [];
             if (this.currentConfig.compIdPriorty.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("@id");
             if (this.currentConfig.compDescPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("http://schema.org/description");
             if (this.currentConfig.compTypePriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("http://purl.org/dc/terms/type");
+            if (this.currentConfig.compClassPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("https://schema.cassproject.org/0.4/Classification");
+            if (this.currentConfig.compMarkingsPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push(("https://schema.cassproject.org/0.4/Markings"));
             if (this.currentConfig.compAllowLevels && this.currentConfig.levelPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("https://schema.cassproject.org/0.4/Level");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.tertiaryProperties, "tertiary");
         },
@@ -498,6 +552,44 @@ export default {
                 null,
                 null,
                 this.currentConfig.compTypeHeading,
+                false,
+                true);
+        },
+        buildCompetencyClassificationConfigObject(compConf) {
+            compConf["https://schema.cassproject.org/0.4/Classification"] = this.generatePropertyConfigObject(
+                "https://schema.cassproject.org/0.4/Classification",
+                "http://schema.cassproject.org/0.3/Framework",
+                "http://schema.org/Text",
+                this.currentConfig.compClassDescription,
+                this.currentConfig.compClassLabel,
+                this.currentConfig.compClassPriority,
+                this.currentConfig.compClassRequired,
+                false,
+                false,
+                false,
+                null,
+                null,
+                null,
+                this.currentConfig.compClassHeading,
+                false,
+                true);
+        },
+        buildCompetencyMarkingsConfigObject(compConf) {
+            compConf["https://schema.cassproject.org/0.4/Markings"] = this.generatePropertyConfigObject(
+                "https://schema.cassproject.org/0.4/Markings",
+                "http://schema.cassproject.org/0.3/Framework",
+                "http://schema.org/Text",
+                this.currentConfig.compMarkingsDescription,
+                this.currentConfig.compMarkingsLabel,
+                this.currentConfig.compMarkingsPriority,
+                this.currentConfig.compMarkingsRequired,
+                false,
+                false,
+                false,
+                null,
+                null,
+                null,
+                this.currentConfig.compMarkingsHeading,
                 false,
                 true);
         },
@@ -633,6 +725,8 @@ export default {
             this.determineHeadingStatus(this.currentConfig.fwkIdHeading, headingsTracking);
             this.determineHeadingStatus(this.currentConfig.fwkNameHeading, headingsTracking);
             this.determineHeadingStatus(this.currentConfig.fwkDescHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.fwkClassHeading, headingsTracking);
+            this.determineHeadingStatus(this.currentConfig.fwkMarkingsHeading, headingsTracking);
             this.determineHeadingStatusForCustomProperties(this.currentConfig.compCustomProperties, headingsTracking);
             this.determineHeadingStatusForCustomProperties(this.currentConfig.fwkCustomProperties, headingsTracking);
             if (headingsTracking.anyHeadingsPopulated && headingsTracking.anyHeadingsBlank) this.enforceHeadings = true;
@@ -711,6 +805,16 @@ export default {
             newConfigObj.fwkDescPriority = "primary";
             newConfigObj.fwkDescRequired = true;
             newConfigObj.fwkDescHeading = "";
+            newConfigObj.fwkClassLabel = "Classification";
+            newConfigObj.fwkClassDescription = "Classification of the framework";
+            newConfigObj.fwkClassPriority = "primary";
+            newConfigObj.fwkClassRequired = false;
+            newConfigObj.fwkClassHeading = "";
+            newConfigObj.fwkMarkingsLabel = "Markings";
+            newConfigObj.fwkMarkingsDescription = "Markings of the framework";
+            newConfigObj.fwkMarkingsPriority = "primary";
+            newConfigObj.fwkMarkingsRequired = false;
+            newConfigObj.fwkMarkingsHeading = "";
             newConfigObj.compAllowLevels = true;
             newConfigObj.levelLabel = 'Level';
             newConfigObj.levelDescription = 'Level of the competency';
@@ -735,6 +839,16 @@ export default {
             newConfigObj.compTypePriority = "secondary";
             newConfigObj.compTypeRequired = false;
             newConfigObj.compTypeHeading = "";
+            newConfigObj.compClassLabel = "Classification";
+            newConfigObj.compClassDescription = "Classification of the competency";
+            newConfigObj.compClassPriority = "primary";
+            newConfigObj.compClassRequired = false;
+            newConfigObj.compClassHeading = "";
+            newConfigObj.compMarkingsLabel = "Markings";
+            newConfigObj.compMarkingsDescription = "Markings of the competency";
+            newConfigObj.compMarkingsPriority = "primary";
+            newConfigObj.compMarkingsRequired = false;
+            newConfigObj.compMarkingsHeading = "";
             newConfigObj.compEnforceTypes = false;
             newConfigObj.compEnforcedTypes = [];
             newConfigObj.fwkCustomProperties = [];
