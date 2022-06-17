@@ -331,7 +331,7 @@ export default {
         },
         handleCheckUsernameConfigureFromServerFail: function(failMsg) {
             this.createAccountBusy = false;
-            appLog('New account configure from server for username check failure: ' + msg);
+            appLog('New account configure from server for username check failure: ' + failMsg);
         },
         checkForExistingUsername: function() {
             appLog("Check if new account username already exists");

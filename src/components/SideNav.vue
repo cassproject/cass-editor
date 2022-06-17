@@ -56,6 +56,11 @@
                     class="is-size-5">
                     {{ loggedOnPerson.type }}
                 </p>
+                <p
+                    v-if="showSideNav && $store.getters['user/lastLogin']"
+                    class="is-size-5">
+                    Last Login: {{new Date($store.getters['user/lastLogin']).toLocaleString()}}
+                </p>
                 <div
                     class="buttons is-right"
                     v-if="showSideNav"
