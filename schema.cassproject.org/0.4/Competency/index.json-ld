@@ -402,6 +402,64 @@
             }
         },
         {
+            "@id": "https://schema.cassproject.org/0.4/Classification",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": [
+                {
+                    "@id": "https://schema.cassproject.org/0.4/Competency"
+                },
+                {
+                    "@id": "https://schema.cassproject.org/0.4/Framework"
+                }
+            ],
+            "http://schema.org/rangeIncludes": {
+                "@id": "http://schema.org/Text"
+            },
+            "rdfs:comment": [
+                {
+                    "@language": "en",
+                    "@value": "Classification of the competency."
+                },
+                {
+                    "@language": "en",
+                    "@value": "Classification of the framework."
+                }
+            ],
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "classification"
+            }
+        },
+        {
+            "@id": "https://schema.cassproject.org/0.4/Markings",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": [
+                {
+                    "@id": "https://schema.cassproject.org/0.4/Competency"
+                },
+                {
+                    "@id": "https://schema.cassproject.org/0.4/Framework"
+                }
+            ],
+            "http://schema.org/rangeIncludes": {
+                "@id": "http://schema.org/Text"
+            },
+            "rdfs:comment": [
+                {
+                    "@language": "en",
+                    "@value": "Markings of the competency."
+                },
+                {
+                    "@language": "en",
+                    "@value": "Markings of the framework."
+                }
+            ],
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "markings"
+            }
+        },
+        {
             "@id": "https://schema.cassproject.org/0.4/Assertion/subject",
             "@type": "rdfs:Property",
             "http://schema.org/domainIncludes": {
