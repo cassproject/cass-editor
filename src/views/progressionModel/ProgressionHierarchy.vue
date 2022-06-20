@@ -94,7 +94,7 @@
                         </span>
                     </div>
                     <div
-                        v-if="view === 'framework' || view === 'progression'"
+                        v-if="view === 'framework' || view === 'concept'"
                         :disabled="!canCopyOrCut"
                         title="Copy competency"
                         :class="canCopyOrCut ? 'is-primary' : 'is-disabled'"
@@ -105,7 +105,7 @@
                         </span>
                     </div>
                     <div
-                        v-if="view === 'framework' || view === 'progression'"
+                        v-if="view === 'framework' || view === 'concept'"
                         title="Cut competency"
                         :disabled="!canCopyOrCut"
                         class="button is-outlined"
@@ -116,7 +116,7 @@
                         </span>
                     </div>
                     <div
-                        v-if="view === 'framework' || view === 'progression'"
+                        v-if="view === 'framework' || view === 'concept'"
                         :disabled="!canPaste"
                         class="button is-outlined "
                         @click="pasteClick"

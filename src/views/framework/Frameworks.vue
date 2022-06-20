@@ -396,7 +396,7 @@ export default {
             return this.$store.getters['editor/queryParams'];
         },
         type: function() {
-            return this.conceptMode ? "ConceptScheme" : (this.progressionMode ? "ProgressionModel" : "Framework");
+            return this.conceptMode ? "ConceptScheme" : (this.progressionMode ? "ConceptScheme" : "Framework");
         },
         searchOptions: function() {
             let search = "";
@@ -407,7 +407,7 @@ export default {
                     search += " AND NOT (subType:\"Collection\")";
                 }
             }
-            if (this.type === "ProgressionModel") {
+            if (this.progressionMode) {
                 search += " AND (subType:\"Progression\")";
             } else {
                 // TODO: Should Progression Models be included as ConceptSchemes if ceasnDataFields = false?

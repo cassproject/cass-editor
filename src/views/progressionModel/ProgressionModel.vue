@@ -63,7 +63,7 @@
                     containerTypeGet="EcConceptScheme"
                     :viewOnly="queryParams.view === 'true'"
                     :repo="repo"
-                    view="progression"
+                    view="concept"
                     :highlightList="highlightCompetency"
                     :profile="progressionLevelProfile"
                     @edit-multiple-event="onEditMultiple"
