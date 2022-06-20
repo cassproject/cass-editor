@@ -78,6 +78,10 @@ const state = {
         color: '',
         background: ''
     },
+    motd: {
+        message: '',
+        title: ''
+    },
     curatedPlugins: [
         {
             "id": "vlrcTestPlugin3",
@@ -328,6 +332,14 @@ const mutations = {
             state.banner.background = payload.background;
         }
     },
+    setMotd: function(state, payload) {
+        if (payload.message) {
+            state.motd.message = payload.message;
+        }
+        if (payload.title) {
+            state.motd.title = payload.title;
+        }
+    },
     setCuratedPlugins: function(state, payload) {
         state.curatedPlugins = payload;
     }
@@ -531,6 +543,12 @@ const getters = {
     },
     bannerBackground: state => {
         return state.banner.background;
+    },
+    motdTitle: state => {
+        return state.motd.title;
+    },
+    motdMessage: state => {
+        return state.motd.message;
     },
     curatedPlugins: state => {
         return state.curatedPlugins;

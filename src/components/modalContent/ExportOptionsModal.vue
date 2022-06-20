@@ -107,7 +107,8 @@ export default {
                     {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
                     {name: "Credential Engine ASN (CSV)", value: "ctdlasnCsv"},
                     {name: "Table (CSV)", value: "csv"},
-                    {name: "IMS Global CASE (JSON)", value: "case"}
+                    {name: "IMS Global CASE (JSON)", value: "case"},
+                    {name: "Shareable Competency Definitions (JSON)", value: "scd"}
                 ];
             } else if (this.objType.indexOf("competency") !== -1) {
                 return [
@@ -116,7 +117,8 @@ export default {
                     {name: "CASS (RDF+XML)", value: "rdfXml"},
                     {name: "CASS (Turtle)", value: "turtle"},
                     {name: "Credential Engine ASN (JSON-LD)", value: "ctdlasnJsonld"},
-                    {name: "IMS Global CASE (JSON)", value: "case"}
+                    {name: "IMS Global CASE (JSON)", value: "case"},
+                    {name: "Shareable Competency Definitions (JSON)", value: "scd"}
                 ];
             } else {
                 return [];
@@ -211,6 +213,8 @@ export default {
                 await this.exportCtdlasnJsonld(link);
             } else if (exportType === "case") {
                 await this.exportCaseItems(guid);
+            } else if (exportType === "scd") {
+                await this.exportScd(link);
             }
         },
         exportFramework: async function() {
@@ -240,6 +244,8 @@ export default {
                 await this.exportCsv();
             } else if (exportType === "case") {
                 await this.exportCasePackages(frameworkExportGuid);
+            } else if (exportType === "scd") {
+                await this.exportScd(frameworkExportLink);
             }
         },
         exportAsn: async function(link) {
@@ -298,6 +304,9 @@ export default {
         },
         exportCtdlasnJsonld: function(link) {
             window.open(link.replace("/data/", "/ceasn/"), '_blank');
+        },
+        exportScd: function(link) {
+            window.open(link.replace("/data/", "/scd/"), '_blank');
         },
         exportCtdlasnCsv: async function(link) {
             var me = this;
