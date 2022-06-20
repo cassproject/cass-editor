@@ -8,11 +8,17 @@ const state = {
     repoInit: {
         ssoLogin: null,
         ssoLogout: null
-    }
+    },
+    lastLogin: null
 };
 const mutations = {
     loggedOnPerson(state, personObj) {
         state.loggedOnPerson = personObj;
+        if (window.EcIdentityManager.default.ids.length > 0) {
+            state.lastLogin = window.EcIdentityManager.default.ids[0].lastLogin;
+        } else {
+            state.lastLogin = null;
+        }
     },
     repositorySsoOptions(state, repoInit) {
         state.repoInit.ssoLogin = repoInit.ssoLogin;
@@ -28,6 +34,9 @@ const getters = {
     },
     repositorySsoOptions: function(state) {
         return state.repoInit;
+    },
+    lastLogin: function(state) {
+        return state.lastLogin;
     }
 };
 
