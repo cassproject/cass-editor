@@ -106,7 +106,7 @@ export default {
                     "isRequired": "true",
                     "heading": "General"
                 },
-                "https://purl.org/ctdlasn/terms/author": {
+                "http://schema.org/author": {
                     "@id": "https://purl.org/ctdlasn/terms/author",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
@@ -386,7 +386,7 @@ export default {
                     "http://schema.org/license",
                     "http://purl.org/dc/elements/1.1/rights",
                     "http://schema.org/copyrightHolder",
-                    "https://purl.org/ctdlasn/terms/author",
+                    "http://schema.org/author",
                     "https://purl.org/ctdlasn/terms/localSubject",
                     "https://schema.cassproject.org/0.4/cipList"
                 ]
@@ -832,7 +832,7 @@ export default {
                     "isRequired": "true",
                     "heading": "General"
                 },
-                "https://purl.org/ctdlasn/terms/author": {
+                "http://schema.org/author": {
                     "@id": "https://purl.org/ctdlasn/terms/author",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
@@ -1334,7 +1334,7 @@ export default {
                     "https://purl.org/ctdl/terms/hasWorkforceDemand",
                     "https://purl.org/ctdl/terms/hasTask",
                     "http://schema.org/creator",
-                    "https://purl.org/ctdlasn/terms/author",
+                    "http://schema.org/author",
                     "http://purl.org/ASN/schema/core/hasProgressionLevel"
                 ]
             };
