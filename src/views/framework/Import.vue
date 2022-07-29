@@ -1211,7 +1211,7 @@ export default {
                 return this.ctdlAsnConceptSchemeProfile;
             }
             if (this.progressionMode) {
-                return this.ctdlAsnProgressionLevelProfile;
+                return this.ctdlAsnProgressionModelProfile;
             }
             if (this.isT3Import) {
                 return this.t3FrameworkProfile;

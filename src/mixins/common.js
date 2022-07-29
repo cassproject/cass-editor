@@ -373,7 +373,7 @@ export default {
             var message = {
                 message: "selected",
                 selected: ary,
-                type: this.$store.getters['editor/conceptMode'] === true ? 'Concept' : (this.$store.getters['editor/progressionMode'] === true ? 'Progression Level' : 'Competency'),
+                type: ((this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) ? 'Concept' : 'Competency'),
                 selectedFramework: currentFramework
             };
             message = JSON.parse(JSON.stringify(message));

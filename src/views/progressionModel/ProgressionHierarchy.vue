@@ -662,6 +662,7 @@ export default {
             } else {
                 c.generateId(this.repo.selectedServer);
             }
+            c["subType"] = 'Progression';
             c["schema:dateCreated"] = new Date().toISOString();
             c["schema:dateModified"] = new Date().toISOString();
             if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {

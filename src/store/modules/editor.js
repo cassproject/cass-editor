@@ -190,13 +190,23 @@ const mutations = {
         state.refreshAlignments = boolean;
     },
     conceptMode(state, boolean) {
-        state.conceptMode = boolean;
+        if (boolean) {
+            state.conceptMode = true;
+            state.progressionMode = false;
+        } else {
+            state.conceptMode = false;
+        }
     },
     collectionMode(state, boolean) {
         state.collectionMode = boolean;
     },
     progressionMode(state, boolean) {
-        state.progressionMode = boolean;
+        if (boolean) {
+            state.progressionMode = true;
+            state.conceptMode = false;
+        } else {
+            state.progressionMode = false;
+        }
     },
     cutId(state, id) {
         state.cutId = id;

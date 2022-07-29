@@ -465,7 +465,7 @@ export default {
             queryParams: state => state.editor.queryParams,
             newCompetency: state => state.editor.newCompetency,
             conceptMode: state => state.editor.conceptMode,
-            progressionMode: state => state.editor.profressionMode
+            progressionMode: state => state.editor.progressionMode
         }),
         showAddComments() {
             if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
@@ -696,7 +696,7 @@ export default {
                         y: true
                     };
                     this.$scrollTo("#scroll-newCompetency", 500, options);
-                } else if (this.conceptMode || this.profressionMode) {
+                } else if (this.conceptMode || this.progressionMode) {
                     let options = {
                         container: "#concept",
                         easing: "ease",

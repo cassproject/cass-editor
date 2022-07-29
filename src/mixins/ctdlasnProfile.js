@@ -2550,12 +2550,35 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Note"}],
                     "heading": "Documentation"
                 },
+                "http://www.w3.org/2004/02/skos/core#changeNote": {
+                    "@id": "http://www.w3.org/2004/02/skos/core#changeNote",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes": [
+                        {
+                            "@id": "http://schema.cassproject.org/0.4/skos/Concept"
+                        }
+                    ],
+                    "http://schema.org/rangeIncludes": [
+                        {
+                            "@id": "http://www.w3.org/2000/01/rdf-schema#langString"
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#comment": [
+                        {
+                            "@language": "en",
+                            "@value": "Text describing a significant change to the concept."
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Change Note"}],
+                    "heading": "Documentation"
+                },
                 "headings": ["General", "Other Labels", "Documentation", "Connections", "Keys"],
                 "primaryProperties": [
                     "http://www.w3.org/2004/02/skos/core#prefLabel",
                     "http://www.w3.org/2004/02/skos/core#definition",
                     "http://www.w3.org/2004/02/skos/core#notation"
                 ],
+                "secondaryProperties": ["http://www.w3.org/2004/02/skos/core#changeNote"],
                 "tertiaryProperties": [
                     "@id",
                     "registryURL",

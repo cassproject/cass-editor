@@ -534,6 +534,10 @@ export default {
                 this.expandedThing["https://schema.cassproject.org/0.4/skos/subType"][0]["@value"] === "Progression") {
                 type = "ProgressionModel";
             }
+            if (type === "Concept" && this.expandedThing["https://schema.cassproject.org/0.4/skos/subType"] && this.expandedThing["https://schema.cassproject.org/0.4/skos/subType"][0] &&
+                this.expandedThing["https://schema.cassproject.org/0.4/skos/subType"][0]["@value"] === "Progression") {
+                type = "ProgressionLevel";
+            }
             if (type === "Framework" && this.expandedThing["https://schema.cassproject.org/0.4/subType"] && this.expandedThing["https://schema.cassproject.org/0.4/subType"][0] &&
                 this.expandedThing["https://schema.cassproject.org/0.4/subType"][0]["@value"] === "Collection") {
                 type = "Collection";
@@ -1440,14 +1444,14 @@ export default {
         },
         displayHeading: function(heading) {
             if (this.showAlways === true && this.showPossible === false) {
-                if (this.alwaysProperties[heading] && EcObject.keys(this.alwaysProperties[heading]).length > 0) {
+                if (this.alwaysProperties[heading] && this.alwaysProperties[heading] && EcObject.keys(this.alwaysProperties[heading]) && EcObject.keys(this.alwaysProperties[heading]).length > 0) {
                     return heading;
                 }
             } else if (this.showAlways === false && this.showPossible == null) {
-                if (this.viewProperties[heading] && EcObject.keys(this.viewProperties[heading]).length > 0) {
+                if (this.viewProperties[heading] && this.viewProperties[heading] && EcObject.keys(this.viewProperties[heading]) && EcObject.keys(this.viewProperties[heading]).length > 0) {
                     return heading;
                 }
-            } else if (this.showPossible === true && EcObject.keys(this.possibleProperties[heading]).length > 0) {
+            } else if (this.showPossible === true && this.possibleProperties[heading] && EcObject.keys(this.possibleProperties[heading]) && EcObject.keys(this.possibleProperties[heading]).length > 0) {
                 return heading;
             }
             return null;

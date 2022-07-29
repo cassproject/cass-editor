@@ -120,7 +120,7 @@
             <li class="has-text-white">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false)">
+                    @click.native="$store.commit('editor/progressionMode', true); $store.commit('editor/conceptMode', false)">
                     Import
                 </router-link>
             </li>

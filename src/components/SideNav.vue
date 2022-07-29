@@ -337,7 +337,7 @@
                 v-if="showSideNav && queryParams.ceasnDataFields === 'true' && showConcepts">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');">
+                    @click.native="$store.commit('editor/progressionMode', true); $store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');">
                     <span class="icon">
                         <i class="fa fa-upload" />
                     </span>

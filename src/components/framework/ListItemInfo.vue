@@ -1365,7 +1365,7 @@ export default {
             link = link.replace('/frameworks', '').replace('/directory', '');
             if (this.objectType === "Directory") {
                 return (link + "?directoryId=" + this.objectShortId);
-            } else if ((this.$store.getters['editor/conceptMode'] === true) || (this.$store.getters['editor/progression'] === true)) {
+            } else if ((this.$store.getters['editor/conceptMode'] === true) || (this.$store.getters['editor/progressionMode'] === true)) {
                 return (link + "?concepts=true&frameworkId=" + this.objectShortId);
             }
             return (link + "?frameworkId=" + this.objectShortId);
