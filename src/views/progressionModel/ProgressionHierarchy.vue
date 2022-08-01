@@ -682,7 +682,7 @@ export default {
             }
             this.setDefaultLanguage();
             c["skos:prefLabel"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Progression Level"};
-            c["skos:inScheme"] = this.container.shortId();
+            c["ceasn:inProgressionModel"] = this.container.shortId();
             if (containerId === this.container.shortId()) {
                 var initialValue = this.container["skos:hasTopConcept"] ? this.container["skos:hasTopConcept"].slice() : null;
                 if (!EcArray.isArray(this.container["skos:hasTopConcept"])) {
