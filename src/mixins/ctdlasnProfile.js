@@ -2572,7 +2572,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label":
                     [
                         {
-                            "@language": "en", "@value": "Local Subject"
+                            "@language": "en", "@value": "Precedes"
                         }
                     ],
                     "heading": "General"
@@ -2599,7 +2599,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label":
                     [
                         {
-                            "@language": "en", "@value": "Local Subject"
+                            "@language": "en", "@value": "Preceded By"
                         }
                     ],
                     "heading": "General"
@@ -2610,7 +2610,10 @@ export default {
                     "http://www.w3.org/2004/02/skos/core#definition",
                     "http://www.w3.org/2004/02/skos/core#notation"
                 ],
-                "secondaryProperties": [],
+                "secondaryProperties": [
+                    "https://purl.org/ctdlasn/terms/precedes",
+                    "https://purl.org/ctdlasn/terms/precededBy"
+                ],
                 "tertiaryProperties": [
                     "@id",
                     "registryURL",

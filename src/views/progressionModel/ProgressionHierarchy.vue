@@ -474,20 +474,41 @@ export default {
             }, 1000);
         },
         computeHierarchy: async function() {
-            let structure = [];
             if (this.container == null) { return r; }
+            let unorderedContainer = [];
+            let orderedContainer = [];
             if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
                 for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
                     var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
+                    unorderedContainer.push(c);
+                }
+                let next = null;
+                for (let i = 0; i < unorderedContainer.length; i++) {
+                    if (!unorderedContainer[i]["ceasn:precededBy"]) {
+                        orderedContainer.push({"obj": unorderedContainer[i], "children": []});
+                        next = unorderedContainer[i];
+                        unorderedContainer.splice(i, 1);
+                        break;
+                    }
+                }
+                while (unorderedContainer.length > 0 && next && next["ceasn:precedes"]) {
+                    next = await unorderedContainer.find(i => EcRemoteLinkedData.trimVersionFromUrl(i.id) === EcRemoteLinkedData.trimVersionFromUrl(next["ceasn:precedes"]));
+                    orderedContainer.push({"obj": next, "children": []});
+                    unorderedContainer.splice(unorderedContainer.map(i => EcRemoteLinkedData.trimVersionFromUrl(i.id)).indexOf(EcRemoteLinkedData.trimVersionFromUrl(next.id)), 1);
+                }
+                // Add remaining progression levels to container (include any children)
+                for (let i in unorderedContainer) {
+                    appLog('Error with sorting progression');
+                    var c = unorderedContainer[i];
                     if (c) {
-                        structure.push({"obj": c, "children": []});
+                        orderedContainer.push({"obj": c, "children": []});
                         if (c["skos:narrower"]) {
-                            this.addChildren(structure, c, i);
+                            this.addChildren(orderedContainer, c, i);
                         }
                     }
                 }
             }
-            this.structure = structure;
+            await Object.assign(this.structure, orderedContainer);
             this.once = false;
         },
         addChildren: async function(structure, c, i) {
