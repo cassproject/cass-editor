@@ -913,6 +913,14 @@ export default {
                         }
                     }
                 }
+                if (me.progressionMode) {
+                    for (var i = 0; i < frameworks.length; i++) {
+                        frameworks[i]["subType"] = "Progression";
+                    }
+                    for (var i = 0; i < competencies.length; i++) {
+                        competencies[i]["subType"] = "Progression";
+                    }
+                }
                 var all = frameworks.concat(competencies);
                 me.$store.commit('app/importStatus', "Saving " + all.length + " objects.");
                 me.repo.multiput(all, function() {
