@@ -4,7 +4,7 @@
 
 const state = {
     sideNavEnabled: true,
-    showSideNav: false,
+    showSideNav: true,
     showRightAside: false,
     rightAsideContent: '',
     rightAsideObject: null,
@@ -100,7 +100,7 @@ const mutations = {
     showRightAside: function(state, payload) {
         state.showRightAside = true;
         state.rightAsideContent = payload;
-        state.showSideNav = false;
+        // state.showSideNav = false;
     },
     closeRightAside: function(state) {
         state.showRightAside = false;

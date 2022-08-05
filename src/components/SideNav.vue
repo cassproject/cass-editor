@@ -3,8 +3,8 @@
         id="app-side-nav-bar"
         :class="{'is-narrow': !showSideNav}"
         class="menu has-background-primary has-text-white">
-        <div
-            class="">
+        <div class="">
+            <!--CaSS Logo-->
             <router-link
                 v-if="queryParams.ceasnDataFields !== 'true'"
                 :to="{path: '/', query: queryParams}">
@@ -17,6 +17,15 @@
                     class="cass-logo-square"
                     :src="casslogoSquare">
             </router-link>
+            <!--Collapse / Grow Icon-->
+            <div
+                v-if="!showSideNav"
+                class="buttons is-centered"
+                @click="$store.commit('app/showSideNav')">
+                <button class="button is-outlined is-rounded p-0">
+                    <i class="fa fa-chevron-right px-3" />
+                </button>
+            </div>
             <div
                 v-if="showSideNav"
                 class="button is-rounded p-0 is-pulled-right"
@@ -26,14 +35,6 @@
         </div>
         <div
             class="menu-label has-text-white is-size-3">
-            <div
-                v-if="!showSideNav"
-                class="buttons is-centered"
-                @click="$store.commit('app/showSideNav')">
-                <button class="button is-outlined is-rounded p-0">
-                    <i class="fa fa-chevron-right px-3" />
-                </button>
-            </div>
             <template v-if="displayName !== 'No user'">
                 <div
                     v-if="!showSideNav"
@@ -51,15 +52,15 @@
                     class="is-size-5">
                     {{ loggedOnPerson.email }}
                 </p>
-                <p
+                <!-- <p
                     v-if="showSideNav"
                     class="is-size-5">
                     {{ loggedOnPerson.type }}
-                </p>
+                </p> -->
                 <p
                     v-if="showSideNav && $store.getters['user/lastLogin']"
                     class="is-size-5">
-                    Last Login: {{new Date($store.getters['user/lastLogin']).toLocaleString()}}
+                    Last Login: {{ new Date($store.getters['user/lastLogin']).toLocaleString() }}
                 </p>
                 <div
                     class="buttons is-right"
@@ -116,7 +117,7 @@
         </div>
         <hr>
         <!-- Add new buttons -->
-        <div
+        <!-- <div
             v-if="showSideNav"
             @click="addFrameworkOrDirectory = true;">
             <add-new-dropdown
@@ -133,13 +134,13 @@
                 @framework="$emit('create-new-framework')"
                 @collection="$emit('create-new-collection')"
                 :active="addFrameworkOrDirectory" />
-        </div>
+        </div> -->
         <!-- GENERAL MENU -->
         <!-- COMPETENCIES AND FRAMEWORKS -->
         <div
             v-if="showSideNav && showFrameworks"
             class="menu-label has-text-weight-bold">
-            Competencies & Frameworks
+            Framework
         </div>
         <ul
             class="menu-list"
@@ -207,7 +208,7 @@
                 v-if="showSideNav"
                 data-id="side-nav-assertions-section"
                 class="menu-label has-text-weight-bold">
-                Assertions
+                Assertion
             </div>
             <ul
                 class="menu-list">
@@ -217,7 +218,7 @@
                         <span class="icon">
                             <i class="fa fa-history" />
                         </span>
-                        <span v-if="showSideNav"> Assertion Timeline</span>
+                        <span v-if="showSideNav"> Timeline</span>
                     </router-link>
                 </li>
                 <li
@@ -228,13 +229,13 @@
                         <span class="icon">
                             <i class="fa fa-share" />
                         </span>
-                        <span v-if="showSideNav"> Share Assertions</span>
+                        <span v-if="showSideNav"> Share</span>
                     </a>
                 </li>
             </ul>
         </template>
         <!-- DIRECTORIES -->
-        <div
+        <!-- <div
             v-if="showSideNav && showFrameworks"
             class="menu-label has-text-weight-bold">
             My Directories
@@ -263,7 +264,7 @@
                         class="cass--main-nav--item"> {{ directory.name }}</span>
                 </router-link>
             </li>
-        </ul>
+        </ul> -->
         <!-- CONCEPT SCHEMES -->
         <div
             v-if="showSideNav && showConcepts"
@@ -339,7 +340,7 @@
                 <router-link :to="{path: '/users', query: queryParams}">
                     <span class="icon">
                         <i class="fa fa-users" />
-                    </span><span v-if="showSideNav">Users and Groups</span>
+                    </span><span v-if="showSideNav">Groups</span>
                 </router-link>
             </li>
             <li
@@ -392,7 +393,6 @@ import casslogoSquare from '@/assets/cass-logo-square.png';
 import {cassUtil} from './../mixins/cassUtil';
 import {cassApi} from './../mixins/cassApi';
 import {pluginUtil} from './../mixins/pluginUtil';
-import AddNewDropdown from './AddNewDropdown.vue';
 
 export default {
     mixins: [cassUtil, cassApi, pluginUtil],
@@ -408,7 +408,6 @@ export default {
         }
     },
     components: {
-        AddNewDropdown
     },
     data() {
         return {

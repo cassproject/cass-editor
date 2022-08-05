@@ -77,8 +77,10 @@
                         <add-new-dropdown
                             :frameworkEnabled="true"
                             :collectionEnabled="queryParams.ceasnDataFields === 'true'"
+                            :directoryEnabled="true"
                             @framework="$emit('create-new-framework')"
                             @collection="$emit('create-new-collection')"
+                            @directory="$store.commit('app/showModal', {component: 'AddDirectory'});"
                             @close="createDropDownActive = false"
                             @toggle="createDropDownActive = !createDropDownActive"
                             :active="createDropDownActive" />
