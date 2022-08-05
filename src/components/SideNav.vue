@@ -44,12 +44,12 @@
                         {{ loggedOnPerson.email.slice(0, 2) }}
                     </span>
                 </div>
-                <h3 class="is-size-2 has-text-weight-semibold">
+                <h3 class="is-size-3 has-text-weight-semibold">
                     <span v-if="showSideNav">{{ displayName }}</span>
                 </h3>
                 <p
                     v-if="showSideNav"
-                    class="is-size-5">
+                    class="is-size-6">
                     {{ loggedOnPerson.email }}
                 </p>
                 <!-- <p

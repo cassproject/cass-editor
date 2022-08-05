@@ -166,6 +166,11 @@
                 </div>
                 <!-- configuration -->
                 <div
+                    v-if="configurationsEnabled"
+                    class="column is-narrow">
+                    <div class="vl" />
+                </div>
+                <div
                     class="column is-narrow"
                     v-if="configurationsEnabled">
                     <div
@@ -182,6 +187,11 @@
                 <!-- directory -->
                 <div
                     v-if="directoryId"
+                    class="column is-narrow">
+                    <div class="vl" />
+                </div>
+                <div
+                    v-if="directoryId"
                     class="column is-narrow"
                     @click="goToDirectory">
                     <div class="button is-text has-text-dark">
@@ -189,6 +199,11 @@
                     </div>
                 </div>
                 <!-- assertions -->
+                <div
+                    v-if="canManageAssertions"
+                    class="column is-narrow">
+                    <div class="vl" />
+                </div>
                 <div
                     id="manageAssertionsButton"
                     v-if="canManageAssertions"
@@ -204,6 +219,11 @@
                             Manage Assertions
                         </template>
                     </div>
+                </div>
+                <div
+                    v-if="ceasnDataFields || ceasnDataFields === false"
+                    class="column is-narrow">
+                    <div class="vl" />
                 </div>
                 <div
                     v-if="ceasnDataFields || ceasnDataFields === false"
