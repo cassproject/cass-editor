@@ -688,7 +688,10 @@ export default {
             if (this.queryParams.view === 'true') {
                 return false;
             }
-            return this.framework.canEditAny(EcIdentityManager.default.getMyPks());
+            if (this.framework != null) {
+                return this.framework.canEditAny(EcIdentityManager.default.getMyPks());
+            }
+            return false;
         }
     },
     created: function() {
