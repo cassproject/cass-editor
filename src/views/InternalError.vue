@@ -5,7 +5,7 @@
                 Internal Error
             </h2>
             <p>
-                The CaSS server is not responding properly. This is probably our fault. Please try again later or contact your system administrator.
+                The CaSS server is not responding properly. Please try again later or contact your system administrator.
             </p>
         </div>
         <div class="section">

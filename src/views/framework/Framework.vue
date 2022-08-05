@@ -309,8 +309,8 @@ export default {
                     "heading": "General",
                     "onePerLanguage": "true"
                 },
-                "https://schema.cassproject.org/0.4/Classification": {
-                    "@id": "https://schema.cassproject.org/0.4/Classification",
+                "https://schema.cassproject.org/0.4/classification": {
+                    "@id": "https://schema.cassproject.org/0.4/classification",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
@@ -320,8 +320,8 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Classification"}],
                     "heading": "General"
                 },
-                "https://schema.cassproject.org/0.4/Markings": {
-                    "@id": "https://schema.cassproject.org/0.4/Markings",
+                "https://schema.cassproject.org/0.4/markings": {
+                    "@id": "https://schema.cassproject.org/0.4/markings",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
@@ -348,8 +348,8 @@ export default {
                 "primaryProperties": [
                     "http://schema.org/name",
                     "http://schema.org/description",
-                    "https://schema.cassproject.org/0.4/Classification",
-                    "https://schema.cassproject.org/0.4/Markings"
+                    "https://schema.cassproject.org/0.4/classification",
+                    "https://schema.cassproject.org/0.4/markings"
                 ],
                 "secondaryProperties": ["@id"],
                 "tertiaryProperties": []
@@ -494,8 +494,8 @@ export default {
                         "max": 1,
                         "heading": "Keys"
                     },
-                    "https://schema.cassproject.org/0.4/Classification": {
-                        "@id": "https://schema.cassproject.org/0.4/Classification",
+                    "https://schema.cassproject.org/0.4/classification": {
+                        "@id": "https://schema.cassproject.org/0.4/classification",
                         "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                         "http://schema.org/domainIncludes":
                         [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
@@ -505,8 +505,8 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Classification"}],
                         "heading": "General"
                     },
-                    "https://schema.cassproject.org/0.4/Markings": {
-                        "@id": "https://schema.cassproject.org/0.4/Markings",
+                    "https://schema.cassproject.org/0.4/markings": {
+                        "@id": "https://schema.cassproject.org/0.4/markings",
                         "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                         "http://schema.org/domainIncludes":
                         [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
@@ -659,8 +659,8 @@ export default {
                     "primaryProperties": [
                         "http://schema.org/name",
                         "http://schema.org/description",
-                        "https://schema.cassproject.org/0.4/Classification",
-                        "https://schema.cassproject.org/0.4/Markings"
+                        "https://schema.cassproject.org/0.4/classification",
+                        "https://schema.cassproject.org/0.4/markings"
                     ],
                     "secondaryProperties": [
                         "@id",

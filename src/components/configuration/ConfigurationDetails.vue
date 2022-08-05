@@ -2594,6 +2594,10 @@ export default {
             configFrameworkNameDescriptionInvalid: false,
             configFrameworkDescLabelInvalid: false,
             configFrameworkDescDescriptionInvalid: false,
+            configFrameworkClassLabelInvalid: false,
+            configFrameworkClassDescriptionInvalid: false,
+            configFrameworkMarkingsLabelInvalid: false,
+            configFrameworkMarkingsDescriptionInvalid: false,
             configCompetencyIdLabelInvalid: false,
             configCompetencyIdDescriptionInvalid: false,
             configCompetencyNameLabelInvalid: false,
@@ -2602,6 +2606,10 @@ export default {
             configCompetencyDescDescriptionInvalid: false,
             configCompetencyTypeLabelInvalid: false,
             configCompetencyTypeDescriptionInvalid: false,
+            configCompetencyClassLabelInvalid: false,
+            configCompetencyClassDescriptionInvalid: false,
+            configCompetencyMarkingsLabelInvalid: false,
+            configCompetencyMarkingsDescriptionInvalid: false,
             showCustomPropertyDetailsModal: false,
             customPropertyModalTitle: '',
             customPropertyParent: '',
@@ -2839,6 +2847,10 @@ export default {
             this.configFrameworkNameDescriptionInvalid = false;
             this.configFrameworkDescLabelInvalid = false;
             this.configFrameworkDescDescriptionInvalid = false;
+            this.configFrameworkClassLabelInvalid = false;
+            this.configFrameworkClassDescriptionInvalid = false;
+            this.configFrameworkMarkingsLabelInvalid = false;
+            this.configFrameworkMarkingsDescriptionInvalid = false;
             this.configCompetencyIdLabelInvalid = false;
             this.configCompetencyIdDescriptionInvalid = false;
             this.configCompetencyNameLabelInvalid = false;
@@ -2847,6 +2859,10 @@ export default {
             this.configCompetencyDescDescriptionInvalid = false;
             this.configCompetencyTypeLabelInvalid = false;
             this.configCompetencyTypeDescriptionInvalid = false;
+            this.configCompetencyClassLabelInvalid = false;
+            this.configCompetencyClassDescriptionInvalid = false;
+            this.configCompetencyMarkingsLabelInvalid = false;
+            this.configCompetencyMarkingsDescriptionInvalid = false;
         },
         validateConfigRelationships() {
             let configRelationships = Object.keys(this.config.relationships);
@@ -2900,6 +2916,22 @@ export default {
                 this.configInvalid = true;
                 this.configFrameworkDescDescriptionInvalid = true;
             }
+            if (!this.config.fwkClassLabel || this.config.fwkClassLabel.trim().equals('')) {
+                this.configInvalid = true;
+                this.configFrameworkClassLabelInvalid = true;
+            }
+            if (!this.config.fwkClassDescription || this.config.fwkClassDescription.trim().equals('')) {
+                this.configInvalid = true;
+                this.configFrameworkClassDescriptionInvalid = true;
+            }
+            if (!this.config.fwkMarkingsLabel || this.config.fwkMarkingsLabel.trim().equals('')) {
+                this.configInvalid = true;
+                this.configFrameworkMarkingsLabelInvalid = true;
+            }
+            if (!this.config.fwkMarkingsDescription || this.config.fwkMarkingsDescription.trim().equals('')) {
+                this.configInvalid = true;
+                this.configFrameworkMarkingsDescriptionInvalid = true;
+            }
             if (!this.config.compIdLabel || this.config.compIdLabel.trim().equals('')) {
                 this.configInvalid = true;
                 this.configCompetencyIdLabelInvalid = true;
@@ -2931,6 +2963,22 @@ export default {
             if (!this.config.compTypeDescription || this.config.compTypeDescription.trim().equals('')) {
                 this.configInvalid = true;
                 this.configCompetencyTypeDescriptionInvalid = true;
+            }
+            if (!this.config.compClassLabel || this.config.compClassLabel.trim().equals('')) {
+                this.configInvalid = true;
+                this.configCompetencyClassLabelInvalid = true;
+            }
+            if (!this.config.compClassDescription || this.config.compClassDescription.trim().equals('')) {
+                this.configInvalid = true;
+                this.configCompetencyClassDescriptionInvalid = true;
+            }
+            if (!this.config.compMarkingsLabel || this.config.compMarkingsLabel.trim().equals('')) {
+                this.configInvalid = true;
+                this.configCompetencyMarkingsLabelInvalid = true;
+            }
+            if (!this.config.compMarkingsDescription || this.config.compMarkingsDescription.trim().equals('')) {
+                this.configInvalid = true;
+                this.configCompetencyMarkingsDescriptionInvalid = true;
             }
         },
         validateConfigFields() {

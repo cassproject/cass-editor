@@ -52,6 +52,8 @@ export const configuration = {
             else if (propertyKey.equals('@id')) return false;
             else if (propertyKey.equals('http://schema.org/name')) return false;
             else if (propertyKey.equals('http://schema.org/description')) return false;
+            else if (propertyKey.equals('https://schema.cassproject.org/0.4/classification')) return false;
+            else if (propertyKey.equals('https://schema.cassproject.org/0.4/markings')) return false;
             else if (propertyParent.equalsIgnoreCase('competency') && propertyKey.equals('http://purl.org/dc/terms/type')) return false;
             else if (propertyParent.equalsIgnoreCase('competency') && propertyKey.equals('relationshipsHeading')) return false;
             else if (propertyParent.equalsIgnoreCase('competency') && propertyKey.equals('relationshipsPriority')) return false;
@@ -128,21 +130,25 @@ export const configuration = {
             if (descHeading) simpleConfigObj.fwkDescHeading = descHeading.trim();
             else simpleConfigObj.fwkDescHeading = "";
 
-            simpleConfigObj.fwkClassLabel = cfo["https://schema.cassproject.org/0.4/Classification"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-            simpleConfigObj.fwkClassDescription = cfo["https://schema.cassproject.org/0.4/Classification"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            simpleConfigObj.fwkClassPriority = cfo["https://schema.cassproject.org/0.4/Classification"]["priority"];
-            simpleConfigObj.fwkClassRequired = this.getBooleanValue(cfo["https://schema.cassproject.org/0.4/Classification"]["isRequired"]);
-            let classHeading = cfo["https://schema.cassproject.org/0.4/Classification"]["heading"];
-            if (classHeading) simpleConfigObj.fwkClassHeading = classHeading.trim();
-            else simpleConfigObj.fwkClassHeading = "";
+            if (cfo["https://schema.cassproject.org/0.4/classification"] != null) {
+                simpleConfigObj.fwkClassLabel = cfo["https://schema.cassproject.org/0.4/classification"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
+                simpleConfigObj.fwkClassDescription = cfo["https://schema.cassproject.org/0.4/classification"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
+                simpleConfigObj.fwkClassPriority = cfo["https://schema.cassproject.org/0.4/classification"]["priority"];
+                simpleConfigObj.fwkClassRequired = this.getBooleanValue(cfo["https://schema.cassproject.org/0.4/classification"]["isRequired"]);
+                let classHeading = cfo["https://schema.cassproject.org/0.4/classification"]["heading"];
+                if (classHeading) simpleConfigObj.fwkClassHeading = classHeading.trim();
+                else simpleConfigObj.fwkClassHeading = "";
+            }
 
-            simpleConfigObj.fwkMarkingsLabel = cfo["https://schema.cassproject.org/0.4/Markings"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-            simpleConfigObj.fwkMarkingsDescription = cfo["https://schema.cassproject.org/0.4/Markings"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            simpleConfigObj.fwkMarkingsPriority = cfo["https://schema.cassproject.org/0.4/Markings"]["priority"];
-            simpleConfigObj.fwkMarkingsRequired = this.getBooleanValue(cfo["https://schema.cassproject.org/0.4/Markings"]["isRequired"]);
-            let markingsHeading = cfo["https://schema.cassproject.org/0.4/Markings"]["heading"];
-            if (markingsHeading) simpleConfigObj.fwkMarkingsHeading = markingsHeading.trim();
-            else simpleConfigObj.fwkMarkingsHeading = "";
+            if (cfo["https://schema.cassproject.org/0.4/markings"] != null) {
+                simpleConfigObj.fwkMarkingsLabel = cfo["https://schema.cassproject.org/0.4/markings"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
+                simpleConfigObj.fwkMarkingsDescription = cfo["https://schema.cassproject.org/0.4/markings"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
+                simpleConfigObj.fwkMarkingsPriority = cfo["https://schema.cassproject.org/0.4/markings"]["priority"];
+                simpleConfigObj.fwkMarkingsRequired = this.getBooleanValue(cfo["https://schema.cassproject.org/0.4/markings"]["isRequired"]);
+                let markingsHeading = cfo["https://schema.cassproject.org/0.4/markings"]["heading"];
+                if (markingsHeading) simpleConfigObj.fwkMarkingsHeading = markingsHeading.trim();
+                else simpleConfigObj.fwkMarkingsHeading = "";
+            }
 
             simpleConfigObj.fwkCustomProperties = [];
             let propertyKeys = Object.keys(cfo);
@@ -197,22 +203,25 @@ export const configuration = {
                 }
             }
 
-            simpleConfigObj.compClassLabel = cfo["https://schema.cassproject.org/0.4/Classification"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-            simpleConfigObj.compClassDescription = cfo["https://schema.cassproject.org/0.4/Classification"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            simpleConfigObj.compClassPriority = cfo["https://schema.cassproject.org/0.4/Classification"]["priority"];
-            simpleConfigObj.compClassRequired = this.getBooleanValue(cfo["https://schema.cassproject.org/0.4/Classification"]["isRequired"]);
-            let classHeading = cfo["https://schema.cassproject.org/0.4/Classification"]["heading"];
-            if (classHeading) simpleConfigObj.compClassHeading = classHeading.trim();
-            else simpleConfigObj.compClassHeading = "";
+            if (cco["https://schema.cassproject.org/0.4/classification"] != null) {
+                simpleConfigObj.compClassLabel = cco["https://schema.cassproject.org/0.4/classification"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
+                simpleConfigObj.compClassDescription = cco["https://schema.cassproject.org/0.4/classification"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
+                simpleConfigObj.compClassPriority = cco["https://schema.cassproject.org/0.4/classification"]["priority"];
+                simpleConfigObj.compClassRequired = this.getBooleanValue(cco["https://schema.cassproject.org/0.4/classification"]["isRequired"]);
+                let classHeading = cco["https://schema.cassproject.org/0.4/classification"]["heading"];
+                if (classHeading) simpleConfigObj.compClassHeading = classHeading.trim();
+                else simpleConfigObj.compClassHeading = "";
+            }
 
-            simpleConfigObj.compMarkingsLabel = cfo["https://schema.cassproject.org/0.4/Markings"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
-            simpleConfigObj.compMarkingsDescription = cfo["https://schema.cassproject.org/0.4/Markings"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
-            simpleConfigObj.compMarkingsPriority = cfo["https://schema.cassproject.org/0.4/Markings"]["priority"];
-            simpleConfigObj.compMarkingsRequired = this.getBooleanValue(cfo["https://schema.cassproject.org/0.4/Markings"]["isRequired"]);
-            let markingsHeading = cfo["https://schema.cassproject.org/0.4/Markings"]["heading"];
-            if (markingsHeading) simpleConfigObj.compMarkingsHeading = markingsHeading.trim();
-            else simpleConfigObj.compMarkingsHeading = "";
-
+            if (cco["https://schema.cassproject.org/0.4/markings"] != null) {
+                simpleConfigObj.compMarkingsLabel = cco["https://schema.cassproject.org/0.4/markings"]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
+                simpleConfigObj.compMarkingsDescription = cco["https://schema.cassproject.org/0.4/markings"]["http://www.w3.org/2000/01/rdf-schema#comment"][0]["@value"];
+                simpleConfigObj.compMarkingsPriority = cco["https://schema.cassproject.org/0.4/markings"]["priority"];
+                simpleConfigObj.compMarkingsRequired = this.getBooleanValue(cco["https://schema.cassproject.org/0.4/markings"]["isRequired"]);
+                let markingsHeading = cco["https://schema.cassproject.org/0.4/markings"]["heading"];
+                if (markingsHeading) simpleConfigObj.compMarkingsHeading = markingsHeading.trim();
+                else simpleConfigObj.compMarkingsHeading = "";
+            }
             simpleConfigObj.compCustomProperties = [];
             let propertyKeys = Object.keys(cco);
             for (let pk of propertyKeys) {
