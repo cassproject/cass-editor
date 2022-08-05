@@ -312,7 +312,7 @@ export default {
             EcIdentityManager.default.clearContacts();
         },
         handleCheckUsernameFetchIdentityFailure: function(failMsg) {
-            if (failMsg && String(failMsg).toLowerCase().trim().equals('user does not exist.')) {
+            if (failMsg && String(failMsg).toLowerCase().includes('user does not exist.')) {
                 this.performAccountCreation();
             } else {
                 this.createAccountInvalid = true;
