@@ -7,17 +7,16 @@
                         Welcome to CaSS
                     </h1>
                     <h3 class="subtitle is-size-3">
-                        Competency Authoring Tools
+                        Competency and Skills System
                     </h3>
                     <p class="pb-4">
-                        CaSS Authoring Tools support authoring frameworks, importing existing frameworks from supported
-                        document types, and editing competency frameworks within the system.  You can navigate to the
+                        CaSS supports authoring frameworks, importing existing frameworks from supported
+                        document types, and editing frameworks of competencies, skills, and other capabilities.  You can navigate to the
                         <router-link
                             class="custom-link local"
                             :to="{path: '/frameworks', query: queryParams}">
                             frameworks page
-                        </router-link> and start creating
-                        framework right away without following the below steps.
+                        </router-link> and start creating frameworks right away without following the below steps.
                     </p>
                     <div class="py-2">
                         <div class="py-2">

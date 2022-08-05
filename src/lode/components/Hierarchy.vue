@@ -168,7 +168,7 @@
                             <span class="icon">
                                 <i class="fa fa-search" />
                             </span>
-                            <span>search competencies</span>
+                            <span>search</span>
                         </div>
                         <div
                             v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
@@ -506,7 +506,7 @@ export default {
             isDraggable: true,
             shiftKey: false,
             arrowKey: null,
-            addCompetencyOrChildText: "Add Competency",
+            addCompetencyOrChildText: "Add",
             hierarchy: null,
             selectedSubject: null,
             availablePersons: [],
@@ -535,7 +535,7 @@ export default {
             if (this.selectedArray.length === 1) {
                 this.addCompetencyOrChildText = "Add Child";
             } else {
-                this.addCompetencyOrChildText = "Add Competency";
+                this.addCompetencyOrChildText = "Add";
             }
             this.$emit('selected-array', this.selectedArray);
         },

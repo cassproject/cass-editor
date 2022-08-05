@@ -287,7 +287,7 @@
                             <span class="icon">
                                 <i class="fa fa-search" />
                             </span>
-                            <span>search competencies</span>
+                            <span>search</span>
                         </div>
                     </div>
                 </div>

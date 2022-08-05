@@ -70,13 +70,13 @@ settings and managing the properties of competency frameworks, see the
 
 ## Adding Competencies 
 
-To add competencies to your framework, click the “add competency” button
+To add competencies to your framework, click the “add” button
 below the framework details.
 
 ![CAT Competency Framework Management - Add Competencies](/docs/add-competencies.png)
 
 You can construct a hierarchy of competencies by checking the box to the
-left of a competency. The “add competency” button text will change to
+left of a competency. The “add” button text will change to
 “add child”, which you can click to place a competency underneath the
 one you’ve checked.
 
