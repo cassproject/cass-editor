@@ -59,7 +59,7 @@
                 </p> -->
                 <p
                     v-if="showSideNav && $store.getters['user/lastLogin']"
-                    class="is-size-5">
+                    class="is-size-6">
                     Last Login: {{ new Date($store.getters['user/lastLogin']).toLocaleString() }}
                 </p>
                 <div

@@ -1401,7 +1401,7 @@ export default {
         overflow-y: scroll;
         height: 100vh;
         padding: 1rem;
-        width: 300px;
+        width: 250px;
     }
 
     .navbar-menu {
