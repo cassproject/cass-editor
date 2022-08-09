@@ -166,7 +166,7 @@
                 </div>
                 <!-- configuration -->
                 <div
-                    v-if="configurationsEnabled"
+                    v-if="configurationsEnabled && canEditFramework"
                     class="column is-narrow">
                     <div class="vl" />
                 </div>

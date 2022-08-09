@@ -1093,10 +1093,11 @@ export default {
             this.$emit('select', key, checked);
         },
         getPropertiesFromProfile: function(result, type) {
+            if (this.profile[type] == null) return null;
             for (var i = 0; i < this.profile[type].length; i++) {
                 var prop = this.profile[type][i];
                 var heading = "";
-                if (this.profile[prop]["heading"]) {
+                if (this.profile[prop] && this.profile[prop]["heading"]) {
                     heading = this.profile[prop]["heading"];
                 }
                 if (result[heading] == null && result[heading] === undefined) {
@@ -1105,7 +1106,7 @@ export default {
                 if (this.$store.getters['editor/conceptMode'] && (prop === "http://www.w3.org/2004/02/skos/core#broader" || prop === "http://www.w3.org/2004/02/skos/core#narrower")) {
                     continue;
                 }
-                if (this.profile[prop]["valuesIndexed"]) {
+                if (this.profile[prop] && this.profile[prop]["valuesIndexed"]) {
                     if (this.$store.state.editor.queryParams.ceasnDataFields === "true" && (prop === "hasChild" || prop === "isChildOf")) {
                         continue;
                     } else if (this.$store.state.editor.queryParams.ceasnDataFields !== "true" && (prop === "narrows" || prop === "broadens")) {

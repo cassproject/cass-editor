@@ -377,7 +377,8 @@ export default {
             validateCount: 0,
             repo: window.repo,
             doneValidating: false,
-            doneSaving: false,
+            doneSaving: true,
+            saveTimingToken: 0,
             errorMessage: [],
             idsNotPermittedInSearch: [],
             typesPermittedInSearch: [],
@@ -897,7 +898,7 @@ export default {
                         {operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), fieldChanged: [property], initialValue: [initialValue], changedValue: [this.expandedThing[property]], expandedProperty: true}
                     );
                 }
-                this.saveThing();
+                await this.saveThing();
             }
             this.showAddPropertyContent = false;
             this.$store.commit('lode/setIsAddingProperty', false);
@@ -977,12 +978,12 @@ export default {
                 }
             }
         },
-        load: function() {
+        load: async function() {
             var me = this;
             me.clickToLoad = false;
             if (this.uri != null) {
                 // If we have a uri, go get the data from the uri and continue loading.
-                EcRepository.get(
+                await EcRepository.get(
                     this.uri,
                     function(t) {
                         me.originalThing = t;
@@ -1179,6 +1180,7 @@ export default {
             this.doneSaving = false;
             this.saved = false;
             this.errorSaving = false;
+            let timingToken = this.saveTimingToken = new Date().getTime();
             // TODO: If repo isn't defined, save to its @id location.
             var saver = this;
             var me = this;
@@ -1201,7 +1203,12 @@ export default {
                         rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     rld["schema:dateModified"] = new Date().toISOString();
-                    repo.saveTo(rld, async function() {
+                    try {
+                        await repo.saveTo(rld);
+                        // Check timing token to make sure another save didn't occur while the previous save was going on.
+                        if (timingToken !== this.saveTimingToken) {
+                            return;
+                        }
                         me.doneSaving = true;
                         me.saving = false;
                         me.saved = "last saved " + new Date(rld["schema:dateModified"]).toLocaleString();
@@ -1220,10 +1227,10 @@ export default {
                             me.$store.commit('editor/framework', await EcConceptScheme.get(rld.shortId()));
                             me.spitEvent('viewChanged');
                         }
-                    }, function(err) {
+                    } catch (ex) {
                         appError(err);
                         me.errorSaving = true;
-                    });
+                    }
                 }
             } catch (err) {
                 appError(err);
@@ -1435,13 +1442,13 @@ export default {
             for (var i = 0; i < this.profile[type].length; i++) {
                 var prop = this.profile[type][i];
                 var heading = "";
-                if (this.profile[prop]["heading"]) {
+                if (this.profile[prop] && this.profile[prop]["heading"]) {
                     heading = this.profile[prop]["heading"];
                 }
                 if (result[heading] == null && result[heading] === undefined) {
                     result[heading] = {};
                 }
-                if (this.profile[prop]["valuesIndexed"]) {
+                if (this.profile[prop] && this.profile[prop]["valuesIndexed"]) {
                     var f = this.profile[prop]["valuesIndexed"];
                     f = f();
                     if (f && f[this.obj.shortId()]) {
@@ -1474,7 +1481,7 @@ export default {
             this.validate = true;
             this.errorValidating = null;
             // If object needs to be saved, this will be set to false in saveThing
-            this.doneSaving = true;
+            // this.doneSaving = true;
             if (this.addAnother && this.doneValidating) {
                 this.$store.commit('editor/addAnother', true);
                 this.addAnother = false;
@@ -1557,7 +1564,7 @@ export default {
                         this.$store.commit('lode/setAddingProperty', relation);
                         this.$store.commit('lode/setAddingValue', {"@value": results[i]});
                         this.add();
-                        this.saveThing();
+                        await this.saveThing();
                     } else {
                         if (!EcArray.isArray(resource[this.$store.state.editor.selectCompetencyRelation])) {
                             resource[this.$store.state.editor.selectCompetencyRelation] = [];
@@ -1570,7 +1577,7 @@ export default {
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
                 resource = await EcEncryptedValue.toEncryptedValue(resource);
             }
-            this.repo.saveTo(resource, function() {}, appError);
+            await this.repo.saveTo(resource, function() {}, appError);
         },
         clickToDelete: function() {
             if (this.$store.getters['app/editDirectory']) {
@@ -1604,7 +1611,7 @@ export default {
                 if (type) {
                     var thing = await window[type].get(this.changedObject);
                     this.obj = thing;
-                    if (this.clickToLoad === false) { this.load(); }
+                    if (this.clickToLoad === false) { await this.load(); }
                 }
                 this.$store.commit('editor/changedObject', null);
             }
