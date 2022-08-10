@@ -43,7 +43,7 @@
 		},
 		"ceasn:localSubject": {
 			"@id": "ceasn:localSubject",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"ceasn:competencyLabel": {
 			"@id": "ceasn:competencyLabel",
