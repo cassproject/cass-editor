@@ -1,4 +1,4 @@
-﻿[{
+[{
     "type" : "language",
     "subtag" : "aa",
     "description" : "Afar",
@@ -213,6 +213,12 @@
     "type" : "language",
     "subtag" : "en",
     "description" : "English",
+    "added" : " 2005-10-16",
+    "suppress-script" : "Latn"
+    },{
+    "type" : "language",
+    "subtag" : "en-us",
+    "description" : "American English",
     "added" : " 2005-10-16",
     "suppress-script" : "Latn"
     },{

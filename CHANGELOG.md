@@ -812,7 +812,7 @@
 - CEASN fields not updated properly after saving in edit panel [\#53](https://github.com/cassproject/cass-editor/issues/53)
 - Error saving CE-ASN data fields on a framework [\#52](https://github.com/cassproject/cass-editor/issues/52)
 - Remove empty properties from jsonld data [\#51](https://github.com/cassproject/cass-editor/issues/51)
-- Defaulting to en-US and editor's behavior [\#50](https://github.com/cassproject/cass-editor/issues/50)
+- Defaulting to en-us and editor's behavior [\#50](https://github.com/cassproject/cass-editor/issues/50)
 - Missing "weight" in json output [\#49](https://github.com/cassproject/cass-editor/issues/49)
 - hasChild and IsChildOf point to incorrect competencies [\#48](https://github.com/cassproject/cass-editor/issues/48)
 - Download/view version of Credential Engine ASN should be jsonld [\#47](https://github.com/cassproject/cass-editor/issues/47)

@@ -303,7 +303,7 @@ describe('timeline-element', () => {
                         "id": "http://localhost/api/data/schema.cassproject.org.0.4.Competency/a8ed1bbe-1269-4df0-8e18-87c5472e2911/1638393835047",
                         "type": "Competency",
                         "name": {
-                            "@language": "en-US",
+                            "@language": "en-us",
                             "@value": "New Competency"
                         },
                         "owner": [
@@ -503,7 +503,7 @@ describe('timeline-element', () => {
                         "id": "http://localhost/api/data/schema.cassproject.org.0.4.Competency/a8ed1bbe-1269-4df0-8e18-87c5472e2911/1638393835047",
                         "type": "Competency",
                         "name": {
-                            "@language": "en-US",
+                            "@language": "en-us",
                             "@value": "New Competency"
                         },
                         "owner": [
