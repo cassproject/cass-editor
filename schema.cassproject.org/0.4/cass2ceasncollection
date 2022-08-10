@@ -61,15 +61,15 @@
 		},
 		"name": {
 			"@id": "ceterms:name",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"title": {
 			"@id": "ceterms:name",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"description": {
 			"@id": "ceterms:description",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"schema:dateCreated": {
 			"@id": "ceasn:dateCreated",
@@ -113,7 +113,7 @@
 		},
         "schema:keywords": {
 			"@id": "ceterms:keyword",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
         "ceterms:ownedBy": {
 			"@id": "ceterms:ownedBy",

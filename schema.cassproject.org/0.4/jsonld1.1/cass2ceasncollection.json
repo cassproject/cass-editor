@@ -43,11 +43,11 @@
 		},
 		"ceterms:name": {
 			"@id": "ceterms:name",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"ceterms:description": {
 			"@id": "ceterms:description",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"ceasn:dateCreated": {
 			"@id": "ceasn:dateCreated",
@@ -83,7 +83,7 @@
 		},
         "ceterms:keyword": {
 			"@id": "ceterms:keyword",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
         "ceterms:ownedBy": {
 			"@id": "ceterms:ownedBy",

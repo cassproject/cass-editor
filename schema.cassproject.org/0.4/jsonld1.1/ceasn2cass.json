@@ -49,13 +49,13 @@
 		},
 		"schema:keywords": {
 			"@id": "schema:keywords",
-			"@language": "en-US",
+			"@language": "en-us",
 			"@container": "@language"
 		},
 		"ceasn:publisherName": {
 			"@id": "ceasn:publisherName",
 			"@container": "@language",
-			"@language": "en-US"
+			"@language": "en-us"
 		}
 	}
 }

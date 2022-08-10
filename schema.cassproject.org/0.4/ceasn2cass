@@ -114,7 +114,7 @@
 		},
 		"ceasn:conceptKeyword": {
 			"@id": "schema:keywords",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"ceasn:license": {
 			"@id": "schema:license"
@@ -179,7 +179,7 @@
 		"ceasn:publisherName": {
 			"@id": "ceasn:publisherName",
 			"@container": "@language",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"skos:related": {
 			"@id": "skos:related"

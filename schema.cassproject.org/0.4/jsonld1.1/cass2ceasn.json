@@ -47,22 +47,22 @@
 		},
 		"ceasn:competencyLabel": {
 			"@id": "ceasn:competencyLabel",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"ceasn:competencyCategory": {
 			"@id": "ceasn:competencyCategory",
-			"@language": "en-US"
-		},		
+			"@language": "en-us"
+		},
 		"ceasn:name": {
 			"@id": "ceasn:name",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"ceasn:weight": {
 			"@id": "ceasn:weight"
 		},
 		"ceasn:description": {
 			"@id": "ceasn:description",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"ceasn:author": {
 			"@id": "ceasn:author",
@@ -122,7 +122,7 @@
 		},
 		"ceasn:conceptKeyword": {
 			"@id": "ceasn:conceptKeyword",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"ceasn:license": {
 			"@id": "ceasn:license",
@@ -134,7 +134,7 @@
 		},
 		"ceasn:rights": {
 			"@id": "ceasn:rights",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"ceasn:source": {
 			"@id": "ceasn:source",
@@ -213,7 +213,7 @@
 		},
 		"ceasn:publisherName": {
 			"@id": "ceasn:publisherName",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"skos:related": {
 			"@id": "skos:related",

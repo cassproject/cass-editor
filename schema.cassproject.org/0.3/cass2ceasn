@@ -65,33 +65,33 @@
 		},
 		"dcterms:type": {
 			"@id": "ceasn:competencyCategory",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"http://schema.eduworks.com/ims/case/v1p0/CFItemType": {
 			"@id": "ceasn:competencyCategory",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"case:CFItemType": {
 			"@id": "ceasn:competencyCategory",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"privateEncrypted": {
 			"@id": "ebac:privateEncrypted"
 		},
 		"name": {
 			"@id": "ceasn:name",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"title": {
 			"@id": "ceasn:name",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"weight": {
 			"@id": "ceasn:weight"
 		},
 		"description": {
 			"@id": "ceasn:description",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"schema:author": {
 			"@id": "ceasn:author",
@@ -154,7 +154,7 @@
 		},
 		"schema:keywords": {
 			"@id": "ceasn:conceptKeyword",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"schema:license": {
 			"@id": "ceasn:license",
@@ -166,7 +166,7 @@
 		},
 		"dc:rights": {
 			"@id": "ceasn:rights",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"dc:source": {
 			"@id": "ceasn:source",
@@ -229,7 +229,7 @@
 		},
 		"ceasn:publisherName": {
 			"@id": "ceasn:publisherName",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"skos:relatedMatch": {
 			"@id": "skos:relatedMatch",

@@ -39,7 +39,7 @@
 		},
 		"skos:altLabel": {
 			"@id": "skos:altLabel",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"skos:broader": {
 			"@id": "skos:broader",
@@ -51,7 +51,7 @@
 		},
 		"skos:changeNote": {
 			"@id": "skos:changeNote",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"skos:closeMatch": {
 			"@id": "skos:closeMatch",
@@ -59,7 +59,7 @@
 		},
 		"skos:definition": {
 			"@id": "skos:definition",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"skos:exactMatch": {
 			"@id": "skos:exactMatch",
@@ -67,7 +67,7 @@
 		},
 		"skos:hiddenLabel": {
 			"@id": "skos:hiddenLabel",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"skos:inScheme": {
 			"@id": "skos:inScheme",
@@ -84,11 +84,11 @@
 		},
 		"skos:note": {
 			"@id": "skos:note",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"skos:prefLabel": {
 			"@id": "skos:prefLabel",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"skos:related": {
 			"@id": "skos:related",
@@ -100,7 +100,7 @@
 		},
 		"ceasn:conceptKeyword": {
 			"@id": "ceasn:conceptKeyword",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"ceasn:conceptTerm": {
 			"@id": "ceasn:conceptTerm",
@@ -124,12 +124,16 @@
 		},
 		"ceasn:description": {
 			"@id": "ceasn:description",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"skos:hasTopConcept": {
 			"@id": "skos:hasTopConcept",
 			"@type": "@id",
 			"@container": "@list"
+		},
+		"skos:historyNote": {
+			"@id": "skos:historyNote",
+			"@language": "en-us"
 		},
 		"ceasn:license": {
 			"@id": "ceasn:license",
@@ -145,11 +149,11 @@
 		},
 		"ceasn:publisherName": {
 			"@id": "ceasn:publisherName",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"ceasn:rights": {
 			"@id": "ceasn:rights",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"ceasn:rightsHolder": {
 			"@id": "ceasn:rightsHolder",
@@ -157,7 +161,7 @@
 		},
 		"ceasn:name": {
 			"@id": "ceasn:name",
-			"@language": "en-US"
+			"@language": "en-us"
 		},
 		"meta:changeHistory": {
 			"@id": "meta:changeHistory",
