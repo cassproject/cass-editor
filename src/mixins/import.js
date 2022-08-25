@@ -193,25 +193,20 @@ export default {
             appLog("file is", file);
             var feedback;
             if (file.name.endsWith(".csv")) {
-                if (this.conceptMode) {
-                    CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount) {
-                        me.$store.commit('app/importFileType', 'conceptcsv');
-                        let name = "taxonomies";
-                        if (me.queryParams.ceasnDataFields === 'true') {
-                            name = "concept schemes";
+                if (this.conceptMode || this.progressionMode) {
+                    CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount, progressionCount) {
+                        if (progressionCount) {
+                            me.$store.commit('app/importFileType', 'progressioncsv');
+                            let name = "progression models";
+                            feedback = "Import " + progressionCount + " " + name + " and " + competencyCount + " levels.";
+                        } else {
+                            me.$store.commit('app/importFileType', 'conceptcsv');
+                            let name = "taxonomies";
+                            if (me.queryParams.ceasnDataFields === 'true') {
+                                name = "concept schemes";
+                            }
+                            feedback = "Import " + frameworkCount + " " + name + " and " + competencyCount + " concepts.";
                         }
-                        feedback = "Import " + frameworkCount + " " + name + " and " + competencyCount + " concepts.";
-                        me.$store.commit('app/importStatus', feedback);
-                        me.$store.commit('app/importTransition', 'info');
-                    }, function(errorMsg) {
-                        me.$store.commit('app/addImportError', errorMsg);
-                        me.$store.commit('app/importTransition', 'process');
-                    });
-                } else if (this.progressionMode) {
-                    CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount) {
-                        me.$store.commit('app/importFileType', 'conceptcsv');
-                        let name = "progression models";
-                        feedback = "Import " + frameworkCount + " " + name + " and " + competencyCount + " concepts.";
                         me.$store.commit('app/importStatus', feedback);
                         me.$store.commit('app/importTransition', 'info');
                     }, function(errorMsg) {
@@ -279,16 +274,23 @@ export default {
                             }
                             me.$store.commit('app/importFileType', 'ctdlasnjsonld');
                             me.$store.commit('app/importTransition', 'info');
-                        } else if (me.progressionMode) {
-                            me.$store.commit('app/importStatus', "1 Progression Model Detected.");
-                            me.$store.commit('app/importFileType', 'ctdlasnjsonld');
-                            me.$store.commit('app/importTransition', 'info');
                         } else {
                             if (me.queryParams.ceasnDataFields === 'true') {
                                 var message = "Concept Schemes must be imported in the concept scheme editor.";
                             } else {
                                 var message = "Taxonomies must be imported in the taxonomy editor.";
                             }
+                            invalid = true;
+                            me.$store.commit('app/addImportError', message);
+                            me.$store.commit('app/importTransition', 'process');
+                        }
+                    } else if (ctdlasn === "ctdlasnProgression") {
+                        if (me.conceptMode || me.progressionMode) {
+                            me.$store.commit('app/importStatus', "1 Progression Detected.");
+                            me.$store.commit('app/importFileType', 'ctdlasnjsonldprogression');
+                            me.$store.commit('app/importTransition', 'info');
+                        } else {
+                            var message = "Progression Models must be imported in the concept scheme editor.";
                             invalid = true;
                             me.$store.commit('app/addImportError', message);
                             me.$store.commit('app/importTransition', 'process');
@@ -312,7 +314,7 @@ export default {
                         }
                     }
                     me.competencyCount = EcObject.keys(data).length;
-                    if (!invalid && (ctdlasn === "ctdlasn" || ctdlasn === "ctdlasnConcept" || ctdlasn === "ctdlasnCollection")) {
+                    if (!invalid && (ctdlasn === "ctdlasn" || ctdlasn === "ctdlasnConcept" || ctdlasn === "ctdlasnProgression" || ctdlasn === "ctdlasnCollection")) {
                         // Do nothing
                     } else if (!invalid) {
                         let error = "Context is not CTDL-ASN";
@@ -481,6 +483,8 @@ export default {
                         jsonObj["@context"] === "https://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] === "https://credreg.net/ctdl/schema/context/json") {
                         if (jsonObj["@graph"][0]["@type"].indexOf("Concept") !== -1) {
                             success(jsonObj["@graph"], "ctdlasnConcept");
+                        } else if (jsonObj["@graph"][0]["@type"].indexOf("Progression") !== -1) {
+                            success(jsonObj["@graph"], "ctdlasnProgression");
                         } else if (jsonObj["@graph"][0]["@type"].indexOf("Collection") !== -1) {
                             success(jsonObj["@graph"], "ctdlasnCollection");
                         } else {
@@ -880,14 +884,16 @@ export default {
                     me.$store.commit('app/addImportError', failure);
                     reject(failure.statusText);
                 });
-                if (me.conceptMode) {
-                    if (me.queryParams.ceasnDataFields === 'true') {
-                        me.$store.commit('app/importStatus', "Importing Concept Scheme");
+                if (me.conceptMode || me.progressionMode) {
+                    if (me.importFileType === 'ctdlasnjsonldprogression') {
+                        me.$store.commit('app/importStatus', "Importing Progression Model");
                     } else {
-                        me.$store.commit('app/importStatus', "Importing Taxonomy");
+                        if (me.queryParams.ceasnDataFields === 'true') {
+                            me.$store.commit('app/importStatus', "Importing Concept Scheme");
+                        } else {
+                            me.$store.commit('app/importStatus', "Importing Taxonomy");
+                        }
                     }
-                } else if (me.progressionMode) {
-                    me.$store.commit('app/importStatus', "Importing Progression Model");
                 } else {
                     if (me.importFileType === 'ctdlasnjsonldcollection') {
                         me.$store.commit('app/importStatus', 'Importing Collection');
@@ -913,7 +919,7 @@ export default {
                         }
                     }
                 }
-                if (me.progressionMode) {
+                if (me.importFileType === "progressioncsv") {
                     for (var i = 0; i < frameworks.length; i++) {
                         frameworks[i]["subType"] = "Progression";
                     }
@@ -939,7 +945,7 @@ export default {
                 me.$store.commit('app/importTransition', 'process');
                 me.$store.commit('app/addImportError', failure);
                 appError(failure);
-            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null));
+            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'progressioncsv');
         },
         importFromFile: function() {
             let me = this;
@@ -949,9 +955,9 @@ export default {
                 me.importCsv();
             } else if (me.importFileType === "ctdlasncsv" || me.importFileType === "collectioncsv") {
                 me.importCtdlAsnCsv();
-            } else if (me.importFileType === "conceptcsv") {
+            } else if (me.importFileType === "conceptcsv" || me.importFileType === "progressioncsv") {
                 me.importCtdlAsnConceptCsv();
-            } else if (me.importFileType === "ctdlasnjsonld" || me.importFileType === "ctdlasnjsonldcollection") {
+            } else if (me.importFileType === "ctdlasnjsonld" || me.importFileType === "ctdlasnjsonldprogression" || me.importFileType === "ctdlasnjsonldcollection") {
                 me.importJsonLd();
             } else if (me.importFileType === "asn") {
                 me.importAsn();
