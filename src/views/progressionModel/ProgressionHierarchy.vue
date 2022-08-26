@@ -483,7 +483,7 @@ export default {
                 }
                 let next = unordered.findIndex(item => !(item["ceasn:precedes"]));
                 while (unordered.length > 0) {
-                    if (next < 0) {
+                    if (next < 0 || next >= unordered.length) {
                         next = unordered.length - 1;
                     }
                     let c = unordered[next];
@@ -518,7 +518,7 @@ export default {
                 }
                 let next = unordered.findIndex(item => !(item["ceasn:precedes"]));
                 while (unordered.length > 0) {
-                    if (next < 0) {
+                    if (next < 0 || next >= unordered.length) {
                         next = unordered.length - 1;
                     }
                     var subC = unordered[next];
