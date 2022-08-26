@@ -109,7 +109,7 @@
             class="menu-list">
             <li class="has-text-white">
                 <router-link :to="{path: '/progressionLevels', query: queryParams}">
-                    ProgressionLevels
+                    Progression Levels
                 </router-link>
             </li>
             <li

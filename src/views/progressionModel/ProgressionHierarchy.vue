@@ -474,51 +474,75 @@ export default {
             }, 1000);
         },
         computeHierarchy: async function() {
+            let structure = [];
             if (this.container == null) { return r; }
-            let unorderedContainer = [];
-            let orderedContainer = [];
             if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
-                for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
-                    var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
-                    unorderedContainer.push(c);
+                let unordered = [];
+                for (let child in this.container["skos:hasTopConcept"]) {
+                    unordered.push(await EcConcept.get(this.container["skos:hasTopConcept"][child]));
                 }
-                let next = null;
-                for (let i = 0; i < unorderedContainer.length; i++) {
-                    if (!unorderedContainer[i]["ceasn:precededBy"]) {
-                        orderedContainer.push({"obj": unorderedContainer[i], "children": []});
-                        next = unorderedContainer[i];
-                        unorderedContainer.splice(i, 1);
-                        break;
+                let next = unordered.findIndex(item => !(item["ceasn:precedes"]));
+                while (unordered.length > 0) {
+                    if (next < 0) {
+                        next = unordered.length - 1;
                     }
-                }
-                while (unorderedContainer.length > 0 && next && next["ceasn:precedes"]) {
-                    next = await unorderedContainer.find(i => EcRemoteLinkedData.trimVersionFromUrl(i.id) === EcRemoteLinkedData.trimVersionFromUrl(next["ceasn:precedes"]));
-                    orderedContainer.push({"obj": next, "children": []});
-                    unorderedContainer.splice(unorderedContainer.map(i => EcRemoteLinkedData.trimVersionFromUrl(i.id)).indexOf(EcRemoteLinkedData.trimVersionFromUrl(next.id)), 1);
-                }
-                // Add remaining progression levels to container (include any children)
-                for (let i in unorderedContainer) {
-                    appLog('Error with sorting progression');
-                    var c = unorderedContainer[i];
+                    let c = unordered[next];
+                    let index = -1;
+                    unordered.splice(next, 1);
+                    next = unordered.findIndex(item => c["ceasn:precededBy"] && (EcRemoteLinkedData.trimVersionFromUrl(item.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceasn:precededBy"])));
                     if (c) {
-                        orderedContainer.push({"obj": c, "children": []});
+                        if (c["ceasn:precededBy"] && structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceasn:precededBy"])) >= 0) {
+                            index = structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceasn:precededBy"])) + 1;
+                            structure.splice(index, 0, {"obj": c, "children": []});
+                        } else if (c["ceasn:precedes"] && structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceasn:precedes"])) >= 0) {
+                            index = structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceasn:precedes"]));
+                            structure.splice(index, 0, {"obj": c, "children": []});
+                        } else {
+                            structure.push({"obj": c, "children": []});
+                            index = structure.length - 1;
+                        }
                         if (c["skos:narrower"]) {
-                            this.addChildren(orderedContainer, c, i);
+                            await this.addChildren(structure, c, index);
                         }
                     }
                 }
             }
-            await Object.assign(this.structure, orderedContainer);
+            this.structure = structure;
             this.once = false;
         },
         addChildren: async function(structure, c, i) {
-            for (var j = 0; j < c["skos:narrower"].length; j++) {
-                var subC = await EcConcept.get(c["skos:narrower"][j]);
-                structure[i].children.push({"obj": subC, "children": []});
-                if (subC && subC["skos:narrower"]) {
-                    this.addChildren(structure[i].children, subC, j);
+            return new Promise(async(resolve) => {
+                let unordered = [];
+                for (let child in c["skos:narrower"]) {
+                    unordered.push(await EcConcept.get(c["skos:narrower"][child]));
                 }
-            }
+                let next = unordered.findIndex(item => !(item["ceasn:precedes"]));
+                while (unordered.length > 0) {
+                    if (next < 0) {
+                        next = unordered.length - 1;
+                    }
+                    var subC = unordered[next];
+                    let index = -1;
+                    unordered.splice(next, 1);
+                    next = unordered.findIndex(item => subC["ceasn:precededBy"] && (EcRemoteLinkedData.trimVersionFromUrl(item.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceasn:precededBy"])));
+                    if (subC) {
+                        if (subC["ceasn:precededBy"] && structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceasn:precededBy"])) >= 0) {
+                            index = structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceasn:precededBy"])) + 1;
+                            structure[i].children.splice(index, 0, {"obj": subC, "children": []});
+                        } else if (subC["ceasn:precedes"] && structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceasn:precedes"])) >= 0) {
+                            index = structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceasn:precedes"]));
+                            structure[i].children.splice(index, 0, {"obj": subC, "children": []});
+                        } else {
+                            structure[i].children.push({"obj": subC, "children": []});
+                            index = structure[i].children.length - 1;
+                        }
+                        if (subC["skos:narrower"]) {
+                            await this.addChildren(structure[i].children, subC, index);
+                        }
+                    }
+                }
+                resolve();
+            });
         },
         // WARNING: The Daemon of OBO lingers in these here drag and move methods. The library moves the objects, and OBO will then come get you!
         beginDrag: function(event) {
