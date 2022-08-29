@@ -71,7 +71,7 @@ export default {
             this.repo.deleteRegistered(framework, function(success) {
                 me.spitEvent("frameworkDeleted", framework.shortId(), "editFrameworkSection");
                 // Delete the framework, delete all non-used stuff.
-                EcConcept.search(me.repo, "skos\\:inScheme:\"" + framework.shortId() + "\"", function(concepts) {
+                EcConcept.search(me.repo, "(skos\\:inScheme:\"" + framework.shortId() + "\") OR (ceasn\\:inProgressionModel:\"" + framework.shortId() + "\")", function(concepts) {
                     for (var i = 0; i < concepts.length; i++) {
                         me.repo.deleteRegistered(concepts[i], appLog, appError);
                     }

@@ -14,14 +14,14 @@
                         </button>
                     </li>
                     <li
-                        v-if="!conceptMode"
+                        v-if="!conceptMode && !progressionMode"
                         :class="[tab === 'html' ? 'is-active' : '', '']">
                         <button @click="newTab = 'html'">
                             HTML
                         </button>
                     </li>
                     <li
-                        v-if="!conceptMode"
+                        v-if="!conceptMode && !progressionMode"
                         :class="[tab === 'xml' ? 'is-active' : '', '']">
                         <button @click="newTab = 'xml'">
                             XML
@@ -35,7 +35,7 @@
                         </button>
                     </li>
                     <li
-                        v-if="!conceptMode"
+                        v-if="!conceptMode && !progressionMode"
                         :class="[tab === 'pdf' ? 'is-active' : '', '']">
                         <button @click="newTab = 'pdf'">
                             PDF
@@ -43,7 +43,7 @@
                     </li>
                     <li
 
-                        v-if="!conceptMode"
+                        v-if="!conceptMode && !progressionMode"
                         :class="[tab === 'docx' ? 'is-active' : '', '']">
                         <button @click="newTab = 'docx'">
                             DOCX
@@ -156,7 +156,7 @@
             <!-- CSV -->
             <div
                 class="section"
-                v-if="tab === 'csv' && !conceptMode">
+                v-if="tab === 'csv' && !conceptMode && !progressionMode">
                 <h2 class="title has-text-weight-bold is-size-2">
                     CSV
                     <span class="icon is-pulled-right has-text-success">
@@ -287,7 +287,7 @@
             <!-- CSV Concepts -->
             <div
                 class="section"
-                v-if="tab === 'csv' && conceptMode">
+                v-if="tab === 'csv' && (conceptMode || progressionMode)">
                 <h2 class="title has-text-weight-bold is-size-2">
                     CSV
                     <span class="icon is-pulled-right has-text-success">
@@ -370,7 +370,7 @@
             <!-- JSON -->
             <div
                 class="section"
-                v-if="tab === 'json' && !conceptMode">
+                v-if="tab === 'json' && !conceptMode && !progressionMode">
                 <h2 class="title has-text-weight-bold is-size-2">
                     JSON
                     <span class="icon is-pulled-right has-text-success">
@@ -425,7 +425,7 @@
             <!-- JSON Concepts -->
             <div
                 class="section"
-                v-if="tab === 'json' && conceptMode">
+                v-if="tab === 'json' && (conceptMode || progressionMode)">
                 <h2 class="title has-text-weight-bold is-size-2">
                     JSON
                     <span class="icon is-pulled-right has-text-success">
@@ -531,6 +531,9 @@ export default {
         },
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
+        },
+        progressionMode: function() {
+            return this.$store.getters['editor/progressionMode'];
         },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];

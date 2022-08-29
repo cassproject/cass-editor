@@ -1,7 +1,7 @@
 <template>
     <div class="organizations">
         <div>
-            <span v-if="$store.getters['editor/conceptMode']">
+            <span v-if="$store.getters['editor/conceptMode'] || $store.getters['editor/progressionMode']">
                 <input
                     type="radio"
                     value="dcterms:title.keyword"

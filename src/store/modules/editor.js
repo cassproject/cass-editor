@@ -66,6 +66,7 @@ const state = {
     refreshAlignments: false,
     conceptMode: false,
     collectionMode: false,
+    progressionMode: false,
     cutId: null,
     copyId: null,
     paste: false,
@@ -189,10 +190,23 @@ const mutations = {
         state.refreshAlignments = boolean;
     },
     conceptMode(state, boolean) {
-        state.conceptMode = boolean;
+        if (boolean) {
+            state.conceptMode = true;
+            state.progressionMode = false;
+        } else {
+            state.conceptMode = false;
+        }
     },
     collectionMode(state, boolean) {
         state.collectionMode = boolean;
+    },
+    progressionMode(state, boolean) {
+        if (boolean) {
+            state.progressionMode = true;
+            state.conceptMode = false;
+        } else {
+            state.progressionMode = false;
+        }
     },
     cutId(state, id) {
         state.cutId = id;
@@ -509,6 +523,9 @@ const getters = {
     },
     collectionMode: function(state) {
         return state.collectionMode;
+    },
+    progressionMode: function(state) {
+        return state.progressionMode;
     },
     cutId: function(state) {
         return state.cutId;
