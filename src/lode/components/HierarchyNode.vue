@@ -818,6 +818,11 @@ export default {
             var fromContainerId = this.parent.shortId();
             var toId = null;
             var toContainerId = this.$parent.$parent.parent.shortId();
+            // If attempting to move this to top level, then set toContainerId to null and toId equal to fromId to indicate top level
+            if (toContainerId.includes('Framework') || (this.parent["ceasn:isTopChildOf"] && this.parent["ceasn:isTopChildOf"].includes(toContainerId))) {
+                toContainerId = '';
+                toId = fromId;
+            }
             this.move(fromId, toId, fromContainerId, toContainerId, true, 0);
         },
         add: function(containerId) {
