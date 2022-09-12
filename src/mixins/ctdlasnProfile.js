@@ -168,6 +168,36 @@ export default {
                     "max": 1,
                     "heading": "Connections"
                 },
+                "https://purl.org/ctdlasn/terms/alignFrom": {
+                    "@id": "https://purl.org/ctdlasn/terms/alignFrom",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `A competency framework from which this competency framework is aligned.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Align From"}],
+                    "max": 1,
+                    "heading": "Connections"
+                },
+                "https://purl.org/ctdlasn/terms/alignTo": {
+                    "@id": "https://purl.org/ctdlasn/terms/alignTo",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `A competency framework to which this competency framework is aligned.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Align To"}],
+                    "max": 1,
+                    "heading": "Connections"
+                },
                 "http://purl.org/dc/elements/1.1/source": {
                     "@id": "http://purl.org/dc/elements/1.1/source",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -368,6 +398,8 @@ export default {
                     "http://schema.org/keywords",
                     "https://purl.org/ctdlasn/terms/conceptTerm",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
+                    "https://purl.org/ctdlasn/terms/alignFrom",
+                    "https://purl.org/ctdlasn/terms/alignTo",
                     "http://purl.org/dc/elements/1.1/source",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://schema.cassproject.org/0.4/socList",
@@ -806,6 +838,36 @@ export default {
                             For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.`}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Derived From"}],
+                    "max": 1,
+                    "heading": "Connections"
+                },
+                "https://purl.org/ctdlasn/terms/alignFrom": {
+                    "@id": "https://purl.org/ctdlasn/terms/alignFrom",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `A competency from which this competency is aligned.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Align From"}],
+                    "max": 1,
+                    "heading": "Connections"
+                },
+                "https://purl.org/ctdlasn/terms/alignTo": {
+                    "@id": "https://purl.org/ctdlasn/terms/alignTo",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `A competency to which this competency is aligned.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Align To"}],
                     "max": 1,
                     "heading": "Connections"
                 },
@@ -1316,6 +1378,8 @@ export default {
                     "https://purl.org/ctdlasn/terms/comprisedOf",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
+                    "https://purl.org/ctdlasn/terms/alignFrom",
+                    "https://purl.org/ctdlasn/terms/alignTo",
                     "http://schema.org/identifier",
                     "https://purl.org/ctdl/terms/environmentalHazardType",
                     "https://purl.org/ctdl/terms/performanceLevelType",
