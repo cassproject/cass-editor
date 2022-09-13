@@ -579,12 +579,6 @@ export default {
                             frameworks[i]["schema:inLanguage"] = me.$store.state.editor.defaultLanguage;
                         }
                     }
-                    if (frameworks[i]["schema:dateModified"] == null || frameworks[i]["schema:dateModified"] === undefined) {
-                        frameworks[i]["schema:dateModified"] = new Date().toISOString();
-                    }
-                    if (frameworks[i]["schema:dateCreated"] == null || frameworks[i]["schema:dateCreated"] === undefined) {
-                        frameworks[i]["schema:dateCreated"] = new Date().toISOString();
-                    }
                 }
                 var all = frameworks.concat(competencies).concat(relations);
                 me.$store.commit('app/importStatus', "Saving " + all.length + " objects.");
