@@ -171,7 +171,7 @@
                     <div
                         title="Framework configuration"
                         class="button  is-text has-text-dark is-pulled-right not-lowercase"
-                        v-if="canEditFramework && !conceptMode"
+                        v-if="canEditFramework && !conceptMode && !progressionMode"
                         @click="showManageConfigurationModal(); showShareDropdown = false;">
                         <span class="icon">
                             <i class="fas fa-cog" />
@@ -514,10 +514,16 @@ export default {
             if (this.$store.getters['editor/conceptMode'] === true) {
                 return false;
             }
+            if (this.$store.getters['editor/progressionMode'] === true) {
+                return false;
+            }
             return this.$store.state.app.canAddComments;
         },
         showViewComments() {
             if (this.$store.getters['editor/conceptMode'] === true) {
+                return false;
+            }
+            if (this.$store.getters['editor/progressionMode'] === true) {
                 return false;
             }
             return this.$store.state.app.canViewComments;
@@ -554,6 +560,9 @@ export default {
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
         },
+        progressionMode: function() {
+            return this.$store.getters['editor/progressionMode'];
+        },
         canExport: function() {
             if (this.$store.state.editor.private) {
                 return false;
@@ -587,7 +596,7 @@ export default {
             return this.framework.directory;
         },
         canManageAssertions: function() {
-            if (this.queryParams.disableAssertions !== 'true' && this.loggedInPerson && this.loggedInPerson.name && !this.conceptMode) {
+            if (this.queryParams.disableAssertions !== 'true' && this.loggedInPerson && this.loggedInPerson.name && !this.conceptMode && !this.progressionMode) {
                 return true;
             }
             return false;

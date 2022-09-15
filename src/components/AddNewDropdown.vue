@@ -73,6 +73,12 @@
                     Concept Scheme
                 </a>
                 <a
+                    v-if="conceptEnabled && queryParams.ceasnDataFields === 'true'"
+                    @click="$emit('progression')"
+                    class="dropdown-item">
+                    Progression Model
+                </a>
+                <a
                     v-else-if="conceptEnabled"
                     @click="$emit('concept')"
                     class="dropdown-item">

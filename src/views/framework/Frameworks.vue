@@ -28,12 +28,13 @@
                         <add-new-dropdown
                             :conceptEnabled="true"
                             @concept="$emit('create-new-concept-scheme')"
+                            @progression="$emit('create-new-progression-model')"
                             @close="createDropDownActive = false"
                             @toggle="createDropDownActive = !createDropDownActive"
                             :active="createDropDownActive" />
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
+                            @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
                             class="button is-hidden-touch is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -41,7 +42,57 @@
                         </router-link>
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', true); $store.dispatch('app/clearImport');"
+                            @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                            class="button is-hidden-desktop is-outlined is-primary">
+                            <span class="icon">
+                                <i class="fa fa-upload" />
+                            </span>
+                        </router-link>
+                        <!-- help -->
+                        <a
+                            href="docs/taxonomies/"
+                            target="_blank"
+                            title="Go to documentation on framework library"
+                            class="button is-hidden-touch is-primary is-outlined">
+                            <span class="icon">
+                                <i class="far fa-question-circle" />
+                            </span>
+                            <span class="is-hidden-touch">
+                                Help
+                            </span>
+                        </a>
+                        <a
+                            href="docs/taxonomies/"
+                            target="_blank"
+                            title="Go to documentation on framework library"
+                            class="button is-primary is-hidden-desktop is-outlined">
+                            <span class="icon">
+                                <i class="far fa-question-circle" />
+                            </span>
+                        </a>
+                    </div>
+                    <!-- progression models -->
+                    <div
+                        v-if="progressionMode"
+                        class="buttons is-right concept-buttons">
+                        <add-new-dropdown
+                            :conceptEnabled="true"
+                            @concept="$emit('create-new-concept-scheme')"
+                            @progression="$emit('create-new-progression-model')"
+                            @close="createDropDownActive = false"
+                            @toggle="createDropDownActive = !createDropDownActive"
+                            :active="createDropDownActive" />
+                        <router-link
+                            :to="{path: '/import', query: queryParams}"
+                            @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', true); $store.dispatch('app/clearImport');"
+                            class="button is-hidden-touch is-outlined is-primary">
+                            <span class="icon">
+                                <i class="fa fa-upload" />
+                            </span><span>import Progression Model</span>
+                        </router-link>
+                        <router-link
+                            :to="{path: '/import', query: queryParams}"
+                            @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', true); $store.dispatch('app/clearImport');"
                             class="button is-hidden-desktop is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -72,7 +123,7 @@
                     </div>
                     <!-- frameworks -->
                     <div
-                        v-else
+                        v-if="!conceptMode && !progressionMode"
                         class="buttons is-right frameworks-buttons">
                         <add-new-dropdown
                             :frameworkEnabled="true"
@@ -85,7 +136,7 @@
                         <!-- upload -->
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
+                            @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
                             class="button is-outlined is-hidden-desktop is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -93,7 +144,7 @@
                         </router-link>
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
+                            @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
                             class="button is-outlined is-hidden-touch is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -173,7 +224,7 @@
                             <span class="framework-details has-text-weight-light family-primary is-size-7">
                                 <span
                                     class="framework-details__item"
-                                    v-if="!conceptMode && slotProps.item.type === 'Framework'">
+                                    v-if="!conceptMode && !progressionMode && slotProps.item.type === 'Framework'">
                                     <span class="has-text-weight-medium">
                                         Items:
                                     </span>
@@ -314,7 +365,7 @@ export default {
         };
     },
     created: function() {
-        this.sortBy = this.conceptMode ? "dcterms:title.keyword" : "name.keyword";
+        this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
         this.$store.commit("editor/t3Profile", false);
         this.$store.commit('editor/framework', null);
         this.spitEvent('viewChanged');
@@ -345,7 +396,7 @@ export default {
             return this.$store.getters['editor/queryParams'];
         },
         type: function() {
-            return this.conceptMode ? "ConceptScheme" : "Framework";
+            return this.conceptMode ? "ConceptScheme" : (this.progressionMode ? "ConceptScheme" : "Framework");
         },
         searchOptions: function() {
             let search = "";
@@ -356,11 +407,17 @@ export default {
                     search += " AND NOT (subType:\"Collection\")";
                 }
             }
+            if (this.progressionMode) {
+                search += " AND (subType:\"Progression\")";
+            } else {
+                // TODO: Should Progression Models be included as ConceptSchemes if ceasnDataFields = false?
+                search += " AND NOT (subType:\"Progression\")";
+            }
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && !this.conceptMode && this.queryParams.show === "mine") ||
-                (this.queryParams && this.conceptMode && this.queryParams.conceptShow === "mine")) {
+            if (this.showMine || (this.queryParams && !this.conceptMode && !this.progressionMode && this.queryParams.show === "mine") ||
+                (this.queryParams && (this.conceptMode || this.progressionMode) && this.queryParams.conceptShow === "mine")) {
                 if (EcIdentityManager.default.ids.length > 0) {
                     search += " AND (";
                     for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
@@ -399,8 +456,8 @@ export default {
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             let type = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "text" : "date";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
-            if (EcIdentityManager.default.ids.length > 0 && this.queryParams && ((!this.conceptMode && this.queryParams.show === 'mine') ||
-                (this.conceptMode && this.queryParams.conceptShow === "mine"))) {
+            if (EcIdentityManager.default.ids.length > 0 && this.queryParams && ((!this.conceptMode && !this.progressionMode && this.queryParams.show === 'mine') ||
+                ((this.conceptMode || this.progressionMode) && this.queryParams.conceptShow === "mine"))) {
                 obj.ownership = 'me';
             }
             return obj;
@@ -418,6 +475,9 @@ export default {
         },
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
+        },
+        progressionMode: function() {
+            return this.$store.getters['editor/progressionMode'];
         },
         collectionMode: function() {
             return this.$store.getters['editor/collectionMode'];
@@ -461,6 +521,14 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: object.id}});
+                }, appError);
+            } else if (this.progressionMode) {
+                EcConceptScheme.get(object.id, function(success) {
+                    me.$store.commit('editor/framework', success);
+                    me.$store.commit('editor/clearFrameworkCommentData');
+                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    me.$router.push({name: "progressionModel", params: {frameworkId: object.id}});
                 }, appError);
             } else {
                 EcFramework.get(object.id, function(success) {
@@ -544,7 +612,7 @@ export default {
         } else if (this.sortResults.id === "dateCreated") {
             this.sortBy = "schema:dateCreated";
         } else {
-            this.sortBy = this.conceptMode ? "dcterms:title.keyword" : "name.keyword";
+            this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
         }
         this.showMine = false;
         this.showNotMine = false;
@@ -570,7 +638,7 @@ export default {
             } else if (this.sortResults.id === "dateCreated") {
                 this.sortBy = "schema:dateCreated";
             } else {
-                this.sortBy = this.conceptMode ? "dcterms:title.keyword" : "name.keyword";
+                this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
             }
         },
         filteredQuickFilters: function() {
@@ -590,7 +658,10 @@ export default {
             }
         },
         conceptMode: function() {
-            this.sortBy = this.conceptMode ? "dcterms:title.keyword" : "name.keyword";
+            this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
+        },
+        progressionMode: function() {
+            this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
         }
     }
 };

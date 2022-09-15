@@ -464,10 +464,11 @@ export default {
             paste: state => state.editor.paste,
             queryParams: state => state.editor.queryParams,
             newCompetency: state => state.editor.newCompetency,
-            conceptMode: state => state.editor.conceptMode
+            conceptMode: state => state.editor.conceptMode,
+            progressionMode: state => state.editor.progressionMode
         }),
         showAddComments() {
-            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true) {
+            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
                 return false;
             }
             return this.$store.state.app.canAddComments;
@@ -695,7 +696,7 @@ export default {
                         y: true
                     };
                     this.$scrollTo("#scroll-newCompetency", 500, options);
-                } else if (this.conceptMode) {
+                } else if (this.conceptMode || this.progressionMode) {
                     let options = {
                         container: "#concept",
                         easing: "ease",
@@ -817,6 +818,11 @@ export default {
             var fromContainerId = this.parent.shortId();
             var toId = null;
             var toContainerId = this.$parent.$parent.parent.shortId();
+            // If attempting to move this to top level, then set toContainerId to null and toId equal to fromId to indicate top level
+            if (toContainerId.includes('Framework') || (this.parent["ceasn:isTopChildOf"] && this.parent["ceasn:isTopChildOf"].includes(toContainerId))) {
+                toContainerId = '';
+                toId = fromId;
+            }
             this.move(fromId, toId, fromContainerId, toContainerId, true, 0);
         },
         add: function(containerId) {

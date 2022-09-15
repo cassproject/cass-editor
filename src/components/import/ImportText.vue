@@ -117,6 +117,9 @@ export default {
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
         },
+        progressionMode: function() {
+            return this.$store.getters['editor/progressionMode'];
+        },
         importErrors: function() {
             return this.$store.getters['app/importErrors'];
         },
