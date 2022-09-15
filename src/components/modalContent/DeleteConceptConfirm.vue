@@ -70,7 +70,8 @@ export default {
             var me = this;
             if (c["skos:broader"] != null) {
                 for (var i = 0; i < c["skos:broader"].length; i++) {
-                    EcConcept.get(c["skos:broader"][i], async function(concept) {
+                    try {
+                        let concept = await EcConcept.get(c["skos:broader"][i]);
                         var initialValue = concept["skos:narrower"].slice();
                         EcArray.setRemove(concept["skos:narrower"], c.shortId());
                         concept["schema:dateModified"] = new Date().toISOString();
@@ -78,31 +79,38 @@ export default {
                         if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
                             concept = await EcEncryptedValue.toEncryptedValue(concept);
                         }
-                        repo.saveTo(concept, function() {
-                            me.$store.commit('editor/framework', me.framework);
-                        }, appError);
-                    }, appError);
+                        await repo.saveTo(concept);
+                        me.$store.commit('editor/framework', me.framework);
+                    } catch (e) {
+                        appError(e);
+                    }
                 }
             }
             if (c["skos:narrower"] != null) {
                 for (var i = 0; i < c["skos:narrower"].length; i++) {
-                    EcConcept.get(c["skos:narrower"][i], function(concept) {
+                    try {
+                        let concept = await EcConcept.get(c["skos:narrower"][i]);
                         me.deleteConceptInner(concept);
-                    }, appError);
+                    } catch (e) {
+                        appError(e);
+                    }
                 }
             }
             if (c["skos:topConceptOf"] != null) {
-                var initialValue = this.framework["skos:hasTopConcept"].slice();
-                EcArray.setRemove(this.framework["skos:hasTopConcept"], c.shortId());
-                me.editsToUndo.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]});
-                var framework = this.framework;
-                framework["schema:dateModified"] = new Date().toISOString();
-                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
-                    framework = await EcEncryptedValue.toEncryptedValue(framework);
-                }
-                repo.saveTo(framework, function() {
+                try {
+                    var initialValue = this.framework["skos:hasTopConcept"].slice();
+                    EcArray.setRemove(this.framework["skos:hasTopConcept"], c.shortId());
+                    me.editsToUndo.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]});
+                    var framework = this.framework;
+                    framework["schema:dateModified"] = new Date().toISOString();
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                        framework = await EcEncryptedValue.toEncryptedValue(framework);
+                    }
+                    await repo.saveTo(framework);
                     me.$store.commit('editor/framework', me.framework);
-                }, appError);
+                } catch (e) {
+                    appError(e);
+                }
             }
             this.spitEvent("conceptDeleted", c.shortId(), "editFrameworkPage");
             me.editsToUndo.push({operation: "delete", obj: c});
