@@ -73,6 +73,18 @@
                             {{ addConceptOrChildText }}
                         </span>
                     </div>
+                    <!-- delete item -->
+                    <div
+                        v-if="!addingNode && canEdit && !multipleSelected && canCopyOrCut"
+                        @click="deleteSelected"
+                        class="button is-outlined is-danger">
+                        <span class="icon">
+                            <i class="fa fa-plus-circle" />
+                        </span>
+                        <span>
+                            delete item
+                        </span>
+                    </div>
                     <div
                         v-if="addingNode"
                         @click="addingNode = false;"
@@ -341,6 +353,9 @@ export default {
         },
         recomputeHierarchy: function() {
             return this.$store.getters['editor/recomputeHierarchy'];
+        },
+        framework() {
+            return this.$store.getters['editor/framework'];
         }
     },
     watch: {
@@ -779,6 +794,65 @@ export default {
             }
             this.add(parent, null);
             this.addingNode = false;
+        },
+        deleteSelected: async function() {
+            let item = await EcRepository.get(this.selectedArray[0]);
+            this.deleteConcept(item);
+            this.selectedArray.splice(0, this.selectedArray.length);
+        },
+        deleteConcept: function(thing) {
+            appLog("deleting " + thing.id);
+            this.deleteConceptInner(thing);
+
+            this.framework["schema:dateModified"] = new Date().toISOString();
+            this.$store.commit('editor/selectedCompetency', null);
+        },
+        deleteConceptInner: async function(c) {
+            var me = this;
+            let editsToUndo = [];
+            if (c["skos:broader"] != null) {
+                for (var i = 0; i < c["skos:broader"].length; i++) {
+                    EcConcept.get(c["skos:broader"][i], async function(concept) {
+                        var initialValue = concept["skos:narrower"].slice();
+                        EcArray.setRemove(concept["skos:narrower"], c.shortId());
+                        concept["schema:dateModified"] = new Date().toISOString();
+                        editsToUndo.push({operation: "update", id: concept.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]});
+                        if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
+                            concept = await EcEncryptedValue.toEncryptedValue(concept);
+                        }
+                        repo.saveTo(concept, function() {
+                            me.$store.commit('editor/framework', me.framework);
+                        }, appError);
+                    }, appError);
+                }
+            }
+            if (c["skos:narrower"] != null) {
+                for (var i = 0; i < c["skos:narrower"].length; i++) {
+                    EcConcept.get(c["skos:narrower"][i], function(concept) {
+                        me.deleteConceptInner(concept);
+                    }, appError);
+                }
+            }
+            if (c["skos:topConceptOf"] != null) {
+                var initialValue = this.framework["skos:hasTopConcept"].slice();
+                EcArray.setRemove(this.framework["skos:hasTopConcept"], c.shortId());
+                editsToUndo.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]});
+                var framework = this.framework;
+                framework["schema:dateModified"] = new Date().toISOString();
+                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    framework = await EcEncryptedValue.toEncryptedValue(framework);
+                }
+                repo.saveTo(framework, function() {
+                    me.$store.commit('editor/framework', me.framework);
+                }, appError);
+            }
+            this.spitEvent("conceptDeleted", c.shortId(), "editFrameworkPage");
+            editsToUndo.push({operation: "delete", obj: c});
+            repo.deleteRegistered(c, function() {
+                me.$store.commit('editor/framework', me.framework);
+                me.$store.commit('editor/addEditsToUndo', JSON.parse(JSON.stringify(editsToUndo)));
+                editsToUndo.splice(0, editsToUndo.length);
+            }, appError);
         }
     }
 };
