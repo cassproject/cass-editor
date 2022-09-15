@@ -1,6 +1,8 @@
 {
 	"skos:ConceptScheme": "cass:skos/ConceptScheme",
 	"skos:Concept": "cass:skos/Concept",
+	"ceasn:ProgressionModel": "cass:skos/ConceptScheme",
+	"ceasn:ProgressionLevel": "cass:skos/Concept",
 	"@owner": "ebac:@owner",
 	"@reader": "ebac:@reader",
 	"@signature": "ebac:@signature",
