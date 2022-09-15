@@ -52,6 +52,15 @@ export default new Router({
             }
         },
         {
+            path: '/progressionLevels',
+            name: 'progressionLevels',
+            components: {
+                default: () => import(/* webpackChunkName: "progressionLevels" */ './views/framework/Frameworks.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
+            }
+        },
+        {
             path: '/login',
             name: 'login',
             component: () => import(/* webpackChunkName: "login" */ './views/login/Login.vue')
@@ -179,6 +188,15 @@ export default new Router({
             name: 'conceptScheme',
             components: {
                 default: () => import(/* webpackChunkName: "conceptScheme" */ './views/conceptScheme/ConceptScheme.vue'),
+                sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
+                topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
+            }
+        },
+        {
+            path: '/progressionModel',
+            name: 'progressionModel',
+            components: {
+                default: () => import(/* webpackChunkName: "progressionModel" */ './views/progressionModel/ProgressionModel.vue'),
                 sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
                 topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }

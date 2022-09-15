@@ -319,7 +319,7 @@ export default {
                 selectedArray = this.selectedArray;
             }
             for (var i = 0; i < selectedArray.length; i++) {
-                if (this.queryParams.selectVerbose === "true" && this.$store.getters['editor/conceptMode'] !== true) {
+                if (this.queryParams.selectVerbose === "true" && this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true) {
                     if (this.queryParams.selectExport === "ctdlasn") {
                         var link;
                         if (EcRepository.shouldTryUrl(selectedArray[i]) === false && selectedArray[i].indexOf(window.repo.selectedServer) === -1) {
@@ -353,7 +353,7 @@ export default {
                 }
             }
             var currentFramework = this.framework;
-            if (this.queryParams.selectExport === "ctdlasn" && this.$store.getters['editor/conceptMode'] !== true) {
+            if (this.queryParams.selectExport === "ctdlasn" && this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true) {
                 if (this.framework != null) {
                     var link;
                     if (EcRepository.shouldTryUrl(this.framework.id) === false && this.framework.id.indexOf(window.repo.selectedServer) === -1) {
@@ -373,7 +373,7 @@ export default {
             var message = {
                 message: "selected",
                 selected: ary,
-                type: this.$store.getters['editor/conceptMode'] === true ? 'Concept' : 'Competency',
+                type: ((this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) ? 'Concept' : 'Competency'),
                 selectedFramework: currentFramework
             };
             message = JSON.parse(JSON.stringify(message));
@@ -525,7 +525,7 @@ export default {
             }
         },
         addAlignments: async function(targets, thing, relationType, allowSave) {
-            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true) {
+            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
                 return this.addConceptAlignments(targets, thing, relationType);
             }
             if (relationType === "ceasn:skillEmbodied" || relationType === "ceasn:abilityEmbodied" || relationType === "ceasn:knowledgeEmbodied" || relationType === "ceasn:taskEmbodied") {

@@ -462,6 +462,15 @@ export default {
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: object.id}});
                 }, appError);
+            } else if (this.$store.getters['editor/progressionMode']) {
+                this.$store.commit('app/selectDirectory', null);
+                EcConceptScheme.get(object.id, function(success) {
+                    me.$store.commit('editor/framework', success);
+                    me.$store.commit('editor/clearFrameworkCommentData');
+                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    me.$router.push({name: "progressionModel", params: {frameworkId: object.id}});
+                }, appError);
             } else {
                 this.$store.commit('app/selectDirectory', null);
                 EcFramework.get(object.id, function(success) {
