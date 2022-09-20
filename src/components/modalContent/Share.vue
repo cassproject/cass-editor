@@ -345,7 +345,7 @@ export default {
             clipStatus: 'ready',
             viewOptions: [
                 {
-                    label: 'Admin',
+                    label: 'Edit/Share',
                     value: 'admin',
                     disabled: false,
                     title: null
