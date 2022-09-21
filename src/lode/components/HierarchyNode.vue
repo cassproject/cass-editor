@@ -79,6 +79,7 @@
                                 :subview="subview"
                                 :id="'scroll-' + obj.shortId().split('/').pop()"
                                 :obj="changedObj ? changedObj : obj"
+                                :uri="obj.shortId()"
                                 @expand-event="onExpandEvent()"
                                 @edit-node-event="onEditNode()"
                                 @done-editing-node-event="onDoneEditingNode()"

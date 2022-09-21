@@ -395,10 +395,7 @@ export default {
         if (this.uri && this.$store.state.editor) {
             this.resolveNameFromUrl(this.uri);
         }
-        var lastSaved = this.originalThing["schema:dateModified"];
-        if (lastSaved) {
-            this.saved = "last saved " + new Date(lastSaved).toLocaleString();
-        }
+        this.load();
         if (this.obj && this.obj.shortId() === this.changedObject) {
             this.$store.commit('editor/changedObject', null);
         }
@@ -987,6 +984,10 @@ export default {
                     this.uri,
                     function(t) {
                         me.originalThing = t;
+                        var lastSaved = me.originalThing["schema:dateModified"];
+                        if (lastSaved) {
+                            me.saved = "last saved " + new Date(lastSaved).toLocaleString();
+                        }
                         if (!EcObject.isObject(t)) {
                             me.resolveNameFromUrl(me.uri);
                             me.uriAndNameOnly = true;
@@ -1020,6 +1021,10 @@ export default {
                     }, this.expandedObj["@type"][0]);
                 } else {
                     me.originalThing = this.obj;
+                    var lastSaved = this.originalThing["schema:dateModified"];
+                    if (lastSaved) {
+                        this.saved = "last saved " + new Date(lastSaved).toLocaleString();
+                    }
                     var allTypes = me.getAllTypes(this.obj);
                     if (this.obj.context != null && this.obj.context !== undefined) {
                         allTypes.push(this.obj.context);
@@ -1204,6 +1209,7 @@ export default {
                     }
                     rld["schema:dateModified"] = new Date().toISOString();
                     try {
+                        me.$store.commit('editor/changedObject', null);
                         await repo.saveTo(rld);
                         // Check timing token to make sure another save didn't occur while the previous save was going on.
                         if (timingToken !== this.saveTimingToken) {
@@ -1594,6 +1600,9 @@ export default {
             if (value) {
                 this.errorMessage = [];
             }
+        },
+        uri: function() {
+            this.load();
         },
         isSavingThing: function(value) {
             if (value) {

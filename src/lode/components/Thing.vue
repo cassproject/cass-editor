@@ -244,9 +244,7 @@ export default {
         if (this.clickToLoad === false) { this.load(); }
     },
     mounted: function() {
-        if (this.expandInModal) {
-            this.load();
-        }
+        this.load();
         if (this.uri && this.$store.state.editor) {
             this.resolveNameFromUrl(this.uri);
         }
@@ -1170,8 +1168,11 @@ export default {
                 this.showPossible = true;
             }
         },
+        uri: function() {
+            this.load();
+        },
         obj: function() {
-            if (this.obj && this.obj.shortId() !== this.originalThing.shortId()) {
+            if (this.obj && this.originalThing && this.obj.shortId() !== this.originalThing.shortId()) {
                 this.load();
             }
         }
