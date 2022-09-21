@@ -37,7 +37,7 @@
                         <!-- server tab -->
                         <div
                             class="column"
-                            v-if="!conceptMode">
+                            v-if="!conceptMode && !progressionMode">
                             <div
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'server'}">
@@ -56,7 +56,7 @@
                         <!-- text tab -->
                         <div
                             class="column"
-                            v-if="!conceptMode">
+                            v-if="!conceptMode && !progressionMode">
                             <div
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'text'}">
@@ -75,7 +75,7 @@
                         <!-- url tab -->
                         <div
                             class="column"
-                            v-if="!conceptMode">
+                            v-if="!conceptMode && !progressionMode">
                             <div
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'url'}">
@@ -105,6 +105,11 @@
                     v-if="importTransition === 'upload' && (!importFile || importFile.length === 0) && conceptMode"
                     class="is-size-5 has-text-dark">
                     Upload documents to transform into CaSS {{ queryParams.ceasnDataFields === 'true' ? 'Concept Schemes' : 'Taxonomies' }}.
+                </span>
+                <span
+                    v-if="importTransition === 'upload' && (!importFile || importFile.length === 0) && progressionMode"
+                    class="is-size-5 has-text-dark">
+                    Upload documents to transform into CaSS Progression Models.
                 </span>
                 <span
                     v-else-if="importTransition === 'process'"
@@ -237,6 +242,9 @@ export default {
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
         },
+        progressionMode: function() {
+            return this.$store.getters['editor/progressionMode'];
+        },
         importErrors: function() {
             return this.$store.getters['app/importErrors'];
         },
@@ -259,7 +267,7 @@ export default {
             return this.$store.getters['app/importStatus'];
         },
         frameworkSize: function() {
-            if (this.conceptMode) {
+            if (this.conceptMode || this.progressionMode) {
                 return null;
             }
             if (this.importFramework && this.importFramework.competency) {

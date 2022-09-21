@@ -55,6 +55,7 @@
                         <ImportFile
                             :importFile="importFile"
                             :conceptMode="conceptMode"
+                            :progressionMode="progressionMode"
                             :importTransition="importTransition"
                             v-if="importType === 'file'">
                             <template slot="import-file-title">
@@ -63,10 +64,13 @@
                                     <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
                                         Import a concept scheme
                                     </span>
-                                    <span v-else-if="conceptMode">
+                                    <span v-if="conceptMode && !(queryParams.ceasnDataFields === 'true')">
                                         Import a taxonomy
                                     </span>
-                                    <span v-else>Import a framework</span>
+                                    <span v-if="progressionMode">
+                                        Import a Progression Model
+                                    </span>
+                                    <span v-if="!conceptMode && !progressionMode">Import a framework</span>
                                     <span
 
                                         @click="showRightAside"
@@ -123,7 +127,7 @@
                                     <Hierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                         view="importPreview"
-                                        v-if="importFramework && !conceptMode"
+                                        v-if="importFramework && !conceptMode && !progressionMode"
                                         @done-loading-nodes="handleDoneLoading"
                                         @search-things="handleSearch($event)"
                                         @edit-multiple-event="onEditMultiple"
@@ -147,7 +151,7 @@
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                         view="import"
-                                        v-if="importFramework && conceptMode"
+                                        v-if="importFramework && conceptMode && !progressionMode"
                                         @done-loading-nodes="handleDoneLoading"
                                         @search-things="handleSearch($event)"
                                         @edit-multiple-event="onEditMultiple"
@@ -159,6 +163,22 @@
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
                                         :profile="ctdlAsnConceptProfile"
+                                        properties="tertiary" />
+                                    <ProgressionHierarchy
+                                        :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                        view="import"
+                                        v-if="importFramework && !conceptMode && progressionMode"
+                                        @done-loading-nodes="handleDoneLoading"
+                                        @search-things="handleSearch($event)"
+                                        @edit-multiple-event="onEditMultiple"
+                                        :container="importFramework"
+                                        containerType="ConceptScheme"
+                                        :viewOnly="false"
+                                        :isDraggable="true"
+                                        :repo="repo"
+                                        @selected-array="selectedArrayEvent"
+                                        :newFramework="true"
+                                        :profile="ctdlAsnProgressionLevelProfile"
                                         properties="tertiary" />
                                 </div>
                                 <!-- import light view -->
@@ -176,7 +196,7 @@
                                         :profile="containerProfile"
                                         properties="tertiary" />
                                     <Hierarchy
-                                        v-if="importFramework && !conceptMode"
+                                        v-if="importFramework && !conceptMode && !progressionMode"
                                         view="importLight"
                                         :container="importFramework"
                                         containerType="Framework"
@@ -197,7 +217,7 @@
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                         view="import"
-                                        v-if="importFramework && conceptMode"
+                                        v-if="importFramework && conceptMode && !progressionMode"
                                         :container="importFramework"
                                         containerType="ConceptScheme"
                                         :viewOnly="true"
@@ -206,12 +226,25 @@
                                         :newFramework="true"
                                         :profile="ctdlAsnConceptProfile"
                                         properties="tertiary" />
+                                    <ProgressionHierarchy
+                                        :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                        view="import"
+                                        v-if="importFramework && !conceptMode && progressionMode"
+                                        :container="importFramework"
+                                        containerType="ConceptScheme"
+                                        :viewOnly="true"
+                                        :repo="repo"
+                                        @selected-array="selectedArrayEvent"
+                                        :newFramework="true"
+                                        :profile="ctdlAsnProgressionLevelProfile"
+                                        properties="tertiary" />
                                 </div>
                             </template>
                         </ImportFile>
                         <!-- import from server -->
                         <ImportServer
                             :conceptMode="conceptMode"
+                            :progressionMode="progressionMode"
                             :importTransition="importTransition"
                             @import-case="handleImportFromTabs($event)"
                             v-if="importType === 'server'">
@@ -221,10 +254,15 @@
                                     <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
                                         Import a concept scheme
                                     </span>
-                                    <span v-else-if="conceptMode">
+                                    <span v-if="conceptMode && !(queryParams.ceasnDataFields === 'true')">
                                         Import a taxonomy
                                     </span>
-                                    <span v-else>Import a framework</span>
+                                    <span v-if="progressionMode">
+                                        Import a Progression Model
+                                    </span>
+                                    <span v-if="!conceptMode && !progressionMode">
+                                        Import a framework
+                                    </span>
                                     <span
                                         @click="showRightAside"
                                         class="button is-outlined is-primary is-pulled-right">
@@ -275,7 +313,7 @@
                                     <Hierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                         view="importPreview"
-                                        v-if="importFramework && !conceptMode"
+                                        v-if="importFramework && !conceptMode && !progressionMode"
                                         @done-loading-nodes="handleDoneLoading"
                                         @search-things="handleSearch($event)"
                                         @edit-multiple-event="onEditMultiple"
@@ -299,7 +337,7 @@
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                         view="import"
-                                        v-if="importFramework && conceptMode"
+                                        v-if="importFramework && conceptMode && !progressionMode"
                                         @done-loading-nodes="handleDoneLoading"
                                         @search-things="handleSearch($event)"
                                         @edit-multiple-event="onEditMultiple"
@@ -311,6 +349,22 @@
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
                                         :profile="ctdlAsnConceptProfile"
+                                        properties="tertiary" />
+                                    <ProgressionHierarchy
+                                        :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                        view="import"
+                                        v-if="importFramework && !conceptMode && progressionMode"
+                                        @done-loading-nodes="handleDoneLoading"
+                                        @search-things="handleSearch($event)"
+                                        @edit-multiple-event="onEditMultiple"
+                                        :container="importFramework"
+                                        containerType="ConceptScheme"
+                                        :viewOnly="false"
+                                        :isDraggable="true"
+                                        :repo="repo"
+                                        @selected-array="selectedArrayEvent"
+                                        :newFramework="true"
+                                        :profile="ctdlAsnProgressionLevelProfile"
                                         properties="tertiary" />
                                 </div>
                                 <!-- import light view -->
@@ -328,7 +382,7 @@
                                         :profile="containerProfile"
                                         properties="tertiary" />
                                     <Hierarchy
-                                        v-if="importFramework && !conceptMode"
+                                        v-if="importFramework && !conceptMode && !progressionMode"
                                         view="importLight"
                                         :container="importFramework"
                                         containerType="Framework"
@@ -349,7 +403,7 @@
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                         view="import"
-                                        v-if="importFramework && conceptMode"
+                                        v-if="importFramework && conceptMode && !progressionMode"
                                         :container="importFramework"
                                         containerType="ConceptScheme"
                                         :viewOnly="true"
@@ -358,11 +412,24 @@
                                         :newFramework="true"
                                         :profile="ctdlAsnConceptProfile"
                                         properties="tertiary" />
+                                    <ProgressionHierarchy
+                                        :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                        view="import"
+                                        v-if="importFramework && !conceptMode && progressionMode"
+                                        :container="importFramework"
+                                        containerType="ConceptScheme"
+                                        :viewOnly="true"
+                                        :repo="repo"
+                                        @selected-array="selectedArrayEvent"
+                                        :newFramework="true"
+                                        :profile="ctdlAsnProgressionLevelProfile"
+                                        properties="tertiary" />
                                 </div>
                             </template>
                         </ImportServer>
                         <ImportUrl
                             :conceptMode="conceptMode"
+                            :progressionMode="progressionMode"
                             :importTransition="importTransition"
                             v-if="importType === 'url'">
                             <template slot="import-url-title">
@@ -371,10 +438,13 @@
                                     <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
                                         Import a concept scheme
                                     </span>
-                                    <span v-else-if="conceptMode">
+                                    <span v-if="conceptMode && !(queryParams.ceasnDataFields === 'true')">
                                         Import a taxonomy
                                     </span>
-                                    <span v-else>Import a framework</span>
+                                    <span v-if="progressionMode">
+                                        Import a Progression Model
+                                    </span>
+                                    <span v-if="!conceptMode && !progressionMode">Import a framework</span>
                                     <span
                                         @click="showRightAside"
                                         class="button is-outlined is-primary is-pulled-right">
@@ -425,7 +495,7 @@
                                     <Hierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                         view="importPreview"
-                                        v-if="importFramework && !conceptMode"
+                                        v-if="importFramework && !conceptMode && !progressionMode"
                                         @done-loading-nodes="handleDoneLoading"
                                         @search-things="handleSearch($event)"
                                         @edit-multiple-event="onEditMultiple"
@@ -449,7 +519,7 @@
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                         view="import"
-                                        v-if="importFramework && conceptMode"
+                                        v-if="importFramework && conceptMode && !progressionMode"
                                         @done-loading-nodes="handleDoneLoading"
                                         @search-things="handleSearch($event)"
                                         @edit-multiple-event="onEditMultiple"
@@ -461,6 +531,22 @@
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
                                         :profile="ctdlAsnConceptProfile"
+                                        properties="tertiary" />
+                                    <ProgressionHierarchy
+                                        :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                        view="import"
+                                        v-if="importFramework && !conceptMode && progressionMode"
+                                        @done-loading-nodes="handleDoneLoading"
+                                        @search-things="handleSearch($event)"
+                                        @edit-multiple-event="onEditMultiple"
+                                        :container="importFramework"
+                                        containerType="ConceptScheme"
+                                        :viewOnly="false"
+                                        :isDraggable="true"
+                                        :repo="repo"
+                                        @selected-array="selectedArrayEvent"
+                                        :newFramework="true"
+                                        :profile="ctdlAsnProgressionLevelProfile"
                                         properties="tertiary" />
                                 </div>
                                 <!-- import light view -->
@@ -478,7 +564,7 @@
                                         :profile="containerProfile"
                                         properties="tertiary" />
                                     <Hierarchy
-                                        v-if="importFramework && !conceptMode"
+                                        v-if="importFramework && !conceptMode && !progressionMode"
                                         view="importLight"
                                         :container="importFramework"
                                         containerType="Framework"
@@ -499,7 +585,7 @@
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                         view="import"
-                                        v-if="importFramework && conceptMode"
+                                        v-if="importFramework && conceptMode && !progressionMode"
                                         :container="importFramework"
                                         containerType="ConceptScheme"
                                         :viewOnly="true"
@@ -508,11 +594,24 @@
                                         :newFramework="true"
                                         :profile="ctdlAsnConceptProfile"
                                         properties="tertiary" />
+                                    <ProgressionHierarchy
+                                        :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                        view="import"
+                                        v-if="importFramework && !conceptMode && progressionMode"
+                                        :container="importFramework"
+                                        containerType="ConceptScheme"
+                                        :viewOnly="true"
+                                        :repo="repo"
+                                        @selected-array="selectedArrayEvent"
+                                        :newFramework="true"
+                                        :profile="ctdlAsnProgressionLevelProfile"
+                                        properties="tertiary" />
                                 </div>
                             </template>
                         </ImportUrl>
                         <ImportText
                             :conceptMode="conceptMode"
+                            :progressionMode="progressionMode"
                             :importTransition="importTransition"
                             v-if="importType === 'text'">
                             <template slot="import-text-title">
@@ -521,10 +620,15 @@
                                     <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
                                         Import a concept scheme
                                     </span>
-                                    <span v-else-if="conceptMode">
+                                    <span v-if="conceptMode && !(queryParams.ceasnDataFields === 'true')">
                                         Import a taxonomy
                                     </span>
-                                    <span v-else>Import a framework</span>
+                                    <span v-if="progressionMode">
+                                        Import a Progression Model
+                                    </span>
+                                    <span v-if="!conceptMode && !progressionMode">
+                                        Import a framework
+                                    </span>
                                     <span
                                         @click="showRightAside"
                                         class="button is-outlined is-primary is-pulled-right">
@@ -554,7 +658,7 @@
                                         properties="tertiary"
                                         view="importLight" />
                                     <Hierarchy
-                                        v-if="importFramework && !conceptMode"
+                                        v-if="importFramework && !conceptMode && !progressionMode"
                                         view="importLight"
                                         :container="importFramework"
                                         containerType="Framework"
@@ -575,7 +679,7 @@
                                     <ConceptHierarchy
                                         :class="{'is-hidden': !hierarchyIsdoneLoading}"
                                         view="import"
-                                        v-if="importFramework && conceptMode"
+                                        v-if="importFramework && conceptMode && !progressionMode"
                                         :container="importFramework"
                                         containerType="ConceptScheme"
                                         :viewOnly="true"
@@ -583,6 +687,18 @@
                                         @selected-array="selectedArrayEvent"
                                         :newFramework="true"
                                         :profile="ctdlAsnConceptProfile"
+                                        properties="tertiary" />
+                                    <ProgressionHierarchy
+                                        :class="{'is-hidden': !hierarchyIsdoneLoading}"
+                                        view="import"
+                                        v-if="importFramework && !conceptMode && progressionMode"
+                                        :container="importFramework"
+                                        containerType="ConceptScheme"
+                                        :viewOnly="true"
+                                        :repo="repo"
+                                        @selected-array="selectedArrayEvent"
+                                        :newFramework="true"
+                                        :profile="ctdlAsnProgressionLevelProfile"
                                         properties="tertiary" />
                                 </div>
                             </template>
@@ -609,7 +725,7 @@
                                     <button
                                         @click="showImportModal('pdf')"
                                         class="button  is-warning is-light is-outlined is-small"
-                                        v-if="!conceptMode">
+                                        v-if="!conceptMode && !progressionMode">
                                         <span
                                             title="PDF files are experimentally supported. Click to learn more."
                                             class="icon">
@@ -622,7 +738,7 @@
                                     <button
                                         @click="showImportModal('docx')"
                                         class="button  is-warning is-light is-outlined is-small"
-                                        v-if="!conceptMode">
+                                        v-if="!conceptMode && !progressionMode">
                                         <span
                                             title="Word documents and Docx files are experimental. Click to learn more."
                                             class="icon">
@@ -635,7 +751,7 @@
                                     <button
                                         @click="showImportModal('html')"
                                         class="button  is-warning is-light is-outlined is-small"
-                                        v-if="!conceptMode">
+                                        v-if="!conceptMode && !progressionMode">
                                         <span
                                             title="HTML files are experimentally supported. Click to learn more."
                                             class="icon is-pulled-right">
@@ -660,7 +776,7 @@
                                     <button
                                         @click="showImportModal('xml')"
                                         class="button  is-success is-light is-outlined is-small"
-                                        v-if="!conceptMode">
+                                        v-if="!conceptMode && !progressionMode">
                                         <span
                                             title="XML files are supported, click to learn more."
                                             class="icon is-pulled-right">
@@ -688,7 +804,7 @@
                             </p>
                             <ul
                                 class="cat__bullet-list is-size-6"
-                                v-if="!conceptMode">
+                                v-if="!conceptMode && !progressionMode">
                                 <li>
                                     Click inside the “Files to Upload” box or drag and drop a file inside the dashed box.
                                 </li>
@@ -881,6 +997,7 @@ import ThingEditing from '@/lode/components/ThingEditing.vue';
 import ImportTabs from '@/components/import/ImportTabs.vue';
 import ImportDetails from '@/components/import/ImportDetails.vue';
 import ConceptHierarchy from '@/views/conceptScheme/ConceptHierarchy.vue';
+import ProgressionHierarchy from '@/views/progressionModel/ProgressionHierarchy.vue';
 import getLevelsAndRelations from '@/mixins/getLevelsAndRelations.js';
 import imports from '@/mixins/import.js';
 export default {
@@ -902,6 +1019,7 @@ export default {
         ImportTabs,
         ImportDetails,
         ConceptHierarchy,
+        ProgressionHierarchy,
         ImportFile,
         ImportServer,
         ImportUrl,
@@ -938,6 +1056,9 @@ export default {
         },
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
+        },
+        progressionMode: function() {
+            return this.$store.getters['editor/progressionMode'];
         },
         showImportActions: function() {
             if (this.importTransition === 'detail' ||
@@ -1089,6 +1210,9 @@ export default {
             if (this.conceptMode) {
                 return this.ctdlAsnConceptSchemeProfile;
             }
+            if (this.progressionMode) {
+                return this.ctdlAsnProgressionModelProfile;
+            }
             if (this.isT3Import) {
                 return this.t3FrameworkProfile;
             } else if (this.queryParams.ceasnDataFields === 'true') {
@@ -1099,6 +1223,9 @@ export default {
         hierarchyProfile: function() {
             if (this.conceptMode) {
                 return this.ctdlAsnConceptProfile;
+            }
+            if (this.progressionMode) {
+                return this.ctdlAsnProgressionLevelProfile;
             }
             if (this.isT3Import) {
                 return this.t3CompetencyProfile;

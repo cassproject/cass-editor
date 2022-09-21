@@ -219,6 +219,7 @@ export default {
             }
             this.$store.commit('editor/framework', await EcRepository.get(framework.url));
             if (this.dynamicModalContent.objectType === "Concept") {
+                // TODO: check for subType=Progression and route to progressionModel
                 this.$store.commit('editor/conceptMode', true);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: framework.url}});
             }
