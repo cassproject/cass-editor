@@ -229,6 +229,10 @@ export default {
             type: Boolean,
             default: false
         },
+        progressionMode: {
+            type: Boolean,
+            default: false
+        },
         importFile: {
             type: Array,
             default: () => { return []; }

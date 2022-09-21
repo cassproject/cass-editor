@@ -24,6 +24,11 @@
                     </span>
                     <span
                         class="pr-2"
+                        v-else-if="newFramework && shortType === 'ProgressionModel'">
+                        Create Progression Model
+                    </span>
+                    <span
+                        class="pr-2"
                         v-else>Edit {{ shortType }}</span>
                     <span class="">
                         <span
@@ -186,6 +191,17 @@
                             </span>
                             <span v-else>
                                 Cancel Create Taxonomy
+                            </span>
+                        </template>
+                        <template v-else-if="newFramework && shortType === 'ProgressionModel'">
+                            <span
+                                class="icon delete-thing">
+                                <i
+                                    class="fa fa-times"
+                                    aria-hidden="true" />
+                            </span>
+                            <span>
+                                Cancel Create Progression Model
                             </span>
                         </template>
                         <template v-else>
@@ -515,6 +531,14 @@ export default {
                 return null;
             }
             let type = this.expandedThing["@type"][0].split("/").pop();
+            if (type === "ConceptScheme" && this.expandedThing["https://schema.cassproject.org/0.4/skos/subType"] && this.expandedThing["https://schema.cassproject.org/0.4/skos/subType"][0] &&
+                this.expandedThing["https://schema.cassproject.org/0.4/skos/subType"][0]["@value"] === "Progression") {
+                type = "ProgressionModel";
+            }
+            if (type === "Concept" && this.expandedThing["https://schema.cassproject.org/0.4/skos/subType"] && this.expandedThing["https://schema.cassproject.org/0.4/skos/subType"][0] &&
+                this.expandedThing["https://schema.cassproject.org/0.4/skos/subType"][0]["@value"] === "Progression") {
+                type = "ProgressionLevel";
+            }
             if (type === "Framework" && this.expandedThing["https://schema.cassproject.org/0.4/subType"] && this.expandedThing["https://schema.cassproject.org/0.4/subType"][0] &&
                 this.expandedThing["https://schema.cassproject.org/0.4/subType"][0]["@value"] === "Collection") {
                 type = "Collection";
@@ -961,6 +985,10 @@ export default {
                 } else if (this.shortType === "Concept") {
                     this.$store.commit('app/showModal', {component: 'DeleteConceptConfirm'});
                 } else if (this.shortType === "ConceptScheme") {
+                    this.$store.commit('app/showModal', {component: 'DeleteConceptSchemeConfirm'});
+                } else if (this.shortType === "ProgressionLevel") {
+                    this.$store.commit('app/showModal', {component: 'DeleteConceptConfirm'});
+                } else if (this.shortType === "ProgressionModel") {
                     this.$store.commit('app/showModal', {component: 'DeleteConceptSchemeConfirm'});
                 } else if (this.shortType === "Framework" || this.shortType === "Collection") {
                     this.$store.commit('app/showModal', {component: 'DeleteFrameworkConfirm'});
@@ -1423,14 +1451,14 @@ export default {
         },
         displayHeading: function(heading) {
             if (this.showAlways === true && this.showPossible === false) {
-                if (this.alwaysProperties[heading] && EcObject.keys(this.alwaysProperties[heading]).length > 0) {
+                if (this.alwaysProperties[heading] && this.alwaysProperties[heading] && EcObject.keys(this.alwaysProperties[heading]) && EcObject.keys(this.alwaysProperties[heading]).length > 0) {
                     return heading;
                 }
             } else if (this.showAlways === false && this.showPossible == null) {
-                if (this.viewProperties[heading] && EcObject.keys(this.viewProperties[heading]).length > 0) {
+                if (this.viewProperties[heading] && this.viewProperties[heading] && EcObject.keys(this.viewProperties[heading]) && EcObject.keys(this.viewProperties[heading]).length > 0) {
                     return heading;
                 }
-            } else if (this.showPossible === true && EcObject.keys(this.possibleProperties[heading]).length > 0) {
+            } else if (this.showPossible === true && this.possibleProperties[heading] && EcObject.keys(this.possibleProperties[heading]) && EcObject.keys(this.possibleProperties[heading]).length > 0) {
                 return heading;
             }
             return null;
@@ -1607,7 +1635,13 @@ export default {
         changedObject: async function() {
             if (!this.originalThing) { return; }
             if (this.shortType && this.changedObject === this.originalThing.shortId()) {
-                var type = "Ec" + this.shortType;
+                let type = "Ec" + this.shortType;
+                if (type === "EcProgressionModel") {
+                    type = "EcConceptScheme";
+                }
+                if (type === "EcProgressionLevel") {
+                    type = "EcConcept";
+                }
                 if (type) {
                     var thing = await window[type].get(this.changedObject);
                     this.obj = thing;
@@ -1623,14 +1657,14 @@ export default {
         },
         originalThing: function() {
             if (this.originalThing) {
-                if (this.shortType === "Competency" || this.shortType === "Concept" || this.shortType === "Level") {
+                if (this.shortType === "Competency" || this.shortType === "Concept" || this.shortType === "ProgressionLevel" || this.shortType === "Level") {
                     this.$store.commit('editor/selectedCompetency', this.originalThing);
                 }
             }
         },
         shortType() {
             if (this.originalThing && this.shortType) {
-                if (this.shortType === "Competency" || this.shortType === "Concept" || this.shortType === "Level") {
+                if (this.shortType === "Competency" || this.shortType === "Concept" || this.shortType === "ProgressionLevel" || this.shortType === "Level") {
                     this.$store.commit('editor/selectedCompetency', this.originalThing);
                 }
             }
