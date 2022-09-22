@@ -356,8 +356,6 @@ npm run serve
 * Increment version in package.json
 * `npm run test:unit`
 * Document code coverage output by the previous step.
-* Push changes to dev on gitlab
-* Merge into qa and master
-* Push gitlab master branch to github
+* Push to master branch on github
 
 After github finishes deploying to the gh-pages branch, the cass-editor pointer can be updated in the CaSS repository.
