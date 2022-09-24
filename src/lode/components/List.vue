@@ -571,7 +571,7 @@ export default {
             } else if (this.paramObj && (this.searchTerm !== "" || !this.displayFirst || this.displayFirst.length === 0)) {
                 var me = this;
                 var localParamObj = Object.assign({}, this.paramObj);
-                if (me.searchTerm != null && me.searchTerm !== "") { delete paramObj.sort; }
+                if (me.searchTerm != null && me.searchTerm !== "") { delete localParamObj.sort; }
                 if (me.nonDirectoryResults) {
                     this.start += this.paramObj.size;
                 }
@@ -651,7 +651,7 @@ export default {
             var me = this;
             this.searchingForCompetencies = true;
             var subLocalParamObj = Object.assign({}, me.paramObj);
-            if (me.searchTerm != null && me.searchTerm !== "") { delete paramObj.sort; }
+            if (me.searchTerm != null && me.searchTerm !== "") { delete subLocalParamObj.sort; }
             subLocalParamObj.start = me.subStart;
             if (subLocalParamObj.sort.indexOf("dcterms:title") !== -1) {
                 subLocalParamObj.sort = subLocalParamObj.sort.replace('dcterms:title', 'skos:prefLabel');
