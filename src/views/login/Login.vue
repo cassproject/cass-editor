@@ -194,6 +194,9 @@ export default {
             EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
         },
         findLinkedPersonPersonSearchSuccess: function(ecRemoteLda) {
+            if (!EcArray.isArray(ecRemoteLda)) {
+                ecRemoteLda = [ecRemoteLda];
+            }
             appLog("Linked person person search success: ");
             appLog(ecRemoteLda);
             this.identityToLinkToPerson = EcIdentityManager.default.ids[0];
@@ -223,11 +226,7 @@ export default {
         },
         findLinkedPersonForIdentity: function() {
             appLog("Finding linked person for identity...");
-            let identFingerprint = EcIdentityManager.default.ids[0].ppk.toPk().fingerprint();
-            let paramObj = {};
-            paramObj.size = this.PERSON_SEARCH_SIZE;
-            window.repo.searchWithParams("@type:Person AND @id:\"" + identFingerprint + "\"", paramObj, null,
-                this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
+            window.EcPerson.getByPk(window.repo, window.EcIdentityManager.default.ids[0].ppk.toPk(), this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
         },
         handleCreateAccountFetchIdentitySuccess: function() {
             appLog("Creating new account identity object...");

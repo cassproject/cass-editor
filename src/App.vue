@@ -277,13 +277,12 @@ export default {
         },
         findLinkedPersonForIdentity: function() {
             appLog("Finding linked person for identity...");
-            let identFingerprint = EcIdentityManager.default.ids[0].ppk.toPk().fingerprint();
-            let paramObj = {};
-            paramObj.size = 10000;
-            window.repo.searchWithParams("@type:Person AND @id:\"" + identFingerprint + "\"", paramObj, null,
-                this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
+            window.EcPerson.getByPk(window.repo, window.EcIdentityManager.default.ids[0].ppk.toPk(), this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
         },
         findLinkedPersonPersonSearchSuccess(ecRemoteLda) {
+            if (!EcArray.isArray(ecRemoteLda)) {
+                ecRemoteLda = [ecRemoteLda];
+            }
             appLog("Linked person person search success: ");
             appLog(ecRemoteLda);
             let matchingPersonRecordFound = false;

@@ -237,7 +237,8 @@
                     :expandAll="expanded==true"
                     :parentChecked="false"
                     :shiftKey="shiftKey"
-                    :arrowKey="arrowKey" />
+                    :arrowKey="arrowKey"
+                    :largeNumberOfItems="hasLargeNumberOfItems" />
             </draggable>
         </template>
     </div>
@@ -296,6 +297,7 @@ export default {
             selectedArray: [],
             selectButtonText: null,
             expanded: true,
+            hasLargeNumberOfItems: false,
             isDraggable: true,
             shiftKey: false,
             arrowKey: null,
@@ -334,11 +336,27 @@ export default {
             if (!this.once) return this.structure;
             appLog("Computing hierarchy.");
             var precache = [];
-            if (this.container["skos:hasTopConcept"] != null) { precache = precache.concat(this.container["skos:hasTopConcept"]); }
+            if (this.container["skos:hasTopConcept"] != null) {
+                precache = precache.concat(this.container["skos:hasTopConcept"]);
+            }
             if (precache.length > 0) {
-                this.repo.multiget(precache, function(success) {
-                    me.computeHierarchy();
-                }, appError);
+                if (this.container["skos:hasTopConcept"] != null) {
+                    EcConcept.search(this.repo, "skos\\:inScheme:\"" + this.container.shortId() + "\"", function(results) {
+                        if (results.length > 200) {
+                            me.hasLargeNumberOfItems = true;
+                        }
+                        if (me.hasLargeNumberOfItems) {
+                            me.expanded = false;
+                        }
+                        me.repo.multiget(precache, function(success) {
+                            me.computeHierarchy();
+                        }, appError);
+                    }, null, {size: 10000});
+                } else {
+                    this.repo.multiget(precache, function(success) {
+                        me.computeHierarchy();
+                    }, appError);
+                }
             } else {
                 me.computeHierarchy();
             }
