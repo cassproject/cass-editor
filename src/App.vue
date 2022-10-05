@@ -148,19 +148,21 @@ export default {
                         this.$store.commit('app/showModal', {component: 'MessageOfTheDay'});
                     }
                 }
-                try {
-                    window.EcIdentityManager.default.ids[0].displayName = (await window.EcPerson.getByPk(r, window.EcIdentityManager.default.ids[0].ppk.toPk())).getName();
-                    if (loginInfo.ssoAdditionalPublicKeys != null) {
-                        for (let i = 0; i < loginInfo.ssoAdditionalPublicKeys.length; i++) {
-                            let ppk = window.EcPpkFacade.fromPem(loginInfo.ssoAdditionalPublicKeys[i]);
-                            let ident = new window.EcIdentity();
-                            ident.displayName = (await window.EcPerson.getByPk(r, ppk.toPk())).getName();
-                            ident.ppk = ppk;
-                            window.EcIdentityManager.default.addIdentity(ident);
+                let pers = (await window.EcPerson.getByPk(r, window.EcIdentityManager.default.ids[0].ppk.toPk()));
+                if (pers != null) {
+                    window.EcIdentityManager.default.ids[0].displayName = pers.getName();
+                }
+                if (loginInfo.ssoAdditionalPublicKeys != null) {
+                    for (let i = 0; i < loginInfo.ssoAdditionalPublicKeys.length; i++) {
+                        let ppk = window.EcPpkFacade.fromPem(loginInfo.ssoAdditionalPublicKeys[i]);
+                        let ident = new window.EcIdentity();
+                        let per = (await window.EcPerson.getByPk(r, ppk.toPk()));
+                        if (per != null) {
+                            ident.displayName = per.getName();
                         }
+                        ident.ppk = ppk;
+                        window.EcIdentityManager.default.addIdentity(ident);
                     }
-                } catch (ex) {
-                    console.error(ex);
                 }
             });
             window.repo = r;
