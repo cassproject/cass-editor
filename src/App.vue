@@ -130,8 +130,12 @@ export default {
                     }
                     me.$store.commit('app/setCuratedPlugins', plugins);
                 }
-            }, appError, (loginInfo) => {
+            }, appError, async(loginInfo) => {
                 this.$store.commit('user/repositorySsoOptions', loginInfo);
+                if (loginInfo.ssoPublicKey != null && loginInfo.ssoLogin == null) {
+                    this.$store.commit('featuresEnabled/loginEnabled', false);
+                    this.$store.commit('featuresEnabled/userManagementEnabled', false);
+                }
                 if (loginInfo.ssoLogin != null) {
                     this.$store.commit('featuresEnabled/apiLoginEnabled', true);
                 }
@@ -143,6 +147,20 @@ export default {
                     if (loginInfo.motd.message) {
                         this.$store.commit('app/showModal', {component: 'MessageOfTheDay'});
                     }
+                }
+                try {
+                    window.EcIdentityManager.default.ids[0].displayName = (await window.EcPerson.getByPk(r, window.EcIdentityManager.default.ids[0].ppk.toPk())).getName();
+                    if (loginInfo.ssoAdditionalPublicKeys != null) {
+                        for (let i = 0; i < loginInfo.ssoAdditionalPublicKeys.length; i++) {
+                            let ppk = window.EcPpkFacade.fromPem(loginInfo.ssoAdditionalPublicKeys[i]);
+                            let ident = new window.EcIdentity();
+                            ident.displayName = (await window.EcPerson.getByPk(r, ppk.toPk())).getName();
+                            ident.ppk = ppk;
+                            window.EcIdentityManager.default.addIdentity(ident);
+                        }
+                    }
+                } catch (ex) {
+                    console.error(ex);
                 }
             });
             window.repo = r;

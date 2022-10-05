@@ -1,8 +1,10 @@
 <template>
     <aside
         id="app-side-nav-bar"
-        :class="{'is-narrow': !showSideNav}"
-        class="menu has-background-primary has-text-white">
+        :class="{'is-narrow': !showSideNav,
+                 'menu':true,
+                 'has-background-primary':true,
+                 'has-text-white':true}">
         <div class="">
             <!--CaSS Logo-->
             <router-link
@@ -41,12 +43,24 @@
                     class="cass-editor__logged-in-user-icon">
                     <span
                         :title="'Signed in as: ' + displayName">
-                        {{ loggedOnPerson.email.slice(0, 2) }}
+                        {{ loggedOnPerson.email != null ? loggedOnPerson.email.slice(0, 2) : "ME" }}
                     </span>
                 </div>
-                <h3 class="is-size-3 has-text-weight-semibold">
+                <h3
+                    v-if="availableIdentities.length < 2"
+                    class="is-size-3 has-text-weight-semibold">
                     <span v-if="showSideNav">{{ displayName }}</span>
                 </h3>
+                <select class="is-size-4 has-text-weight-semibold"
+                    v-else
+                    @change="setIdentity($event.target.value)">
+                    <option
+                        v-for="ident in availableIdentities"
+                        :value="ident.ppk.toPk().toPem()"
+                        :key="ident">
+                        {{ ident.displayName }}
+                    </option>
+                </select>
                 <p
                     v-if="showSideNav"
                     class="is-size-6">
@@ -462,6 +476,7 @@ export default {
             casslogoSquare: casslogoSquare,
             pluginLinkMap: {},
             addFrameworkOrDirectory: false,
+            availableIdentities: [],
             addNewDirectory: false,
             directoryName: ""
         };
@@ -472,6 +487,19 @@ export default {
                 this.addFrameworkOrDirectory = false;
                 this.addNewDirectory = false;
             }
+        },
+        setIdentity: async function(identity) {
+            for (let i = 0; i < window.EcIdentityManager.default.ids.length; i++) {
+                if (window.EcIdentityManager.default.ids[i].ppk.toPk().toPem() === identity) {
+                    window.EcIdentityManager.default.ids.unshift(window.EcIdentityManager.default.ids.splice(i, 1)[0]);
+                    console.log(identity);
+                    break;
+                }
+            }
+            this.identityDropdownActive = false;
+            let person = await window.EcPerson.getByPk(window.repo, window.EcIdentityManager.default.ids[0].ppk.toPk());
+            this.$store.commit('user/loggedOnPerson', person);
+            this.availableIdentities = EcIdentityManager.default.ids;
         },
         setLaunchPluginValues(pluginShortcut) {
             this.$store.commit('app/pluginToLaunch', pluginShortcut);
@@ -545,6 +573,9 @@ export default {
         }
     },
     watch: {
+        loggedOnPerson: function() {
+            this.availableIdentities = EcIdentityManager.default.ids;
+        },
         pluginLastUpdate: function() {
             this.buildPluginList(this.buildPluginListComplete);
         }
@@ -617,6 +648,7 @@ export default {
     mounted() {
         this.buildPluginList(this.buildPluginListComplete);
         this.$store.dispatch('app/refreshDirectories');
+        this.availableIdentities = EcIdentityManager.default.ids;
     }
 };
 </script>
