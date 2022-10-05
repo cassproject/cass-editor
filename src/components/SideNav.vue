@@ -492,7 +492,6 @@ export default {
             for (let i = 0; i < window.EcIdentityManager.default.ids.length; i++) {
                 if (window.EcIdentityManager.default.ids[i].ppk.toPk().toPem() === identity) {
                     window.EcIdentityManager.default.ids.unshift(window.EcIdentityManager.default.ids.splice(i, 1)[0]);
-                    console.log(identity);
                     break;
                 }
             }
