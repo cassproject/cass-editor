@@ -2614,8 +2614,36 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Note"}],
                     "heading": "Documentation"
                 },
-                "https://purl.org/ctdlasn/terms/precedes": {
-                    "@id": "https://purl.org/ctdlasn/terms/precedes",
+                "https://purl.org/ctdlasn/terms/inProgressionModel": {
+                    "@id": "https://purl.org/ctdlasn/terms/inProgressionModel",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes": [
+                        {
+                            "@id": "http://schema.cassproject.org/0.4/skos/Concept"
+                        }
+                    ],
+                    "http://schema.org/rangeIncludes": [
+                        {
+                            "@id": "https://schema.cassproject.org/0.4/skos/ConceptScheme"
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {
+                            "@language": "en", "@value": "Progression Model to which this Progression Level belongs."
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label":
+                    [
+                        {
+                            "@language": "en", "@value": "In Progression Model"
+                        }
+                    ],
+                    "heading": "General",
+                    "max": 1
+                },
+                "https://purl.org/ctdl/terms/precedes": {
+                    "@id": "https://purl.org/ctdl/terms/precedes",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes": [
                         {
@@ -2639,10 +2667,11 @@ export default {
                             "@language": "en", "@value": "Precedes"
                         }
                     ],
-                    "heading": "General"
+                    "heading": "General",
+                    "max": 1
                 },
-                "https://purl.org/ctdlasn/terms/precededBy": {
-                    "@id": "https://purl.org/ctdlasn/terms/precededBy",
+                "https://purl.org/ctdl/terms/precededBy": {
+                    "@id": "https://purl.org/ctdl/terms/precededBy",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes": [
                         {
@@ -2666,7 +2695,8 @@ export default {
                             "@language": "en", "@value": "Preceded By"
                         }
                     ],
-                    "heading": "General"
+                    "heading": "General",
+                    "max": 1
                 },
                 "headings": ["General", "Other Labels", "Documentation", "Connections", "Keys"],
                 "primaryProperties": [
@@ -2675,8 +2705,9 @@ export default {
                     "http://www.w3.org/2004/02/skos/core#notation"
                 ],
                 "secondaryProperties": [
-                    "https://purl.org/ctdlasn/terms/precedes",
-                    "https://purl.org/ctdlasn/terms/precededBy"
+                    "https://purl.org/ctdlasn/terms/inProgressionModel",
+                    "https://purl.org/ctdl/terms/precedes",
+                    "https://purl.org/ctdl/terms/precededBy"
                 ],
                 "tertiaryProperties": [
                     "@id",
