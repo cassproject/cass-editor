@@ -778,6 +778,23 @@ export default {
                     "noTextEditing": "true",
                     "heading": "General"
                 },
+                "https://purl.org/ctdlasn/terms/publicationStatusType": {
+                    "@id": "https://purl.org/ctdlasn/terms/publicationStatusType",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                        [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Publication status of the source competency. The original competency may be drafted, published, or depreciated outside of this system."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publication Status"}],
+                    "options": [
+                        {display: "Draft", val: "https://credreg.net/ctdlasn/vocabs/publicationStatus/Draft"},
+                        {display: "Published", val: "https://credreg.net/ctdlasn/vocabs/publicationStatus/Published"},
+                        {display: "Deprecated", val: "https://credreg.net/ctdlasn/vocabs/publicationStatus/Deprecated"}
+                    ],
+                    "max": 1,
+                    "heading": "Context"
+                },
                 "https://purl.org/ctdlasn/terms/listID": {
                     "@id": "https://purl.org/ctdlasn/terms/listID",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1377,6 +1394,7 @@ export default {
                     "https://purl.org/ctdlasn/terms/isVersionOf",
                     "https://purl.org/ctdlasn/terms/comprisedOf",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
+                    "https://purl.org/ctdlasn/terms/publicationStatusType",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
                     "https://purl.org/ctdlasn/terms/alignFrom",
                     "https://purl.org/ctdlasn/terms/alignTo",
