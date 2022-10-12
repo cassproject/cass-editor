@@ -91,13 +91,13 @@
                                             class="fa fa-check" />
                                     </div>
                                     <p class="step-details is-hidden-touch">
+                                        <span :class="[{'has-text-primary has-text-weight-bold': index === step}, { 'has-text-success': step > index}, { 'has-text-medium': step < index}]">
+                                            {{ item.description }}
+                                        </span>
                                         <span
                                             v-if="item.complete"
                                             class="icon has-text-success">
                                             <i class="fa fa-check" />
-                                        </span>
-                                        <span :class="[{'has-text-primary has-text-weight-bold': index === step}, { 'has-text-success': step > index}, { 'has-text-medium': step < index}]">
-                                            {{ item.description }}
                                         </span>
                                     </p>
                                 </div>
@@ -135,7 +135,7 @@
                             </div>
                             <!-- search -->
                             <div
-                                class="crosswalk__search column is-8 is-offset-2"
+                                class="crosswalk__search column is-8 is-offset-1"
                                 v-if="step < 2 ">
                                 <div class="container">
                                     <SearchBar
