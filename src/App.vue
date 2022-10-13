@@ -148,17 +148,25 @@ export default {
                         this.$store.commit('app/showModal', {component: 'MessageOfTheDay'});
                     }
                 }
-                let pers = (await window.EcPerson.getByPk(r, window.EcIdentityManager.default.ids[0].ppk.toPk()));
-                if (pers != null) {
-                    window.EcIdentityManager.default.ids[0].displayName = pers.getName();
+                try {
+                    let pers = (await window.EcPerson.getByPk(r, window.EcIdentityManager.default.ids[0].ppk.toPk()));
+                    if (pers != null) {
+                        window.EcIdentityManager.default.ids[0].displayName = pers.getName();
+                    }
+                } catch (ex) {
+                    window.EcIdentityManager.default.ids[0].displayName = "Unknown Person";
                 }
                 if (loginInfo.ssoAdditionalPublicKeys != null) {
                     for (let i = 0; i < loginInfo.ssoAdditionalPublicKeys.length; i++) {
                         let ppk = window.EcPpkFacade.fromPem(loginInfo.ssoAdditionalPublicKeys[i]);
                         let ident = new window.EcIdentity();
-                        let per = (await window.EcPerson.getByPk(r, ppk.toPk()));
-                        if (per != null) {
-                            ident.displayName = per.getName();
+                        try {
+                            let per = (await window.EcPerson.getByPk(r, ppk.toPk()));
+                            if (per != null) {
+                                ident.displayName = per.getName();
+                            }
+                        } catch (ex) {
+                            ident.displayName = "Unknown Person";
                         }
                         ident.ppk = ppk;
                         window.EcIdentityManager.default.addIdentity(ident);
