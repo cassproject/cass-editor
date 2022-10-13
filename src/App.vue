@@ -148,13 +148,15 @@ export default {
                         this.$store.commit('app/showModal', {component: 'MessageOfTheDay'});
                     }
                 }
-                try {
-                    let pers = (await window.EcPerson.getByPk(r, window.EcIdentityManager.default.ids[0].ppk.toPk()));
-                    if (pers != null) {
-                        window.EcIdentityManager.default.ids[0].displayName = pers.getName();
+                if (window.EcIdentityManager.default.ids.length > 0) {
+                    try {
+                        let pers = (await window.EcPerson.getByPk(r, window.EcIdentityManager.default.ids[0].ppk.toPk()));
+                        if (pers != null) {
+                            window.EcIdentityManager.default.ids[0].displayName = pers.getName();
+                        }
+                    } catch (ex) {
+                        window.EcIdentityManager.default.ids[0].displayName = "Unknown Person";
                     }
-                } catch (ex) {
-                    window.EcIdentityManager.default.ids[0].displayName = "Unknown Person";
                 }
                 if (loginInfo.ssoAdditionalPublicKeys != null) {
                     for (let i = 0; i < loginInfo.ssoAdditionalPublicKeys.length; i++) {
