@@ -137,6 +137,12 @@
 		"ceasn:derivedFrom": {
 			"@id": "ceasn:derivedFrom"
 		},
+		"ceasn:alignFrom": {
+			"@id": "ceasn:alignFrom"
+		},
+		"ceasn:alignTo": {
+			"@id": "ceasn:alignTo"
+		},
 		"ceasn:isPartOf": {
 			"@id": "ceasn:isPartOf"
 		},

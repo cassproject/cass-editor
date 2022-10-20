@@ -198,6 +198,14 @@
 			"@id": "ceasn:derivedFrom",
 			"@type": "@id"
 		},
+		"ceasn:alignFrom": {
+			"@id": "ceasn:alignFrom",
+			"@type": "@id"
+		},
+		"ceasn:alignTo": {
+			"@id": "ceasn:alignTo",
+			"@type": "@id"
+		},
 		"ceasn:isPartOf": {
 			"@id": "ceasn:isPartOf",
 			"@type": "@id"
