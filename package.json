@@ -57,7 +57,7 @@
     "file-loader": "^6.2.0",
     "flush-promises": "^1.0.2",
     "sass": "^1.55.0",
-    "sass-loader": "^13.1.0",
+    "sass-loader": "^10.1.0",
     "vue-template-compiler": "^2.7.13",
     "vuepress": "^1.9.7"
   },
