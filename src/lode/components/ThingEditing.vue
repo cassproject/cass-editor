@@ -1604,14 +1604,14 @@ export default {
                             resource[this.$store.state.editor.selectCompetencyRelation] = [];
                         }
                         EcArray.setAdd(resource[this.$store.state.editor.selectCompetencyRelation], thing.shortId());
+                        resource["schema:dateModified"] = new Date().toISOString();
+                        if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
+                            resource = await EcEncryptedValue.toEncryptedValue(resource);
+                        }
+                        await this.repo.saveTo(resource, function() {}, appError);
                     }
                 }
             }
-            resource["schema:dateModified"] = new Date().toISOString();
-            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
-                resource = await EcEncryptedValue.toEncryptedValue(resource);
-            }
-            await this.repo.saveTo(resource, function() {}, appError);
         },
         clickToDelete: function() {
             if (this.$store.getters['app/editDirectory']) {
