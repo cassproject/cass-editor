@@ -1,6 +1,6 @@
 {
   "name": "cass-editor",
-  "version": "1.5.15",
+  "version": "1.5.16",
   "private": true,
   "scripts": {
     "docs:dev": "vuepress dev docs",
@@ -14,14 +14,14 @@
   },
   "main": "/theme.scss",
   "dependencies": {
-    "axios": "^0.27.2",
+    "axios": "^1.1.3",
     "bulma": "^0.9.4",
     "bulma-checkradio": "^1.1.1",
     "bulma-switch": "^2.0.4",
-    "cassproject": "^1.5.15",
-    "core-js": "^3.23.3",
+    "cassproject": "^1.5.16",
+    "core-js": "^3.25.5",
     "dateformat": "^5.0.3",
-    "dompurify": "^2.3.8",
+    "dompurify": "^2.4.0",
     "file-saver": "^2.0.5",
     "http2": "^3.3.7",
     "jsonld": "^5.2.0",
@@ -38,7 +38,7 @@
     "vue-resource": "^1.5.3",
     "vue-router": "^3.5.3",
     "vue-scrollto": "^2.20.0",
-    "vue-server-renderer": "^2.6.14",
+    "vue-server-renderer": "^2.7.13",
     "vuedraggable": "^2.24.3",
     "vuex": "^3.6.2"
   },
@@ -56,9 +56,9 @@
     "eslint-plugin-vue": "^8.5.0",
     "file-loader": "^6.2.0",
     "flush-promises": "^1.0.2",
-    "sass": "^1.53.0",
-    "sass-loader": "^10.1.0",
-    "vue-template-compiler": "^2.6.14",
+    "sass": "^1.55.0",
+    "sass-loader": "^13.1.0",
+    "vue-template-compiler": "^2.7.13",
     "vuepress": "^1.9.7"
   },
   "eslintConfig": {
