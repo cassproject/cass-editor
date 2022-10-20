@@ -94,10 +94,10 @@
     }
     .crosswalk__steps {
         flex-grow:0;
-        padding: .5rem;
+        padding: 0rem;
         display: flex;
         flex-wrap: nowrap;
-        min-height: 3rem;
+        min-height: 2.5rem;
         font-size: 1rem;
         .step-item {
             margin-top: 0;
@@ -108,7 +108,7 @@
                 height: 2rem;
                 width: 2rem;
                 position: absolute;
-                left: calc(50% - 1rem);
+                left: 1rem;
                 align-items: center;
                 display: flex;
                 border-radius: 50%;
@@ -120,11 +120,10 @@
                 z-index:1;
             }
             .step-details {
-                margin-top: 2rem;
-                margin-left: .5em;
+                margin-top: 0rem;
+                margin-left: 4em;
                 margin-right: .5em;
                 padding-top: .2em;
-                text-align:center;
             }
            
         }
@@ -139,17 +138,6 @@
             content: " " !important;
             display: block !important;
             position: absolute !important;
-        }
-        .step-item.complete::before {
-            background-position: left bottom;
-        }
-        .step-item.current::before {
-            background-position: left bottom;
-        }
-        .step-item::before {
-            background: linear-gradient(to left, $light 50%,  $success 50%);
-            background-size: 200% 100%;
-            background-position: right bottom;
         }
     }
     .crosswalk__list {
