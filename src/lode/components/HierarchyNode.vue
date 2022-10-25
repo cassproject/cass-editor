@@ -854,6 +854,16 @@ export default {
             } else {
                 this.canEditInCollection = true;
             }
+        },
+        selectChild: function(obj, selected) {
+            if (obj.obj) {
+                this.$emit('select', obj.obj.shortId(), selected);
+                if (obj.children) {
+                    for (let child of obj.children) {
+                        this.selectChild(child, selected);
+                    }
+                }
+            }
         }
     },
     watch: {
@@ -897,6 +907,12 @@ export default {
         checked: function() {
             // Select event propagates up multiple components.
             this.$emit('select', this.obj.shortId(), this.checked);
+            // If this node has hidden children (not expanded), then emit a selet signal for those as well
+            if (!this.childrenExpanded) {
+                for (let child of this.hasChild) {
+                    this.selectChild(child, this.checked);
+                }
+            }
             if (!this.checked) {
                 this.unfocusHierarchyItem();
             }
