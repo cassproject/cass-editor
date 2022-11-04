@@ -131,24 +131,42 @@
             </div>
         </div>
         <!-- timestamp -->
-        <label
-            class="label"
-            v-if="range[0] === 'http://www.w3.org/2001/XMLSchema#dateTime'">date/time</label>
-        <input
-            v-if="range[0] === 'http://www.w3.org/2001/XMLSchema#dateTime'"
-            class="input is-small is-fullwidth date-time"
-            v-model="computedText"
-            type="datetime-local"
-            @blur="blur">
-        <label
-            class="label"
-            v-if="range[0] === 'http://www.w3.org/2001/XMLSchema#date'">date</label>
-        <input
-            v-if="range[0] === 'http://www.w3.org/2001/XMLSchema#date'"
-            class="input is-small is-fullwidth date-time"
-            v-model="computedText"
-            type="date"
-            @blur="blur">
+        <div
+            v-if="range[0] === 'http://www.w3.org/2001/XMLSchema#dateTime'">
+            <label
+                class="label">date/time</label>
+            <div class="field is-grouped">
+                <input
+                    class="input is-small is-fullwidth date-time"
+                    v-model="computedText"
+                    type="datetime-local"
+                    @blur="blur">
+                <div
+                    v-if="ceasnUser"
+                    @click="showModal('remove')"
+                    class="button is-small is-text has-text-danger is-pulled-right">
+                    <i class="fa fa-times" />
+                </div>
+            </div>
+        </div>
+        <div
+            v-if="range[0] === 'http://www.w3.org/2001/XMLSchema#date'">
+            <label
+                class="label">date</label>
+            <div class="field is-grouped">
+                <input
+                    class="input is-small is-fullwidth date-time"
+                    v-model="computedText"
+                    type="datetime-local"
+                    @blur="blur">
+                <div
+                    v-if="ceasnUser"
+                    @click="showModal('remove')"
+                    class="button is-small is-text has-text-danger is-pulled-right">
+                    <i class="fa fa-times" />
+                </div>
+            </div>
+        </div>
         <label
             class="label"
             v-if="options && !isDirectLink">options</label>
@@ -307,6 +325,14 @@ export default {
         }
     },
     computed: {
+        ceasnUser: function() {
+            const queryParams = this.$store.getters['editor/queryParams'];
+            if (queryParams.ceasnDataFields === 'true') {
+                return true;
+            } else {
+                return false;
+            }
+        },
         isDirectLink: function() {
             if (this.profile[this.expandedProperty]["isDirectLink"] && (this.profile[this.expandedProperty]["isDirectLink"] === 'true' || this.profile[this.expandedProperty]["isDirectLink"] === true)) {
                 return true;

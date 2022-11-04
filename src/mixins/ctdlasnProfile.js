@@ -253,6 +253,30 @@ export default {
                     "max": 1,
                     "heading": "Context"
                 },
+                "http://schema.org/dateCreated": {
+                    "@id": "https://purl.org/ctdlasn/terms/dateCreated",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Date of creation of this resource."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Created"}],
+                    "max": 1,
+                    "heading": "Context"
+                },
+                "http://schema.org/dateModified": {
+                    "@id": "https://purl.org/ctdlasn/terms/dateModified",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The date on which this resource was most recently modified in some way."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Modified"}],
+                    "max": 1,
+                    "heading": "Context"
+                },
                 "https://purl.org/ctdlasn/terms/publicationStatusType": {
                     "@id": "https://purl.org/ctdlasn/terms/publicationStatusType",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -410,6 +434,8 @@ export default {
                     "@id",
                     "registryURL",
                     "ctid",
+                    "http://schema.org/dateCreated",
+                    "http://schema.org/dateModified",
                     "http://schema.org/validFrom",
                     "http://schema.org/validThrough",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
@@ -760,6 +786,30 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Competency Category"}],
                     "onePerLanguage": "true",
                     "heading": "General"
+                },
+                "http://schema.org/dateCreated": {
+                    "@id": "https://purl.org/ctdlasn/terms/dateCreated",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Date of creation of this resource."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Created"}],
+                    "max": 1,
+                    "heading": "Context"
+                },
+                "http://schema.org/dateModified": {
+                    "@id": "https://purl.org/ctdlasn/terms/dateModified",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The date on which this resource was most recently modified in some way."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Modified"}],
+                    "max": 1,
+                    "heading": "Context"
                 },
                 "https://purl.org/ctdlasn/terms/educationLevelType": {
                     "@id": "https://purl.org/ctdlasn/terms/educationLevelType",
@@ -1393,6 +1443,8 @@ export default {
                     "requires",
                     "https://purl.org/ctdlasn/terms/isVersionOf",
                     "https://purl.org/ctdlasn/terms/comprisedOf",
+                    "http://schema.org/dateCreated",
+                    "http://schema.org/dateModified",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
@@ -1488,6 +1540,30 @@ export default {
                     "heading": "General",
                     "isRequired": "true",
                     "onePerLanguage": "true"
+                },
+                "http://schema.org/dateCreated": {
+                    "@id": "https://purl.org/ctdlasn/terms/dateCreated",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/ConceptScheme"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Date of creation of this resource."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Created"}],
+                    "max": 1,
+                    "heading": "Context"
+                },
+                "http://schema.org/dateModified": {
+                    "@id": "https://purl.org/ctdlasn/terms/dateModified",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/ConceptScheme"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The date on which this resource was most recently modified in some way."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Modified"}],
+                    "max": 1,
+                    "heading": "Context"
                 },
                 "http://purl.org/dc/terms/creator": {
                     "@id": "https://purl.org/ctdlasn/terms/creator",
@@ -1785,6 +1861,8 @@ export default {
                     "ctid",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
                     "http://purl.org/dc/terms/dateCopyrighted",
+                    "http://schema.org/dateCreated",
+                    "http://schema.org/dateModified",
                     "http://purl.org/dc/terms/license",
                     "http://purl.org/dc/terms/rights",
                     "http://purl.org/dc/terms/rightsHolder"
@@ -2171,6 +2249,30 @@ export default {
                     "max": 1,
                     "heading": "Keys"
                 },
+                "http://schema.org/dateCreated": {
+                    "@id": "https://purl.org/ctdlasn/terms/dateCreated",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/ConceptScheme"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Date of creation of this resource."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Created"}],
+                    "max": 1,
+                    "heading": "Context"
+                },
+                "http://schema.org/dateModified": {
+                    "@id": "https://purl.org/ctdlasn/terms/dateModified",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/ConceptScheme"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "The date on which this resource was most recently modified in some way."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Modified"}],
+                    "max": 1,
+                    "heading": "Context"
+                },
                 "http://purl.org/dc/terms/title": {
                     "@id": "https://purl.org/ctdlasn/terms/name",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -2492,6 +2594,8 @@ export default {
                     "registryURL",
                     "ctid",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
+                    "http://schema.org/dateCreated",
+                    "http://schema.org/dateModified",
                     "http://purl.org/dc/terms/dateCopyrighted",
                     "http://purl.org/dc/terms/license",
                     "http://purl.org/dc/terms/rights",
