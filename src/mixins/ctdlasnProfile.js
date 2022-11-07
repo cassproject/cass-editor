@@ -253,7 +253,7 @@ export default {
                     "max": 1,
                     "heading": "Context"
                 },
-                "http://schema.org/dateCreated": {
+                "https://purl.org/ctdlasn/terms/dateCreated": {
                     "@id": "https://purl.org/ctdlasn/terms/dateCreated",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
@@ -265,7 +265,7 @@ export default {
                     "max": 1,
                     "heading": "Context"
                 },
-                "http://schema.org/dateModified": {
+                "https://purl.org/ctdlasn/terms/dateModified": {
                     "@id": "https://purl.org/ctdlasn/terms/dateModified",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
@@ -434,8 +434,8 @@ export default {
                     "@id",
                     "registryURL",
                     "ctid",
-                    "http://schema.org/dateCreated",
-                    "http://schema.org/dateModified",
+                    "https://purl.org/ctdlasn/terms/dateCreated",
+                    "https://purl.org/ctdlasn/terms/dateModifiedd",
                     "http://schema.org/validFrom",
                     "http://schema.org/validThrough",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
@@ -787,7 +787,7 @@ export default {
                     "onePerLanguage": "true",
                     "heading": "General"
                 },
-                "http://schema.org/dateCreated": {
+                "https://purl.org/ctdlasn/terms/dateCreated": {
                     "@id": "https://purl.org/ctdlasn/terms/dateCreated",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
@@ -799,7 +799,7 @@ export default {
                     "max": 1,
                     "heading": "Context"
                 },
-                "http://schema.org/dateModified": {
+                "https://purl.org/ctdlasn/terms/dateModified": {
                     "@id": "https://purl.org/ctdlasn/terms/dateModified",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
@@ -1443,8 +1443,8 @@ export default {
                     "requires",
                     "https://purl.org/ctdlasn/terms/isVersionOf",
                     "https://purl.org/ctdlasn/terms/comprisedOf",
-                    "http://schema.org/dateCreated",
-                    "http://schema.org/dateModified",
+                    "https://purl.org/ctdlasn/terms/dateCreated",
+                    "https://purl.org/ctdlasn/terms/dateModified",
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
                     "https://purl.org/ctdlasn/terms/derivedFrom",
@@ -1541,7 +1541,7 @@ export default {
                     "isRequired": "true",
                     "onePerLanguage": "true"
                 },
-                "http://schema.org/dateCreated": {
+                "https://purl.org/ctdlasn/terms/dateCreated": {
                     "@id": "https://purl.org/ctdlasn/terms/dateCreated",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
@@ -1553,7 +1553,7 @@ export default {
                     "max": 1,
                     "heading": "Context"
                 },
-                "http://schema.org/dateModified": {
+                "https://purl.org/ctdlasn/terms/dateModified": {
                     "@id": "https://purl.org/ctdlasn/terms/dateModified",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
@@ -1861,8 +1861,8 @@ export default {
                     "ctid",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
                     "http://purl.org/dc/terms/dateCopyrighted",
-                    "http://schema.org/dateCreated",
-                    "http://schema.org/dateModified",
+                    "https://purl.org/ctdlasn/terms/dateCreated",
+                    "https://purl.org/ctdlasn/terms/dateModified",
                     "http://purl.org/dc/terms/license",
                     "http://purl.org/dc/terms/rights",
                     "http://purl.org/dc/terms/rightsHolder"
@@ -2249,7 +2249,7 @@ export default {
                     "max": 1,
                     "heading": "Keys"
                 },
-                "http://schema.org/dateCreated": {
+                "https://purl.org/ctdlasn/terms/dateCreated": {
                     "@id": "https://purl.org/ctdlasn/terms/dateCreated",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
@@ -2261,7 +2261,7 @@ export default {
                     "max": 1,
                     "heading": "Context"
                 },
-                "http://schema.org/dateModified": {
+                "https://purl.org/ctdlasn/terms/dateModified": {
                     "@id": "https://purl.org/ctdlasn/terms/dateModified",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
@@ -2594,8 +2594,8 @@ export default {
                     "registryURL",
                     "ctid",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
-                    "http://schema.org/dateCreated",
-                    "http://schema.org/dateModified",
+                    "https://purl.org/ctdlasn/terms/dateCreated",
+                    "https://purl.org/ctdlasn/terms/dateModified",
                     "http://purl.org/dc/terms/dateCopyrighted",
                     "http://purl.org/dc/terms/license",
                     "http://purl.org/dc/terms/rights",
