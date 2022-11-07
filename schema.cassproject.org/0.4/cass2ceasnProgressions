@@ -33,10 +33,10 @@
 			"@id": "ebac:EncryptedValue"
 		},
 		"ConceptScheme": {
-			"@id": "ceasn:ProgressionModel"
+			"@id": "asn:ProgressionModel"
 		},
 		"Concept": {
-			"@id": "ceasn:ProgressionLevel"
+			"@id": "asn:ProgressionLevel"
 		},
 		"@owner": {
 			"@id": "ebac:@owner",
@@ -93,11 +93,15 @@
 			"@id": "ceasn:dateCopyrighted",
 			"@type": "xsd:string"
 		},
-		"schema:dateCreated": {
+		"ceasn:repositoryDate": {
+			"@id": "ceasn:repositoryDate",
+			"@type": "xsd:date"
+		},
+		"ceasn:dateCreated": {
 			"@id": "ceasn:dateCreated",
 			"@type": "xsd:date"
 		},
-		"schema:dateModified": {
+		"ceasn:dateModified": {
 			"@id": "ceasn:dateModified",
 			"@type": "xsd:dateTime"
 		},

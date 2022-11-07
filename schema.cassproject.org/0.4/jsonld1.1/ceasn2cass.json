@@ -39,6 +39,10 @@
 			"@id": "dcterms:type",
 			"@container": "@language"
 		},
+		"ceasn:repositoryDate": {
+			"@id": "ceasn:repositoryDate",
+			"@type": "xsd:date"
+		},
 		"schema:validFrom": {
 			"@id": "schema:validFrom",
 			"@type": "xsd:date"

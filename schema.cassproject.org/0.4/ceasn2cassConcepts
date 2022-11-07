@@ -186,10 +186,10 @@
 			"@container": "@language"
 		},
 		"ceasn:dateCreated": {
-			"@id": "schema:dateCreated"
+			"@id": "ceasn:dateCreated"
 		},
 		"ceasn:dateModified": {
-			"@id": "schema:dateModified"
+			"@id": "ceasn:dateModified"
 		}
 	}
 }

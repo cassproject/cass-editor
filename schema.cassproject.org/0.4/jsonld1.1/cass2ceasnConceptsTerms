@@ -6,8 +6,6 @@
 	"@signature": "ebac:@signature",
 	"dcterms:creator": "ceasn:creator",
 	"dcterms:dateCopyrighted": "ceasn:dateCopyrighted",
-	"schema:dateCreated": "ceasn:dateCreated",
-	"schema:dateModified": "ceasn:dateModified",
 	"dcterms:description": "ceasn:description",
 	"dcterms:language": "ceasn:inLanguage",
 	"dcterms:license": "ceasn:license",

@@ -89,17 +89,14 @@
 		"ceasn:publicationStatusType": {
 			"@id": "ceasn:publicationStatusType"
 		},
-		"ceasn:rightsHolder": {
-			"@id": "schema:copyrightHolder"
-		},
 		"ceasn:conceptTerm": {
 			"@id": "ceasn:conceptTerm"
 		},
 		"ceasn:dateCreated": {
-			"@id": "schema:dateCreated"
+			"@id": "ceasn:dateCreated"
 		},
 		"ceasn:dateModified": {
-			"@id": "schema:dateModified"
+			"@id": "ceasn:dateModified"
 		},
 		"ceasn:dateValidFrom": {
 			"@id": "schema:validFrom",

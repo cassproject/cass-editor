@@ -191,7 +191,12 @@
 			"@container": "@language"
 		},
 		"ceasn:dateCreated": {
-			"@id": "schema:dateCreated"
+			"@id": "ceasn:dateCreated",
+			"@type": "xsd:date"
+		},
+		"ceasn:dateModified": {
+			"@id": "ceasn:dateModified",
+			"@type": "xsd:dateTime"
 		}
 	}
 }

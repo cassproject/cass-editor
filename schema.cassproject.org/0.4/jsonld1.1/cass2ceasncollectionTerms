@@ -9,8 +9,6 @@
 	"name": "ceterms:name",
 	"title": "ceterms:name",
 	"description": "ceterms:description",
-	"schema:dateCreated": "ceasn:dateCreated",
-	"schema:dateModified": "ceasn:dateModified",
 	"schema:license": "ceasn:license",
 	"competency": "ceterms:hasMember",
 	"schema:inLanguage": "ceterms:inLanguage",

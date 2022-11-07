@@ -49,6 +49,10 @@
 			"@id": "ceterms:description",
 			"@language": "en-us"
 		},
+		"ceasn:repositoryDate": {
+			"@id": "ceasn:repositoryDate",
+			"@type": "xsd:date"
+		},
 		"ceasn:dateCreated": {
 			"@id": "ceasn:dateCreated",
 			"@type": "xsd:date"

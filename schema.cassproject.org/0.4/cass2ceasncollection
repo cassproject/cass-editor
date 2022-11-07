@@ -71,11 +71,15 @@
 			"@id": "ceterms:description",
 			"@language": "en-us"
 		},
-		"schema:dateCreated": {
+		"ceasn:repositoryDate": {
+			"@id": "ceasn:repositoryDate",
+			"@type": "xsd:date"
+		},
+		"ceasn:dateCreated": {
 			"@id": "ceasn:dateCreated",
 			"@type": "xsd:date"
 		},
-		"schema:dateModified": {
+		"ceasn:dateModified": {
 			"@id": "ceasn:dateModified",
 			"@type": "xsd:dateTime"
 		},

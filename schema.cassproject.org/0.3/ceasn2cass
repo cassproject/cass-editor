@@ -66,9 +66,6 @@
 		"ceasn:creator": {
 			"@id": "schema:creator"
 		},
-		"ceasn:rightsHolder": {
-			"@id": "schema:copyrightHolder"
-		},
 		"ceasn:dateCopyrighted": {
 			"@id": "schema:copyrightYear"
 		},
@@ -88,7 +85,15 @@
 			"@id": "ceasn:conceptTerm"
 		},
 		"ceasn:dateCreated": {
-			"@id": "schema:dateCreated",
+			"@id": "ceasn:dateCreated",
+			"@type": "xsd:date"
+		},
+		"ceasn:dateModified": {
+			"@id": "ceasn:dateModified",
+			"@type": "xsd:dateTime"
+		},
+		"ceasn:repositoryDate": {
+			"@id": "ceasn:repositoryDate",
 			"@type": "xsd:date"
 		},
 		"ceasn:dateValidFrom": {
@@ -167,9 +172,6 @@
 		},
 		"ceasn:inLanguage": {
 			"@id": "schema:inLanguage"
-		},
-		"ceasn:repositoryDate": {
-			"@id": "ceasn:repositoryDate"
 		}
 	}
 }

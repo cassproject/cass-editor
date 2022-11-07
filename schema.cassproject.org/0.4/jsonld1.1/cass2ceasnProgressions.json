@@ -78,6 +78,10 @@
 			"@id": "ceasn:dateCopyrighted",
 			"@type": "xsd:string"
 		},
+		"ceasn:repositoryDate": {
+			"@id": "ceasn:repositoryDate",
+			"@type": "xsd:date"
+		},
 		"ceasn:dateCreated": {
 			"@id": "ceasn:dateCreated",
 			"@type": "xsd:date"

@@ -133,11 +133,11 @@
 			"@id": "ceasn:dateCopyrighted",
 			"@type": "xsd:string"
 		},
-		"schema:dateCreated": {
+		"ceasn:dateCreated": {
 			"@id": "ceasn:dateCreated",
 			"@type": "xsd:date"
 		},
-		"schema:dateModified": {
+		"ceasn:dateModified": {
 			"@id": "ceasn:dateModified",
 			"@type": "xsd:dateTime"
 		},

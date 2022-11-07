@@ -21,8 +21,6 @@
 	"creator": "ceasn:creator",
 	"schema:copyrightYear": "ceasn:dateCopyrighted",
 	"schema:copyrightHolder": "ceasn:rightsHolder",
-	"schema:dateCreated": "ceasn:dateCreated",
-	"schema:dateModified": "ceasn:dateModified",
 	"schema:validFrom": "ceasn:dateValidFrom",
 	"schema:validThrough": "ceasn:dateValidUntil",
 	"schema:identifier": "ceasn:identifier",

@@ -141,11 +141,11 @@
 			"@id": "ceasn:conceptTerm",
 			"@type": "@id"
 		},
-		"schema:dateCreated": {
+		"ceasn:dateCreated": {
 			"@id": "ceasn:dateCreated",
 			"@type": "xsd:date"
 		},
-		"schema:dateModified": {
+		"ceasn:dateModified": {
 			"@id": "ceasn:dateModified",
 			"@type": "xsd:dateTime"
 		},
