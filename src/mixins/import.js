@@ -513,7 +513,9 @@ export default {
             f.setName(this.importFrameworkName);
             f.setDescription(this.importFrameworkDescription);
             let me = this;
+            me.$store.commit('app/importAllowCancel', true);
             MedbiqImport.importCompetencies(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint, identity, function(competencies) {
+                me.$store.commit('app/importAllowCancel', false);
                 for (var i = 0; i < competencies.length; i++) {
                     f.addCompetency(competencies[i].shortId());
                 }
@@ -547,7 +549,9 @@ export default {
             var identity = EcIdentityManager.default.ids[0];
             let me = this;
             me.$store.commit('app/importTransition', 'process');
+            me.$store.commit('app/importAllowCancel', true);
             ASNImport.importCompetencies(this.repo.selectedServer, identity, true, function(competencies, f) {
+                me.$store.commit('app/importAllowCancel', false);
                 me.importFile.splice(0, 1);
                 if (me.importFile.length > 0) {
                     me.firstImport = false;
@@ -571,7 +575,9 @@ export default {
             let ceo = null;
             if (EcIdentityManager.default.ids.length > 0) { ceo = EcIdentityManager.default.ids[0]; }
             let me = this;
+            me.$store.commit('app/importAllowCancel', true);
             CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies, relations) {
+                me.$store.commit('app/importAllowCancel', false);
                 for (var i = 0; i < frameworks.length; i++) {
                     if (me.queryParams.ceasnDataFields === true) {
                         if (frameworks[i]["schema:inLanguage"] == null || frameworks[i]["schema:inLanguage"] === undefined) {
@@ -943,24 +949,32 @@ export default {
         },
         importFromFile: function() {
             let me = this;
-            appLog("this.importFileType", me.importFileType);
-            me.$store.commit('app/importTransition', 'process');
-            if (me.importFileType === "csv") {
-                me.importCsv();
-            } else if (me.importFileType === "ctdlasncsv" || me.importFileType === "collectioncsv") {
-                me.importCtdlAsnCsv();
-            } else if (me.importFileType === "conceptcsv" || me.importFileType === "progressioncsv") {
-                me.importCtdlAsnConceptCsv();
-            } else if (me.importFileType === "ctdlasnjsonld" || me.importFileType === "ctdlasnjsonldprogression" || me.importFileType === "ctdlasnjsonldcollection") {
-                me.importJsonLd();
-            } else if (me.importFileType === "asn") {
-                me.importAsn();
-            } else if (me.importFileType === "pdf") {
-                me.importPdf();
-            } else if (me.importFileType === "medbiq") {
-                me.importMedbiq();
-            } else {
-                let error = "Unsupported file type" + me.importFileType;
+            try {
+                const fileType = this.$store.getters['app/importFileType'];
+                appLog(fileType);
+                me.$store.commit('app/importTransition', 'process');
+                if (fileType === "csv") {
+                    me.importCsv();
+                } else if (fileType === "ctdlasncsv" || fileType === "collectioncsv") {
+                    me.importCtdlAsnCsv();
+                } else if (fileType === "conceptcsv" || fileType === "progressioncsv") {
+                    me.importCtdlAsnConceptCsv();
+                } else if (fileType === "ctdlasnjsonld" || fileType === "ctdlasnjsonldprogression" || fileType === "ctdlasnjsonldcollection") {
+                    me.importJsonLd();
+                } else if (fileType === "asn") {
+                    me.importAsn();
+                } else if (fileType === "pdf") {
+                    me.importPdf();
+                } else if (fileType === "medbiq") {
+                    me.importMedbiq();
+                } else {
+                    appLog("unsupported file type");
+                    let error = "Unsupported file type" + fileType;
+                    me.$store.commit('app/addImportError', error);
+                    me.$store.commit('app/importTransition', 'process');
+                }
+            } catch (error) {
+                appLog("error during importFromFile", error);
                 me.$store.commit('app/addImportError', error);
                 me.$store.commit('app/importTransition', 'process');
             }

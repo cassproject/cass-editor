@@ -177,11 +177,11 @@
                         </div>
                         <!-- handle non pdf imports -->
                         <div
-                            v-if="importType === 'file' && importTransition === 'info'"
+                            v-if="(importType === 'file' && importTransition === 'info') || importAllowCancel"
                             class="buttons is-right">
                             <div
                                 class="button is-pulled-right is-outlined is-dark"
-                                v-if="importFile && importType === 'file' && importFileType!=='pdf'"
+                                v-if="(importFile && importType === 'file' && importFileType!=='pdf') || importAllowCancel"
                                 @click="cancelImport">
                                 <span class="icon">
                                     <i class="fas fa-times" />
@@ -192,7 +192,7 @@
                             </div>
                             <div
                                 class="button is-pulled-right is-outlined is-primary"
-                                v-if="importFile && importType === 'file' && importFileType!=='pdf'"
+                                v-if="(importFile && importType === 'file' && importFileType!=='pdf') && !importAllowCancel"
                                 @click="prepareToImportNonPdf">
                                 <span class="icon">
                                     <i class="fas fa-upload" />
@@ -322,6 +322,9 @@ export default {
                     value: this.importTargetColumn
                 }
             };
+        },
+        importAllowCancel: function() {
+            return this.$store.getters['app/importAllowCancel'];
         },
         importInfoVisible: function() {
             return this.$store.getters['app/showRightAside'];

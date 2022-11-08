@@ -51,6 +51,7 @@ const state = {
         type: 'file', // pdf, server, text
         fileType: '',
         firstImport: Boolean,
+        allowCancel: false,
         errors: [], // erorrs from the code or from the api
         feedback: '', // additional information
         framework: null,
@@ -210,6 +211,9 @@ const mutations = {
     importStatus: function(state, val) {
         state.import.status = val;
     },
+    importAllowCancel: function(state, val) {
+        state.import.allowCancel = val;
+    },
     importFeedback: function(state, val) {
         state.import.feedback = val;
     },
@@ -351,6 +355,7 @@ const actions = {
         commit('clearImportErrors');
         commit('importTransition', 'upload');
         commit('importStatus', '');
+        commit('importAllowCancel', false);
         commit('importFeedback', '');
         commit('importFileType', '');
     },
@@ -419,6 +424,7 @@ const getters = {
         return state.import.transition;
     },
     importFileType: state => {
+        console.log('importFileType is [' + state.import.fileType + ']');
         return state.import.fileType;
     },
     importType: state => {
@@ -432,6 +438,9 @@ const getters = {
     },
     importStatus: state => {
         return state.import.status;
+    },
+    importAllowCancel: state => {
+        return state.import.allowCancel;
     },
     importFeedback: state => {
         return state.import.feedback;
