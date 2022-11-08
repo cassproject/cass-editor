@@ -424,7 +424,6 @@ const getters = {
         return state.import.transition;
     },
     importFileType: state => {
-        console.log('importFileType is [' + state.import.fileType + ']');
         return state.import.fileType;
     },
     importType: state => {
