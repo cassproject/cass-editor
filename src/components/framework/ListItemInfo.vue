@@ -309,7 +309,7 @@
                                     <div
                                         @click="manageUsers"
                                         class="button is-primary is-rounded">
-                                        <span>Manage Users and Privacy</span>
+                                        <span>Manage Permissions / Share Framework</span>
                                         <span
                                             class="icon">
                                             <i class="fas fa-users" />
