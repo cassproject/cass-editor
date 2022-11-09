@@ -251,10 +251,11 @@
 </template>
 <script>
 
+import common from '@/mixins/common.js';
 import {cassUtil} from '../../mixins/cassUtil';
 export default {
     name: 'EditorToolbar',
-    mixins: [ cassUtil ],
+    mixins: [ common, cassUtil ],
     props: {
         properties: {
             type: String,
@@ -560,7 +561,7 @@ export default {
         canEditFramework: function() {
             if (this.queryParams && this.queryParams.view === 'true') {
                 return false;
-            } else if (!this.framework.canEditAny(EcIdentityManager.default.getMyPks())) {
+            } else if (!this.canEditAny(this.framework)) {
                 return false;
             }
             return true;

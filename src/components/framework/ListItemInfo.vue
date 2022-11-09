@@ -1396,7 +1396,7 @@ export default {
             }
         },
         canEditObject: function() {
-            return this.object.canEditAny(EcIdentityManager.default.getMyPks());
+            return this.canEditAny(this.object);
         },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];

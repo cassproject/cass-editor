@@ -158,6 +158,7 @@
 
 <script>
 import Thing from './Thing.vue';
+import common from '@/mixins/common.js';
 import Breadcrumbs from './Breadcrumbs.vue';
 import {cassUtil} from '@/mixins/cassUtil.js';
 import debounce from 'lodash/debounce';
@@ -192,7 +193,7 @@ export default {
         }
     },
     components: {Thing, Breadcrumbs},
-    mixins: [ cassUtil ],
+    mixins: [ common, cassUtil ],
     created: function() {
         this.$nextTick(() => this.searchRepo());
     },
@@ -434,7 +435,7 @@ export default {
                 let directories = [];
                 me.repo.searchWithParams(search, paramObj, null, async function(results) {
                     for (let result of results) {
-                        if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
+                        if (!me.filterToEditable || (me.filterToEditable && me.canEditAny(result))) {
                             if (!EcArray.has(me.resultIds, result.id)) {
                                 me.resultIds.push(result.id);
                                 if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
@@ -517,7 +518,7 @@ export default {
                     me.repo.searchWithParams(search, paramObj, function(result) {
                     }, async function(results) {
                         for (let result of results) {
-                            if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
+                            if (!me.filterToEditable || (me.filterToEditable && me.canEditAny(result))) {
                                 if (!EcArray.has(me.resultIds, result.id)) {
                                     me.resultIds.push(result.id);
                                     if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
@@ -591,7 +592,7 @@ export default {
                     me.repo.searchWithParams(search, localParamObj, function(result) {
                     }, async function(results) {
                         for (let result of results) {
-                            if (!me.filterToEditable || (me.filterToEditable && result.canEditAny(EcIdentityManager.default.getMyPks()))) {
+                            if (!me.filterToEditable || (me.filterToEditable && me.canEditAny(result))) {
                                 if (me.searchingForCompetencies) {
                                     if (!EcArray.has(me.resultIds, result.id)) {
                                         me.resultIds.push(result.id);
@@ -661,7 +662,7 @@ export default {
                 me.repo.searchWithParams(subSearch, subLocalParamObj, function(subResult) {
                 }, async function(subResults) {
                     for (let subResult of subResults) {
-                        if (!me.filterToEditable || (me.filterToEditable && subResult.canEditAny(EcIdentityManager.default.getMyPks()))) {
+                        if (!me.filterToEditable || (me.filterToEditable && me.canEditAny(subResult))) {
                             if (!EcArray.has(me.resultIds, subResult.id)) {
                                 me.resultIds.push(subResult.id);
                                 if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, subResult.shortId())) {

@@ -632,7 +632,7 @@ export default {
             if (this.viewOnly === true) {
                 return false;
             }
-            return this.container.canEditAny(EcIdentityManager.default.getMyPks());
+            return this.canEditAny(this.container);
         },
         hasLargeNumberOfItems: function() {
             if (this.container == null) {

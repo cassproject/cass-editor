@@ -321,7 +321,7 @@
                                 </span>
                                 <span
                                     class="framework-details__item"
-                                    v-if="canEditItem(slotProps.item) && queryParams.view !== 'true'">
+                                    v-if="canEditAny(slotProps.item) && queryParams.view !== 'true'">
                                     <span class="has-text-weight-medium">
                                         Editable
                                     </span>
@@ -496,9 +496,6 @@ export default {
     methods: {
         refocusSearch: function() {
             this.setFocus = !this.setFocus;
-        },
-        canEditItem: function(item) {
-            return item.canEditAny(EcIdentityManager.default.getMyPks());
         },
         openItem: function(object) {
             var me = this;

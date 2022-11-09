@@ -50,6 +50,17 @@ export default {
         }
     },
     methods: {
+        canEditAny: function(item) {
+            if (this.isAdmin()) return true;
+            if (item.canEditAny == null) return true;
+            return item.canEditAny(EcIdentityManager.default.getMyPks());
+        },
+        isAdmin: function() {
+            if (EcIdentityManager.default.ids.length > 0 && window.repo.adminKeys != null && window.repo.adminKeys.length > 0) {
+                if (window.repo.adminKeys[0] === EcIdentityManager.default.ids[0].ppk.toPk().toPem()) { return true; }
+            }
+            return false;
+        },
         getConceptCtids: async function() {
             this.conceptCtids = null;
             let framework = this.framework;

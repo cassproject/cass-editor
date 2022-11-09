@@ -689,7 +689,7 @@ export default {
                 return false;
             }
             if (this.framework != null) {
-                return this.framework.canEditAny(EcIdentityManager.default.getMyPks());
+                return this.canEditAny(this.framework);
             }
             return false;
         }

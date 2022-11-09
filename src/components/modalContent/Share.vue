@@ -447,11 +447,11 @@ export default {
             }
             if (this.queryParams && this.queryParams.view === 'true') {
                 return false;
-            } else if (this.framework && !this.framework.canEditAny(EcIdentityManager.default.getMyPks())) {
+            } else if (this.framework && !this.canEditAny(this.framework)) {
                 return false;
-            } else if (this.directory && !this.directory.canEditAny(EcIdentityManager.default.getMyPks())) {
+            } else if (this.directory && !this.canEditAny(this.directory)) {
                 return false;
-            } else if (this.resource && !this.resource.canEditAny(EcIdentityManager.default.getMyPks())) {
+            } else if (this.resource && !this.canEditAny(this.resource)) {
                 return false;
             }
             return true;
@@ -946,7 +946,7 @@ export default {
         },
         handleMakePrivateDirectory: function(directory) {
             let me = this;
-            if (directory.canEditAny(EcIdentityManager.default.getMyPks())) {
+            if (this.canEditAny(this.directory)) {
                 if (!directory.owner) {
                     directory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
@@ -983,7 +983,7 @@ export default {
         },
         handleMakePrivateResource: function(resource) {
             let me = this;
-            if (resource.canEditAny(EcIdentityManager.default.getMyPks())) {
+            if (this.canEditAny(resource)) {
                 if (!resource.owner) {
                     resource.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
@@ -1002,7 +1002,7 @@ export default {
             if (framework.competency && framework.competency.length > 0) {
                 new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
                     EcCompetency.get(competencyId, function(c) {
-                        if (c.canEditAny(EcIdentityManager.default.getMyPks())) {
+                        if (me.canEditAny(c)) {
                             if (!c.owner) {
                                 c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                             }
@@ -1113,7 +1113,7 @@ export default {
             if (framework.competency && framework.competency.length > 0) {
                 new EcAsyncHelper().each(framework.competency, function(competencyId, done) {
                     EcRepository.get(competencyId, async function(c) {
-                        if (c.canEditAny(EcIdentityManager.default.getMyPks())) {
+                        if (me.canEditAny(c)) {
                             let d = new EcCompetency();
                             d.copyFrom(await EcEncryptedValue.fromEncryptedValue(c));
                             d["schema:dateModified"] = new Date().toISOString();

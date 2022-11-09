@@ -119,7 +119,7 @@
                 <button
                     @click="edit=true"
                     class="button is-outlined is-primary"
-                    v-if="dynamicModalContent.objectType==='Level' && canEdit">
+                    v-if="dynamicModalContent.objectType==='Level' && canEditContent">
                     Edit {{ dynamicModalContent.type }}
                 </button>
                 <button
@@ -135,7 +135,7 @@
                     done
                 </button>
                 <button
-                    v-if="numberOfParentFrameworks === 0 && canEdit"
+                    v-if="numberOfParentFrameworks === 0 && canEditContent"
                     @click="deleteOrphan"
                     class="button is-danger is-outlined">
                     Delete
@@ -151,18 +151,20 @@
 <script>
 import {mapState} from 'vuex';
 import ModalTemplate from './ModalTemplate.vue';
+import common from '@/mixins/common.js';
 import Thing from '@/lode/components/Thing.vue';
 import ThingEditing from '@/lode/components/ThingEditing.vue';
 
 export default {
     name: 'Single',
+    mixins: [common],
     components: {Thing, ModalTemplate, ThingEditing},
     data() {
         return {
             edit: false,
             parentFrameworks: [],
             repo: window.repo,
-            canEdit: false,
+            canEditContent: false,
             error: null,
             obj: null,
             inCassInstance: false
@@ -296,16 +298,16 @@ export default {
         EcRepository.get(this.content.uri, function(success) {
             if (success) {
                 me.inCassInstance = true;
-                if (success.canEditAny(EcIdentityManager.default.getMyPks())) {
-                    me.canEdit = true;
+                if (me.canEditAny(success)) {
+                    me.canEditContent = true;
                     me.obj = success;
                 }
             } else {
-                me.canEdit = false;
+                me.canEditContent = false;
             }
         }, function(err) {
             appError(err);
-            me.canEdit = false;
+            me.canEditContent = false;
         });
     }
 };

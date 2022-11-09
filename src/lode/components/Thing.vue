@@ -161,9 +161,11 @@
 </template>
 <script>
 
+import common from '@/mixins/common.js';
 export default {
     // Thing represents a JSON-LD object. Does not have to be based on http://schema.org/Thing.
     name: 'Thing',
+    mixins: [common],
     props: {
         expandInModal: {
             type: Boolean,
@@ -430,8 +432,8 @@ export default {
             if (this.parentNotEditable === true) {
                 return false;
             }
-            if (this.originalThing && this.originalThing.canEditAny) {
-                return this.originalThing.canEditAny(EcIdentityManager.default.getMyPks());
+            if (this.originalThing) {
+                return this.canEditAny(this.originalThing);
             }
             return true;
         },

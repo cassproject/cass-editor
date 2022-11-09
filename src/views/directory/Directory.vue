@@ -437,7 +437,7 @@ export default {
             }
         },
         canEditItem: function(item) {
-            return item.canEditAny(EcIdentityManager.default.getMyPks());
+            return this.canEditAny(item);
         },
         frameworkClick: function(framework) {
             this.$store.commit('app/rightAsideObject', framework);

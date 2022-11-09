@@ -337,7 +337,7 @@ export default {
             if (this.viewOnly === true) {
                 return false;
             }
-            return this.container.canEditAny(EcIdentityManager.default.getMyPks());
+            return this.canEditAny(this.container);
         },
         recomputeHierarchy: function() {
             return this.$store.getters['editor/recomputeHierarchy'];

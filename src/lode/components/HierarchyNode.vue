@@ -353,9 +353,11 @@
 </template>
 <script>
 import {mapState} from 'vuex';
+import common from '@/mixins/common.js';
 
 export default {
     name: "HierarchyNode",
+    mixins: [ common ],
     props: {
         depth: Number,
         obj: Object,
@@ -565,8 +567,8 @@ export default {
             if (this.containerSubType === 'Collection') {
                 return this.canEditInCollection;
             }
-            if (this.obj && this.obj.canEditAny) {
-                return this.obj.canEditAny(EcIdentityManager.default.getMyPks());
+            if (this.obj) {
+                return this.canEditAny(this.obj);
             }
             return true;
         }

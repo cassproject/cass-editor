@@ -92,13 +92,15 @@ export const cassUtil = {
             else return false;
         },
         doesAnyIdentityOwnObject(obj) {
-            if (!EcIdentityManager || !EcIdentityManager.default.ids || EcIdentityManager.default.ids.length <= 0) return false;
-            else {
-                for (let i = 0; i < EcIdentityManager.default.ids.length; i++) {
-                    if (obj.hasOwner(EcIdentityManager.default.ids[i].ppk.toPk())) return true;
-                }
-                return false;
+            if (this.isAdmin()) return true;
+            if (obj.canEditAny == null) return true;
+            return obj.canEditAny(EcIdentityManager.default.getMyPks());
+        },
+        isAdmin: function() {
+            if (EcIdentityManager.default.ids.length > 0 && window.repo.adminKeys != null && window.repo.adminKeys.length > 0) {
+                if (window.repo.adminKeys[0] === EcIdentityManager.default.ids[0].ppk.toPk().toPem()) { return true; }
             }
+            return false;
         },
         generateProbablePersonFingerprintFromShortId(personShortId) {
             return personShortId.substring(personShortId.lastIndexOf("/") + 1);
@@ -132,6 +134,7 @@ export const cassUtil = {
             return false;
         },
         isPersonalIdentityAnObjectOwner(obj) {
+            if (this.isAdmin()) return true;
             if (!obj.owner || obj.owner.length === 0) return false;
             let personalIdentPkPem = this.getPersonalIdentityPk().toPem();
             return obj.owner.includes(personalIdentPkPem);

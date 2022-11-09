@@ -674,7 +674,7 @@ export default {
             if (this.queryParams.view === 'true') {
                 return false;
             }
-            return this.framework.canEditAny(EcIdentityManager.default.getMyPks());
+            return this.canEditAny(this.framework);
         }
     },
     components: {
