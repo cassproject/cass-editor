@@ -131,7 +131,7 @@ export default {
                     me.$store.commit('app/setCuratedPlugins', plugins);
                 }
             }, appError, async(loginInfo) => {
-                r.fetchServerAdminKeys(() => {}, console.error);
+                r.fetchServerAdminKeys(() => {}, appError);
                 this.$store.commit('user/repositorySsoOptions', loginInfo);
                 if (loginInfo.ssoPublicKey != null && loginInfo.ssoLogin == null) {
                     this.$store.commit('featuresEnabled/loginEnabled', false);
