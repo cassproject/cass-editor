@@ -87,7 +87,8 @@
                                     class="control">
                                     <input
                                         class="input"
-                                        v-model="item.value">
+                                        v-model="item.value"
+                                        @change="updateColumn(item)">
                                 </div>
                                 <div
                                     v-else-if="item.type === 'column'"
