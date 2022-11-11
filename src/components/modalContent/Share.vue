@@ -615,6 +615,7 @@ export default {
             me.numGroupsAsOwner = 0;
             me.userIsOwner = false;
             let obj = this.directory ? this.directory : (this.resource ? this.resource : this.framework);
+            if (me.isAdmin()) { me.ownerCount++; me.userIsOwner = true; }
             if (obj.owner) {
                 for (var i = 0; i < obj.owner.length; i++) {
                     this.getEachOwner(obj.owner[i]);
