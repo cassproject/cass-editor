@@ -107,7 +107,7 @@ export default {
                     "heading": "General"
                 },
                 "http://schema.org/author": {
-                    "@id": "https://purl.org/ctdlasn/terms/author",
+                    "@id": "http://schema.org/author",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
@@ -962,7 +962,7 @@ export default {
                     "heading": "General"
                 },
                 "http://schema.org/author": {
-                    "@id": "https://purl.org/ctdlasn/terms/author",
+                    "@id": "http://schema.org/author",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
