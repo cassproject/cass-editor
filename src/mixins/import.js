@@ -787,6 +787,7 @@ export default {
             f.setName(this.importFrameworkName);
             f.setDescription(this.importFrameworkDescription);
             let me = this;
+            me.$store.commit('app/importAllowCancel', true);
             CSVImport.importCompetencies(
                 file,
                 endpoint,
@@ -800,6 +801,7 @@ export default {
                 (this.importCsvColumnRelationType ? this.importCsvColumnRelationType.index : -1),
                 (this.importCsvColumnTarget ? this.importCsvColumnTarget.index : -1),
                 function(competencies, alignments) {
+                    me.$store.commit('app/importAllowCancel', false);
                     f.competency = [];
                     f.relation = [];
                     for (var i = 0; i < competencies.length; i++) {
@@ -910,7 +912,9 @@ export default {
                 ceo = EcIdentityManager.default.ids[0];
             }
             me.$store.commit('app/importStatus', 'process');
+            me.$store.commit('app/importAllowCancel', true);
             CTDLASNCSVConceptImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies) {
+                me.$store.commit('app/importAllowCancel', false);
                 if (me.queryParams.ceasnDataFields === 'true') {
                     for (var i = 0; i < frameworks.length; i++) {
                         if (frameworks[i]["dcterms:language"] == null || frameworks[i]["dcterms:language"] === undefined) {
