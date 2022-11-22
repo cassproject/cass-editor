@@ -16,7 +16,7 @@ export default {
             if (!framework || !framework.id) {
                 return null;
             }
-            if (this.queryParams.ceasnDataFields !== "true") {
+            if (this.$store.getters['editor/queryParams'] && (this.$store.getters['editor/queryParams'].ceasnDataFields !== "true")) {
                 return null;
             }
             var obj = {};
@@ -36,7 +36,7 @@ export default {
             if (!framework || !framework.id) {
                 return null;
             }
-            if (this.queryParams.ceasnDataFields !== "true") {
+            if (this.$store.getters['editor/queryParams'] && (this.$store.getters['editor/queryParams'].ceasnDataFields !== "true")) {
                 return null;
             }
             var obj = {};
@@ -678,7 +678,10 @@ export default {
             });
         },
         ceasnRegistryUriTransform: function(uri) {
-            var endpoint = this.queryParams.newObjectEndpoint;
+            var endpoint = null;
+            if (this.$store.getters['editor/queryParams'] && (this.$store.getters['editor/queryParams'].newObjectEndpoint)) {
+                endpoint = this.queryParams.newObjectEndpoint;
+            }
             if (endpoint == null) {
                 return uri;
             }

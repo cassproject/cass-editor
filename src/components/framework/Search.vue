@@ -178,10 +178,7 @@ export default {
             if (this.$store.getters['editor/progressionMode'] === true) {
                 // If searching for precedes or precededBy in a progression, restrict results to the progression model
                 if (this.addingProperty.includes('precede') !== -1) {
-                    let inProgressionModel = this.selectedCompetency["ceasn:inProgressionModel"].split('/');
-                    if (inProgressionModel && inProgressionModel.length && inProgressionModel.length > 0) {
-                        search += " AND (ceasn\\:inProgressionModel:" + inProgressionModel[inProgressionModel.length - 1] + ")";
-                    }
+                    search += " AND (ceasn\\:inProgressionModel:\"" + this.selectedCompetency["ceasn:inProgressionModel"] + "\")";
                 }
             }
             if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true && this.queryParams.show === "mine") ||
