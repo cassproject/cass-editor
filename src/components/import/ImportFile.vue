@@ -32,7 +32,9 @@
                                         <i class="fa fa-spinner fa-pulse fa-2x" />
                                     </span>
                                 </div>
-                                <div class="section">
+                                <div
+                                    id="import-status"
+                                    class="section">
                                     <p
                                         class="is-size-6">
                                         {{ importStatus }}
@@ -413,6 +415,19 @@ export default {
             this.$store.commit('app/clearImportFiles');
         },
         prepareToImportNonPdf: function() {
+            let scrollOptions = {
+                container: "#import",
+                easing: "ease",
+                offset: -150,
+                force: true,
+                cancelable: true,
+                onStart: false,
+                onDone: false,
+                onCancel: false,
+                x: false,
+                y: true
+            };
+
             if (this.importFileType === 'csv') {
                 // prepare csv
                 this.$store.commit('app/importFrameworkName', this.optionImportFrameworkName);
@@ -425,12 +440,15 @@ export default {
                 this.$store.commit('app/importTargetColumn', this.csvRelationDetails.targetColumn.value);
                 this.$store.commit('app/importRelationColumn', this.csvRelationDetails.relationColumn.value);
                 this.$store.commit('app/importTransition', 'uploadCsv');
+                this.$scrollTo('#import-status', 500, scrollOptions);
             } else if (this.importFileType === 'medbiq') {
                 this.$store.commit('app/importFrameworkName', this.optionImportFrameworkName);
                 this.$store.commit('app/importFrameworkDescription', this.optionImportFrameworkDescription);
                 this.$store.commit('app/importTransition', 'uploadMedbiq');
+                this.$scrollTo('#import-status', 500, scrollOptions);
             } else if (this.importFileType !== 'pdf') {
                 this.$store.commit('app/importTransition', 'uploadOtherNonPdf');
+                this.$scrollTo('#import-status', 500, scrollOptions);
             }
         },
         updateColumn(column) {
