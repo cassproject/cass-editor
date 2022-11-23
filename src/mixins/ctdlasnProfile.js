@@ -258,7 +258,7 @@ export default {
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#date"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Date of creation of this resource."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Created"}],
@@ -435,7 +435,7 @@ export default {
                     "registryURL",
                     "ctid",
                     "https://purl.org/ctdlasn/terms/dateCreated",
-                    "https://purl.org/ctdlasn/terms/dateModifiedd",
+                    "https://purl.org/ctdlasn/terms/dateModified",
                     "http://schema.org/validFrom",
                     "http://schema.org/validThrough",
                     "https://purl.org/ctdlasn/terms/publicationStatusType",
@@ -792,7 +792,7 @@ export default {
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#date"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Date of creation of this resource."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Created"}],
@@ -1546,7 +1546,7 @@ export default {
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/ConceptScheme"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#date"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Date of creation of this resource."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Created"}],
@@ -2254,7 +2254,7 @@ export default {
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/ConceptScheme"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#dateTime"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2001/XMLSchema#date"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Date of creation of this resource."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Date Created"}],
