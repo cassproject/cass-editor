@@ -481,28 +481,81 @@ export default {
                 for (let child in this.container["skos:hasTopConcept"]) {
                     unordered.push(await EcConcept.get(this.container["skos:hasTopConcept"][child]));
                 }
-                let next = unordered.findIndex(item => !(item["ceterms:precedes"]));
-                while (unordered.length > 0) {
-                    if (next < 0 || next >= unordered.length) {
-                        next = unordered.length - 1;
-                    }
-                    let c = unordered[next];
-                    let index = -1;
-                    unordered.splice(next, 1);
-                    next = unordered.findIndex(item => c["ceterms:precededBy"] && (EcRemoteLinkedData.trimVersionFromUrl(item.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precededBy"])));
-                    if (c) {
-                        if (c["ceterms:precededBy"] && structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precededBy"])) >= 0) {
-                            index = structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precededBy"])) + 1;
-                            structure.splice(index, 0, {"obj": c, "children": []});
-                        } else if (c["ceterms:precedes"] && structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precedes"])) >= 0) {
-                            index = structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precedes"]));
-                            structure.splice(index, 0, {"obj": c, "children": []});
-                        } else {
-                            structure.push({"obj": c, "children": []});
-                            index = structure.length - 1;
+                // Progression Levels can be sorted using precedes and precededBy in combination or only with precedes or only with precededBy.
+                //   To reduce confusion and improve performance (slightly) these three situations are dealt with separately.
+                if (unordered.findIndex(item => (item["ceterms:precedes"])) > -1 && unordered.findIndex(item => (item["ceterms:precededBy"])) > -1) {
+                    // Progression levels contain precedes and precededBy properties
+                    let next = unordered.findIndex(item => !(item["ceterms:precedes"]));
+                    while (unordered.length > 0) {
+                        if (next < 0 || next >= unordered.length) {
+                            next = unordered.length - 1;
                         }
-                        if (c["skos:narrower"]) {
-                            await this.addChildren(structure, c, index);
+                        let c = unordered[next];
+                        let index = -1;
+                        unordered.splice(next, 1);
+                        next = unordered.findIndex(item => c["ceterms:precededBy"] && (EcRemoteLinkedData.trimVersionFromUrl(item.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precededBy"])));
+                        if (c) {
+                            if (c["ceterms:precededBy"] && structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precededBy"])) >= 0) {
+                                index = structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precededBy"])) + 1;
+                                structure.splice(index, 0, {"obj": c, "children": []});
+                            } else if (c["ceterms:precedes"] && structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precedes"])) >= 0) {
+                                index = structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precedes"]));
+                                structure.splice(index, 0, {"obj": c, "children": []});
+                            } else {
+                                structure.push({"obj": c, "children": []});
+                                index = structure.length - 1;
+                            }
+                            if (c["skos:narrower"]) {
+                                await this.addChildren(structure, c, index);
+                            }
+                        }
+                    }
+                } else if (unordered.findIndex(item => (item["ceterms:precedes"])) > -1) {
+                    // Progression levels only contain precedes property
+                    let next = unordered.findIndex(item => !(item["ceterms:precedes"]));
+                    while (unordered.length > 0) {
+                        if (next < 0 || next >= unordered.length) {
+                            next = unordered.length - 1;
+                        }
+                        let c = unordered[next];
+                        let index = -1;
+                        unordered.splice(next, 1);
+                        next = unordered.findIndex(item => item["ceterms:precedes"] && (item["ceterms:precedes"] === EcRemoteLinkedData.trimVersionFromUrl(c.id)));
+                        if (c) {
+                            if (c["ceterms:precedes"] && structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precedes"])) >= 0) {
+                                index = structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precedes"]));
+                                structure.splice(index, 0, {"obj": c, "children": []});
+                            } else {
+                                structure.push({"obj": c, "children": []});
+                                index = structure.length - 1;
+                            }
+                            if (c["skos:narrower"]) {
+                                await this.addChildren(structure, c, index);
+                            }
+                        }
+                    }
+                } else {
+                    // Progression levels only contain precededBy property
+                    let next = unordered.findIndex(item => !(item["ceterms:precededBy"]));
+                    while (unordered.length > 0) {
+                        if (next < 0 || next >= unordered.length) {
+                            next = unordered.length - 1;
+                        }
+                        let c = unordered[next];
+                        let index = -1;
+                        unordered.splice(next, 1);
+                        next = unordered.findIndex(item => c["ceterms:precededBy"] && (EcRemoteLinkedData.trimVersionFromUrl(item.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precededBy"])));
+                        if (c) {
+                            if (c["ceterms:precededBy"] && structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precededBy"])) >= 0) {
+                                index = structure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(c["ceterms:precededBy"])) + 1;
+                                structure.splice(index, 0, {"obj": c, "children": []});
+                            } else {
+                                structure.push({"obj": c, "children": []});
+                                index = structure.length - 1;
+                            }
+                            if (c["skos:narrower"]) {
+                                await this.addChildren(structure, c, index);
+                            }
                         }
                     }
                 }
@@ -516,28 +569,81 @@ export default {
                 for (let child in c["skos:narrower"]) {
                     unordered.push(await EcConcept.get(c["skos:narrower"][child]));
                 }
-                let next = unordered.findIndex(item => !(item["ceterms:precedes"]));
-                while (unordered.length > 0) {
-                    if (next < 0 || next >= unordered.length) {
-                        next = unordered.length - 1;
-                    }
-                    var subC = unordered[next];
-                    let index = -1;
-                    unordered.splice(next, 1);
-                    next = unordered.findIndex(item => subC["ceterms:precededBy"] && (EcRemoteLinkedData.trimVersionFromUrl(item.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precededBy"])));
-                    if (subC) {
-                        if (subC["ceterms:precededBy"] && structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precededBy"])) >= 0) {
-                            index = structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precededBy"])) + 1;
-                            structure[i].children.splice(index, 0, {"obj": subC, "children": []});
-                        } else if (subC["ceterms:precedes"] && structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precedes"])) >= 0) {
-                            index = structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precedes"]));
-                            structure[i].children.splice(index, 0, {"obj": subC, "children": []});
-                        } else {
-                            structure[i].children.push({"obj": subC, "children": []});
-                            index = structure[i].children.length - 1;
+                // Progression Levels can be sorted using precedes and precededBy in combination or only with precedes or only with precededBy.
+                //   To reduce confusion and improve performance (slightly) these three situations are dealt with separately.
+                if (unordered.findIndex(item => (item["ceterms:precedes"])) > -1 && unordered.findIndex(item => (item["ceterms:precededBy"])) > -1) {
+                    // Progression levels contain precedes and precededBy properties
+                    let next = unordered.findIndex(item => !(item["ceterms:precedes"]));
+                    while (unordered.length > 0) {
+                        if (next < 0 || next >= unordered.length) {
+                            next = unordered.length - 1;
                         }
-                        if (subC["skos:narrower"]) {
-                            await this.addChildren(structure[i].children, subC, index);
+                        var subC = unordered[next];
+                        let index = -1;
+                        unordered.splice(next, 1);
+                        next = unordered.findIndex(item => subC["ceterms:precededBy"] && (EcRemoteLinkedData.trimVersionFromUrl(item.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precededBy"])));
+                        if (subC) {
+                            if (subC["ceterms:precededBy"] && structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precededBy"])) >= 0) {
+                                index = structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precededBy"])) + 1;
+                                structure[i].children.splice(index, 0, {"obj": subC, "children": []});
+                            } else if (subC["ceterms:precedes"] && structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precedes"])) >= 0) {
+                                index = structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precedes"]));
+                                structure[i].children.splice(index, 0, {"obj": subC, "children": []});
+                            } else {
+                                structure[i].children.push({"obj": subC, "children": []});
+                                index = structure[i].children.length - 1;
+                            }
+                            if (subC["skos:narrower"]) {
+                                await this.addChildren(structure[i].children, subC, index);
+                            }
+                        }
+                    }
+                } else if (unordered.findIndex(item => (item["ceterms:precedes"])) > -1) {
+                    // Progression levels contain only precedes properties
+                    let next = unordered.findIndex(item => !(item["ceterms:precedes"]));
+                    while (unordered.length > 0) {
+                        if (next < 0 || next >= unordered.length) {
+                            next = unordered.length - 1;
+                        }
+                        var subC = unordered[next];
+                        let index = -1;
+                        unordered.splice(next, 1);
+                        next = unordered.findIndex(item => item["ceterms:precedes"] && (item["ceterms:precedes"] === EcRemoteLinkedData.trimVersionFromUrl(subC.id)));
+                        if (subC) {
+                            if (subC["ceterms:precedes"] && structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precedes"])) >= 0) {
+                                index = structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precedes"]));
+                                structure[i].children.splice(index, 0, {"obj": subC, "children": []});
+                            } else {
+                                structure[i].children.push({"obj": subC, "children": []});
+                                index = structure[i].children.length - 1;
+                            }
+                            if (subC["skos:narrower"]) {
+                                await this.addChildren(structure[i].children, subC, index);
+                            }
+                        }
+                    }
+                } else {
+                    // Progression levels contain only precededBy properties
+                    let next = unordered.findIndex(item => !(item["ceterms:precededBy"]));
+                    while (unordered.length > 0) {
+                        if (next < 0 || next >= unordered.length) {
+                            next = unordered.length - 1;
+                        }
+                        var subC = unordered[next];
+                        let index = -1;
+                        unordered.splice(next, 1);
+                        next = unordered.findIndex(item => item["ceterms:precededBy"] && (item["ceterms:precededBy"] === EcRemoteLinkedData.trimVersionFromUrl(subC.id)));
+                        if (subC) {
+                            if (subC["ceterms:precededBy"] && structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precededBy"])) >= 0) {
+                                index = structure[i].children.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj.id) === EcRemoteLinkedData.trimVersionFromUrl(subC["ceterms:precededBy"])) + 1;
+                                structure[i].children.splice(index, 0, {"obj": subC, "children": []});
+                            } else {
+                                structure[i].children.push({"obj": subC, "children": []});
+                                index = structure[i].children.length - 1;
+                            }
+                            if (subC["skos:narrower"]) {
+                                await this.addChildren(structure[i].children, subC, index);
+                            }
                         }
                     }
                 }
