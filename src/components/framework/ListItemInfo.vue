@@ -35,7 +35,7 @@
                         <button
                             @click="clickAccordion('details')"
                             class="cass__right-side--accordion details">
-                            Details
+                            Details {{ isCeasn ? "(in CaSS)" : "" }}
                             <span class="icon is-pulled-right">
                                 <i
                                     v-if="accordion === 'details'"
@@ -1278,6 +1278,13 @@ export default {
         }
     },
     computed: {
+        isCeasn: function() {
+            if (this.queryParams["ceasnDataFields"] && this.queryParams["ceasnDataFields"] === 'true') {
+                return true;
+            } else {
+                return false;
+            }
+        },
         objectName: function() {
             let name = this.object.name;
             if (!name && this.object["dcterms:title"]) {

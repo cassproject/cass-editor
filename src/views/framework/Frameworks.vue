@@ -261,7 +261,7 @@
                                     v-if="slotProps.item['schema:dateCreated']"
                                     :title="new Date(slotProps.item['schema:dateCreated'])">
                                     <span class="has-text-weight-medium">
-                                        Created:
+                                        Created {{ isCeasn ? "(in CaSS)" : "" }}:
                                     </span>
                                     <span class="has-text-weight-light">
                                         &nbsp; {{ $moment(new Date(slotProps.item['schema:dateCreated'])).format("MMM D YYYY") }}
@@ -272,7 +272,7 @@
                                     v-if="slotProps.item.getTimestamp()"
                                     :title="new Date(slotProps.item.getTimestamp())">
                                     <span class="has-text-weight-medium">
-                                        Last modified:
+                                        Last modified {{ isCeasn ? "(in CaSS)" : "" }}:
                                     </span>
                                     <span class="has-text-weight-light">
                                         &nbsp; {{ $moment(slotProps.item.getTimestamp()).format("MMM D YYYY") }}
@@ -283,7 +283,7 @@
                                     v-else-if="slotProps.item['schema:dateModified']"
                                     :title="new Date(slotProps.item['schema:dateModified'])">
                                     <span class="has-text-weight-medium">
-                                        Last modified:
+                                        Last modified {{ isCeasn ? "(in CaSS)" : "" }}:
                                     </span>
                                     <span class="has-text-weight-light">
                                         {{ $moment(new Date(slotProps.item['schema:dateModified'])).format("MMM D YYYY") }}
@@ -374,15 +374,22 @@ export default {
         this.setDefaultConfig();
     },
     computed: {
+        isCeasn: function() {
+            if (this.queryParams["ceasnDataFields"] && this.queryParams["ceasnDataFields"] === 'true') {
+                return true;
+            } else {
+                return false;
+            }
+        },
         conceptSchemeString: function() {
-            if (this.queryParams.ceasnDataFields === 'true') {
+            if (this.isCeasn) {
                 return 'Concept Schemes';
             } else {
                 return "Taxonomies";
             }
         },
         conceptSchemeStringForButton: function() {
-            if (this.queryParams.ceasnDataFields === 'true') {
+            if (this.isCeasn) {
                 return 'Concept Scheme';
             } else {
                 return "Taxonomy";
@@ -402,7 +409,7 @@ export default {
         },
         searchOptions: function() {
             let search = "";
-            if (this.queryParams.ceasnDataFields === 'true' && this.type === "Framework") {
+            if (this.isCeasn && this.type === "Framework") {
                 if (this.collectionMode) {
                     search += " AND (subType:\"Collection\")";
                 } else {
