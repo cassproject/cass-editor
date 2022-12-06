@@ -2826,16 +2826,14 @@ export default {
                     "http://www.w3.org/2004/02/skos/core#definition",
                     "http://www.w3.org/2004/02/skos/core#notation"
                 ],
-                "secondaryProperties": [
-                    "https://purl.org/ctdlasn/terms/inProgressionModel",
-                    "https://purl.org/ctdl/terms/precedes",
-                    "https://purl.org/ctdl/terms/precededBy"
-                ],
+                "secondaryProperties": ["https://purl.org/ctdlasn/terms/inProgressionModel"],
                 "tertiaryProperties": [
                     "@id",
                     "registryURL",
                     "ctid",
-                    "http://www.w3.org/2004/02/skos/core#note"
+                    "http://www.w3.org/2004/02/skos/core#note",
+                    "https://purl.org/ctdl/terms/precedes",
+                    "https://purl.org/ctdl/terms/precededBy"
                 ]
             };
         }
