@@ -854,8 +854,10 @@ export default {
                 var identity = EcIdentityManager.default.ids[0];
                 if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
                 let me = this;
+                me.$store.commit('app/importAllowCancel', true);
                 me.$store.commit('app/importFramework', null);
                 EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
+                    me.$store.commit('app/importAllowCancel', false);
                     var framework;
                     if (EcRepository.cache) {
                         delete EcRepository.cache[data];

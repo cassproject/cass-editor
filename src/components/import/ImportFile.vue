@@ -411,6 +411,9 @@ export default {
         }
     },
     methods: {
+        cancelImport: function() {
+            this.$store.dispatch('app/clearImport');
+        },
         clearFiles: function() {
             this.$store.commit('app/clearImportFiles');
         },
