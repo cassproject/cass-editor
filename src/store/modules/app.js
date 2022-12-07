@@ -51,7 +51,6 @@ const state = {
         type: 'file', // pdf, server, text
         fileType: '',
         firstImport: Boolean,
-        allowCancel: false,
         errors: [], // erorrs from the code or from the api
         feedback: '', // additional information
         framework: null,
@@ -74,6 +73,7 @@ const state = {
         csvRelationFile: null,
         importModalParams: null
     },
+    allowCancel: false,
     banner: {
         message: '',
         color: '',
@@ -212,7 +212,7 @@ const mutations = {
         state.import.status = val;
     },
     importAllowCancel: function(state, val) {
-        state.import.allowCancel = val;
+        state.allowCancel = val;
     },
     importFeedback: function(state, val) {
         state.import.feedback = val;
@@ -439,7 +439,7 @@ const getters = {
         return state.import.status;
     },
     importAllowCancel: state => {
-        return state.import.allowCancel;
+        return state.allowCancel;
     },
     importFeedback: state => {
         return state.import.feedback;
