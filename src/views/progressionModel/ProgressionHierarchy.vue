@@ -487,13 +487,8 @@ export default {
                     }
                 }
             }
-            console.log('original order');
-            console.log(this.printPrettyStructure(structure));
             await this.reorder(structure, "ceterms:precedes");
             await this.reorder(structure, "ceterms:precededBy");
-            console.log('sorted');
-            console.log(this.printPrettyStructure(structure));
-            console.log(structure);
             this.structure = structure;
             this.once = false;
         },
@@ -509,7 +504,6 @@ export default {
                             let children = structure[i].children;
                             output += (j === 0 ? "(" : "") + children[j].obj["skos:prefLabel"]["@value"] + (j === structure[i].children.length - 1 ? ")" : ", ");
                             output += (j === structure[i].children.length - 1 ? (i === structure.length - 1 ? "]" : ", ") : "");
-
                             if (children[j].children.length > 0) {
                                 for (let k = 0; k < children[j].children.length; k++) {
                                     if (children[j].children[k]) {
@@ -536,53 +530,56 @@ export default {
             }
         },
         reorder: async function(unorderedStructure, property) {
-            let changesMade = true;
-            if (unorderedStructure == null) {
-                return;
-            }
-            if (unorderedStructure !== null && unorderedStructure.length) {
-                while (changesMade) {
-                    changesMade = false;
-                    let i;
-                    if (property === "ceterms:precedes") {
-                        i = 0;
-                    } else {
-                        i = unorderedStructure.length - 1;
-                    }
-                    let next = unorderedStructure[i];
-                    while (next) {
-                        var c = unorderedStructure[i].obj;
-                        if (c) {
-                            if (unorderedStructure[i].children) {
-                                if (await this.reorderChildren(unorderedStructure, unorderedStructure[i].children, property)) {
-                                    changesMade = true;
+            return new Promise(async(resolve) => {
+                let changesMade = true;
+                if (unorderedStructure == null) {
+                    return;
+                }
+                if (unorderedStructure !== null && unorderedStructure.length) {
+                    while (changesMade) {
+                        changesMade = false;
+                        let i;
+                        if (property === "ceterms:precedes") {
+                            i = 0;
+                        } else {
+                            i = unorderedStructure.length - 1;
+                        }
+                        let next = unorderedStructure[i];
+                        while (next) {
+                            var c = unorderedStructure[i].obj;
+                            if (c) {
+                                if (unorderedStructure[i].children) {
+                                    if (await this.reorderChildren(unorderedStructure, unorderedStructure[i].children, property)) {
+                                        changesMade = true;
+                                    }
                                 }
-                            }
-                            if (c[property]) {
-                                var c2 = await EcConcept.get(c[property]);
-                                if (await this.setProrgressionOrder(unorderedStructure, c, c2, property)) {
-                                    changesMade = true;
+                                if (c[property]) {
+                                    var c2 = await EcConcept.get(c[property]);
+                                    if (await this.setProrgressionOrder(unorderedStructure, c, c2, property)) {
+                                        changesMade = true;
+                                    }
                                 }
-                            }
-                            if (property === "ceterms:precedes") {
-                                if (i < unorderedStructure.length - 1) {
-                                    i++;
-                                    next = unorderedStructure[i];
+                                if (property === "ceterms:precedes") {
+                                    if (i < unorderedStructure.length - 1) {
+                                        i++;
+                                        next = unorderedStructure[i];
+                                    } else {
+                                        next = undefined;
+                                    }
                                 } else {
-                                    next = undefined;
-                                }
-                            } else {
-                                if (i > 0) {
-                                    i--;
-                                    next = unorderedStructure[i];
-                                } else {
-                                    next = undefined;
+                                    if (i > 0) {
+                                        i--;
+                                        next = unorderedStructure[i];
+                                    } else {
+                                        next = undefined;
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            }
+                resolve();
+            });
         },
         reorderChildren: async function(unorderedStructure, children, property) {
             return new Promise(async(resolve) => {
@@ -649,7 +646,7 @@ export default {
                 }
                 let node1Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(node1.id));
                 let node2Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(sibling.id));
-                node2 = structuredClone(parentStructure[node2Index]);
+                node2 = ({"obj": parentStructure[node2Index].obj, "children": parentStructure[node2Index].children});
                 if (property === "ceterms:precedes") {
                     if (node1Index + 1 === node2Index) {
                         // Nodes are already in order
@@ -680,7 +677,7 @@ export default {
                     }
                     let node1Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(sibling.id));
                     let node2Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(node2.id));
-                    node2 = structuredClone(parentStructure[node2Index]);
+                    node2 = ({"obj": parentStructure[node2Index].obj, "children": parentStructure[node2Index].children});
                     if (property === "ceterms:precedes") {
                         if (node1Index + 1 === node2Index) {
                             // Nodes are already in order
