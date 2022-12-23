@@ -482,131 +482,233 @@ export default {
                     if (c) {
                         structure.push({"obj": c, "children": []});
                         if (c["skos:narrower"]) {
-                            this.addChildren(structure, c, i);
+                            await this.addChildren(structure, c, i);
                         }
                     }
                 }
             }
-            await this.reorder(structure);
+            console.log('original order');
+            console.log(this.printPrettyStructure(structure));
+            await this.reorder(structure, "ceterms:precedes");
+            await this.reorder(structure, "ceterms:precededBy");
+            console.log('sorted');
+            console.log(this.printPrettyStructure(structure));
+            console.log(structure);
             this.structure = structure;
             this.once = false;
+        },
+        printPrettyStructure(structure) {
+            let output = "[";
+            for (let i = 0; i < structure.length; i++) {
+                if (structure[i].obj) {
+                    output += structure[i].obj["skos:prefLabel"]["@value"] + ((i === structure.length - 1) && !(structure[i].children && structure[i].children.length > 0) ? "" : ", ");
+                }
+                if (structure[i].children.length > 0) {
+                    for (let j = 0; j < structure[i].children.length; j++) {
+                        if (structure[i].children[j]) {
+                            let children = structure[i].children;
+                            output += (j === 0 ? "(" : "") + children[j].obj["skos:prefLabel"]["@value"] + (j === structure[i].children.length - 1 ? ")" : ", ");
+                            output += (j === structure[i].children.length - 1 ? (i === structure.length - 1 ? "]" : ", ") : "");
+
+                            if (children[j].children.length > 0) {
+                                for (let k = 0; k < children[j].children.length; k++) {
+                                    if (children[j].children[k]) {
+                                        output += (k === 0 ? "(" : "") + children[j].children[k].obj["skos:prefLabel"]["@value"] + (k === children[j].children.length - 1 ? ")" : ", ");
+                                        output += (k === children[j].children.length - 1 ? (j === children.length - 1 ? "]" : ", ") : "");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    output += (i === structure.length - 1 ? "]" : "");
+                }
+            }
+            return output;
         },
         addChildren: async function(structure, c, i) {
             for (var j = 0; j < c["skos:narrower"].length; j++) {
                 var subC = await EcConcept.get(c["skos:narrower"][j]);
                 structure[i].children.push({"obj": subC, "children": []});
                 if (subC && subC["skos:narrower"]) {
-                    this.addChildren(structure[i].children, subC, j);
+                    await this.addChildren(structure[i].children, subC, j);
                 }
             }
         },
-        reorder: async function(unorderedStructure) {
-            let orderedStructure = [];
+        reorder: async function(unorderedStructure, property) {
+            let changesMade = true;
             if (unorderedStructure == null) {
                 return;
             }
-            Object.assign(orderedStructure, unorderedStructure);
-            if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
-                for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
-                    var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
-                    if (c) {
-                        if (c["ceterms:precededBy"]) {
-                            console.log('precededBy: ' + c["ceterms:precededBy"]);
-                            var c2 = await EcConcept.get(c["ceterms:precededBy"]);
-                            await this.setProrgressionOrder(orderedStructure, c, c2, false);
-                        }
-                        if (c["ceterms:precedes"]) {
-                            console.log('precedes: ' + c["ceterms:precedes"]);
-                            var c2 = await EcConcept.get(c["ceterms:precedes"]);
-                            await this.setProrgressionOrder(orderedStructure, c, c2, true);
-                        }
-                        if (c["skos:narrower"]) {
-                            await this.reorderChildren(unorderedStructure, orderedStructure, c, i);
+            if (unorderedStructure !== null && unorderedStructure.length) {
+                while (changesMade) {
+                    changesMade = false;
+                    let i;
+                    if (property === "ceterms:precedes") {
+                        i = 0;
+                    } else {
+                        i = unorderedStructure.length - 1;
+                    }
+                    let next = unorderedStructure[i];
+                    while (next) {
+                        var c = unorderedStructure[i].obj;
+                        if (c) {
+                            if (unorderedStructure[i].children) {
+                                if (await this.reorderChildren(unorderedStructure, unorderedStructure[i].children, property)) {
+                                    changesMade = true;
+                                }
+                            }
+                            if (c[property]) {
+                                var c2 = await EcConcept.get(c[property]);
+                                if (await this.setProrgressionOrder(unorderedStructure, c, c2, property)) {
+                                    changesMade = true;
+                                }
+                            }
+                            if (property === "ceterms:precedes") {
+                                if (i < unorderedStructure.length - 1) {
+                                    i++;
+                                    next = unorderedStructure[i];
+                                } else {
+                                    next = undefined;
+                                }
+                            } else {
+                                if (i > 0) {
+                                    i--;
+                                    next = unorderedStructure[i];
+                                } else {
+                                    next = undefined;
+                                }
+                            }
                         }
                     }
                 }
             }
-            console.log(unorderedStructure);
-            console.log('reordered...');
-            console.log(orderedStructure);
         },
-        reorderChildren: async function(unorderedStructure, orderedStructure, c, i) {
-            for (var j = 0; j < c["skos:narrower"].length; j++) {
-                var subC1 = await EcConcept.get(c["skos:narrower"][j]);
-                if (subC1) {
-                    if (subC1["ceterms:precededBy"]) {
-                        var subC2 = await EcConcept.get(subC1["ceterms:precededBy"]);
-                        console.log('Search for siblings: ' + subC1["skos:prefLabel"]["@value"] + ' and ' + subC2["skos:prefLabel"]["@value"]);
-                        await this.setProrgressionOrder(orderedStructure, subC1, subC2, false);
+        reorderChildren: async function(unorderedStructure, children, property) {
+            return new Promise(async(resolve) => {
+                let changesMade = false;
+                let childChangesMade = true;
+                while (childChangesMade) {
+                    childChangesMade = false;
+                    let j;
+                    if (property === "ceterms:precedes") {
+                        j = 0;
+                    } else {
+                        j = children.length - 1;
                     }
-                    if (subC1["ceterms:precedes"]) {
-                        var subC2 = await EcConcept.get(subC1["ceterms:precedes"]);
-                        console.log('Search for siblings: ' + subC1["skos:prefLabel"]["@value"] + ' and ' + subC2["skos:prefLabel"]["@value"]);
-                        await this.setProrgressionOrder(orderedStructure, subC1, subC2, true);
-                    }
-                    if (subC1["skos:narrower"]) {
-                        await this.reorderChildren(unorderedStructure[i].children, orderedStructure, subC1, j);
+                    let next = children[j];
+                    while (next) {
+                        let subC1 = children[j].obj;
+                        if (subC1) {
+                            if (subC1["skos:narrower"]) {
+                                if (await this.reorderChildren(unorderedStructure, children[j].children, property)) {
+                                    changesMade = true;
+                                    childChangesMade = true;
+                                }
+                            }
+                            if (subC1[property]) {
+                                let subC2 = await EcConcept.get(subC1[property]);
+                                if (await this.setProrgressionOrder(unorderedStructure, subC1, subC2, property)) {
+                                    changesMade = true;
+                                    childChangesMade = true;
+                                }
+                            }
+                        }
+
+                        if (property === "ceterms:precedes") {
+                            if (j < children.length - 1) {
+                                j++;
+                                next = children[j];
+                            } else {
+                                next = undefined;
+                            }
+                        } else {
+                            if (j > 0) {
+                                j--;
+                                next = children[j];
+                            } else {
+                                next = undefined;
+                            }
+                        }
                     }
                 }
-            }
+                resolve(changesMade);
+            });
         },
-        setProrgressionOrder: async function(structure, node1, node2, node1ComesFirst) {
+        setProrgressionOrder: async function(structure, node1, node2, property) {
             // If the nodes are not at the same level in the hierarchy, then find the ancestor that IS
             //  at the same level. Once the two sibling nodes are found, switch positions in the array.
             let sibling = await this.findSiblingOfNode(node1, node2);
             if (sibling !== null) {
-                console.log('found! ' + node1["skos:prefLabel"]["@value"] + ' and ' + sibling["skos:prefLabel"]["@value"]);
-
                 // Set the order of the progression levels
                 let parentStructure = await this.findSubStructure(structure, node1);
                 if (!parentStructure) {
                     // This condition should never be reached.
                     appLog('Error: No parent structure found');
-                    return;
+                    return false;
                 }
                 let node1Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(node1.id));
-                Object.assign(node1, parentStructure[node1Index]);
-                if (node1ComesFirst) {
-                    parentStructure.splice(node1Index, 1);
-                    let node2Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(sibling.id));
-                    parentStructure.splice(node2Index, 0, node1);
+                let node2Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(sibling.id));
+                node2 = structuredClone(parentStructure[node2Index]);
+                if (property === "ceterms:precedes") {
+                    if (node1Index + 1 === node2Index) {
+                        // Nodes are already in order
+                        return false;
+                    }
+                    parentStructure.splice(node2Index, 1);
+                    node1Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(node1.id));
+                    parentStructure.splice(node1Index + 1, 0, node2);
                 } else {
-                    parentStructure.splice(node1Index, 1);
-                    let node2Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(sibling.id));
-                    parentStructure.splice(node2Index + 1, 0, node1);
+                    if (node2Index + 1 === node1Index) {
+                        // Nodes are already in order
+                        return false;
+                    }
+                    parentStructure.splice(node2Index, 1);
+                    node1Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(node1.id));
+                    parentStructure.splice(node1Index, 0, node2);
                 }
+                return true;
             } else {
                 sibling = await this.findSiblingOfNode(node2, node1);
                 if (sibling !== null) {
-                    console.log('found! ' + sibling["skos:prefLabel"]["@value"] + ' and ' + node2["skos:prefLabel"]["@value"]);
-
                     // Set the order of the progression levels
                     let parentStructure = await this.findSubStructure(structure, node2);
                     if (!parentStructure) {
                         // This condition should never be reached.
                         appLog('Error: No parent structure found');
-                        return;
+                        return false;
                     }
                     let node1Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(sibling.id));
-                    Object.assign(sibling, parentStructure[node1Index]);
-                    if (node1ComesFirst) {
-                        parentStructure.splice(node1Index, 1);
-                        let node2Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(node2.id));
-                        parentStructure.splice(node2Index, 0, sibling);
+                    let node2Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(node2.id));
+                    node2 = structuredClone(parentStructure[node2Index]);
+                    if (property === "ceterms:precedes") {
+                        if (node1Index + 1 === node2Index) {
+                            // Nodes are already in order
+                            return false;
+                        }
+                        parentStructure.splice(node2Index, 1);
+                        node1Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(sibling.id));
+                        parentStructure.splice(node1Index + 1, 0, node2);
                     } else {
-                        parentStructure.splice(node1Index, 1);
-                        let node2Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(node2.id));
-                        parentStructure.splice(node2Index + 1, 0, sibling);
+                        if (node2Index + 1 === node1Index) {
+                            // Nodes are already in order
+                            return false;
+                        }
+                        parentStructure.splice(node2Index, 1);
+                        node1Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(sibling.id));
+                        parentStructure.splice(node1Index, 0, node2);
                     }
+                    return true;
                 } else {
                     // If no sibling is found, then the common ancestor is higher up in the hierarchy.
                     //  Search again with the node parent.
                     if (node1["skos:broader"]) {
                         let nodeParent = await EcConcept.get(EcRemoteLinkedData.trimVersionFromUrl(node1["skos:broader"]).toString());
-                        await this.setProrgressionOrder(structure, nodeParent, node2, node1ComesFirst);
+                        return (this.setProrgressionOrder(structure, nodeParent, node2, property));
                     } else {
                         // This condition should never be reached.
                         appLog('Error: No common ancestry found');
+                        return false;
                     }
                 }
             }
@@ -658,7 +760,7 @@ export default {
                             resolve(structure[i].children);
                             return;
                         } else {
-                            // If none of the children in the currently level contain the target node, then go deeper...
+                            // If this level is not the parent, of the target node, then go deeper...
                             let subStructure = await this.findSubStructure(structure[i].children, node);
                             if (subStructure) {
                                 resolve(subStructure);
