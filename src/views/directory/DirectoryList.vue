@@ -13,6 +13,8 @@
                 <div class="cass--list--container">
                     <ul class="cass--list">
                         <!-- directories -->
+                        <li v-if="!firstSearchProcessing"
+                            class="cass--list--item no-results">No results found</li>
                         <li
                             class="cass--list--item "
                             :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"

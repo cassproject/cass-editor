@@ -18,6 +18,9 @@
             display: none;
         }
         .cass--list {
+             li.cass--list--item.no-results:not(:only-child) {
+                display: none;
+             }
              li.cass--list--item {
                     padding: .5rem;
                     width: 100%;
