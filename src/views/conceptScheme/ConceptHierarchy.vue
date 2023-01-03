@@ -97,6 +97,7 @@
                     <div
                         v-if="addingNode"
                         @click="onClickCreateNew"
+                        :class="{'is-loading': loading}"
                         class="button is-outlined is-primary ">
                         <span class="icon">
                             <i class="fa fa-plus" />
@@ -301,7 +302,8 @@ export default {
             isDraggable: true,
             shiftKey: false,
             arrowKey: null,
-            addConceptOrChildText: "Add Concept"
+            addConceptOrChildText: "Add Concept",
+            loading: false
         };
     },
     components: {
@@ -740,11 +742,12 @@ export default {
                         me.container = await EcEncryptedValue.toEncryptedValue(me.container);
                     }
                 }
-                this.repo.saveTo(c, function() {
-                    me.repo.saveTo(me.container, function() {
-                        me.once = true;
-                    }, appError);
-                }, appError);
+                try {
+                    await this.repo.multiput([c, me.container]);
+                    me.once = true;
+                } catch (e) {
+                    appError(e);
+                }
             } else {
                 c["skos:broader"] = [containerId];
                 var parent = await EcConcept.get(containerId);
@@ -775,13 +778,12 @@ export default {
                         me.container = await EcEncryptedValue.toEncryptedValue(me.container);
                     }
                 }
-                this.repo.saveTo(c, function() {
-                    me.repo.saveTo(parent, function() {
-                        me.repo.saveTo(me.container, function() {
-                            me.once = true;
-                        }, appError);
-                    }, appError);
-                }, appError);
+                try {
+                    await this.repo.multiput([c, parent, me.container]);
+                    me.once = true;
+                } catch (e) {
+                    appError(e);
+                }
             }
             this.$store.commit("editor/newCompetency", c.shortId());
             appLog("Added node: ", JSON.parse(c.toJson()));
@@ -805,12 +807,19 @@ export default {
             this.$store.commit('editor/framework', f);
             this.$router.push({name: "conceptScheme", params: {frameworkId: this.container.id}});
         },
-        onClickCreateNew: function() {
+        onClickCreateNew: async function() {
             let parent = this.container.shortId();
             if (this.selectedArray.length === 1) {
                 parent = this.selectedArray[0];
             }
-            this.add(parent, null);
+
+            this.loading = true;
+            try {
+                await this.add(parent, null);
+            } catch (e) {
+                appError(e);
+            }
+            this.loading = false;
             this.addingNode = false;
         },
         deleteSelected: async function() {
