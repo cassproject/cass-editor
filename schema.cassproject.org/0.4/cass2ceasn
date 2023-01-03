@@ -103,7 +103,7 @@
 		},
 		"schema:author": {
 			"@id": "ceasn:author",
-			"@type": "xsd:string"
+			"@type": "@id"
 		},
 		"schema:creator": {
 			"@id": "ceasn:creator",
@@ -326,7 +326,7 @@
 		},
 		"ceasn:author": {
 			"@id": "ceasn:author",
-			"@type": "xsd:string"
+			"@type": "@id"
 		},
 		"asn:hasProgressionModel": {
 			"@id": "asn:hasProgressionModel",
