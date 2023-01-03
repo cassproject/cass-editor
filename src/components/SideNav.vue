@@ -78,7 +78,7 @@
                 </p>
                 <div
                     class="buttons is-right"
-                    v-if="showSideNav"
+                    v-if="showSideNav && !hideLogoutButton"
                     title="Log out">
                     <div
                         class="button is-rounded white"
@@ -590,6 +590,15 @@ export default {
             pluginLastUpdate: state => state.app.pluginLastUpdate,
             directoryList: state => state.app.directories.directoryList
         }),
+        hideLogoutButton: function() {
+            let loginInfo = this.$store.getters['user/repositorySsoOptions'];
+            if (loginInfo) {
+                if (loginInfo.ssoPublicKey && !loginInfo.ssoLogout) {
+                    return true;
+                }
+            }
+            return false;
+        },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },

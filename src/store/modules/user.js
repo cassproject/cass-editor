@@ -7,7 +7,8 @@ const state = {
     loggedOnPerson: {},
     repoInit: {
         ssoLogin: null,
-        ssoLogout: null
+        ssoLogout: null,
+        ssoPublicKey: null
     },
     lastLogin: null
 };
@@ -23,6 +24,7 @@ const mutations = {
     repositorySsoOptions(state, repoInit) {
         state.repoInit.ssoLogin = repoInit.ssoLogin;
         state.repoInit.ssoLogout = repoInit.ssoLogout;
+        state.repoInit.ssoPublicKey = repoInit.ssoPublicKey;
     }
 };
 const actions = {
