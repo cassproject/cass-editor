@@ -498,7 +498,7 @@ export default {
             // this.$emit('checkedOptions', this.checkedOptions);
         },
         selectedPropertyToAddValue: function() {
-            this.$store.commit('lode/setAddingValue', this.selectedPropertyToAddValue);
+            this.$store.commit('lode/addToAddingValues', this.selectedPropertyToAddValue);
         },
         selectedPropertyRange: function() {
             this.$store.commit('lode/setAddingRange', this.selectedPropertyRange);

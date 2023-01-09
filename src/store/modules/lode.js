@@ -7,7 +7,7 @@ const state = {
     isSavingThing: false,
     isAddingProperty: false,
     addingProperty: '',
-    addingValue: '',
+    addingValues: [],
     addingRange: [],
     addingChecked: [],
     removeAddingValueAtIndex: null,
@@ -70,8 +70,16 @@ const mutations = {
     setAddingProperty(state, value) {
         state.addingProperty = value;
     },
-    setAddingValue(state, value) {
-        state.addingValue = value;
+    setAddingValues(state, value) {
+        state.addingValues = value;
+    },
+    addToAddingValues(state, value) {
+        if (!state.addingValues) {
+            state.addingValues = [];
+            state.addingValues.push(value);
+        } else {
+            state.addingValues.push(value);
+        }
     },
     setAddingRange(state, value) {
         state.addingRange = value;
@@ -139,8 +147,8 @@ const getters = {
     addingProperty(state) {
         return state.addingProperty;
     },
-    addingValue(state) {
-        return state.addingValue;
+    addingValues(state) {
+        return state.addingValues;
     },
     addingRange(state) {
         return state.addingRange;
