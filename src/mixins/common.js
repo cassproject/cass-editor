@@ -539,7 +539,17 @@ export default {
             if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
                 return this.addConceptAlignments(targets, thing, relationType);
             }
-            if (relationType === "ceasn:skillEmbodied" || relationType === "ceasn:abilityEmbodied" || relationType === "ceasn:knowledgeEmbodied" || relationType === "ceasn:taskEmbodied") {
+            let urlProperties = [
+                "ceasn:knowledgeEmbodied",
+                "ceasn:skillEmbodied",
+                "ceasn:taskEmbodied",
+                "ceasn:abilityEmbodied",
+                "ceasn:comprisedOf",
+                "ceasn:derivedFrom",
+                "ceasn:inferredCompetency",
+                "ceasn:isVersionOf"
+            ];
+            if (urlProperties.includes(relationType)) {
                 // This property is attached to competency, not a relation attached to framework
                 return this.addRelationAsCompetencyField(targets, thing, relationType, allowSave);
             }
