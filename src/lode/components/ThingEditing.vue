@@ -1156,16 +1156,16 @@ export default {
             var me = this;
             // this.addingValues can now store multiple values to allow for adding all at once.
             for (let i = 0; i < values.length; i++) {
-                let value = values[i];
-                if (value["@value"] == null || value["@value"] === undefined) {
-                    value = {"@value": value};
+                if (values[i]["@value"] == null || values[i]["@value"] === undefined) {
+                    values[i] = {"@value": values[i]};
                 }
-                new EcAsyncHelper().each(me.getAllTypes(value), function(type, callback) {
+                let value = values[i];
+                new EcAsyncHelper().each(me.getAllTypes(values[i]), function(type, callback) {
                     me.loadSchema(callback, type);
                 }, async function() {
                     if (values[i]["@value"] == null) {
                         try {
-                            let expanded = await jsonld.expand(JSON.parse(value.toJson()));
+                            let expanded = await jsonld.expand(JSON.parse(values[i].toJson()));
                             newProperties.push(me.reactify(expanded[0]));
                         } catch (err) {
                             appError(err);
@@ -1573,9 +1573,17 @@ export default {
             try {
                 var ids = this.$store.getters['editor/selectedCompetenciesAsProperties'];
                 var relationType = this.$store.state.editor.selectCompetencyRelation;
-                if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "DirectLink" || relationType === "https://purl.org/ctdlasn/terms/knowledgeEmbodied" ||
-                relationType === "https://purl.org/ctdlasn/terms/abilityEmbodied" || relationType === "https://purl.org/ctdlasn/terms/taskEmbodied" ||
-                relationType === "https://purl.org/ctdlasn/terms/skillEmbodied") {
+                let urlProperties = [
+                    "https://purl.org/ctdlasn/terms/knowledgeEmbodied",
+                    "https://purl.org/ctdlasn/terms/skillEmbodied",
+                    "https://purl.org/ctdlasn/terms/taskEmbodied",
+                    "https://purl.org/ctdlasn/terms/abilityEmbodied",
+                    "https://purl.org/ctdlasn/terms/comprisedOf",
+                    "https://purl.org/ctdlasn/terms/derivedFrom",
+                    "https://purl.org/ctdlasn/terms/inferredCompetency",
+                    "https://purl.org/ctdlasn/terms/isVersionOf"
+                ];
+                if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "DirectLink" || urlProperties.includes(relationType)) {
                     this.attachUrlProperties(ids);
                 } else if (this.$store.state.lode.searchType === "Competency") {
                     await this.addAlignments(ids, this.$store.state.editor.selectedCompetency, relationType);

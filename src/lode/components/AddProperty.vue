@@ -386,8 +386,17 @@ export default {
             if (range.toLowerCase().indexOf("level") !== -1 && this.profile[property]["add"] !== "checkedOptions") {
                 return false;
             }
-            if (this.selectedPropertyToAdd.value === "https://purl.org/ctdlasn/terms/knowledgeEmbodied" || this.selectedPropertyToAdd.value === "https://purl.org/ctdlasn/terms/skillEmbodied" ||
-            this.selectedPropertyToAdd.value === "https://purl.org/ctdlasn/terms/taskEmbodied" || this.selectedPropertyToAdd.value === "https://purl.org/ctdlasn/terms/abilityEmbodied") {
+            let urlProperties = [
+                "https://purl.org/ctdlasn/terms/knowledgeEmbodied",
+                "https://purl.org/ctdlasn/terms/skillEmbodied",
+                "https://purl.org/ctdlasn/terms/taskEmbodied",
+                "https://purl.org/ctdlasn/terms/abilityEmbodied",
+                "https://purl.org/ctdlasn/terms/comprisedOf",
+                "https://purl.org/ctdlasn/terms/derivedFrom",
+                "https://purl.org/ctdlasn/terms/inferredCompetency",
+                "https://purl.org/ctdlasn/terms/isVersionOf"
+            ];
+            if (urlProperties.includes(this.selectedPropertyToAdd.value)) {
                 return false;
             }
             return true;
