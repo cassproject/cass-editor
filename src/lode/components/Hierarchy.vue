@@ -153,6 +153,7 @@
                         <div
                             v-if="addingNode"
                             @click="onClickCreateNew"
+                            :class="{'is-loading': loading}"
                             class="button is-outlined is-primary ">
                             <span class="icon">
                                 <i class="fa fa-plus" />
@@ -510,7 +511,8 @@ export default {
             hierarchy: null,
             selectedSubject: null,
             availablePersons: [],
-            personFilter: ''
+            personFilter: '',
+            loading: false
         };
     },
     components: {
@@ -1057,7 +1059,8 @@ export default {
             if (this.$store.state.editor && this.$store.state.editor.private === true) {
                 c = await EcEncryptedValue.toEncryptedValue(c);
             }
-            this.repo.saveTo(c, async function() {
+            try {
+                await this.repo.saveTo(c);
                 if (!EcArray.isArray(me.container[me.containerNodeProperty])) {
                     me.container[me.containerNodeProperty] = [];
                 }
@@ -1078,9 +1081,8 @@ export default {
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
                         toSave = await EcEncryptedValue.toEncryptedValue(me.container);
                     }
-                    me.repo.saveTo(me.stripEmptyArrays(toSave), function() {
-                        me.once = true;
-                    }, appError);
+                    await me.repo.saveTo(me.stripEmptyArrays(toSave));
+                    me.once = true;
                 } else {
                     var a = new window[me.edgeType]();
                     if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
@@ -1124,14 +1126,13 @@ export default {
                                 toSave = await EcEncryptedValue.toEncryptedValue(me.container);
                             }
                         }
-                        me.repo.saveTo(a, function() {
-                            me.repo.saveTo(me.stripEmptyArrays(toSave), function() {
-                                me.once = true;
-                            }, appError);
-                        }, appError);
+                        await me.repo.multiput([a, me.stripEmptyArrays(toSave)]);
+                        me.once = true;
                     }
                 }
-            }, appError);
+            } catch (e) {
+                appError(e);
+            }
         },
         // Supports save() by removing reactify arrays.
         stripEmptyArrays(o) {
@@ -1191,12 +1192,20 @@ export default {
             this.deleteObject(this.container);
             this.$store.dispatch('app/clearImport');
         },
-        onClickCreateNew: function() {
+        onClickCreateNew: async function() {
             let parent = this.container.shortId();
             if (this.selectedArray.length === 1) {
                 parent = this.selectedArray[0];
             }
-            this.add(parent, null);
+
+            this.loading = true;
+            try {
+                await this.add(parent, null);
+            } catch (e) {
+                appError(e);
+            }
+            this.loading = false;
+
             this.addingNode = false;
         },
         deleteSelected: async function() {

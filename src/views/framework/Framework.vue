@@ -58,13 +58,13 @@
                                                     class="tag is-medium-grey has-text-dark"
                                                     v-if="timestamp"
                                                     :title="new Date(timestamp)">
-                                                    Last modified {{ lastModified }}
+                                                    Last modified {{ isCeasn ? "(in CaSS)" : "" }} {{ lastModified }}
                                                 </span>
                                                 <span
                                                     class="tag is-medium-grey has-text-dark"
                                                     v-if="framework['schema:dateCreated']"
                                                     :title="new Date(framework['schema:dateCreated'])">
-                                                    Created {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
+                                                    Created  {{ isCeasn ? "(in CaSS)" : "" }} {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
                                                 </span>
                                                 <span
                                                     class="tag is-medium-grey has-text-dark"
@@ -221,6 +221,13 @@ export default {
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
+        isCeasn: function() {
+            if (this.queryParams["ceasnDataFields"] && this.queryParams["ceasnDataFields"] === 'true') {
+                return true;
+            } else {
+                return false;
+            }
+        },
         showRightAside: function() {
             return this.$store.getters['app/showRightAside'];
         },
@@ -271,10 +278,10 @@ export default {
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3FrameworkProfile;
             }
-            if (this.queryParams.ceasnDataFields === 'true' && this.framework.subType === 'Collection') {
+            if (this.isCeasn && this.framework.subType === 'Collection') {
                 return this.ctdlAsnCollectionProfile;
             }
-            if (this.queryParams.ceasnDataFields === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
+            if (this.isCeasn && ((this.config && !this.configSetOnFramework) || !this.config)) {
                 return this.ctdlAsnFrameworkProfile;
             }
             if (this.queryParams.tlaProfile === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
@@ -359,7 +366,7 @@ export default {
             if (this.$store.state.editor.t3Profile === true) {
                 return this.t3CompetencyProfile;
             }
-            if (this.queryParams.ceasnDataFields === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
+            if (this.isCeasn && ((this.config && !this.configSetOnFramework) || !this.config)) {
                 return this.ctdlAsnCompetencyProfile;
             }
             if (this.queryParams.tlaProfile === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {

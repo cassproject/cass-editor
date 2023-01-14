@@ -34,13 +34,13 @@
                                 class="tag is-medium-grey has-text-dark"
                                 v-if="timestamp"
                                 :title="new Date(timestamp)">
-                                Last modified {{ lastModified }}
+                                Last modified {{ isCeasn ? "(in CaSS)" : "" }} {{ lastModified }}
                             </span>
                             <span
                                 class="tag is-medium-grey has-text-dark"
                                 v-if="framework['schema:dateCreated']"
                                 :title="new Date(framework['schema:dateCreated'])">
-                                Created {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
+                                Created {{ isCeasn ? "(in CaSS)" : "" }} {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
                             </span>
                             <span
                                 class="tag is-medium-grey has-text-dark"
@@ -119,6 +119,13 @@ export default {
         };
     },
     computed: {
+        isCeasn: function() {
+            if (this.queryParams["ceasnDataFields"] && this.queryParams["ceasnDataFields"] === 'true') {
+                return true;
+            } else {
+                return false;
+            }
+        },
         newFramework: function() {
             return this.$store.getters['editor/newFramework'] === this.framework.shortId();
         },
