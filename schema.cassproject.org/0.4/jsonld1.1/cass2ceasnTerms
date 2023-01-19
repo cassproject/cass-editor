@@ -17,6 +17,7 @@
 	"weight": "ceasn:weight",
 	"description": "ceasn:description",
 	"schema:author": "ceasn:author",
+	"author": "ceasn:author",
 	"schema:creator": "ceasn:creator",
 	"creator": "ceasn:creator",
 	"schema:copyrightYear": "ceasn:dateCopyrighted",
