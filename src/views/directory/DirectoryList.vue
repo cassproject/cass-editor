@@ -13,7 +13,8 @@
                 <div class="cass--list--container">
                     <ul class="cass--list">
                         <!-- directories -->
-                        <li v-if="!firstSearchProcessing"
+                        <li
+                            v-if="!firstSearchProcessing && (!directory || directory.length === 0)"
                             class="cass--list--item no-results">No results found</li>
                         <li
                             class="cass--list--item "
