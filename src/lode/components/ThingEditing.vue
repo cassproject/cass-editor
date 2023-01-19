@@ -419,7 +419,7 @@ export default {
     beforeDestroy: function() {
         this.$store.commit('editor/selectedCompetency', null);
         this.$store.commit('lode/setAddingProperty', '');
-        this.$store.commit('lode/setAddingValue', '');
+        this.$store.commit('lode/setAddingValues', []);
         this.$store.commit('lode/setIsAddingProperty', false);
     },
     computed: {
@@ -430,7 +430,7 @@ export default {
             addingProperty: state => state.lode.addingProperty,
             isSavingProperty: state => state.lode.isSavingProperty,
             isSavingThing: state => state.lode.isSavingThing,
-            addingValue: state => state.lode.addingValue,
+            addingValues: state => state.lode.addingValues,
             addingRange: state => state.lode.addingRange,
             addingChecked: state => state.lode.addingChecked
         }),
@@ -821,7 +821,7 @@ export default {
         onClickToAddProperty: function() {
             this.showAddPropertyContent = true;
             this.$store.commit('lode/setAddingProperty', '');
-            this.$store.commit('lode/setAddingValue', '');
+            this.$store.commit('lode/setAddingValues', []);
             this.$store.commit('lode/setIsAddingProperty', true);
         },
         onCancelAddProperty: function() {
@@ -834,7 +834,7 @@ export default {
         saveNewProperty: async function() {
             // Validate input
             var property = this.addingProperty;
-            var value = this.addingValue;
+            var value = (this.addingValues.length > 0) ? this.addingValues[0] : undefined;
             var range = this.addingRange;
             this.errorMessage = [];
             this.errorMessage = [];
@@ -924,7 +924,7 @@ export default {
             this.showAddPropertyContent = false;
             this.$store.commit('lode/setIsAddingProperty', false);
             this.$store.commit('lode/setAddingProperty', '');
-            this.$store.commit('lode/setAddingValue', '');
+            this.$store.commit('lode/setAddingValues', []);
         },
         handleMove: function(e) {
             appLog(e);
@@ -1151,31 +1151,39 @@ export default {
         // Add a piece of new data to a property. Invoked by child components, in order to add data (for reactivity reasons).
         add: function(passedInProp, passedInVal) {
             let property = passedInProp || this.addingProperty;
-            let value = passedInVal || this.addingValue;
-            if (value["@value"] == null || value["@value"] === undefined) {
-                value = {"@value": value};
-            }
+            let values = passedInVal || (this.addingValues.length > 0 ? this.addingValues : undefined);
+            let newProperties = [];
             var me = this;
-            new EcAsyncHelper().each(me.getAllTypes(value), function(type, callback) {
-                me.loadSchema(callback, type);
-            }, async function() {
-                if (me.expandedThing[property] === undefined || me.expandedThing[property] == null) {
-                    me.expandedThing[property] = [];
+            // this.addingValues can now store multiple values to allow for adding all at once.
+            for (let i = 0; i < values.length; i++) {
+                if (values[i]["@value"] == null || values[i]["@value"] === undefined) {
+                    values[i] = {"@value": values[i]};
                 }
-                if (!EcArray.isArray(me.expandedThing[property])) {
-                    me.expandedThing[property] = [me.expandedThing[property]];
-                }
-                if (value["@value"] == null) {
-                    try {
-                        let expanded = await jsonld.expand(JSON.parse(value.toJson()));
-                        me.expandedThing[property].push(me.reactify(expanded[0]));
-                    } catch (err) {
-                        appError(err);
+                let value = values[i];
+                new EcAsyncHelper().each(me.getAllTypes(values[i]), function(type, callback) {
+                    me.loadSchema(callback, type);
+                }, async function() {
+                    if (values[i]["@value"] == null) {
+                        try {
+                            let expanded = await jsonld.expand(JSON.parse(values[i].toJson()));
+                            newProperties.push(me.reactify(expanded[0]));
+                        } catch (err) {
+                            appError(err);
+                        }
+                    } else {
+                        newProperties.push(value);
                     }
-                } else {
-                    me.expandedThing[property].push(value);
-                }
-            });
+                });
+            }
+            if (me.expandedThing[property] === undefined || me.expandedThing[property] == null) {
+                me.expandedThing[property] = [];
+            }
+            if (!EcArray.isArray(me.expandedThing[property])) {
+                me.expandedThing[property] = [me.expandedThing[property]];
+            }
+            for (let i = 0; i < newProperties.length; i++) {
+                me.expandedThing[property].push(newProperties[i]);
+            }
         },
         // Removes a piece of data from a property. Invoked by child components, in order to remove data (for reactivity reasons).
         remove: function(property, index) {
@@ -1565,9 +1573,17 @@ export default {
             try {
                 var ids = this.$store.getters['editor/selectedCompetenciesAsProperties'];
                 var relationType = this.$store.state.editor.selectCompetencyRelation;
-                if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "DirectLink" || relationType === "https://purl.org/ctdlasn/terms/knowledgeEmbodied" ||
-                relationType === "https://purl.org/ctdlasn/terms/abilityEmbodied" || relationType === "https://purl.org/ctdlasn/terms/taskEmbodied" ||
-                relationType === "https://purl.org/ctdlasn/terms/skillEmbodied") {
+                let urlProperties = [
+                    "https://purl.org/ctdlasn/terms/knowledgeEmbodied",
+                    "https://purl.org/ctdlasn/terms/skillEmbodied",
+                    "https://purl.org/ctdlasn/terms/taskEmbodied",
+                    "https://purl.org/ctdlasn/terms/abilityEmbodied",
+                    "https://purl.org/ctdlasn/terms/comprisedOf",
+                    "https://purl.org/ctdlasn/terms/derivedFrom",
+                    "https://purl.org/ctdlasn/terms/inferredCompetency",
+                    "https://purl.org/ctdlasn/terms/isVersionOf"
+                ];
+                if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "DirectLink" || urlProperties.includes(relationType)) {
                     this.attachUrlProperties(ids);
                 } else if (this.$store.state.lode.searchType === "Competency") {
                     await this.addAlignments(ids, this.$store.state.editor.selectedCompetency, relationType);
@@ -1589,6 +1605,7 @@ export default {
             if (this.$store.state.editor.selectedCompetency != null) {
                 resource = this.$store.state.editor.selectedCompetency;
             }
+            let addValueAndSave = false;
             for (var i = 0; i < results.length; i++) {
                 var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcConcept().getTypes()) || thing.isAny(new EcCompetency().getTypes())) {
@@ -1596,9 +1613,8 @@ export default {
                     // Check if expanded version of property
                     if (relation.indexOf("http") !== -1) {
                         this.$store.commit('lode/setAddingProperty', relation);
-                        this.$store.commit('lode/setAddingValue', {"@value": results[i]});
-                        this.add();
-                        await this.saveThing();
+                        this.$store.commit('lode/addToAddingValues', {"@value": results[i]});
+                        addValueAndSave = true;
                     } else {
                         if (!EcArray.isArray(resource[this.$store.state.editor.selectCompetencyRelation])) {
                             resource[this.$store.state.editor.selectCompetencyRelation] = [];
@@ -1611,6 +1627,11 @@ export default {
                         await this.repo.saveTo(resource, function() {}, appError);
                     }
                 }
+            }
+            // If adding url links, consolidate adding properties to improve performance and eliminate unnecessary UI updates
+            if (addValueAndSave) {
+                this.add();
+                await this.saveThing();
             }
         },
         clickToDelete: function() {
