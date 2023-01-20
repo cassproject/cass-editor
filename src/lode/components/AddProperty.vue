@@ -1,72 +1,143 @@
 <template>
-    <div class="">
-        <div class="px-1">
-            <h2 class="title is-size-2 has-text-weight-light">
-                Adding property
-            </h2>
-            <p
-                class="subtitle is-size-5"
-                v-if="selectedPropertyToAdd === ''">
-                Select a property from one of the following groups.
-            </p>
-            <p
-                class="subtitle is-size-5"
-                v-else-if="selectedPropertyToAdd !== '' && !selectedPropertyToAddIsTextValue">
-                When adding relationships or levels, you can
-                either search for existing relationships/levels or
-                add one via url. Choose one.
-            </p>
-        </div>
-        <div
-            class="py-4 px-1"
-            v-if="selectedPropertyToAdd !== ''">
-            <p
-                v-if="selectedPropertyToAdd !== ''"
-                class="title is-size-3 has-text-weight-normal">
-                {{ selectedPropertyToAdd.label }}
-                <span
-                    @click="selectedPropertyToAdd = ''; addRelationBy = '';"
-
-                    class="button is-pulled-right is-text has-text-primary">
-                    <span class="icon">
-                        <i class="fa fa-arrow-left" />
-                    </span>
-                    <span>back</span>
-                </span>
-            </p>
-            <!-- text property input -->
+    <div>
+        <!-- create new level input name modal -->
+        <modal-template
+            :active="createNewLevelNameModal"
+            @close="closeNewLevelNameModal">
+            <template slot="modal-header">
+                Create New Level
+            </template>
+            <template slot="modal-body">
+                <div
+                    class="field">
+                    <div class="label">
+                        <label>Name of new level</label>
+                    </div>
+                    <div class="control">
+                        <div class="control">
+                            <input
+                                class="input"
+                                placeholder="Name of new directory"
+                                v-model="newLevelName">
+                        </div>
+                    </div>
+                </div>
+            </template>
+            <template slot="modal-foot">
+                <button
+                    @click="addNewLevel"
+                    class="is-outlined button">
+                    Create
+                </button>
+                <button
+                    @click="closeNewLevelNameModal"
+                    class="is-dark button">
+                    Cancel
+                </button>
+            </template>
+        </modal-template>
+        <div class="">
+            <div class="px-1">
+                <h2 class="title is-size-2 has-text-weight-light">
+                    Adding property
+                </h2>
+                <p
+                    class="subtitle is-size-5"
+                    v-if="selectedPropertyToAdd === ''">
+                    Select a property from one of the following groups.
+                </p>
+                <p
+                    class="subtitle is-size-5"
+                    v-else-if="selectedPropertyToAdd !== '' && !selectedPropertyToAddIsTextValue">
+                    When adding relationships or levels, you can
+                    either search for existing relationships/levels or
+                    add one via url. Choose one.
+                </p>
+            </div>
             <div
-                v-if="selectedPropertyToAddIsTextValue || addRelationBy === 'url'"
-                class="add-property-field">
-                <!-- if it is a text input type, show the following -->
-                <div class="add-property__input-type">
-                    <div class="add-property__select-type">
-                        <div class="field is-expanded">
-                            <!-- if options -->
-                            <template v-if="checkedOptions && profile && profile[selectedPropertyToAdd.value] && profile[selectedPropertyToAdd.value]['options']">
-                                <p class="subtitle is-size-6">
-                                    Choose one or more of the following levels.
-                                </p>
-                                <div
-                                    class="field"
-                                    v-for="each in optionsArray"
-                                    :key="each">
-                                    <input
-                                        type="checkbox"
-                                        class="is-checkradio"
-                                        v-model="checkedOptions"
-                                        :value="each.val"
-                                        :name="each.val"
-                                        :id="each.val">
-                                    <label
-                                        class="label"
-                                        :for="each.val">
-                                        {{ each.name }}
-                                    </label>
-                                </div>
-                            </template>
+                class="py-4 px-1"
+                v-if="selectedPropertyToAdd !== ''">
+                <p
+                    v-if="selectedPropertyToAdd !== ''"
+                    class="title is-size-3 has-text-weight-normal">
+                    {{ selectedPropertyToAdd.label }}
+                    <span
+                        @click="selectedPropertyToAdd = ''; addRelationBy = '';"
+
+                        class="button is-pulled-right is-text has-text-primary">
+                        <span class="icon">
+                            <i class="fa fa-arrow-left" />
+                        </span>
+                        <span>back</span>
+                    </span>
+                </p>
+                <!-- text property input -->
+                <div
+                    v-if="selectedPropertyToAddIsTextValue || addRelationBy === 'url'"
+                    class="add-property-field">
+                    <!-- if it is a text input type, show the following -->
+                    <div class="add-property__input-type">
+                        <div class="add-property__select-type">
+                            <div class="field is-expanded">
+                                <!-- if options -->
+                                <template v-if="checkedOptions && profile && profile[selectedPropertyToAdd.value] && profile[selectedPropertyToAdd.value]['options']">
+                                    <p class="subtitle is-size-6">
+                                        Choose one or more of the following levels.
+                                    </p>
+                                    <div
+                                        class="field"
+                                        v-for="each in optionsArray"
+                                        :key="each">
+                                        <input
+                                            type="checkbox"
+                                            class="is-checkradio"
+                                            v-model="checkedOptions"
+                                            :value="each.val"
+                                            :name="each.val"
+                                            :id="each.val">
+                                        <label
+                                            class="label"
+                                            :for="each.val">
+                                            {{ each.name }}
+                                        </label>
+                                    </div>
+                                </template>
+                                <PropertyString
+                                    v-else
+                                    index="null"
+                                    :expandedProperty="selectedPropertyToAdd.value"
+                                    :langString="selectedPropertyToAddIsLangString"
+                                    :range="selectedPropertyRange"
+                                    :newProperty="true"
+                                    :profile="profile"
+                                    :addSingle="true"
+                                    :valueFromSearching="selectedPropertyToAddValue"
+                                    :options="(profile && profile[selectedPropertyToAdd.value] && profile[selectedPropertyToAdd.value]['options']) ? profile[selectedPropertyToAdd.value]['options'] : null" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- non text value input: create new, search, or url -->
+                <div
+                    v-else-if="selectedPropertyToAdd !== '' && !selectedPropertyToAddIsTextValue"
+                    class="add-property__field">
+                    <div class="buttons is-left">
+                        <div
+                            v-if="selectedPropertyRange && selectedPropertyRange[0].toLowerCase().indexOf('level') !== -1 && !editingMultipleCompetencies"
+                            @click="getNewLevelName"
+                            type="text"
+                            class="button is-outlined is-primary">
+                            <span class="icon">
+                                <i class="fa fa-plus" />
+                            </span>
+                            <span>
+                                create new Level
+                            </span>
+                        </div>
+                        <!-- add by limited concept -->
+                        <div
+                            v-if="(limitedConcepts.length > 0) && !(addRelationBy === 'url')">
                             <PropertyString
-                                v-else
                                 index="null"
                                 :expandedProperty="selectedPropertyToAdd.value"
                                 :langString="selectedPropertyToAddIsLangString"
@@ -75,165 +146,133 @@
                                 :profile="profile"
                                 :addSingle="true"
                                 :valueFromSearching="selectedPropertyToAddValue"
-                                :options="(profile && profile[selectedPropertyToAdd.value] && profile[selectedPropertyToAdd.value]['options']) ? profile[selectedPropertyToAdd.value]['options'] : null" />
+                                :options="limitedConcepts" />
+                        </div>
+                        <!-- add by url -->
+                        <div
+                            v-if="!(limitedConcepts.length > 0)"
+                            @click="addRelationBy = 'url'"
+                            type="text"
+                            class="button is-outlined is-primary">
+                            <span>
+                                Add {{ selectedPropertyToAdd.label }} by url
+                            </span>
+                            <span class="icon">
+                                <i class="fa fa-link" />
+                            </span>
+                        </div>
+                        <!-- add by search -->
+                        <div
+                            v-if="!(limitedConcepts.length > 0)"
+                            @click="search"
+                            type="button"
+                            class="button is-outlined is-primary">
+                            <span>
+                                Search for {{ selectedPropertyToAdd.label }} to add
+                            </span>
+                            <span class="icon">
+                                <i class="fa fa-search" />
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
-            <!-- non text value input: create new, search, or url -->
-            <div
-                v-else-if="selectedPropertyToAdd !== '' && !selectedPropertyToAddIsTextValue"
-                class="add-property__field">
-                <div class="buttons is-left">
-                    <div
-                        v-if="selectedPropertyRange && selectedPropertyRange[0].toLowerCase().indexOf('level') !== -1 && !editingMultipleCompetencies"
-                        @click="addNewLevel"
-                        type="text"
-                        class="button is-outlined is-primary">
-                        <span class="icon">
-                            <i class="fa fa-plus" />
-                        </span>
-                        <span>
-                            create new Level
-                        </span>
-                    </div>
-                    <!-- add by limited concept -->
-                    <div
-                        v-if="(limitedConcepts.length > 0) && !(addRelationBy === 'url')">
-                        <PropertyString
-                            index="null"
-                            :expandedProperty="selectedPropertyToAdd.value"
-                            :langString="selectedPropertyToAddIsLangString"
-                            :range="selectedPropertyRange"
-                            :newProperty="true"
-                            :profile="profile"
-                            :addSingle="true"
-                            :valueFromSearching="selectedPropertyToAddValue"
-                            :options="limitedConcepts" />
-                    </div>
-                    <!-- add by url -->
-                    <div
-                        v-if="!(limitedConcepts.length > 0)"
-                        @click="addRelationBy = 'url'"
-                        type="text"
-                        class="button is-outlined is-primary">
-                        <span>
-                            Add {{ selectedPropertyToAdd.label }} by url
-                        </span>
-                        <span class="icon">
-                            <i class="fa fa-link" />
-                        </span>
-                    </div>
-                    <!-- add by search -->
-                    <div
-                        v-if="!(limitedConcepts.length > 0)"
-                        @click="search"
-                        type="button"
-                        class="button is-outlined is-primary">
-                        <span>
-                            Search for {{ selectedPropertyToAdd.label }} to add
-                        </span>
-                        <span class="icon">
-                            <i class="fa fa-search" />
-                        </span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- select property to add -->
-        <div class="">
-            <div class="columns my-2">
-                <div class="column is-6">
-                    <div
-                        class="buttons"
-                        v-if="selectedPropertyToAdd === ''">
+            <!-- select property to add -->
+            <div class="">
+                <div class="columns my-2">
+                    <div class="column is-6">
                         <div
-                            class="button is-small"
-                            :class="filterProperties === 'all' ? 'is-primary' : ''"
-                            @click="filterProperties = 'all'">
-                            all
-                        </div>
-                        <div
-                            class="button is-small"
-                            :class="filterProperties === 'relationships' ? 'is-primary' : ''"
-                            @click="filterProperties = 'relationships'">
-                            relationships
-                        </div>
-                        <div
-                            class="button is-small"
-                            :class="filterProperties === 'general' ? 'is-primary' : ''"
-                            @click="filterProperties = 'general'">
-                            general
-                        </div>
-                    </div>
-                </div>
-                <div class="column is-6">
-                    <div
-                        class="buttons is-right"
-                        v-if="selectedPropertyToAdd === ''">
-                        <div
-                            class="button is-small"
-                            :class="propertyView === 'list' ? 'is-primary' : ''"
-                            @click="propertyView = 'list'">
-                            <span class="icon"><i class="fa fa-list-alt" /></span>
-                        </div>
-                        <div
-                            class="button is-small"
-                            :class="propertyView === 'grid' ? 'is-primary' : ''"
-                            @click="propertyView = 'grid'">
-                            <span class="icon"><i class="fa fa-th" /></span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <template
-                v-if="selectedPropertyToAdd === ''">
-                <div class="columns is-multiline property-columns px-1">
-                    <div
-                        class="column is-12 slide px-4"
-                        :class="{ 'collapsed': !showGeneral}">
-                        <div class="columns is-mobile is-multiline">
+                            class="buttons"
+                            v-if="selectedPropertyToAdd === ''">
                             <div
-                                v-for="option in showProperties"
-                                :key="option"
-                                class="column property"
-                                :class="propertyView === 'grid' ? 'is-3' : 'is-12'">
-                                <div
-                                    @click="selectedPropertyToAdd = option"
-                                    class="property-button"
-                                    :title="option.description"
-                                    :class="{'selected': option === selectedPropertyToAdd}">
-                                    <p class="has-text-weight-semibold is-size-6">
-                                        {{ option.label }}
-                                    </p>
-                                    <p class="is-size-7 property-description">
-                                        {{ option.description }}
-                                    </p>
-                                </div>
+                                class="button is-small"
+                                :class="filterProperties === 'all' ? 'is-primary' : ''"
+                                @click="filterProperties = 'all'">
+                                all
+                            </div>
+                            <div
+                                class="button is-small"
+                                :class="filterProperties === 'relationships' ? 'is-primary' : ''"
+                                @click="filterProperties = 'relationships'">
+                                relationships
+                            </div>
+                            <div
+                                class="button is-small"
+                                :class="filterProperties === 'general' ? 'is-primary' : ''"
+                                @click="filterProperties = 'general'">
+                                general
+                            </div>
+                        </div>
+                    </div>
+                    <div class="column is-6">
+                        <div
+                            class="buttons is-right"
+                            v-if="selectedPropertyToAdd === ''">
+                            <div
+                                class="button is-small"
+                                :class="propertyView === 'list' ? 'is-primary' : ''"
+                                @click="propertyView = 'list'">
+                                <span class="icon"><i class="fa fa-list-alt" /></span>
+                            </div>
+                            <div
+                                class="button is-small"
+                                :class="propertyView === 'grid' ? 'is-primary' : ''"
+                                @click="propertyView = 'grid'">
+                                <span class="icon"><i class="fa fa-th" /></span>
                             </div>
                         </div>
                     </div>
                 </div>
-            </template>
-            <p class="help is-danger">
-                {{ errorMessage[0] }}
-            </p>
-        </div>
-        <div
-            class="px-1"
-            v-if="$store.state.featuresEnabled.configurationsEnabled">
-            <p class="subtitle">
-                Note: Property options are determined by your <router-link
-                    target="_blank"
-                    :to="{path: '/configuration', query: queryParams}">
-                    configuration settings.
-                </router-link> If a property is unavailable to you here, please refer to your
-                configuration settings or contact your administrator.
-            </p>
+                <template
+                    v-if="selectedPropertyToAdd === ''">
+                    <div class="columns is-multiline property-columns px-1">
+                        <div
+                            class="column is-12 slide px-4"
+                            :class="{ 'collapsed': !showGeneral}">
+                            <div class="columns is-mobile is-multiline">
+                                <div
+                                    v-for="option in showProperties"
+                                    :key="option"
+                                    class="column property"
+                                    :class="propertyView === 'grid' ? 'is-3' : 'is-12'">
+                                    <div
+                                        @click="selectedPropertyToAdd = option"
+                                        class="property-button"
+                                        :title="option.description"
+                                        :class="{'selected': option === selectedPropertyToAdd}">
+                                        <p class="has-text-weight-semibold is-size-6">
+                                            {{ option.label }}
+                                        </p>
+                                        <p class="is-size-7 property-description">
+                                            {{ option.description }}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+                <p class="help is-danger">
+                    {{ errorMessage[0] }}
+                </p>
+            </div>
+            <div
+                class="px-1"
+                v-if="$store.state.featuresEnabled.configurationsEnabled">
+                <p class="subtitle">
+                    Note: Property options are determined by your <router-link
+                        target="_blank"
+                        :to="{path: '/configuration', query: queryParams}">
+                        configuration settings.
+                    </router-link> If a property is unavailable to you here, please refer to your
+                    configuration settings or contact your administrator.
+                </p>
+            </div>
         </div>
     </div>
 </template>
 <script>
+import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import PropertyString from './PropertyString.vue';
 
 
@@ -252,6 +291,7 @@ export default {
         }
     },
     components: {
+        ModalTemplate,
         PropertyString
     },
     data: function() {
@@ -270,7 +310,9 @@ export default {
             skipConfigProperties: ["alwaysProperties", "headings", "primaryProperties", "secondaryProperties", "tertiaryProperties", "relationshipsHeading", "relationshipsPriority"],
             optionsArray: [],
             limitedTypes: [],
-            limitedConcepts: []
+            limitedConcepts: [],
+            createNewLevelNameModal: false,
+            newLevelName: ''
         };
     },
     mounted: function() {
@@ -372,7 +414,7 @@ export default {
             return options;
         },
         selectedPropertyToAddIsTextValue: function() {
-            var property = this.selectedPropertyToAdd.value;
+            let property = this.selectedPropertyToAdd["value"] ? this.selectedPropertyToAdd["value"] : "";
             var range;
             if (this.profile && this.profile[property]) {
                 range = this.profile[property]["http://schema.org/rangeIncludes"][0]["@id"];
@@ -396,7 +438,7 @@ export default {
                 "https://purl.org/ctdlasn/terms/inferredCompetency",
                 "https://purl.org/ctdlasn/terms/isVersionOf"
             ];
-            if (urlProperties.includes(this.selectedPropertyToAdd.value)) {
+            if (urlProperties.includes(property)) {
                 return false;
             }
             return true;
@@ -407,10 +449,17 @@ export default {
             this.selectedPropertyToAddValue = input;
             this.$emit('property-string-updated', this.selectedPropertyToAdd, input, this.selectedPropertyRange, this.idx);
         },
+        closeNewLevelNameModal: function() {
+            this.createNewLevelNameModal = false;
+        },
+        getNewLevelName: function() {
+            this.createNewLevelNameModal = true;
+        },
         addNewLevel: function() {
+            this.createNewLevelNameModal = false;
             var f = this.profile[this.selectedPropertyToAdd.value]["add"];
             var shortId = EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]);
-            f(shortId);
+            f(shortId, this.newLevelName);
         },
         removeValueAtIndex: function() {
             this.$store.commit('lode/removeAddingValueAtIndex', this.idx);
