@@ -391,12 +391,12 @@ export default {
             appLog(message);
             parent.postMessage(message, this.queryParams.origin);
         },
-        addLevel: async function(selectedCompetency, optionalLevelUrl) {
+        addLevel: async function(selectedCompetency, optionalLevelUrlOrName) {
             var c;
             var me = this;
             var framework = this.framework ? this.framework : this.$store.getters['editor/framework'];
             var initialLevels = framework.level ? framework.level.slice() : null;
-            if (!optionalLevelUrl) {
+            if (!optionalLevelUrlOrName || !optionalLevelUrlOrName.includes('http')) {
                 c = new EcLevel();
                 if (this.queryParams.newObjectEndpoint != null) {
                     c.generateShortId(this.queryParams.newObjectEndpoint);
@@ -404,11 +404,11 @@ export default {
                     c.generateId(window.repo.selectedServer);
                 }
                 c["schema:dateCreated"] = new Date().toISOString();
-                c.name = "New Level";
+                c.name = (optionalLevelUrlOrName && optionalLevelUrlOrName !== "") ? optionalLevelUrlOrName : "New Level";
                 c.competency = selectedCompetency;
             } else {
-                optionalLevelUrl = optionalLevelUrl[0];
-                var c = await EcRepository.get(optionalLevelUrl);
+                optionalLevelUrlOrName = optionalLevelUrlOrName[0];
+                var c = await EcRepository.get(optionalLevelUrlOrName);
                 if (!c.competency) {
                     c.competency = [];
                 } else if (!EcArray.isArray(c.competency)) {
@@ -420,7 +420,7 @@ export default {
             window.repo.saveTo(c, async function() {
                 framework.addLevel(c.shortId());
                 var edits = [];
-                if (!optionalLevelUrl) {
+                if (!optionalLevelUrlOrName || !optionalLevelUrlOrName.includes('http')) {
                     edits.push({operation: "addNew", id: c.shortId()});
                 }
                 edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["level"], initialValue: [initialLevels], changedValue: [framework.level]});
