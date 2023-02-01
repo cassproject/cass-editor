@@ -662,32 +662,21 @@ export default {
                 }
             }, null);
         },
-        async continueCassTaxonomyImport(dataArray) {
-            var data = dataArray[0];
-            var firstIndex = dataArray[1];
-            var me = this;
-            let taxonomy = new EcConceptScheme();
-            taxonomy.copyFrom(data);
-            delete taxonomy.owner;
-            delete taxonomy.reader;
+        cleanData(thing) {
+            delete thing.owner;
+            delete thing.reader;
             if (EcIdentityManager.default.ids.length > 0) {
-                taxonomy.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                thing.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
-            taxonomy.id = taxonomy.shortId();
-            taxonomy["schema:dateModified"] = new Date().toISOString();
-            delete taxonomy.loading;
-            delete taxonomy.success;
-            delete taxonomy.error;
-            delete taxonomy.checked;
-            delete taxonomy.directory;
-            // To do: address directory
-            let toSave = [];
-            toSave.push(taxonomy);
-            let subObjects = [];
-            if (taxonomy['skos:hasTopConcept'] && taxonomy['skos:hasTopConcept'].length) {
-                subObjects = (await EcConcept.search(this.remoteRepo, 'skos:inScheme\\:"' + taxonomy.shortId() + '"', undefined, undefined, {size: 10000})).map(x => x.shortId());
-            }
-            EcRepository.alwaysTryUrl = true;
+            thing.id = thing.shortId();
+            thing["schema:dateModified"] = new Date().toISOString();
+            delete thing.loading;
+            delete thing.success;
+            delete thing.error;
+            delete thing.checked;
+            delete thing.directory;
+        },
+        saveSubobjects(subObjects, toSave, callback) {
             this.precacheRemoteServer(subObjects, function() {
                 new EcAsyncHelper().each(subObjects, function(subId, done) {
                     EcRepository.get(subId, function(result) {
@@ -706,22 +695,39 @@ export default {
                         toSave.push(newObj);
                         done();
                     }, done);
-                }, function(allDone) {
-                    EcRepository.alwaysTryUrl = false;
-                    me.repo.multiput(toSave, function() {
-                        me.cassTaxonomies[firstIndex].loading = false;
-                        me.cassTaxonomies[firstIndex].success = true;
-                        me.$store.commit('editor/framework', taxonomy);
-                        me.spitEvent("importFinished", taxonomy.shortId(), "importPage");
-                        me.importCassTaxonomies();
-                    }, function() {
-                        me.cassTaxonomies[firstIndex].loading = false;
-                        me.cassTaxonomies[firstIndex].error = true;
-                        me.importCassTaxonomies();
-                    });
-                });
+                }, callback);
             }, function(error) {
                 appError(error);
+            });
+        },
+        async continueCassTaxonomyImport(dataArray) {
+            var data = dataArray[0];
+            var firstIndex = dataArray[1];
+            var me = this;
+            let taxonomy = new EcConceptScheme();
+            taxonomy.copyFrom(data);
+            this.cleanData(taxonomy);
+            // To do: address directory
+            let toSave = [];
+            toSave.push(taxonomy);
+            let subObjects = [];
+            if (taxonomy['skos:hasTopConcept'] && taxonomy['skos:hasTopConcept'].length) {
+                subObjects = (await EcConcept.search(this.remoteRepo, 'skos:inScheme\\:"' + taxonomy.shortId() + '"', undefined, undefined, {size: 10000})).map(x => x.shortId());
+            }
+            EcRepository.alwaysTryUrl = true;
+            this.saveSubobjects(subObjects, toSave, function() {
+                EcRepository.alwaysTryUrl = false;
+                me.repo.multiput(toSave, function() {
+                    me.cassTaxonomies[firstIndex].loading = false;
+                    me.cassTaxonomies[firstIndex].success = true;
+                    me.$store.commit('editor/framework', taxonomy);
+                    me.spitEvent("importFinished", taxonomy.shortId(), "importPage");
+                    me.importCassTaxonomies();
+                }, function() {
+                    me.cassTaxonomies[firstIndex].loading = false;
+                    me.cassTaxonomies[firstIndex].error = true;
+                    me.importCassTaxonomies();
+                });
             });
         },
         continueCassFrameworkImport(dataArray) {
@@ -730,18 +736,7 @@ export default {
             var me = this;
             let framework = new EcFramework();
             framework.copyFrom(data);
-            delete framework.owner;
-            delete framework.reader;
-            if (EcIdentityManager.default.ids.length > 0) {
-                framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
-            }
-            framework.id = framework.shortId();
-            framework["schema:dateModified"] = new Date().toISOString();
-            delete framework.loading;
-            delete framework.success;
-            delete framework.error;
-            delete framework.checked;
-            delete framework.directory;
+            this.cleanData(framework);
             // To do: address directory
             let toSave = [];
             toSave.push(framework);
@@ -756,40 +751,19 @@ export default {
                 subObjects = subObjects.concat(framework.level);
             }
             EcRepository.alwaysTryUrl = true;
-            this.precacheRemoteServer(subObjects, function() {
-                new EcAsyncHelper().each(subObjects, function(subId, done) {
-                    EcRepository.get(subId, function(result) {
-                        let type = "Ec" + result.type;
-                        if (type === "EcRelation") {
-                            type = "EcAlignment";
-                        }
-                        let newObj = new window[type]();
-                        newObj.copyFrom(result);
-                        delete newObj.owner;
-                        delete newObj.reader;
-                        if (EcIdentityManager.default.ids.length > 0) {
-                            newObj.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
-                        }
-                        newObj.id = newObj.shortId();
-                        toSave.push(newObj);
-                        done();
-                    }, done);
-                }, function(allDone) {
-                    EcRepository.alwaysTryUrl = false;
-                    me.repo.multiput(toSave, function() {
-                        me.cassFrameworks[firstIndex].loading = false;
-                        me.cassFrameworks[firstIndex].success = true;
-                        me.$store.commit('editor/framework', framework);
-                        me.spitEvent("importFinished", framework.shortId(), "importPage");
-                        me.importCassFrameworks();
-                    }, function() {
-                        me.cassFrameworks[firstIndex].loading = false;
-                        me.cassFrameworks[firstIndex].error = true;
-                        me.importCassFrameworks();
-                    });
+            this.saveSubobjects(subObjects, toSave, function() {
+                EcRepository.alwaysTryUrl = false;
+                me.repo.multiput(toSave, function() {
+                    me.cassFrameworks[firstIndex].loading = false;
+                    me.cassFrameworks[firstIndex].success = true;
+                    me.$store.commit('editor/framework', framework);
+                    me.spitEvent("importFinished", framework.shortId(), "importPage");
+                    me.importCassFrameworks();
+                }, function() {
+                    me.cassFrameworks[firstIndex].loading = false;
+                    me.cassFrameworks[firstIndex].error = true;
+                    me.importCassFrameworks();
                 });
-            }, function(error) {
-                appError(error);
             });
         },
         openDirectory: async function(directory) {
