@@ -59,7 +59,7 @@
 		},
 		"ceasn:dateModified": {
 			"@id": "ceasn:dateModified",
-			"@type": "xsd:dateTime"
+			"@type": "xsd:date"
 		},
 		"ceasn:license": {
 			"@id": "ceasn:license",

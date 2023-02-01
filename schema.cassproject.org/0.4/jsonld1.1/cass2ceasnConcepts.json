@@ -124,7 +124,7 @@
 		},
 		"ceasn:dateModified": {
 			"@id": "ceasn:dateModified",
-			"@type": "xsd:dateTime"
+			"@type": "xsd:date"
 		},
 		"ceasn:description": {
 			"@id": "ceasn:description",
