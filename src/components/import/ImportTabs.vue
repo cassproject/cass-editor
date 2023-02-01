@@ -37,7 +37,7 @@
                         <!-- server tab -->
                         <div
                             class="column"
-                            v-if="!conceptMode && !progressionMode">
+                            v-if="!progressionMode">
                             <div
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'server'}">
@@ -107,7 +107,7 @@
                     Upload documents to transform into CaSS {{ queryParams.ceasnDataFields === 'true' ? 'Concept Schemes' : 'Taxonomies' }}.
                 </span>
                 <span
-                    v-if="importTransition === 'upload' && (!importFile || importFile.length === 0) && progressionMode"
+                    v-else-if="importTransition === 'upload' && (!importFile || importFile.length === 0) && progressionMode"
                     class="is-size-5 has-text-dark">
                     Upload documents to transform into CaSS Progression Models.
                 </span>

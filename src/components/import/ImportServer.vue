@@ -33,7 +33,8 @@
                                                 type="url">
                                         </div>
                                     </div>
-                                    <div class="field">
+                                    <div class="field"
+                                        v-if="!conceptMode">
                                         <div class="buttons is-right">
                                             <div
                                                 class="button is-large is-outlined is-primary"
@@ -186,14 +187,15 @@
                             <!-- HANDLE CASS DOCS -->
                             <div
                                 class="cass__import--cass"
-                                v-if="cassDirectories.length || cassFrameworks.length">
+                                v-if="cassDirectories.length || cassFrameworks.length || cassTaxonomies.length">
                                 <div class="cass__import--frameworks">
                                     <h3 class="has-text-weight-bold is-size-4">
-                                        Found Frameworks
+                                        <span v-if="!conceptMode">Found Frameworks</span>
+                                        <span v-else>Found Taxonomies</span>
                                     </h3>
                                     <div class="field">
                                         <SearchBar
-                                            searchType="framework" />
+                                            :searchType="conceptMode ? 'taxonomy' : 'framework'" />
                                     </div>
                                     <div class="field">
                                         <div class="label">
@@ -204,7 +206,10 @@
                                                 <label>Directories</label>
                                                 <option
                                                     value="all">
-                                                    <span class="has-text-dark">All frameworks</span>
+                                                    <span v-if="!conceptMode"
+                                                        class="has-text-dark">All frameworks</span>
+                                                    <span v-else
+                                                        class="has-text-dark">All taxonomies</span>
                                                 </option>
                                                 <option
                                                     v-for="directory in cassDirectories"
@@ -240,7 +245,8 @@
                                         </div>
                                     </div>
                                     <!-- multi select for frameworks -->
-                                    <div class="field">
+                                    <div class="field"
+                                        v-if="!conceptMode">
                                         <div
                                             class="select is-fullwidth is-primary is-multiple">
                                             <select
@@ -260,6 +266,27 @@
                                             Select the framework(s) to import.
                                         </p>
                                     </div>
+                                    <div class="field"
+                                        v-else>
+                                        <div
+                                            class="select is-fullwidth is-primary is-multiple">
+                                            <select
+                                                multiple
+                                                size="6"
+                                                v-model="selectedTaxonomies">
+                                                <option
+                                                    v-for="doc in cassTaxonomies"
+                                                    :key="doc.id"
+                                                    :id="'check' + doc.id"
+                                                    :value="doc.id">
+                                                    {{ Array.isArray(doc['dcterms:title']) ? doc['dcterms:title'][0]['@value'] : doc['dcterms:title']['@value'] }}
+                                                </option>
+                                            </select>
+                                        </div>
+                                        <p class="help is-info">
+                                            Select the taxonomies to import.
+                                        </p>
+                                    </div>
                                 </div>
                                 <div class="is-12">
                                     <div class="buttons is-right">
@@ -277,7 +304,7 @@
                                         <div
                                             v-if="importTransition !== 'importingCassFrameworks'"
                                             class="button is-outlined is-primary"
-                                            @click="importCassFrameworks()">
+                                            @click="conceptMode ? importCassTaxonomies() : importCassFrameworks()">
                                             Import
                                         </div>
                                     </div>
@@ -330,10 +357,12 @@ export default {
             serverType: '',
             cassDirectories: [],
             cassFrameworks: [],
+            cassTaxonomies: [],
             remoteRepo: null,
             directoryThatsOpen: null,
             selectDirectory: 'all',
             selectedFrameworks: [],
+            selectedTaxonomies: [],
             directoryTrail: []
         };
     },
@@ -354,6 +383,9 @@ export default {
         },
         searchTerm: function() {
             return this.$store.getters['app/searchTerm'];
+        },
+        conceptMode: function() {
+            return this.$store.getters['editor/conceptMode'];
         }
     },
     mounted: function() {
@@ -393,6 +425,7 @@ export default {
             this.caseDocs.splice(0, this.caseDocs.length);
             this.cassDirectories.splice(0, this.cassDirectories.length);
             this.cassFrameworks.splice(0, this.cassFrameworks.length);
+            this.cassTaxonomies.splice(0, this.cassTaxonomies.length);
             if (this.serverType === 'cass') {
                 this.cassDetectEndpoint();
             } else if (this.serverType === 'case') {
@@ -419,8 +452,8 @@ export default {
             this.$store.commit('editor/setFirstSearchProcessing', true);
             let me = this;
             let paramObj = {};
-            paramObj.size = 50;
-            paramObj.sort = '[ { "name.keyword": {"order" : "asc"}} ]';
+            paramObj.size = 10000;
+            paramObj.sort = this.conceptMode ? '[]' : '[ { "name.keyword": {"order" : "asc"}} ]';
             let search = "(*)";
             if (this.searchTerm) {
                 search = this.searchTerm;
@@ -432,14 +465,25 @@ export default {
                 appLog(error);
                 me.cassDirectories.splice(0, me.cassDirectories.length);
             }, paramObj);
-            EcFramework.search(this.remoteRepo, search, function(success) {
-                me.cassFrameworks.splice(0, me.cassFrameworks.length);
-                me.cassSearchSuccess(success, "framework");
-            }, function(error) {
-                me.cassFrameworks.splice(0, me.cassFrameworks.length);
-                appLog(error);
-                me.cassSearchError();
-            }, paramObj);
+            if (!this.conceptMode) {
+                EcFramework.search(this.remoteRepo, search, function(success) {
+                    me.cassFrameworks.splice(0, me.cassFrameworks.length);
+                    me.cassSearchSuccess(success, "framework");
+                }, function(error) {
+                    me.cassFrameworks.splice(0, me.cassFrameworks.length);
+                    appLog(error);
+                    me.cassSearchError();
+                }, paramObj);
+            } else {
+                EcConceptScheme.search(this.remoteRepo, search, function(success) {
+                    me.cassTaxonomies.splice(0, me.cassTaxonomies.length);
+                    me.cassSearchSuccess(success, "taxonomy");
+                }, function(error) {
+                    me.cassTaxonomies.splice(0, me.cassTaxonomies.length);
+                    appLog(error);
+                    me.cassSearchError();
+                }, paramObj);
+            }
         }, 1000),
         cassSearchError: function() {
             this.$store.commit('editor/setFirstSearchProcessing', false);
@@ -457,6 +501,10 @@ export default {
                 let message = success.length + " frameworks detected.";
                 this.$store.commit('app/importStatus', message);
                 this.$store.commit('app/importTransition', 'serverFrameworksDetected');
+            } else if (objectType === 'taxonomy') {
+                let message = success.length + " taxonomies detected.";
+                this.$store.commit('app/importStatus', message);
+                this.$store.commit('app/importTransition', 'serverFrameworksDetected');
             }
             for (let each in success) {
                 success[each].loading = false;
@@ -467,7 +515,58 @@ export default {
                     this.cassDirectories.push(success[each]);
                 } else if (objectType === "framework") {
                     this.cassFrameworks.push(success[each]);
+                } else if (objectType === 'taxonomy') {
+                    this.cassTaxonomies.push(success[each]);
                 }
+            }
+        },
+        importCassTaxonomies: function(dataArray) {
+            this.$store.commit('app/importTransition', 'importingCassFrameworks');
+            if (dataArray) {
+                // User has clicked cancel on this import item
+                var localFirstIndex = dataArray[1];
+                this.cassTaxonomies[localFirstIndex].loading = false;
+                this.cassTaxonomies[localFirstIndex].error = true;
+            }
+            for (var i = this.cassTaxonomies.length - 1; i >= 0; i--) {
+                if (!this.cassTaxonomies[i].checked) {
+                    this.cassTaxonomies.splice(i, 1);
+                } else if (this.cassTaxonomies[i].success === false && this.cassTaxonomies[i].error === false) {
+                    this.cassTaxonomies[i].loading = true;
+                }
+            }
+            let lis = 0;
+            let firstIndex = null;
+            for (var i = 0; i < this.cassTaxonomies.length; i++) {
+                if (this.cassTaxonomies[i].loading === true) {
+                    lis++;
+                    if (firstIndex == null) {
+                        firstIndex = i;
+                    }
+                }
+            }
+            if (lis === 0) {
+                this.$store.commit('app/importFramework', this.$store.getters['editor/framework']);
+                if (this.cassTaxonomies.length === 1) {
+                    this.importSuccess();
+                } else {
+                    this.$store.commit('app/sortResults', {
+                        id: 'lastEdited',
+                        label: 'last modified'
+                    });
+                    this.$router.push({name: "concepts"});
+                }
+                this.$store.commit('app/importStatus', "Import finished.");
+            } else {
+                var me = this;
+                EcRepository.cache = {};
+                EcConceptScheme.get(this.cassTaxonomies[firstIndex].shortId(), function(found) {
+                    me.$store.commit('app/importStatus', 'taxonomy found...');
+                    me.showModal('duplicateOverwriteOnly', [[me.cassTaxonomies[firstIndex], firstIndex], found]);
+                }, function(notFound) {
+                    me.$store.commit('app/importStatus', 'no match, saving new taxonomy...');
+                    me.continueCassTaxonomyImport([me.cassTaxonomies[firstIndex], firstIndex]);
+                });
             }
         },
         importCassFrameworks: function(dataArray) {
@@ -515,7 +614,7 @@ export default {
                     me.showModal('duplicateOverwriteOnly', [[me.cassFrameworks[firstIndex], firstIndex], found]);
                 }, function(notFound) {
                     me.$store.commit('app/importStatus', 'no match, saving new framework...');
-                    me.continueCassImport([me.cassFrameworks[firstIndex], firstIndex]);
+                    me.continueCassFrameworkImport([me.cassFrameworks[firstIndex], firstIndex]);
                 });
             }
         },
@@ -563,7 +662,69 @@ export default {
                 }
             }, null);
         },
-        continueCassImport(dataArray) {
+        async continueCassTaxonomyImport(dataArray) {
+            var data = dataArray[0];
+            var firstIndex = dataArray[1];
+            var me = this;
+            let taxonomy = new EcConceptScheme();
+            taxonomy.copyFrom(data);
+            delete taxonomy.owner;
+            delete taxonomy.reader;
+            if (EcIdentityManager.default.ids.length > 0) {
+                taxonomy.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+            }
+            taxonomy.id = taxonomy.shortId();
+            taxonomy["schema:dateModified"] = new Date().toISOString();
+            delete taxonomy.loading;
+            delete taxonomy.success;
+            delete taxonomy.error;
+            delete taxonomy.checked;
+            delete taxonomy.directory;
+            // To do: address directory
+            let toSave = [];
+            toSave.push(taxonomy);
+            let subObjects = [];
+            if (taxonomy['skos:hasTopConcept'] && taxonomy['skos:hasTopConcept']) {
+                subObjects = (await EcConcept.search(this.remoteRepo, 'skos:inScheme\\:"' + taxonomy.shortId() + '"', undefined, undefined, {size: 10000})).map(x => x.shortId());
+            }
+            EcRepository.alwaysTryUrl = true;
+            this.precacheRemoteServer(subObjects, function() {
+                new EcAsyncHelper().each(subObjects, function(subId, done) {
+                    EcRepository.get(subId, function(result) {
+                        let type = "Ec" + result.type;
+                        if (type === "EcRelation") {
+                            type = "EcAlignment";
+                        }
+                        let newObj = new window[type]();
+                        newObj.copyFrom(result);
+                        delete newObj.owner;
+                        delete newObj.reader;
+                        if (EcIdentityManager.default.ids.length > 0) {
+                            newObj.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                        }
+                        newObj.id = newObj.shortId();
+                        toSave.push(newObj);
+                        done();
+                    }, done);
+                }, function(allDone) {
+                    EcRepository.alwaysTryUrl = false;
+                    me.repo.multiput(toSave, function() {
+                        me.cassTaxonomies[firstIndex].loading = false;
+                        me.cassTaxonomies[firstIndex].success = true;
+                        me.$store.commit('editor/framework', taxonomy);
+                        me.spitEvent("importFinished", taxonomy.shortId(), "importPage");
+                        me.importCassTaxonomies();
+                    }, function() {
+                        me.cassTaxonomies[firstIndex].loading = false;
+                        me.cassTaxonomies[firstIndex].error = true;
+                        me.importCassTaxonomies();
+                    });
+                });
+            }, function(error) {
+                appError(error);
+            });
+        },
+        continueCassFrameworkImport(dataArray) {
             var data = dataArray[0];
             var firstIndex = dataArray[1];
             var me = this;
@@ -654,9 +815,16 @@ export default {
             }
         },
         selectAllFrameworks: function() {
-            for (let each in this.cassFrameworks) {
-                this.cassFrameworks[each].checked = true;
-                EcArray.setAdd(this.selectedFrameworks, this.cassFrameworks[each].id);
+            if (!this.conceptMode) {
+                for (let each in this.cassFrameworks) {
+                    this.cassFrameworks[each].checked = true;
+                    EcArray.setAdd(this.selectedFrameworks, this.cassFrameworks[each].id);
+                }
+            } else {
+                for (let each in this.cassTaxonomies) {
+                    this.cassTaxonomies[each].checked = true;
+                    EcArray.setAdd(this.selectedTaxonomies, this.cassTaxonomies[each].id);
+                }
             }
         },
         caseDetectEndpoint: function() {
@@ -871,8 +1039,20 @@ export default {
                 }
             }
         },
+        selectedTaxonomies: function() {
+            for (let each in this.cassTaxonomies) {
+                if (EcArray.has(this.selectedTaxonomies, this.cassTaxonomies[each].id)) {
+                    this.cassTaxonomies[each].checked = true;
+                } else {
+                    this.cassTaxonomies[each].checked = false;
+                }
+            }
+        },
         cassFrameworks: function() {
             this.selectedFrameworks.splice(0, this.selectedFrameworks.length);
+        },
+        cassTaxonomies: function() {
+            this.selectedTaxonomies.splice(0, 1);
         }
     }
 };

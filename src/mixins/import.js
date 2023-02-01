@@ -63,7 +63,7 @@ export default {
             } else if (val === 'duplicateOverwriteOnly') {
                 if (data[1] && (!EcIdentityManager.default.ids || EcIdentityManager.default.ids.length === 0)) {
                     // An owner is attached from the server-side import so it can be overwritten, just not edited
-                    let type = data[1].subType === "Collection" ? "collection" : "framework";
+                    let type = data[1].subType === "Collection" ? "collection" : data[1] && data[1].type === "ConceptScheme" ? "taxonomy" : "framework";
                     params = {
                         type: val,
                         title: "Duplicate " + type,
@@ -73,7 +73,11 @@ export default {
                                 return this.importJsonLd(data[0]);
                             }
                             if (this.serverType === "cass") {
-                                return this.continueCassImport(data[0]);
+                                if (!this.conceptMode) {
+                                    return this.continueCassFrameworkImport(data[0]);
+                                } else {
+                                    return this.continueCassTaxonomyImport(data[0]);
+                                }
                             }
                             return this.continueCaseImport(data[0]);
                         },
@@ -89,7 +93,7 @@ export default {
                         }
                     };
                 } else {
-                    let type = data[1] && data[1].subType === "Collection" ? "collection" : "framework";
+                    let type = data[1].subType === "Collection" ? "collection" : data[1] && data[1].type === "ConceptScheme" ? "taxonomy" : "framework";
                     params = {
                         type: val,
                         title: "Duplicate " + type,
@@ -98,7 +102,11 @@ export default {
                             if (this.importType === "url") {
                                 return this.importJsonLd(data[0]);
                             } else if (this.serverType === "cass") {
-                                return this.continueCassImport(data[0]);
+                                if (!this.conceptMode) {
+                                    return this.continueCassFrameworkImport(data[0]);
+                                } else {
+                                    return this.continueCassTaxonomyImport(data[0]);
+                                }
                             }
                             return this.continueCaseImport(data[0]);
                         },
