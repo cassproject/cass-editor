@@ -684,7 +684,7 @@ export default {
             let toSave = [];
             toSave.push(taxonomy);
             let subObjects = [];
-            if (taxonomy['skos:hasTopConcept'] && taxonomy['skos:hasTopConcept']) {
+            if (taxonomy['skos:hasTopConcept'] && taxonomy['skos:hasTopConcept'].length) {
                 subObjects = (await EcConcept.search(this.remoteRepo, 'skos:inScheme\\:"' + taxonomy.shortId() + '"', undefined, undefined, {size: 10000})).map(x => x.shortId());
             }
             EcRepository.alwaysTryUrl = true;
