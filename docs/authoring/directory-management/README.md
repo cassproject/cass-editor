@@ -2,23 +2,23 @@
 
 Directories can be used to orgranize competency frameworks and resources into collections. A directory can contain *subdirectories, frameworks,* and *resources*. Items can be copied or moved into and out-of directories.
 
-![Directory Management - Directory List](/v1.5/authoring/directory-list.png)
+![Directory Management - Directory List](/authoring/directory-list.png)
 
 ## Navigating to a Directory
 
 Directories that you have created or you have access to can be viewed by clicking on a ***Directory icon*** on the left side bar highlighted by the red box in the image below. If you have access to multiple directories, then you will see multiple directory icons (one for each created directory).
 
-![Directory Management - Directories Icon](/v1.5/authoring/directory-icon.png)
+![Directory Management - Directories Icon](/authoring/directory-icon.png)
 
 Click on a ***Directory icon*** to open the directory. Once opened, you will see the contents of the selected directory. If the directory does not show any items listed, then it is empty.
 
-![Directory Management - Directory List](/v1.5/authoring/directory-list.png)
+![Directory Management - Directory List](/authoring/directory-list.png)
 
 ### Navigating with the Directory Path
 
 The path for the selected directory is located in the breadcrumb navigation directly above the contents of the directory.
 
-![Directory Management - Directory Path](/v1.5/authoring/directory-breadcrumbs.png)
+![Directory Management - Directory Path](/authoring/directory-breadcrumbs.png)
 
 Click on a directory or subdirectory name in the path to show items within that directory or subdirectory. If the directory does not show any items listed, then it is empty.
 
@@ -27,13 +27,13 @@ Click on ***CaSS*** in the breadcrumb navigation to show all available items. Th
 * Directories that you have created
 * Any other directories that you have access to
 
-![Directory Management - Directory Path](/v1.5/authoring/directory-cass-link.png)
+![Directory Management - Directory Path](/authoring/directory-cass-link.png)
 
 ### Navigating to a Directory from a Framework
 
 If a framework exists within a directory, then a link to its parent directory is available when viewing the framework. To view the directory that a framework is in, click on ***go to directory*** in the top right corner as outlined in red below.
 
-![Framework - Go To Directory](/v1.5/authoring/framework-go-to-directory.png)
+![Framework - Go To Directory](/authoring/framework-go-to-directory.png)
 
 ## Opening an Item
 
@@ -48,7 +48,7 @@ Single-click on any item name within a directory (including another directory) t
 
 The Information about the item will show on a side panel to the right of the directory list.
 
-![Directory Management - Directory Information](/v1.5/authoring/directory-information.png)
+![Directory Management - Directory Information](/authoring/directory-information.png)
 
 The type of item (*Directory, Framework, or Resource*) along with the item name is shown in the top section of the ***Information panel***. The type of item being viewed and its properties determines the contents available within the information panel.
 
@@ -65,9 +65,9 @@ Not all options listed below are available on all items.
     - **Parent Directory** - A link to navigate to the parent of this directory (only available for subdirectories)
     - **Share** - Click on "copy link" and the link to this item will be copied to your clipboard
 
-    ![Directory Management - Directory Information Details](/v1.5/authoring/directory-information-details.png)
+    ![Directory Management - Directory Information Details](/authoring/directory-information-details.png)
 - **Users** - Click on "manage users and privacy" and a window dialogue will allow you to view and control access to this item.
-    ![Directory Management - Directory Information Users](/v1.5/authoring/directory-information-users.png)
+    ![Directory Management - Directory Information Users](/authoring/directory-information-users.png)
 - **Properties** - Available properties on this item, including name and URL (if a resource). Includes option to edit properties if editable
 - **Description** - A description for the item if one has been provided
 - **Copy** - Includes a list of available directories that this item can be copied to
@@ -86,17 +86,17 @@ Items that contain the search term and are within the currently open directory (
 
 You can sort and filter the list of items by clicking the ***filter button*** next to the search bar. The button next to it clears any filters you’ve applied.
 
-![CAT Competency Framework Management - Filter Button](/v1.5/authoring/filter-frameworks-button.png)
+![CAT Competency Framework Management - Filter Button](/authoring/filter-frameworks-button.png)
 
 The filter button will open up a side panel to the right of the ***Available items*** with options to sort, filter, and apply your search term to various fields.
 
-![CAT Competency and Framework Management - Filter and Sort Panel](/v1.5/authoring/filter-and-sort-panel.png)
+![CAT Competency and Framework Management - Filter and Sort Panel](/authoring/filter-and-sort-panel.png)
 
 ## Making Changes to Directories
 
 You can only make changes to a directory if you are an owner (listed as *Admin*) for the directory. To confirm that you can edit a directory, click on ***CaSS*** in the breadcrumb navigation to show all available items. If the directory has the label ***Editable*** beneath it, then you can make changes to it.
 
-![Directory Management - Directory Editable](/v1.5/authoring/directory-editable.png)
+![Directory Management - Directory Editable](/authoring/directory-editable.png)
 
 ### Creating a New Directory
 
@@ -107,7 +107,7 @@ To create a new directory (not a subdirectory):
 * Enter the name and click ***create***
     * A new directory is created and the *Directory Path* is updated to reflect the location of the new directory.
 
-![Directory Management - Create New](/v1.5/authoring/directory-create-new.png)
+![Directory Management - Create New](/authoring/directory-create-new.png)
 
 ### Editing Properties of a Directory
 
@@ -128,7 +128,7 @@ To add an item to a directory:
 
 A directory can contain *Subdirectories, Frameworks,* and *Resources*.
 
-![Directory Management - Add New](/v1.5/authoring/directory-add-new.png)
+![Directory Management - Add New](/authoring/directory-add-new.png)
 
 ### Adding a New Framework
 
@@ -147,7 +147,7 @@ To create a new Framework within the current Directory:
 * Enter the name of the new directory
 * Click ***create***
 
-![Directory Management - Create Directory](/v1.5/authoring/directory-create.png)
+![Directory Management - Create Directory](/authoring/directory-create.png)
 
 A new subdirectory is created and the Directory Path is updated to reflect the location of the new directory.
 
@@ -158,7 +158,7 @@ A new subdirectory is created and the Directory Path is updated to reflect the l
 * Enter the name + URL of the new resource
 * Click ***create***
 
-![Directory Management - Create Resource](/v1.5/authoring/directory-create-resource.png)
+![Directory Management - Create Resource](/authoring/directory-create-resource.png)
 
 A new resource is created and the contents of the Directory is updated to relfect the additional resource.
 
@@ -188,7 +188,7 @@ To create a copy of an item in a directory:
     * The copy of the item will be in the new directory
     * The original item will remain in its original location.
 
-![Directory Management - Copy Progress Bar](/v1.5/authoring/directory-copy-progress.png)
+![Directory Management - Copy Progress Bar](/authoring/directory-copy-progress.png)
 
 ## Moving Items
 
@@ -202,7 +202,7 @@ To move an item to a directory:
     * A progress bar at the top of the main window will move from left to right to indicate the progress of the move
     * The item will now be in the new directory location only.
 
-![Directory Management - Copy Progress Bar](/v1.5/authoring/directory-copy-progress.png)
+![Directory Management - Copy Progress Bar](/authoring/directory-copy-progress.png)
 
 ## Remove Item from Directory
 
@@ -216,7 +216,7 @@ To remove an item from a directory:
     * A progress bar at the top of the main window will move from left to right to indicate the progress of the removal
     * The item will no longer reside in the directory
 
-![Directory Management - Copy Progress Bar](/v1.5/authoring/directory-copy-progress.png)
+![Directory Management - Copy Progress Bar](/authoring/directory-copy-progress.png)
 
 ## Deleting a Directory
 
@@ -231,4 +231,4 @@ To delete a directory:
 This action is irreversible. Deleting this directory will delete all of its contents and make it unavailable to others who might be using it.
 :::
 
-![Directory Management - Delete Directory](/v1.5/authoring/directory-delete.png)
+![Directory Management - Delete Directory](/authoring/directory-delete.png)

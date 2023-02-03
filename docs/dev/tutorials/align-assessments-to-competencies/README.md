@@ -125,6 +125,6 @@ The CaSS Dashboard (**cass-vlrc**) can do this. Navigate to the competency, clic
 
 ## 5. An adapter that listens for or watches the assessment system for new data and converts it into assertions
 
-The CaSS [xAPI Adapter](/v1.5/dev/extending-cass/adapters/xapi) does this.
+The CaSS [xAPI Adapter](/dev/extending-cass/adapters/xapi) does this.
 
 Other CaSS adapters could be created that do this, as well as other code that can use the CaSS Library. To see details about how the CaSS xAPI Adapter does this, you can read the code [here](https://github.com/cassproject/CASS/blob/master/src/main/resources/c-adapter/xapi/xapi.js).

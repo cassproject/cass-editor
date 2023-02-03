@@ -22,7 +22,7 @@ Although the CaSS project is providing reference implementations of end-user app
 ### Infrastructure and Interoperability, but not Another Standard
 CaSS is infrastructure that is intended to promote interoperability among software systems that produce and consume competencies and competency assertions.  As expected, CaSS documentation specifies how these systems must receive and transmit data, and to the extent that systems must conform to these specifications to use CaSS. CaSS documentation also specifies the object models (expressed as Linked Data schema) that CaSS uses to internally store competencies, frameworks, and assertions, and to represent alignments between resources and competencies; None of these internal representations are intended to be standards. To the contrary, multiple standards exist and are in development for these purposes.  The CaSS project supports these standards as import and export formats and does not to try to create yet another one.
 
-![XKCD Comic](/v1.5/cass-overview-comic.png)
+![XKCD Comic](/cass-overview-comic.png)
 
 ### Collaboration
 The CaSS Project is a community effort that strives to incorporate, support, and add value to the work of the many individuals and organizations involved in competency-based education and training. These include the [Credential Engine](https://www.credentialtransparencyinitiative.org/), the [IMS Global Learning Consortium](https://www.imsglobal.org/), the [IEEE Learning Technology Standards Committee](https://ieee-sa.imeetcentral.com/ltsc/), [MedBiquitous](https://www.medbiq.org/std_specs/), the [Learning Resource Metadata Initiative](https://www.dublincore.org/specifications/lrmi/), the [Centre for Educational Technology Interoperability and Standards](http://www.cetis.org.uk/inloc/Home), the [Achievement Standards Network](http://www.achievementstandards.org/), [O*Net](https://www.onetonline.org/), and many others.
@@ -56,7 +56,7 @@ A working installation of CaSS is called a CaSS Instance and is composed of a Ca
 
 Other applications interact with CaSS through the CaSS SDK. CaSS Libraries are written in Javascript and may be included in any execution environment with Javascript interoperability, such as Node, Java, or the .NET environment.
 
-![CaSS Overview](/v1.5/cass_overview_environment.png)
+![CaSS Overview](/cass_overview_environment.png)
 
 ### CRUD APIs
 Data in CaSS is stored as objects. Subject to authorization, CaSS Web Service APIs enable these objectives to be created, retrieved, updated, and deleted (“CRUD” operations), and these operation suffice to use CaSS services.
@@ -112,7 +112,7 @@ Each CaSS instance contains the following components:
     * Plugins (JavaScript CaSS adapters used to communicate with external applications)
 * **CaSS Applications** - HTML5 web applications that provide software capabilities. Can be run as a standalone Web application or incorporated into other Web applications.
 
-![CaSS Components](/v1.5/cass_overview_components.png)
+![CaSS Components](/cass_overview_components.png)
 
 ### CaSS Reference Implementation
 The CaSS Reference Implementation refers to an instance of CaSS maintained by the CaSS project to demonstrate CaSS services in action and to provide sample code to developers. The CaSS Reference Implementation includes end-user applications that are meant to demonstrate CaSS but are not meant to be production applications. The code for the CaSS Reference Implementation is available from [GitHub](https://github.com/cassproject/CaSS).
@@ -120,19 +120,19 @@ The CaSS Reference Implementation refers to an instance of CaSS maintained by th
 ### CaSS Adapters
 A CaSS Adapter is software that translates information and requests from an external system into the format required by CaSS APIs and vice versa. CaSS Adapters can be built into external systems or be implemented as middleware that sits between an external system and a CaSS instance.  CaSS Adapters are used by a CaSS instance to retrieve assertions about an individual’s competencies from external systems. CaSS Adapters may also be used by external systems to query CaSS about individual competencies and to receive answers to such queries in their preferred format.
 
-[Several CaSS adapters](/v1.5/guide/interoperability/#adapters-overview) come with the CaSS code distribution, including an xAPI adapter for retrieving [xAPI statements](https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md) from a Learning Record Store (LRS). Other adapters relevant to the [ADL’s Total Learning Architecture (TLA)](https://adlnet.gov/projects/tla/) are incorporated.
+[Several CaSS adapters](/guide/interoperability/#adapters-overview) come with the CaSS code distribution, including an xAPI adapter for retrieving [xAPI statements](https://github.com/adlnet/xAPI-Spec/blob/master/xAPI.md) from a Learning Record Store (LRS). Other adapters relevant to the [ADL’s Total Learning Architecture (TLA)](https://adlnet.gov/projects/tla/) are incorporated.
 
 ### Assertion Processors
 An Assertion Processor is a component of CaSS that, when asked whether an individual *X* has competency *C* (at performance level *L*), retrieves relevant assertions, collates them (using roll-up rules and the structure of the framework containing *C*, and returns a conclusion (assuming it is authorized to do so.) An assertion includes the identity of the individual (or **subject**) and the competency. It can also include the identity of the agent making the assertion, a performance level, a link to evidence, a **confidence** (a number between 0 and 1), a timestamp, and an expiration time.
 
-![CaSS Assertion Format](/v1.5/cass_overview_assertion_format.png)
+![CaSS Assertion Format](/cass_overview_assertion_format.png)
 
 Assertion processors maintain a configurable list of systems that can provide them with assertions. This list could consist of only one CaSS instance, in which case that instance acts as a store for competency-based learner profiles, but it can also include other systems that might make or transmit assertions. When an assertion processor receives a query, it looks at what other competencies might be related to the queried competency through roll-up rules and framework relationships, and the processor retrieves information about these as well as about the target competency. The processor then follows an algorithm that computes a single conclusion about the target competency (and target performance level, if relevant) taking into consideration roll-up rules, relationships, confidence, and (in some cases) the reliability of collaborating systems.
 
 The current CaSS distribution includes a JavaScript Assertion Processor. This enables assertion processing to be done within client applications. Server-side versions may be implemented as part of an adapter or Node application. Future plans include a server-side version that will act as an adapter for the TLA’s profile API.
 
 ## Security and Privacy
-Security and privacy are strongly enforced in CaSS. The CaSS project has developed a [security framework](/v1.5/dev/security/kbac-specification) that uses “Key-based Access Control” (KBAC) based on cryptographic methods found in Public Key Infrastructure (PKI). This approach was guided by the following requirements:
+Security and privacy are strongly enforced in CaSS. The CaSS project has developed a [security framework](/dev/security/kbac-specification) that uses “Key-based Access Control” (KBAC) based on cryptographic methods found in Public Key Infrastructure (PKI). This approach was guided by the following requirements:
 * Prevent sensitive information (which in CaSS includes [personally identifiable information (PII)](https://en.wikipedia.org/wiki/Personal_data)) and competency assertions) from being discovered or read by any unauthorized individual.
 * Enable access to information to be controlled by its “owner.” The owner of an assertion about an individual’s competencies may be the individual, but it may also be the individual’s employer or another type of entity. Note that controlling access is not the same as controlling the contents of an assertion, which an owner cannot typically change.
 * Enable recipients of sensitive information to verify that it is valid and that no unauthorized tampering or alteration has occurred.
@@ -155,9 +155,9 @@ In CaSS, identities, and hence the above permissions, can be assigned to groups 
 ### Roles in CaSS Applications
 CaSS itself only supports permissions, and only does this on an object-by-object basis. Roles and associated policies are defined in applications that use CaSS services. It is up to these applications to assign appropriate permissions to CaSS objects. Once assigned, however, any CaSS instance will enforce these permissions and unauthorized actions will be either prevented (read actions) or revealed (other actions).
 
-![CaSS Roles](/v1.5/cass_overview_roles.png)
+![CaSS Roles](/cass_overview_roles.png)
 
 ### Analysis of KBAC Security
-The effectiveness of KBAC Security is analyzed in a [Threat Model](/v1.5/dev/security/kbac-threat-model) document. The document shows how KBAC prevents common threats and the impact should systems become compromised.
+The effectiveness of KBAC Security is analyzed in a [Threat Model](/dev/security/kbac-threat-model) document. The document shows how KBAC prevents common threats and the impact should systems become compromised.
 
 Implementers, users, and administrator should note that KBAC will not prevent attacks based on compromising end user applications, e.g. attacks that steal information from an end-user’s browser after it has been decrypted and displayed, attacks that compromise a server that provides an end-user application, or attacks that steal a user’s password from a web browser. These attacks are also analyzed in the Threat Model under the “Client-side Attacks” tab.

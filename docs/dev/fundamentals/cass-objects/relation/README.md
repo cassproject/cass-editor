@@ -15,7 +15,7 @@ Relations are directional and labeled. Let's look at the different types.
 
 ### Narrows
 
-![Image](/v1.5/relation-narrows.png)
+![Image](/relation-narrows.png)
 
 A Narrows B states that the entirety of the task in A is contained within B and that A helps describe B. This relation can also be stated as “A is a subcompetency of B”. With set theory we could say that “A is a subset of B”.
 
@@ -27,7 +27,7 @@ When presenting this relationship, it is useful to think of an indented list:
 
 ### Requires
 
-![Image](/v1.5/relation-requires.png)
+![Image](/relation-requires.png)
 
 A Requires B describes a relation where it is necessary to hold the competency B before the competency A may be obtained. As opposed to a Narrows relation, A and B are logically distinct. B may be involved in the steps to complete A, but it does not help describe A.
 
@@ -39,7 +39,7 @@ When presenting this relationship, it is useful to consider a sequential checkli
 
 ### Equivalent
 
-![Image](/v1.5/relation-equivalent.png)
+![Image](/relation-equivalent.png)
 
 A is Equivalent to B describes a relation where two competencies represent the same capability in all aspects. The wording may be somewhat different, but there should be no distinction between these two competencies.
 
@@ -51,7 +51,7 @@ When presenting this relationship, it is useful to append additional names.
 
 ### Related
 
-![Image](/v1.5/relation-related.png)
+![Image](/relation-related.png)
 
 A is Related to B describes a relation where two competencies involve some degree of overlap such that interest in A may be followed by interest in B or visa versa.  With set theory we could say that “there exists an intersection between A and B”.
 
@@ -65,7 +65,7 @@ When presenting this relationship, it may be useful to annote with “Did you me
 
 ### Desires
 
-![Image](/v1.5/relation-desires.png)
+![Image](/relation-desires.png)
 
 A desires B describes a relation where B is not essential to the acquisition of A, but it may be desired, lightly assumed, or implied by the declaration of A.
 
@@ -78,7 +78,7 @@ When presenting this relationship, present it similarly to Requires, but ensure 
 
 ### Is Enabled By
 
-![Image](/v1.5/relation-is-enabled-by.png)
+![Image](/relation-is-enabled-by.png)
 
 A is Enabled by B describes a relation where the acquisition of B speeds or makes more probable the acquisition of A.
 

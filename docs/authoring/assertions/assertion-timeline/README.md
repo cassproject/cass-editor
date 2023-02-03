@@ -4,14 +4,14 @@
 
 To access the Assertion Timeline, click the button indicated below in the left navigation bar.
 
-![Open Assertion Timeline](/v1.5/authoring/assertion-timeline-button.png)
+![Open Assertion Timeline](/authoring/assertion-timeline-button.png)
 
 The timeline will display any assertions made by you, about you, or that have been shared with you.
 
-![Assertion Timeline](/v1.5/authoring/assertion-timeline.png)
+![Assertion Timeline](/authoring/assertion-timeline.png)
 
 You can click on any competency mentioned in the timeline to open the related framework.
 
-![Deleting Assertions](/v1.5/authoring/assertion-timeline-delete.png)
+![Deleting Assertions](/authoring/assertion-timeline-delete.png)
 
 You can also delete any assertions you've made directly from the assertion timeline.

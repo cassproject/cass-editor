@@ -13,7 +13,7 @@ To copy a link to a directory or framework:
 
 This option offers a method for sharing directories, given that exporting directories is not available at this time.
 
-![Directory Management - Directories Copy Link](/v1.5/authoring/directory-copy-link.png)
+![Directory Management - Directories Copy Link](/authoring/directory-copy-link.png)
 
 ## Managing Users for an Item
 
@@ -21,7 +21,7 @@ To control who can view+edit a directory, framework, or resource:
 * Click on the item to show it in the ***Information Panel***.
 * In the ***Users*** section of the ***Information Panel***, click on ***manage users and privacy***.
 
-![Directory Management - Directories Shareable Link](/v1.5/authoring/directory-information-users.png)
+![Directory Management - Directories Shareable Link](/authoring/directory-information-users.png)
 
 A dialogue window shows options for adding Users or Groups to the item. You can:
 * View the current list of users with privileges (*Admin* or *View*)
@@ -34,4 +34,4 @@ The dialogue has an option to set the item as ***Public*** or ***Private***
 
 For directories and frameworks, a shareable link shows at the top of the window and provides a button to copy the link to your clipboard. This option offers a method for sharing directories, given that exporting directories is not available at this time.
 
-![Directory Management - Directories Shareable Link](/v1.5/authoring/directory-shareable-link.png)
+![Directory Management - Directories Shareable Link](/authoring/directory-shareable-link.png)

@@ -3,7 +3,7 @@
 
 Framework properties are the values that can be added, edited, and deleted for framework objects. Minimal framework properties are ***id***, ***name***, and ***description***. Properties added here will be displayed in the framework object at the top of the framework editor view.
 
-![Framework Configuration](/v1.5/authoring/framework-properties.png)
+![Framework Configuration](/authoring/framework-properties.png)
 
 ## Property Fields
 
@@ -25,11 +25,11 @@ At the framework level the following static rules apply:
 
 Custom properties can be added to a framework by clicking the _add custom framework property_ button.
 
-![Add Custom Framework Property](/v1.5/authoring/add-custom-framework-property.png)
+![Add Custom Framework Property](/authoring/add-custom-framework-property.png)
 
 Once clicked, the _New Framework Property_ dialogue window is displayed.
 
-![New Framework Property](/v1.5/authoring/new-framework-property.png)
+![New Framework Property](/authoring/new-framework-property.png)
 
 ### Custom Framework Property Fields
 
@@ -109,7 +109,7 @@ The category (if any) under which the property is displayed in form inputs.
 This is only available for ***range/type=Lang-String***
 :::
 
-![One entry per language](/v1.5/authoring/one-entry-per-language.png)
+![One entry per language](/authoring/one-entry-per-language.png)
 
 By toggling this field on, custom properties of the ***range/type Lang-String*** can be limited so that only a single entry can be made per language chosen.
 
@@ -121,14 +121,14 @@ This is only available for ***range/type=Text***
 
 When creating a custom property of ***range/type Text***, you can limit the values allowed to the property. To do this, toggle the ***Limit Values*** field on and click the ***add*** button to begin managing the list of allowable values.
 
-![Limit Values](/v1.5/authoring/limit-values.png)
+![Limit Values](/authoring/limit-values.png)
 
 For each entry in the limit values table, a ***display label*** and ***field value*** must be entered.
 
 - ***display label*** - the label displayed to the user when selecting the value
 - ***field value*** - the recorded value when the value is selected by the user
 
-![Limit Value Entries](/v1.5/authoring/limit-values-framework.png)
+![Limit Value Entries](/authoring/limit-values-framework.png)
 
 ## Applying the Custom Framework Property
 
@@ -138,4 +138,4 @@ Once complete, the new property can be applied to the framework by clicking the 
 
 Custom properties can be edited and deleted by selecting the appropriate action buttons to the right of the corresponding property entry in the ***Framework Properties*** list.
 
-![Delete Custom Properties](/v1.5/authoring/framework-configuration.png)
+![Delete Custom Properties](/authoring/framework-configuration.png)

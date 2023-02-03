@@ -20,7 +20,7 @@ When first visiting CaSS Authoring Tools, you will be presented with the
 More detailed instructions on how CaSS Authoring Tools can be used are
 included in this User Guide.
 
-![Welcome Page](/v1.5/authoring/welcome-page.png)
+![Welcome Page](/authoring/welcome-page.png)
 
 ## Application Navigation Menu
 
@@ -33,9 +33,9 @@ in two specific ways.
 The expanded navigation menu can be accessed by clicking on the expand
 menu icon on the top right corner of the screen.
 
-![Expand Menu Button](/v1.5/authoring/expand-menu-button.png)
+![Expand Menu Button](/authoring/expand-menu-button.png)
 
-![Expanded Menu](/v1.5/authoring/expanded-menu.png)
+![Expanded Menu](/authoring/expanded-menu.png)
 
 Once expanded, the navigation menu displays links to the following
 application areas:
@@ -61,14 +61,14 @@ application areas:
 
 ### Collapsed Navigation Menu
 
-![Collapse Menu](/v1.5/authoring/collapse-menu-button.png)
+![Collapse Menu](/authoring/collapse-menu-button.png)
 
 
 The navigation menu can be collapsed by clicking on the collapse menu icon on the
 upper right hand corner of the expanded navigation menu.
 
 
-![Collapsed Menu](/v1.5/authoring/collapsed-menu.png)
+![Collapsed Menu](/authoring/collapsed-menu.png)
 
 Once collapsed, the navigation menu displays links to the following
 application areas:
@@ -101,7 +101,7 @@ permissions can be found in the corresponding sections.
 The ***login button*** can be accessed through the application navigation
 menu.  
 
-![CAT Navigation Menu - Login Button](/v1.5/authoring/login-button.png)
+![CAT Navigation Menu - Login Button](/authoring/login-button.png)
 
 ## Creating an Account
 
@@ -109,7 +109,7 @@ From the landing page users have the option to login or create a new
 account to access the CaSS Authoring Tool. At the login page users have
 the option to select ***create account*** shown below.
 
-![CAT Login - Create Account Button](/v1.5/authoring/create-account-button.png)
+![CAT Login - Create Account Button](/authoring/create-account-button.png)
 
 From here, users will be prompted to input basic information required to
 register their account with the CaSS Authoring Tool.
@@ -119,14 +119,14 @@ hit ***create*** to begin the registration of their account. Once
 successfully registered, you will be automatically logged into the
 application.
 
-![CAT Login - Create Account Submit Button](/v1.5/authoring/create-account-submit-button.png)
+![CAT Login - Create Account Submit Button](/authoring/create-account-submit-button.png)
 
 ### Logging into an Existing Account
 
 You can login with existing accounts by filling out the appropriate
 fields on the login form and clicking the ***login*** button.
 
-![CAT Login - Login Button](/v1.5/authoring/login-button.png)
+![CAT Login - Login Button](/authoring/login-button.png)
 
 ## Helpful Links
 
@@ -135,7 +135,7 @@ find a list of documentation, resources, example framework imports,
 options for getting in touch with the CaSS community, and legacy
 applications of CaSS.
 
-![CAT Welcome - Helpful Links ](/v1.5/authoring/helpful-links.png)
+![CAT Welcome - Helpful Links ](/authoring/helpful-links.png)
 
 ## Get in touch
 

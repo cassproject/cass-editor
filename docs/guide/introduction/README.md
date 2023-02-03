@@ -38,13 +38,13 @@ Realistically, CaSS is suitable for a much wider array of projects, however. Per
 
 ## Developers
 
-If you're a developer, consider checking out the [Developer's Guide](/v1.5/dev/overview) once you're familiar with the structure of CaSS to find more information on how to work with it. There you'll find tutorials, code references, API documentation, and helpful links to other resources such as our Github and CaSS Sandbox environment.
+If you're a developer, consider checking out the [Developer's Guide](/dev/overview) once you're familiar with the structure of CaSS to find more information on how to work with it. There you'll find tutorials, code references, API documentation, and helpful links to other resources such as our Github and CaSS Sandbox environment.
 
 ## Explore the interfaces
 
 ### CaSS Authoring Tools UI
 
-The [CaSS Authoring Tools](/v1.5/authoring-tool) provide easy to use User Interfaces for authoring and managing the data within a CaSS system. This is a more tangible way of working with CaSS without writing any code, and also a good way of testing the waters. Get started by creating a user account.
+The [CaSS Authoring Tools](/authoring-tool) provide easy to use User Interfaces for authoring and managing the data within a CaSS system. This is a more tangible way of working with CaSS without writing any code, and also a good way of testing the waters. Get started by creating a user account.
 
 ## Join the community
 

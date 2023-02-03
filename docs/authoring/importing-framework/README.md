@@ -3,7 +3,7 @@
 
 The process of Importing a new framework is also relatively simple. From the frameworks tab on the sidebar, users have the ability to view all existing frameworks within the system. At the top of the page is a list of options which allow users to import new frameworks into the database of existing frameworks.
 
-![CAT Competency Framework Management - Import Frameworks](/v1.5/authoring/import-framework-button.png)
+![CAT Competency Framework Management - Import Frameworks](/authoring/import-framework-button.png)
 
 After clicking the import framework button users will be prompted with a new page where they have the ability to select the source of the frameworks they are trying to import. Options include: ***File Import, Remote Server, Paste Text***, and ***URL Source***.
 
@@ -18,7 +18,7 @@ To import a framwork from a file:
     * *Html, pdf,* and *docx* formats are also experimentally supported
     * Example files and templates are linked from the panel on the right side of the screen.
 
-![CAT Competency Framework Management - Importing Frameworks](/v1.5/authoring/importing-framework-page.png)
+![CAT Competency Framework Management - Importing Frameworks](/authoring/importing-framework-page.png)
 
 Once imported, users can select the process files button and the desired framework will be imported into the your CaSS Authoring Tool database.
 
@@ -47,11 +47,11 @@ When you select a directory to view the contents of, the directory name will sho
 **To navigate back to the parent directory:**
 > * Click on the *Back* button in the bottom right corner
 
-![CAT Competency Framework Management - Importing Open Directory](/v1.5/authoring/importing-open-directory.png)
+![CAT Competency Framework Management - Importing Open Directory](/authoring/importing-open-directory.png)
 
 You can select one or more individual frameworks to import by clicking on each framwork name. When you have selected the frameworks that you would like to import, click "import".
 
-![CAT Competency Framework Management - Importing CaSS Repository](/v1.5/authoring/importing-cass-directories.png)
+![CAT Competency Framework Management - Importing CaSS Repository](/authoring/importing-cass-directories.png)
 
 ## Importing From an IMS CASE Repositories
 
