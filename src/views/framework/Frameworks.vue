@@ -50,7 +50,7 @@
                         </router-link>
                         <!-- help -->
                         <a
-                            href="docs/taxonomies/"
+                            href="docs/v1.5/authoring/taxonomies/"
                             target="_blank"
                             title="Go to documentation on framework library"
                             class="button is-hidden-touch is-primary is-outlined">
@@ -62,7 +62,7 @@
                             </span>
                         </a>
                         <a
-                            href="docs/taxonomies/"
+                            href="docs/v1.5/authoring/taxonomies/"
                             target="_blank"
                             title="Go to documentation on framework library"
                             class="button is-primary is-hidden-desktop is-outlined">
@@ -100,7 +100,7 @@
                         </router-link>
                         <!-- help -->
                         <a
-                            href="docs/taxonomies/"
+                            href="docs/v1.5/authoring/taxonomies/"
                             target="_blank"
                             title="Go to documentation on framework library"
                             class="button is-hidden-touch is-primary is-outlined">
@@ -112,7 +112,7 @@
                             </span>
                         </a>
                         <a
-                            href="docs/taxonomies/"
+                            href="docs/v1.5/authoring/taxonomies/"
                             target="_blank"
                             title="Go to documentation on framework library"
                             class="button is-primary is-hidden-desktop is-outlined">
@@ -172,7 +172,7 @@
                         </router-link>
                         <!-- help -->
                         <a
-                            href="docs/competency-and-framework-management/"
+                            href="docs/v1.5/authoring/competency-and-framework-management/"
                             target="_blank"
                             title="Go to documentation on framework library"
                             class="button is-hidden-touch is-primary is-outlined">
@@ -184,7 +184,7 @@
                             </span>
                         </a>
                         <a
-                            href="docs/competency-and-framework-management/"
+                            href="docs/v1.5/authoring/competency-and-framework-management/"
                             target="_blank"
                             title="Go to documentation on framework library"
                             class="button is-primary is-hidden-desktop is-outlined">

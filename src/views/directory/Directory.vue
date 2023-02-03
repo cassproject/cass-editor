@@ -162,7 +162,7 @@
                     </div>
                     <div class="column is-narrow">
                         <a
-                            href="docs/directory-management/"
+                            href="docs/v1.5/authoring/directory-management/"
                             target="_blank"
                             title="Go to documentation on framework library"
                             class="button is-hidden-touch is-outlined is-primary">
@@ -174,7 +174,7 @@
                             </span>
                         </a>
                         <a
-                            href="docs/directory-management/"
+                            href="docs/v1.5/authoring/directory-management/"
                             target="_blank"
                             title="Go to documentation on framework library"
                             class="button is-hidden-desktop is-outlined is-primary">
