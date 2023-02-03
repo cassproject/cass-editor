@@ -6,6 +6,7 @@ module.exports = {
     title: "CaSS Docs",
     description: description,
     base: "/v1.5/",
+    dest: 'public/docs',
 
     // Extra tags to be injected to the page HTML `<head>`
     head: [
