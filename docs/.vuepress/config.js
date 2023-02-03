@@ -5,7 +5,7 @@ const {description} = require('../../package')
 module.exports = {
     title: "CaSS Docs",
     description: description,
-    base: "/cass-editor/docs/",
+    base: "/docs/",
     dest: 'public/docs',
 
     // Extra tags to be injected to the page HTML `<head>`
