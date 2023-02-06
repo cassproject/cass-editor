@@ -327,10 +327,10 @@ export default {
             if (this.container["skos:hasTopConcept"] != null) { precache = precache.concat(this.container["skos:hasTopConcept"]); }
             if (precache.length > 0) {
                 this.repo.multiget(precache, function(success) {
-                    me.computeHierarchy();
+                    me.computeHierarchy(false);
                 }, appError);
             } else {
-                me.computeHierarchy();
+                me.computeHierarchy(false);
             }
             return this.structure;
         },
@@ -475,7 +475,7 @@ export default {
                 this.$emit('done-loading-nodes');
             }, 1000);
         },
-        computeHierarchy: async function() {
+        computeHierarchy: async function(setPrecedence) {
             let structure = [];
             if (this.container == null) { return r; }
             if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
@@ -489,9 +489,13 @@ export default {
                     }
                 }
             }
-            await this.reorder(structure, "ceterms:precedes");
-            await this.reorder(structure, "ceterms:precededBy");
-            await this.setPrecedenceProperties(structure);
+            if (setPrecedence) {
+                await this.setPrecedes(structure);
+                await this.setPrecededBy(structure);
+            } else {
+                await this.reorder(structure, "ceterms:precedes");
+                await this.reorder(structure, "ceterms:precededBy");
+            }
 
             this.structure = structure;
             this.once = false;
@@ -813,84 +817,90 @@ export default {
                 foo.to.id,
                 !this.controlOnStart, toLast);
         },
-        setPrecedenceProperties: async function(container) {
-            console.log('setPrecedenceProperties');
-            console.log(container);
+        setPrecedes: async function(container) {
+            // container received should be an array - each array element containing and array of children and EcConcept obj.
             if (container === null || container.length <= 0) {
                 return null;
             }
             for (let i = 0; i < container.length; i++) {
                 if (container[i]) {
                     if (container[i].children && container[i].children.length > 0) {
-                        delete container[i].obj["ceterms:precedes"];
-                        delete container[i].obj["ceterms:precededBy"];
-                        await this.setChildrenPrecedenceProperties(container, container[i].children, i);
-                    } else {
-                        // leaf node - add precedes and precededBy properties
-                        if (i === 0) {
-                            // precededBy level at another stage of the hierarchy
-                            console.log('set precededBy');
-                            // console.log(this.findPrecededBy(container, EcRemoteLinkedData.trimVersionFromUrl(container[i].obj.id)));
-                        } else {
-                            console.log('set precededBy to ' + EcRemoteLinkedData.trimVersionFromUrl(container[i - 1].obj.id));
-                            container[i].obj["ceterms:precededBy"] = EcRemoteLinkedData.trimVersionFromUrl(container[i - 1].obj.id);
+                        if (container[i].obj["ceterms:precedes"]) {
+                            delete container[i].obj["ceterms:precedes"];
+                            await this.saveObject(container[i].obj);
                         }
+                        await this.setChildrenPrecedes(container, container[i].children);
+                    } else {
+                        // leaf node - add precedes property
                         if (i === container.length - 1) {
                             // precedes level at another stage of the hierarchy
-                            console.log('set precedes');
-                            // console.log(this.findPrecedes(container, EcRemoteLinkedData.trimVersionFromUrl(container[i].obj.id)));
+                            let precedes = await this.findPrecedes(container, EcRemoteLinkedData.trimVersionFromUrl(container[i].obj.id));
+                            container[i].obj["ceterms:precedes"] = EcRemoteLinkedData.trimVersionFromUrl(precedes);
+                            await this.saveObject(container[i].obj);
                         } else {
-                            console.log('set precedes to ' + EcRemoteLinkedData.trimVersionFromUrl(container[i + 1].obj.id));
-                            container[i].obj["ceterms:precedes"] = EcRemoteLinkedData.trimVersionFromUrl(container[i + 1].obj.id);
+                            if (container[i + 1].children && container[i + 1].children.length > 0) {
+                                let precedes = await this.findChildrenPrecedes(container[i + 1].children, container[i].obj.id, true);
+                                if (precedes !== null) {
+                                    container[i].obj["ceterms:precedes"] = EcRemoteLinkedData.trimVersionFromUrl(precedes);
+                                    await this.saveObject(container[i].obj);
+                                }
+                            } else {
+                                container[i].obj["ceterms:precedes"] = EcRemoteLinkedData.trimVersionFromUrl(container[i + 1].obj.id);
+                                await this.saveObject(container[i].obj);
+                            }
                         }
                     }
                 }
             }
-            console.log('done setPrecedenceProperties');
-            console.log(container);
             return container;
         },
-        setChildrenPrecedenceProperties: async function(container, subContainer, i) {
-            console.log('setChildrenPrecedenceProperties');
-            console.log(subContainer);
+        setChildrenPrecedes: async function(container, subContainer) {
+            // container and subContainer received should both be an array - each array element containing and array of children and EcConcept obj.
             for (let j = 0; j < subContainer.length; j++) {
-                if (subContainer[j].children && subContainer[j].children.length > 0) {
-                    delete subContainer[j].obj["ceterms:precedes"];
-                    delete subContainer[j].obj["ceterms:precededBy"];
-                    await this.setChildrenPrecedenceProperties(container, subContainer[j].children, j);
-                } else {
-                    // leaf node - add precedes and precededBy properties
-                    if (j === 0) {
-                        // precededBy level at another stage of the hierarchy
-                        console.log('set precededBy');
-                        // console.log(this.findPrecededBy(container, EcRemoteLinkedData.trimVersionFromUrl(subContainer[j].id)));
+                if (subContainer[j]) {
+                    if (subContainer[j].children && subContainer[j].children.length > 0) {
+                        if (subContainer[j].obj["ceterms:precedes"]) {
+                            delete subContainer[j].obj["ceterms:precedes"];
+                            await this.saveObject(subContainer[j].obj);
+                        }
+                        await this.setChildrenPrecedes(container, subContainer[j].children);
                     } else {
-                        console.log('set precededBy to ' + EcRemoteLinkedData.trimVersionFromUrl(subContainer[j - 1].obj.id));
-                        subContainer[j].obj["ceterms:precededBy"] = EcRemoteLinkedData.trimVersionFromUrl(subContainer[j - 1].obj.id);
-                    }
-                    if (j === subContainer.length - 1) {
-                        // precedes level at another stage of the hierarchy
-                        console.log('set precedes');
-                        // console.log(this.findPrecedes(container, EcRemoteLinkedData.trimVersionFromUrl(subContainer[j].id)));
-                    } else {
-                        console.log('set precedes to ' + EcRemoteLinkedData.trimVersionFromUrl(subContainer[j + 1].obj.id));
-                        subContainer[j].obj["ceterms:precedes"] = EcRemoteLinkedData.trimVersionFromUrl(subContainer[j + 1].obj.id);
+                        // leaf node - add precedes property
+                        if (j === subContainer.length - 1) {
+                            // precedes level at another stage of the hierarchy
+                            let precedes = await this.findPrecedes(container, EcRemoteLinkedData.trimVersionFromUrl(subContainer[j].obj.id));
+                            if (precedes !== null) {
+                                subContainer[j].obj["ceterms:precedes"] = EcRemoteLinkedData.trimVersionFromUrl(precedes);
+                                await this.saveObject(subContainer[j].obj);
+                            }
+                        } else {
+                            if (subContainer[j + 1].children && subContainer[j + 1].children.length > 0) {
+                                let precedes = await this.findChildrenPrecedes(subContainer[j + 1].children, subContainer[j].obj.id, true);
+                                if (precedes !== null) {
+                                    subContainer[j].obj["ceterms:precedes"] = EcRemoteLinkedData.trimVersionFromUrl(precedes);
+                                    await this.saveObject(subContainer[j].obj);
+                                }
+                            } else {
+                                subContainer[j].obj["ceterms:precedes"] = EcRemoteLinkedData.trimVersionFromUrl(subContainer[j + 1].obj.id);
+                                await this.saveObject(subContainer[j].obj);
+                            }
+                        }
                     }
                 }
             }
         },
         findPrecedes: async function(container, sourceNodeId) {
+            // container received should be an array - each array element containing and array of children and EcConcept obj.
             // Assumes sourceNodeId is a leaf node
             let foundSourceNode = false;
             if (container === null) { return null; }
-            if (EcRemoteLinkedData.trimVersionFromUrl(container.obj.id) === sourceNodeId) { return null; }
-
-            for (let i = 0; i < container.children.length; i++) {
+            // if (EcRemoteLinkedData.trimVersionFromUrl(container.obj.id) === sourceNodeId) { return null; }
+            for (let i = 0; i < container.length; i++) {
                 if (!foundSourceNode && (EcRemoteLinkedData.trimVersionFromUrl(container[i].obj.id) === sourceNodeId)) {
                     foundSourceNode = true;
                 } else {
                     if (container[i].children && container[i].children.length > 0) {
-                        let precedes = await this.findChildrenPrecedes(container[i], sourceNodeId, foundSourceNode);
+                        let precedes = await this.findChildrenPrecedes(container[i].children, sourceNodeId, foundSourceNode);
                         if (precedes) {
                             if (precedes === sourceNodeId) {
                                 foundSourceNode = true;
@@ -901,7 +911,7 @@ export default {
                     } else {
                         if (foundSourceNode) {
                             // Source node has already been found. That means that this is the closeest leaf node
-                            return EcRemoteLinkedData.trimVersionFromUrl(container.obj.id);
+                            return EcRemoteLinkedData.trimVersionFromUrl(container[i].obj.id);
                         }
                     }
                 }
@@ -909,14 +919,15 @@ export default {
             return null;
         },
         findChildrenPrecedes: async function(subContainer, sourceNodeId, foundSourceNode) {
+            // subContainer received should be an array - each array element containing and array of children and EcConcept obj.
             let foundChildSourceNode = foundSourceNode;
             if (subContainer === null) { return null; }
-            for (let j = 0; j < subContainer.children.length; j++) {
+            for (let j = 0; j < subContainer.length; j++) {
                 if (!foundChildSourceNode && (EcRemoteLinkedData.trimVersionFromUrl(subContainer[j].obj.id) === sourceNodeId)) {
                     foundChildSourceNode = true;
                 } else {
                     if (subContainer[j].children && subContainer[j].children.length > 0) {
-                        let precedes = await this.findChildrenPrecedes(subContainer[j], sourceNodeId, foundSourceNode);
+                        let precedes = await this.findChildrenPrecedes(subContainer[j].children, sourceNodeId, foundSourceNode);
                         if (precedes) {
                             if (precedes === sourceNodeId) {
                                 foundChildSourceNode = true;
@@ -927,7 +938,7 @@ export default {
                     } else {
                         if (foundChildSourceNode) {
                             // Source node has already been found. That means that this is the closeest leaf node
-                            return EcRemoteLinkedData.trimVersionFromUrl(subContainer.obj.id);
+                            return EcRemoteLinkedData.trimVersionFromUrl(subContainer[j].obj.id);
                         }
                     }
                 }
@@ -937,6 +948,143 @@ export default {
             } else {
                 return null;
             }
+        },
+        setPrecededBy: async function(container) {
+            // container received should be an array - each array element containing and array of children and EcConcept obj.
+            if (container === null || container.length <= 0) {
+                return null;
+            }
+            for (let i = container.length - 1; i >= 0; i--) {
+                if (container[i]) {
+                    if (container[i].children && container[i].children.length > 0) {
+                        if (container[i].obj["ceterms:precededBy"]) {
+                            delete container[i].obj["ceterms:precededBy"];
+                            await this.saveObject(container[i].obj);
+                        }
+                        await this.setChildrenPrecededBy(container, container[i].children, i);
+                    } else {
+                        // leaf node - add precededBy property
+                        if (i === 0) {
+                            // precededBy level at another stage of the hierarchy
+                            let precededBy = await this.findPrecededBy(container, EcRemoteLinkedData.trimVersionFromUrl(container[i].obj.id));
+                            if (precededBy !== null) {
+                                container[i].obj["ceterms:precededBy"] = EcRemoteLinkedData.trimVersionFromUrl(precededBy);
+                                await this.saveObject(container[i].obj);
+                            }
+                        } else {
+                            if (container[i - 1].children && container[i - 1].children.length > 0) {
+                                let precededBy = await this.findChildrenPrecededBy(container[i - 1].children, container[i].obj.id, true);
+                                if (precededBy !== null) {
+                                    container[i].obj["ceterms:precededBy"] = EcRemoteLinkedData.trimVersionFromUrl(precededBy);
+                                    await this.saveObject(container[i].obj);
+                                }
+                            } else {
+                                container[i].obj["ceterms:precededBy"] = EcRemoteLinkedData.trimVersionFromUrl(container[i - 1].obj.id);
+                                await this.saveObject(container[i].obj);
+                            }
+                        }
+                    }
+                }
+            }
+            return container;
+        },
+        setChildrenPrecededBy: async function(container, subContainer) {
+            // container and subContainer received should both be an array - each array element containing and array of children and EcConcept obj.
+            for (let j = subContainer.length - 1; j >= 0; j--) {
+                if (subContainer[j]) {
+                    if (subContainer[j].children && subContainer[j].children.length > 0) {
+                        if (subContainer[j].obj["ceterms:precededBy"]) {
+                            delete subContainer[j].obj["ceterms:precededBy"];
+                            await this.saveObject(subContainer[j].obj);
+                        }
+                        await this.setChildrenPrecededBy(container, subContainer[j].children);
+                    } else {
+                        // leaf node - add precededBy property
+                        if (j === 0) {
+                            // precededBy level at another stage of the hierarchy
+                            let precededBy = await this.findPrecededBy(container, EcRemoteLinkedData.trimVersionFromUrl(subContainer[j].obj.id));
+                            if (precededBy !== null) {
+                                subContainer[j].obj["ceterms:precededBy"] = EcRemoteLinkedData.trimVersionFromUrl(precededBy);
+                                await this.saveObject(subContainer[j].obj);
+                            }
+                        } else {
+                            if (subContainer[j - 1].children && subContainer[j - 1].children.length > 0) {
+                                let precededBy = await this.findChildrenPrecededBy(subContainer[j - 1].children, subContainer[j].obj.id, true);
+                                if (precededBy !== null) {
+                                    subContainer[j].obj["ceterms:precededBy"] = EcRemoteLinkedData.trimVersionFromUrl(precededBy);
+                                    await this.saveObject(subContainer[j].obj);
+                                }
+                            } else {
+                                subContainer[j].obj["ceterms:precededBy"] = EcRemoteLinkedData.trimVersionFromUrl(subContainer[j - 1].obj.id);
+                                await this.saveObject(subContainer[j].obj);
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        findPrecededBy: async function(container, sourceNodeId) {
+            // container received should be an array - each array element containing and array of children and EcConcept obj.
+            // Assumes sourceNodeId is a leaf node
+            let foundSourceNode = false;
+            if (container === null) { return null; }
+            for (let i = container.length - 1; i >= 0; i--) {
+                if (!foundSourceNode && (EcRemoteLinkedData.trimVersionFromUrl(container[i].obj.id) === sourceNodeId)) {
+                    foundSourceNode = true;
+                } else {
+                    if (container[i].children && container[i].children.length > 0) {
+                        let precededBy = await this.findChildrenPrecededBy(container[i].children, sourceNodeId, foundSourceNode);
+                        if (precededBy) {
+                            if (precededBy === sourceNodeId) {
+                                foundSourceNode = true;
+                            } else {
+                                return precededBy;
+                            }
+                        }
+                    } else {
+                        if (foundSourceNode) {
+                            // Source node has already been found. That means that this is the closeest leaf node
+                            return EcRemoteLinkedData.trimVersionFromUrl(container[i].obj.id);
+                        }
+                    }
+                }
+            }
+            return null;
+        },
+        findChildrenPrecededBy: async function(subContainer, sourceNodeId, foundSourceNode) {
+            // subContainer received should be an array - each array element containing and array of children and EcConcept obj.
+            let foundChildSourceNode = foundSourceNode;
+            if (subContainer === null) { return null; }
+            for (let j = subContainer.length - 1; j >= 0; j--) {
+                if (!foundChildSourceNode && (EcRemoteLinkedData.trimVersionFromUrl(subContainer[j].obj.id) === sourceNodeId)) {
+                    foundChildSourceNode = true;
+                } else {
+                    if (subContainer[j].children && subContainer[j].children.length > 0) {
+                        let precededBy = await this.findChildrenPrecededBy(subContainer[j].children, sourceNodeId, foundSourceNode);
+                        if (precededBy) {
+                            if (precededBy === sourceNodeId) {
+                                foundChildSourceNode = true;
+                            } else {
+                                return precededBy;
+                            }
+                        }
+                    } else {
+                        if (foundChildSourceNode) {
+                            // Source node has already been found. That means that this is the closeest leaf node
+                            return EcRemoteLinkedData.trimVersionFromUrl(subContainer[j].obj.id);
+                        }
+                    }
+                }
+            }
+            if (foundChildSourceNode) {
+                return sourceNodeId;
+            } else {
+                return null;
+            }
+        },
+        saveObject(obj) {
+            this.repo.saveTo(obj, function() {
+            }, appError);
         },
         move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, toLast) {
             this.once = true;
@@ -970,7 +1118,7 @@ export default {
                     container = await EcEncryptedValue.toEncryptedValue(container);
                 }
                 this.repo.saveTo(container, function() {
-                    me.computeHierarchy();
+                    me.computeHierarchy(true);
                 }, appError);
             } else {
                 var moveComp = await EcConcept.get(fromId);
@@ -1047,7 +1195,7 @@ export default {
                     }
                     me.repo.saveTo(toContainer, function() {
                         me.repo.saveTo(moveComp, appLog, appError);
-                        me.computeHierarchy();
+                        me.computeHierarchy(true);
                     }, appLog);
                 }, appError);
             }
