@@ -376,14 +376,10 @@ export default {
                     if (this.range[0] === 'http://www.w3.org/2001/XMLSchema#dateTime' && this.text["@value"].length > 16) {
                         return this.text["@value"].substr(0, 16);
                     }
+                    if (this.range[0] === 'http://www.w3.org/2001/XMLSchema#date' && this.text["@value"].length > 10) {
+                        return this.text["@value"].substr(0, 10);
+                    }
                     return this.text["@value"];
-                }
-                if (this.range[0] === 'http://www.w3.org/2001/XMLSchema#dateTime' && this.text === "") {
-                    // CE requested that the default seconds are set to 12am when adding a new Date Modified because most customers will only add a date when setting
-                    //  a retroactive Date Modified value, even though the schema supports date and time.
-                    const today = new Date();
-                    const dateOut = `${today.getFullYear()}-${today.getMonth() + 1}-${today.getDate()}T00:00`;
-                    return dateOut;
                 }
                 return this.text;
             },

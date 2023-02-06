@@ -232,7 +232,7 @@
 
                         class="buttons is-pulled-right">
                         <a
-                            href="docs/competency-and-framework-management/#creating-a-new-competency-framework"
+                            href="docs/authoring/competency-and-framework-management/#creating-a-new-competency-framework"
                             target="_blank"
                             title="Go to documentation on creating a new competency framework"
                             class="button is-primary is-outlined">

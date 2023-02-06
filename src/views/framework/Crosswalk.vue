@@ -41,7 +41,7 @@
                         <div class="column">
                             <div class="buttons is-right">
                                 <a
-                                    href="docs/crosswalk-tool/"
+                                    href="docs/authoring/crosswalk-tool/"
                                     target="_blank"
                                     title="Go to documentation on crosswalking"
                                     class="button is-primary is-outlined">

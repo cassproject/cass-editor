@@ -91,7 +91,7 @@
                 </div>
                 <div
                     class="buttons pt-4 is-centered"
-                    v-else>
+                    v-else-if="!hideLogoutButton">
                     <div
                         class="button is-outlined is-white"
                         @click="performApplicationLogout">

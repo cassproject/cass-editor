@@ -12,7 +12,8 @@
         <template>
             <div class="container is-desktop">
                 <ul class="cass--list">
-                    <li v-if="!firstSearchProcessing"
+                    <li
+                        v-if="!firstSearchProcessing && (!results || results.length === 0)"
                         class="cass--list--item no-results">No results found</li>
                     <li
                         class="cass--list--item"

@@ -149,6 +149,9 @@ export default {
                         this.$store.commit('app/showModal', {component: 'MessageOfTheDay'});
                     }
                 }
+                if (loginInfo.corsCredentials) {
+                    global.axiosOptions.withCredentials = loginInfo.corsCredentials;
+                }
                 if (window.EcIdentityManager.default.ids.length > 0) {
                     try {
                         let pers = (await window.EcPerson.getByPk(r, window.EcIdentityManager.default.ids[0].ppk.toPk()));
