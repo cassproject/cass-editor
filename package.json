@@ -21,7 +21,7 @@
     "cassproject": "^1.5.22",
     "core-js": "^3.23.3",
     "dateformat": "^5.0.3",
-    "dompurify": "^2.3.8",
+    "dompurify": "^2.4.3",
     "file-saver": "^2.0.5",
     "http2": "^3.3.7",
     "jsonld": "^5.2.0",
