@@ -2764,34 +2764,6 @@ export default {
                     "heading": "General",
                     "max": 1
                 },
-                "https://purl.org/ctdl/terms/precedes": {
-                    "@id": "https://purl.org/ctdl/terms/precedes",
-                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
-                    "http://schema.org/domainIncludes": [
-                        {
-                            "@id": "http://schema.cassproject.org/0.4/skos/Concept"
-                        }
-                    ],
-                    "http://schema.org/rangeIncludes": [
-                        {
-                            "@id": "https://schema.cassproject.org/0.4/skos/Concept"
-                        }
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [
-                        {
-                            "@language": "en", "@value": "Resource that logically comes after this resource."
-                        }
-                    ],
-                    "http://www.w3.org/2000/01/rdf-schema#label":
-                    [
-                        {
-                            "@language": "en", "@value": "Precedes"
-                        }
-                    ],
-                    "heading": "General",
-                    "max": 1
-                },
                 "https://purl.org/ctdl/terms/precededBy": {
                     "@id": "https://purl.org/ctdl/terms/precededBy",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -2820,6 +2792,34 @@ export default {
                     "heading": "General",
                     "max": 1
                 },
+                "https://purl.org/ctdl/terms/precedes": {
+                    "@id": "https://purl.org/ctdl/terms/precedes",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes": [
+                        {
+                            "@id": "http://schema.cassproject.org/0.4/skos/Concept"
+                        }
+                    ],
+                    "http://schema.org/rangeIncludes": [
+                        {
+                            "@id": "https://schema.cassproject.org/0.4/skos/Concept"
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {
+                            "@language": "en", "@value": "Resource that logically comes after this resource."
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label":
+                    [
+                        {
+                            "@language": "en", "@value": "Precedes"
+                        }
+                    ],
+                    "heading": "General",
+                    "max": 1
+                },
                 "headings": ["General", "Other Labels", "Documentation", "Connections", "Keys"],
                 "primaryProperties": [
                     "http://www.w3.org/2004/02/skos/core#prefLabel",
@@ -2832,8 +2832,8 @@ export default {
                     "registryURL",
                     "ctid",
                     "http://www.w3.org/2004/02/skos/core#note",
-                    "https://purl.org/ctdl/terms/precedes",
-                    "https://purl.org/ctdl/terms/precededBy"
+                    "https://purl.org/ctdl/terms/precededBy",
+                    "https://purl.org/ctdl/terms/precedes"
                 ]
             };
         }
