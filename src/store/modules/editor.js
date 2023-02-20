@@ -61,6 +61,7 @@ const state = {
     editsToUndo: [],
     lastEditToUndo: null,
     recomputeHierarchy: false,
+    recomputePrecedence: false,
     selectedCompetenciesAsProperties: null,
     refreshLevels: false,
     refreshAlignments: false,
@@ -179,6 +180,9 @@ const mutations = {
     },
     recomputeHierarchy(state, boolean) {
         state.recomputeHierarchy = boolean;
+    },
+    recomputePrecedence(state, boolean) {
+        state.recomputePrecedence = boolean;
     },
     selectedCompetenciesAsProperties(state, comps) {
         state.selectedCompetenciesAsProperties = comps;
@@ -508,6 +512,9 @@ const getters = {
     },
     recomputeHierarchy: function(state) {
         return state.recomputeHierarchy;
+    },
+    recomputePrecedence: function(state) {
+        return state.recomputePrecedence;
     },
     selectedCompetenciesAsProperties: function(state) {
         return state.selectedCompetenciesAsProperties;
