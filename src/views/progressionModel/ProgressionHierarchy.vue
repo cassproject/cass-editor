@@ -501,7 +501,7 @@ export default {
                 }
 
                 if (!restructureSuccess) {
-                    console.log('Error setting precedence. Using original structure');
+                    appLog('Error setting precedence. Using original structure');
                     structure = originalStructure.map(i => ({...i}));
                 }
             } else {
@@ -1029,12 +1029,8 @@ export default {
                     if (subContainer[j]) {
                         if (subContainer[j].children && subContainer[j].children.length > 0) {
                             if (subContainer[j].obj["ceterms:precededBy"]) {
-                                console.log('remove precededBy');
                                 delete subContainer[j].obj["ceterms:precededBy"];
                                 await this.saveObject(subContainer[j].obj);
-                            }
-                            if (subContainer[j].obj["ceterms:precededBy"]) {
-                                console.log('why still precededBy???');
                             }
                             await this.setChildrenPrecededBy(container, subContainer[j].children);
                         } else {
