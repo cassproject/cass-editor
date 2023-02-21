@@ -127,6 +127,7 @@ export default {
                     [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}],
                     "isRequired": "true",
+                    "max": 1,
                     "heading": "General"
                 },
                 "http://schema.org/keywords": {
@@ -165,7 +166,6 @@ export default {
                             For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.`}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Derived From"}],
-                    "max": 1,
                     "heading": "Connections"
                 },
                 "https://purl.org/ctdlasn/terms/alignFrom": {
@@ -632,6 +632,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}],
+                    "max": 1,
                     "heading": "General"
                 },
                 "http://schema.org/keywords": {
@@ -905,7 +906,6 @@ export default {
                             For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.`}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Derived From"}],
-                    "max": 1,
                     "heading": "Connections"
                 },
                 "https://purl.org/ctdlasn/terms/alignFrom": {
@@ -958,6 +958,7 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}],
+                    "max": 1,
                     "isRequired": "true",
                     "heading": "General"
                 },
@@ -1603,7 +1604,6 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher"}],
-                    "max": 1,
                     "heading": "General"
                 },
                 "https://purl.org/ctdlasn/terms/publisherName": {
@@ -1626,7 +1626,6 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher Name"}],
-                    "max": 1,
                     "heading": "General"
                 },
                 "http://purl.org/dc/terms/language": {
@@ -1650,6 +1649,7 @@ export default {
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Language"}],
                     "isRequired": "true",
+                    "max": 1,
                     "heading": "General"
                 },
                 "http://purl.org/dc/elements/1.1/source": {
@@ -1672,8 +1672,7 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source"}],
-                    "heading": "General",
-                    "max": 1
+                    "heading": "General"
                 },
                 "https://purl.org/ctdlasn/terms/conceptKeyword": {
                     "@id": "https://purl.org/ctdlasn/terms/conceptKeyword",
@@ -1838,8 +1837,7 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rights Holder"}],
-                    "heading": "Rights",
-                    "max": 1
+                    "heading": "Rights"
                 },
                 "headings": ["General", "Tagging", "Context", "Rights", "Keys"],
                 "primaryProperties": [
@@ -1978,6 +1976,7 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Notation"}],
+                    "max": 1,
                     "heading": "General"
                 },
                 "http://www.w3.org/2004/02/skos/core#altLabel": {
@@ -2337,7 +2336,6 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher"}],
-                    "max": 1,
                     "heading": "General"
                 },
                 "https://purl.org/ctdlasn/terms/publisherName": {
@@ -2360,7 +2358,6 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher Name"}],
-                    "max": 1,
                     "heading": "General"
                 },
                 "http://purl.org/dc/terms/language": {
@@ -2383,6 +2380,7 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Language"}],
+                    "max": 1,
                     "isRequired": "true",
                     "heading": "General"
                 },
@@ -2406,8 +2404,7 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Source"}],
-                    "heading": "General",
-                    "max": 1
+                    "heading": "General"
                 },
                 "https://purl.org/ctdlasn/terms/conceptKeyword": {
                     "@id": "https://purl.org/ctdlasn/terms/conceptKeyword",
@@ -2572,8 +2569,7 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Rights Holder"}],
-                    "heading": "Rights",
-                    "max": 1
+                    "heading": "Rights"
                 },
                 "headings": ["General", "Tagging", "Context", "Rights", "Keys"],
                 "primaryProperties": [
@@ -2712,6 +2708,7 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Notation"}],
+                    "max": 1,
                     "heading": "General"
                 },
                 "http://www.w3.org/2004/02/skos/core#note": {
