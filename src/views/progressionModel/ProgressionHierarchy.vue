@@ -346,6 +346,9 @@ export default {
         },
         recomputePrecedence: function() {
             return this.$store.getters['editor/recomputePrecedence'];
+        },
+        recomputePrecedenceAfterReorder: function() {
+            return this.$store.getters['editor/recomputePrecedenceAfterReorder'];
         }
     },
     watch: {
@@ -493,6 +496,13 @@ export default {
             }
             let restructureSuccess = false;
             let originalStructure = structure.map(i => ({...i}));
+
+            if (this.recomputePrecedenceAfterReorder) {
+                this.$store.commit('editor/recomputePrecedenceAfterReorder', false);
+                this.$store.commit('editor/recomputePrecedence', true);
+                await this.reorder(structure, "ceterms:precedes");
+                await this.reorder(structure, "ceterms:precededBy");
+            }
             if (this.recomputePrecedence) {
                 this.$store.commit('editor/recomputePrecedence', false);
                 restructureSuccess = await this.setPrecedes(structure);
@@ -1364,6 +1374,7 @@ export default {
         openFramework: async function() {
             var f = await EcConceptScheme.get(this.container.shortId());
             this.$store.commit('editor/framework', f);
+            this.$store.commit('editor/recomputePrecedenceAfterReorder', true);
             this.$router.push({name: "progressionModel", params: {frameworkId: this.container.id}});
         },
         onClickCreateNew: async function() {
