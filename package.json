@@ -24,7 +24,7 @@
     "dompurify": "^2.3.8",
     "file-saver": "^2.0.5",
     "http2": "^3.3.7",
-    "jsonld": "^5.2.0",
+    "jsonld": "^8.1.1",
     "lodash": "^4.17.21",
     "p-limit": "^4.0.0",
     "pure-uuid": "^1.6.2",
