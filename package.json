@@ -1,6 +1,6 @@
 {
   "name": "cass-editor",
-  "version": "1.5.22",
+  "version": "1.5.25",
   "private": true,
   "scripts": {
     "docs:dev": "vuepress dev docs",
@@ -18,7 +18,7 @@
     "bulma": "^0.9.4",
     "bulma-checkradio": "^1.1.1",
     "bulma-switch": "^2.0.4",
-    "cassproject": "^1.5.22",
+    "cassproject": "^1.5.25",
     "core-js": "^3.23.3",
     "dateformat": "^5.0.3",
     "dompurify": "^2.3.8",
