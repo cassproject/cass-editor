@@ -66,6 +66,7 @@ const state = {
     selectedCompetenciesAsProperties: null,
     refreshLevels: false,
     refreshAlignments: false,
+    refreshProperties: false,
     conceptMode: false,
     collectionMode: false,
     progressionMode: false,
@@ -196,6 +197,9 @@ const mutations = {
     },
     refreshAlignments(state, boolean) {
         state.refreshAlignments = boolean;
+    },
+    refreshProperties(state, boolean) {
+        state.refreshProperties = boolean;
     },
     conceptMode(state, boolean) {
         if (boolean) {
@@ -531,6 +535,9 @@ const getters = {
     },
     refreshAlignments: function(state) {
         return state.refreshAlignments;
+    },
+    refreshProperties: function(state) {
+        return state.refreshProperties;
     },
     conceptMode: function(state) {
         return state.conceptMode;

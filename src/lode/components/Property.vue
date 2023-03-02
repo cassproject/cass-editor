@@ -196,6 +196,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         v-if="editingProperty && limitedConcepts.length > 0">
                         <PropertyString
                             :index="index"
+                            :propertyValue="expandedThing[expandedProperty][index]"
                             :expandedProperty="expandedProperty"
                             :expandedThing="expandedThing"
                             :expandedValue="expandedValue"
@@ -204,6 +205,7 @@ TO DO MAYBE: Separate out property by editing or not.
                             :view="view"
                             :options="limitedConcepts"
                             :profile="profile"
+                            @removeByValue="removeByValue($event)"
                             @remove="remove(item)" />
                     </div>
                     <div
@@ -296,6 +298,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     v-else-if="editingProperty && !checkedOptions && !(limitedConcepts.length > 0) && !(limitedTypes.length > 0)">
                     <PropertyString
                         :index="index"
+                        :propertyValue="expandedThing[expandedProperty][index]"
                         :expandedProperty="expandedProperty"
                         :expandedThing="expandedThing"
                         :expandedValue="expandedValue"
@@ -305,6 +308,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         :addSingle="isNotDeletable()"
                         :options="(profile && profile[expandedProperty] && profile[expandedProperty]['options']) ? profile[expandedProperty]['options'] : null"
                         :profile="profile"
+                        @removeByValue="removeByValue($event)"
                         @remove="remove(item)" />
                 </div>
                 <!-- text view has language -->
@@ -968,6 +972,9 @@ export default {
                 rld.type = type.split("/").pop();
                 this.$parent.add(this.expandedProperty, rld);
             }
+        },
+        removeByValue: async function(value) {
+            this.$parent.removeByValue(this.expandedProperty, value);
         },
         remove: async function(index) {
             if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["remove"]) {
