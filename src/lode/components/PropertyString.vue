@@ -242,6 +242,10 @@ export default {
         profile: Object,
         // True if adding a single property
         addSingle: Boolean,
+        propertyValue: {
+            type: Object,
+            default: function() { return undefined; }
+        },
         valueFromSearching: null,
         view: {
             type: String,
@@ -262,7 +266,7 @@ export default {
         }
         if (EcArray.isArray(property)) {
             return {
-                text: this.expandedThing[this.expandedProperty][this.index],
+                text: this.propertyValue ? this.propertyValue : this.expandedThing[this.expandedProperty][this.index],
                 indexInternal: this.index,
                 isOpen: false,
                 search: "",
@@ -318,7 +322,7 @@ export default {
         if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["resource"]) {
             this.isResource = true;
             if (this.expandedValue) {
-                this.text = this.expandedValue[this.index];
+                this.text = this.propertyValue ? this.propertyValue : this.expandedValue[this.index];
             } else {
                 this.text = {};
             }
@@ -490,7 +494,11 @@ export default {
             }
         },
         clickConfirmRemove: function() {
-            this.$emit('remove');
+            if (this.propertyValue) {
+                this.$emit('removeByValue', this.propertyValue);
+            } else {
+                this.$emit('remove');
+            }
             this.removePropertyConfirmModal = false;
         },
         closeModal: function() {

@@ -434,6 +434,14 @@ export default {
             addingRange: state => state.lode.addingRange,
             addingChecked: state => state.lode.addingChecked
         }),
+        refreshProperties: {
+            get: function() {
+                return this.$store.getters['editor/refreshProperties'];
+            },
+            set: function(val) {
+                return this.$store.commit('editor/refreshProperties', val);
+            }
+        },
         addingPropertyLabel: function() {
             if (this.addingProperty && this.profile && this.profile[this.addingProperty]) {
                 return this.profile[this.addingProperty]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"];
@@ -1066,6 +1074,20 @@ export default {
                 }
             }
         },
+        reload: function() {
+            this.refreshProperties = false;
+            this.$store.commit('editor/selectedCompetency', null);
+            this.$store.commit('lode/setAddingProperty', '');
+            this.$store.commit('lode/setAddingValues', []);
+            this.$store.commit('lode/setIsAddingProperty', false);
+            if (this.uri && this.$store.state.editor) {
+                this.resolveNameFromUrl(this.uri);
+            }
+            this.load();
+            if (this.obj && this.obj.shortId() === this.changedObject) {
+                this.$store.commit('editor/changedObject', null);
+            }
+        },
         // Fleshes out the Thing object with empty containers for any possible field that can be edited, according to the schema. Permits reactivity of currently unused fields.
         reactify: function(o) {
             for (let key in o) {
@@ -1186,7 +1208,7 @@ export default {
             }
         },
         // Removes a piece of data from a property. Invoked by child components, in order to remove data (for reactivity reasons).
-        remove: function(property, index) {
+        remove: async function(property, index) {
             var initialValue = JSON.parse(JSON.stringify(this.expandedThing[property]));
             if (!EcArray.isArray(this.expandedThing[property])) {
                 this.expandedThing[property] = [this.expandedThing[property]];
@@ -1195,7 +1217,28 @@ export default {
             this.$store.commit('editor/addEditsToUndo',
                 {operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), fieldChanged: [property], initialValue: initialValue, changedValue: this.expandedThing[property], expandedProperty: true}
             );
-            this.saveThing();
+            await this.saveThing();
+            this.refreshProperties = true;
+        },
+        // Removes a piece of data from a property based on the data's value. Invoked by child components, in order to remove data (for reactivity reasons).
+        // This is needed in cases where the original array is in a different order due to deletions and additions.
+        removeByValue: async function(property, value) {
+            var initialValue = JSON.parse(JSON.stringify(this.expandedThing[property]));
+            if (!EcArray.isArray(this.expandedThing[property])) {
+                this.expandedThing[property] = [this.expandedThing[property]];
+            }
+            let index = this.expandedThing[property].findIndex((obj) => (obj['@value'].contains(value['@value'])));
+            if (index >= 0 && index < this.expandedThing[property].length) {
+                this.expandedThing[property].splice(index, 1);
+                this.$store.commit('editor/addEditsToUndo',
+                    {operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), fieldChanged: [property], initialValue: initialValue, changedValue: this.expandedThing[property], expandedProperty: true}
+                );
+                await this.saveThing();
+                this.refreshProperties = true;
+            } else {
+                appLog('Unable to find property to remove');
+                appLog(value);
+            }
         },
         // Changes a piece of data. Invoked by child components, in order to change a piece of data to something else (for reactivity reasons).
         update: function(property, index, value, callback) {
@@ -1739,6 +1782,11 @@ export default {
             if (!this.validate) {
                 this.disableDoneEditingButton = false;
                 this.validateCount = 0;
+            }
+        },
+        refreshProperties: function() {
+            if (this.refreshProperties) {
+                this.reload();
             }
         }
     }
