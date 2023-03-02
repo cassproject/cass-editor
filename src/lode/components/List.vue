@@ -657,7 +657,7 @@ export default {
             var subLocalParamObj = Object.assign({}, me.paramObj);
             if (me.searchTerm != null && me.searchTerm !== "") { delete subLocalParamObj.sort; }
             subLocalParamObj.start = me.subStart;
-            if (subLocalParamObj.sort.indexOf("dcterms:title") !== -1) {
+            if (subLocalParamObj.sort && subLocalParamObj.sort.indexOf("dcterms:title") !== -1) {
                 subLocalParamObj.sort = subLocalParamObj.sort.replace('dcterms:title', 'skos:prefLabel');
             }
             var type = me.type === "Framework" ? "Competency" : "Concept";

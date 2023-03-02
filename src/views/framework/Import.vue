@@ -858,42 +858,43 @@
                             <h2 class="title is-size-4">
                                 Remote Server Import
                             </h2>
-                            <!--v-else-if="importType=='server' && !conceptMode"-->
+                            <template v-if="!conceptMode">
+                                <p class="has-text-weight-bold">
+                                    If you know the URL of a IMS CASE Repository, such as OpenSalt, you can import published frameworks from that repository.
+                                </p>
+                                <br>
+                                <ul class="cat__bullet-list">
+                                    <li class="is-size-6">
+                                        A CASE framework cannot be imported if it uses API Key authentication.
+                                    </li>
+                                    <li class="is-size-6">
+                                        This import maintains the URLs of the CASE frameworks and changes both the format and schema used to store the CASE frameworks in CaSS, but does not change any of the data.
+                                    </li>
+                                    <li class="is-size-6">
+                                        After entering the endpoint below, you can select which frameworks you would like to import.
+                                    </li>
+                                    <li class="is-size-6">
+                                        If you wish to edit the frameworks after importing, please be sure you are signed in.
+                                    </li>
+                                </ul>
+                                <br>
+                            </template>
                             <p class="has-text-weight-bold">
-                                If you know the URL of a IMS CASE Repository, such as OpenSalt, you can import published frameworks from that repository.
+                                If you know the URL of another CaSS Repository, you can import <span v-if="conceptMode">taxonomies</span><span v-else>frameworks</span> from that repository.
                             </p>
                             <br>
                             <ul class="cat__bullet-list">
                                 <li class="is-size-6">
-                                    A CASE framework cannot be imported if it uses API Key authentication.
+                                    This import maintains the URLs of the CaSS <span v-if="conceptMode">taxonomies</span><span v-else>frameworks</span> but does not change any of the data besides the owner. If you are logged in, you will have ownership of the newly imported <span v-if="conceptMode">taxonomy</span><span v-else>framework</span> and be able to edit it.
                                 </li>
                                 <li class="is-size-6">
-                                    This import maintains the URLs of the CASE frameworks and changes both the format and schema used to store the CASE frameworks in CaSS, but does not change any of the data.
+                                    After entering the endpoint below, you can select which <span v-if="conceptMode">taxonomies</span><span v-else>frameworks</span> you would like to import.
                                 </li>
                                 <li class="is-size-6">
-                                    After entering the endpoint below, you can select which frameworks you would like to import.
+                                    If the other repository has directories, these will appear at the top of the list. You can click on a directory to view and select <span v-if="conceptMode">taxonomies</span><span v-else>frameworks</span> within it.
                                 </li>
                                 <li class="is-size-6">
-                                    If you wish to edit the frameworks after importing, please be sure you are signed in.
-                                </li>
-                            </ul>
-                            <br>
-                            <p class="has-text-weight-bold">
-                                If you know the URL of another CaSS Repository, you can import frameworks from that repository.
-                            </p>
-                            <br>
-                            <ul class="cat__bullet-list">
-                                <li class="is-size-6">
-                                    This import maintains the URLs of the CaSS frameworks but does not change any of the data besides the owner. If you are logged in, you will have ownership of the newly imported framework and be able to edit it.
-                                </li>
-                                <li class="is-size-6">
-                                    After entering the endpoint below, you can select which frameworks you would like to import.
-                                </li>
-                                <li class="is-size-6">
-                                    If the other repository has directories, these will appear at the top of the list. You can click on a directory to view and select frameworks within it.
-                                </li>
-                                <li class="is-size-6">
-                                    Use the search bar to find particular frameworks or directories.
+                                    Use the search bar to find particular <span v-if="conceptMode">taxonomies</span><span v-else>frameworks</span> or directories.
                                 </li>
                             </ul>
                         </div>
