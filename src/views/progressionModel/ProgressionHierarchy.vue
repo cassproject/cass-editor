@@ -127,6 +127,24 @@
                             <i class="fa fa-paste" />
                         </span>
                     </div>
+                    <div
+                        v-if="view === 'concept'"
+                        @click="computeHierarchy(true)"
+                        class="button is-outlined is-primary "
+                        title="Reorder by Precedence">
+                        <span>
+                            reorder by precedence
+                        </span>
+                    </div>
+                    <div
+                        v-if="view === 'concept'"
+                        @click="setPrecedence"
+                        class="button is-outlined is-primary "
+                        title="Set Precedence">
+                        <span>
+                            set precedence by order
+                        </span>
+                    </div>
                 </div>
             </div>
             <!-- IMPORT WORKFLOW BUTTONS -->
@@ -327,10 +345,10 @@ export default {
             if (this.container["skos:hasTopConcept"] != null) { precache = precache.concat(this.container["skos:hasTopConcept"]); }
             if (precache.length > 0) {
                 this.repo.multiget(precache, function(success) {
-                    me.computeHierarchy();
+                    me.computeHierarchy(true);
                 }, appError);
             } else {
-                me.computeHierarchy();
+                me.computeHierarchy(true);
             }
             return this.structure;
         },
@@ -343,12 +361,6 @@ export default {
         },
         recomputeHierarchy: function() {
             return this.$store.getters['editor/recomputeHierarchy'];
-        },
-        recomputePrecedence: function() {
-            return this.$store.getters['editor/recomputePrecedence'];
-        },
-        recomputePrecedenceAfterReorder: function() {
-            return this.$store.getters['editor/recomputePrecedenceAfterReorder'];
         }
     },
     watch: {
@@ -480,7 +492,38 @@ export default {
                 this.$emit('done-loading-nodes');
             }, 1000);
         },
-        computeHierarchy: async function() {
+        setPrecedence: async function() {
+            let structure = [];
+            if (this.container == null) { return r; }
+            if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
+                if (this.container["ceterms:precedes"]) {
+                    delete this.container["ceterms:precedes"];
+                }
+                if (this.container["ceterms:precededBy"]) {
+                    delete this.container["ceterms:precededBy"];
+                }
+                for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
+                    var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
+                    if (c) {
+                        structure.push({"obj": c, "children": []});
+                        if (c["ceterms:precedes"]) {
+                            delete c["ceterms:precedes"];
+                        }
+                        if (c["ceterms:precededBy"]) {
+                            delete c["ceterms:precededBy"];
+                        }
+                        if (c["skos:narrower"]) {
+                            await this.addChildren(structure, c, i, true);
+                        }
+                    }
+                }
+            }
+            await this.setPrecedes(structure);
+            await this.setPrecededBy(structure);
+
+            this.structure = structure;
+        },
+        computeHierarchy: async function(setOrder) {
             let structure = [];
             if (this.container == null) { return r; }
             if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
@@ -489,32 +532,13 @@ export default {
                     if (c) {
                         structure.push({"obj": c, "children": []});
                         if (c["skos:narrower"]) {
-                            await this.addChildren(structure, c, i);
+                            await this.addChildren(structure, c, i, false);
                         }
                     }
                 }
             }
-            let restructureSuccess = false;
-            let originalStructure = structure.map(i => ({...i}));
 
-            if (this.recomputePrecedenceAfterReorder) {
-                this.$store.commit('editor/recomputePrecedenceAfterReorder', false);
-                this.$store.commit('editor/recomputePrecedence', true);
-                await this.reorder(structure, "ceterms:precedes");
-                await this.reorder(structure, "ceterms:precededBy");
-            }
-            if (this.recomputePrecedence) {
-                this.$store.commit('editor/recomputePrecedence', false);
-                restructureSuccess = await this.setPrecedes(structure);
-                if (restructureSuccess) {
-                    restructureSuccess = await this.setPrecededBy(structure);
-                }
-
-                if (!restructureSuccess) {
-                    appLog('Error setting precedence. Using original structure');
-                    structure = originalStructure.map(i => ({...i}));
-                }
-            } else {
+            if (setOrder) {
                 await this.reorder(structure, "ceterms:precedes");
                 await this.reorder(structure, "ceterms:precededBy");
             }
@@ -550,12 +574,20 @@ export default {
             }
             return output;
         },
-        addChildren: async function(structure, c, i) {
+        addChildren: async function(structure, c, i, deletePrecedence) {
             for (var j = 0; j < c["skos:narrower"].length; j++) {
                 var subC = await EcConcept.get(c["skos:narrower"][j]);
+                if (deletePrecedence) {
+                    if (subC["ceterms:precedes"]) {
+                        delete subC["ceterms:precedes"];
+                    }
+                    if (subC["ceterms:precededBy"]) {
+                        delete subC["ceterms:precededBy"];
+                    }
+                }
                 structure[i].children.push({"obj": subC, "children": []});
                 if (subC && subC["skos:narrower"]) {
-                    await this.addChildren(structure[i].children, subC, j);
+                    await this.addChildren(structure[i].children, subC, j, deletePrecedence);
                 }
             }
         },
@@ -1169,8 +1201,7 @@ export default {
                     container = await EcEncryptedValue.toEncryptedValue(container);
                 }
                 this.repo.saveTo(container, function() {
-                    me.$store.commit('editor/recomputePrecedence', true);
-                    me.computeHierarchy();
+                    me.computeHierarchy(false);
                 }, appError);
             } else {
                 var moveComp = await EcConcept.get(fromId);
@@ -1247,8 +1278,7 @@ export default {
                     }
                     me.repo.saveTo(toContainer, function() {
                         me.repo.saveTo(moveComp, appLog, appError);
-                        me.$store.commit('editor/recomputePrecedence', true);
-                        me.computeHierarchy();
+                        me.computeHierarchy(false);
                     }, appLog);
                 }, appError);
             }
@@ -1311,7 +1341,6 @@ export default {
 
                 try {
                     await this.repo.multiput([c, me.container]);
-                    this.$store.commit('editor/recomputePrecedence', true);
                     me.once = true;
                 } catch (e) {
                     appError(e);
@@ -1348,7 +1377,6 @@ export default {
                 }
                 try {
                     await this.repo.multiput([c, parent, me.container]);
-                    this.$store.commit('editor/recomputePrecedence', true);
                     me.once = true;
                 } catch (e) {
                     appError(e);
@@ -1374,7 +1402,6 @@ export default {
         openFramework: async function() {
             var f = await EcConceptScheme.get(this.container.shortId());
             this.$store.commit('editor/framework', f);
-            this.$store.commit('editor/recomputePrecedenceAfterReorder', true);
             this.$router.push({name: "progressionModel", params: {frameworkId: this.container.id}});
         },
         onClickCreateNew: async function() {
