@@ -345,10 +345,10 @@ export default {
             if (this.container["skos:hasTopConcept"] != null) { precache = precache.concat(this.container["skos:hasTopConcept"]); }
             if (precache.length > 0) {
                 this.repo.multiget(precache, function(success) {
-                    me.computeHierarchy(true);
+                    me.computeHierarchy(false);
                 }, appError);
             } else {
-                me.computeHierarchy(true);
+                me.computeHierarchy(false);
             }
             return this.structure;
         },
