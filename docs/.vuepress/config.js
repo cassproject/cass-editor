@@ -24,7 +24,13 @@ module.exports = {
             };
         `]
     ],
-
+    configureWebpack: {
+        resolve: {
+            alias: {
+                '@img': path.resolve(__dirname, '../public/img')
+            }
+        }
+    },
     // Theme configuration, here is the default theme configuration for VuePress.
     themeConfig: {
         logo: '/cass-logo.png',

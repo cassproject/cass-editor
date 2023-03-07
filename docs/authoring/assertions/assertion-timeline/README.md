@@ -4,7 +4,7 @@
 
 To access the Assertion Timeline, click the button indicated below in the left navigation bar.
 
-![Open Assertion Timeline](/authoring/assertion-timeline-button.png)
+![Open Assertion Timeline](~@img/assertion-timeline-button.png)
 
 The timeline will display any assertions made by you, about you, or that have been shared with you.
 
