@@ -1,6 +1,7 @@
 // https://vuepress.vuejs.org/config/#base
 
 const {description} = require('../../package')
+const path = require('path');
 
 module.exports = {
     title: "CaSS Docs",
@@ -27,7 +28,7 @@ module.exports = {
     configureWebpack: {
         resolve: {
             alias: {
-                '@img': path.resolve(__dirname, '../public/img')
+                '@img': path.resolve(__dirname, './public/img')
             }
         }
     },
