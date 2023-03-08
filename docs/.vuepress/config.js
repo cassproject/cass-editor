@@ -6,7 +6,7 @@ const path = require('path');
 module.exports = {
     title: "CaSS Docs",
     description: description,
-    base: "/docs/",
+    base: process.env.DOCS_BASE || "/docs/",
     dest: 'public/docs',
 
     // Extra tags to be injected to the page HTML `<head>`

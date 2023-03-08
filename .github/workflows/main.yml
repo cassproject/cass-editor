@@ -27,8 +27,8 @@ jobs:
       - run: git pull --recurse-submodules
       - run: git submodule update --init --remote
       - run: export VUE_APP_API_LOGIN_ENABLED=false
+      - run: export DOCS_BASE=/cass-editor/docs/
       - run: npm ci
-      - run: sed -i "s/\/docs\//\/cass-editor\/docs\//g" ./docs/.vuepress/config.js
       - run: npm run docs:build
       - run: npm run build
 
