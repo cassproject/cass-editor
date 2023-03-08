@@ -107,6 +107,9 @@ export default {
                 if (this.queryParams.user === "wait") {
                     this.$store.commit('featuresEnabled/shareEnabled', false);
                 }
+                if (this.queryParams.ownedByNe === "true") {
+                    this.$store.commit('featuresEnabled/ownedByMe', true);
+                }
             }
             var r = new EcRepository();
             r.selectedServer = server;
