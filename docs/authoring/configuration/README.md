@@ -22,22 +22,22 @@ Only a single configuration can be set to the instance default at any given time
 The CAT configuration manager can be accessed at any time by selecting the ***configurations*** icon on the
 lower left corner of the navigation menu.
 
-![Configurations Navigation Menu](/authoring/configurations.png)
+![Configurations Navigation Menu](~@img/configurations.png)
 
 Upon entering the configuration manager, a list of all existing configurations in the current CAT instance are displayed. Public configurations or configurations owned by the current logged in user can be managed or deleted by selecting one of the actions icons to the right of the configuration item. Unowned configurations can be viewed by selecting the appropriate action icon.
 
-![Configuration Action Browser Default](/authoring/browser-default.png)
+![Configuration Action Browser Default](~@img/browser-default.png)
 
 It is also possible for users to set their browser default configuration from this screen
 
-![Browser Default](/authoring/view-manage-delete.png)
+![Browser Default](~@img/view-manage-delete.png)
 
 
 ## Creating a New Configuration
 
 Configurations can be created by clicking the ***create new configuration*** button at the bottom right corner of the configuration management list screen. By default, all required fields are pre-populated with default CaSS terminology and settings.
 
-![Create new Configuration](/authoring/create-new-configuration.png)
+![Create new Configuration](~@img/create-new-configuration.png)
 
 ## Managing a Configuration
 
@@ -45,7 +45,7 @@ After creating a new configuration or selecting the ***manage*** action on an ex
 
 ### Configuration General Details
 
-![General Details](/authoring/general-details.png)
+![General Details](~@img/general-details.png)
 
 The general details configuration settings provide fields for editing the ***name*** and ***description*** of the configuration. From this section you can also toggle the ***instance default*** switch and set your browser default.
 
@@ -57,7 +57,7 @@ Only a single configuration can be set to the instance default at any given time
 
 Configurations can be saved by clicking on the ***save configuration*** button on the left side of the ***configuration details*** screen.
 
-![Save Configuration](/authoring/save-configuration.png)
+![Save Configuration](~@img/save-configuration.png)
 
 
 

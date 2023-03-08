@@ -1,11 +1,12 @@
 // https://vuepress.vuejs.org/config/#base
 
 const {description} = require('../../package')
+const path = require('path');
 
 module.exports = {
     title: "CaSS Docs",
     description: description,
-    base: "/docs/",
+    base: process.env.DOCS_BASE || "/docs/",
     dest: 'public/docs',
 
     // Extra tags to be injected to the page HTML `<head>`
@@ -24,7 +25,13 @@ module.exports = {
             };
         `]
     ],
-
+    configureWebpack: {
+        resolve: {
+            alias: {
+                '@img': path.resolve(__dirname, './public/img')
+            }
+        }
+    },
     // Theme configuration, here is the default theme configuration for VuePress.
     themeConfig: {
         logo: '/cass-logo.png',
