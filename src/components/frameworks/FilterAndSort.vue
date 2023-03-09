@@ -152,6 +152,9 @@ export default {
         searchByOwnerNameEnabled: function() {
             return this.$store.state.featuresEnabled.searchByOwnerNameEnabled;
         },
+        searchOwnedByMe: function() {
+            return this.$store.state.featuresEnabled.ownedByMe;
+        },
         configurationsEnabled: function() {
             return this.$store.state.featuresEnabled.configurationsEnabled;
         },
