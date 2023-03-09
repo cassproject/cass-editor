@@ -496,32 +496,40 @@ export default {
                 this.$emit('done-loading-nodes');
             }, 1000);
         },
-        setPrecedence: async function() {
-            let structure = [];
-            if (this.container == null) { return r; }
-            if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
-                if (this.container["ceterms:precedes"]) {
-                    delete this.container["ceterms:precedes"];
-                }
-                if (this.container["ceterms:precededBy"]) {
-                    delete this.container["ceterms:precededBy"];
-                }
-                for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
-                    var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
-                    if (c) {
-                        structure.push({"obj": c, "children": []});
-                        if (c["ceterms:precedes"]) {
-                            delete c["ceterms:precedes"];
-                        }
-                        if (c["ceterms:precededBy"]) {
-                            delete c["ceterms:precededBy"];
-                        }
-                        if (c["skos:narrower"]) {
-                            await this.addChildren(structure, c, i, true);
+        removePrecedence: async function() {
+            return new Promise(async(resolve) => {
+                let structure = [];
+                if (this.container == null) { return r; }
+                if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
+                    if (this.container["ceterms:precedes"] || this.container["ceterms:precededBy"]) {
+                        if (this.container["ceterms:precedes"]) delete this.container["ceterms:precedes"];
+                        if (this.container["ceterms:precededBy"]) delete this.container["ceterms:precededBy"];
+                        await this.saveObject(this.container);
+                    }
+                    for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
+                        var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
+                        if (c) {
+                            if (c["ceterms:precedes"] || c["ceterms:precededBy"]) {
+                                if (c["ceterms:precedes"]) delete c["ceterms:precedes"];
+                                if (c["ceterms:precededBy"]) delete c["ceterms:precededBy"];
+                                await this.saveObject(c);
+                            }
+                            structure.push({"obj": c, "children": []});
+                            if (c["skos:narrower"]) {
+                                await this.addChildren(structure, c, i, true);
+                            }
                         }
                     }
                 }
-            }
+
+                this.structure = structure;
+                resolve();
+            });
+        },
+        setPrecedence: async function() {
+            await this.removePrecedence();
+
+            let structure = this.structure;
             await this.setPrecedes(structure);
             await this.setPrecededBy(structure);
 
@@ -579,21 +587,22 @@ export default {
             return output;
         },
         addChildren: async function(structure, c, i, deletePrecedence) {
-            for (var j = 0; j < c["skos:narrower"].length; j++) {
-                var subC = await EcConcept.get(c["skos:narrower"][j]);
-                if (deletePrecedence) {
-                    if (subC["ceterms:precedes"]) {
-                        delete subC["ceterms:precedes"];
+            return new Promise(async(resolve) => {
+                for (var j = 0; j < c["skos:narrower"].length; j++) {
+                    var subC = await EcConcept.get(c["skos:narrower"][j]);
+                    if (deletePrecedence &&
+                        (subC["ceterms:precedes"] || subC["ceterms:precededBy"])) {
+                        if (subC["ceterms:precedes"]) delete subC["ceterms:precedes"];
+                        if (subC["ceterms:precededBy"]) delete subC["ceterms:precededBy"];
+                        await this.saveObject(subC);
                     }
-                    if (subC["ceterms:precededBy"]) {
-                        delete subC["ceterms:precededBy"];
+                    structure[i].children.push({"obj": subC, "children": []});
+                    if (subC && subC["skos:narrower"]) {
+                        await this.addChildren(structure[i].children, subC, j, deletePrecedence);
                     }
                 }
-                structure[i].children.push({"obj": subC, "children": []});
-                if (subC && subC["skos:narrower"]) {
-                    await this.addChildren(structure[i].children, subC, j, deletePrecedence);
-                }
-            }
+                resolve();
+            });
         },
         reorder: async function(unorderedStructure, property) {
             return new Promise(async(resolve) => {
@@ -1169,9 +1178,12 @@ export default {
                 }
             });
         },
-        saveObject(obj) {
-            this.repo.saveTo(obj, function() {
-            }, appError);
+        saveObject: async function(obj) {
+            return new Promise(async(resolve) => {
+                this.repo.saveTo(obj, function() {
+                    resolve();
+                }, appError);
+            });
         },
         move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, toLast) {
             this.once = true;
@@ -1432,8 +1444,6 @@ export default {
         deleteLevel: function(thing) {
             appLog("deleting " + thing.id);
             this.deleteLevelInner(thing);
-            console.log('thing');
-            console.log(thing);
             this.framework["schema:dateModified"] = new Date().toISOString();
             this.$store.commit('editor/selectedCompetency', null);
         },
@@ -1470,8 +1480,6 @@ export default {
             }
             if (c["skos:topConceptOf"] != null) {
                 try {
-                    console.log('this.framework');
-                    console.log(this.framework);
                     var initialValue = this.framework["skos:hasTopConcept"].slice();
                     EcArray.setRemove(this.framework["skos:hasTopConcept"], c.shortId());
                     editsToUndo.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]});
