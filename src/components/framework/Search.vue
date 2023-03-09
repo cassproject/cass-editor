@@ -336,7 +336,6 @@ export default {
             }
         },
         filteredQuickFilters: function() {
-            console.log('checking for ownedByMe...');
             this.showMine = false;
             for (var i = 0; i < this.filteredQuickFilters.length; i++) {
                 if (this.filteredQuickFilters[i].id === "ownedByMe") {
