@@ -181,6 +181,7 @@ export default {
                         window.EcIdentityManager.default.addIdentity(ident);
                     }
                 }
+                this.$store.dispatch('app/refreshDirectories');
             });
             window.repo = r;
             this.repo = r;
