@@ -152,8 +152,8 @@ export default {
                         this.$store.commit('app/showModal', {component: 'MessageOfTheDay'});
                     }
                 }
-                if (loginInfo.corsCredentials) {
-                    global.axiosOptions.withCredentials = loginInfo.corsCredentials;
+                if (loginInfo.corsOrigins) {
+                    global.corsOrigins = loginInfo.corsOrigins;
                 }
                 if (window.EcIdentityManager.default.ids.length > 0) {
                     try {
