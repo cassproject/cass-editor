@@ -13,17 +13,20 @@
                 <img
                     v-if="showSideNav"
                     class="cass-logo"
+                    alt="Cass logo"
                     :src="casslogo">
                 <img
                     v-else
                     class="cass-logo-square"
+                    alt="Cass logo"
                     :src="casslogoSquare">
             </router-link>
             <!--Collapse / Grow Icon-->
             <div
                 v-if="!showSideNav"
                 class="buttons is-centered"
-                @click="$store.commit('app/showSideNav')">
+                @click="$store.commit('app/showSideNav')"
+                title="Expand sidebar">
                 <button class="button is-outlined is-rounded p-0">
                     <i class="fa fa-chevron-right px-3" />
                 </button>
@@ -31,7 +34,8 @@
             <div
                 v-if="showSideNav"
                 class="button is-rounded p-0 is-pulled-right"
-                @click="$store.commit('app/closeSideNav')">
+                @click="$store.commit('app/closeSideNav')"
+                title="Collapse sidebar">
                 <i class="fa fa-chevron-left p-3" />
             </div>
         </div>
@@ -94,7 +98,8 @@
                     v-else-if="!hideLogoutButton">
                     <div
                         class="button is-outlined is-white"
-                        @click="performApplicationLogout">
+                        @click="performApplicationLogout"
+                        :title="showSideNav ? '' : 'Logout'">
                         <span class="icon">
                             <i class="fa fa-sign-out-alt" />
                         </span>
@@ -102,24 +107,25 @@
                 </div>
             </template>
             <template v-else-if="loginEnabled">
-                <div
+                <button
                     v-if="showSideNav"
-                    class="button  is-large is-outlined is-white"
+                    class="button is-large is-outlined is-white"
                     @click="performApplicationLogin">
                     <span class="icon">
                         <i class="fa fa-sign-in-alt" />
                     </span><span v-if="showSideNav">login</span>
-                </div>
+                </button>
                 <div
                     v-if="!showSideNav"
                     class="buttons is-centered">
-                    <div
+                    <button
                         class="button is-outlined is-white"
-                        @click="performApplicationLogin">
+                        @click="performApplicationLogin"
+                        title="Login">
                         <span class="icon">
                             <i class="fa fa-sign-in-alt" />
                         </span>
-                    </div>
+                    </button>
                 </div>
             </template>
             <!-- might need later to close -->
@@ -163,7 +169,8 @@
             <li class="has-text-white">
                 <router-link
                     :to="{path: '/frameworks', query: queryParams}"
-                    @click.native="$store.commit('editor/collectionMode', false)">
+                    @click.native="$store.commit('editor/collectionMode', false)"
+                    :title="showSideNav ? '' : 'Frameworks'">
                     <span class="icon">
                         <i class="fa fa-th-list" />
                     </span>
@@ -175,7 +182,8 @@
                 v-if="queryParams.ceasnDataFields === 'true' && showSideNav">
                 <router-link
                     :to="{path: '/collections', query: queryParams}"
-                    @click.native="$store.commit('editor/collectionMode', true)">
+                    @click.native="$store.commit('editor/collectionMode', true)"
+                    :title="showSideNav ? '' : 'Collections'">
                     <span class="icon">
                         <i class="fa fa-th-list" />
                     </span>
@@ -187,7 +195,8 @@
                 v-if="showSideNav">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');">
+                    @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                    :title="showSideNav ? '' : 'Import'">
                     <span class="icon">
                         <i class="fa fa-upload" />
                     </span><span v-if="showSideNav">
@@ -198,7 +207,9 @@
             <li
                 class="has-text-white"
                 v-if="crosswalkEnabled">
-                <router-link :to="{path: '/crosswalk', query: queryParams}">
+                <router-link
+                    :to="{path: '/crosswalk', query: queryParams}"
+                    :title="showSideNav ? '' : 'Crosswalk Frameworks'">
                     <span class="icon">
                         <i class="fa fa-network-wired" />
                     </span>
@@ -210,7 +221,8 @@
                 class="has-text-white"
                 v-show="showSideNav && pluginsEnabled"
                 :key="navLink">
-                <a @click="setLaunchPluginValues(navLink)">
+                <a @click="setLaunchPluginValues(navLink)"
+                    :title="showSideNav ? '' : '{{ navLink.launchName }}'">
                     <span class="icon">
                         <i class="fa fa-plug" />
                     </span>
@@ -229,7 +241,9 @@
                 class="menu-list">
                 <li
                     class="has-text-white">
-                    <router-link :to="{path: '/timeline', query: queryParams}">
+                    <router-link
+                        :to="{path: '/timeline', query: queryParams}"
+                        :title="showSideNav ? '' : 'Timeline'">
                         <span class="icon">
                             <i class="fa fa-history" />
                         </span>
@@ -240,7 +254,8 @@
                     class="has-text-white">
                     <a
                         data-id="share-assertions-button"
-                        @click="shareAssertions">
+                        @click="shareAssertions"
+                        :title="showSideNav ? '' : 'Share'">
                         <span class="icon">
                             <i class="fa fa-share" />
                         </span>
@@ -291,7 +306,9 @@
             class="menu-list"
             v-if="showConcepts">
             <li class="has-text-white">
-                <router-link :to="{path: '/concepts', query: queryParams}">
+                <router-link
+                    :to="{path: '/concepts', query: queryParams}"
+                    :title="showSideNav ? '' : queryParams.ceasnDataFields === 'true'? 'Concept Schemes' : 'Taxonomies'">
                     <span class="icon">
                         <i class="fa fa-layer-group" />
                     </span>
@@ -308,7 +325,8 @@
                 v-if="showSideNav">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');">
+                    @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                    :title="showSideNav ? '' : 'Import'">
                     <span class="icon">
                         <i class="fa fa-upload" />
                     </span>
@@ -320,7 +338,9 @@
                 class="has-text-white"
                 v-show="showSideNav && pluginsEnabled"
                 :key="navLink">
-                <a @click="setLaunchPluginValues(navLink)">
+                <a
+                    @click="setLaunchPluginValues(navLink)"
+                    :title="showSideNav ? '' : '{{ navLink.launchName }}'">
                     <span class="icon">
                         <i class="fa fa-plug" />
                     </span>
@@ -338,7 +358,8 @@
             class="menu-list"
             v-if="queryParams.ceasnDataFields === 'true' && showConcepts">
             <li class="has-text-white">
-                <router-link :to="{path: '/progressionLevels', query: queryParams}">
+                <router-link :to="{path: '/progressionLevels', query: queryParams}"
+                    :title="showSideNav && queryParams.ceasnDataFields === 'true' ? '' : 'Progression Models'">
                     <span class="icon">
                         <i class="fa fa-layer-group" />
                     </span>
@@ -352,7 +373,8 @@
                 v-if="showSideNav && queryParams.ceasnDataFields === 'true' && showConcepts">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/progressionMode', true); $store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');">
+                    @click.native="$store.commit('editor/progressionMode', true); $store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
+                    :title="showSideNav ? '' : 'Import'">
                     <span class="icon">
                         <i class="fa fa-upload" />
                     </span>
@@ -364,7 +386,8 @@
                 class="has-text-white"
                 v-show="showSideNav && pluginsEnabled"
                 :key="navLink">
-                <a @click="setLaunchPluginValues(navLink)">
+                <a @click="setLaunchPluginValues(navLink)"
+                    :title="showSideNav ? '' : '{{ navLink.launchName }}'">
                     <span class="icon">
                         <i class="fa fa-plug" />
                     </span>
@@ -382,21 +405,26 @@
         <ul
             class="menu-list">
             <li v-if="configurationsEnabled">
-                <router-link :to="{path: '/configuration', query: queryParams}">
+                <router-link :to="{path: '/configuration', query: queryParams}"
+                    :title="showSideNav ? '' : 'Configurations'">
                     <span class="icon">
                         <i class="fa fa-cog" />
                     </span><span v-if="showSideNav">Configurations</span>
                 </router-link>
             </li>
             <li v-if="pluginsEnabled">
-                <router-link :to="{path: '/pluginManager', query: queryParams}">
+                <router-link
+                    :to="{path: '/pluginManager', query: queryParams}"
+                    :title="showSideNav ? '' : 'Plugins'">
                     <span class="icon">
                         <i class="fa fa-charging-station" />
                     </span><span v-if="showSideNav">Plugins</span>
                 </router-link>
             </li>
             <li v-if="isLoggedOn && userManagementEnabled">
-                <router-link :to="{path: '/users', query: queryParams}">
+                <router-link
+                    :to="{path: '/users', query: queryParams}"
+                    :title="showSideNav ? '' : 'Groups'">
                     <span class="icon">
                         <i class="fa fa-users" />
                     </span><span v-if="showSideNav">Groups</span>
@@ -407,7 +435,9 @@
                 class="has-text-white"
                 v-show="showSideNav && pluginsEnabled"
                 :key="navLink">
-                <a @click="setLaunchPluginValues(navLink)">
+                <a
+                    @click="setLaunchPluginValues(navLink)"
+                    :title="showSideNav ? '' : '{{ navLink.launchName }}'">
                     <span class="icon">
                         <i class="fa fa-plug" />
                     </span>
@@ -433,7 +463,9 @@
                     v-for="navLink of pluginLinkMap[nonStandardNavCat]"
                     class="has-text-white"
                     :key="navLink">
-                    <a @click="setLaunchPluginValues(navLink)">
+                    <a
+                        @click="setLaunchPluginValues(navLink)"
+                        :title="showSideNav ? '' : '{{ navLink.launchName }}'">
                         <span class="icon">
                             <i class="fa fa-plug" />
                         </span>
