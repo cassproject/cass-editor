@@ -107,7 +107,7 @@ export default {
                 if (this.queryParams.user === "wait") {
                     this.$store.commit('featuresEnabled/shareEnabled', false);
                 }
-                if (this.queryParams.ownedByNe === "true") {
+                if (this.queryParams.ownedByMe === "true") {
                     this.$store.commit('featuresEnabled/ownedByMe', true);
                 }
             }
