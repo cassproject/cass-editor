@@ -127,7 +127,6 @@ export default {
                     [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}],
                     "isRequired": "true",
-                    "max": 1,
                     "heading": "General"
                 },
                 "http://schema.org/keywords": {
@@ -632,7 +631,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The primary language or languages of the entity, even if it makes use of other languages; e.g., a course offered in English to teach Spanish would have an inLanguage of English, while a credential in Quebec could have an inLanguage of both French and English."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}],
-                    "max": 1,
                     "heading": "General"
                 },
                 "http://schema.org/keywords": {
@@ -958,7 +956,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "The primary language used in or by this competency framework or competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "In Language"}],
-                    "max": 1,
                     "isRequired": "true",
                     "heading": "General"
                 },
@@ -1649,7 +1646,6 @@ export default {
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Language"}],
                     "isRequired": "true",
-                    "max": 1,
                     "heading": "General"
                 },
                 "http://purl.org/dc/elements/1.1/source": {
@@ -2380,7 +2376,6 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Language"}],
-                    "max": 1,
                     "isRequired": "true",
                     "heading": "General"
                 },
