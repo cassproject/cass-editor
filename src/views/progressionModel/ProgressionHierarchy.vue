@@ -108,7 +108,7 @@
                     </div>
                     <div
                         v-if="view === 'framework' || view === 'concept'"
-                        title="Cut competency"
+                        title="Cut progression level"
                         :disabled="!canCopyOrCut"
                         class="button is-outlined"
                         :class="canCopyOrCut ? 'is-primary' : 'is-disabled'"
@@ -123,7 +123,7 @@
                         class="button is-outlined "
                         @click="pasteClick"
                         :class="canPaste ? 'is-primary' : 'is-disabled'"
-                        title="Paste competency">
+                        title="Paste progression level">
                         <span class="icon">
                             <i class="fa fa-paste" />
                         </span>
