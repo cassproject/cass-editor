@@ -21,7 +21,7 @@ This page only describes the algorithms, and does not address security, privacy,
 
 CaSS is designed to collect and provide information about a learner’s or employee’s competencies and skills to systems used in education, training, talent management, and workforce development. The simplest way to conceptualize the role of CaSS is as a “profile service” that collects, maintains, and publishes a list of the competencies that a learner or employee or job applicant has mastered (Figure 1). CaSS can operate in this mode, but this conceptualization fails to recognize the many real-world complexities and requirements surrounding the collection and determination of competencies. This section briefly discusses these as informative background.
 
-![Image](/centralized-competency-profile.png)
+![Image](~@img/centralized-competency-profile.png)
 
 ### Competency Articulation via Relations
 

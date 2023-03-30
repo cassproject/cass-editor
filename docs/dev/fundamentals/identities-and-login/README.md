@@ -50,15 +50,15 @@ Non-privileged actions are:
 
 In most systems, an actor will have some credentials that tie in with an account that allow them to operate an application or use services. The desired outcome is that a user account on a system is strongly tied to an individual.
 
-![Visual](/identities-and-login-1.png)
+![Visual](~@img/identities-and-login-1.png)
 
 This is also possible with PKI.
 
-![Visual](/identities-and-login-2.png)
+![Visual](~@img/identities-and-login-2.png)
 
 However, individuals often act in different capacities throughout the day, and there is value in separating these identities. As an example, an individual may have been a student in more than one school, may have been employed in multiple locations, and may act in different capacities in an organization. Each one of those should be, for the sake of privacy, security, and compartmentalization, different identities.
 
-![Visual](/identities-and-login-3.png)
+![Visual](~@img/identities-and-login-3.png)
 
 Additionally, there is often little value in disclosing user’s personal information as a user of the system. Similar to OAuth2, all real-world identifying information is, by default, not associated with an identity. This level of anonymity is intended to satisfy privacy law while allowing CASS Repositories to be publically federated.
 

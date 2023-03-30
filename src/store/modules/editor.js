@@ -62,9 +62,11 @@ const state = {
     lastEditToUndo: null,
     recomputeHierarchy: false,
     recomputePrecedence: false,
+    recomputePrecedenceAfterReorder: false,
     selectedCompetenciesAsProperties: null,
     refreshLevels: false,
     refreshAlignments: false,
+    refreshProperties: false,
     conceptMode: false,
     collectionMode: false,
     progressionMode: false,
@@ -184,6 +186,9 @@ const mutations = {
     recomputePrecedence(state, boolean) {
         state.recomputePrecedence = boolean;
     },
+    recomputePrecedenceAfterReorder(state, boolean) {
+        state.recomputePrecedenceAfterReorder = boolean;
+    },
     selectedCompetenciesAsProperties(state, comps) {
         state.selectedCompetenciesAsProperties = comps;
     },
@@ -192,6 +197,9 @@ const mutations = {
     },
     refreshAlignments(state, boolean) {
         state.refreshAlignments = boolean;
+    },
+    refreshProperties(state, boolean) {
+        state.refreshProperties = boolean;
     },
     conceptMode(state, boolean) {
         if (boolean) {
@@ -516,6 +524,9 @@ const getters = {
     recomputePrecedence: function(state) {
         return state.recomputePrecedence;
     },
+    recomputePrecedenceAfterReorder: function(state) {
+        return state.recomputePrecedenceAfterReorder;
+    },
     selectedCompetenciesAsProperties: function(state) {
         return state.selectedCompetenciesAsProperties;
     },
@@ -524,6 +535,9 @@ const getters = {
     },
     refreshAlignments: function(state) {
         return state.refreshAlignments;
+    },
+    refreshProperties: function(state) {
+        return state.refreshProperties;
     },
     conceptMode: function(state) {
         return state.conceptMode;

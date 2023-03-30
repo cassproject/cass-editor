@@ -12,7 +12,8 @@ const state = {
     loginEnabled: true,
     legacyLoginEnabled: true,
     apiLoginEnabled: false,
-    shareEnabled: true
+    shareEnabled: true,
+    ownedByMe: false
 };
 
 const mutations = {
@@ -42,6 +43,9 @@ const mutations = {
     },
     shareEnabled(state, bool) {
         state.shareEnabled = bool;
+    },
+    ownedByMe(state, bool) {
+        state.ownedByMe = bool;
     }
 };
 
@@ -55,6 +59,9 @@ const getters = {
     },
     apiLoginEnabled: function(state) {
         return state.apiLoginEnabled;
+    },
+    ownedByMe: function(state) {
+        return state.ownedByMe;
     }
 };
 

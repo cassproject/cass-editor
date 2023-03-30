@@ -7,17 +7,18 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v2
-
-      - name: Setup Node
-        uses: actions/setup-node@v2.1.2
+      - uses: actions/checkout@v3.5.0
+      
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3.6.0
         with:
+          # Version Spec of the version to use.  Examples: 12.x, 10.15.1, >=10.15.0
           node-version: '16.x'
-
+          
       - name: Cache dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3.3.1
         with:
           path: ~/.npm
           key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
@@ -27,8 +28,8 @@ jobs:
       - run: git pull --recurse-submodules
       - run: git submodule update --init --remote
       - run: export VUE_APP_API_LOGIN_ENABLED=false
+      - run: export DOCS_BASE=/cass-editor/docs/
       - run: npm ci
-      - run: sed -i "s/\/docs\//\/cass-editor\/docs\//g" ./docs/.vuepress/config.js
       - run: npm run docs:build
       - run: npm run build
 

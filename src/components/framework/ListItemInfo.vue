@@ -354,7 +354,7 @@
                     <template>
                         <button
                             :class=" accordion === 'copy' ? 'active' : ''"
-                            @click="clickAccordion('copy'); copyingToDirectory = true;"
+                            @click="clickAccordion('copy');"
                             class="cass__right-side--accordion">
                             Copy {{ objectTypeForDisplay }}
                             <span class="icon is-pulled-right">
@@ -378,7 +378,8 @@
                                     {{ directory.name }}
                                 </span>
                                 <span
-                                    @click="copyOrMove(directory)"
+                                    @click="copyOrMove(directory, 'copy')"
+                                    :class="{'is-loading': processingCopyOrMove}"
                                     class="button is-primary is-outlined is-small is-pulled-right">
                                     copy here
                                 </span>
@@ -389,7 +390,7 @@
                     <template v-if="canEditObject">
                         <button
                             :class=" accordion === 'move' ? 'active' : ''"
-                            @click="clickAccordion('move'); movingToDirectory = true;"
+                            @click="clickAccordion('move');"
                             class="cass__right-side--accordion">
                             Move {{ objectTypeForDisplay }}
                             <span class="icon is-pulled-right">
@@ -413,7 +414,8 @@
                                     {{ directory.name }}
                                 </span>
                                 <span
-                                    @click="copyOrMove(directory)"
+                                    @click="copyOrMove(directory, 'move')"
+                                    :class="{'is-loading': processingCopyOrMove}"
                                     class="button is-primary is-v-centered is-outlined is-small is-pulled-right">
                                     move here
                                 </span>
@@ -426,8 +428,8 @@
                                     Remove from directory
                                 </span>
                                 <span
-                                    v-if="movingToDirectory"
                                     @click="removeFromDirectory"
+                                    :class="{'is-loading': processingRemove}"
                                     class="button is-danger is-outlined is-small is-pulled-right">
                                     remove
                                 </span>
@@ -470,7 +472,8 @@ export default {
             clipStatus: 'ready',
             ineligibleDirectoriesForMove: [],
             errorEditing: null,
-            processingCopyOrMove: false
+            processingCopyOrMove: false,
+            processingRemove: false
         };
     },
     methods: {
@@ -573,7 +576,12 @@ export default {
                 me.$store.commit('app/closeRightAside');
             }, appError);
         },
-        copyOrMove: function(directory) {
+        copyOrMove: function(directory, copyOrMove) {
+            if (copyOrMove === 'copy') {
+                this.copyingToDirectory = true;
+            } else {
+                this.movingToDirectory = true;
+            }
             this.frameworksToProcess = 0;
             this.processingCopyOrMove = true;
             this.$Progress.start();
@@ -608,31 +616,27 @@ export default {
             }
         },
         multiput: async function(toSave, shouldRefresh) {
-            let me = this;
             this.frameworksToProcess--;
-            return new Promise((resolve, reject) => {
-                if (this.frameworksToProcess <= 0) {
-                    this.repo.multiput(toSave, function(success) {
-                        me.processingCopyOrMove = false;
-                        me.$Progress.finish();
-                        me.copyingToDirectory = false;
-                        if (me.movingToDirectory) {
-                            // Remove the moved item from the right panel
-                            me.$store.commit('app/rightAsideObject', null);
-                            me.$store.commit('app/closeRightAside');
-                            me.$Progress.finish();
-                            me.movingToDirectory = false;
-                        }
-                        if (shouldRefresh) {
-                            // If removing or moving, need to refresh search results
-                            me.$store.commit('app/refreshSearch', true);
-                        }
-                        resolve();
-                    }, reject);
-                } else {
-                    resolve();
+
+            if (this.frameworksToProcess <= 0) {
+                try {
+                    await this.repo.multiput(toSave);
+                    if (this.movingToDirectory) {
+                        // Remove the moved item from the right panel
+                        this.$store.commit('app/rightAsideObject', null);
+                        this.$store.commit('app/closeRightAside');
+                    }
+                    if (shouldRefresh) {
+                        // If removing or moving, need to refresh search results
+                        this.$store.commit('app/refreshSearch', true);
+                    }
+                } finally {
+                    this.processingCopyOrMove = false;
+                    this.$Progress.finish();
+                    this.copyingToDirectory = false;
+                    this.movingToDirectory = false;
                 }
-            });
+            }
         },
         getCopyFrameworkName: function(f) {
             let name = f.name;
@@ -1109,42 +1113,47 @@ export default {
             });
         },
         removeFrameworkFromDirectory: async function(framework) {
-            let me = this;
-            let toSave = [];
-            this.$Progress.start();
-            let directory = await EcDirectory.ge(framework.directory);
-            if (directory.owner) {
-                for (let each of directory.owner) {
-                    framework.removeOwner(EcPk.fromPem(each));
+            this.processingRemove = true;
+            try {
+                let me = this;
+                let toSave = [];
+                this.$Progress.start();
+                let directory = await EcDirectory.get(framework.directory);
+                if (directory.owner) {
+                    for (let each of directory.owner) {
+                        framework.removeOwner(EcPk.fromPem(each));
+                    }
+                    framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
-                framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
-            }
-            if (directory.reader) {
-                for (let each of directory.reader) {
-                    framework.removeReader(EcPk.fromPem(each));
+                if (directory.reader) {
+                    for (let each of directory.reader) {
+                        framework.removeReader(EcPk.fromPem(each));
+                    }
                 }
-            }
-            delete framework.directory;
-            framework["schema:dateModified"] = new Date().toISOString();
-            // remove this framework from the list of children
-            if (directory.frameworks) {
-                EcArray.setRemove(directory.frameworks, framework.shortId());
-            }
-            toSave.push(...[framework, directory]);
-            let subobjects = [];
-            if (framework.competency && framework.competency.length > 0) {
-                subobjects = framework.competency;
-            }
-            if (framework.level && framework.level.length > 0) {
-                subobjects = subobjects.concat(framework.level);
-            }
-            if (framework.relation && framework.relation.length > 0) {
-                subobjects = subobjects.concat(framework.relation);
-            }
-            if (subobjects.length > 0) {
-                await me.removeSubobjectsFromDirectory(subobjects, directory, toSave);
-            } else {
-                await me.multiput(toSave, true);
+                delete framework.directory;
+                framework["schema:dateModified"] = new Date().toISOString();
+                // remove this framework from the list of children
+                if (directory.frameworks) {
+                    EcArray.setRemove(directory.frameworks, framework.shortId());
+                }
+                toSave.push(...[framework, directory]);
+                let subobjects = [];
+                if (framework.competency && framework.competency.length > 0) {
+                    subobjects = framework.competency;
+                }
+                if (framework.level && framework.level.length > 0) {
+                    subobjects = subobjects.concat(framework.level);
+                }
+                if (framework.relation && framework.relation.length > 0) {
+                    subobjects = subobjects.concat(framework.relation);
+                }
+                if (subobjects.length > 0) {
+                    await me.removeSubobjectsFromDirectory(subobjects, directory, toSave);
+                } else {
+                    await me.multiput(toSave, true);
+                }
+            } finally {
+                this.processingRemove = false;
             }
         },
         removeSubobjectsFromDirectory: async function(subobjects, directory, toSave) {

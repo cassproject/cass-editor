@@ -1,5 +1,6 @@
 @import './theme.scss';
-@import './../assets/fonts/webfonts/all.css';
+@import './../assets/fonts/fontawesome/css/all.min.css';
+// @import './../assets/fonts/webfonts/all.css';
 @import './../assets/fonts/RobotoCondensed/stylesheet.css';
 @import './../assets/fonts/Assistant/stylesheet.css';
 html {
@@ -172,6 +173,10 @@ label {
 .button.not-lowercase {
     text-transform: none;
 }
+
+// .button.is-text.has-text-light:hover {
+//     color: black;
+// }
 
 .lode__Property-text{
     border-radius: .25rem;

@@ -107,6 +107,9 @@ export default {
                 if (this.queryParams.user === "wait") {
                     this.$store.commit('featuresEnabled/shareEnabled', false);
                 }
+                if (this.queryParams.ownedByMe === "true") {
+                    this.$store.commit('featuresEnabled/ownedByMe', true);
+                }
             }
             var r = new EcRepository();
             r.selectedServer = server;
@@ -149,8 +152,8 @@ export default {
                         this.$store.commit('app/showModal', {component: 'MessageOfTheDay'});
                     }
                 }
-                if (loginInfo.corsCredentials) {
-                    global.axiosOptions.withCredentials = loginInfo.corsCredentials;
+                if (loginInfo.corsOrigins) {
+                    global.corsOrigins = loginInfo.corsOrigins;
                 }
                 if (window.EcIdentityManager.default.ids.length > 0) {
                     try {
@@ -178,6 +181,7 @@ export default {
                         window.EcIdentityManager.default.addIdentity(ident);
                     }
                 }
+                this.$store.dispatch('app/refreshDirectories');
             });
             window.repo = r;
             this.repo = r;

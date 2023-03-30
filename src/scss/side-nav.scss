@@ -1,4 +1,3 @@
-
 .cass-add-item--button {
     position: relative;
     overflow: visible;
@@ -13,9 +12,8 @@
     top: 2rem;
     z-index: 100;
     padding: 16px;
-    margin: .25rem 0rem;
+    margin: 0.25rem 0rem;
     border-radius: 1rem;
-
 }
 .cass--popout-text-button {
     display: block;
@@ -23,35 +21,61 @@
     text-align: left;
     color: black;
     text-transform: capitalize;
-    padding: .25rem;
+    padding: 0.25rem;
 }
 .cass--popout-text-button:hover {
     cursor: pointer;
     color: $primary;
+}
+
+.logo-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    &.is-narrow {
+        justify-content: center;
+    }
 }
 .cass-logo {
     max-width: 100px;
     display: inline;
     margin: auto;
     width: 100%;
-    padding: 0rem .5rem;
+    padding: 0 0.5rem 0 0;
 }
 .cass-logo-square {
     max-width: 100px;
     display: block;
     margin: auto;
     width: 100%;
-    padding: .5rem .5rem;
+    padding: 0.5rem 0.5rem;
 }
 #app-side-nav-bar {
     position: fixed;
     z-index: 39;
     top: 0;
-    left:0;
+    left: 0;
     height: calc(100vh);
     margin-top: 0rem;
+    padding: 0;
     bottom: 0;
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    .menu {
+        margin: 0.5rem;
+    }
+    div:last-child {
+        margin-top: auto;
+    }
+    &.is-narrow {
+        align-items: center;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 }
 .has-banner {
     #app-side-nav-bar {
@@ -60,23 +84,44 @@
         bottom: 15px;
     }
 }
+.menu-list a {
+    padding-left: 0;
+}
+
 .menu.is-narrow {
     margin: auto !important;
-    padding: .25rem !important;
+    padding: 0.25rem !important;
     width: 4rem;
     .menu-label {
+        height: 1px;
+        border-bottom: 1px solid $text;
+        overflow: hidden;
+        margin: 0.5rem auto;
+        width: 50%;
+
         div.open-nav {
             display: block;
             margin: auto;
-            padding: .5rem 0rem;
+            padding: 0.5rem 0rem;
         }
     }
     .menu-list {
         margin: auto !important;
         display: block;
         a {
-            padding: .5em !important;
+            // padding: 0.5em 0;
             text-align: center;
         }
     }
+}
+
+.cass-editor__logged-in-user-icon {
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    width: 2em;
+}
+
+.cass-editor__logged-in-user-info {
+    background-color: rgba(#fff, 0.15);
 }
