@@ -87,6 +87,12 @@ import {cassUtil} from '@/mixins/cassUtil.js';
 
 export default {
     name: 'FilterAndSort',
+    props: {
+        ownedByMe: {
+            type: Boolean,
+            default: false
+        }
+    },
     data() {
         return {
             sortResults: [
@@ -115,7 +121,7 @@ export default {
                 },
                 {
                     id: 'ownedByMe',
-                    checked: false,
+                    checked: this.ownedByMe,
                     label: 'Owned by me',
                     enabled: true
                 },
