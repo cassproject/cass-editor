@@ -73,6 +73,18 @@
                             {{ addProgressionModelOrLevelText }}
                         </span>
                     </div>
+                    <!-- delete item -->
+                    <div
+                        v-if="!addingNode && canEdit && !multipleSelected && canCopyOrCut"
+                        @click="deleteSelected"
+                        class="button is-outlined is-danger">
+                        <span class="icon">
+                            <i class="fa fa-plus-circle" />
+                        </span>
+                        <span>
+                            delete item
+                        </span>
+                    </div>
                     <div
                         v-if="addingNode"
                         @click="addingNode = false;"
@@ -96,18 +108,7 @@
                     </div>
                     <div
                         v-if="view === 'framework' || view === 'concept'"
-                        :disabled="!canCopyOrCut"
-                        title="Copy competency"
-                        :class="canCopyOrCut ? 'is-primary' : 'is-disabled'"
-                        class="button is-outlined"
-                        @click="copyClick">
-                        <span class="icon">
-                            <i class="fa fa-copy" />
-                        </span>
-                    </div>
-                    <div
-                        v-if="view === 'framework' || view === 'concept'"
-                        title="Cut competency"
+                        title="Cut progression level"
                         :disabled="!canCopyOrCut"
                         class="button is-outlined"
                         :class="canCopyOrCut ? 'is-primary' : 'is-disabled'"
@@ -122,9 +123,27 @@
                         class="button is-outlined "
                         @click="pasteClick"
                         :class="canPaste ? 'is-primary' : 'is-disabled'"
-                        title="Paste competency">
+                        title="Paste progression level">
                         <span class="icon">
                             <i class="fa fa-paste" />
+                        </span>
+                    </div>
+                    <div
+                        v-if="view === 'concept'"
+                        @click="computeHierarchy(true)"
+                        class="button is-outlined is-primary "
+                        title="Reorder by Precedence">
+                        <span>
+                            reorder by precedence
+                        </span>
+                    </div>
+                    <div
+                        v-if="view === 'concept'"
+                        @click="setPrecedence"
+                        class="button is-outlined is-primary "
+                        title="Set Precedence">
+                        <span>
+                            set precedence by order
                         </span>
                     </div>
                 </div>
@@ -288,7 +307,7 @@ export default {
             isDraggable: true,
             shiftKey: false,
             arrowKey: null,
-            addProgressionModelOrLevelText: "Add Progression",
+            addProgressionModelOrLevelText: "Add Level",
             loading: false
         };
     },
@@ -327,10 +346,10 @@ export default {
             if (this.container["skos:hasTopConcept"] != null) { precache = precache.concat(this.container["skos:hasTopConcept"]); }
             if (precache.length > 0) {
                 this.repo.multiget(precache, function(success) {
-                    me.computeHierarchy();
+                    me.computeHierarchy(false);
                 }, appError);
             } else {
-                me.computeHierarchy();
+                me.computeHierarchy(false);
             }
             return this.structure;
         },
@@ -344,8 +363,8 @@ export default {
         recomputeHierarchy: function() {
             return this.$store.getters['editor/recomputeHierarchy'];
         },
-        recomputePrecedence: function() {
-            return this.$store.getters['editor/recomputePrecedence'];
+        framework() {
+            return this.$store.getters['editor/framework'];
         }
     },
     watch: {
@@ -362,7 +381,7 @@ export default {
                 this.multipleSelected = false;
             }
             if (this.selectedArray.length === 1) {
-                this.addProgressionModelOrLevelText = "Add Progression Level";
+                this.addProgressionModelOrLevelText = "Add Level";
             } else {
                 this.addProgressionMaddProgressionModelOrLevelTextodelOrChildText = "Add Progression Model";
             }
@@ -477,7 +496,46 @@ export default {
                 this.$emit('done-loading-nodes');
             }, 1000);
         },
-        computeHierarchy: async function() {
+        removePrecedence: async function() {
+            return new Promise(async(resolve) => {
+                let structure = [];
+                if (this.container == null) { return r; }
+                if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
+                    if (this.container["ceterms:precedes"] || this.container["ceterms:precededBy"]) {
+                        if (this.container["ceterms:precedes"]) delete this.container["ceterms:precedes"];
+                        if (this.container["ceterms:precededBy"]) delete this.container["ceterms:precededBy"];
+                        await this.saveObject(this.container);
+                    }
+                    for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
+                        var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
+                        if (c) {
+                            if (c["ceterms:precedes"] || c["ceterms:precededBy"]) {
+                                if (c["ceterms:precedes"]) delete c["ceterms:precedes"];
+                                if (c["ceterms:precededBy"]) delete c["ceterms:precededBy"];
+                                await this.saveObject(c);
+                            }
+                            structure.push({"obj": c, "children": []});
+                            if (c["skos:narrower"]) {
+                                await this.addChildren(structure, c, i, true);
+                            }
+                        }
+                    }
+                }
+
+                this.structure = structure;
+                resolve();
+            });
+        },
+        setPrecedence: async function() {
+            await this.removePrecedence();
+
+            let structure = this.structure;
+            await this.setPrecedes(structure);
+            await this.setPrecededBy(structure);
+
+            this.structure = structure;
+        },
+        computeHierarchy: async function(setOrder) {
             let structure = [];
             if (this.container == null) { return r; }
             if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
@@ -486,25 +544,13 @@ export default {
                     if (c) {
                         structure.push({"obj": c, "children": []});
                         if (c["skos:narrower"]) {
-                            await this.addChildren(structure, c, i);
+                            await this.addChildren(structure, c, i, false);
                         }
                     }
                 }
             }
-            let restructureSuccess = false;
-            let originalStructure = structure.map(i => ({...i}));
-            if (this.recomputePrecedence) {
-                this.$store.commit('editor/recomputePrecedence', false);
-                restructureSuccess = await this.setPrecedes(structure);
-                if (restructureSuccess) {
-                    restructureSuccess = await this.setPrecededBy(structure);
-                }
 
-                if (!restructureSuccess) {
-                    console.log('Error setting precedence. Using original structure');
-                    structure = originalStructure.map(i => ({...i}));
-                }
-            } else {
+            if (setOrder) {
                 await this.reorder(structure, "ceterms:precedes");
                 await this.reorder(structure, "ceterms:precededBy");
             }
@@ -540,14 +586,23 @@ export default {
             }
             return output;
         },
-        addChildren: async function(structure, c, i) {
-            for (var j = 0; j < c["skos:narrower"].length; j++) {
-                var subC = await EcConcept.get(c["skos:narrower"][j]);
-                structure[i].children.push({"obj": subC, "children": []});
-                if (subC && subC["skos:narrower"]) {
-                    await this.addChildren(structure[i].children, subC, j);
+        addChildren: async function(structure, c, i, deletePrecedence) {
+            return new Promise(async(resolve) => {
+                for (var j = 0; j < c["skos:narrower"].length; j++) {
+                    var subC = await EcConcept.get(c["skos:narrower"][j]);
+                    if (deletePrecedence &&
+                        (subC["ceterms:precedes"] || subC["ceterms:precededBy"])) {
+                        if (subC["ceterms:precedes"]) delete subC["ceterms:precedes"];
+                        if (subC["ceterms:precededBy"]) delete subC["ceterms:precededBy"];
+                        await this.saveObject(subC);
+                    }
+                    structure[i].children.push({"obj": subC, "children": []});
+                    if (subC && subC["skos:narrower"]) {
+                        await this.addChildren(structure[i].children, subC, j, deletePrecedence);
+                    }
                 }
-            }
+                resolve();
+            });
         },
         reorder: async function(unorderedStructure, property) {
             return new Promise(async(resolve) => {
@@ -1029,12 +1084,8 @@ export default {
                     if (subContainer[j]) {
                         if (subContainer[j].children && subContainer[j].children.length > 0) {
                             if (subContainer[j].obj["ceterms:precededBy"]) {
-                                console.log('remove precededBy');
                                 delete subContainer[j].obj["ceterms:precededBy"];
                                 await this.saveObject(subContainer[j].obj);
-                            }
-                            if (subContainer[j].obj["ceterms:precededBy"]) {
-                                console.log('why still precededBy???');
                             }
                             await this.setChildrenPrecededBy(container, subContainer[j].children);
                         } else {
@@ -1127,9 +1178,12 @@ export default {
                 }
             });
         },
-        saveObject(obj) {
-            this.repo.saveTo(obj, function() {
-            }, appError);
+        saveObject: async function(obj) {
+            return new Promise(async(resolve) => {
+                this.repo.saveTo(obj, function() {
+                    resolve();
+                }, appError);
+            });
         },
         move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, toLast) {
             this.once = true;
@@ -1163,8 +1217,7 @@ export default {
                     container = await EcEncryptedValue.toEncryptedValue(container);
                 }
                 this.repo.saveTo(container, function() {
-                    me.$store.commit('editor/recomputePrecedence', true);
-                    me.computeHierarchy();
+                    me.computeHierarchy(false);
                 }, appError);
             } else {
                 var moveComp = await EcConcept.get(fromId);
@@ -1241,8 +1294,7 @@ export default {
                     }
                     me.repo.saveTo(toContainer, function() {
                         me.repo.saveTo(moveComp, appLog, appError);
-                        me.$store.commit('editor/recomputePrecedence', true);
-                        me.computeHierarchy();
+                        me.computeHierarchy(false);
                     }, appLog);
                 }, appError);
             }
@@ -1305,7 +1357,6 @@ export default {
 
                 try {
                     await this.repo.multiput([c, me.container]);
-                    this.$store.commit('editor/recomputePrecedence', true);
                     me.once = true;
                 } catch (e) {
                     appError(e);
@@ -1342,7 +1393,6 @@ export default {
                 }
                 try {
                     await this.repo.multiput([c, parent, me.container]);
-                    this.$store.commit('editor/recomputePrecedence', true);
                     me.once = true;
                 } catch (e) {
                     appError(e);
@@ -1385,6 +1435,72 @@ export default {
             this.loading = false;
 
             this.addingNode = false;
+        },
+        deleteSelected: async function() {
+            let item = await EcRepository.get(this.selectedArray[0]);
+            this.deleteLevel(item);
+            this.selectedArray.splice(0, this.selectedArray.length);
+        },
+        deleteLevel: function(thing) {
+            appLog("deleting " + thing.id);
+            this.deleteLevelInner(thing);
+            this.framework["schema:dateModified"] = new Date().toISOString();
+            this.$store.commit('editor/selectedCompetency', null);
+        },
+        deleteLevelInner: async function(c) {
+            var me = this;
+            let editsToUndo = [];
+            if (c["skos:broader"] != null) {
+                for (var i = 0; i < c["skos:broader"].length; i++) {
+                    try {
+                        let level = await EcConcept.get(c["skos:broader"][i]);
+                        var initialValue = level["skos:narrower"].slice();
+                        EcArray.setRemove(level["skos:narrower"], c.shortId());
+                        level["schema:dateModified"] = new Date().toISOString();
+                        editsToUndo.push({operation: "update", id: level.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]});
+                        if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
+                            level = await EcEncryptedValue.toEncryptedValue(level);
+                        }
+                        await repo.saveTo(level);
+                        me.$store.commit('editor/framework', me.framework);
+                    } catch (e) {
+                        appError(e);
+                    }
+                }
+            }
+            if (c["skos:narrower"] != null) {
+                for (var i = 0; i < c["skos:narrower"].length; i++) {
+                    try {
+                        let level = await EcConcept.get(c["skos:narrower"][i]);
+                        me.deleteLevelInner(level);
+                    } catch (e) {
+                        appError(e);
+                    }
+                }
+            }
+            if (c["skos:topConceptOf"] != null) {
+                try {
+                    var initialValue = this.framework["skos:hasTopConcept"].slice();
+                    EcArray.setRemove(this.framework["skos:hasTopConcept"], c.shortId());
+                    editsToUndo.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]});
+                    var framework = this.framework;
+                    framework["schema:dateModified"] = new Date().toISOString();
+                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                        framework = await EcEncryptedValue.toEncryptedValue(framework);
+                    }
+                    await repo.saveTo(framework);
+                    me.$store.commit('editor/framework', me.framework);
+                } catch (e) {
+                    appError(e);
+                }
+            }
+            this.spitEvent("levelDeleted", c.shortId(), "editFrameworkPage");
+            editsToUndo.push({operation: "delete", obj: c});
+            repo.deleteRegistered(c, function() {
+                me.$store.commit('editor/framework', me.framework);
+                me.$store.commit('editor/addEditsToUndo', JSON.parse(JSON.stringify(editsToUndo)));
+                editsToUndo.splice(0, editsToUndo.length);
+            }, appError);
         }
     }
 };
