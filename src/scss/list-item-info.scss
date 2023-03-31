@@ -48,7 +48,6 @@
     margin-top: 1rem;
 }
 .cass--list-item-info--search-result--li {
-    cursor: pointer;
     display: flex;
     align-items: center;
     width: 100%;
@@ -100,7 +99,7 @@
 
 .cass__right-side--accordion {
     background-color: #eee;
-    color: #444;
+    color: var(--primary-);
     cursor: pointer;
     font-weight: 700;
     font-size: 1rem;
@@ -111,11 +110,13 @@
     border: none;
     outline: none;
     transition: 0.4s;
+    border-bottom: 1px solid white;
 }
 .cass__right-side--accordion.active,
-.cass__right-side--accordion:hover {
+.cass__right-side--accordion:hover,
+.cass__right-side--accordion:has(+ .active) {
     background-color: var(--dark-grey-color);
-    color: white;
+    color: #444;
 }
 
 .cass__right-side--accordion-panel {
@@ -129,7 +130,8 @@
     height: 0px;
     transition: height .2s ease-in;
     visibility: hidden;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: auto;
 }
 
 .cass__right-side--accordion-panel.details.active {
