@@ -113,9 +113,10 @@
     transition: 0.4s;
 }
 .cass__right-side--accordion.active,
-.cass__right-side--accordion:hover {
+.cass__right-side--accordion:hover,
+.cass__right-side--accordion:has(+ .active) {
     background-color: var(--dark-grey-color);
-    color: white;
+    color: gray;
 }
 
 .cass__right-side--accordion-panel {
@@ -129,7 +130,8 @@
     height: 0px;
     transition: height .2s ease-in;
     visibility: hidden;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: auto;
 }
 
 .cass__right-side--accordion-panel.details.active {
