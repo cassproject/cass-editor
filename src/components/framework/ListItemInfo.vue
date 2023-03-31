@@ -369,6 +369,8 @@
                         <div
                             :class=" accordion === 'copy' ? 'active' : ''"
                             class="cass__right-side--accordion-panel">
+                            <p v-if="copyDirectoryOptions.length < 1"
+                                class="mx-2"><em>Please create a new directory to copy this {{ objectTypeForDisplay }} into.</em></p>
                             <li
                                 class="cass--list-item-info--search-result--li"
                                 v-for="directory in copyDirectoryOptions"
