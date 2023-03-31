@@ -4,6 +4,9 @@
 
 [Full Changelog](https://github.com/cassproject/cass-editor/compare/1.2.9...HEAD)
 
+**Implemented enhancements:**
+- Improved copy framework process and usability.
+
 **Fixed bugs:**
 
 - Framework that forks and merges loses children [\#576](https://github.com/cassproject/cass-editor/issues/576)
