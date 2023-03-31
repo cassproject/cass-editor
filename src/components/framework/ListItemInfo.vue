@@ -382,6 +382,7 @@
                                 <span
                                     @click="copyOrMove(directory, 'copy')"
                                     :class="{'is-loading': processingCopyOrMove}"
+                                    :disabled="processingCopyOrMove"
                                     class="button is-primary is-outlined is-small is-pulled-right">
                                     copy here
                                 </span>
