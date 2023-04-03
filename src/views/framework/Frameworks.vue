@@ -17,6 +17,7 @@
                 <div class="column">
                     <SearchBar
                         filterSet="all"
+                        :ownedByMe="ownedByMe"
                         :setFocus="setFocus"
                         :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
                 </div>
@@ -407,6 +408,13 @@ export default {
         type: function() {
             return this.conceptMode ? "ConceptScheme" : (this.progressionMode ? "ConceptScheme" : "Framework");
         },
+        currentUser: function() {
+            if (EcIdentityManager.default.ids.length > 0) {
+                return EcIdentityManager.default.ids;
+            } else {
+                return undefined;
+            }
+        },
         searchOptions: function() {
             let search = "";
             if (this.isCeasn && this.type === "Framework") {
@@ -425,18 +433,17 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && !this.conceptMode && !this.progressionMode && this.queryParams.show === "mine") ||
-                (this.queryParams && (this.conceptMode || this.progressionMode) && this.queryParams.conceptShow === "mine")) {
-                if (EcIdentityManager.default.ids.length > 0) {
+            if (((this.showMine) && (!this.conceptMode && !this.progressionMode)) ||
+                ((this.conceptMode || this.progressionMode) && this.queryParams && this.queryParams.conceptShow === "mine")) {
+                if (this.currentUser) {
                     search += " AND (";
-                    for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
+                    this.currentUser.forEach((user, i) => {
                         if (i !== 0) {
                             search += " OR ";
                         }
-                        var id = EcIdentityManager.default.ids[i];
-                        search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
-                        search += " OR \\*owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
-                    }
+                        search += "\\*owner:\"" + user.ppk.toPk().toPem() + "\"";
+                        search += " OR \\*owner:\"" + this.addNewlinesToId(user.ppk.toPk().toPem()) + "\"";
+                    });
                     search += ")";
                 }
             }
@@ -490,6 +497,9 @@ export default {
         },
         collectionMode: function() {
             return this.$store.getters['editor/collectionMode'];
+        },
+        ownedByMe: function() {
+            return this.$store.getters['featuresEnabled/ownedByMe'];
         }
     },
     components: {
@@ -633,6 +643,11 @@ export default {
             if (this.filteredQuickFilters[i].id === "configMatchDefault") {
                 this.filterByConfig = true;
             }
+        }
+        // Override ownedByMe if set in query param
+        if (this.ownedByMe) {
+            this.showMine = true;
+            this.showNotMine = false;
         }
         let documentBody = document.getElementById('frameworks');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));

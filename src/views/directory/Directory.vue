@@ -144,6 +144,7 @@
                     <div class="column">
                         <SearchBar
                             filterSet="all"
+                            :ownedByMe="ownedByMe"
                             searchType="framework" />
                     </div>
                     <div class="column is-1" />
@@ -377,6 +378,9 @@ export default {
                 search += "\")";
             }
             return search;
+        },
+        ownedByMe: function() {
+            return this.$store.getters["featuresEnabled.ownedByMe"];
         },
         paramObj: function() {
             let obj = {};
