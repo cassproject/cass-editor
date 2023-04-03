@@ -128,7 +128,7 @@ export default {
     props: {
         ownedByMe: {
             type: Boolean,
-            default: false
+            default: true
         },
         view: {
             type: String,
@@ -155,7 +155,7 @@ export default {
         return {
             searchTerm: '',
             basicSort: '',
-            basicFilter: ''
+            basicFilter: this.ownedByMe
         };
     },
     watch: {
@@ -170,26 +170,11 @@ export default {
             this.$store.commit("app/sortResults", {id: val});
         },
         basicFilter: function(val) {
-            appLog(val);
-            var filter;
-            if (val === true) {
-                filter = {
-                    id: 'ownedByMe',
-                    checked: true
-                };
-            } else {
-                filter = {
-                    id: 'ownedByMe',
-                    checked: false
-                };
-            }
-            this.$store.commit("app/quickFilters", [filter]);
+            this.setFilters(val);
         }
     },
     mounted: function() {
-        if (this.ownedByMe) {
-            this.basicFilter = true;
-        }
+        this.setFilters(this.ownedByMe);
         let searchTerm = this.$store.getters['app/searchTerm'];
         if (searchTerm && searchTerm.length > 0) {
             this.searchTerm = searchTerm;
@@ -212,6 +197,21 @@ export default {
             let objIndex = filterArray.findIndex(obj => obj.id === val.id);
             filterArray[objIndex].checked = false;
             this.$store.commit(storeCaller, filterArray);
+        },
+        setFilters(val) {
+            var filter;
+            if (val === true) {
+                filter = {
+                    id: 'ownedByMe',
+                    checked: true
+                };
+            } else {
+                filter = {
+                    id: 'ownedByMe',
+                    checked: false
+                };
+            }
+            this.$store.commit("app/quickFilters", [filter]);
         },
         updateSearchTerm: function(e) {
             this.$store.commit('app/searchTerm', e);

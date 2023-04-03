@@ -12,6 +12,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
             v-if="!selectedFramework">
             <SearchBar
                 filterSet="basic"
+                :ownedByMe="ownedByMe"
                 :allowShowFrameworks="allowShowFrameworks"
                 :searchType="searchType" />
         </div>
@@ -197,6 +198,9 @@ export default {
                 }
             }
             return search;
+        },
+        ownedByMe: function() {
+            return this.$store.getters["featuresEnabled.ownedByMe"];
         },
         paramObj: function() {
             let obj = {};
