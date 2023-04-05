@@ -170,11 +170,11 @@ export default {
             this.$store.commit("app/sortResults", {id: val});
         },
         basicFilter: function(val) {
-            this.setFilters(val);
+            this.setOwnedByMe(val);
         }
     },
     mounted: function() {
-        this.setFilters(this.ownedByMe);
+        this.setOwnedByMe(this.ownedByMe);
         let searchTerm = this.$store.getters['app/searchTerm'];
         if (searchTerm && searchTerm.length > 0) {
             this.searchTerm = searchTerm;
@@ -198,20 +198,12 @@ export default {
             filterArray[objIndex].checked = false;
             this.$store.commit(storeCaller, filterArray);
         },
-        setFilters(val) {
-            var filter;
-            if (val === true) {
-                filter = {
-                    id: 'ownedByMe',
-                    checked: true
-                };
-            } else {
-                filter = {
-                    id: 'ownedByMe',
-                    checked: false
-                };
-            }
-            this.$store.commit("app/quickFilters", [filter]);
+        setOwnedByMe(val) {
+            const filter = {
+                id: 'ownedByMe',
+                checked: val
+            };
+            this.$store.commit("app/singleQuickFilter", filter);
         },
         updateSearchTerm: function(e) {
             this.$store.commit('app/searchTerm', e);
@@ -229,14 +221,6 @@ export default {
         },
         filteredSearchTo: function() {
             let filterValues = this.applySearchTo.filter(item => item.checked === true);
-            appLog('filtered value', filterValues);
-            return filterValues;
-        },
-        quickFilters: function() {
-            return this.$store.getters['app/quickFilters'];
-        },
-        filteredQuickFilters: function() {
-            let filterValues = this.quickFilters.filter(item => item.checked === true);
             appLog('filtered value', filterValues);
             return filterValues;
         },

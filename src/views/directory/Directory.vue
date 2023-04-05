@@ -144,7 +144,7 @@
                     <div class="column">
                         <SearchBar
                             filterSet="all"
-                            :ownedByMe="ownedByMe"
+                            :ownedByMe="initialOwnedByMe"
                             searchType="framework" />
                     </div>
                     <div class="column is-1" />
@@ -238,7 +238,7 @@
                 <div class="container is-fluid show-only-mine">
                     <!-- show my frameworks radio -->
                     <div class="control">
-                        <div v-if="queryParams.show !== 'mine' && numIdentities">
+                        <div v-if="initialOwnedByMe && numIdentities">
                             <label
                                 class="checkbox"
                                 for="showMine">
@@ -293,8 +293,6 @@ export default {
             createDropDownActive: false,
             repo: window.repo,
             showMine: false,
-            showNotMine: false,
-            filterByConfig: false,
             numIdentities: EcIdentityManager.default.ids.length,
             parentObjectClass: 'frameworks-sticky',
             sortBy: null,
@@ -341,26 +339,41 @@ export default {
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
         },
+        currentUser: function() {
+            if (EcIdentityManager.default.ids.length > 0) {
+                return EcIdentityManager.default.ids;
+            } else {
+                return undefined;
+            }
+        },
+        filterByOwnedByMe: function() {
+            return this.$store.getters['app/filterByOwnedByMe'];
+        },
+        filterByNotOwnedByMe: function() {
+            return this.$store.getters['app/filterByNotOwnedByMe'];
+        },
+        filterByConfigMatchDefault: function() {
+            return this.$store.getters['app/filterByConfigMatchDefault'];
+        },
         searchOptions: function() {
             let search = "";
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && this.queryParams.show === "mine")) {
-                if (EcIdentityManager.default.ids.length > 0) {
+            if (this.filterByOwnedByMe) {
+                if (this.currentUser) {
                     search += " AND (";
-                    for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
+                    this.currentUser.forEach((user, i) => {
                         if (i !== 0) {
                             search += " OR ";
                         }
-                        var id = EcIdentityManager.default.ids[i];
-                        search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
-                        search += " OR \\*owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
-                    }
+                        search += "\\*owner:\"" + user.ppk.toPk().toPem() + "\"";
+                        search += " OR \\*owner:\"" + this.addNewlinesToId(user.ppk.toPk().toPem()) + "\"";
+                    });
                     search += ")";
                 }
             }
-            if (this.showNotMine && EcIdentityManager.default.ids.length > 0) {
+            if (this.filterByNotOwnedByMe && EcIdentityManager.default.ids.length > 0) {
                 search += " AND NOT (";
                 for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
                     if (i !== 0) {
@@ -379,8 +392,8 @@ export default {
             }
             return search;
         },
-        ownedByMe: function() {
-            return this.$store.getters["featuresEnabled.ownedByMe"];
+        initialOwnedByMe: function() {
+            return this.$store.getters["featuresEnabled/ownedByMe"];
         },
         paramObj: function() {
             let obj = {};
@@ -388,7 +401,7 @@ export default {
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             let type = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "text" : "date";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
-            if (EcIdentityManager.default.ids.length > 0 && this.queryParams && this.queryParams.show === 'mine') {
+            if (this.showMine) {
                 obj.ownership = 'me';
             }
             return obj;
@@ -405,6 +418,7 @@ export default {
         filteredQuickFilters: function() {
             let filterValues = this.quickFilters.filter(item => item.checked === true);
             appLog('filtered value', filterValues);
+            console.log(filterValues);
             return filterValues;
         },
         shareLink: function() {
@@ -435,6 +449,13 @@ export default {
         }
     },
     methods: {
+        setOwnedByMe(val) {
+            const filter = {
+                id: 'ownedByMe',
+                checked: val
+            };
+            this.$store.commit("app/singleQuickFilter", filter);
+        },
         closeCreateDropDown: function() {
             if (this.createDropDownActive) {
                 this.createDropDownActive = false;
@@ -651,6 +672,7 @@ export default {
         this.$store.commit('app/selectDirectory', null);
     },
     mounted: function() {
+        this.showMine = this.filterByOwnedByMe;
         if (!this.directory || this.directory === '') {
             this.$router.push({name: "frameworks"});
         }
@@ -665,25 +687,14 @@ export default {
         } else {
             this.sortBy = "name.keyword";
         }
-        this.showMine = false;
-        this.showNotMine = false;
-        this.filterByConfig = false;
-        for (var i = 0; i < this.filteredQuickFilters.length; i++) {
-            if (this.filteredQuickFilters[i].id === "ownedByMe") {
-                this.showMine = true;
-            }
-            if (this.filteredQuickFilters[i].id === "notOwnedByMe") {
-                this.showNotMine = true;
-            }
-            if (this.filteredQuickFilters[i].id === "configMatchDefault") {
-                this.filterByConfig = true;
-            }
-        }
         let documentBody = document.getElementById('directory');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
         this.findDirectoryTrail(this.directory);
     },
     watch: {
+        showMine: function() {
+            this.setOwnedByMe(this.showMine);
+        },
         sortResults: function() {
             if (this.sortResults.id === "lastEdited") {
                 this.sortBy = "schema:dateModified";
@@ -691,22 +702,6 @@ export default {
                 this.sortBy = "schema:dateCreated";
             } else {
                 this.sortBy = "name.keyword";
-            }
-        },
-        filteredQuickFilters: function() {
-            this.showMine = false;
-            this.showNotMine = false;
-            this.filterByConfig = false;
-            for (var i = 0; i < this.filteredQuickFilters.length; i++) {
-                if (this.filteredQuickFilters[i].id === "ownedByMe") {
-                    this.showMine = true;
-                }
-                if (this.filteredQuickFilters[i].id === "notOwnedByMe") {
-                    this.showNotMine = true;
-                }
-                if (this.filteredQuickFilters[i].id === "configMatchDefault") {
-                    this.filterByConfig = true;
-                }
             }
         },
         resource: function() {

@@ -12,7 +12,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
             v-if="!selectedFramework">
             <SearchBar
                 filterSet="basic"
-                :ownedByMe="ownedByMe"
+                :ownedByMe="initialOwnedByMe"
                 :allowShowFrameworks="allowShowFrameworks"
                 :searchType="searchType" />
         </div>
@@ -116,7 +116,6 @@ export default {
             repo: window.repo,
             selectedIds: [],
             displayFirst: [],
-            showMine: false,
             sortBy: null,
             selectedFramework: null,
             hierarchyLoaded: false
@@ -182,25 +181,31 @@ export default {
                     search += " AND (ceasn\\:inProgressionModel:\"" + this.selectedCompetency["ceasn:inProgressionModel"] + "\")";
                 }
             }
-            if (this.showMine || (this.queryParams && this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true && this.queryParams.show === "mine") ||
+            if ((this.showMine && this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true) ||
                 (this.queryParams && (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) && this.queryParams.conceptShow === "mine")) {
-                if (EcIdentityManager.default.ids.length > 0) {
+                if (this.currentUser) {
                     search += " AND (";
-                    for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
+                    this.currentUser.forEach((user, i) => {
                         if (i !== 0) {
                             search += " OR ";
                         }
-                        var id = EcIdentityManager.default.ids[i];
-                        search += "\\*owner:\"" + id.ppk.toPk().toPem() + "\"";
-                        search += " OR \\*owner:\"" + this.addNewlinesToId(id.ppk.toPk().toPem()) + "\"";
-                    }
+                        search += "\\*owner:\"" + user.ppk.toPk().toPem() + "\"";
+                        search += " OR \\*owner:\"" + this.addNewlinesToId(user.ppk.toPk().toPem()) + "\"";
+                    });
                     search += ")";
                 }
             }
             return search;
         },
-        ownedByMe: function() {
-            return this.$store.getters["featuresEnabled.ownedByMe"];
+        currentUser: function() {
+            if (EcIdentityManager.default.ids.length > 0) {
+                return EcIdentityManager.default.ids;
+            } else {
+                return undefined;
+            }
+        },
+        initialOwnedByMe: function() {
+            return this.$store.getters["featuresEnabled/ownedByMe"];
         },
         paramObj: function() {
             let obj = {};
@@ -213,8 +218,8 @@ export default {
             } else {
                 delete obj.sort;
             }
-            if (EcIdentityManager.default.ids.length > 0 && this.queryParams && ((this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true && this.queryParams.show === 'mine') ||
-                ((this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) && this.queryParams.conceptShow === "mine"))) {
+            if ((this.showMine && (this.$store.getters['editor/conceptMode'] !== true) && (this.$store.getters['editor/progressionMode'] !== true)) ||
+                ((this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) && this.queryParams.conceptShow === "mine")) {
                 obj.ownership = 'me';
             }
             return obj;
@@ -225,17 +230,8 @@ export default {
         sortResults: function() {
             return this.$store.getters['app/sortResults'];
         },
-        quickFilters: function() {
-            return this.$store.getters['app/quickFilters'];
-        },
-        filteredQuickFilters: function() {
-            if (this.quickFilters) {
-                let filterValues = this.quickFilters.filter(item => item.checked === true);
-                appLog('filtered value', filterValues);
-                return filterValues;
-            } else {
-                return [];
-            }
+        showMine: function() {
+            return this.$store.getters['app/filterByOwnedByMe'];
         },
         searchFrameworksInCompetencySearch: function() {
             return this.$store.getters['app/searchFrameworksInCompetencySearch'];
@@ -339,13 +335,9 @@ export default {
                 this.displayFirst.splice(0, this.displayFirst.length);
             }
         },
-        filteredQuickFilters: function() {
-            this.showMine = false;
-            for (var i = 0; i < this.filteredQuickFilters.length; i++) {
-                if (this.filteredQuickFilters[i].id === "ownedByMe") {
-                    this.showMine = true;
-                    this.displayFirst.splice(0, this.displayFirst.length);
-                }
+        showMine: function() {
+            if (this.showMine) {
+                this.displayFirst.splice(0, this.displayFirst.length);
             }
         },
         selectedIds(newVal) {

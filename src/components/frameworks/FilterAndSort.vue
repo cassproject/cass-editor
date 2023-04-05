@@ -35,7 +35,6 @@
                 </h3>
                 <div
                     v-for="option in quickFilters"
-                    v-show="!hideOwnershipFilters || !option.id.includes('ByMe')"
                     :key="option"
                     class="field">
                     <template v-if="option.enabled">
@@ -87,12 +86,6 @@ import {cassUtil} from '@/mixins/cassUtil.js';
 
 export default {
     name: 'FilterAndSort',
-    props: {
-        ownedByMe: {
-            type: Boolean,
-            default: false
-        }
-    },
     data() {
         return {
             sortResults: [
@@ -121,7 +114,7 @@ export default {
                 },
                 {
                     id: 'ownedByMe',
-                    checked: this.ownedByMe,
+                    checked: false,
                     label: 'Owned by me',
                     enabled: true
                 },
@@ -158,7 +151,7 @@ export default {
         searchByOwnerNameEnabled: function() {
             return this.$store.state.featuresEnabled.searchByOwnerNameEnabled;
         },
-        searchOwnedByMe: function() {
+        initialOwnedByMe: function() {
             return this.$store.state.featuresEnabled.ownedByMe;
         },
         configurationsEnabled: function() {
@@ -166,9 +159,6 @@ export default {
         },
         queryParams: function() {
             return this.$store.getters['editor/queryParams'];
-        },
-        hideOwnershipFilters: function() {
-            return this.queryParams.show === 'mine';
         },
         applySearchTo: function() {
             return this.frameworkPropertiesApplySearchTo.concat(this.competencyPropertiesApplySearchTo).concat(this.otherPropertiesApplySearchTo);
@@ -194,6 +184,13 @@ export default {
             for (var i = 0; i < this.quickFilters.length; i++) {
                 if (this.quickFilters[i].id !== "configMatchDefault") {
                     this.quickFilters[i].enabled = false;
+                }
+            }
+        }
+        if (this.loggedIn && this.initialOwnedByMe) {
+            for (var i = 0; i < this.quickFilters.length; i++) {
+                if (this.quickFilters[i].id === "ownedByMe") {
+                    this.quickFilters[i].checked = true;
                 }
             }
         }

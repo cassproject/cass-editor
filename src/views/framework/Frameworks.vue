@@ -17,7 +17,7 @@
                 <div class="column">
                     <SearchBar
                         filterSet="all"
-                        :ownedByMe="ownedByMe"
+                        :ownedByMe="initialOwnedByMe"
                         :setFocus="setFocus"
                         :searchType="type === 'ConceptScheme' ? 'concept scheme' : 'framework'" />
                 </div>
@@ -357,9 +357,6 @@ export default {
         return {
             createDropDownActive: false,
             repo: window.repo,
-            showMine: false,
-            showNotMine: false,
-            filterByConfig: false,
             numIdentities: EcIdentityManager.default.ids.length,
             parentObjectClass: 'frameworks-sticky',
             sortBy: null,
@@ -433,7 +430,7 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (((this.showMine) && (!this.conceptMode && !this.progressionMode)) ||
+            if (((this.filterByOwnedByMe) && (!this.conceptMode && !this.progressionMode)) ||
                 ((this.conceptMode || this.progressionMode) && this.queryParams && this.queryParams.conceptShow === "mine")) {
                 if (this.currentUser) {
                     search += " AND (";
@@ -447,7 +444,7 @@ export default {
                     search += ")";
                 }
             }
-            if (this.showNotMine && EcIdentityManager.default.ids.length > 0) {
+            if (this.filterByNotOwnedByMe && EcIdentityManager.default.ids.length > 0) {
                 search += " AND NOT (";
                 for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {
                     if (i !== 0) {
@@ -459,7 +456,7 @@ export default {
                 }
                 search += ")";
             }
-            if (this.filterByConfig && this.defaultConfig) {
+            if (this.filterByConfigMatchDefault && this.defaultConfig) {
                 search += " AND (configuration:\"";
                 search += this.defaultConfig;
                 search += "\")";
@@ -472,8 +469,8 @@ export default {
             var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
             let type = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "text" : "date";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
-            if (EcIdentityManager.default.ids.length > 0 && this.queryParams && ((!this.conceptMode && !this.progressionMode && this.queryParams.show === 'mine') ||
-                ((this.conceptMode || this.progressionMode) && this.queryParams.conceptShow === "mine"))) {
+            if ((this.filterByOwnedByMe && !this.conceptMode && !this.progressionMode) ||
+                ((this.conceptMode || this.progressionMode) && this.queryParams.conceptShow === "mine")) {
                 obj.ownership = 'me';
             }
             return obj;
@@ -484,10 +481,14 @@ export default {
         quickFilters: function() {
             return this.$store.getters['app/quickFilters'];
         },
-        filteredQuickFilters: function() {
-            let filterValues = this.quickFilters.filter(item => item.checked === true);
-            appLog('filtered value', filterValues);
-            return filterValues;
+        filterByOwnedByMe: function() {
+            return this.$store.getters['app/filterByOwnedByMe'];
+        },
+        filterByNotOwnedByMe: function() {
+            return this.$store.getters['app/filterByNotOwnedByMe'];
+        },
+        filterByConfigMatchDefault: function() {
+            return this.$store.getters['app/filterByConfigMatchDefault'];
         },
         conceptMode: function() {
             return this.$store.getters['editor/conceptMode'];
@@ -498,7 +499,7 @@ export default {
         collectionMode: function() {
             return this.$store.getters['editor/collectionMode'];
         },
-        ownedByMe: function() {
+        initialOwnedByMe: function() {
             return this.$store.getters['featuresEnabled/ownedByMe'];
         }
     },
@@ -630,25 +631,6 @@ export default {
         } else {
             this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
         }
-        this.showMine = false;
-        this.showNotMine = false;
-        this.filterByConfig = false;
-        for (var i = 0; i < this.filteredQuickFilters.length; i++) {
-            if (this.filteredQuickFilters[i].id === "ownedByMe") {
-                this.showMine = true;
-            }
-            if (this.filteredQuickFilters[i].id === "notOwnedByMe") {
-                this.showNotMine = true;
-            }
-            if (this.filteredQuickFilters[i].id === "configMatchDefault") {
-                this.filterByConfig = true;
-            }
-        }
-        // Override ownedByMe if set in query param
-        if (this.ownedByMe) {
-            this.showMine = true;
-            this.showNotMine = false;
-        }
         let documentBody = document.getElementById('frameworks');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
     },
@@ -660,22 +642,6 @@ export default {
                 this.sortBy = "schema:dateCreated";
             } else {
                 this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
-            }
-        },
-        filteredQuickFilters: function() {
-            this.showMine = false;
-            this.showNotMine = false;
-            this.filterByConfig = false;
-            for (var i = 0; i < this.filteredQuickFilters.length; i++) {
-                if (this.filteredQuickFilters[i].id === "ownedByMe") {
-                    this.showMine = true;
-                }
-                if (this.filteredQuickFilters[i].id === "notOwnedByMe") {
-                    this.showNotMine = true;
-                }
-                if (this.filteredQuickFilters[i].id === "configMatchDefault") {
-                    this.filterByConfig = true;
-                }
             }
         },
         conceptMode: function() {

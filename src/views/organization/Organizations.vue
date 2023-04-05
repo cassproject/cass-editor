@@ -94,10 +94,13 @@ export default {
             var order = (this.sortBy === "name.keyword") ? "asc" : "desc";
             let type = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "text" : "date";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
-            if (this.queryParams && this.queryParams.show != null && this.queryParams.show === 'mine') {
+            if (this.filterByOwnedByMe) {
                 obj.ownership = 'me';
             }
             return obj;
+        },
+        filterByOwnedByMe: function() {
+            return this.$store.getters['app/filterByOwnedByMe'];
         }
     },
     components: {List},

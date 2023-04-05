@@ -33,8 +33,7 @@
         <slot name="right-aside-content">
             <Component
                 @editResourceDetails="$emit('editResource', $event)"
-                :is="rightAsideContent"
-                v-bind="properties" />
+                :is="rightAsideContent"/>
         </slot>
     </aside>
 </template>
@@ -53,7 +52,6 @@ export default {
             isCommenter: true,
             isAdmin: false,
             isViewer: true
-
         };
     },
     components: {
@@ -68,15 +66,6 @@ export default {
         },
         rightAsideContent: function() {
             return this.$store.getters['app/rightAsideContent'];
-        },
-        properties: function() {
-            if (this.rightAsideContent === 'FilterAndSort') {
-                return {
-                    ownedByMe: this.$store.state.featuresEnabled.ownedByMe
-                };
-            } else {
-                return {};
-            }
         }
     }
 };
