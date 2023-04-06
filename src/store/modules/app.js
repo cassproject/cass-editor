@@ -292,6 +292,14 @@ const mutations = {
     quickFilters: function(state, value) {
         state.frameworks.quickFilters = value;
     },
+    singleQuickFilter: function(state, value) {
+        let i = state.frameworks.quickFilters.findIndex((filter) => filter.id === value.id);
+        if (i >= 0) {
+            state.frameworks.quickFilters[i].checked = value.checked;
+        } else {
+            state.frameworks.quickFilters.push(value);
+        }
+    },
     clearSearchFilters: function(state) {
         let quickFilters = state.frameworks.quickFilters;
         let sortResults = state.frameworks.sortResults;
@@ -503,6 +511,39 @@ const getters = {
     },
     quickFilters: state => {
         return state.frameworks.quickFilters;
+    },
+    filterByOwnedByMe: (state) => {
+        let filter = state.frameworks.quickFilters.find((filter) => filter.id === "ownedByMe");
+        if (!filter) {
+            return false;
+        }
+        if (Array.isArray(filter) && filter.length > 0) {
+            return filter[0].checked;
+        } else {
+            return filter.checked;
+        }
+    },
+    filterByNotOwnedByMe: (state) => {
+        let filter = state.frameworks.quickFilters.find((filter) => filter.id === "notOwnedByMe");
+        if (!filter) {
+            return false;
+        }
+        if (Array.isArray(filter) && filter.length > 0) {
+            return filter[0].checked;
+        } else {
+            return filter.checked;
+        }
+    },
+    filterByConfigMatchDefault: (state) => {
+        let filter = state.frameworks.quickFilters.find((filter) => filter.id === "configMatchDefault");
+        if (!filter) {
+            return false;
+        }
+        if (Array.isArray(filter) && filter.length > 0) {
+            return filter[0].checked;
+        } else {
+            return filter.checked;
+        }
     },
     applySearchTo: state => {
         return state.frameworks.applySearchTo;
