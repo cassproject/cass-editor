@@ -418,7 +418,6 @@ export default {
         filteredQuickFilters: function() {
             let filterValues = this.quickFilters.filter(item => item.checked === true);
             appLog('filtered value', filterValues);
-            console.log(filterValues);
             return filterValues;
         },
         shareLink: function() {
