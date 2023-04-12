@@ -665,6 +665,14 @@ export default {
             }
             var f = new EcFramework();
             f.copyFrom(framework);
+
+            if (f.competency && Array.isArray(f.competency)) {
+                f.competency = [...new Set(f.competency)];
+            }
+            if (f.relation && Array.isArray(f.relation)) {
+                f.relation = [...new Set(f.relation)];
+            }
+
             if (this.queryParams.newObjectEndpoint != null) {
                 f.generateShortId(this.queryParams.newObjectEndpoint);
             } else {
@@ -980,6 +988,14 @@ export default {
                 if (toSaveFromSubdirectory) {
                     toSave = toSaveFromSubdirectory;
                 }
+
+                if (framework.competency && Array.isArray(framework.competency)) {
+                    framework.competency = [...new Set(framework.competency)];
+                }
+                if (framework.relation && Array.isArray(framework.relation)) {
+                    framework.relation = [...new Set(framework.relation)];
+                }
+
                 // If the framework was already in a directory, remove it first
                 if (framework.directory) {
                     await this.removeFrameworkFromDirectory(framework);
