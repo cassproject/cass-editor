@@ -811,7 +811,7 @@ export default {
             if (!serverUrl.endsWith("/")) {
                 serverUrl += "/";
             }
-            this.get(serverUrl, "ims/case/v1p0/CFDocuments", {"Accept": "application/json"}, function(success) {
+            this.get(serverUrl, "ims/case/v1p0/CFDocuments/?limit=1000", {"Accept": "application/json"}, function(success) {
                 me.caseGetDocsSuccess(success);
             }, function(failure) {
                 if (failure) {
