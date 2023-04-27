@@ -119,6 +119,9 @@ export default {
         };
     },
     computed: {
+        defaultFrameworkConfiguration: function() {
+            return this.$store.getters['editor/framework'] ? this.$store.getters['editor/framework'].configuration : null;
+        },
         isCeasn: function() {
             if (this.queryParams["ceasnDataFields"] && this.queryParams["ceasnDataFields"] === 'true') {
                 return true;
@@ -178,6 +181,9 @@ export default {
         conceptSchemeProfile: function() {
             if (this.queryParams.ceasnDataFields === "true") {
                 return this.ctdlAsnConceptSchemeProfile;
+            }
+            if (this.config && this.config.taxonomyConfig) {
+                return this.config.taxonomyConfig;
             }
             return {
                 "http://purl.org/dc/terms/title": {
@@ -350,6 +356,9 @@ export default {
         conceptProfile: function() {
             if (this.queryParams.ceasnDataFields === "true") {
                 return this.ctdlAsnConceptProfile;
+            }
+            if (this.config && this.config.taxonConfig) {
+                return this.config.taxonConfig;
             }
             return {
                 "http://www.w3.org/2004/02/skos/core#prefLabel": {
@@ -694,6 +703,7 @@ export default {
     },
     created: function() {
         if (this.framework !== null) {
+            this.getConfiguration();
             this.refreshPage();
             this.spitEvent('viewChanged');
         }
@@ -712,6 +722,12 @@ export default {
     beforeDestroy() {
     },
     watch: {
+        config: function() {
+            this.$store.commit('editor/configuration', this.config);
+        },
+        defaultFrameworkConfiguration: function() {
+            this.getConfiguration();
+        },
         shortId: function() {
             this.refreshPage();
         },
@@ -725,6 +741,33 @@ export default {
         }
     },
     methods: {
+        getConfiguration: async function() {
+            var me = this;
+            if (this.framework.configuration) {
+                var c = await EcRepository.get(this.framework.configuration);
+                appLog("c is: ", c);
+                if (c) {
+                    appLog("c is: ", c);
+                    this.config = c;
+                    this.configSetOnFramework = true;
+                }
+                appLog("c is: ", c);
+            }
+            if (!this.config && localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
+                // If no framework configuration, use browser default
+                var c = await EcRepository.get(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
+                if (c) {
+                    this.config = c;
+                }
+            }
+            if (!this.config) {
+                this.repo.searchWithParams("@type:Configuration", {'size': 10000}, function(c) {
+                    if (c.isDefault === "true" || c.isDefault === true) {
+                        me.config = c;
+                    }
+                }, function() {}, function() {});
+            }
+        },
         scrollFunction(e) {
             let documentObject = document.getElementsByClassName('parent-object');
             let scrollValue = e.target.scrollTop;

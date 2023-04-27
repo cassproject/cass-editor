@@ -1200,6 +1200,56 @@
                         </a>
                     </div>
                     <a
+                        @click="tab = 'taxonomy'"
+                        :class="{'is-active': tab === 'taxonomy'}"
+                        class="panel-block">
+                        <span class="panel-icon">
+                            <i
+                                class="fas fa-list-alt"
+                                aria-hidden="true" />
+                        </span>
+                        Taxonomy Settings
+                    </a>
+                    <div
+                        class="sub-list"
+                        v-if="tab === 'taxonomy'">
+                        <a
+                            class="panel-block is-active"
+                            @click="$scrollTo('#taxonomy-properties', '400', scrollOptions)">
+                            <span class="panel-icon">
+                                <i
+                                    class="fas fa-circle"
+                                    aria-hidden="true" />
+                            </span>
+                            Properties
+                        </a>
+                    </div>
+                    <a
+                        @click="tab = 'taxon'"
+                        :class="{'is-active': tab === 'taxon'}"
+                        class="panel-block">
+                        <span class="panel-icon">
+                            <i
+                                class="fas fa-list-alt"
+                                aria-hidden="true" />
+                        </span>
+                        Taxon Settings
+                    </a>
+                    <div
+                        class="sub-list"
+                        v-if="tab === 'taxon'">
+                        <a
+                            class="panel-block is-active"
+                            @click="$scrollTo('#taxonomy-properties', '400', scrollOptions)">
+                            <span class="panel-icon">
+                                <i
+                                    class="fas fa-circle"
+                                    aria-hidden="true" />
+                            </span>
+                            Properties
+                        </a>
+                    </div>
+                    <a
                         @click="tab = 'users'"
                         :class="{'is-active': tab === 'users'}"
                         class="panel-block">
@@ -2255,6 +2305,450 @@
                         </table>
                     </div>
                 </div>
+                <div
+                    class="px-4 mb-6"
+                    v-show="tab === 'taxonomy' || tab === 'general'"
+                    id="taxonomy-properties">
+                    <h5 class="title is-size-3">
+                        Taxonomy Configuration
+                    </h5>
+                    <p class="subtitle">
+                        Taxonomy properties are the values that can be added, edited, and deleted
+                        for taxonomy objects. Minimum taxonomy properties are <b>id</b>, <b>title</b>, and <b>description</b>.
+                        Properties added here will be displayed in the taxonomy object at the top of
+                        the taxonomy editor view.
+                    </p>
+                    <div class="table-container box py-4 px-4">
+                        <h5 class="is-size-4 title">
+                            Taxonomy properties
+                            <div
+                                v-if="!readOnly"
+                                class="button is-family-primary is-outlined is-pulled-right  is-primary"
+                                @click="addCustomTaxonomyProperty">
+                                <span class="icon">
+                                    <i class="fa fa-plus" />
+                                </span>
+                                <span>
+                                    add custom taxonomy property
+                                </span>
+                            </div>
+                        </h5>
+                        <p class="subtitle">
+                            Manage taxonomy property settings here.  Change how properties are displayed and labeled in the editor.
+                        </p>
+                        <table class="table is-hoverable is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th><abbr title="unique property ID">property</abbr></th>
+                                    <th><abbr title="label to be displayed in form inputs">display label</abbr></th>
+                                    <th><abbr title="description of this property">description</abbr></th>
+                                    <th><abbr title="category (if any) under which the field is displayed in form inputs">display category</abbr></th>
+                                    <th><abbr title="required">required</abbr></th>
+                                    <th><abbr title="priority in which the field is displayed in form inputs">display priority</abbr></th>
+                                    <th><abbr title="manage" /><i class="fa fa-cog" /></th>
+                                    <th><abbr title="delete" /><i class="fa fa-trash" /></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxonomy"
+                                    property="id"
+                                    :label="config.taxonomyIdLabel"
+                                    :description="config.taxonomyIdDescription"
+                                    :required="true"
+                                    :priority="config.taxonomyIdPriorty"
+                                    :heading="config.taxonomyIdHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="true"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxonomy"
+                                    property="name"
+                                    :label="config.taxonomyNameLabel"
+                                    :description="config.taxonomyNameDescription"
+                                    :required="true"
+                                    priority="primary"
+                                    :heading="config.taxonomyNameHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="true"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="true"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxonomy"
+                                    property="description"
+                                    :label="config.taxonomyDescLabel"
+                                    :description="config.taxonomyDescDescription"
+                                    :required="config.taxonomyDescRequired"
+                                    :priority="config.taxonomyDescPriority"
+                                    :heading="config.taxonomyDescHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxonomy"
+                                    property="creator"
+                                    :label="config.taxonomyCreatorLabel"
+                                    :description="config.taxonomyCreatorDescription"
+                                    :required="config.taxonomyCreatorRequired"
+                                    :priority="config.taxonomyCreatorPriority"
+                                    :heading="config.taxonomyCreatorHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxonomy"
+                                    property="publisher"
+                                    :label="config.taxonomyPublisherLabel"
+                                    :description="config.taxonomyPublisherDescription"
+                                    :required="config.taxonomyPublisherRequired"
+                                    :priority="config.taxonomyPublisherPriority"
+                                    :heading="config.taxonomyPublisherHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxonomy"
+                                    property="publisherName"
+                                    :label="config.taxonomyPubNameLabel"
+                                    :description="config.taxonomyPubNameDescription"
+                                    :required="config.taxonomyPubNameRequired"
+                                    :priority="config.taxonomyPubNamePriority"
+                                    :heading="config.taxonomyPubNameHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxonomy"
+                                    property="language"
+                                    :label="config.taxonomyLangLabel"
+                                    :description="config.taxonomyLangDescription"
+                                    :required="config.taxonomyLangRequired"
+                                    :priority="config.taxonomyLangPriority"
+                                    :heading="config.taxonomyLangHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxonomy"
+                                    property="source"
+                                    :label="config.taxonomySourceLabel"
+                                    :description="config.taxonomySourceDescription"
+                                    :required="config.taxonomySourceRequired"
+                                    :priority="config.taxonomySourcePriority"
+                                    :heading="config.taxonomySourceHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    v-for="(prop,idx) in config.taxonomyCustomProperties"
+                                    :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority + '_' +prop.heading"
+                                    propertyParent="taxonomy"
+                                    :property="prop.propertyName"
+                                    :label="prop.label"
+                                    :description="prop.description"
+                                    :required="prop.required"
+                                    :priority="prop.priority"
+                                    :heading="prop.heading"
+                                    :custom="true"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="shouldEnforceNotRequired(prop.range)"
+                                    :enforcePrimary="false"
+                                    :propertyIndex="idx"
+                                    @change="updateFrameworkCompetencyProperty"
+                                    @manage="manageCustomFrameworkCompetencyProperty"
+                                    @delete="deleteCustomFrameworkCompetencyProperty" />
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div
+                    class="px-4 mb-6"
+                    v-show="tab === 'taxon' || tab === 'general'"
+                    id="taxon-properties">
+                    <h5 class="title is-size-3">
+                        Taxon Configuration
+                    </h5>
+                    <p class="subtitle">
+                        Taxon properties are the values that can be added, edited, and deleted
+                        for taxon objects. Minimum taxon properties are <b>id</b>, <b>preferred label</b>, and <b>definition</b>.
+                        Properties added here will be displayed in the taxonomy object at the top of
+                        the taxonomy editor view.
+                    </p>
+                    <div class="table-container box py-4 px-4">
+                        <h5 class="is-size-4 title">
+                            Taxon properties
+                            <div
+                                v-if="!readOnly"
+                                class="button is-family-primary is-outlined is-pulled-right  is-primary"
+                                @click="addCustomTaxonProperty">
+                                <span class="icon">
+                                    <i class="fa fa-plus" />
+                                </span>
+                                <span>
+                                    add custom taxon property
+                                </span>
+                            </div>
+                        </h5>
+                        <p class="subtitle">
+                            Manage taxon property settings here.  Change how properties are displayed and labeled in the editor.
+                        </p>
+                        <table class="table is-hoverable is-fullwidth">
+                            <thead>
+                                <tr>
+                                    <th><abbr title="unique property ID">property</abbr></th>
+                                    <th><abbr title="label to be displayed in form inputs">display label</abbr></th>
+                                    <th><abbr title="description of this property">description</abbr></th>
+                                    <th><abbr title="category (if any) under which the field is displayed in form inputs">display category</abbr></th>
+                                    <th><abbr title="required">required</abbr></th>
+                                    <th><abbr title="priority in which the field is displayed in form inputs">display priority</abbr></th>
+                                    <th><abbr title="manage" /><i class="fa fa-cog" /></th>
+                                    <th><abbr title="delete" /><i class="fa fa-trash" /></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="id"
+                                    :label="config.taxonIdLabel"
+                                    :description="config.taxonIdDescription"
+                                    :required="true"
+                                    :priority="config.taxonIdPriorty"
+                                    :heading="config.taxonIdHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="true"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="prefLabel"
+                                    :label="config.taxonNameLabel"
+                                    :description="config.taxonNameDescription"
+                                    :required="true"
+                                    priority="primary"
+                                    :heading="config.taxonNameHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="true"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="true"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="definition"
+                                    :label="config.taxonDescLabel"
+                                    :description="config.taxonDescDescription"
+                                    :required="config.taxonDescRequired"
+                                    :priority="config.taxonDescPriority"
+                                    :heading="config.taxonDescHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="notation"
+                                    :label="config.taxonNotationLabel"
+                                    :description="config.taxonNotationDescription"
+                                    :required="config.taxonNotationRequired"
+                                    :priority="config.taxonNotationPriority"
+                                    :heading="config.taxonNotationHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="altLabel"
+                                    :label="config.taxonAltLabelLabel"
+                                    :description="config.taxonAltLabelDescription"
+                                    :required="config.taxonAltLabelRequired"
+                                    :priority="config.taxonAltLabelPriority"
+                                    :heading="config.taxonAltLabelHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="hiddenLabel"
+                                    :label="config.taxonHiddenLabelLabel"
+                                    :description="config.taxonHiddenLabelDescription"
+                                    :required="config.taxonHiddenLabelRequired"
+                                    :priority="config.taxonHiddenLabelPriority"
+                                    :heading="config.taxonHiddenLabelHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="note"
+                                    :label="config.taxonNoteLabel"
+                                    :description="config.taxonNoteDescription"
+                                    :required="config.taxonNoteRequired"
+                                    :priority="config.taxonNotePriority"
+                                    :heading="config.taxonNoteHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="broader"
+                                    :label="config.taxonBroaderLabel"
+                                    :description="config.taxonBroaderDescription"
+                                    :required="config.taxonBroaderRequired"
+                                    :priority="config.taxonBroaderPriority"
+                                    :heading="config.taxonBroaderHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="narrower"
+                                    :label="config.taxonNarrowerLabel"
+                                    :description="config.taxonNarrowerDescription"
+                                    :required="config.taxonNarrowerRequired"
+                                    :priority="config.taxonNarrowerPriority"
+                                    :heading="config.taxonNarrowerHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="broadMatch"
+                                    :label="config.taxonBroadMatchLabel"
+                                    :description="config.taxonBroadMatchDescription"
+                                    :required="config.taxonBroadMatchRequired"
+                                    :priority="config.taxonBroadMatchPriority"
+                                    :heading="config.taxonBroadMatchHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="closeMatch"
+                                    :label="config.taxonCloseMatchLabel"
+                                    :description="config.taxonCloseMatchDescription"
+                                    :required="config.taxonCloseMatchRequired"
+                                    :priority="config.taxonCloseMatchPriority"
+                                    :heading="config.taxonCloseMatchHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="exactMatch"
+                                    :label="config.taxonExactMatchLabel"
+                                    :description="config.taxonExactMatchDescription"
+                                    :required="config.taxonExactMatchRequired"
+                                    :priority="config.taxonExactMatchPriority"
+                                    :heading="config.taxonExactMatchHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="narrowMatch"
+                                    :label="config.taxonNarrowMatchLabel"
+                                    :description="config.taxonNarrowMatchDescription"
+                                    :required="config.taxonNarrowMatchRequired"
+                                    :priority="config.taxonNarrowMatchPriority"
+                                    :heading="config.taxonNarrowMatchHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    propertyParent="taxon"
+                                    property="related"
+                                    :label="config.taxonRelatedLabel"
+                                    :description="config.taxonRelatedDescription"
+                                    :required="config.taxonRelatedRequired"
+                                    :priority="config.taxonRelatedPriority"
+                                    :heading="config.taxonRelatedHeading"
+                                    :custom="false"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="false"
+                                    :enforcePrimary="false"
+                                    @change="updateFrameworkCompetencyProperty" />
+                                <FrameworkCompetencyPropertyListItem
+                                    v-for="(prop,idx) in config.taxonCustomProperties"
+                                    :key="prop.propertyName + '_' + prop.label + '_' + prop.description + '_' + prop.required + '_' + prop.priority + '_' +prop.heading"
+                                    propertyParent="taxon"
+                                    :property="prop.propertyName"
+                                    :label="prop.label"
+                                    :description="prop.description"
+                                    :required="prop.required"
+                                    :priority="prop.priority"
+                                    :heading="prop.heading"
+                                    :custom="true"
+                                    :readOnly="readOnly"
+                                    :enforceRequired="false"
+                                    :enforceNotRequired="shouldEnforceNotRequired(prop.range)"
+                                    :enforcePrimary="false"
+                                    :propertyIndex="idx"
+                                    @change="updateFrameworkCompetencyProperty"
+                                    @manage="manageCustomFrameworkCompetencyProperty"
+                                    @delete="deleteCustomFrameworkCompetencyProperty" />
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <!-- default owners -->
                 <div
                     class="px-4"
@@ -3022,6 +3516,8 @@ export default {
         getCustomProperty(propertyParent, propertyName) {
             let customProperties = [];
             if (propertyParent.equals('framework')) customProperties = this.config.fwkCustomProperties;
+            else if (propertyParent.equals('taxonomy')) customProperties = this.config.taxonomyCustomProperties;
+            else if (propertyParent.equals('taxon')) customProperties = this.config.taxonCustomProperties;
             else if (propertyParent.equals('competency')) customProperties = this.config.compCustomProperties;
             else return null;
             for (let prop of customProperties) {
@@ -3093,6 +3589,8 @@ export default {
                 newProp.permittedConcepts = [];
             }
             if (this.customPropertyParent.equals('framework')) this.config.fwkCustomProperties.push(newProp);
+            else if (this.customPropertyParent.equals('taxonomy')) this.config.taxonomyCustomProperties.push(newProp);
+            else if (this.customPropertyParent.equals('taxon')) this.config.taxonCustomProperties.push(newProp);
             else if (this.customPropertyParent.equals('competency')) this.config.compCustomProperties.push(newProp);
         },
         updateExistingConfigCustomProperty() {
@@ -3215,6 +3713,18 @@ export default {
             this.customPropertyParent = "framework";
             this.showCustomPropertyDetailsModal = true;
         },
+        addCustomTaxonomyProperty: function() {
+            this.initCustomPropertyDataHoldersAsNewProperty();
+            this.customPropertyModalTitle = "New Taxonomy Property";
+            this.customPropertyParent = "taxonomy";
+            this.showCustomPropertyDetailsModal = true;
+        },
+        addCustomTaxonProperty: function() {
+            this.initCustomPropertyDataHoldersAsNewProperty();
+            this.customPropertyModalTitle = "New Taxon Property";
+            this.customPropertyParent = "taxon";
+            this.showCustomPropertyDetailsModal = true;
+        },
         addCustomCompetencyProperty: function() {
             this.initCustomPropertyDataHoldersAsNewProperty();
             this.customPropertyModalTitle = "New Competency Property";
@@ -3302,6 +3812,16 @@ export default {
             this.customPropertyModalTitle = "Manage Framework Property";
             this.showCustomPropertyDetailsModal = true;
         },
+        manageCustomTaxonomyProperty: function(propertyIdx) {
+            this.initCustomPropertyDataHoldersAsExistingProperty('taxonomy', this.config.taxonomyCustomProperties[propertyIdx]);
+            this.customPropertyModalTitle = "Manage Taxonomy Property";
+            this.showCustomPropertyDetailsModal = true;
+        },
+        manageCustomTaxonProperty: function(propertyIdx) {
+            this.initCustomPropertyDataHoldersAsExistingProperty('taxon', this.config.taxonCustomProperties[propertyIdx]);
+            this.customPropertyModalTitle = "Manage Taxon Property";
+            this.showCustomPropertyDetailsModal = true;
+        },
         manageCustomCompetencyProperty: function(propertyIdx) {
             this.initCustomPropertyDataHoldersAsExistingProperty('competency', this.config.compCustomProperties[propertyIdx]);
             this.customPropertyModalTitle = "Manage Competency Property";
@@ -3309,14 +3829,20 @@ export default {
         },
         manageCustomFrameworkCompetencyProperty: function(propertyParent, propertyIdx) {
             if (propertyParent.equals('framework')) this.manageCustomFrameworkProperty(propertyIdx);
+            else if (propertyParent.equals('taxonomy')) this.manageCustomTaxonomyProperty(propertyIdx);
+            else if (propertyParent.equals('taxon')) this.manageCustomTaxonProperty(propertyIdx);
             else if (propertyParent.equals('competency')) this.manageCustomCompetencyProperty(propertyIdx);
         },
         deleteCustomFrameworkCompetencyProperty: function(propertyParent, propertyIdx) {
             let customPropertyList;
             if (propertyParent.equals('framework')) customPropertyList = this.config.fwkCustomProperties;
+            else if (propertyParent.equals('taxonomy')) customPropertyList = this.config.taxonomyCustomProperties;
+            else if (propertyParent.equals('taxon')) customPropertyList = this.config.taxonCustomProperties;
             else if (propertyParent.equals('competency')) customPropertyList = this.config.compCustomProperties;
             customPropertyList = customPropertyList.slice(0, propertyIdx).concat(customPropertyList.slice(propertyIdx + 1, customPropertyList.length));
             if (propertyParent.equals('framework')) this.config.fwkCustomProperties = customPropertyList;
+            else if (propertyParent.equals('taxonomy')) this.config.taxonomyCustomProperties = customPropertyList;
+            else if (propertyParent.equals('taxon')) this.config.taxonCustomProperties = customPropertyList;
             else if (propertyParent.equals('competency')) this.config.compCustomProperties = customPropertyList;
         },
         updateFrameworkIdProperty: function(field, newValue) {
@@ -3366,6 +3892,194 @@ export default {
             else if (propertyName.equals("classification")) this.updateFrameworkClassificationProperty(field, newValue);
             else if (propertyName.equals("markings")) this.updateFrameworkMarkingsProperty(field, newValue);
             else this.updateFrameworkCustomProperty(propertyName, field, newValue);
+        },
+        updateTaxonomyIdProperty: function() {
+            if (field.equals("label")) this.config.taxonomyIdLabel = newValue;
+            else if (field.equals("description")) this.config.taxonomyIdDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonomyIdPriorty = newValue;
+            else if (field.equals("heading")) this.config.taxonomyIdHeading = newValue;
+        },
+        updateTaxonomyNameProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonomyNameLabel = newValue;
+            else if (field.equals("description")) this.config.taxonomyNameDescription = newValue;
+            else if (field.equals("heading")) this.config.taxonomyNameHeading = newValue;
+        },
+        updateTaxonomyDescriptionProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonomyDescLabel = newValue;
+            else if (field.equals("description")) this.config.taxonomyDescDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonomyDescPriority = newValue;
+            else if (field.equals("required")) this.config.taxonomyDescRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonomyDescHeading = newValue;
+        },
+        updateTaxonomyCreatorProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonomyCreatorLabel = newValue;
+            else if (field.equals("description")) this.config.taxonomyCreatorDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonomyCreatorPriority = newValue;
+            else if (field.equals("required")) this.config.taxonomyCreatorRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonomyCreatorHeading = newValue;
+        },
+        updateTaxonomyPublisherProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonomyPublisherLabel = newValue;
+            else if (field.equals("description")) this.config.taxonomyPublisherDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonomyPublisherPriority = newValue;
+            else if (field.equals("required")) this.config.taxonomyPublisherRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonomyPublisherHeading = newValue;
+        },
+        updateTaxonomyPubNameProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonomyPubNameLabel = newValue;
+            else if (field.equals("description")) this.config.taxonomyPubNameDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonomyPubNamePriority = newValue;
+            else if (field.equals("required")) this.config.taxonomyPubNameRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonomyPubNameHeading = newValue;
+        },
+        updateTaxonomyLangProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonomyLangLabel = newValue;
+            else if (field.equals("description")) this.config.taxonomyLangDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonomyLangPriority = newValue;
+            else if (field.equals("required")) this.config.taxonomyLangRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonomyLangHeading = newValue;
+        },
+        updateTaxonomySourceProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonomySourceLabel = newValue;
+            else if (field.equals("description")) this.config.taxonomySourceDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonomySourcePriority = newValue;
+            else if (field.equals("required")) this.config.taxonomySourceRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonomySourceHeading = newValue;
+        },
+        updateTaxonomyCustomProperty: function(propertyName, field, newValue) {
+            let propToUpdate = this.getCustomProperty('taxonomy', propertyName);
+            if (field.equals("label")) propToUpdate.label = newValue;
+            else if (field.equals("description")) propToUpdate.description = newValue;
+            else if (field.equals("priority")) propToUpdate.priority = newValue;
+            else if (field.equals("required")) propToUpdate.required = newValue;
+            else if (field.equals("heading")) propToUpdate.heading = newValue;
+        },
+        updateTaxonomyProperty: function(propertyName, field, newValue) {
+            if (propertyName.equals("id")) this.updateTaxonomyIdProperty(field, newValue);
+            else if (propertyName.equals("name")) this.updateTaxonomyNameProperty(field, newValue);
+            else if (propertyName.equals("description")) this.updateTaxonomyDescriptionProperty(field, newValue);
+            else if (propertyName.equals("creator")) this.updateTaxonomyCreatorProperty(field, newValue);
+            else if (propertyName.equals("publisher")) this.updateTaxonomyPublisherProperty(field, newValue);
+            else if (propertyName.equals("publisherName")) this.updateTaxonomyPubNameProperty(field, newValue);
+            else if (propertyName.equals("language")) this.updateTaxonomyLangProperty(field, newValue);
+            else if (propertyName.equals("source")) this.updateTaxonomySourceProperty(field, newValue);
+            else this.updateTaxonomyCustomProperty(propertyName, field, newValue);
+        },
+        updateTaxonIdProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonIdLabel = newValue;
+            else if (field.equals("description")) this.config.taxonIdDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonIdPriority = newValue;
+            else if (field.equals("required")) this.config.taxonIdRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonIdHeading = newValue;
+        },
+        updateTaxonNameProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonNameLabel = newValue;
+            else if (field.equals("description")) this.config.taxonNameDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonNamePriority = newValue;
+            else if (field.equals("required")) this.config.taxonNameRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonNameHeading = newValue;
+        },
+        updateTaxonDescriptionProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonDescLabel = newValue;
+            else if (field.equals("description")) this.config.taxondescDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonDescPriority = newValue;
+            else if (field.equals("required")) this.config.taxonDescRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonDescHeading = newValue;
+        },
+        updateTaxonNotationProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonNotationLabel = newValue;
+            else if (field.equals("description")) this.config.taxonNotationDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonNotationPriority = newValue;
+            else if (field.equals("required")) this.config.taxonNotationRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonNotationHeading = newValue;
+        },
+        updateTaxonAltLabelProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonAltLabelLabel = newValue;
+            else if (field.equals("description")) this.config.taxonAltLabelDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonAltLabelPriority = newValue;
+            else if (field.equals("required")) this.config.taxonAltLabelRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonAltLabelHeading = newValue;
+        },
+        updateTaxonHidenLabelProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonHiddenLabelLabel = newValue;
+            else if (field.equals("description")) this.config.taxonHiddenLabelDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonHiddenLabelPriority = newValue;
+            else if (field.equals("required")) this.config.taxonHiddenLabelRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonHiddenLabelHeading = newValue;
+        },
+        updateTaxonNoteProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonNoteLabel = newValue;
+            else if (field.equals("description")) this.config.taxonNoteDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonNotePriority = newValue;
+            else if (field.equals("required")) this.config.taxonNoteRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonNoteHeading = newValue;
+        },
+        updateTaxonBroaderProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonBroaderLabel = newValue;
+            else if (field.equals("description")) this.config.taxonBroaderDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonBroaderPriority = newValue;
+            else if (field.equals("required")) this.config.taxonBroaderRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonBroaderHeading = newValue;
+        },
+        updateTaxonNarrowerProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonNarrowerLabel = newValue;
+            else if (field.equals("description")) this.config.taxonNarrowerDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonNarrowerPriority = newValue;
+            else if (field.equals("required")) this.config.taxonNarrowerRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonNarrowerHeading = newValue;
+        },
+        updateTaxonBroadMatchProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonBroadMatchLabel = newValue;
+            else if (field.equals("description")) this.config.taxonBroadMatchDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonBroadMatchPriority = newValue;
+            else if (field.equals("required")) this.config.taxonBroadMatchRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonBroadMatchHeading = newValue;
+        },
+        updateTaxonCloseMatchProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonCloseMatchLabel = newValue;
+            else if (field.equals("description")) this.config.taxonCloseMatchDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonCloseMatchPriority = newValue;
+            else if (field.equals("required")) this.config.taxonCloseMatchRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonCloseMatchHeading = newValue;
+        },
+        updateTaxonExactMatchProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonExactMatchLabel = newValue;
+            else if (field.equals("description")) this.config.taxonExactMatchDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonExactMatchPriority = newValue;
+            else if (field.equals("required")) this.config.taxonExactMatchRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonExactMatchHeading = newValue;
+        },
+        updateTaxonNarrowMatchProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonNarrowMatchLabel = newValue;
+            else if (field.equals("description")) this.config.taxonNarrowMatchDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonNarrowMatchPriority = newValue;
+            else if (field.equals("required")) this.config.taxonNarrowMatchRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonNarrowMatchHeading = newValue;
+        },
+        updateTaxonCustomProperty: function(propertyName, field, newValue) {
+            let propToUpdate = this.getCustomProperty('taxon', propertyName);
+            if (field.equals("label")) propToUpdate.label = newValue;
+            else if (field.equals("description")) propToUpdate.description = newValue;
+            else if (field.equals("priority")) propToUpdate.priority = newValue;
+            else if (field.equals("required")) propToUpdate.required = newValue;
+            else if (field.equals("heading")) propToUpdate.heading = newValue;
+        },
+        updateTaxonProperty: function(propertyName, field, newValue) {
+            if (propertyName.equals("id")) this.updateTaxonIdProperty(field, newValue);
+            else if (propertyName.equals("prefLabel")) this.updateTaxonNameProperty(field, newValue);
+            else if (propertyName.equals("definition")) this.updateTaxonDescriptionProperty(field, newValue);
+            else if (propertyName.equals("notation")) this.updateTaxonNotationProperty(field, newValue);
+            else if (propertyName.equals("altLabel")) this.updateTaxonAltLabelProperty(field, newValue);
+            else if (propertyName.equals("hiddenLabel")) this.updateTaxonHiddenLabelProperty(field, newValue);
+            else if (propertyName.equals("note")) this.updateTaxonNoteProperty(field, newValue);
+            else if (propertyName.equals("broader")) this.updateTaxonBroaderProperty(field, newValue);
+            else if (propertyName.equals("narrower")) this.updateTaxonNarrowerProperty(field, newValue);
+            else if (propertyName.equals("broadMatch")) this.updateTaxonBroadMatchProperty(field, newValue);
+            else if (propertyName.equals("closeMatch")) this.updateTaxonCloseMatchProperty(field, newValue);
+            else if (propertyName.equals("exactMatch")) this.updateTaxonExactMatchProperty(field, newValue);
+            else if (propertyName.equals("narrowMatch")) this.updateTaxonNarrowMatchProperty(field, newValue);
+            else if (propertyName.equals("related")) this.updateTaxonRelatedProperty(field, newValue);
+            else this.updateTaxonCustomProperty(propertyName, field, newValue);
         },
         updateCompetencyIdProperty: function(field, newValue) {
             if (field.equals("label")) this.config.compIdLabel = newValue;
@@ -3425,6 +4139,8 @@ export default {
         },
         updateFrameworkCompetencyProperty: function(propertyParent, propertyName, field, newValue) {
             if (propertyParent.equals('framework')) this.updateFrameworkProperty(propertyName, field, newValue);
+            else if (propertyParent.equals('taxonomy')) this.updateTaxonomyProperty(propertyName, field, newValue);
+            else if (propertyParent.equals('taxon')) this.updateTaxonProperty(propertyName, field, newValue);
             else if (propertyParent.equals('competency')) this.updateCompetencyProperty(propertyName, field, newValue);
         },
         updateRelationshipProperty: function(relationship, field, newValue) {

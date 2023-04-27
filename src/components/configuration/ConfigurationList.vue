@@ -114,9 +114,6 @@ export default {
         },
         localDefaultBrowserConfigId() {
             return this.$store.getters['configuration/localDefaultBrowserConfig'];
-        },
-        currentConfig() {
-            return this.$store.getters['configuration/currentConfig'];
         }
     },
     data: () => ({
@@ -170,9 +167,15 @@ export default {
             for (let i = 0; i < owners.length; i++) {
                 framework.addOwner(EcPk.fromPem(owners[i]));
             }
-            let compsAndRelations = framework.competency ? framework.competency : [];
-            if (framework.relation) {
-                compsAndRelations = compsAndRelations.concat(framework.relation);
+
+            let compsAndRelations = [];
+            if (new EcConceptScheme().isA(framework.getFullType())) {
+                compsAndRelations = (await EcConcept.search(window.repo, 'skos:inScheme\\:"' + framework.shortId() + '"', null, null, {size: 10000})).map(x => x.shortId());
+            } else {
+                compsAndRelations = framework.competency ? framework.competency : [];
+                if (framework.relation) {
+                    compsAndRelations = compsAndRelations.concat(framework.relation);
+                }
             }
             new EcAsyncHelper().each(compsAndRelations, function(id, done) {
                 EcRepository.get(id, async function(obj) {

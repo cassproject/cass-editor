@@ -168,7 +168,7 @@
                 <div
                     v-if="configurationsEnabled && canEditFramework"
                     class="column is-narrow">
-                    <div class="vl" />
+                    <div class="vl test" />
                 </div>
                 <div
                     class="column is-narrow"
@@ -176,7 +176,7 @@
                     <div
                         title="Framework configuration"
                         class="button  is-text has-text-dark is-pulled-right not-lowercase"
-                        v-if="canEditFramework && !conceptMode && !progressionMode"
+                        v-if="canEditFramework && !progressionMode"
                         @click="showManageConfigurationModal(); showShareDropdown = false;">
                         <span class="icon">
                             <i class="fas fa-cog" />
