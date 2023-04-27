@@ -187,6 +187,14 @@ export default {
             localHeading: ''
         };
     },
+    watch: {
+        'propertyParent': function() {
+            this.init();
+        },
+        'property': function() {
+            this.init();
+        }
+    },
     methods: {
         changeLabel: function(evt) {
             this.$emit('change', this.propertyParent, this.property, 'label', evt.srcElement.value);
@@ -203,14 +211,17 @@ export default {
         },
         changeHeading: function(evt) {
             this.$emit('change', this.propertyParent, this.property, 'heading', evt.srcElement.value);
+        },
+        init: function() {
+            this.localLabel = this.label;
+            this.localDescription = this.description;
+            this.localRequired = this.required;
+            this.localPriority = this.priority;
+            this.localHeading = this.heading;
         }
     },
     mounted() {
-        this.localLabel = this.label;
-        this.localDescription = this.description;
-        this.localRequired = this.required;
-        this.localPriority = this.priority;
-        this.localHeading = this.heading;
+        this.init();
     }
 
 };
