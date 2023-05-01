@@ -171,7 +171,7 @@
                     <div
                         v-if="shareEnabled"
                         title="Get shareable link"
-                        @click="showManageUsersModal(); shareLinkOnly = true; showShareDropdown = false;"
+                        @click="showManageUsersModal(); showShareDropdown = false;"
                         class="button is-text has-text-dark ">
                         <span class="icon">
                             <i class="fas fa-share" />
@@ -280,7 +280,6 @@ export default {
         return {
             showPropertyViewDropDown: false,
             showShareDropdown: false,
-            shareLinkOnly: false,
             activeView: "primary",
             repo: window.repo,
             editsFinishedCounter: 0,
@@ -314,7 +313,7 @@ export default {
             this.$store.commit('app/showModal', 'Export');
         },
         showManageUsersModal() {
-            this.$store.commit('app/showModal', {component: 'Share', shareLinkOnly: this.shareLinkOnly});
+            this.$store.commit('app/showModal', {component: 'Share'});
         },
         showManageConfigurationModal() {
             this.$store.commit('app/showModal', {component: 'FrameworkConfiguration'});
