@@ -1397,13 +1397,25 @@ export default {
         },
         shareLink: function() {
             let link = window.location.href;
-            link = link.replace('/frameworks', '').replace('/directory', '');
+            link = link.replace('/frameworks', '').replace('/directory', '').replace('#', '');
             if (this.objectType === "Directory") {
-                return (link + "?directoryId=" + this.objectShortId);
+                if (link.contains('?')) {
+                    return (link + "&directoryId=" + this.objectShortId);
+                } else {
+                    return (link + "?directoryId=" + this.objectShortId);
+                }
             } else if ((this.$store.getters['editor/conceptMode'] === true) || (this.$store.getters['editor/progressionMode'] === true)) {
-                return (link + "?concepts=true&frameworkId=" + this.objectShortId);
+                if (link.contains('?')) {
+                    return (link + "&concepts=true&frameworkId=" + this.objectShortId);
+                } else {
+                    return (link + "?concepts=true&frameworkId=" + this.objectShortId);
+                }
             }
-            return (link + "?frameworkId=" + this.objectShortId);
+            if (link.contains('?')) {
+                return (link + "&frameworkId=" + this.objectShortId);
+            } else {
+                return (link + "?frameworkId=" + this.objectShortId);
+            }
         },
         copyDirectoryOptions: function() {
             let me = this;
