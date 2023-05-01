@@ -84,7 +84,7 @@
             </div>
             <div
                 class="columns is-multiline is-mobile"
-                v-if="canEditFramework && userManagementEnabled">
+                v-if="!shareLinkOnly && canEditFramework && userManagementEnabled">
                 <!-- end share link -->
                 <div v-if="ownerCount === 0">
                     To add users or groups or to make your {{ objectType }} private, first add yourself as an owner.
@@ -331,7 +331,11 @@ import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'ShareModal',
     props: {
-        isActive: Boolean
+        isActive: Boolean,
+        shareLinkOnly: {
+            type: Boolean,
+            default: false
+        }
     },
     components: {
         ModalTemplate
@@ -442,7 +446,7 @@ export default {
             return this.$store.getters['editor/queryParams'];
         },
         canEditFramework: function() {
-            if (!this.loggedIn) {
+            if (!this.loggedIn && !this.shareLinkOnly) {
                 return false;
             }
             if (this.queryParams && this.queryParams.view === 'true') {

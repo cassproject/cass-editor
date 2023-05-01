@@ -164,6 +164,20 @@
                         </span>
                     </div>
                 </div>
+                <div
+                    class="column is-narrow"
+                    v-if="!showUserManagementIcon">
+                    <!-- get share link -->
+                    <div
+                        v-if="shareEnabled"
+                        title="Get shareable link"
+                        @click="showManageUsersModal(); shareLinkOnly = true; showShareDropdown = false;"
+                        class="button is-text has-text-dark ">
+                        <span class="icon">
+                            <i class="fas fa-share" />
+                        </span>
+                    </div>
+                </div>
                 <!-- configuration -->
                 <div
                     v-if="configurationsEnabled && canEditFramework"
@@ -266,6 +280,7 @@ export default {
         return {
             showPropertyViewDropDown: false,
             showShareDropdown: false,
+            shareLinkOnly: false,
             activeView: "primary",
             repo: window.repo,
             editsFinishedCounter: 0,
@@ -299,7 +314,7 @@ export default {
             this.$store.commit('app/showModal', 'Export');
         },
         showManageUsersModal() {
-            this.$store.commit('app/showModal', {component: 'Share'});
+            this.$store.commit('app/showModal', {component: 'Share', shareLinkOnly: this.shareLinkOnly});
         },
         showManageConfigurationModal() {
             this.$store.commit('app/showModal', {component: 'FrameworkConfiguration'});
