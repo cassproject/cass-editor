@@ -1244,6 +1244,11 @@ export const configuration = {
             if (this.currentConfig.taxonomyIdHeading && !this.currentConfig.taxonomyIdHeading.trim().equals('')) allHeadings[this.currentConfig.taxonomyIdHeading.trim()] = 'x';
             if (this.currentConfig.taxonomyNameHeading && !this.currentConfig.taxonomyNameHeading.trim().equals('')) allHeadings[this.currentConfig.taxonomyNameHeading.trim()] = 'x';
             if (this.currentConfig.taxonomyDescHeading && !this.currentConfig.taxonomyDescHeading.trim().equals('')) allHeadings[this.currentConfig.taxonomyDescHeading.trim()] = 'x';
+            if (this.currentConfig.taxonomyCreatorHeading && !this.currentConfig.taxonomyCreatorHeading.trim().equals('')) allHeadings[this.currentConfig.taxonomyCreatorHeading.trim()] = 'x';
+            if (this.currentConfig.taxonomyPublisherHeading && !this.currentConfig.taxonomyPublisherHeading.trim().equals('')) allHeadings[this.currentConfig.taxonomyPublisherHeading.trim()] = 'x';
+            if (this.currentConfig.taxonomyPubNameHeading && !this.currentConfig.taxonomyPubNameHeading.trim().equals('')) allHeadings[this.currentConfig.taxonomyPubNameHeading.trim()] = 'x';
+            if (this.currentConfig.taxonomyLangHeading && !this.currentConfig.taxonomyLangHeading.trim().equals('')) allHeadings[this.currentConfig.taxonomyLangHeading.trim()] = 'x';
+            if (this.currentConfig.taxonomySourceHeading && !this.currentConfig.taxonomySourceHeading.trim().equals('')) allHeadings[this.currentConfig.taxonomySourceHeading.trim()] = 'x';
             this.addCustomPropertiesToHeadingsObj(this.currentConfig.taxonomyCustomProperties, allHeadings);
             return allHeadings;
         },
@@ -1252,6 +1257,17 @@ export const configuration = {
             if (this.currentConfig.taxonIdHeading && !this.currentConfig.taxonIdHeading.trim().equals('')) allHeadings[this.currentConfig.taxonIdHeading.trim()] = 'x';
             if (this.currentConfig.taxonNameHeading && !this.currentConfig.taxonNameHeading.trim().equals('')) allHeadings[this.currentConfig.taxonNameHeading.trim()] = 'x';
             if (this.currentConfig.taxonDescHeading && !this.currentConfig.taxonDescHeading.trim().equals('')) allHeadings[this.currentConfig.taxonDescHeading.trim()] = 'x';
+            if (this.currentConfig.taxonNotationHeading && !this.currentConfig.taxonNotationHeading.trim().equals('')) allHeadings[this.currentConfig.taxonNotationHeading.trim()] = 'x';
+            if (this.currentConfig.taxonAltLabelHeading && !this.currentConfig.taxonAltLabelHeading.trim().equals('')) allHeadings[this.currentConfig.taxonAltLabelHeading.trim()] = 'x';
+            if (this.currentConfig.taxonHiddenLabelHeading && !this.currentConfig.taxonHiddenLabelHeading.trim().equals('')) allHeadings[this.currentConfig.taxonHiddenLabelHeading.trim()] = 'x';
+            if (this.currentConfig.taxonNoteHeading && !this.currentConfig.taxonNoteHeading.trim().equals('')) allHeadings[this.currentConfig.taxonNoteHeading.trim()] = 'x';
+            if (this.currentConfig.taxonBroaderHeading && !this.currentConfig.taxonBroaderHeading.trim().equals('')) allHeadings[this.currentConfig.taxonBroaderHeading.trim()] = 'x';
+            if (this.currentConfig.taxonNarrowerHeading && !this.currentConfig.taxonNarrowerHeading.trim().equals('')) allHeadings[this.currentConfig.taxonNarrowerHeading.trim()] = 'x';
+            if (this.currentConfig.taxonBroadMatchHeading && !this.currentConfig.taxonBroadMatchHeading.trim().equals('')) allHeadings[this.currentConfig.taxonBroadMatchHeading.trim()] = 'x';
+            if (this.currentConfig.taxonCloseMatchHeading && !this.currentConfig.taxonCloseMatchHeading.trim().equals('')) allHeadings[this.currentConfig.taxonCloseMatchHeading.trim()] = 'x';
+            if (this.currentConfig.taxonExactMatchHeading && !this.currentConfig.taxonExactMatchHeading.trim().equals('')) allHeadings[this.currentConfig.taxonExactMatchHeading.trim()] = 'x';
+            if (this.currentConfig.taxonNarrowMatchHeading && !this.currentConfig.taxonNarrowMatchHeading.trim().equals('')) allHeadings[this.currentConfig.taxonNarrowMatchHeading.trim()] = 'x';
+            if (this.currentConfig.taxonRelatedHeading && !this.currentConfig.taxonRelatedHeading.trim().equals('')) allHeadings[this.currentConfig.taxonRelatedHeading.trim()] = 'x';
             this.addCustomPropertiesToHeadingsObj(this.currentConfig.taxonCustomProperties, allHeadings);
             return allHeadings;
         },

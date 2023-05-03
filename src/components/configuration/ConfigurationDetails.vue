@@ -3893,7 +3893,7 @@ export default {
             else if (propertyName.equals("markings")) this.updateFrameworkMarkingsProperty(field, newValue);
             else this.updateFrameworkCustomProperty(propertyName, field, newValue);
         },
-        updateTaxonomyIdProperty: function() {
+        updateTaxonomyIdProperty: function(field, newValue) {
             if (field.equals("label")) this.config.taxonomyIdLabel = newValue;
             else if (field.equals("description")) this.config.taxonomyIdDescription = newValue;
             else if (field.equals("priority")) this.config.taxonomyIdPriorty = newValue;
@@ -3981,7 +3981,7 @@ export default {
         },
         updateTaxonDescriptionProperty: function(field, newValue) {
             if (field.equals("label")) this.config.taxonDescLabel = newValue;
-            else if (field.equals("description")) this.config.taxondescDescription = newValue;
+            else if (field.equals("description")) this.config.taxonDescDescription = newValue;
             else if (field.equals("priority")) this.config.taxonDescPriority = newValue;
             else if (field.equals("required")) this.config.taxonDescRequired = newValue;
             else if (field.equals("heading")) this.config.taxonDescHeading = newValue;
@@ -4000,7 +4000,7 @@ export default {
             else if (field.equals("required")) this.config.taxonAltLabelRequired = newValue;
             else if (field.equals("heading")) this.config.taxonAltLabelHeading = newValue;
         },
-        updateTaxonHidenLabelProperty: function(field, newValue) {
+        updateTaxonHiddenLabelProperty: function(field, newValue) {
             if (field.equals("label")) this.config.taxonHiddenLabelLabel = newValue;
             else if (field.equals("description")) this.config.taxonHiddenLabelDescription = newValue;
             else if (field.equals("priority")) this.config.taxonHiddenLabelPriority = newValue;
@@ -4055,6 +4055,13 @@ export default {
             else if (field.equals("priority")) this.config.taxonNarrowMatchPriority = newValue;
             else if (field.equals("required")) this.config.taxonNarrowMatchRequired = newValue;
             else if (field.equals("heading")) this.config.taxonNarrowMatchHeading = newValue;
+        },
+        updateTaxonRelatedProperty: function(field, newValue) {
+            if (field.equals("label")) this.config.taxonRelatedLabel = newValue;
+            else if (field.equals("description")) this.config.taxonRelatedDescription = newValue;
+            else if (field.equals("priority")) this.config.taxonRelatedPriority = newValue;
+            else if (field.equals("required")) this.config.taxonRelatedRequired = newValue;
+            else if (field.equals("heading")) this.config.taxonRelatedHeading = newValue;
         },
         updateTaxonCustomProperty: function(propertyName, field, newValue) {
             let propToUpdate = this.getCustomProperty('taxon', propertyName);
