@@ -919,6 +919,7 @@ export default {
         // fromId is the id of the object you're moving. toId is the id of the object that will be immediately below this object after the move, at the same level of hierarchy.
         move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, toLast) {
             this.once = true;
+            let last = toLast;
             var me = this;
             var initialCompetencies = me.container[me.containerNodeProperty] ? me.container[me.containerNodeProperty].slice() : null;
             var initialRelations = me.container[me.containerEdgeProperty] ? me.container[me.containerEdgeProperty].slice() : null;
@@ -929,6 +930,9 @@ export default {
             if (fromId !== toId) {
                 var fromIndex = this.container[this.containerNodeProperty].indexOf(fromId);
                 appLog(fromIndex);
+                if ((toId == null || toId === undefined) && (fromContainerId === toContainerId) && (fromIndex >= this.container[this.containerNodeProperty].length - 2)) {
+                    last = true;
+                }
                 this.container[this.containerNodeProperty].splice(fromIndex, 1);
                 var toIndex = null;
                 if (toId == null || toId === undefined) {
@@ -937,7 +941,7 @@ export default {
                     toIndex = this.container[this.containerNodeProperty].indexOf(toId);
                 }
                 appLog(toIndex);
-                if (toLast) {
+                if (last) {
                     this.container[this.containerNodeProperty].push(fromId);
                 } else {
                     this.container[this.containerNodeProperty].splice(toIndex, 0, fromId);
@@ -945,7 +949,12 @@ export default {
             }
             if (fromContainerId !== toContainerId) {
                 var source = await window[this.nodeType].get(fromId);
-                var target = toContainerId ? await window[this.nodeType].get(toContainerId) : null;
+                let target;
+                if (toContainerId === this.container.id) {
+                    target = toContainerId ? await window['EcFramework'].get(toContainerId) : null;
+                } else {
+                    target = toContainerId ? await window[this.nodeType].get(toContainerId) : null;
+                }
                 if (removeOldRelations === true && fromId !== toContainerId) {
                     for (var i = 0; i < this.container[this.containerEdgeProperty].length; i++) {
                         var a = await window[this.edgeType].get(this.container[this.containerEdgeProperty][i]);
