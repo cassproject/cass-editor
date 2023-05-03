@@ -851,6 +851,7 @@ export default {
                 isResource = true;
             }
             if (!property) {
+                this.$store.commit('lode/setAddingValues', []);
                 return this.errorMessage.push("Property type is required.");
             }
             if ((!value || (value !== null && value !== undefined && value["@value"] !== null && value["@value"] !== undefined && value["@value"].trim().length === 0)) &&
@@ -860,9 +861,11 @@ export default {
             if (value && isResource) {
                 // Name and value both required for a resource
                 if (!value["@value"] || !value["name"]) {
+                    this.$store.commit('lode/setAddingValues', []);
                     return this.errorMessage.push("This property must have a URL and a name.");
                 }
                 if (value["@value"].indexOf("http") === -1) {
+                    this.$store.commit('lode/setAddingValues', []);
                     return this.errorMessage.push("This property must be a URL. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.");
                 }
             }
@@ -871,6 +874,7 @@ export default {
                    (range[0].indexOf("http://schema.org/URL") !== -1 || range[0].toLowerCase().indexOf("concept") !== -1 ||
                     range[0].toLowerCase().indexOf("competency") !== -1)) {
                     if (value.indexOf("http") === -1) {
+                        this.$store.commit('lode/setAddingValues', []);
                         return this.errorMessage.push("This property must be a URL. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.");
                     }
                 }
@@ -878,23 +882,27 @@ export default {
             if (value && range[0].toLowerCase().indexOf("level") !== -1 && !this.addingChecked) {
                 var level = await EcLevel.get(value);
                 if (!level) {
+                    this.$store.commit('lode/setAddingValues', []);
                     return this.errorMessage.push("This URL must be a Level that is already in the system.");
                 }
             }
             if (value && range.length === 1 && range[0].toLowerCase().indexOf("langstring") !== -1) {
                 if (value["@language"] == null || value["@language"] === undefined || value["@language"].trim().length === 0) {
+                    this.$store.commit('lode/setAddingValues', []);
                     return this.errorMessage.push("This field can only have one entry per language.");
                 }
                 if (this.profile && this.profile[property] && (this.profile[property]["onePerLanguage"] === 'true' || this.profile[property]["onePerLanguage"] === true) && this.expandedThing[property]) {
                     var languagesUsed = [];
                     for (var i = 0; i < this.expandedThing[property].length; i++) {
                         if (languagesUsed.includes(this.expandedThing[property][i]["@language"].toLowerCase())) {
+                            this.$store.commit('lode/setAddingValues', []);
                             return this.errorMessage.push("This field can only have one entry per language.");
                         }
                         languagesUsed.push(this.expandedThing[property][i]["@language"].toLowerCase());
                     }
                     // Check new value being added
                     if (languagesUsed.includes(value["@language"].toLowerCase())) {
+                        this.$store.commit('lode/setAddingValues', []);
                         return this.errorMessage.push("This field can only have one entry per language.");
                     }
                 }
