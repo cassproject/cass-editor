@@ -951,14 +951,33 @@ export const configuration = {
             taxonomyConf.primaryProperties.push("http://purl.org/dc/terms/title");
             if (this.currentConfig.taxonomyIdPriorty.equalsIgnoreCase("primary")) taxonomyConf.primaryProperties.push("@id");
             if (this.currentConfig.taxonomyDescPriority.equalsIgnoreCase("primary")) taxonomyConf.primaryProperties.push("http://purl.org/dc/terms/description");
+            if (this.currentConfig.taxonomyCreatorPriority.equalsIgnoreCase("primary")) taxonomyConf.primaryProperties.push("http://purl.org/dc/terms/creator");
+            if (this.currentConfig.taxonomyPublisherPriority.equalsIgnoreCase("primary")) taxonomyConf.primaryProperties.push("http://purl.org/dc/terms/publisher");
+            if (this.currentConfig.taxonomyPubNamePriority.equalsIgnoreCase("primary")) taxonomyConf.primaryProperties.push("https://purl.org/ctdlasn/terms/publisherName");
+            if (this.currentConfig.taxonomyLangPriority.equalsIgnoreCase("primary")) taxonomyConf.primaryProperties.push("http://purl.org/dc/terms/language");
+            if (this.currentConfig.taxonomySourcePriority.equalsIgnoreCase("primary")) taxonomyConf.primaryProperties.push("http://purl.org/dc/elements/1.1/source");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.taxonomyCustomProperties, taxonomyConf.primaryProperties, "primary");
             taxonomyConf.secondaryProperties = [];
             if (this.currentConfig.taxonomyIdPriorty.equalsIgnoreCase("secondary")) taxonomyConf.secondaryProperties.push("@id");
             if (this.currentConfig.taxonomyDescPriority.equalsIgnoreCase("secondary")) taxonomyConf.secondaryProperties.push("http://purl.org/dc/terms/description");
+            if (this.currentConfig.taxonomyIdPriorty.equalsIgnoreCase("secondary")) taxonomyConf.secondaryProperties.push("@id");
+            if (this.currentConfig.taxonomyDescPriority.equalsIgnoreCase("secondary")) taxonomyConf.secondaryProperties.push("http://purl.org/dc/terms/description");
+            if (this.currentConfig.taxonomyCreatorPriority.equalsIgnoreCase("secondary")) taxonomyConf.secondaryProperties.push("http://purl.org/dc/terms/creator");
+            if (this.currentConfig.taxonomyPublisherPriority.equalsIgnoreCase("secondary")) taxonomyConf.secondaryProperties.push("http://purl.org/dc/terms/publisher");
+            if (this.currentConfig.taxonomyPubNamePriority.equalsIgnoreCase("secondary")) taxonomyConf.secondaryProperties.push("https://purl.org/ctdlasn/terms/publisherName");
+            if (this.currentConfig.taxonomyLangPriority.equalsIgnoreCase("secondary")) taxonomyConf.secondaryProperties.push("http://purl.org/dc/terms/language");
+            if (this.currentConfig.taxonomySourcePriority.equalsIgnoreCase("secondary")) taxonomyConf.secondaryProperties.push("http://purl.org/dc/elements/1.1/source");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.taxonomyCustomProperties, taxonomyConf.secondaryProperties, "secondary");
             taxonomyConf.tertiaryProperties = [];
             if (this.currentConfig.taxonomyIdPriorty.equalsIgnoreCase("tertiary")) taxonomyConf.tertiaryProperties.push("@id");
             if (this.currentConfig.taxonomyDescPriority.equalsIgnoreCase("tertiary")) taxonomyConf.tertiaryProperties.push("http://purl.org/dc/terms/description");
+            if (this.currentConfig.taxonomyIdPriorty.equalsIgnoreCase("tertiary")) taxonomyConf.tertiaryProperties.push("@id");
+            if (this.currentConfig.taxonomyDescPriority.equalsIgnoreCase("tertiary")) taxonomyConf.tertiaryProperties.push("http://purl.org/dc/terms/description");
+            if (this.currentConfig.taxonomyCreatorPriority.equalsIgnoreCase("tertiary")) taxonomyConf.tertiaryProperties.push("http://purl.org/dc/terms/creator");
+            if (this.currentConfig.taxonomyPublisherPriority.equalsIgnoreCase("tertiary")) taxonomyConf.tertiaryProperties.push("http://purl.org/dc/terms/publisher");
+            if (this.currentConfig.taxonomyPubNamePriority.equalsIgnoreCase("tertiary")) taxonomyConf.tertiaryProperties.push("https://purl.org/ctdlasn/terms/publisherName");
+            if (this.currentConfig.taxonomyLangPriority.equalsIgnoreCase("tertiary")) taxonomyConf.tertiaryProperties.push("http://purl.org/dc/terms/language");
+            if (this.currentConfig.taxonomySourcePriority.equalsIgnoreCase("tertiary")) taxonomyConf.tertiaryProperties.push("http://purl.org/dc/elements/1.1/source");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.taxonomyCustomProperties, taxonomyConf.tertiaryProperties, "tertiary");
         },
         buildTaxonomyIdConfigObject(taxonomyConf) {
