@@ -238,7 +238,7 @@
                     </div>
 
                     <div
-                        v-if="!showAddPropertyContent && (view === 'framework' || view === 'concept') && hasAdditionalProperty && !errorValidating"
+                        v-if="!showAddPropertyContent && (view === 'framework' || view === 'concept') && hasAdditionalProperty"
                         @click="onClickToAddProperty"
                         class="button is-outlined is-primary">
                         <span class="icon">
@@ -1185,25 +1185,27 @@ export default {
             let newProperties = [];
             var me = this;
             // this.addingValues can now store multiple values to allow for adding all at once.
-            for (let i = 0; i < values.length; i++) {
-                if (values[i]["@value"] == null || values[i]["@value"] === undefined) {
-                    values[i] = {"@value": values[i]};
-                }
-                let value = values[i];
-                new EcAsyncHelper().each(me.getAllTypes(values[i]), function(type, callback) {
-                    me.loadSchema(callback, type);
-                }, async function() {
-                    if (values[i]["@value"] == null) {
-                        try {
-                            let expanded = await jsonld.expand(JSON.parse(values[i].toJson()));
-                            newProperties.push(me.reactify(expanded[0]));
-                        } catch (err) {
-                            appError(err);
-                        }
-                    } else {
-                        newProperties.push(value);
+            if (Array.isArray(values)) {
+                for (let i = 0; i < values.length; i++) {
+                    if (values[i]["@value"] == null || values[i]["@value"] === undefined) {
+                        values[i] = {"@value": values[i]};
                     }
-                });
+                    let value = values[i];
+                    new EcAsyncHelper().each(me.getAllTypes(values[i]), function(type, callback) {
+                        me.loadSchema(callback, type);
+                    }, async function() {
+                        if (values[i]["@value"] == null) {
+                            try {
+                                let expanded = await jsonld.expand(JSON.parse(values[i].toJson()));
+                                newProperties.push(me.reactify(expanded[0]));
+                            } catch (err) {
+                                appError(err);
+                            }
+                        } else {
+                            newProperties.push(value);
+                        }
+                    });
+                }
             }
             if (me.expandedThing[property] === undefined || me.expandedThing[property] == null) {
                 me.expandedThing[property] = [];
@@ -1211,6 +1213,7 @@ export default {
             if (!EcArray.isArray(me.expandedThing[property])) {
                 me.expandedThing[property] = [me.expandedThing[property]];
             }
+            me.expandedThing[property].push(passedInVal);
             for (let i = 0; i < newProperties.length; i++) {
                 me.expandedThing[property].push(newProperties[i]);
             }
