@@ -549,6 +549,16 @@ export default {
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "progressionModel", params: {frameworkId: me.object.id}});
                 }, appError);
+            } else if (this.objectType === "ConceptScheme") {
+                this.$store.commit('app/selectDirectory', null);
+                this.$store.commit('editor/conceptMode', true);
+                EcConceptScheme.get(this.object.id, function(success) {
+                    me.$store.commit('editor/framework', success);
+                    me.$store.commit('editor/clearFrameworkCommentData');
+                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
+                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    me.$router.push({name: "conceptScheme", params: {frameworkId: me.object.id}});
+                }, appError);
             } else {
                 this.$store.commit('app/selectDirectory', null);
                 EcFramework.get(this.object.id, function(success) {
@@ -579,7 +589,7 @@ export default {
                 me.$store.commit('app/closeRightAside');
             }, appError);
         },
-        copyOrMove: function(directory, copyOrMove) {
+        copyOrMove: async function(directory, copyOrMove) {
             if (copyOrMove === 'copy') {
                 this.copyingToDirectory = true;
             } else {
@@ -600,12 +610,16 @@ export default {
                 this.copyResourceToDirectory(directory, this.object);
             } else if (this.copyingToDirectory && this.objectType === 'Directory') {
                 this.copySubdirectoryToDirectory(directory, this.object);
+            } else if (this.copyingToDirectory && this.objectType === 'ConceptScheme') {
+                await this.copyTaxonomyToDirectory(directory, this.object);
             } else if (this.movingToDirectory && this.objectType === 'Framework') {
                 this.moveFrameworkToDirectory(directory, this.object);
             } else if (this.movingToDirectory && this.objectType === 'CreativeWork') {
                 this.moveResourceToDirectory(directory, this.object);
             } else if (this.movingToDirectory && this.objectType === 'Directory') {
                 this.moveSubdirectoryToDirectory(directory, this.object);
+            } else if (this.movingToDirectory && this.objectType === 'ConceptScheme') {
+                await this.moveTaxonomyToDirectory(directory, this.object);
             }
         },
         removeFromDirectory: async function() {
@@ -616,6 +630,8 @@ export default {
                 await this.removeResourceFromDirectory(this.object);
             } else if (this.objectType === 'Directory') {
                 await this.removeSubdirectoryFromDirectory(this.object);
+            } else if (this.objectType === 'ConceptScheme') {
+                await this.removeTaxonomyFromDirectory(this.object);
             }
         },
         multiput: async function(toSave, shouldRefresh) {
@@ -641,6 +657,23 @@ export default {
                 }
             }
         },
+        getCopyTaxonomyName: function(t) {
+            let name = t['dcterms:title'];
+            if (!EcArray.isArray(name)) {
+                name = [name];
+            }
+            for (let each in name) {
+                if (name[each]["@value"]) {
+                    name[each]["@value"] = "Copy of " + name[each]["@value"];
+                } else {
+                    name[each] = "Copy of " + name[each];
+                }
+            }
+            if (name.length === 1) {
+                name = name[0];
+            }
+            return name;
+        },
         getCopyFrameworkName: function(f) {
             let name = f.name;
             if (!EcArray.isArray(name)) {
@@ -657,6 +690,99 @@ export default {
                 name = name[0];
             }
             return name;
+        },
+        copyTaxonomyToDirectory: async function(directory, taxonomy, toSaveFromSubdirectory) {
+            let toSave = [];
+            if (toSaveFromSubdirectory) {
+                toSave = toSaveFromSubdirectory;
+            }
+            var t = new EcConceptScheme();
+            t.copyFrom(taxonomy);
+            if (this.queryParams.newObjectEndpoint != null) {
+                t.generateShortId(this.queryParams.newObjectEndpoint);
+            } else {
+                t.generateId(this.repo.selectedServer);
+            }
+            t.directory = directory.shortId();
+            t["schema:dateCreated"] = new Date().toISOString();
+            t["schema:dateModified"] = new Date().toISOString();
+            delete t.owner;
+            delete t.reader;
+            if (directory.owner) {
+                t.owner = directory.owner;
+            }
+            if (directory.reader) {
+                t.reader = directory.reader;
+            }
+            if (EcIdentityManager.default.ids.length > 0) {
+                t.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+            }
+            let name = this.getCopyTaxonomyName(t);
+            t.name = name;
+            t['ceasn:derivedFrom'] = taxonomy.id;
+            // Original framework was encrypted, make sure the copy is too
+            if (EcEncryptedValue.encryptOnSaveMap && EcEncryptedValue.encryptOnSaveMap[taxonomy.shortId()]) {
+                EcEncryptedValue.encryptOnSaveMap[t.shortId()] = true;
+            }
+            // Add this framework as a child of the directory
+            if (!directory.taxonomies) {
+                directory.taxonomies = [];
+            }
+            EcArray.setAdd(directory.taxonomies, t.shortId());
+            toSave.push(directory);
+            let idMap = {};
+            idMap[taxonomy.shortId()] = t.shortId();
+            let taxons = await EcConcept.search(this.repo, 'skos\\:inScheme:"' + taxonomy.shortId() + '"', null, null, {size: 10000});
+            // First pass, create new taxons with new IDs
+            let newTaxons = [];
+            for (let taxon of taxons) {
+                let newTaxon = new EcConcept().copyFrom(taxon);
+                if (this.queryParams.newObjectEndpoint != null) {
+                    newTaxon.generateShortId(this.queryParams.newObjectEndpoint);
+                } else {
+                    newTaxon.generateId(this.repo.selectedServer);
+                }
+                idMap[taxon.shortId()] = newTaxon.shortId();
+
+                newTaxon["schema:dateCreated"] = new Date().toISOString();
+                newTaxon["schema:dateModified"] = new Date().toISOString();
+                delete newTaxon.owner;
+                delete newTaxon.reader;
+                if (t.owner) {
+                    newTaxon.owner = t.owner;
+                }
+                if (t.reader) {
+                    newTaxon.reader = t.reader;
+                }
+                if (EcIdentityManager.default.ids.length > 0) {
+                    newTaxon.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                }
+                newTaxon['ceasn:derivedFrom'] = taxon.id;
+                // If the original competency was encrypted, make sure the copy is too
+                if (EcEncryptedValue.encryptOnSaveMap && EcEncryptedValue.encryptOnSaveMap[taxon.shortId()]) {
+                    EcEncryptedValue.encryptOnSaveMap[newTaxon.shortId()] = true;
+                }
+
+                newTaxons.push(newTaxon);
+            }
+            // Second pass, change properties inside new taxons to reflect new IDs
+            for (let obj of [t].concat(newTaxons)) {
+                for (let [key, value] of Object.entries(obj)) {
+                    if (Array.isArray(value)) {
+                        obj[key] = value.map((x) => {
+                            if (idMap[x]) {
+                                return idMap[x];
+                            }
+                            return x;
+                        });
+                    } else if (idMap[value]) {
+                        obj[key] = idMap[value];
+                    }
+                }
+                toSave.push(obj);
+            }
+            console.log(toSave);
+            await this.multiput(toSave);
         },
         copyFrameworkToDirectory: function(directory, framework, toSaveFromSubdirectory) {
             let toSave = [];
@@ -969,6 +1095,8 @@ export default {
                         await this.copyFrameworkToDirectory(subdirectory, obj, toSave);
                     } else if (obj.type === 'CreativeWork') {
                         await this.copyResourceToDirectory(subdirectory, obj, toSave);
+                    } else if (obj.type === 'ConceptScheme') {
+                        await this.copyTaxonomyToDirectory(subdirectory, obj, toSave);
                     } else if (obj.type === 'Directory') {
                         this.frameworksToProcess--;
                         this.copySubdirectoryToDirectory(subdirectory, obj, toSave);
@@ -980,6 +1108,47 @@ export default {
             }
             if (done.length === 0) {
                 await this.multiput(toSave, true);
+            }
+        },
+        moveTaxonomyToDirectory: async function(directory, taxonomy, toSaveFromSubdirectory) {
+            try {
+                let toSave = [];
+                if (toSaveFromSubdirectory) {
+                    toSave = toSaveFromSubdirectory;
+                }
+
+                // If the taxonomy was already in a directory, remove it first
+                if (taxonomy.directory) {
+                    await this.removeTaxonomyFromDirectory(taxonomy);
+                }
+                if (directory.owner) {
+                    for (let each of directory.owner) {
+                        taxonomy.addOwner(EcPk.fromPem(each));
+                    }
+                }
+                taxonomy.reader = directory.reader;
+                taxonomy.directory = directory.shortId();
+                taxonomy["schema:dateModified"] = new Date().toISOString();
+                // Add this taxonomy as a child of the directory
+                if (!directory.taxonomies) {
+                    directory.taxonomies = [];
+                }
+                let taxons = await EcConcept.search(this.repo, 'skos\\:inScheme:"' + taxonomy.shortId() + '"', null, null, {size: 10000});
+                for (let taxon of taxons) {
+                    if (directory.owner) {
+                        for (let each of directory.owner) {
+                            taxon.addOwner(EcPk.fromPem(each));
+                        }
+                    }
+                    taxon.reader = directory.reader;
+                    taxon["schema:dateModified"] = new Date().toISOString();
+                    toSave.push(taxon);
+                }
+                EcArray.setAdd(directory.taxonomies, taxonomy.shortId());
+                toSave.push(...[taxonomy, directory]);
+                await this.multiput(toSave, true);
+            } catch (e) {
+                appError(e);
             }
         },
         moveFrameworkToDirectory: async function(directory, framework, toSaveFromSubdirectory) {
@@ -1117,6 +1286,8 @@ export default {
                         await me.moveFrameworkToDirectory(subdirectory, obj, toSave);
                     } else if (obj.type === 'CreativeWork') {
                         await me.moveResourceToDirectory(subdirectory, obj, toSave);
+                    } else if (obj.type === 'ConceptScheme') {
+                        await me.moveTaxonomyToDirectory(subdirectory, obj, toSave);
                     } else if (obj.type === "Directory") {
                         await me.frameworksToProcess--;
                         await me.moveSubdirectoryToDirectory(subdirectory, obj, toSave);
@@ -1130,6 +1301,36 @@ export default {
                     }
                 });
             });
+        },
+        removeTaxonomyFromDirectory: async function(taxonomy) {
+            this.processingRemove = true;
+            try {
+                let me = this;
+                let toSave = [];
+                this.$Progress.start();
+                let directory = await EcDirectory.get(taxonomy.directory);
+                if (directory.owner) {
+                    for (let each of directory.owner) {
+                        taxonomy.removeOwner(EcPk.fromPem(each));
+                    }
+                    taxonomy.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                }
+                if (directory.reader) {
+                    for (let each of directory.reader) {
+                        taxonomy.removeReader(EcPk.fromPem(each));
+                    }
+                }
+                delete taxonomy.directory;
+                taxonomy["schema:dateModified"] = new Date().toISOString();
+                // remove this framework from the list of children
+                if (directory.taxonomies) {
+                    EcArray.setRemove(directory.taxonomies, taxonomy.shortId());
+                }
+                toSave.push(...[taxonomy, directory]);
+                await me.multiput(toSave, true);
+            } finally {
+                this.processingRemove = false;
+            }
         },
         removeFrameworkFromDirectory: async function(framework) {
             this.processingRemove = true;
