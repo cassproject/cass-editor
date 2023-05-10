@@ -781,7 +781,6 @@ export default {
                 }
                 toSave.push(obj);
             }
-            console.log(toSave);
             await this.multiput(toSave);
         },
         copyFrameworkToDirectory: function(directory, framework, toSaveFromSubdirectory) {
