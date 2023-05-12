@@ -319,7 +319,8 @@ ul.processing-list {
     }
     // framework title is a separate component from hierarchy
     .lode__thing.framework-title {
-            padding: .5rem 0rem;
+            padding: .5rem .5rem;
+            font-size: $size-6;
             ul {
                 padding: .25rem;
             }
