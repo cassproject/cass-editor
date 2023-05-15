@@ -42,7 +42,7 @@
                     Cancel
                 </button>
                 <button
-                    :disabled="typedInName !== directory.name"
+                    :disabled="deleteDirectoryDisabled"
                     class="button is-outlined is-danger"
                     @click="deleteDirectory(directory)">
                     Delete Directory
@@ -155,6 +155,9 @@ export default {
         },
         directory: function() {
             return this.$store.getters['app/rightAsideObject'];
+        },
+        deleteDirectoryDisabled() {
+            return (this.typedInName.trim() !== this.directory.name.trim());
         }
     },
     mounted: function() {
