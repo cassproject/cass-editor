@@ -318,11 +318,14 @@ TO DO MAYBE: Separate out property by editing or not.
                     <span
                         class="tag is-size-7 is-light"
                         v-if="expandedProperty !== 'http://schema.org/name' && expandedProperty !== 'dcterms:title' && expandedProperty !== 'skos:prefLabel'">{{ displayLabel }}</span>
-                    <span class="language">
+                    <span
+                        @click="setCheckbox($event)"
+                        class="language">
                         {{ expandedValue[index]["@language"] + ": " }}
                     </span>
                     <span
                         :title="expandedValue[index]['@value']"
+                        @click="setCheckbox($event)"
                         class="value">
                         {{ expandedValue[index]["@value"] }}
                     </span>
@@ -714,6 +717,10 @@ export default {
         }
     },
     methods: {
+        setCheckbox(event) {
+            event.preventDefault();
+            this.$emit('set-checkbox');
+        },
         async addConceptInner(conceptUri) {
             EcConcept.get(conceptUri).then((concept) => {
                 this.limitedConcepts.push({
