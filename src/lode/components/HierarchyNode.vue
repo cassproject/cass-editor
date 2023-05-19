@@ -64,6 +64,7 @@
                                     :class="{'is-focused': isItemFocused}"
                                     :id="obj.shortId() + 'checkbox'"
                                     type="checkbox"
+                                    @input="checkForDblClick"
                                     :name="obj.shortId() + 'checkbox'"
                                     v-model="checked">
                                 <label :for="obj.shortId() + 'checkbox'" />
@@ -107,7 +108,8 @@
                                 :cantMoveLeft="cantMoveLeft"
                                 :properties="properties"
                                 :containerSubType="containerSubType"
-                                :canEditAssertions="canEditAssertions">
+                                :canEditAssertions="canEditAssertions"
+                                @set-checkbox="setCheckbox">
                                 <div class="hierarchy-item__buttons">
                                     <div
                                         v-if="view !== 'crosswalk' && canEditThing"
@@ -340,6 +342,7 @@
                     @remove-object="removeObject"
                     :properties="properties"
                     :parentChecked="checked"
+                    :propagateParentChecked="propagateChecked === 'parent' ? propagateParentChecked : propagateChecked"
                     :shiftKey="shiftKey"
                     :arrowKey="arrowKey"
                     :largeNumberOfItems="largeNumberOfItems"
@@ -379,6 +382,7 @@ export default {
         properties: String,
         expandAll: Boolean,
         parentChecked: Boolean,
+        propagateParentChecked: String,
         view: {
             type: String,
             default: 'framework'
@@ -441,7 +445,9 @@ export default {
             isItemCut: false,
             isItemCopied: false,
             canPaste: false, // needs trigger that something has been copied or cut
-            canEditInCollection: false
+            canEditInCollection: false,
+            checkBoxDblClick: 0,
+            propagateChecked: 'parent'
         };
     },
     computed: {
@@ -604,6 +610,34 @@ export default {
         }
     },
     methods: {
+        setCheckbox: function() {
+            if (this.view === 'framework') {
+                this.checked = !this.checked;
+                this.propagateChecked = 'false';
+            }
+        },
+        checkForDblClick: function() {
+            if (this.view === 'framework') {
+                // Select all children on double click. PropagateChecked exists on each node and can be set to true, false, or parent.
+                // It is set to parent by default, indicating that the node should take on the value of the parentPropagateChecked.
+                // If this node's checkbox is changed, then propagateChecked takes on the value of false to select only itself and
+                // true to select itself and all children. The behavior is the same for checking and unchecking the box.
+                // A watch exists on PropagateCheck to return the value back to parent.
+                this.checkBoxDblClick++;
+                setTimeout(() => {
+                    if (this.checkBoxDblClick > 1) {
+                        this.checkBoxDblClick = 0;
+                        this.checked = !this.checked;
+                        this.propagateChecked = 'true';
+                    } else if (this.checkBoxDblClick === 1) {
+                        this.checkBoxDblClick = 0;
+                        this.propagateChecked = 'false';
+                    } else {
+                        this.propagateChecked = 'parent';
+                    }
+                }, 500);
+            }
+        },
         focusHierarchyItem: function() {
             appLog("tab");
             this.isItemFocused = true;
@@ -869,6 +903,11 @@ export default {
         }
     },
     watch: {
+        propagateChecked: function() {
+            setTimeout(() => {
+                this.propagateChecked = 'parent';
+            }, 1000);
+        },
         relevantExistingAlignmentsMapLastUpdate: function() {
             // this is bobo but it works...screw you vue!!!
             if (this.view === 'crosswalk' && this.subview === 'crosswalkSource') {
@@ -938,7 +977,13 @@ export default {
         },
         parentChecked: function() {
             if (!this.newCompetency) {
-                this.checked = this.parentChecked;
+                if (this.view === 'framework') {
+                    if (this.propagateParentChecked === 'true') {
+                        this.checked = this.parentChecked;
+                    }
+                } else {
+                    this.checked = this.parentChecked;
+                }
             }
         },
         arrowKey: function() {

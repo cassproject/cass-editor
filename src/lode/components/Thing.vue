@@ -116,6 +116,7 @@
                                 :editingThing="editingThing"
                                 :canEdit="false"
                                 :profile="profile"
+                                @set-checkbox="$emit('set-checkbox')"
                                 @select="select" />
                             <slot name="frameworkTags" />
                         </template>
@@ -132,6 +133,7 @@
                                 :editingThing="editingThing"
                                 :canEdit="allowPropertyEdits(key)"
                                 :profile="profile"
+                                @set-checkbox="$emit('set-checkbox')"
                                 @select="select" />
                         </template>
                         <template v-else-if="showViewProperties && viewProperties[heading]">
@@ -146,6 +148,7 @@
                                 :editingThing="editingThing"
                                 :canEdit="allowPropertyEdits(key)"
                                 :profile="profile"
+                                @set-checkbox="$emit('set-checkbox')"
                                 @select="select" />
                         </template>
                     </div>
