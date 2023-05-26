@@ -16,6 +16,7 @@
                 {'show-all': filter === 'showAll'},
                 { 'is-focused': isItemFocused},
                 { 'is-selected': checked},
+                { 'is-highlighted': highlighted},
                 { 'is-copied': isItemCopied},
                 { 'is-cut': isItemCut},
                 { 'can-paste': canPaste},
@@ -342,6 +343,7 @@
                     @remove-object="removeObject"
                     :properties="properties"
                     :parentChecked="checked"
+                    :parentHighlighted="parentHighlighted ? parentHighlighted : checked"
                     :propagateParentChecked="propagateChecked === 'parent' ? propagateParentChecked : propagateChecked"
                     :shiftKey="shiftKey"
                     :arrowKey="arrowKey"
@@ -382,6 +384,7 @@ export default {
         properties: String,
         expandAll: Boolean,
         parentChecked: Boolean,
+        parentHighlighted: Boolean,
         propagateParentChecked: String,
         view: {
             type: String,
@@ -577,6 +580,13 @@ export default {
                 return this.canEditAny(this.obj);
             }
             return true;
+        },
+        highlighted: function() {
+            if (this.parentHighlighted) {
+                return true;
+            } else {
+                return this.checked;
+            }
         }
     },
     // used to help the parent know when nodes stop rendering

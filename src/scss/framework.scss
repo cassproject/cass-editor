@@ -398,6 +398,10 @@ drag, drag, and chosen states
                 background-color: rgba($link, .2);
                 border-radius: 0rem;
             }
+            .lode__hierarchy-item.is-highlighted {
+                background-color: rgba($link, .2);
+                border-radius: 0rem;
+            }
             .lode__hierarchy-item.is-cut {
                 border-radius: 0rem;
                 border: dashed 2px $dark;
