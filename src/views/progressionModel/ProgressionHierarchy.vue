@@ -244,6 +244,7 @@
                     :properties="properties"
                     :expandAll="expanded==true"
                     :parentChecked="false"
+                    :parentHighlighted="false"
                     :shiftKey="shiftKey"
                     :arrowKey="arrowKey" />
             </draggable>
