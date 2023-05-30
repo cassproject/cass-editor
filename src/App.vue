@@ -106,6 +106,7 @@ export default {
                 }
                 if (this.queryParams.user === "wait") {
                     this.$store.commit('featuresEnabled/shareEnabled', false);
+                    this.$store.commit('featuresEnabled/shareLink', true);
                 }
                 // Add support for show=mine. This param was already being used by CE, but was no longer functioning as expected.
                 //  OwnedByMe offers the expected functionality. Including show=mine for compatibility with existing clients.
