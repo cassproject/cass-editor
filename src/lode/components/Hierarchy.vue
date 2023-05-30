@@ -366,7 +366,8 @@
                     :largeNumberOfItems="hasLargeNumberOfItems"
                     :hierarchyEnabled="hierarchyEnabled"
                     :containerSubType="container.subType"
-                    :canEditAssertions="canEditAssertions" />
+                    :canEditAssertions="canEditAssertions"
+                    :propagateParentChecked="parent" />
 
             <!--</transition-group>-->
             </draggable>

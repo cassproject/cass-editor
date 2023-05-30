@@ -609,7 +609,7 @@ export default {
         if (this.selectAll) {
             this.checked = this.selectAll;
         }
-        if (this.parentChecked && !this.newCompetency) {
+        if ((this.propagateParentChecked === 'parent') && !this.newCompetency) {
             this.checked = this.parentChecked;
         }
         if (this.selectedArray && this.selectedArray.length) {
