@@ -623,13 +623,13 @@ export default {
     },
     methods: {
         setCheckbox: function() {
-            if (this.view === 'framework') {
+            if (this.view === 'framework' || this.view === 'concept') {
                 this.checked = !this.checked;
                 this.propagateChecked = 'false';
             }
         },
         checkForDblClick: function() {
-            if (this.view === 'framework') {
+            if (this.view === 'framework' || this.view === 'concept') {
                 // Select all children on double click. PropagateChecked exists on each node and can be set to true, false, or parent.
                 // It is set to parent by default, indicating that the node should take on the value of the parentPropagateChecked.
                 // If this node's checkbox is changed, then propagateChecked takes on the value of false to select only itself and
@@ -989,7 +989,7 @@ export default {
         },
         parentChecked: function() {
             if (!this.newCompetency) {
-                if (this.view === 'framework') {
+                if (this.view === 'framework' || this.view === 'concept') {
                     if (this.propagateParentChecked === 'true') {
                         this.checked = this.parentChecked;
                     }
