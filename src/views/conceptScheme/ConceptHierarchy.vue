@@ -236,8 +236,7 @@
                     @draggable-check="onDraggableCheck"
                     :properties="properties"
                     :expandAll="expanded==true"
-                    :parentChecked="false"
-                    :parentHighlighted="false"
+                    :propagateParentChecked="parent"
                     :shiftKey="shiftKey"
                     :arrowKey="arrowKey"
                     :largeNumberOfItems="hasLargeNumberOfItems" />
