@@ -582,11 +582,13 @@ export default {
             return true;
         },
         highlighted: function() {
-            if (this.parentHighlighted) {
-                return true;
-            } else {
-                return this.checked;
-            }
+            // Removing this functionality for now. Going to replace with a fade.
+            // if (this.parentHighlighted) {
+            //     return true;
+            // } else {
+            //     return this.checked;
+            // }
+            return false;
         }
     },
     // used to help the parent know when nodes stop rendering
