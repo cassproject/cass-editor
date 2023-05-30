@@ -51,7 +51,7 @@
             v-else-if="!confirmMakePublic && !confirmMakePrivate">
             <div
                 class="columns box is-mobile is-multiline"
-                v-if="shareEnabled">
+                v-if="shareEnabled || shareLink">
                 <!-- share link -->
                 <div class="column is-12">
                     <h3 class="has-text-weight-bold">
@@ -473,6 +473,12 @@ export default {
                 return false;
             }
             return this.$store.state.featuresEnabled.shareEnabled;
+        },
+        shareLink: function() {
+            if (this.resource) {
+                return false;
+            }
+            return this.$store.state.featuresEnabled.shareLink;
         },
         userManagementEnabled: function() {
             return this.$store.state.featuresEnabled.userManagementEnabled;

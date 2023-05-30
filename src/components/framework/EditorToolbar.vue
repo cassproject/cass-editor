@@ -155,7 +155,7 @@
                     </div>
                     <!-- get share link -->
                     <div
-                        v-else-if="shareEnabled"
+                        v-else-if="shareEnabled || shareLink"
                         title="Get shareable link"
                         @click="showManageUsersModal(); showShareDropdown = false;"
                         class="button is-text has-text-dark ">
@@ -169,7 +169,7 @@
                     v-if="!showUserManagementIcon">
                     <!-- get share link -->
                     <div
-                        v-if="shareEnabled"
+                        v-if="shareEnabled || shareLink"
                         title="Get shareable link"
                         @click="showManageUsersModal(); showShareDropdown = false;"
                         class="button is-text has-text-dark ">
@@ -614,6 +614,9 @@ export default {
         },
         shareEnabled: function() {
             return this.$store.state.featuresEnabled.shareEnabled;
+        },
+        shareLink: function() {
+            return this.$store.state.featuresEnabled.shareLink;
         },
         userManagementEnabled: function() {
             return this.$store.state.featuresEnabled.userManagementEnabled;
