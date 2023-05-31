@@ -1597,7 +1597,7 @@ export default {
         },
         shareLink: function() {
             let link = window.location.href;
-            link = link.replace('/frameworks', '').replace('/directory', '').replace('#', '');
+            link = link.replace('/frameworks', '').replace('/directory', '');
             if (this.objectType === "Directory") {
                 if (link.contains('?')) {
                     return (link + "&directoryId=" + this.objectShortId);
