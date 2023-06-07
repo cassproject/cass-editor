@@ -25,7 +25,7 @@
                     @click="showUserInfo = !showUserInfo">
                     <span
                         :title="'Signed in as: ' + displayName">
-                        {{ loggedOnPerson.email != null ? loggedOnPerson.email.slice(0, 2) : "ME" }}
+                        {{ loggedOnPerson.email != null ? loggedOnPerson.email.slice(0, 2) : (displayName !== 'No user' ? displayName.slice(0, 2) : "ME") }}
                     </span>
                 </button>
             </div>
@@ -650,6 +650,8 @@ export default {
         displayName: function() {
             if (this.isLoggedOn) {
                 return this.loggedOnPerson.name;
+            } else if (this.availableIdentities.length > 0) {
+                return this.availableIdentities[0].displayName ? this.availableIdentities[0].displayName : 'Organization';
             } else {
                 return 'No user';
             }
