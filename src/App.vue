@@ -777,7 +777,7 @@ export default {
                     if (data.action === "identity") {
                         identity = new EcIdentity();
                         identity.ppk = EcPpk.fromPem(data.identity);
-                        identity.displayName = "You";
+                        identity.displayName = data.name ? data.name : "You";
                         EcIdentityManager.default.addIdentity(identity);
                         callback();
                         var message = {
