@@ -41,6 +41,10 @@
 			"@id": "skos:altLabel",
 			"@language": "en-us"
 		},
+		"skos:notation": {
+			"@id": "skos:notation",
+			"@language": "en-us"
+		},
 		"skos:broader": {
 			"@id": "skos:broader",
 			"@type": "@id"
