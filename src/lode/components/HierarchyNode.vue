@@ -344,7 +344,7 @@
                     :properties="properties"
                     :parentChecked="checked"
                     :parentHighlighted="parentHighlighted ? parentHighlighted : checked"
-                    :propagateParentChecked="propagateChecked === 'parent' ? propagateParentChecked : propagateChecked"
+                    :propagateParentChecked="propagateChecked === 'parent' ? propagateParentChecked : (propagateChecked === 'true' ? 'true' : 'false')"
                     :shiftKey="shiftKey"
                     :arrowKey="arrowKey"
                     :largeNumberOfItems="largeNumberOfItems"
@@ -385,7 +385,9 @@ export default {
         expandAll: Boolean,
         parentChecked: Boolean,
         parentHighlighted: Boolean,
-        propagateParentChecked: String,
+        propagateParentChecked: {
+            type: String
+        },
         view: {
             type: String,
             default: 'framework'
