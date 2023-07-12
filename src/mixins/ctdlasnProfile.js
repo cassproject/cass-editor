@@ -877,7 +877,6 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "An alphanumeric notation or ID code identifying this competency in common use among end-users."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Alternative Coded Notation"}],
-                    "max": 1,
                     "heading": "Context"
                 },
                 "https://purl.org/ctdlasn/terms/comprisedOf": {
