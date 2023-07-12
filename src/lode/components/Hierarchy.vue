@@ -367,7 +367,7 @@
                     :hierarchyEnabled="hierarchyEnabled"
                     :containerSubType="container.subType"
                     :canEditAssertions="canEditAssertions"
-                    :propagateParentChecked="false" />
+                    propagateParentChecked="false" />
 
             <!--</transition-group>-->
             </draggable>
