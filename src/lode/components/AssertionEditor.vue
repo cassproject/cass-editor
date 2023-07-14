@@ -542,10 +542,16 @@ export default {
             });
         },
         generateCanAssertion: function() {
-            return new Promise((resolve, reject) => {
+            return new Promise(async (resolve, reject) => {
                 var a = new EcAssertion();
                 a.generateId(this.repo.selectedServer);
                 a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                if (this.repo.adminKeys) {
+                    for (let key of this.repo.adminKeys) {
+                        let adminPk = EcPk.fromPem(key);
+                        a.addOwner(adminPk);
+                    }
+                }
                 a.setSubjectAsync(EcPk.fromPem(this.subject), () => {
                     a.setAgentAsync(EcPk.fromPem(this.me), () => {
                         a.setCompetency(EcRemoteLinkedData.trimVersionFromUrl(this.uri));
@@ -616,6 +622,12 @@ export default {
                 var a = new EcAssertion();
                 a.generateId(this.repo.selectedServer);
                 a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+                if (this.repo.adminKeys) {
+                    for (let key of this.repo.adminKeys) {
+                        let adminPk = EcPk.fromPem(key);
+                        a.addOwner(adminPk);
+                    }
+                }
                 a.setSubjectAsync(EcPk.fromPem(this.subject), () => {
                     a.setAgentAsync(EcPk.fromPem(this.me), () => {
                         a.setCompetency(EcRemoteLinkedData.trimVersionFromUrl(this.uri));
