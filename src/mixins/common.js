@@ -547,7 +547,9 @@ export default {
                 "ceasn:comprisedOf",
                 "ceasn:derivedFrom",
                 "ceasn:inferredCompetency",
-                "ceasn:isVersionOf"
+                "ceasn:isVersionOf",
+                "ceasn:alignTo",
+                "ceasn:alignFrom"
             ];
             if (urlProperties.includes(relationType)) {
                 // This property is attached to competency, not a relation attached to framework
