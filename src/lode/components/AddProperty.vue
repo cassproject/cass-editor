@@ -436,7 +436,9 @@ export default {
                 "https://purl.org/ctdlasn/terms/comprisedOf",
                 "https://purl.org/ctdlasn/terms/derivedFrom",
                 "https://purl.org/ctdlasn/terms/inferredCompetency",
-                "https://purl.org/ctdlasn/terms/isVersionOf"
+                "https://purl.org/ctdlasn/terms/isVersionOf",
+                "https://purl.org/ctdlasn/terms/alignTo",
+                "https://purl.org/ctdlasn/terms/alignFrom"
             ];
             if (urlProperties.includes(property)) {
                 return false;
