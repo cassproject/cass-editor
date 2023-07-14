@@ -43,7 +43,7 @@
 		},
 		"skos:notation": {
 			"@id": "skos:notation",
-			"@language": "en-us"
+			"@type": "xsd:string"
 		},
 		"skos:broader": {
 			"@id": "skos:broader",

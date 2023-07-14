@@ -242,6 +242,9 @@
 	"skos:prefLabel": {
 	  "@container": "@language"
 	},
+	"skos:notation": {
+		"@type": "xsd:string"
+	},
 	"skos:definition": {
 	  "@container": "@language"
 	}

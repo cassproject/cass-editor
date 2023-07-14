@@ -45,6 +45,10 @@
 			"@id": "skos:definition",
 			"@language": "en-us"
 		},
+		"skos:notation": {
+			"@id": "skos:notation",
+			"@type": "xsd:string"
+		},
 		"skos:narrower": {
 			"@id": "skos:narrower",
 			"@type": "@id",

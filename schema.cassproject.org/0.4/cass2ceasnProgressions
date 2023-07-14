@@ -63,7 +63,8 @@
 			"@container": "@list"
 		},
 		"skos:notation": {
-			"@id": "skos:notation"
+			"@id": "skos:notation",
+			"@type": "xsd:string"
 		},
 		"skos:note": {
 			"@id": "skos:note",
