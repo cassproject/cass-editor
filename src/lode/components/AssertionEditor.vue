@@ -542,7 +542,7 @@ export default {
             });
         },
         generateCanAssertion: function() {
-            return new Promise(async (resolve, reject) => {
+            return new Promise((resolve, reject) => {
                 var a = new EcAssertion();
                 a.generateId(this.repo.selectedServer);
                 a.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
