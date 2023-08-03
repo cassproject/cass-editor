@@ -437,6 +437,7 @@
     </div>
 </template>
 <script>
+import debounce from 'lodash/debounce';
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
@@ -792,11 +793,9 @@ export default {
          * if the timeout length is met (no new nodes)
          * the done loading event is triggered
          */
-        startTime: function() {
-            setTimeout(() => {
-                this.$emit('done-loading-nodes');
-            }, 1000);
-        },
+        startTime: debounce(function() {
+            this.$emit('done-loading-nodes');
+        }, 100),
         computeHierarchy: async function() {
             var me = this;
             var r = {};

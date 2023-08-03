@@ -455,7 +455,7 @@ ul.processing-list {
     flex-direction: column;
     .busy-hierarchy__list-item {
         background-color: rgba($light, .5);
-        animation: pulse 4s infinite;
+        //animation: pulse 4s infinite;
         width: 100%;
         height: 48px;
         padding:8px 8px 0px 8px;
@@ -466,7 +466,7 @@ ul.processing-list {
         height: 24px;
         margin: 8px 8px 8px 24px;
         background-color: rgba($light, .5);
-        animation: pulse 4s infinite;
+        //animation: pulse 4s infinite;
     }
 }
 

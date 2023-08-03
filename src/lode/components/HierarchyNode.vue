@@ -3,8 +3,14 @@
         :class="[isPotentialCrosswalkTarget ? crosswalkTargetClass : '', editingNodeClass
         ]"
         v-cloak
+        v-observe-visibility="{
+            callback: visibilityChanged,
+            once: true,
+            throttle: 300,
+        }"
         :id="obj.shortId()">
         <div
+            v-if="isVisible"
             class="lode__hierarchy-item columns is-paddingless is-gapless is-marginless is-mobile is-multiline"
             :class="[
                 subview,
@@ -436,6 +442,7 @@ export default {
                 forceFallback: true
             },
             isDraggable: true,
+            isVisible: false,
             addingNode: false,
             editingNode: false,
             collapse: true,
@@ -618,9 +625,6 @@ export default {
             if (EcArray.has(this.selectedArray, this.obj.shortId())) {
                 this.checked = true;
             }
-        }
-        if (this.containerSubType === 'Collection') {
-            this.getCanEditInCollection();
         }
     },
     methods: {
@@ -913,6 +917,15 @@ export default {
                         this.selectChild(child, selected);
                     }
                 }
+            }
+        },
+        visibilityChanged: function(isVisible, entry) {
+            if (isVisible) {
+                this.isVisible = true;
+                if (this.containerSubType === 'Collection') {
+                    this.getCanEditInCollection();
+                }
+                appLog("node is visible");
             }
         }
     },
