@@ -762,7 +762,7 @@ export default {
                         // delay enough for the schema to load from App so not every Thing component has to do this
                         setTimeout(() => {
                             me.loadSchema(callback, type);
-                        }, 1000);
+                        }, 100);
                     }, function() {
                         me.expand(me.obj, function() {
                         });
