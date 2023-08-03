@@ -95,8 +95,7 @@
 			"@type": "@id"
 		},
 		"skos:notation": {
-			"@id": "skos:notation",
-			"@type": "xsd:string"
+			"@id": "skos:notation"
 		},
 		"skos:note": {
 			"@id": "skos:note",
