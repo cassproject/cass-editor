@@ -39,6 +39,28 @@
                                         class="is-size-6">
                                         {{ importStatus }}
                                     </p>
+                                    <div v-if="importDuplicates.length > 0">
+                                        <p
+                                            class="is-size-6">
+                                            Skip {{ importDuplicates.length }} duplicate competenc{{ importDuplicates.length > 1 ? 'ies' : 'y' }}. Duplicates listed below will <b>NOT</b> be uploaded.
+                                        </p>
+                                        <br />
+                                        <ul>
+                                            <li
+                                                class="is-size-6"
+                                                v-for="(duplicate, index) in importDuplicates"
+                                                :key="index">
+                                                <span class="">
+                                                    <span class="icon">
+                                                        <i
+                                                            @click="removeDuplicate(index)"
+                                                            class="fa fa-times-circle has-text-danger" />
+                                                    </span>
+                                                    Line {{ duplicate.line }}: {{ duplicate.competencyText ? duplicate.competencyText: '' }} ({{ duplicate.ctid ? duplicate.ctid : (duplicate.id ? duplicate.id: '') }})
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
                             </div>
                             <!-- import errors -->
@@ -352,6 +374,9 @@ export default {
         importStatus: function() {
             return this.$store.getters['app/importStatus'];
         },
+        importDuplicates: function() {
+            return this.$store.getters['app/importDuplicates'];
+        },
         importFileType: function() {
             return this.$store.getters['app/importFileType'];
         },
@@ -470,6 +495,11 @@ export default {
                     this.optionImportIdColumn = column.value;
                 }
             }
+        },
+        removeDuplicate: function(index) {
+            const duplicates = this.$store.getters['app/importDuplicates'];
+            duplicates.splice(index, 1);
+            this.$store.commit('app/importDuplicates', duplicates);
         }
     },
     watch: {

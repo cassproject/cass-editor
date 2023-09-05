@@ -53,6 +53,7 @@ const state = {
         firstImport: Boolean,
         errors: [], // erorrs from the code or from the api
         feedback: '', // additional information
+        duplicates: [],
         framework: null,
         serverUrl: '',
         url: '',
@@ -169,6 +170,7 @@ const mutations = {
             firstImport: Boolean,
             errors: [], // erorrs from the code or from the api
             feedback: '', // additional information
+            duplicates: [],
             framework: null,
             serverUrl: '',
             url: '',
@@ -216,6 +218,9 @@ const mutations = {
     },
     importFeedback: function(state, val) {
         state.import.feedback = val;
+    },
+    importDuplicates: function(state, val) {
+        state.import.duplicates = val;
     },
     importFramework: function(state, val) {
         state.import.framework = val;
@@ -451,6 +456,9 @@ const getters = {
     },
     importFeedback: state => {
         return state.import.feedback;
+    },
+    importDuplicates: state => {
+        return state.import.duplicates;
     },
     importFramework: state => {
         return state.import.framework;
