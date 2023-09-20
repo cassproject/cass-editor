@@ -41,25 +41,32 @@
                                     </p>
                                     <div v-if="importDuplicates.length > 0">
                                         <p
-                                            class="is-size-6">
-                                            Skip {{ importDuplicates.length }} duplicate competenc{{ importDuplicates.length > 1 ? 'ies' : 'y' }}. Duplicates listed below will <b>NOT</b> be uploaded.
+                                            class="is-size-6 has-text-danger">
+                                            <br>
+                                            Found {{ importDuplicates.length }} instance{{ importDuplicates.length > 1 ? 's' : '' }} of duplicate competencies with different CTIDs.
+                                            <br>
+                                            For each instance, choose whether to upload all or select a single CTID.
                                         </p>
-                                        <br />
-                                        <ul>
-                                            <li
-                                                class="is-size-6"
-                                                v-for="(duplicate, index) in importDuplicates"
-                                                :key="index">
-                                                <span class="">
-                                                    <span class="icon">
-                                                        <i
-                                                            @click="removeDuplicate(index)"
-                                                            class="fa fa-times-circle has-text-danger" />
-                                                    </span>
-                                                    Line {{ duplicate.line }}: {{ duplicate.competencyText ? duplicate.competencyText: '' }} ({{ duplicate.ctid ? duplicate.ctid : (duplicate.id ? duplicate.id: '') }})
-                                                </span>
-                                            </li>
-                                        </ul>
+                                        <br>
+                                        <div v-for="(set) in importDuplicates">
+                                            {{ '(' + set.lines + ') ' + set.competencyText }}{{ set.codedNotation ? '(' + set.codedNotation + ')' : '' }}
+                                            <div>
+                                                <label for="select-ctid">select CTID </label>
+                                                <select
+                                                    id="select-ctid"
+                                                    name="CTIDs">
+                                                    <option
+                                                        v-for="duplicate in set.duplicates"
+                                                        :value="duplicate.line">
+                                                        {{ duplicate.ctid }}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <br>
+                                        </div>
+                                        <br>
+                                        <br>
+                                        <br>
                                     </div>
                                 </div>
                             </div>
@@ -375,7 +382,37 @@ export default {
             return this.$store.getters['app/importStatus'];
         },
         importDuplicates: function() {
-            return this.$store.getters['app/importDuplicates'];
+            // Separate duplicates by competencyText and codedNotation
+            let setsOfDuplicates = [];
+            const duplicates = this.$store.getters['app/importDuplicates'];
+            duplicates.forEach((duplicate) => {
+                const foundIndex = setsOfDuplicates.findIndex((set) => (set.competencyText === duplicate.competencyText) && (set.codedNotation === duplicate.codedNotation));
+                console.log(duplicate);
+                console.log(foundIndex);
+                if (foundIndex >= 0) {
+                    setsOfDuplicates[foundIndex].lines += ', ' + duplicate.line;
+                    setsOfDuplicates[foundIndex].duplicates.push({
+                        ctid: duplicate.ctid,
+                        id: duplicate.id
+                    });
+                } else {
+                    setsOfDuplicates.push({
+                        competencyText: duplicate.competencyText,
+                        codedNotation: duplicate.codedNotation,
+                        lines: 'Line ' + duplicate.line,
+                        duplicates: [
+                            {
+                                ctid: 'upload all'
+                            },
+                            {
+                                ctid: duplicate.ctid
+                            }
+                        ]
+                    });
+                }
+            });
+            console.log(setsOfDuplicates);
+            return setsOfDuplicates;
         },
         importFileType: function() {
             return this.$store.getters['app/importFileType'];
