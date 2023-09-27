@@ -53,6 +53,8 @@ const state = {
         firstImport: Boolean,
         errors: [], // erorrs from the code or from the api
         feedback: '', // additional information
+        duplicates: [],
+        skip: [],
         framework: null,
         serverUrl: '',
         url: '',
@@ -169,6 +171,8 @@ const mutations = {
             firstImport: Boolean,
             errors: [], // erorrs from the code or from the api
             feedback: '', // additional information
+            duplicates: [],
+            skip: [],
             framework: null,
             serverUrl: '',
             url: '',
@@ -216,6 +220,12 @@ const mutations = {
     },
     importFeedback: function(state, val) {
         state.import.feedback = val;
+    },
+    importDuplicates: function(state, val) {
+        state.import.duplicates = val;
+    },
+    importSkip: function(state, val) {
+        state.import.skip = val;
     },
     importFramework: function(state, val) {
         state.import.framework = val;
@@ -366,6 +376,8 @@ const actions = {
         commit('importAllowCancel', false);
         commit('importFeedback', '');
         commit('importFileType', '');
+        commit('importDuplicates', []);
+        commit('importSkip', []);
     },
     refreshDirectories: function({commit}) {
         let directories = [];
@@ -451,6 +463,12 @@ const getters = {
     },
     importFeedback: state => {
         return state.import.feedback;
+    },
+    importDuplicates: state => {
+        return state.import.duplicates;
+    },
+    importSkip: state => {
+        return state.import.skip;
     },
     importFramework: state => {
         return state.import.framework;

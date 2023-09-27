@@ -181,6 +181,8 @@ export default {
             this.$store.commit('app/importStatus', '');
             this.$store.commit('app/importFeedback', '');
             this.$store.commit('app/importFileType', '');
+            this.$store.commit('app/importDuplicates', []);
+            this.$store.commit('app/importSkip', []);
             if (this.caseDocs) {
                 this.caseDocs = [];
             }
@@ -222,13 +224,18 @@ export default {
                         me.$store.commit('app/importTransition', 'process');
                     });
                 } else {
-                    CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount, collectionCount) {
+                    CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount, collectionCount, duplicates) {
                         if (frameworkCount) {
                             me.$store.commit('app/importFileType', 'ctdlasncsv');
                             feedback = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
                         } else if (collectionCount) {
                             me.$store.commit('app/importFileType', 'collectioncsv');
                             feedback = "Import " + collectionCount + " collections and " + competencyCount + " competencies.";
+                        }
+                        if (duplicates && duplicates.length) {
+                            me.$store.commit('app/importDuplicates', duplicates);
+                        } else {
+                            me.$store.commit('app/importDuplicates', []);
                         }
                         me.$store.commit('app/importStatus', feedback);
                         me.$store.commit('app/importTransition', 'info');
@@ -584,6 +591,7 @@ export default {
             if (EcIdentityManager.default.ids.length > 0) { ceo = EcIdentityManager.default.ids[0]; }
             let me = this;
             me.$store.commit('app/importAllowCancel', true);
+            let skip = this.$store.getters['app/importSkip'];
             CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies, relations) {
                 me.$store.commit('app/importAllowCancel', false);
                 for (var i = 0; i < frameworks.length; i++) {
@@ -631,7 +639,7 @@ export default {
                 me.$store.commit('app/importStatus', failure);
                 me.$store.commit('app/importTransition', 'process');
                 me.$store.commit('app/addImportError', failure);
-            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'collectioncsv');
+            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'collectioncsv', skip);
         },
         importPdf: function() {
             var me = this;
