@@ -39,35 +39,6 @@
                                         class="is-size-6">
                                         {{ importStatus }}
                                     </p>
-                                    <div v-if="importDuplicates.length > 0">
-                                        <p
-                                            class="is-size-6 has-text-danger">
-                                            <br>
-                                            Found {{ importDuplicates.length }} instance{{ importDuplicates.length > 1 ? 's' : '' }} of duplicate competencies with different CTIDs.
-                                            <br>
-                                            For each instance, choose whether to upload all or select a single CTID.
-                                        </p>
-                                        <br>
-                                        <div v-for="(set) in importDuplicates">
-                                            {{ '(' + set.lines + ') ' + set.competencyText }}{{ set.codedNotation ? '(' + set.codedNotation + ')' : '' }}
-                                            <div>
-                                                <label for="select-ctid">select CTID </label>
-                                                <select
-                                                    id="select-ctid"
-                                                    name="CTIDs">
-                                                    <option
-                                                        v-for="duplicate in set.duplicates"
-                                                        :value="duplicate.line">
-                                                        {{ duplicate.ctid }}
-                                                    </option>
-                                                </select>
-                                            </div>
-                                            <br>
-                                        </div>
-                                        <br>
-                                        <br>
-                                        <br>
-                                    </div>
                                 </div>
                             </div>
                             <!-- import errors -->
@@ -208,6 +179,43 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- handle duplicates -->
+                        <div v-if="duplicateSets.length > 0">
+                            <div
+                                class="has-text-danger">
+                                <br>
+                                Found {{ duplicateSets.length }} instance{{ duplicateSets.length > 1 ? 's' : '' }} of duplicate competencies with different CTIDs.
+                                <br>
+                                For each instance, choose whether to upload all or select a single CTID.
+                            </div>
+                            <br>
+                            <div v-for="(set, i) in duplicateSets">
+                                <div class="has-text-weight-bold">
+                                    {{ set.competencyText }}
+                                </div>
+                                <div v-if="set.codedNotation">
+                                    {{ "ceasn:codedNotation: " + set.codedNotation }}
+                                </div>
+                                <div>
+                                    {{ set.lines }}
+                                </div>
+                                <br />
+                                <div class="control">
+                                    <label for="select-ctid">select CTID </label>
+                                    <select
+                                        id="select-ctid"
+                                        name="CTIDs"
+                                        v-model="selectedDuplicateOption[i]">
+                                        <option
+                                            v-for="duplicate in set.duplicates"
+                                            :value="duplicate.ctid">
+                                            {{ duplicate.ctid }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <br>
+                            </div>
+                        </div>
                         <!-- handle non pdf imports -->
                         <div
                             v-if="(importType === 'file' && importTransition === 'info') || importAllowCancel"
@@ -282,7 +290,9 @@ export default {
             optionImportNameColumn: this.$store.getters['app/importNameColumn'],
             optionImportDescriptionColumn: this.$store.getters['app/importDescriptionColumn'],
             optionImportScopeColumn: this.$store.getters['app/importScopeColumn'],
-            optionImportIdColumn: this.$store.getters['app/importIdColumn']
+            optionImportIdColumn: this.$store.getters['app/importIdColumn'],
+            selectedDuplicateOption: [],
+            duplicateSets: []
         };
     },
     computed: {
@@ -381,39 +391,6 @@ export default {
         importStatus: function() {
             return this.$store.getters['app/importStatus'];
         },
-        importDuplicates: function() {
-            // Separate duplicates by competencyText and codedNotation
-            let setsOfDuplicates = [];
-            const duplicates = this.$store.getters['app/importDuplicates'];
-            duplicates.forEach((duplicate) => {
-                const foundIndex = setsOfDuplicates.findIndex((set) => (set.competencyText === duplicate.competencyText) && (set.codedNotation === duplicate.codedNotation));
-                console.log(duplicate);
-                console.log(foundIndex);
-                if (foundIndex >= 0) {
-                    setsOfDuplicates[foundIndex].lines += ', ' + duplicate.line;
-                    setsOfDuplicates[foundIndex].duplicates.push({
-                        ctid: duplicate.ctid,
-                        id: duplicate.id
-                    });
-                } else {
-                    setsOfDuplicates.push({
-                        competencyText: duplicate.competencyText,
-                        codedNotation: duplicate.codedNotation,
-                        lines: 'Line ' + duplicate.line,
-                        duplicates: [
-                            {
-                                ctid: 'upload all'
-                            },
-                            {
-                                ctid: duplicate.ctid
-                            }
-                        ]
-                    });
-                }
-            });
-            console.log(setsOfDuplicates);
-            return setsOfDuplicates;
-        },
         importFileType: function() {
             return this.$store.getters['app/importFileType'];
         },
@@ -437,6 +414,9 @@ export default {
         },
         importIdColumn: function() {
             return this.$store.getters['app/importIdColumn'];
+        },
+        importDuplicates: function() {
+            return this.$store.getters['app/importDuplicates'];
         },
         importSourceColumn: {
             get() {
@@ -492,7 +472,7 @@ export default {
                 x: false,
                 y: true
             };
-
+            this.updateDuplicateSkips();
             if (this.importFileType === 'csv') {
                 // prepare csv
                 this.$store.commit('app/importFrameworkName', this.optionImportFrameworkName);
@@ -533,10 +513,55 @@ export default {
                 }
             }
         },
-        removeDuplicate: function(index) {
+        findDuplicateSets: function() {
+            // Separate duplicates by competencyText and codedNotation
+            this.duplicateSets = [];
             const duplicates = this.$store.getters['app/importDuplicates'];
-            duplicates.splice(index, 1);
-            this.$store.commit('app/importDuplicates', duplicates);
+            duplicates.forEach((duplicate) => {
+                const foundIndex = this.duplicateSets.findIndex((set) => (set.competencyText === duplicate.competencyText) && (set.codedNotation === duplicate.codedNotation));
+                if (foundIndex >= 0) {
+                    this.duplicateSets[foundIndex].lines += ', ' + duplicate.line;
+                    this.duplicateSets[foundIndex].duplicates.push({
+                        ctid: duplicate.ctid,
+                        id: duplicate.id
+                    });
+                } else {
+                    this.duplicateSets.push({
+                        competencyText: duplicate.competencyText,
+                        codedNotation: duplicate.codedNotation,
+                        lines: 'Lines ' + duplicate.line,
+                        duplicates: [
+                            {
+                                ctid: 'upload all'
+                            },
+                            {
+                                ctid: duplicate.ctid
+                            }
+                        ]
+                    });
+                }
+            });
+            this.selectedDuplicateOption = [];
+            this.duplicateSets.forEach(() => {
+                this.selectedDuplicateOption.push('upload all');
+            });
+        },
+        updateDuplicateSkips: function() {
+            let skip = [];
+            this.selectedDuplicateOption.forEach((set, i) => {
+                if (set !== 'upload all') {
+                    this.duplicateSets[i].duplicates.forEach((duplicate) => {
+                        if (duplicate.ctid !== set && !duplicate.ctid.includes('upload all')) {
+                            skip.push(duplicate.ctid);
+                            if (duplicate.replaceWith) {
+                                // Replace all instances of duplicate.ctid with duplicate.replaceWith in import file
+                            }
+                        }
+                    });
+                }
+            });
+            this.duplicateSets = [];
+            this.$store.commit('app/importSkip', skip);
         }
     },
     watch: {
@@ -566,6 +591,9 @@ export default {
         },
         importTargetColumn: function() {
             this.csvRelationDetails.targetColumn.value = this.importTargetColumn;
+        },
+        importDuplicates: function() {
+            this.findDuplicateSets();
         }
     }
 };

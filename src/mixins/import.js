@@ -181,6 +181,8 @@ export default {
             this.$store.commit('app/importStatus', '');
             this.$store.commit('app/importFeedback', '');
             this.$store.commit('app/importFileType', '');
+            this.$store.commit('app/importDuplicates', []);
+            this.$store.commit('app/importSkip', []);
             if (this.caseDocs) {
                 this.caseDocs = [];
             }
@@ -589,8 +591,7 @@ export default {
             if (EcIdentityManager.default.ids.length > 0) { ceo = EcIdentityManager.default.ids[0]; }
             let me = this;
             me.$store.commit('app/importAllowCancel', true);
-            let duplicates = this.$store.getters['app/importDuplicates'];
-            let skip = duplicates.map((element) => { return element.ctid; });
+            let skip = this.$store.getters['app/importSkip'];
             CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies, relations) {
                 me.$store.commit('app/importAllowCancel', false);
                 for (var i = 0; i < frameworks.length; i++) {

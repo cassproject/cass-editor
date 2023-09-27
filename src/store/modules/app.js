@@ -54,6 +54,7 @@ const state = {
         errors: [], // erorrs from the code or from the api
         feedback: '', // additional information
         duplicates: [],
+        skip: [],
         framework: null,
         serverUrl: '',
         url: '',
@@ -171,6 +172,7 @@ const mutations = {
             errors: [], // erorrs from the code or from the api
             feedback: '', // additional information
             duplicates: [],
+            skip: [],
             framework: null,
             serverUrl: '',
             url: '',
@@ -221,6 +223,9 @@ const mutations = {
     },
     importDuplicates: function(state, val) {
         state.import.duplicates = val;
+    },
+    importSkip: function(state, val) {
+        state.import.skip = val;
     },
     importFramework: function(state, val) {
         state.import.framework = val;
@@ -371,6 +376,8 @@ const actions = {
         commit('importAllowCancel', false);
         commit('importFeedback', '');
         commit('importFileType', '');
+        commit('importDuplicates', []);
+        commit('importSkip', []);
     },
     refreshDirectories: function({commit}) {
         let directories = [];
@@ -459,6 +466,9 @@ const getters = {
     },
     importDuplicates: state => {
         return state.import.duplicates;
+    },
+    importSkip: state => {
+        return state.import.skip;
     },
     importFramework: state => {
         return state.import.framework;
