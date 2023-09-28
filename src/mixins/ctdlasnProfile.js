@@ -589,6 +589,26 @@ export default {
                     "max": 1,
                     "heading": "General"
                 },
+                "https://purl.org/ctdl/terms/collectionType": {
+                    "@id": "https://purl.org/ctdl/terms/collectionType",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Type of collection, list, array, or other grouping of resources; select from an existing enumeration of such types. Concept scheme: Collection Category."}],
+                    "options": [
+                        {display: "ETPL", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/ETPL"},
+                        {display: "GIBill", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/GIBill"},
+                        {display: "IndustryRecognized", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/IndustryRecognized"},
+                        {display: "Perkins", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/Perkins"},
+                        {display: "PromiseScholarship", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/PromiseScholarship"},
+                        {display: "Quality", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/Quality"},
+                        {display: "StateApprovedPostsecondary", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/StateApprovedPostsecondary"}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Collection Type"}],
+                    "heading": "General"
+                },
                 "https://schema.cassproject.org/0.4/socList": {
                     "@id": "https://schema.cassproject.org/0.4/socList",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -667,6 +687,17 @@ export default {
                     "max": 1,
                     "heading": "General"
                 },
+                "https://purl.org/ctdl/terms/membershipCondition": {
+                    "@id": "https://purl.org/ctdl/terms/membershipCondition",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Conditions and requirements to be included as a member."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Membership Condition"}],
+                    "heading": "General"
+                },
                 "headings": ["General", "Tagging", "Keys"],
                 "primaryProperties": [
                     "http://schema.org/name",
@@ -680,6 +711,8 @@ export default {
                 ],
                 "secondaryProperties": [
                     "https://purl.org/ctdl/terms/classification",
+                    "https://purl.org/ctdl/terms/collectionType",
+                    "https://purl.org/ctdl/terms/membershipCondition",
                     "https://schema.cassproject.org/0.4/socList",
                     "https://schema.cassproject.org/0.4/naicsList",
                     "https://schema.cassproject.org/0.4/cipList",
