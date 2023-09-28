@@ -130,6 +130,14 @@
         "ceterms:subjectWebpage": {
 			"@id": "ceterms:subjectWebpage",
 			"@type": "@id"
+		},
+        "ceterms:collectionType": {
+			"@id": "ceterms:collectionType",
+			"@type": "@id"
+		},
+        "ceterms:membershipCondition": {
+			"@id": "ceterms:membershipCondition",
+			"@type": "@id"
 		}
 	}
 }
