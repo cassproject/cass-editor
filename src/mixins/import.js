@@ -857,12 +857,12 @@ export default {
                     }
                 }, false, me.repo);
         },
-        importJsonLd: function(data) {
+        importJsonLd: function(importData) {
             return new Promise((resolve, reject) => {
                 this.$store.commit('app/importTransition', 'process');
                 var formData = new FormData();
-                if (data != null && data !== undefined) {
-                    formData.append('data', JSON.stringify(data));
+                if (importData != null && importData !== undefined) {
+                    formData.append('data', JSON.stringify(importData));
                 } else {
                     var file = this.importFile[0];
                     formData.append('file', file);
@@ -903,6 +903,12 @@ export default {
                     appLog(failure.statusText);
                     me.$store.commit('app/addImportError', failure);
                     reject(failure.statusText);
+                }).catch((err) => {
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
+                    appLog(err);
+                    me.$store.commit('app/addImportError', err);
+                    reject(err);
                 });
                 if (me.conceptMode || me.progressionMode) {
                     if (me.importFileType === 'ctdlasnjsonldprogression') {
