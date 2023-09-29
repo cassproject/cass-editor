@@ -336,6 +336,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     v-else-if="isObject(expandedValue[index])">
                     <div
                         class="property"
+                        :class="customDisplay"
                         :title="expandedValue[index]['@value']">
                         <template v-if="type && type.includes('resource')">
                             <span class="tag is-light is-link">{{ type }}</span>
@@ -348,7 +349,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         <template v-else>
                             <span
                                 class="tag is-size-7 is-light"
-                                v-if="expandedProperty !== 'http://schema.org/name' && expandedProperty !== 'dcterms:title' && expandedProperty !== 'skos:prefLabel'">{{ displayLabel }}</span>
+                                v-if="customTitle">{{ displayLabel }}</span>
                             {{ expandedValue[index]["@value"] }}
                         </template>
                     </div>
@@ -560,6 +561,23 @@ export default {
         }
     },
     computed: {
+        queryParams: function() {
+            return this.$store.getters['editor/queryParams'];
+        },
+        customTitle: function() {
+            if (this.profile && this.isCompetency && this.queryParams.ceasnDataFields === 'true') {
+                return true;
+            }
+            return (this.expandedProperty !== 'http://schema.org/name' && this.expandedProperty !== 'dcterms:title' && this.expandedProperty !== 'skos:prefLabel');
+        },
+        customDisplay: function() {
+            if (this.isCompetency && this.queryParams.ceasnDataFields === 'true') {
+                if (this.expandedProperty.includes('name')) {
+                    return 'has-text-weight-normal';
+                }
+            }
+            return '';
+        },
         shortTypeAsClass: function() {
             if (this.objectType === "Level") {
                 return this.objectType;
