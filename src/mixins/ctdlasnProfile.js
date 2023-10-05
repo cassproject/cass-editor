@@ -594,17 +594,17 @@ export default {
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Type of collection, list, array, or other grouping of resources; select from an existing enumeration of such types. Concept scheme: Collection Category."}],
                     "options": [
-                        {display: "ETPL", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/ETPL"},
-                        {display: "GIBill", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/GIBill"},
-                        {display: "IndustryRecognized", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/IndustryRecognized"},
-                        {display: "Perkins", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/Perkins"},
-                        {display: "PromiseScholarship", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/PromiseScholarship"},
-                        {display: "Quality", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/Quality"},
-                        {display: "StateApprovedPostsecondary", val: "https://credreg.net/ctdl/terms/CredentialAlignmentObject/StateApprovedPostsecondary"}
+                        {display: "ETPL", val: "ETPL"},
+                        {display: "GIBill", val: "GIBill"},
+                        {display: "IndustryRecognized", val: "IndustryRecognized"},
+                        {display: "Perkins", val: "Perkins"},
+                        {display: "PromiseScholarship", val: "PromiseScholarship"},
+                        {display: "Quality", val: "Quality"},
+                        {display: "StateApprovedPostsecondary", val: "StateApprovedPostsecondary"}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Collection Type"}],
                     "heading": "General"
@@ -692,7 +692,7 @@ export default {
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
                     [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Conditions and requirements to be included as a member."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Membership Condition"}],
