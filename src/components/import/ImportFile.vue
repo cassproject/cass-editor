@@ -552,10 +552,9 @@ export default {
                 if (set !== 'upload all') {
                     this.duplicateSets[i].duplicates.forEach((duplicate) => {
                         if (duplicate.ctid !== set && !duplicate.ctid.includes('upload all')) {
-                            skip.push(duplicate.ctid);
-                            if (duplicate.replaceWith) {
-                                // Replace all instances of duplicate.ctid with duplicate.replaceWith in import file
-                            }
+                            skip.push({
+                                ctid: duplicate.ctid,
+                                replaceWith: set});
                         }
                     });
                 }
