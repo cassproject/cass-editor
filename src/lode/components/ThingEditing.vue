@@ -1324,7 +1324,7 @@ export default {
                             me.spitEvent('viewChanged');
                         }
                     } catch (ex) {
-                        appError(err);
+                        appError(ex);
                         me.errorSaving = true;
                     }
                 }
