@@ -9,12 +9,38 @@ import Clipboard from 'v-clipboard';
 import store from './store/index.js';
 import InfiniteLoading from 'vue-infinite-loading';
 import VueResource from 'vue-resource';
-import DOMPurify from 'dompurify';
 
 import VueObserveVisibility from 'vue-observe-visibility';
 import AsyncComputed from 'vue-async-computed';
 
 var VueScrollTo = require('vue-scrollto');
+
+const {fetch: originalFetch} = global;
+
+let PENDING_REQUESTS = 0;
+const MAX_REQUESTS_COUNT = 10;
+const INTERVAL_MS = 10;
+
+global.fetch = async(...args) => {
+    let [resource, config] = args;
+    // request interceptor here
+    if (PENDING_REQUESTS >= MAX_REQUESTS_COUNT) {
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve(global.fetch(...args));
+            }, INTERVAL_MS);
+        });
+    } else {
+        PENDING_REQUESTS++;
+        const response = await originalFetch(resource, config);
+
+        PENDING_REQUESTS = Math.max(0, PENDING_REQUESTS - 1);
+        // response interceptor here
+        return response;
+    }
+};
+
+
 require("cassproject");
 global.UUID = require('pure-uuid');
 
