@@ -362,7 +362,7 @@ export default {
         // Compact operation removes arrays when length is 1, but some fields need to be arrays in the data that's saved
         turnFieldsBackIntoArrays: function(rld) {
             var fields = [
-                "owner", "reader", "signature", "competency", "level", "relation", "skos:hasTopConcept", "skos:narrower", "skos:broader", "skos:broadMatch", "skos:closeMatch",
+                "owner", "reader", "signature", "signatureSha256", "competency", "level", "relation", "skos:hasTopConcept", "skos:narrower", "skos:broader", "skos:broadMatch", "skos:closeMatch",
                 "skos:exactMatch", "skos:narrowMatch", "skos:related"
             ];
             for (var i = 0; i < fields.length; i++) {

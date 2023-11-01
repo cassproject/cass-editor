@@ -281,7 +281,7 @@ const actions = {
         return new Promise((resolve, reject) => {
             var url = EcRemote.urlAppend(payload.server, payload.service);
             url = EcRemote.upgradeHttpToHttps(url);
-            limitApi.get(url, {
+            fetch(url, {
                 headers: payload.headers
             }).then((resp) => {
                 if (payload.success) {
