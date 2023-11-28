@@ -801,58 +801,79 @@ export default {
                 }
             }
         },
-        caseDetectEndpoint: function() {
-            var me = this;
-            let error = {
-                message: "Unable to import from the URL Endpoint provided.",
-                details: ""
-            };
+        caseDetectEndpoint: async function() {
             let serverUrl = this.importServerUrl;
             if (!serverUrl.endsWith("/")) {
                 serverUrl += "/";
             }
-            this.get(serverUrl, "ims/case/v1p0/CFDocuments/?limit=1000", {"Accept": "application/json"}, function(success) {
-                me.caseGetDocsSuccess(success);
-            }, function(failure) {
-                if (failure) {
-                    error.details = "Error: " + failure;
-                    if (failure === 401) {
-                        error.details += " A CASE framework cannot be imported if it uses API Key authentication.";
+            this.caseDocs = [];
+            let limit = 100;
+            let offset = 0;
+            let success = await this.caseGetDocsBatch(serverUrl, limit, offset);
+            while (success === true) {
+                offset += 100;
+                success = await this.caseGetDocsBatch(serverUrl, limit, offset);
+            }
+        },
+        caseGetDocsBatch: function(serverUrl, limit, offset) {
+            return new Promise((resolve) => {
+                var me = this;
+                let error = {
+                    message: "Unable to import from the URL Endpoint provided.",
+                    details: ""
+                };
+                this.get(serverUrl, `ims/case/v1p0/CFDocuments/?limit=${limit}&offset=${offset}`, {"Accept": "application/json"}, function(result) {
+                    const success = me.caseGetDocsSuccess(result);
+                    resolve(success);
+                }, function(failure) {
+                    if (failure) {
+                        error.details = "Error: " + failure;
+                        if (failure === 401) {
+                            error.details += " A CASE framework cannot be imported if it uses API Key authentication.";
+                        }
+                        me.$store.commit('app/importTransition', 'upload');
+                        me.$store.commit('app/addImportError', error.details);
+                        me.showModal('error', error);
+                    } else {
+                        me.caseGetServerSide();
                     }
-                    me.$store.commit('app/importTransition', 'upload');
-                    me.$store.commit('app/addImportError', error.details);
-                    me.showModal('error', error);
-                } else {
-                    me.caseGetServerSide();
-                }
+                    resolve(false);
+                });
             });
         },
         caseGetDocsSuccess: function(result) {
-            result = JSON.parse(result);
-            let error;
-            this.caseDocs = [];
-            if (result.CFDocuments == null) {
-                error = "No frameworks found. Please check the URL and try again.";
-                this.$store.commit('app/addImportError', error);
-                me.$store.commit('app/importTransition', 'process');
-            } else {
-                let message = result.CFDocuments.length + " frameworks detected.";
-                this.$store.commit('app/importStatus', message);
-                this.$store.commit('app/importTransition', 'serverFrameworksDetected');
-                for (var i = 0; i < result.CFDocuments.length; i++) {
-                    var doc = result.CFDocuments[i];
-                    var obj = {};
-                    obj.name = doc.title;
-                    obj.id = doc.uri;
-                    obj.identifier = doc.identifier;
-                    obj.loading = false;
-                    obj.success = false;
-                    obj.error = false;
-                    obj.checked = false;
-                    this.caseDocs.push(obj);
+            return new Promise((resolve) => {
+                result = JSON.parse(result);
+                let error;
+                if (result.CFDocuments == null) {
+                    error = "No frameworks found. Please check the URL and try again.";
+                    this.$store.commit('app/addImportError', error);
+                    me.$store.commit('app/importTransition', 'process');
+                    resolve(false);
+                } else {
+                    if (result.CFDocuments.length === 0) {
+                        let message = this.caseDocs.length + " frameworks detected.";
+                        this.$store.commit('app/importStatus', message);
+                        this.$store.commit('app/importTransition', 'serverFrameworksDetected');
+                        this.caseCancel = false;
+                        resolve(false);
+                    }
+                    for (var i = 0; i < result.CFDocuments.length; i++) {
+                        var doc = result.CFDocuments[i];
+                        var obj = {};
+                        obj.name = doc.title;
+                        obj.id = doc.uri;
+                        obj.identifier = doc.identifier;
+                        obj.loading = false;
+                        obj.success = false;
+                        obj.error = false;
+                        obj.checked = false;
+                        this.caseDocs.push(obj);
+                    }
+                    this.caseCancel = false;
+                    resolve(true);
                 }
-                this.caseCancel = false;
-            }
+            });
         },
         caseGetServerSide: function() {
             var me = this;
