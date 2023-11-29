@@ -124,7 +124,7 @@ TO DO MAYBE: Separate out property by editing or not.
                                 v-clipboard:success="clipboardSuccess"
                                 v-clipboard:error="clipboardError">
                                 <i
-                                    v-if="showClipboardSuccessMessage"
+                                    v-if="showClipboardSuccessMessage && isCopied(item)"
                                     class="fa fa-check has-text-success" />
                                 <i
                                     v-else
@@ -222,7 +222,7 @@ TO DO MAYBE: Separate out property by editing or not.
                                     v-clipboard:success="clipboardSuccess"
                                     v-clipboard:error="clipboardError">
                                     <i
-                                        v-if="showClipboardSuccessMessage"
+                                        v-if="showClipboardSuccessMessage && isCopied(item)"
                                         class="fa fa-check has-text-success" />
                                     <i
                                         v-else
@@ -265,7 +265,7 @@ TO DO MAYBE: Separate out property by editing or not.
                                 v-clipboard:success="clipboardSuccess"
                                 v-clipboard:error="clipboardError">
                                 <i
-                                    v-if="showClipboardSuccessMessage"
+                                    v-if="showClipboardSuccessMessage && isCopied(item)"
                                     class="fa fa-check has-text-success" />
                                 <i
                                     v-else
@@ -476,7 +476,8 @@ export default {
             errorValidating: null,
             removePropertyConfirmModal: false,
             propertyToRemove: null,
-            expandedValue: []
+            expandedValue: [],
+            copiedItem: null
         };
     },
     components: {
@@ -824,7 +825,8 @@ export default {
                 failure: failure
             });
         },
-        clipboardSuccess: function() {
+        clipboardSuccess: function({value, event}) {
+            this.copiedItem = value;
             let self = this;
             this.showClipboardSuccessMessage = true;
             setTimeout(() => {
@@ -1052,6 +1054,17 @@ export default {
                 if (type["@id"] != null && type["@id"] !== undefined) {
                     return true;
                 } else if (type["@value"] && type["@value"].indexOf("http") === 0) {
+                    return true;
+                }
+            }
+            return false;
+        },
+        isCopied: function(item) {
+            if (EcObject.keys(item).length === 1) {
+                if (item["@value"] && item["@value"] === this.copiedItem) {
+                    return true;
+                }
+                if (item["@id"] && item["@id"] === this.copiedItem) {
                     return true;
                 }
             }

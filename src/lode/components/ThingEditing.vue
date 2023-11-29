@@ -864,7 +864,7 @@ export default {
                     this.$store.commit('lode/setAddingValues', []);
                     return this.errorMessage.push("This property must have a URL and a name.");
                 }
-                if (value["@value"].indexOf("http") === -1) {
+                if (!value["@value"].startsWith("http")) {
                     this.$store.commit('lode/setAddingValues', []);
                     return this.errorMessage.push("This property must be a URL. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.");
                 }
@@ -873,7 +873,7 @@ export default {
                 if ((!this.addingChecked && range[0].toLowerCase().indexOf("level") !== -1) ||
                    (range[0].indexOf("http://schema.org/URL") !== -1 || range[0].toLowerCase().indexOf("concept") !== -1 ||
                     range[0].toLowerCase().indexOf("competency") !== -1)) {
-                    if (value.indexOf("http") === -1) {
+                    if (!value.startsWith("http")) {
                         this.$store.commit('lode/setAddingValues', []);
                         return this.errorMessage.push("This property must be a URL. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.");
                     }
