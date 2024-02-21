@@ -598,13 +598,13 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Type of collection, list, array, or other grouping of resources; select from an existing enumeration of such types. Concept scheme: Collection Category."}],
                     "options": [
-                        {display: "ETPL", val: "https://credreg.net/ctdl/vocabs/collectionCategory/ETPL"},
-                        {display: "GIBill", val: "https://credreg.net/ctdl/vocabs/collectionCategory/GIBill"},
-                        {display: "IndustryRecognized", val: "https://credreg.net/ctdl/vocabs/collectionCategory/IndustryRecognized"},
-                        {display: "Perkins", val: "https://credreg.net/ctdl/vocabs/collectionCategory/Perkins"},
-                        {display: "PromiseScholarship", val: "https://credreg.net/ctdl/vocabs/collectionCategory/PromiseScholarship"},
-                        {display: "Quality", val: "https://credreg.net/ctdl/vocabs/collectionCategory/Quality"},
-                        {display: "StateApprovedPostsecondary", val: "https://credreg.net/ctdl/vocabs/collectionCategory/StateApprovedPostsecondary"}
+                        {display: "ETPL", val: "ETPL"},
+                        {display: "GIBill", val: "GIBill"},
+                        {display: "IndustryRecognized", val: "IndustryRecognized"},
+                        {display: "Perkins", val: "Perkins"},
+                        {display: "PromiseScholarship", val: "PromiseScholarship"},
+                        {display: "Quality", val: "Quality"},
+                        {display: "StateApprovedPostsecondary", val: "StateApprovedPostsecondary"}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Collection Type"}],
                     "heading": "General"
