@@ -20,6 +20,7 @@ module.exports = {
         ca: fs.readFileSync('ca.pem'),
         disableHostCheck: true
     },
+    chainWebpack: config => config.optimization.minimize(false),
     configureWebpack: {
         plugins: [new CompressionPlugin()],
         resolve: {
