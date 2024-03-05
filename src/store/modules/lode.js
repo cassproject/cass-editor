@@ -70,15 +70,30 @@ const mutations = {
     setAddingProperty(state, value) {
         state.addingProperty = value;
     },
-    setAddingValues(state, value) {
-        state.addingValues = value;
+    setAddingValues(state, values) {
+        let newValues = [];
+        if (Array.isArray(values)) {
+            values.forEach((value) => {
+                if (value) {
+                    let newValue = trimUrl(value);
+                    if (newValue) newValues.push(newValue);
+                }
+            });
+        } else {
+            if (values) {
+                let newValue = trimUrl(values);
+                if (newValue) newValues.push(newValue);
+            }
+        }
+        state.addingValues = newValues;
     },
     addToAddingValues(state, value) {
+        let newValue = trimUrl(value);
         if (!state.addingValues) {
             state.addingValues = [];
-            state.addingValues.push(value);
-        } else {
-            state.addingValues.push(value);
+        }
+        if (newValue) {
+            state.addingValues.push(newValue);
         }
     },
     setAddingRange(state, value) {
@@ -163,6 +178,29 @@ const getters = {
         return state.includeRelations;
     }
 };
+
+function trimUrl(url) {
+    if (!url) {
+        return undefined;
+    }
+    if (url === "" || (url["@value"] && url["@value"] === "")) {
+        return undefined;
+    }
+    let trimmed = url;
+    if (trimmed["@value"] && typeof trimmed["@value"] === "string" && trimmed["@value"].endsWith("/")) {
+        trimmed["@value"] = trimmed["@value"].slice(0, trimmed["@value"].length - 2);
+    }
+    if (trimmed["@value"] && typeof trimmed["@value"] === "string" && trimmed["@value"].startsWith("/")) {
+        trimmed["@value"] = trimmed["@value"].slice(1);
+    }
+    if (trimmed && typeof trimmed === "string" && trimmed.endsWith("/")) {
+        trimmed = trimmed.slice(0, trimmed.length - 2);
+    }
+    if (trimmed && typeof trimmed === "string" && trimmed.startsWith("/")) {
+        trimmed = trimmed.slice(1);
+    }
+    return trimmed;
+}
 
 jsonld.documentLoader = async function(url) {
     if (url in state.rawSchemata) {
