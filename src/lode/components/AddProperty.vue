@@ -508,6 +508,7 @@ export default {
             this.selectedPropertyToAddIsLangString = false;
             this.limitedTypes = [];
             this.limitedConcepts = [];
+            this.$store.commit('lode/setAddingValues', []);
             if (this.profile && this.profile[this.selectedPropertyToAdd.value]) {
                 var range = [];
                 var ary = this.profile[this.selectedPropertyToAdd.value]["http://schema.org/rangeIncludes"];

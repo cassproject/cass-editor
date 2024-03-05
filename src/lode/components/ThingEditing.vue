@@ -842,9 +842,8 @@ export default {
         saveNewProperty: async function() {
             // Validate input
             var property = this.addingProperty;
-            // Remove unnecessary slash from end of url. github #827
-            var value = (this.addingValues.length > 0) ? this.addingValues[0] : undefined;
-            value = value.endsWith("/") ? value.slice(0, value.length - 1) : value;
+            // It's possible to accumulate more than one value if user deleted values in textbox. Use the last added value.
+            var value = (this.addingValues.length > 0) ? this.addingValues[this.addingValues.length - 1] : undefined;
             var range = this.addingRange;
             this.errorMessage = [];
             this.errorMessage = [];
