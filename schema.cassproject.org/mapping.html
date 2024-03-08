@@ -75,8 +75,6 @@
         $("a[data-open]").click(function(ev) {
             ev.preventDefault();
         });
-        if (location.hash != null && location.hash != "")
-            $(location.hash).trigger('click');
 
         var d = {};
         var t = {};
@@ -183,8 +181,6 @@
                                     $.getJSON("https://schema.cassproject.org/0.3/ceasn2cassConcepts",function(data,textStatus,xhr){
                                         var s = data["@context"];
                                         bringIn(s);
-                                        console.log(d);
-                                        console.log(t);
                                         spitOut();
                                     });
                                 });

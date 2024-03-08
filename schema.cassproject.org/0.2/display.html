@@ -481,9 +481,7 @@
         $("a[data-open]").click(function(ev) {
             ev.preventDefault();
         });
-        if (location.hash != null && location.hash != "")
-            $(location.hash).trigger('click');
-
+        
         $(document).ready(function(){
         	$("#versionSelect").change(function(){
         		var version = $("#versionSelect").val();
