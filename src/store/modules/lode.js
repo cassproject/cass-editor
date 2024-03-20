@@ -188,13 +188,13 @@ function trimUrl(url) {
     }
     let trimmed = url;
     if (trimmed["@value"] && typeof trimmed["@value"] === "string" && trimmed["@value"].endsWith("/")) {
-        trimmed["@value"] = trimmed["@value"].slice(0, trimmed["@value"].length - 2);
+        trimmed["@value"] = trimmed["@value"].slice(0, trimmed["@value"].length - 1);
     }
     if (trimmed["@value"] && typeof trimmed["@value"] === "string" && trimmed["@value"].startsWith("/")) {
         trimmed["@value"] = trimmed["@value"].slice(1);
     }
     if (trimmed && typeof trimmed === "string" && trimmed.endsWith("/")) {
-        trimmed = trimmed.slice(0, trimmed.length - 2);
+        trimmed = trimmed.slice(0, trimmed.length - 1);
     }
     if (trimmed && typeof trimmed === "string" && trimmed.startsWith("/")) {
         trimmed = trimmed.slice(1);
