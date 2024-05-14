@@ -33,6 +33,9 @@ global.fetch = async(...args) => {
     } else {
         PENDING_REQUESTS++;
         try {
+            if (config != null && config.headers != null && Object.values(config.headers).length === 0) {
+                delete config.headers;
+            }
             const response = await originalFetch(resource, config);
             // response interceptor here
             return response;
