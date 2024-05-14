@@ -32,11 +32,13 @@ global.fetch = async(...args) => {
         });
     } else {
         PENDING_REQUESTS++;
-        const response = await originalFetch(resource, config);
-
-        PENDING_REQUESTS = Math.max(0, PENDING_REQUESTS - 1);
-        // response interceptor here
-        return response;
+        try {
+            const response = await originalFetch(resource, config);
+            // response interceptor here
+            return response;
+        } finally {
+            PENDING_REQUESTS = Math.max(0, PENDING_REQUESTS - 1);
+        }
     }
 };
 
