@@ -842,8 +842,8 @@ export default {
         saveNewProperty: async function() {
             // Validate input
             var property = this.addingProperty;
-            // It's possible to accumulate more than one value if user deleted values in textbox. Use the last added value.
-            var value = (this.addingValues.length > 0) ? this.addingValues[this.addingValues.length - 1] : undefined;
+            // Revert fix for github #827 - caused major breaking change github #1360
+            var value = (this.addingValues.length > 0) ? this.addingValues[0] : undefined;
             var range = this.addingRange;
             this.errorMessage = [];
             this.errorMessage = [];
