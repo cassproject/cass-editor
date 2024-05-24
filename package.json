@@ -5,11 +5,11 @@
   "scripts": {
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
-    "serve": "export NODE_OPTIONS=--openssl-legacy-provider &set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve --port=8082 --fix",
+    "serve": "vue-cli-service serve --port=8082 --fix",
     "build": "vue-cli-service build --mode production",
     "lint": "vue-cli-service lint",
     "buildDev": "vue-cli-service build --mode development",
-    "serveDev": "export NODE_OPTIONS=--openssl-legacy-provider &set NODE_OPTIONS=--openssl-legacy-provider && vue-cli-service serve --port=8082 --mode development",
+    "serveDev": "vue-cli-service serve --port=8082 --mode development",
     "test:unit": "vue-cli-service test:unit"
   },
   "main": "/theme.scss",

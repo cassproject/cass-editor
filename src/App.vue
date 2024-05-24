@@ -595,6 +595,7 @@ export default {
                 } else {
                     delete EcRepository.cache[resp];
                     delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp)];
+                    delete EcRepository.cache[EcRemoteLinkedData.veryShortId(repo.selectedServer, EcCrypto.md5(resp))];
                     EcRepository.get(resp, connection.changedObject, appError);
                 }
             };
