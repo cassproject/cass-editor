@@ -585,6 +585,7 @@ export default {
                     for (var i = 0; i < resp.length; i++) {
                         delete EcRepository.cache[resp[i]];
                         delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp[i])];
+                        delete EcRepository.cache[EcRemoteLinkedData.veryShortId(repo.selectedServer, EcCrypto.md5(resp[i]))];
                     }
                     if (me.$store.state.editor.framework == null) return;
                     me.repo.precache(resp, function() {
