@@ -283,7 +283,7 @@
                     <div
                         v-if="!showAddPropertyContent"
                         @click="saveOnce"
-                        :disabled="disableDoneEditingButton"
+                        :disabled="disableDoneEditingButton || saving"
                         title="Done editing"
                         class="button is-outlined is-dark">
                         <span class="export icon">
@@ -294,6 +294,7 @@
                     <div
                         v-if="!showAddPropertyContent && $store.state.editor.newCompetency"
                         @click="saveAndAddAnother"
+                        :disabled="saving"
                         title="Done editing"
                         class="button is-outlined is-dark">
                         <span class="export icon">
@@ -305,6 +306,7 @@
                         <div
                             @click="addSelected"
                             title="Add Competency as Property"
+                            :disabled="saving"
                             :class="{'is-loading': loading}"
                             class="button is-outlined is-primary">
                             <span class="icon">
@@ -1307,7 +1309,6 @@ export default {
                             return;
                         }
                         me.doneSaving = true;
-                        me.saving = false;
                         me.saved = "last saved " + new Date(rld["schema:dateModified"]).toLocaleString();
                         me.$store.commit('editor/changedObject', rld.shortId());
                         if (me.doneValidating) {
@@ -1331,6 +1332,8 @@ export default {
                 }
             } catch (err) {
                 appError(err);
+            } finally {
+                me.saving = false;
             }
         },
         // Compact operation removes arrays when length is 1, but some fields need to be arrays in the data that's saved
