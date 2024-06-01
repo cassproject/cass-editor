@@ -102,6 +102,7 @@ Vue.directive('click-outside', {
 });
 
 EcRepository.caching = true;
+EcRepository.cachingL2 = true;
 
 Vue.config.productionTip = false;
 // Vue.config.silent = true;
