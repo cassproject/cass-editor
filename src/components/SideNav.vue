@@ -536,7 +536,7 @@ export default {
             this.identityDropdownActive = false;
             let person = await window.EcPerson.getByPk(window.repo, window.EcIdentityManager.default.ids[0].ppk.toPk());
             this.$store.commit('user/loggedOnPerson', person);
-            this.availableIdentities = EcIdentityManager.default.ids;
+            this.availableIdentities = window.EcIdentityManager.default.ids;
         },
         setLaunchPluginValues(pluginShortcut) {
             this.$store.commit('app/pluginToLaunch', pluginShortcut);
@@ -592,8 +592,8 @@ export default {
             dir.name = this.directoryName;
             // dir.description = "Test Description";
             dir.generateId(window.repo.selectedServer);
-            if (EcIdentityManager.default.ids.length > 0) {
-                dir.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
+            if (window.EcIdentityManager.default.ids.length > 0) {
+                dir.addOwner(window.EcIdentityManager.default.ids[0].ppk.toPk());
             }
             dir["schema:dateCreated"] = new Date().toISOString();
             dir["schema:dateModified"] = new Date().toISOString();
@@ -611,7 +611,7 @@ export default {
     },
     watch: {
         loggedOnPerson: function() {
-            this.availableIdentities = EcIdentityManager.default.ids;
+            this.availableIdentities = window.EcIdentityManager.default.ids;
         },
         pluginLastUpdate: function() {
             this.buildPluginList(this.buildPluginListComplete);
@@ -696,7 +696,7 @@ export default {
     mounted() {
         this.buildPluginList(this.buildPluginListComplete);
         this.$store.dispatch('app/refreshDirectories');
-        this.availableIdentities = EcIdentityManager.default.ids;
+        this.availableIdentities = window.EcIdentityManager.default.ids;
     }
 };
 </script>

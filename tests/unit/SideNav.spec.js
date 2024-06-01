@@ -1,6 +1,7 @@
 /* eslint-disable */
 
 import {shallowMount, createLocalVue} from '@vue/test-utils';
+import 'cassproject';
 import SideNav from '@/components/SideNav.vue';
 import Vuex from 'vuex';
 import flushPromises from 'flush-promises';
