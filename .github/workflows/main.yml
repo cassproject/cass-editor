@@ -29,7 +29,7 @@ jobs:
       - run: git submodule update --init --remote
       - run: export VUE_APP_API_LOGIN_ENABLED=false
       - run: export DOCS_BASE=/cass-editor/docs/
-      - run: npm ci
+      - run: npm i
       - run: npm run docs:build
       - run: npm run build
 
