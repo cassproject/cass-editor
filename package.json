@@ -1,11 +1,12 @@
 {
   "name": "cass-editor",
-  "version": "1.5.58",
+  "version": "1.5.60",
   "private": true,
   "scripts": {
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
     "serve": "vue-cli-service serve --port=8082 --fix",
+    "serveLocal": "npm run serve",
     "build": "vue-cli-service build --mode production",
     "lint": "vue-cli-service lint",
     "buildDev": "vue-cli-service build --mode development",
@@ -17,7 +18,7 @@
     "bulma": "^0.9.4",
     "bulma-checkradio": "^1.1.1",
     "bulma-switch": "^2.0.4",
-    "cassproject": "^1.5.58",
+    "cassproject": "^1.5.60",
     "core-js": "^3.35.0",
     "dateformat": "^5.0.3",
     "dompurify": "^2.4.7",
