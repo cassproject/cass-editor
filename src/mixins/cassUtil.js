@@ -102,8 +102,17 @@ export const cassUtil = {
             return item.canEditAny(EcIdentityManager.default.getMyPks());
         },
         isAdmin: function() {
-            if (EcIdentityManager.default.ids.length > 0 && window.repo.adminKeys != null && window.repo.adminKeys.length > 0) {
-                if (window.repo.adminKeys[0] === EcIdentityManager.default.ids[0].ppk.toPk().toPem()) { return true; }
+            let adminKeys = window.repo.adminKeys;
+            let userIds = EcIdentityManager.default.ids;
+            if (!Array.isArray(adminKeys)) return false;
+            if (!Array.isArray(userIds)) return false;
+            for (let userId of userIds) {
+                let userKey = userId.ppk.toPk().toPem();
+                for (let adminKey of adminKeys) {
+                    if (userKey === adminKey) {
+                        return true;
+                    }
+                }
             }
             return false;
         },
