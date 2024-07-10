@@ -177,7 +177,7 @@
                 class="select is-small">
                 <select
                     v-model="computedText"
-                    @blur="blur">
+                    @change="blur">
                     <option
                         v-for="item in options"
                         :key="item"
