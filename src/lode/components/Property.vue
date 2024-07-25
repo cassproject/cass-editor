@@ -477,7 +477,8 @@ export default {
             removePropertyConfirmModal: false,
             propertyToRemove: null,
             expandedValue: [],
-            copiedItem: null
+            copiedItem: null,
+            isVisible: false
         };
     },
     components: {
@@ -1136,6 +1137,7 @@ export default {
             this.expandedValue = expanded;
         },
         visibilityChanged: function(isVisible, entry) {
+            this.isVisible = isVisible;
             if (isVisible) {
                 this.getExpandedValue();
             }
@@ -1155,6 +1157,11 @@ export default {
         },
         checkedOptions: function() {
             this.save();
+        },
+        expandedThing: function(newval, oldval) {
+            if (newval['@id'] !== oldval['@id'] && this.isVisible) {
+                this.getExpandedValue();
+            }
         }
     }
 };
