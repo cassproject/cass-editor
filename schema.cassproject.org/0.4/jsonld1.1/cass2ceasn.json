@@ -353,6 +353,18 @@
 		"ceterms:isMemberOf": {
 			"@id": "ceterms:isMemberOf",
 			"@type": "@id"
+		},
+		"ceterms:latestVersion": {
+			"@id": "ceterms:latestVersion",
+			"@type": "@id"
+		},
+		"ceterms:nextVersion": {
+			"@id": "ceterms:nextVersion",
+			"@type": "@id"
+		},
+		"ceterms:previousVersion": {
+			"@id": "ceterms:previousVersion",
+			"@type": "@id"
 		}
 	}
 }

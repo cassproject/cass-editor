@@ -43,5 +43,8 @@
 	"relation": "cass:relation",
 	"rollupRule": "cass:rollupRule",
 	"confidence": "cass:confidence",
-	"evidence": "cass:evidence"
+	"evidence": "cass:evidence",
+	"ceterms:latestVersion": "ceterms:latestVersion",
+	"ceterms:nextVersion": "ceterms:nextVersion",
+	"ceterms:previousVersion": "ceterms:previousVersion"
 }
