@@ -408,6 +408,51 @@ export default {
                     "max": 1,
                     "heading": "Connections"
                 },
+                "https://purl.org/ctdl/terms/latestVersion": {
+                    "@id": "https://purl.org/ctdl/terms/latestVersion",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Latest version of the resource.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Latest Version"}],
+                    "max": 1,
+                    "heading": "Tagging"
+                },
+                "https://purl.org/ctdl/terms/nextVersion": {
+                    "@id": "https://purl.org/ctdl/terms/nextVersion",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Version of the resource that immediately follows this version.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Next Version"}],
+                    "max": 1,
+                    "heading": "Tagging"
+                },
+                "https://purl.org/ctdl/terms/previousVersion": {
+                    "@id": "https://purl.org/ctdl/terms/previousVersion",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Version of the resource that immediately precedes this version.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Previous Version"}],
+                    "max": 1,
+                    "heading": "Tagging"
+                },
                 "headings": ["General", "Tagging", "Connections", "Context", "Rights", "Keys"],
                 "primaryProperties": [
                     "http://schema.org/name",
@@ -427,7 +472,10 @@ export default {
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://schema.cassproject.org/0.4/socList",
                     "https://schema.cassproject.org/0.4/naicsList",
-                    "http://purl.org/ASN/schema/core/hasProgressionModel"
+                    "http://purl.org/ASN/schema/core/hasProgressionModel",
+                    "https://purl.org/ctdl/terms/latestVersion",
+                    "https://purl.org/ctdl/terms/previousVersion",
+                    "https://purl.org/ctdl/terms/nextVersion"
                 ],
                 "tertiaryProperties": [
                     "@id",
@@ -698,6 +746,51 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Membership Condition"}],
                     "heading": "General"
                 },
+                "https://purl.org/ctdl/terms/latestVersion": {
+                    "@id": "https://purl.org/ctdl/terms/latestVersion",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Latest version of the resource.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Latest Version"}],
+                    "max": 1,
+                    "heading": "Tagging"
+                },
+                "https://purl.org/ctdl/terms/nextVersion": {
+                    "@id": "https://purl.org/ctdl/terms/nextVersion",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Version of the resource that immediately follows this version.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Next Version"}],
+                    "max": 1,
+                    "heading": "Tagging"
+                },
+                "https://purl.org/ctdl/terms/previousVersion": {
+                    "@id": "https://purl.org/ctdl/terms/previousVersion",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Version of the resource that immediately precedes this version.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Previous Version"}],
+                    "max": 1,
+                    "heading": "Tagging"
+                },
                 "headings": ["General", "Tagging", "Keys"],
                 "primaryProperties": [
                     "http://schema.org/name",
@@ -718,7 +811,10 @@ export default {
                     "https://schema.cassproject.org/0.4/cipList",
                     "http://schema.org/keywords",
                     "https://purl.org/ctdl/terms/ownedBy",
-                    "https://purl.org/ctdl/terms/subject"
+                    "https://purl.org/ctdl/terms/subject",
+                    "https://purl.org/ctdl/terms/latestVersion",
+                    "https://purl.org/ctdl/terms/previousVersion",
+                    "https://purl.org/ctdl/terms/nextVersion"
                 ],
                 "tertiaryProperties": [
                     "@id",
@@ -1435,6 +1531,51 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Progression Level"}],
                     "heading": "Connections"
                 },
+                "https://purl.org/ctdl/terms/latestVersion": {
+                    "@id": "https://purl.org/ctdl/terms/latestVersion",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Latest version of the resource.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Latest Version"}],
+                    "max": 1,
+                    "heading": "Tagging"
+                },
+                "https://purl.org/ctdl/terms/nextVersion": {
+                    "@id": "https://purl.org/ctdl/terms/nextVersion",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Version of the resource that immediately follows this version.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Next Version"}],
+                    "max": 1,
+                    "heading": "Tagging"
+                },
+                "https://purl.org/ctdl/terms/previousVersion": {
+                    "@id": "https://purl.org/ctdl/terms/previousVersion",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Version of the resource that immediately precedes this version.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Previous Version"}],
+                    "max": 1,
+                    "heading": "Tagging"
+                },
                 "headings": ["General", "Context", "Tagging", "Scales", "Connections", "Keys"],
                 "primaryProperties": [
                     "https://purl.org/ctdlasn/terms/competencyLabel",
@@ -1459,7 +1600,10 @@ export default {
                     "https://schema.cassproject.org/0.4/naicsList",
                     "https://purl.org/ctdlasn/terms/localSubject",
                     "https://purl.org/ctdlasn/terms/crossSubjectReference",
-                    "https://schema.cassproject.org/0.4/cipList"
+                    "https://schema.cassproject.org/0.4/cipList",
+                    "https://purl.org/ctdl/terms/latestVersion",
+                    "https://purl.org/ctdl/terms/previousVersion",
+                    "https://purl.org/ctdl/terms/nextVersion"
                 ],
                 "tertiaryProperties": [
                     "@id",
