@@ -428,6 +428,9 @@ export default {
             if (range.toLowerCase().indexOf("level") !== -1 && this.profile[property]["add"] !== "checkedOptions") {
                 return false;
             }
+            if (range.toLowerCase().indexOf("https://purl.org/ctdl/terms/IdentifierValue") !== -1) {
+                return false;
+            }
             let urlProperties = [
                 "https://purl.org/ctdlasn/terms/knowledgeEmbodied",
                 "https://purl.org/ctdlasn/terms/skillEmbodied",

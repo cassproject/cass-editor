@@ -408,6 +408,20 @@ export default {
                     "max": 1,
                     "heading": "Connections"
                 },
+                "https://purl.org/ctdl/terms/versionIdentifier": {
+                    "@id": "https://purl.org/ctdl/terms/versionIdentifier",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://purl.org/ctdl/terms/IdentifierValue", "@type": "https://purl.org/ctdl/terms/IdentifierValue"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Alphanumeric identifier of the version of the resource that is unique within the organizational context of its owner.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Identifier"}],
+                    "heading": "Tagging"
+                },
                 "https://purl.org/ctdl/terms/latestVersion": {
                     "@id": "https://purl.org/ctdl/terms/latestVersion",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
