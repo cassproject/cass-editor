@@ -1,6 +1,6 @@
 {
   "name": "cass-editor",
-  "version": "1.5.64",
+  "version": "1.5.65",
   "private": true,
   "scripts": {
     "docs:dev": "vuepress dev docs",
@@ -18,7 +18,7 @@
     "bulma": "^0.9.4",
     "bulma-checkradio": "^1.1.1",
     "bulma-switch": "^2.0.4",
-    "cassproject": "^1.5.63",
+    "cassproject": "^1.5.65",
     "core-js": "^3.35.0",
     "dateformat": "^5.0.3",
     "dompurify": "^2.4.9",
@@ -38,7 +38,6 @@
     "vue-resource": "^1.5.3",
     "vue-router": "^3.6.5",
     "vue-scrollto": "^2.20.0",
-    "vue-server-renderer": "^2.7.16",
     "vuedraggable": "^2.24.3",
     "vuex": "^3.6.2"
   },
@@ -59,6 +58,7 @@
     "sass": "^1.70.0",
     "sass-loader": "^10.5.2",
     "vue-template-compiler": "^2.7.16",
+    "vue-server-renderer": "^2.7.16",
     "vuepress": "^1.9.10"
   },
   "eslintConfig": {
