@@ -1529,7 +1529,8 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Reference to a specific point in a progression model."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Progression Level"}],
-                    "heading": "Connections"
+                    "heading": "Connections",
+                    "max": 1
                 },
                 "https://purl.org/ctdl/terms/latestVersion": {
                     "@id": "https://purl.org/ctdl/terms/latestVersion",
