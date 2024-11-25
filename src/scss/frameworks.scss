@@ -53,16 +53,10 @@
                         .lode__Definition,
                         .lode__prefLabel {
                             .lode__thing-heading {
-                                line-height: 1rem;
                                 .framework-details {
                                 }
                             }
                             .lode__Property {
-                                overflow: hidden;
-                                white-space: nowrap;
-                                text-overflow: ellipsis;
-                                max-width: 400px;
-                                line-height: 1rem;
                                 padding: 0 0 .25rem 0;
                                 .tag {
                                     display: none;
