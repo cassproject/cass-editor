@@ -240,38 +240,43 @@ export default {
                         me.$store.commit('app/importStatus', feedback);
                         me.$store.commit('app/importTransition', 'info');
                     }, function(errorMsg) {
-                        CSVImport.analyzeFile(file, function(data) {
-                            me.$store.commit('app/importFileType', 'csv');
-                            me.importFrameworkName = file.name.replace(".csv", "");
-                            for (let i = 0; i < data.length; i++) {
-                                if (data[i][0] === "") {
-                                    data.splice(i, 1);
-                                }
-                            }
-                            for (var i = 0; i < data[0].length; i++) {
-                                let column = {};
-                                column.name = data[0][i];
-                                column.index = i;
-                                me.csvColumns.push(column);
-                                if (column.name.toLowerCase().indexOf("name") !== -1) {
-                                    me.importCsvColumnName = column;
-                                }
-                                if (column.name.toLowerCase().indexOf("description") !== -1) {
-                                    me.importCsvColumnDescription = column;
-                                }
-                                if (column.name.toLowerCase().indexOf("scope") !== -1) {
-                                    me.importCsvColumnScope = column;
-                                }
-                                if (column.name.toLowerCase().indexOf("id") !== -1) {
-                                    me.importCsvColumnId = column;
-                                }
-                            }
-                            me.$store.commit('app/importStatus', (me.competencyCount = (data.length - 1)) + " Competencies Detected.");
-                            me.$store.commit('app/importTransition', 'info');
-                        }, function(error) {
-                            me.$store.commit('app/addImportError', error);
+                        if (errorMsg.indexOf('CTDLASN Parse Error') !== -1) {
+                            me.$store.commit('app/addImportError', errorMsg);
                             me.$store.commit('app/importTransition', 'process');
-                        });
+                        } else {
+                            CSVImport.analyzeFile(file, function(data) {
+                                me.$store.commit('app/importFileType', 'csv');
+                                me.importFrameworkName = file.name.replace(".csv", "");
+                                for (let i = 0; i < data.length; i++) {
+                                    if (data[i][0] === "") {
+                                        data.splice(i, 1);
+                                    }
+                                }
+                                for (var i = 0; i < data[0].length; i++) {
+                                    let column = {};
+                                    column.name = data[0][i];
+                                    column.index = i;
+                                    me.csvColumns.push(column);
+                                    if (column.name.toLowerCase().indexOf("name") !== -1) {
+                                        me.importCsvColumnName = column;
+                                    }
+                                    if (column.name.toLowerCase().indexOf("description") !== -1) {
+                                        me.importCsvColumnDescription = column;
+                                    }
+                                    if (column.name.toLowerCase().indexOf("scope") !== -1) {
+                                        me.importCsvColumnScope = column;
+                                    }
+                                    if (column.name.toLowerCase().indexOf("id") !== -1) {
+                                        me.importCsvColumnId = column;
+                                    }
+                                }
+                                me.$store.commit('app/importStatus', (me.competencyCount = (data.length - 1)) + " Competencies Detected.");
+                                me.$store.commit('app/importTransition', 'info');
+                            }, function(error) {
+                                me.$store.commit('app/addImportError', error);
+                                me.$store.commit('app/importTransition', 'process');
+                            });
+                        }
                     });
                 }
             } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
