@@ -504,6 +504,7 @@ export default {
                                 f.copyFrom(wut);
                             }
                             me.$store.commit('editor/framework', f);
+                            me.setDefaultLanguage();
                             me.spitEvent("frameworkChanged", f.shortId());
                         }
                     }
@@ -519,6 +520,7 @@ export default {
                                 f.copyFrom(wut);
                             }
                             me.$store.commit('editor/framework', f);
+                            me.setDefaultLanguage();
                             me.spitEvent("frameworkChanged", f.shortId());
                         }
                     }

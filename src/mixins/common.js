@@ -190,13 +190,17 @@ export default {
             }
         },
         setDefaultLanguage: function() {
+            let framework = this.framework;
+            if (!framework) {
+                framework = this.$store.getters['editor/framework'];
+            }
             var defaultLanguage;
-            if (this.framework && this.framework["ceasn:inLanguage"]) {
-                defaultLanguage = EcArray.isArray(this.framework["ceasn:inLanguage"]) ? this.framework["ceasn:inLanguage"][0] : this.framework["ceasn:inLanguage"];
-            } else if (this.framework && this.framework["schema:inLanguage"]) {
-                defaultLanguage = EcArray.isArray(this.framework["schema:inLanguage"]) ? this.framework["schema:inLanguage"][0] : this.framework["schema:inLanguage"];
-            } else if (this.framework && this.framework["dcterms:language"]) {
-                defaultLanguage = EcArray.isArray(this.framework["dcterms:language"]) ? this.framework["dcterms:language"][0] : this.framework["dcterms:language"];
+            if (framework && framework["ceasn:inLanguage"]) {
+                defaultLanguage = EcArray.isArray(framework["ceasn:inLanguage"]) ? framework["ceasn:inLanguage"][0] : framework["ceasn:inLanguage"];
+            } else if (framework && framework["schema:inLanguage"]) {
+                defaultLanguage = EcArray.isArray(framework["schema:inLanguage"]) ? framework["schema:inLanguage"][0] : framework["schema:inLanguage"];
+            } else if (framework && framework["dcterms:language"]) {
+                defaultLanguage = EcArray.isArray(framework["dcterms:language"]) ? framework["dcterms:language"][0] : framework["dcterms:language"];
             } else if (navigator.language || navigator.userLanguage) {
                 defaultLanguage = navigator.language || navigator.userLanguage;
             } else {
