@@ -28,6 +28,7 @@
 	"schema:keywords": "ceasn:conceptKeyword",
 	"schema:license": "ceasn:license",
 	"schema:publisher": "ceasn:publisher",
+	"schema:publisherName": "ceasn:publisherName",
 	"dc:rights": "ceasn:rights",
 	"dc:source": "ceasn:source",
 	"validFrom": "ceasn:dateValidFrom",

@@ -14,7 +14,7 @@
     "version": "schema:version",
     "language": "schema:inLanguage",
     "statusStartDate": "schema:datePublished",
-    "publisher": "schema:publisher",
+    "publisher": "schema:publisherName",
     "humanCodingScheme": "ceasn:codedNotation",
     "fullStatement": "schema:name",
     "CFItemType": "case:CFItemType",
