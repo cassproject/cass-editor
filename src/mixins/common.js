@@ -195,10 +195,10 @@ export default {
                 framework = this.$store.getters['editor/framework'];
             }
             var defaultLanguage;
-            if (framework && framework["ceasn:inLanguage"]) {
-                defaultLanguage = EcArray.isArray(framework["ceasn:inLanguage"]) ? framework["ceasn:inLanguage"][0] : framework["ceasn:inLanguage"];
-            } else if (framework && framework["schema:inLanguage"]) {
+            if (framework && framework["schema:inLanguage"]) {
                 defaultLanguage = EcArray.isArray(framework["schema:inLanguage"]) ? framework["schema:inLanguage"][0] : framework["schema:inLanguage"];
+            } else if (framework && framework["ceasn:inLanguage"]) {
+                defaultLanguage = EcArray.isArray(framework["ceasn:inLanguage"]) ? framework["ceasn:inLanguage"][0] : framework["ceasn:inLanguage"];
             } else if (framework && framework["dcterms:language"]) {
                 defaultLanguage = EcArray.isArray(framework["dcterms:language"]) ? framework["dcterms:language"][0] : framework["dcterms:language"];
             } else if (navigator.language || navigator.userLanguage) {
