@@ -1,6 +1,6 @@
 {
   "name": "cass-editor",
-  "version": "1.5.70",
+  "version": "1.5.71",
   "private": true,
   "scripts": {
     "docs:dev": "vuepress dev docs",
