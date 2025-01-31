@@ -183,13 +183,11 @@
 		},
 		"ceasn:hasTopChild": {
 			"@id": "ceasn:hasTopChild",
-			"@type": "@id",
-			"@container": "@list"
+			"@type": "@id"
 		},
 		"ceasn:hasChild": {
 			"@id": "ceasn:hasChild",
-			"@type": "@id",
-			"@container": "@list"
+			"@type": "@id"
 		},
 		"ceasn:narrowAlignment": {
 			"@id": "ceasn:narrowAlignment",

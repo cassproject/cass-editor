@@ -92,12 +92,10 @@
 	  "@type": "@id"
 	},
 	"ceasn:hasChild": {
-	  "@type": "@id",
-	  "@container": "@list"
+	  "@type": "@id"
 	},
 	"ceasn:hasTopChild": {
-	  "@type": "@id",
-	  "@container": "@list"
+	  "@type": "@id"
 	},
 	"ceasn:identifier": {
 	  "@type": "@id"
@@ -208,8 +206,7 @@
 	  "@type": "@id"
 	},
 	"skos:narrower": {
-	  "@type": "@id",
-	  "@container": "@list"
+	  "@type": "@id"
 	},
 	"skos:inScheme": {
 	  "@type": "@id"
@@ -224,8 +221,7 @@
 	  "@type": "@id"
 	},
 	"skos:hasTopConcept": {
-	  "@type": "@id",
-	  "@container": "@list"
+	  "@type": "@id"
 	},
 	"rdfs:label": {
 	  "@container": "@language"

@@ -59,8 +59,7 @@
 		},
 		"skos:narrower": {
 			"@id": "skos:narrower",
-			"@type": "@id",
-			"@container": "@list"
+			"@type": "@id"
 		},
 		"skos:notation": {
 			"@id": "skos:notation"
@@ -111,8 +110,7 @@
 		},
 		"skos:hasTopConcept": {
 			"@id": "skos:hasTopConcept",
-			"@type": "@id",
-			"@container": "@list"
+			"@type": "@id"
 		},
 		"skos:historyNote": {
 			"@id": "skos:historyNote",
