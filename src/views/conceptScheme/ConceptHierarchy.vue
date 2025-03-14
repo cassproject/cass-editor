@@ -510,14 +510,64 @@ export default {
         },
         computeHierarchy: async function() {
             let structure = [];
+            let allChildrenIds = new Set(); // Track all nodes that are children
+            
             if (this.container == null) { return r; }
             if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
+                // First pass - collect all children IDs from both narrower and broader relationships
+                for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
+                    var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
+                    if (c && c["skos:narrower"]) {
+                        for (var j = 0; j < c["skos:narrower"].length; j++) {
+                            allChildrenIds.add(c["skos:narrower"][j]);
+                        }
+                    }
+                }
+                
+                // Additional pass to include broader relationships
+                for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
+                    var conceptId = this.container["skos:hasTopConcept"][i];
+                    var topConcept = await EcConcept.get(conceptId);
+                    
+                    // Check all concepts in the scheme for broader relationships pointing to this concept
+                    if (this.container["skos:hasTopConcept"]) {
+                        for (var j = 0; j < this.container["skos:hasTopConcept"].length; j++) {
+                            if (i === j) continue; // Skip self
+                            
+                            var otherConceptId = this.container["skos:hasTopConcept"][j];
+                            var otherConcept = await EcConcept.get(otherConceptId);
+                            
+                            if (otherConcept && otherConcept["skos:broader"]) {
+                                let broaderRefs = Array.isArray(otherConcept["skos:broader"]) 
+                                    ? otherConcept["skos:broader"] 
+                                    : [otherConcept["skos:broader"]];
+                                    
+                                if (broaderRefs.includes(conceptId)) {
+                                    // This concept is broader than otherConcept, so otherConcept is a child
+                                    allChildrenIds.add(otherConceptId);
+                                    
+                                    // Ensure narrower relationship exists in parent concept
+                                    if (!topConcept["skos:narrower"]) {
+                                        topConcept["skos:narrower"] = [];
+                                    }
+                                    if (!topConcept["skos:narrower"].includes(otherConceptId)) {
+                                        topConcept["skos:narrower"].push(otherConceptId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                // Second pass - only add nodes that aren't children of other nodes
                 for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
                     var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
                     if (c) {
-                        structure.push({"obj": c, "children": []});
-                        if (c["skos:narrower"]) {
-                            this.addChildren(structure, c, i);
+                        // Only add this node if it's not a child of another node
+                        if (!allChildrenIds.has(this.container["skos:hasTopConcept"][i])) {
+                            structure.push({"obj": c, "children": []});
+                            if (c["skos:narrower"]) {
+                                await this.addChildren(structure, c, structure.length - 1);
+                            }
                         }
                     }
                 }
@@ -525,12 +575,29 @@ export default {
             this.structure = structure;
             this.once = false;
         },
-        addChildren: async function(structure, c, i) {
+        addChildren: async function(structure, c, parentIndex) {
+            if (!structure[parentIndex]) {
+                console.error(`Structure at index ${parentIndex} is undefined`);
+                return;
+            }
+            if (!structure[parentIndex].children) {
+                structure[parentIndex].children = [];
+            }
+            if (!c["skos:narrower"]) return;
             for (var j = 0; j < c["skos:narrower"].length; j++) {
                 var subC = await EcConcept.get(c["skos:narrower"][j]);
-                structure[i].children.push({"obj": subC, "children": []});
-                if (subC && subC["skos:narrower"]) {
-                    this.addChildren(structure[i].children, subC, j);
+                if (subC) {
+                    // Add this child node regardless of whether it appears elsewhere
+                    let childIndex = structure[parentIndex].children.length;
+                    structure[parentIndex].children.push({"obj": subC, "children": []});
+                    if (subC["skos:narrower"]) {
+                        // Use the correct index of the newly added child
+                        await this.addChildren(
+                            structure[parentIndex].children,
+                            subC,
+                            childIndex
+                        );
+                    }
                 }
             }
         },
@@ -577,116 +644,205 @@ export default {
         move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, toLast) {
             this.once = true;
             var me = this;
-            if (fromContainerId === toContainerId) {
-                var container = toContainerId ? await EcRepository.get(toContainerId) : this.container;
-                var property = "skos:narrower";
-                if (container.type === "ConceptScheme") {
-                    container = this.container;
-                    property = "skos:hasTopConcept";
-                }
-                var initialValue = container[property] ? container[property].slice() : null;
-                var fromIndex = container[property].indexOf(fromId);
-                container[property].splice(fromIndex, 1);
-                if (toId == null || toId === undefined) {
-                    if (!EcArray.isArray(container[property])) {
-                        container[property] = [];
-                    }
-                    container[property].push(fromId);
-                } else {
-                    if (toLast) {
-                        container[property].push(fromId);
-                    } else {
-                        var toIndex = container[property].indexOf(toId);
-                        container[property].splice(toIndex, 0, fromId);
-                    }
-                }
-                me.$store.commit('editor/addEditsToUndo', [{operation: "update", id: container.shortId(), fieldChanged: [property], initialValue: [initialValue]}]);
-                container["schema:dateModified"] = new Date().toISOString();
-                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[container.id] !== true) {
-                    container = await EcEncryptedValue.toEncryptedValue(container);
-                }
-                this.repo.saveTo(container, function() {
-                    me.computeHierarchy();
-                }, appError);
-            } else {
-                var moveComp = await EcConcept.get(fromId);
-                var fromContainer = fromContainerId ? await EcRepository.get(fromContainerId) : this.container;
-                var fromProperty = "skos:narrower";
-                var fromProperty2 = "skos:broader";
-                var toContainer = toContainerId ? await EcRepository.get(toContainerId) : this.container;
-                var toProperty = "skos:narrower";
-                var toProperty2 = "skos:broader";
-                if (fromContainer.type === "ConceptScheme") {
-                    fromContainer = this.container;
-                    fromProperty = "skos:hasTopConcept";
-                    fromProperty2 = "skos:topConceptOf";
-                }
-                if (toContainer.type === "ConceptScheme") {
-                    toContainer = this.container;
-                    toProperty = "skos:hasTopConcept";
-                    toProperty2 = "skos:topConceptOf";
-                }
+            
+            // Debug logging to track the move operation
+            appLog("Moving concept", {
+                fromId: fromId,
+                toId: toId,
+                fromContainerId: fromContainerId,
+                toContainerId: toContainerId,
+                removeOldRelations: removeOldRelations,
+                toLast: toLast
+            });
+            
+            // Get the concept being moved
+            var movingConcept = await EcConcept.get(fromId);
+            if (!movingConcept) {
+                appError("Cannot find concept to move: " + fromId);
+                return;
+            }
+            
+            // Determine if containers are ConceptSchemes or Concepts
+            var fromContainer = fromContainerId ? await EcRepository.get(fromContainerId) : this.container;
+            var toContainer = toContainerId ? await EcRepository.get(toContainerId) : this.container;
+            
+            var isFromConceptScheme = fromContainer.type === "ConceptScheme";
+            var isToConceptScheme = toContainer.type === "ConceptScheme";
+            
+            // Use the actual concept scheme if needed
+            if (isFromConceptScheme) {
+                fromContainer = this.container;
+            }
+            if (isToConceptScheme) {
+                toContainer = this.container;
+            }
+            
+            // Determine property names based on container types
+            var fromProperty = isFromConceptScheme ? "skos:hasTopConcept" : "skos:narrower";
+            var fromInverseProperty = isFromConceptScheme ? "skos:topConceptOf" : "skos:broader";
+            var toProperty = isToConceptScheme ? "skos:hasTopConcept" : "skos:narrower";
+            var toInverseProperty = isToConceptScheme ? "skos:topConceptOf" : "skos:broader";
+            
+            // Store initial values for undo
+            var fromPropInitialValue = fromContainer[fromProperty] ? fromContainer[fromProperty].slice() : null;
+            var toPropInitialValue = toContainer[toProperty] ? toContainer[toProperty].slice() : null;
+            
+            var conceptFromInverseInitialValue = null;
+            var conceptToInverseInitialValue = null;
+            
+            if (movingConcept[fromInverseProperty]) {
+                conceptFromInverseInitialValue = Array.isArray(movingConcept[fromInverseProperty]) 
+                    ? movingConcept[fromInverseProperty].slice() 
+                    : movingConcept[fromInverseProperty];
+            }
+            
+            if (movingConcept[toInverseProperty]) {
+                conceptToInverseInitialValue = Array.isArray(movingConcept[toInverseProperty]) 
+                    ? movingConcept[toInverseProperty].slice() 
+                    : movingConcept[toInverseProperty];
+            }
+            
+            // Create objects to track for saving
+            var objectsToSave = [movingConcept];
+            
+            // Remove from old container if needed
+            if (removeOldRelations) {
                 var fromIndex = fromContainer[fromProperty].indexOf(fromId);
-                var fromPropInitialValue = fromContainer[fromProperty].slice();
-                var fromProp2InitialValue = moveComp[fromProperty2] ? moveComp[fromProperty2].slice() : null;
-                var toPropInitialValue = toContainer[toProperty] ? toContainer[toProperty].slice() : null;
-                var toProp2InitialValue = moveComp[toProperty2] ? moveComp[toProperty2].slice() : null;
-                if (removeOldRelations) {
+                if (fromIndex !== -1) {
                     fromContainer[fromProperty].splice(fromIndex, 1);
+                    
+                    // Add to objects to save if changed
+                    if (!objectsToSave.includes(fromContainer)) {
+                        objectsToSave.push(fromContainer);
+                    }
                 }
-                if (fromContainerId && moveComp[fromProperty2]) {
-                    if (removeOldRelations) {
-                        EcArray.setRemove(moveComp[fromProperty2], fromContainerId);
-                    }
-                    if (moveComp[fromProperty2].length === 0) {
-                        delete moveComp[fromProperty2];
-                    }
+                
+                // Update inverse relationship in the concept
+                if (isFromConceptScheme) {
+                    // If it was a top concept, remove the topConceptOf relationship
+                    delete movingConcept[fromInverseProperty];
                 } else {
-                    delete moveComp[fromProperty2];
-                }
-                fromContainer["schema:dateModified"] = new Date().toISOString();
-                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[fromContainer.id] !== true) {
-                    fromContainer = await EcEncryptedValue.toEncryptedValue(fromContainer);
-                }
-                this.repo.saveTo(fromContainer, async function() {
-                    if (toId == null || toId === undefined) {
-                        if (!EcArray.isArray(toContainer[toProperty])) {
-                            toContainer[toProperty] = [];
+                    // Otherwise handle the broader relationship
+                    if (Array.isArray(movingConcept[fromInverseProperty])) {
+                        // Remove the specific broader reference
+                        EcArray.setRemove(movingConcept[fromInverseProperty], fromContainerId);
+                        
+                        // If no broader concepts remain and we're moving to the concept scheme,
+                        // check if it should be a root-level concept
+                        if (movingConcept[fromInverseProperty].length === 0 && isToConceptScheme) {
+                            delete movingConcept[fromInverseProperty];
                         }
+                    } else if (movingConcept[fromInverseProperty] === fromContainerId) {
+                        // If it's a direct reference, remove it
+                        delete movingConcept[fromInverseProperty];
+                    }
+                }
+            }
+            
+            // When moving to the concept scheme, we need to handle root-level duplication
+            if (isToConceptScheme) {
+                // If it's already a top concept, don't add it again
+                if (toContainer[toProperty] && toContainer[toProperty].includes(fromId)) {
+                    // Concept is already at root level, no need to add again
+                    appLog("Concept is already a top concept, not adding again");
+                } else {
+                    // Add to concept scheme
+                    if (!toContainer[toProperty]) {
+                        toContainer[toProperty] = [];
+                    }
+                    
+                    if (toId === null || toId === undefined || toLast) {
                         toContainer[toProperty].push(fromId);
                     } else {
                         var toIndex = toContainer[toProperty].indexOf(toId);
+                        if (toIndex !== -1) {
+                            toContainer[toProperty].splice(toIndex, 0, fromId);
+                        } else {
+                            toContainer[toProperty].push(fromId);
+                        }
+                    }
+                    
+                    // Set topConceptOf relationship
+                    movingConcept[toInverseProperty] = toContainerId;
+                    
+                    // Add to objects to save
+                    if (!objectsToSave.includes(toContainer)) {
+                        objectsToSave.push(toContainer);
+                    }
+                }
+            } else {
+                // Moving to another concept
+                if (!toContainer[toProperty]) {
+                    toContainer[toProperty] = [];
+                }
+                
+                // Add to the narrower property of the target container
+                if (toId === null || toId === undefined || toLast) {
+                    if (!toContainer[toProperty].includes(fromId)) {
+                        toContainer[toProperty].push(fromId);
+                    }
+                } else {
+                    var toIndex = toContainer[toProperty].indexOf(toId);
+                    if (toIndex !== -1) {
                         toContainer[toProperty].splice(toIndex, 0, fromId);
-                    }
-                    if (toContainer.type === "ConceptScheme") {
-                        moveComp[toProperty2] = toContainerId;
                     } else {
-                        if (!EcArray.isArray(moveComp[toProperty2])) {
-                            moveComp[toProperty2] = [];
-                        }
-                        if (toContainerId) {
-                            moveComp[toProperty2].push(toContainerId);
-                        }
+                        toContainer[toProperty].push(fromId);
                     }
-                    me.$store.commit('editor/addEditsToUndo', [
-                        {operation: "update", id: fromContainer.shortId(), fieldChanged: [fromProperty], initialValue: [fromPropInitialValue]},
-                        {operation: "update", id: toContainer.shortId(), fieldChanged: [toProperty], initialValue: [toPropInitialValue]},
-                        {operation: "update", id: moveComp.shortId(), fieldChanged: [fromProperty2, toProperty2], initialValue: [fromProp2InitialValue, toProp2InitialValue]}
-                    ]);
-                    toContainer["schema:dateModified"] = new Date().toISOString();
-                    moveComp["schema:dateModified"] = new Date().toISOString();
-                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[toContainer.id] !== true) {
-                        toContainer = await EcEncryptedValue.toEncryptedValue(toContainer);
-                    }
-                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[moveComp.id] !== true) {
-                        moveComp = await EcEncryptedValue.toEncryptedValue(moveComp);
-                    }
-                    me.repo.saveTo(toContainer, function() {
-                        me.repo.saveTo(moveComp, appLog, appError);
-                        me.computeHierarchy();
-                    }, appLog);
-                }, appError);
+                }
+                
+                // Update broader relationship in the concept
+                if (!movingConcept[toInverseProperty]) {
+                    movingConcept[toInverseProperty] = [];
+                } else if (!Array.isArray(movingConcept[toInverseProperty])) {
+                    movingConcept[toInverseProperty] = [movingConcept[toInverseProperty]];
+                }
+                
+                if (toContainerId && !movingConcept[toInverseProperty].includes(toContainerId)) {
+                    movingConcept[toInverseProperty].push(toContainerId);
+                }
+                
+                // Add to objects to save
+                if (!objectsToSave.includes(toContainer)) {
+                    objectsToSave.push(toContainer);
+                }
             }
+            
+            // Update modification timestamps and prepare for saving
+            for (let i = 0; i < objectsToSave.length; i++) {
+                objectsToSave[i]["schema:dateModified"] = new Date().toISOString();
+                
+                // Handle encryption if needed
+                if (me.$store.state.editor.private === true && 
+                    EcEncryptedValue.encryptOnSaveMap[objectsToSave[i].id] !== true) {
+                    objectsToSave[i] = await EcEncryptedValue.toEncryptedValue(objectsToSave[i]);
+                }
+            }
+            
+            // Track changes for undo
+            me.$store.commit('editor/addEditsToUndo', [
+                {operation: "update", id: fromContainer.shortId(), fieldChanged: [fromProperty], initialValue: [fromPropInitialValue]},
+                {operation: "update", id: toContainer.shortId(), fieldChanged: [toProperty], initialValue: [toPropInitialValue]},
+                {
+                    operation: "update",
+                    id: movingConcept.shortId(),
+                    fieldChanged: [fromInverseProperty, toInverseProperty], 
+                    initialValue: [conceptFromInverseInitialValue, conceptToInverseInitialValue]
+                }
+            ]);
+            
+            // Save all objects
+            try {
+                await me.repo.multiput(objectsToSave, function() {
+                    appLog("Move complete", {
+                        concept: movingConcept.shortId(),
+                        objectsSaved: objectsToSave.map(o => o.shortId())
+                    });
+                    me.computeHierarchy();
+                }, appError);
+            } catch (e) {
+                appError("Error saving changes:", e);
+            }
+            
             this.dragging = false;
         },
         add: async function(containerId, previousSibling) {

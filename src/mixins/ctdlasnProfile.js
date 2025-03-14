@@ -2989,20 +2989,91 @@ export default {
                     "heading": "General",
                     "max": 1
                 },
+                "http://www.w3.org/2004/02/skos/core#broader": {
+                    "@id": "http://www.w3.org/2004/02/skos/core#broader",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes": [
+                        {
+                            "@id": "http://schema.cassproject.org/0.4/skos/Concept"
+                        }
+                    ],
+                    "http://schema.org/rangeIncludes": [
+                        {
+                            "@id": "https://schema.cassproject.org/0.4/skos/Concept"
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#comment": [
+                        {
+                            "@language": "en",
+                            "@value": "Concept that is broader in some way than this concept."
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broader"}],
+                    "heading": "Connections"
+                },
+                "http://www.w3.org/2004/02/skos/core#narrower": {
+                    "@id": "http://www.w3.org/2004/02/skos/core#narrower",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes": [
+                        {
+                            "@id": "http://schema.cassproject.org/0.4/skos/Concept"
+                        }
+                    ],
+                    "http://schema.org/rangeIncludes": [
+                        {
+                            "@id": "https://schema.cassproject.org/0.4/skos/Concept"
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#comment": [
+                        {
+                            "@language": "en",
+                            "@value": "Concept that is narrower in some way than this concept."
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrower"}],
+                    "heading": "Connections"
+                },
+                "https://purl.org/ctdl/terms/facetedDescription": {
+                    "@id": "https://purl.org/ctdl/terms/facetedDescription",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes": [
+                        {
+                            "@id": "http://schema.cassproject.org/0.4/skos/Concept"
+                        }
+                    ],
+                    "http://schema.org/rangeIncludes": [
+                        {
+                            "@id": "https://schema.cassproject.org/0.4/Competency"
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#comment": [
+                        {
+                            "@language": "en",
+                            "@value": "Description of a specific aspect or characteristic of this resource."
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Faceted Description"}],
+                    "heading": "Documentation"
+                },
                 "headings": ["General", "Other Labels", "Documentation", "Connections", "Keys"],
                 "primaryProperties": [
                     "http://www.w3.org/2004/02/skos/core#prefLabel",
                     "http://www.w3.org/2004/02/skos/core#definition",
                     "http://www.w3.org/2004/02/skos/core#notation"
                 ],
-                "secondaryProperties": ["https://purl.org/ctdlasn/terms/inProgressionModel"],
+                "secondaryProperties": [
+                    "https://purl.org/ctdlasn/terms/inProgressionModel",
+                    "http://www.w3.org/2004/02/skos/core#broader",
+                    "http://www.w3.org/2004/02/skos/core#narrower"
+                ],
                 "tertiaryProperties": [
                     "@id",
                     "registryURL",
                     "ctid",
                     "http://www.w3.org/2004/02/skos/core#note",
                     "https://purl.org/ctdl/terms/precededBy",
-                    "https://purl.org/ctdl/terms/precedes"
+                    "https://purl.org/ctdl/terms/precedes",
+                    "https://purl.org/ctdl/terms/facetedDescription"
                 ]
             };
         }
