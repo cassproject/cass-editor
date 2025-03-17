@@ -643,7 +643,7 @@ export default {
         addChildren: async function(structure, c, parentIndex, deletePrecedence) {
             return new Promise(async(resolve) => {
                 if (!structure[parentIndex]) {
-                    console.error(`Structure at index ${parentIndex} is undefined`);
+                    appError(`Structure at index ${parentIndex} is undefined`);
                     resolve();
                     return;
                 }
@@ -660,7 +660,7 @@ export default {
                 for (var j = 0; j < c["skos:narrower"].length; j++) {
                     var subC = await EcConcept.get(c["skos:narrower"][j]);
                     if (!subC) {
-                        console.warn(`Could not find child concept: ${c["skos:narrower"][j]}`);
+                        appLog(`Could not find child concept: ${c["skos:narrower"][j]}`);
                         continue;
                     }
                     

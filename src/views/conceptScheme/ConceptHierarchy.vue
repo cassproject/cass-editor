@@ -577,7 +577,7 @@ export default {
         },
         addChildren: async function(structure, c, parentIndex) {
             if (!structure[parentIndex]) {
-                console.error(`Structure at index ${parentIndex} is undefined`);
+                appError(`Structure at index ${parentIndex} is undefined`);
                 return;
             }
             if (!structure[parentIndex].children) {
