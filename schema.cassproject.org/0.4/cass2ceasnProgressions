@@ -154,6 +154,10 @@
 			"@id": "ceterms:precedes",
 			"@type": "@id"
 		},
+		"ceterms:facetedDescription": {
+			"@id": "ceterms:facetedDescription",
+			"@language": "en-us"
+		},
 		"ceterms:precededBy": {
 			"@id": "ceterms:precededBy",
 			"@type": "@id"
