@@ -13,5 +13,7 @@
 	"dcterms:rights": "ceasn:rights",
 	"dcterms:rightsHolder": "ceasn:rightsHolder",
 	"dcterms:title": "ceasn:name",
-	"dc:source": "ceasn:source"
+	"dc:source": "ceasn:source",
+	"schema:dateCreated": "ceasn:dateCreated",
+	"schema:dateModified": "ceasn:dateModified"
 }

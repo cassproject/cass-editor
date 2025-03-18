@@ -106,7 +106,7 @@
 		},
 		"ceasn:dateModified": {
 			"@id": "ceasn:dateModified",
-			"@type": "xsd:date"
+			"@type": "xsd:dateTime"
 		},
 		"ceasn:dateValidFrom": {
 			"@id": "ceasn:dateValidFrom",

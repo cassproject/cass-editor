@@ -90,7 +90,7 @@
 		},
 		"ceasn:dateModified": {
 			"@id": "ceasn:dateModified",
-			"@type": "xsd:date"
+			"@type": "xsd:dateTime"
 		},
 		"ceasn:description": {
 			"@id": "ceasn:description",
