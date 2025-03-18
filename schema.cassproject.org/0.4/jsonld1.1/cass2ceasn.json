@@ -28,7 +28,7 @@
 		"cass": "https://schema.cassproject.org/0.4/",
 		"ebac": "https://schema.cassproject.org/kbac/0.4/",
 		"general": "http://schema.eduworks.com/general/0.3/",
-		"schema": "http://schema.org/",
+		"schema": "https://schema.org/",
 		"ceasn:listID": {
 			"@id": "ceasn:listID",
 			"@type": "xsd:string"
