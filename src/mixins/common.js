@@ -549,9 +549,9 @@ export default {
             }
         },
         addAlignments: async function(targets, thing, relationType, allowSave) {
-            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
-                return this.addConceptAlignments(targets, thing, relationType);
-            }
+            // if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
+            //     return this.addConceptAlignments(targets, thing, relationType);
+            // }
             let urlProperties = [
                 "ceasn:knowledgeEmbodied",
                 "ceasn:skillEmbodied",
@@ -562,7 +562,8 @@ export default {
                 "ceasn:inferredCompetency",
                 "ceasn:isVersionOf",
                 "ceasn:alignTo",
-                "ceasn:alignFrom"
+                "ceasn:alignFrom",
+                "https://purl.org/ctdl/terms/facetedDescription"
             ];
             if (urlProperties.includes(relationType)) {
                 // This property is attached to competency, not a relation attached to framework
