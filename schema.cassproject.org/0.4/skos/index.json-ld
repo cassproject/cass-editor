@@ -37,11 +37,7 @@
 		},
 		"ConceptScheme": {
 			"@id": "cass:skos/ConceptScheme"
-		},
-        "ceterms:facetedDescription": {
-            "@id": "ceterms:facetedDescription",
-            "@type": "@id"
-        }
+		}
     },
     "@graph": [
         {
