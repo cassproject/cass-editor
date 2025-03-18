@@ -150,7 +150,7 @@
 		},
 		"ceterms:facetedDescription": {
 			"@id": "ceterms:facetedDescription",
-			"@language": "en-us"
+			"@type": "@id"
 		},
 		"ceterms:precededBy": {
 			"@id": "ceterms:precededBy",
