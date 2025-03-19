@@ -562,8 +562,7 @@ export default {
                 "ceasn:inferredCompetency",
                 "ceasn:isVersionOf",
                 "ceasn:alignTo",
-                "ceasn:alignFrom",
-                "https://purl.org/ctdl/terms/facetedDescription"
+                "ceasn:alignFrom"
             ];
             if (urlProperties.includes(relationType)) {
                 // This property is attached to competency, not a relation attached to framework
