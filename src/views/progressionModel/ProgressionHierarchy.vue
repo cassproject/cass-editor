@@ -537,69 +537,15 @@ export default {
         },
         computeHierarchy: async function(setOrder) {
             let structure = [];
-            let allChildrenIds = new Set(); // Track all nodes that are children
-            
             if (this.container == null) { return r; }
-            
             if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
-                // First pass - collect all children IDs
-                for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
-                    var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
-                    if (c && c["skos:narrower"]) {
-                        for (var j = 0; j < c["skos:narrower"].length; j++) {
-                            allChildrenIds.add(c["skos:narrower"][j]);
-                        }
-                    }
-                }
-                
-                // Additional pass to include broader relationships
-                for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
-                    var conceptId = this.container["skos:hasTopConcept"][i];
-                    var topConcept = await EcConcept.get(conceptId);
-                    
-                    // Check all concepts in the scheme for broader relationships pointing to this concept
-                    if (this.container["skos:hasTopConcept"]) {
-                        for (var j = 0; j < this.container["skos:hasTopConcept"].length; j++) {
-                            if (i === j) continue; // Skip self
-                            
-                            var otherConceptId = this.container["skos:hasTopConcept"][j];
-                            var otherConcept = await EcConcept.get(otherConceptId);
-                            
-                            if (otherConcept && otherConcept["skos:broader"]) {
-                                let broaderRefs = Array.isArray(otherConcept["skos:broader"]) 
-                                    ? otherConcept["skos:broader"] 
-                                    : [otherConcept["skos:broader"]];
-                                    
-                                if (broaderRefs.includes(conceptId)) {
-                                    // This concept is broader than otherConcept, so otherConcept is a child
-                                    allChildrenIds.add(otherConceptId);
-                                    
-                                    // Ensure narrower relationship exists in parent concept
-                                    if (!topConcept["skos:narrower"]) {
-                                        topConcept["skos:narrower"] = [];
-                                    }
-                                    if (!topConcept["skos:narrower"].includes(otherConceptId)) {
-                                        topConcept["skos:narrower"].push(otherConceptId);
-                                        // We've modified the concept, so save it
-                                        await this.saveObject(topConcept);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-                
-                // Second pass - only add nodes that aren't children of other nodes to the root level
                 for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
                     var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
                     if (c) {
-                        // Only add this node if it's not a child of another node
-                        if (!allChildrenIds.has(this.container["skos:hasTopConcept"][i])) {
-                            structure.push({"obj": c, "children": []});
-                            if (c["skos:narrower"]) {
-                                await this.addChildren(structure, c, structure.length - 1, false);
-                            }
-                        }
+                        structure.push({"obj": c, "children": []});
+                        // if (c["skos:narrower"]) {
+                        //     await this.addChildren(structure, c, i, false);
+                        // }
                     }
                 }
             }
