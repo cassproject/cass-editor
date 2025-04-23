@@ -342,7 +342,7 @@ export default {
             // Used to only add OR to query if there's already a term
             var termAdded = false;
             if (!this.applySearchTo || this.searchTerm === "") {
-                search = "((@type:" + type + " OR (EncryptedValue AND \\*encryptedType:" + type + "))" + (this.searchTerm != null && this.searchTerm !== "" ? " AND " + this.searchTerm : "") + ")" + (this.searchOptions == null || this.searchOptions === "" ? "" : this.searchOptions);
+                search = "((@type:" + type + " OR (EncryptedValue AND \\*encryptedType:" + type + "))" + (this.searchTerm != null && this.searchTerm !== "" ? " AND " + this.searchTerm + '*' : "") + ")" + (this.searchOptions == null || this.searchOptions === "" ? "" : this.searchOptions);
             } else {
                 search = "((@type:" + type + " OR (EncryptedValue AND \\*encryptedType:" + type + "))" + " AND (";
                 for (let i = 0; i < this.applySearchTo.length; i++) {
@@ -352,7 +352,7 @@ export default {
                         if (termAdded) {
                             search += " OR ";
                         }
-                        search += ("name:" + this.searchTerm);
+                        search += ("name:" + this.searchTerm + '*');
                         termAdded = true;
                     } else if ((type === "Framework" && this.applySearchTo[i].id === "frameworkDescription") ||
                     (type === "Competency" && this.applySearchTo[i].id === "competencyDescription") ||
@@ -360,13 +360,13 @@ export default {
                         if (termAdded) {
                             search += " OR ";
                         }
-                        search += ("description:" + this.searchTerm);
+                        search += ("description:" + this.searchTerm + '*');
                         termAdded = true;
                     } else if (this.applySearchTo[i].id === "ownerName") {
                         let paramObj = {};
                         paramObj.size = 10;
                         let me = this;
-                        EcPerson.search(window.repo, 'name:' + this.searchTerm, function(success) {
+                        EcPerson.search(window.repo, 'name:' + this.searchTerm + '*', function(success) {
                             if (termAdded && success.length > 0) {
                                 search += " OR ";
                             }
@@ -377,7 +377,7 @@ export default {
                                     search += " OR ";
                                 }
                             }
-                            EcOrganization.search(window.repo, 'name:' + me.searchTerm, async function(success) {
+                            EcOrganization.search(window.repo, 'name:' + me.searchTerm + '*', async function(success) {
                                 appLog(success);
                                 for (var i = 0; i < success.length; i++) {
                                     search += "\\*owner:\"" + (await me.getOrganizationEcPk(success[i])).toPem() + "\"";
@@ -404,13 +404,13 @@ export default {
                             search += " OR ";
                         }
                         // Other framework property from config
-                        search += (this.applySearchTo[i].id + ":" + this.searchTerm);
+                        search += (this.applySearchTo[i].id + ":" + this.searchTerm + '*');
                         termAdded = true;
                     } else if (type === "Competency" && this.applySearchTo[i].id === "competencyLabel") {
                         if (termAdded) {
                             search += " OR ";
                         }
-                        search += ("ceasn\\:competencyLabel:" + this.searchTerm);
+                        search += ("ceasn\\:competencyLabel:" + this.searchTerm + '*');
                         termAdded = true;
                     }
                 }
