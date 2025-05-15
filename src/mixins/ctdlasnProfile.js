@@ -94,6 +94,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher Name"}],
                     "heading": "General"
                 },
+                "http://schema.org/publisherName": {
+                    "@id": "http://schema.org/publisherName",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://www.w3.org/2000/01/rdf-schema#langString"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Name of the agent responsible for making this entity available."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher Name"}],
+                    "heading": "General"
+                },
                 "http://schema.org/publisher": {
                     "@id": "http://schema.org/publisher",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -461,6 +472,7 @@ export default {
                 "secondaryProperties": [
                     "http://schema.org/creator",
                     "https://purl.org/ctdlasn/terms/publisherName",
+                    "http://schema.org/publisherName",
                     "http://schema.org/publisher",
                     "http://schema.org/inLanguage",
                     "http://schema.org/keywords",
