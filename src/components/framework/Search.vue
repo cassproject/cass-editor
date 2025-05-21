@@ -122,7 +122,12 @@ export default {
         };
     },
     created: function() {
-        this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true || this.searchType === "Concept") ? "skos:prefLabel.keyword" : "name.keyword";
+        if (this.addingRange.includes("https://schema.cassproject.org/0.4/Competency")) {
+            this.sortBy = "name.keyword";
+        } else {
+            this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true || this.searchType === "Concept") ? "skos:prefLabel.keyword" : "name.keyword";
+        }
+        
         this.$store.commit('app/searchTerm', "");
     },
     beforeDestroy: function() {
@@ -133,7 +138,8 @@ export default {
             selectedCompetency: state => state.editor.selectedCompetency,
             framework: state => state.editor.framework,
             queryParams: state => state.editor.queryParams,
-            addingProperty: state => state.lode.addingProperty
+            addingProperty: state => state.lode.addingProperty,
+            addingRange: state => state.lode.addingRange
         }),
         nameOfSelectedCompetency: function() {
             if (this.selectedCompetency && this.selectedCompetency.name) {
@@ -177,7 +183,7 @@ export default {
             }
             if (this.$store.getters['editor/progressionMode'] === true) {
                 // If searching for precedes or precededBy in a progression, restrict results to the progression model
-                if (this.addingProperty.includes('precede') !== -1) {
+                if (this.addingProperty.includes('precede')) {
                     search += " AND (ceasn\\:inProgressionModel:\"" + this.selectedCompetency["ceasn:inProgressionModel"] + "\")";
                 }
             }
@@ -329,6 +335,9 @@ export default {
         sortResults: function() {
             if (this.sortResults.id === "lastEdited") {
                 this.sortBy = "schema:dateModified";
+                this.displayFirst.splice(0, this.displayFirst.length);
+            } else if (this.addingRange.includes("https://schema.cassproject.org/0.4/Competency")) {
+                this.sortBy = "name.keyword";
                 this.displayFirst.splice(0, this.displayFirst.length);
             } else {
                 this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true || this.searchType === "Concept") ? "skos:prefLabel.keyword" : "name.keyword";

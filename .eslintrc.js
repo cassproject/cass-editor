@@ -306,7 +306,7 @@ module.exports = {
          */
         'no-tabs': 2,
         // 'no-ternary': 0,
-        'no-trailing-spaces': 2,
+        'no-trailing-spaces': 0,
         /*
          * 'no-underscore-dangle': 0,
          * 'no-unneeded-ternary': 0,

@@ -122,7 +122,7 @@
                                 </ul>
                                 <div class="buttons is-centered">
                                     <div
-                                        @click="resetImport()"
+                                        @click="cancelImport()"
                                         class="button is-primary">
                                         <span class="icon">
                                             <i class="fa fa-redo" />

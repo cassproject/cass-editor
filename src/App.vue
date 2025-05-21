@@ -210,15 +210,15 @@ export default {
                                 me.$store.commit('editor/clearFrameworkCommentData');
                                 me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                                 me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
-                                me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
-                            }, appError);
-                        } else if ((me.$store.getters['editor/progressionMode'] === true)) {
-                            EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
-                                me.$store.commit('editor/framework', success);
-                                me.$store.commit('editor/clearFrameworkCommentData');
-                                me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                                me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
-                                me.$router.push({name: "progressionModel", params: {frameworkId: me.queryParams.frameworkId}});
+                                if (success.subType === 'Progression') {
+                                    me.$store.commit('editor/conceptMode', false);
+                                    me.$store.commit('editor/progressionMode', true);
+                                    me.$router.push({name: "progressionModel", params: {frameworkId: me.queryParams.frameworkId}});
+                                } else {
+                                    me.$store.commit('editor/conceptMode', true);
+                                    me.$store.commit('editor/progressionMode', false);
+                                    me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
+                                }
                             }, appError);
                         } else {
                             EcFramework.get(me.queryParams.frameworkId, function(success) {
@@ -504,6 +504,7 @@ export default {
                                 f.copyFrom(wut);
                             }
                             me.$store.commit('editor/framework', f);
+                            me.setDefaultLanguage();
                             me.spitEvent("frameworkChanged", f.shortId());
                         }
                     }
@@ -519,6 +520,7 @@ export default {
                                 f.copyFrom(wut);
                             }
                             me.$store.commit('editor/framework', f);
+                            me.setDefaultLanguage();
                             me.spitEvent("frameworkChanged", f.shortId());
                         }
                     }

@@ -1641,7 +1641,8 @@ export default {
                     "https://purl.org/ctdlasn/terms/inferredCompetency",
                     "https://purl.org/ctdlasn/terms/isVersionOf",
                     "https://purl.org/ctdlasn/terms/alignTo",
-                    "https://purl.org/ctdlasn/terms/alignFrom"
+                    "https://purl.org/ctdlasn/terms/alignFrom",
+                    "https://purl.org/ctdl/terms/facetedDescription"
                 ];
                 if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "DirectLink" || urlProperties.includes(relationType)) {
                     this.attachUrlProperties(ids);

@@ -320,8 +320,8 @@ TO DO MAYBE: Separate out property by editing or not.
                         v-if="expandedProperty !== 'http://schema.org/name' && expandedProperty !== 'dcterms:title' && expandedProperty !== 'skos:prefLabel'">{{ displayLabel }}</span>
                     <span
                         @click="setCheckbox($event)"
-                        class="language">
-                        {{ expandedValue[index]["@language"] + ": " }}
+                        class="tag is-size-7 is-light language">
+                        {{ expandedValue[index]["@language"] }}
                     </span>
                     <span
                         :title="expandedValue[index]['@value']"
