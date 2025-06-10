@@ -58,20 +58,21 @@ TO DO MAYBE: Separate out property by editing or not.
                     </label>
                 </template>
                 <!-- identifier values -->
-                <div v-if="isVersionIdentifier(item)">
-                    <div v-if="editingProperty"
+                <div v-if="isVersionIdentifier(item)"
+                    :temp="realItem = getVersionIdentifier(item)">
+                    <div v-if="editingProperty && realItem"
                         class="columns">
                         <div class="column">
                             <div class="field">
                                 <div class="control">
                                     <div>
-                                        Identifier Value Code: {{ item['https://purl.org/ctdl/terms/identifierValueCode'][0]['@value'] }}
+                                        Identifier Value Code: {{ realItem['https://purl.org/ctdl/terms/identifierValueCode'][0]['@value'] }}
                                     </div>
                                     <div>
-                                        Identifier Type Name: {{ item['https://purl.org/ctdl/terms/identifierTypeName'][0]['@value'] }}
+                                        Identifier Type Name: {{ realItem['https://purl.org/ctdl/terms/identifierTypeName'][0]['@value'] }}
                                     </div>
                                     <div>
-                                        Identifier Type: {{ item['https://purl.org/ctdl/terms/identifierType'][0]['@value'] }}
+                                        Identifier Type: {{ realItem['https://purl.org/ctdl/terms/identifierType'][0]['@value'] }}
                                     </div>
                                 </div>
                             </div>
@@ -90,12 +91,12 @@ TO DO MAYBE: Separate out property by editing or not.
                             </div>
                         </div>
                     </div>
-                    <div v-else>
+                    <div v-else-if="realItem">
                         <div class="expanded-view-property">
-                            <div :title="item['https://purl.org/ctdl/terms/identifierTypeName'][0]"
+                            <div :title="realItem['https://purl.org/ctdl/terms/identifierTypeName'][0]"
                                 class="property">
                                 <span class="tag is-size-7 is-light">Version Identifier</span>
-                                {{ item['https://purl.org/ctdl/terms/identifierTypeName'][0]['@value'] }}
+                                {{ realItem['https://purl.org/ctdl/terms/identifierTypeName'][0]['@value'] }}
                             </div>
                         </div>
                     </div>
@@ -780,6 +781,17 @@ export default {
         }
     },
     methods: {
+        getVersionIdentifier(item) {
+            if (Array.isArray(item)) {
+                if (item.length > 0) {
+                    return item[0];
+                } else {
+                    return null;
+                }
+            } else {
+                return item;
+            }
+        },
         setCheckbox(event) {
             event.preventDefault();
             this.$emit('set-checkbox');
