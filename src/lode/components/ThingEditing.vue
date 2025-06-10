@@ -413,6 +413,7 @@ export default {
         if (this.uri && this.$store.state.editor) {
             this.resolveNameFromUrl(this.uri);
         }
+        console.log('mounted thingediting', this.obj);
         this.load();
         if (this.obj && this.obj.shortId() === this.changedObject) {
             this.$store.commit('editor/changedObject', null);
@@ -857,7 +858,13 @@ export default {
                 this.$store.commit('lode/setAddingValues', []);
                 return this.errorMessage.push("Property type is required.");
             }
-            if ((!value || (value !== null && value !== undefined && value["@value"] !== null && value["@value"] !== undefined && value["@value"].trim().length === 0)) &&
+            // Special handling for versionIdentifier - this is already a complete object
+            if (property === "https://purl.org/ctdl/terms/versionIdentifier") {
+                if (!value) {
+                    this.$store.commit('lode/setAddingValues', []);
+                    return this.errorMessage.push("Version Identifier information is required.");
+                }
+            } else if ((!value || (value !== null && value !== undefined && value["@value"] !== null && value["@value"] !== undefined && value["@value"].trim().length === 0)) &&
                 (!this.addingChecked || this.addingChecked.length === 0)) {
                 return this.errorMessage.push("Value is required to save.");
             }
@@ -922,7 +929,8 @@ export default {
                 if (this.expandedThing[property]) {
                     initialValue = JSON.parse(JSON.stringify(this.expandedThing[property]));
                 }
-                this.add();
+                const isCustom = this.profile && this.profile[property]["custom"] === "true";
+                this.add(undefined, undefined, isCustom);
             }
             if (this.profile && this.profile[property]["save"]) {
                 var f = this.profile[property]["save"];
@@ -1182,13 +1190,19 @@ export default {
             }
         },
         // Add a piece of new data to a property. Invoked by child components, in order to add data (for reactivity reasons).
-        add: function(passedInProp, passedInVal) {
+        add: function(passedInProp, passedInVal, custom) {
             let property = passedInProp || this.addingProperty;
             let values = passedInVal || (this.addingValues.length > 0 ? this.addingValues : undefined);
             let newProperties = [];
             var me = this;
             // this.addingValues can now store multiple values to allow for adding all at once.
-            if (Array.isArray(values)) {
+            if (custom) {
+                if (typeof values === "string") {
+                    newProperties.push(values);
+                } else if (Array.isArray(values)) {
+                    newProperties = [...values];
+                }
+            } else if (Array.isArray(values)) {
                 for (let i = 0; i < values.length; i++) {
                     if (values[i]["@value"] == null || values[i]["@value"] === undefined) {
                         values[i] = {"@value": values[i]};

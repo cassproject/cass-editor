@@ -73,7 +73,7 @@
                 </p>
                 <!-- text property input -->
                 <div
-                    v-if="selectedPropertyToAddIsTextValue || addRelationBy === 'url'"
+                    v-if="(selectedPropertyToAddIsTextValue || addRelationBy === 'url') && !selectedPropertyToAddIsVersionIdentifier"
                     class="add-property-field">
                     <!-- if it is a text input type, show the following -->
                     <div class="add-property__input-type">
@@ -117,6 +117,113 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Version Identifier input - special handling for complex object -->
+                <div
+                    v-else-if="selectedPropertyToAddIsVersionIdentifier"
+                    class="add-property-field">
+                    <div class="add-property__input-type">
+                        <div class="add-property__select-type">
+                            <div class="field is-expanded">
+                                <h3 class="subtitle is-6">
+                                    {{ editingVersionIdentifierIndex >= 0 ? 'Edit Version Identifier' : 'Enter Version Identifier Information' }}
+                                </h3>
+                                
+                                <!-- Display existing version identifiers -->
+                                <div v-if="versionIdentifiers.length > 0"
+                                    class="field">
+                                    <label class="label">Current Version Identifiers</label>
+                                    <div class="box"
+                                        v-for="(identifier, index) in versionIdentifiers"
+                                        :key="index"
+                                        :class="{ 'has-background-info-light': editingVersionIdentifierIndex === index }">
+                                        <div class="columns is-vcentered">
+                                            <div class="column">
+                                                <p><strong>Value:</strong> {{ identifier.identifierValue }}</p>
+                                                <p><strong>Name:</strong> {{ identifier.identifierName['@value'] }}</p>
+                                                <p><strong>Type:</strong> {{ identifier.identifierType }}</p>
+                                            </div>
+                                            <div class="column is-narrow">
+                                                <div class="buttons">
+                                                    <button 
+                                                        class="button is-small is-info" 
+                                                        @click="editVersionIdentifier(index)"
+                                                        :disabled="editingVersionIdentifierIndex >= 0 && editingVersionIdentifierIndex !== index">
+                                                        {{ editingVersionIdentifierIndex === index ? 'Editing...' : 'Edit' }}
+                                                    </button>
+                                                    <button 
+                                                        class="button is-small is-danger" 
+                                                        @click="removeVersionIdentifier(index)"
+                                                        :disabled="editingVersionIdentifierIndex >= 0">
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Reused form for both adding and editing -->
+                                <div class="field">
+                                    <label class="label">Identifier Value Code</label>
+                                    <div class="control">
+                                        <input 
+                                            class="input" 
+                                            v-model="versionIdentifierData.identifierValue">
+                                    </div>
+                                </div>
+                                
+                                <div class="field">
+                                    <label class="label">Identifier Type Name</label>
+                                    <PropertyString
+                                        :key="tempKey"
+                                        ref="identifierNameInput"
+                                        index="null"
+                                        expandedProperty="identifierName"
+                                        :langString="true"
+                                        :range="['http://www.w3.org/2000/01/rdf-schema#langString']"
+                                        :newProperty="true"
+                                        :profile="profile"
+                                        :addSingle="true"
+                                        :options="null"
+                                        :overrideUpdate="true"
+                                        :propertyValue="versionIdentifierData.identifierName"
+                                        :customProperty="true"
+                                        @updatePropertyString="updateVersionIdentifierName" />
+                                </div>
+                                
+                                <div class="field">
+                                    <label class="label">Identifier Type</label>
+                                    <div class="control">
+                                        <input 
+                                            class="input" 
+                                            v-model="versionIdentifierData.identifierType">
+                                    </div>
+                                </div>
+                                
+                                <div class="field is-grouped">
+                                    <div class="control">
+                                        <button 
+                                            class="button is-primary" 
+                                            @click="editingVersionIdentifierIndex >= 0 ? saveVersionIdentifierEdit() : addVersionIdentifier()"
+                                            :disabled="!canAddVersionIdentifier">
+                                            {{ editingVersionIdentifierIndex >= 0 ? 'Save Changes' : 'Add Version Identifier' }}
+                                        </button>
+                                    </div>
+                                    <div class="control"
+                                        v-if="editingVersionIdentifierIndex >= 0">
+                                        <button 
+                                            class="button" 
+                                            @click="cancelVersionIdentifierEdit()">
+                                            Cancel Edit
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- non text value input: create new, search, or url -->
                 <div
                     v-else-if="selectedPropertyToAdd !== '' && !selectedPropertyToAddIsTextValue"
@@ -312,7 +419,15 @@ export default {
             limitedTypes: [],
             limitedConcepts: [],
             createNewLevelNameModal: false,
-            newLevelName: ''
+            newLevelName: '',
+            versionIdentifiers: [],
+            versionIdentifierData: {
+                identifierValue: '',
+                identifierName: {},
+                identifierType: ''
+            },
+            tempKey: 0,
+            editingVersionIdentifierIndex: -1
         };
     },
     mounted: function() {
@@ -323,6 +438,11 @@ export default {
         }
     },
     computed: {
+        canAddVersionIdentifier() {
+            return this.versionIdentifierData.identifierValue && 
+                this.versionIdentifierData.identifierName && this.versionIdentifierData.identifierName['@value'] && 
+                this.versionIdentifierData.identifierType;
+        },
         queryParams() {
             return this.$store.getters['editor/queryParams'];
         },
@@ -428,6 +548,9 @@ export default {
             if (range.toLowerCase().indexOf("level") !== -1 && this.profile[property]["add"] !== "checkedOptions") {
                 return false;
             }
+            if (range.toLowerCase().indexOf("https://purl.org/ctdl/terms/IdentifierValue") !== -1) {
+                return false;
+            }
             let urlProperties = [
                 "https://purl.org/ctdlasn/terms/knowledgeEmbodied",
                 "https://purl.org/ctdlasn/terms/skillEmbodied",
@@ -444,6 +567,10 @@ export default {
                 return false;
             }
             return true;
+        },
+        selectedPropertyToAddIsVersionIdentifier: function() {
+            let property = this.selectedPropertyToAdd["value"] ? this.selectedPropertyToAdd["value"] : "";
+            return property === "https://purl.org/ctdl/terms/versionIdentifier";
         }
     },
     methods: {
@@ -501,6 +628,73 @@ export default {
                     }
                 }
             });
+        },
+        editVersionIdentifier(index) {
+            this.editingVersionIdentifierIndex = index;
+            const identifier = this.versionIdentifiers[index];
+            
+            // Populate the form with existing data
+            this.versionIdentifierData = {
+                identifierValue: identifier.identifierValue,
+                identifierName: {...identifier.identifierName},
+                identifierType: identifier.identifierType
+            };
+            
+            // Force PropertyString component to re-render with new data
+            this.tempKey++;
+        },
+        saveVersionIdentifierEdit() {
+            if (this.canAddVersionIdentifier && this.editingVersionIdentifierIndex >= 0) {
+                // Update the existing identifier
+                this.versionIdentifiers[this.editingVersionIdentifierIndex] = {...this.versionIdentifierData};
+                this.cancelVersionIdentifierEdit();
+            }
+        },
+        cancelVersionIdentifierEdit() {
+            this.editingVersionIdentifierIndex = -1;
+            // Clear the form
+            this.clearVersionIdentifierForm();
+        },
+        // Modify existing addVersionIdentifier to handle edit mode
+        addVersionIdentifier() {
+            if (this.canAddVersionIdentifier) {
+                if (this.editingVersionIdentifierIndex >= 0) {
+                    // This is actually an edit save
+                    this.saveVersionIdentifierEdit();
+                } else {
+                    // Original add logic
+                    this.versionIdentifiers.push({...this.versionIdentifierData});
+                    this.clearVersionIdentifierForm();
+                }
+            }
+            this.emitVersionIdentifiers();
+        },
+        removeVersionIdentifier(index) {
+            this.versionIdentifiers.splice(index, 1);
+            this.emitVersionIdentifiers();
+        },
+        clearVersionIdentifierForm() {
+            this.versionIdentifierData = {
+                identifierValue: '',
+                identifierName: {},
+                identifierType: ''
+            };
+            
+            this.tempKey = Date.now();
+        },
+        updateVersionIdentifierName(value) {
+            this.versionIdentifierData.identifierName = value;
+        },
+        emitVersionIdentifiers() {
+            const versionId = this.versionIdentifiers.map((x) => {
+                return {
+                    "https://purl.org/ctdl/terms/identifierValueCode": x.identifierValue,
+                    "https://purl.org/ctdl/terms/identifierTypeName": x.identifierName,
+                    "https://purl.org/ctdl/terms/identifierType": x.identifierType
+                };
+            });
+            // Emit the value through the property-string-updated event
+            this.updatePropertyString(versionId);
         }
     },
     watch: {
