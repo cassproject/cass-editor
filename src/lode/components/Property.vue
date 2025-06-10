@@ -66,13 +66,13 @@ TO DO MAYBE: Separate out property by editing or not.
                             <div class="field">
                                 <div class="control">
                                     <div>
-                                        Identifier Value Code: {{ realItem['https://purl.org/ctdl/terms/identifierValueCode'][0]['@value'] }}
+                                        Identifier Value Code: {{ realItem['https://purl.org/ctdl/terms/identifierValueCode']['@value'] }}
                                     </div>
                                     <div>
-                                        Identifier Type Name: {{ realItem['https://purl.org/ctdl/terms/identifierTypeName'][0]['@value'] }}
+                                        Identifier Type Name: {{ realItem['https://purl.org/ctdl/terms/identifierTypeName']['@value'] }}
                                     </div>
                                     <div>
-                                        Identifier Type: {{ realItem['https://purl.org/ctdl/terms/identifierType'][0]['@value'] }}
+                                        Identifier Type: {{ realItem['https://purl.org/ctdl/terms/identifierType']['@value'] }}
                                     </div>
                                 </div>
                             </div>
@@ -93,10 +93,10 @@ TO DO MAYBE: Separate out property by editing or not.
                     </div>
                     <div v-else-if="realItem">
                         <div class="expanded-view-property">
-                            <div :title="realItem['https://purl.org/ctdl/terms/identifierTypeName'][0]"
+                            <div :title="realItem['https://purl.org/ctdl/terms/identifierTypeName']['@value']"
                                 class="property">
                                 <span class="tag is-size-7 is-light">Version Identifier</span>
-                                {{ realItem['https://purl.org/ctdl/terms/identifierTypeName'][0]['@value'] }}
+                                {{ realItem['https://purl.org/ctdl/terms/identifierTypeName']['@value'] }}
                             </div>
                         </div>
                     </div>
@@ -782,15 +782,22 @@ export default {
     },
     methods: {
         getVersionIdentifier(item) {
+            let versionIdentifier;
             if (Array.isArray(item)) {
                 if (item.length > 0) {
-                    return item[0];
+                    versionIdentifier = item[0];
                 } else {
                     return null;
                 }
             } else {
-                return item;
+                versionIdentifier = item;
             }
+
+            return {
+                "https://purl.org/ctdl/terms/identifierType": Array.isArray(versionIdentifier["https://purl.org/ctdl/terms/identifierType"]) ? versionIdentifier["https://purl.org/ctdl/terms/identifierType"][0] : versionIdentifier["https://purl.org/ctdl/terms/identifierType"],
+                "https://purl.org/ctdl/terms/identifierTypeName": Array.isArray(versionIdentifier["https://purl.org/ctdl/terms/identifierTypeName"]) ? versionIdentifier["https://purl.org/ctdl/terms/identifierTypeName"][0] : versionIdentifier["https://purl.org/ctdl/terms/identifierTypeName"],
+                "https://purl.org/ctdl/terms/identifierValueCode": Array.isArray(versionIdentifier["https://purl.org/ctdl/terms/identifierValueCode"]) ? versionIdentifier["https://purl.org/ctdl/terms/identifierValueCode"][0] : versionIdentifier["https://purl.org/ctdl/terms/identifierValueCode"]
+            };
         },
         setCheckbox(event) {
             event.preventDefault();
