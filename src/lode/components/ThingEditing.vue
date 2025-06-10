@@ -413,7 +413,6 @@ export default {
         if (this.uri && this.$store.state.editor) {
             this.resolveNameFromUrl(this.uri);
         }
-        console.log('mounted thingediting', this.obj);
         this.load();
         if (this.obj && this.obj.shortId() === this.changedObject) {
             this.$store.commit('editor/changedObject', null);
