@@ -66,13 +66,13 @@ TO DO MAYBE: Separate out property by editing or not.
                             <div class="field">
                                 <div class="control">
                                     <div>
-                                        Identifier Value Code: {{ realItem['https://purl.org/ctdl/terms/identifierValueCode']['@value'] }}
+                                        Identifier Value Code: {{ getDisplayString(realItem['https://purl.org/ctdl/terms/identifierValueCode']) }}
                                     </div>
                                     <div>
-                                        Identifier Type Name: {{ realItem['https://purl.org/ctdl/terms/identifierTypeName']['@value'] }}
+                                        Identifier Type Name: {{ getDisplayString(realItem['https://purl.org/ctdl/terms/identifierTypeName']) }}
                                     </div>
                                     <div>
-                                        Identifier Type: {{ realItem['https://purl.org/ctdl/terms/identifierType']['@value'] }}
+                                        Identifier Type: {{ getDisplayString(realItem['https://purl.org/ctdl/terms/identifierType']) }}
                                     </div>
                                 </div>
                             </div>
@@ -93,10 +93,10 @@ TO DO MAYBE: Separate out property by editing or not.
                     </div>
                     <div v-else-if="realItem">
                         <div class="expanded-view-property">
-                            <div :title="realItem['https://purl.org/ctdl/terms/identifierTypeName']['@value']"
+                            <div :title="getDisplayString(realItem['https://purl.org/ctdl/terms/identifierTypeName'])"
                                 class="property">
                                 <span class="tag is-size-7 is-light">Version Identifier</span>
-                                {{ realItem['https://purl.org/ctdl/terms/identifierTypeName']['@value'] }}
+                                {{ getDisplayString(realItem['https://purl.org/ctdl/terms/identifierTypeName'])}}
                             </div>
                         </div>
                     </div>
@@ -781,6 +781,9 @@ export default {
         }
     },
     methods: {
+        getDisplayString(thing) {
+            return EcRemoteLinkedData.getDisplayStringFrom(thing);
+        },
         getVersionIdentifier(item) {
             let versionIdentifier;
             if (Array.isArray(item)) {
