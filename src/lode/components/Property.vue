@@ -1094,6 +1094,7 @@ export default {
             return false;
         },
         isVersionIdentifier: function(type) {
+            appLog("isVersionIdentifier", type);
             if (type && (type['https://purl.org/ctdl/terms/identifierType'] || type['ceterms:identifierType'])) {
                 return true;
             }
