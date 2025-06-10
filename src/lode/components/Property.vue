@@ -57,33 +57,8 @@ TO DO MAYBE: Separate out property by editing or not.
                             aria-hidden="true" />
                     </label>
                 </template>
-                <!-- properties that are relations, levels, and click to load -->
-                <template
-                    v-if="!editingProperty && isLink(item) && expandedProperty != '@id' && expandedProperty != 'registryURL'">
-                    <Component
-                        :is="dynamicThing"
-                        :uri="item['@id'] || item['@value']"
-                        :clickToLoad="true"
-                        class="lode__property"
-                        :competencyAsPropertyType="displayLabel"
-                        :competencyAsPropertyObjectType="objectType"
-                        :parentNotEditable="!canEdit"
-                        :profile="childProfile" />
-                    <div
-                        class="editing-property"
-                        v-if="editingProperty">
-                        <div class="control">
-                            <label><br></label>
-                            <div
-                                @click="showModal('remove', item)"
-                                class="button is-text has-text-danger">
-                                <i class="fa fa-times" />
-                            </div>
-                        </div>
-                    </div>
-                </template>
                 <!-- identifier values -->
-                <div v-else-if="isVersionIdentifier(item)">
+                <div v-if="isVersionIdentifier(item)">
                     <div v-if="editingProperty"
                         class="columns">
                         <div class="column">
@@ -125,6 +100,31 @@ TO DO MAYBE: Separate out property by editing or not.
                         </div>
                     </div>
                 </div>
+                <!-- properties that are relations, levels, and click to load -->
+                <template
+                    v-else-if="!editingProperty && isLink(item) && expandedProperty != '@id' && expandedProperty != 'registryURL'">
+                    <Component
+                        :is="dynamicThing"
+                        :uri="item['@id'] || item['@value']"
+                        :clickToLoad="true"
+                        class="lode__property"
+                        :competencyAsPropertyType="displayLabel"
+                        :competencyAsPropertyObjectType="objectType"
+                        :parentNotEditable="!canEdit"
+                        :profile="childProfile" />
+                    <div
+                        class="editing-property"
+                        v-if="editingProperty">
+                        <div class="control">
+                            <label><br></label>
+                            <div
+                                @click="showModal('remove', item)"
+                                class="button is-text has-text-danger">
+                                <i class="fa fa-times" />
+                            </div>
+                        </div>
+                    </div>
+                </template>
                 <!-- non text fields load a component-->
                 <div
                     v-else-if="!isText(item)"
@@ -1101,6 +1101,7 @@ export default {
             return false;
         },
         isLink: function(type) {
+            appLog("isLink", type);
             if (EcObject.keys(type).length === 1) {
                 if (type["@id"] != null && type["@id"] !== undefined) {
                     return true;
