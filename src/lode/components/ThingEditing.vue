@@ -1064,15 +1064,17 @@ export default {
                     }
                 );
             } else {
-                if (this.expandedObj != null && this.expandedObj !== undefined && this.expandedObj["@type"]) {
-                    // If we don't have an expandedObj provided, expand whatever is in obj and continue loading.
-                    this.loadSchema(function() {
-                        me.expandedThing = me.expandedObj;
-                        if (me.$store.state.editor && (EcRemoteLinkedData.trimVersionFromUrl(me.expandedThing["@id"]) === me.$store.state.editor.newCompetency ||
-                        EcRemoteLinkedData.trimVersionFromUrl(me.expandedThing["@id"]) === me.$store.state.editor.newFramework)) {
-                            me.populateRequiredFields();
-                        }
-                    }, this.expandedObj["@type"][0]);
+                if (this.expandedObj != null && this.expandedObj !== undefined) {
+                    if (this.expandedObj["@type"]) {
+                        // If we don't have an expandedObj provided, expand whatever is in obj and continue loading.
+                        this.loadSchema(function() {
+                            me.expandedThing = me.expandedObj;
+                            if (me.$store.state.editor && (EcRemoteLinkedData.trimVersionFromUrl(me.expandedThing["@id"]) === me.$store.state.editor.newCompetency ||
+                            EcRemoteLinkedData.trimVersionFromUrl(me.expandedThing["@id"]) === me.$store.state.editor.newFramework)) {
+                                me.populateRequiredFields();
+                            }
+                        }, this.expandedObj["@type"][0]);
+                    }
                 } else {
                     me.originalThing = this.obj;
                     var lastSaved = this.originalThing["schema:dateModified"];
