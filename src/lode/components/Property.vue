@@ -82,6 +82,49 @@ TO DO MAYBE: Separate out property by editing or not.
                         </div>
                     </div>
                 </template>
+                <!-- identifier values -->
+                <div v-else-if="isVersionIdentifier(item)">
+                    <div v-if="editingProperty"
+                        class="columns">
+                        <div class="column">
+                            <div class="field">
+                                <div class="control">
+                                    <div>
+                                        Identifier Value Code: {{ item['https://purl.org/ctdl/terms/identifierValueCode'][0]['@value'] }}
+                                    </div>
+                                    <div>
+                                        Identifier Type Name: {{ item['https://purl.org/ctdl/terms/identifierTypeName'][0]['@value'] }}
+                                    </div>
+                                    <div>
+                                        Identifier Type: {{ item['https://purl.org/ctdl/terms/identifierType'][0]['@value'] }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column is-narrow">
+                            <div
+                                class="field delete-property-button">
+                                <div class="control">
+                                    <label><br></label>
+                                    <div
+                                        @click="showModal('remove', item)"
+                                        class="button is-text has-text-danger">
+                                        <i class="fa fa-times" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-else>
+                        <div class="expanded-view-property">
+                            <div :title="item['https://purl.org/ctdl/terms/identifierTypeName'][0]"
+                                class="property">
+                                <span class="tag is-size-7 is-light">Version Identifier</span>
+                                {{ item['https://purl.org/ctdl/terms/identifierTypeName'][0]['@value'] }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <!-- non text fields load a component-->
                 <div
                     v-else-if="!isText(item)"
@@ -1048,6 +1091,12 @@ export default {
                 if (type["@type"][0].toLowerCase().indexOf("string") !== -1) { return true; }
             }
             if (type["@id"] != null && type["@id"] !== undefined) { return true; }
+            return false;
+        },
+        isVersionIdentifier: function(type) {
+            if (type && type['https://purl.org/ctdl/terms/identifierType']) {
+                return true;
+            }
             return false;
         },
         isLink: function(type) {

@@ -419,6 +419,7 @@ export default {
                     "max": 1,
                     "heading": "Connections"
                 },
+                // NOTE: This has special code in AddProperty.vue to handle it.
                 "https://purl.org/ctdl/terms/versionIdentifier": {
                     "@id": "https://purl.org/ctdl/terms/versionIdentifier",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -431,6 +432,8 @@ export default {
                             "@value": `Alphanumeric identifier of the version of the resource that is unique within the organizational context of its owner.`}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Identifier"}],
+                    "custom": "true",
+                    "noTextEditing": "true",
                     "heading": "Tagging"
                 },
                 "https://purl.org/ctdl/terms/latestVersion": {
@@ -499,6 +502,7 @@ export default {
                     "https://schema.cassproject.org/0.4/socList",
                     "https://schema.cassproject.org/0.4/naicsList",
                     "http://purl.org/ASN/schema/core/hasProgressionModel",
+                    "https://purl.org/ctdl/terms/versionIdentifier",
                     "https://purl.org/ctdl/terms/latestVersion",
                     "https://purl.org/ctdl/terms/previousVersion",
                     "https://purl.org/ctdl/terms/nextVersion"
@@ -772,6 +776,23 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Membership Condition"}],
                     "heading": "General"
                 },
+                // NOTE: This has special code in AddProperty.vue to handle it.
+                "https://purl.org/ctdl/terms/versionIdentifier": {
+                    "@id": "https://purl.org/ctdl/terms/versionIdentifier",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://purl.org/ctdl/terms/IdentifierValue", "@type": "https://purl.org/ctdl/terms/IdentifierValue"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Alphanumeric identifier of the version of the resource that is unique within the organizational context of its owner.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Identifier"}],
+                    "custom": "true",
+                    "noTextEditing": "true",
+                    "heading": "Tagging"
+                },
                 "https://purl.org/ctdl/terms/latestVersion": {
                     "@id": "https://purl.org/ctdl/terms/latestVersion",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -838,6 +859,7 @@ export default {
                     "http://schema.org/keywords",
                     "https://purl.org/ctdl/terms/ownedBy",
                     "https://purl.org/ctdl/terms/subject",
+                    "https://purl.org/ctdl/terms/versionIdentifier",
                     "https://purl.org/ctdl/terms/latestVersion",
                     "https://purl.org/ctdl/terms/previousVersion",
                     "https://purl.org/ctdl/terms/nextVersion"
@@ -1558,6 +1580,23 @@ export default {
                     "heading": "Connections",
                     "max": 1
                 },
+                // NOTE: This has special code in AddProperty.vue to handle it.
+                "https://purl.org/ctdl/terms/versionIdentifier": {
+                    "@id": "https://purl.org/ctdl/terms/versionIdentifier",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://purl.org/ctdl/terms/IdentifierValue", "@type": "https://purl.org/ctdl/terms/IdentifierValue"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Alphanumeric identifier of the version of the resource that is unique within the organizational context of its owner.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Identifier"}],
+                    "custom": "true",
+                    "noTextEditing": "true",
+                    "heading": "Tagging"
+                },
                 "https://purl.org/ctdl/terms/latestVersion": {
                     "@id": "https://purl.org/ctdl/terms/latestVersion",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1628,6 +1667,7 @@ export default {
                     "https://purl.org/ctdlasn/terms/localSubject",
                     "https://purl.org/ctdlasn/terms/crossSubjectReference",
                     "https://schema.cassproject.org/0.4/cipList",
+                    "https://purl.org/ctdl/terms/versionIdentifier",
                     "https://purl.org/ctdl/terms/latestVersion",
                     "https://purl.org/ctdl/terms/previousVersion",
                     "https://purl.org/ctdl/terms/nextVersion"

@@ -250,7 +250,9 @@ export default {
         view: {
             type: String,
             default: ''
-        }
+        },
+        overrideUpdate: Boolean, // Emit an event instead if true
+        customProperty: Boolean
     },
     components: {
         ModalTemplate
@@ -260,7 +262,7 @@ export default {
     data: function() {
         var property;
         if (this.newProperty === true) {
-            property = "";
+            property = this.customProperty ? this.propertyValue : '';
         } else {
             property = this.expandedThing[this.expandedProperty];
         }
@@ -326,6 +328,9 @@ export default {
             } else {
                 this.text = {};
             }
+        }
+        if (this.customProperty && this.propertyValue) {
+            this.text = this.propertyValue;
         }
     },
     computed: {
@@ -446,7 +451,11 @@ export default {
     },
     methods: {
         blur: function() {
-            this.$parent.updatePropertyString(this.text, this.indexInternal);
+            if (this.overrideUpdate) {
+                this.$emit('updatePropertyString', this.text, this.indexInternal);
+            } else {
+                this.$parent.updatePropertyString(this.text, this.indexInternal);
+            }
             this.isOpen = false;
         },
         onSearchChange: function() {
