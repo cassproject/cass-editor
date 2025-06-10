@@ -114,11 +114,11 @@ Vue.config.warnHandler = function(msg, vm, trace) {
     // `trace` is the component hierarchy trace
 };
 
-global.appLog = function(x) {
+global.appLog = function(...args) {
     /* eslint-disable no-console */
     if (process.env.NODE_ENV !== 'production') {
         // console.trace(x);
-        console.log(x);
+        console.log(...args);
     }
     /* eslint-enable no-console */
 };
