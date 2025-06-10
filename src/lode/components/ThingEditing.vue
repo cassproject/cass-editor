@@ -1064,7 +1064,7 @@ export default {
                     }
                 );
             } else {
-                if (this.expandedObj != null && this.expandedObj !== undefined) {
+                if (this.expandedObj != null && this.expandedObj !== undefined && this.expandedObj["@type"]) {
                     // If we don't have an expandedObj provided, expand whatever is in obj and continue loading.
                     this.loadSchema(function() {
                         me.expandedThing = me.expandedObj;
