@@ -440,8 +440,7 @@ export default {
     computed: {
         canAddVersionIdentifier() {
             return this.versionIdentifierData.identifierValue && 
-                this.versionIdentifierData.identifierName && this.versionIdentifierData.identifierName['@value'] && 
-                this.versionIdentifierData.identifierType;
+                this.versionIdentifierData.identifierName && this.versionIdentifierData.identifierName['@value'];
         },
         queryParams() {
             return this.$store.getters['editor/queryParams'];

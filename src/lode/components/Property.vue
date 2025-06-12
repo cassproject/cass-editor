@@ -1117,7 +1117,7 @@ export default {
         },
         isVersionIdentifier: function(type) {
             appLog("isVersionIdentifier", type);
-            if (type && (type['https://purl.org/ctdl/terms/identifierType'] || (Array.isArray(type) && type[0] && type[0]['https://purl.org/ctdl/terms/identifierType']))) {
+            if (type && (type['https://purl.org/ctdl/terms/identifierTypeName'] || (Array.isArray(type) && type[0] && type[0]['https://purl.org/ctdl/terms/identifierTypeName']))) {
                 return true;
             }
             return false;
