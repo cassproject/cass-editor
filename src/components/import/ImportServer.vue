@@ -815,6 +815,20 @@ export default {
                 success = await this.caseGetDocsBatch(serverUrl, limit, offset);
             }
         },
+        caseGetDocsFailure: function(failure) {
+            let error = {
+                message: "Unable to import from the URL Endpoint provided.",
+                details: ""
+            };
+
+            error.details = "Error: " + failure;
+            if (failure === 401) {
+                error.details += " A CASE framework cannot be imported if it uses API Key authentication.";
+            }
+            this.$store.commit('app/importTransition', 'upload');
+            this.$store.commit('app/addImportError', error.details);
+            this.showModal('error', error);
+        },
         caseGetDocsBatch: function(serverUrl, limit, offset) {
             return new Promise((resolve) => {
                 var me = this;
@@ -825,63 +839,81 @@ export default {
                 this.get(serverUrl, `ims/case/v1p0/CFDocuments/?limit=${limit}&offset=${offset}`, {"Accept": "application/json"}, function(result) {
                     const success = me.caseGetDocsSuccess(result);
                     resolve(success);
-                }, function(failure) {
-                    if (failure) {
-                        error.details = "Error: " + failure;
-                        if (failure === 401) {
-                            error.details += " A CASE framework cannot be imported if it uses API Key authentication.";
-                        }
-                        me.$store.commit('app/importTransition', 'upload');
-                        me.$store.commit('app/addImportError', error.details);
-                        me.showModal('error', error);
-                    } else {
-                        me.caseGetServerSide();
-                    }
-                    resolve(false);
+                }, function() {
+                    resolve(me.caseGetServerSide());
                 });
             });
         },
-        caseGetDocsSuccess: function(result) {
+        parseCaseDocs: function(result) {
+            for (var i = 0; i < result.CFDocuments.length; i++) {
+                var doc = result.CFDocuments[i];
+                var obj = {};
+                obj.name = doc.title;
+                obj.id = doc.uri;
+                obj.identifier = doc.identifier;
+                obj.loading = false;
+                obj.success = false;
+                obj.error = false;
+                obj.checked = false;
+                this.caseDocs.push(obj);
+            }
+        },  
+        caseGetDocsSuccess: function(result, done) {
             return new Promise((resolve) => {
-                result = JSON.parse(result);
-                let error;
-                if (result.CFDocuments == null) {
-                    error = "No frameworks found. Please check the URL and try again.";
-                    this.$store.commit('app/addImportError', error);
-                    me.$store.commit('app/importTransition', 'process');
-                    resolve(false);
-                } else {
-                    if (result.CFDocuments.length === 0) {
-                        let message = this.caseDocs.length + " frameworks detected.";
-                        this.$store.commit('app/importStatus', message);
-                        this.$store.commit('app/importTransition', 'serverFrameworksDetected');
-                        this.caseCancel = false;
+                try {
+                    result = JSON.parse(result);
+                    let error;
+                    if (result.CFDocuments == null) {
+                        error = "No frameworks found. Please check the URL and try again.";
+                        this.$store.commit('app/addImportError', error);
+                        this.$store.commit('app/importTransition', 'process');
                         resolve(false);
+                    } else {
+                        if (result.CFDocuments.length === 0 || done) {
+                            if (done) {
+                                this.parseCaseDocs(result);
+                            }
+                            let message = this.caseDocs.length + " frameworks detected.";
+                            this.$store.commit('app/importStatus', message);
+                            this.$store.commit('app/importTransition', 'serverFrameworksDetected');
+                            this.caseCancel = false;
+                            resolve(false);
+                        } else {
+                            this.parseCaseDocs(result);
+                            this.caseCancel = false;
+                            resolve(true);
+                        }
                     }
-                    for (var i = 0; i < result.CFDocuments.length; i++) {
-                        var doc = result.CFDocuments[i];
-                        var obj = {};
-                        obj.name = doc.title;
-                        obj.id = doc.uri;
-                        obj.identifier = doc.identifier;
-                        obj.loading = false;
-                        obj.success = false;
-                        obj.error = false;
-                        obj.checked = false;
-                        this.caseDocs.push(obj);
-                    }
-                    this.caseCancel = false;
-                    resolve(true);
+                } catch (e) {
+                    this.caseGetDocsFailure(e.toString());
+                    resolve(false);
                 }
             });
         },
         caseGetServerSide: function() {
-            var me = this;
-            EcRemote.getExpectingString(this.repo.selectedServer, "ims/case/getDocs?url=" + this.importServerUrl, function(success) {
-                me.caseGetDocsSuccess(success);
-            }, function(failure) {
-                me.$store.commit('app/importTransition', 'process');
-                me.$store.commit('app/addImportError', "No frameworks found. Please check the URL and try again.");
+            return new Promise((resolve) => {
+                var me = this;
+                let url = this.importServerUrl;
+                // Add trailing slash if not present.
+                if (url.charAt(url.length - 1) !== '/') {
+                    url += '/';
+                }
+                EcRemote.getExpectingString(this.repo.selectedServer, "ims/case/getDocs?url=" + url, function(success) {
+                    try {
+                        if (typeof success !== 'string') {
+                            success = JSON.stringify(success);
+                        }
+                        me.caseGetDocsSuccess(success, true).then(() => {
+                            resolve(false);
+                        });
+                    } catch (e) {
+                        me.caseGetDocsFailure(e.toString());
+                        resolve(false);
+                    }
+                }, function(failure) {
+                    me.caseGetDocsFailure();
+                    resolve(false);
+                });
             });
         },
         importCase: function(dataArray) {
