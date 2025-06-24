@@ -29,6 +29,7 @@
 	"schema:license": "ceasn:license",
 	"schema:publisher": "ceasn:publisher",
 	"schema:publisherName": "ceasn:publisherName",
+	"schema:name": "ceasn:name",
 	"dc:rights": "ceasn:rights",
 	"dc:source": "ceasn:source",
 	"validFrom": "ceasn:dateValidFrom",
