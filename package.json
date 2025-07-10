@@ -51,6 +51,7 @@
     "@vuepress/core": "^1.9.7",
     "babel-eslint": "^10.1.0",
     "compression-webpack-plugin": "^6.1.2",
+    "cypress": "^14.5.1",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^8.7.1",
     "file-loader": "^6.2.0",
@@ -94,5 +95,6 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+  "packageManager": "npm@11.3.0+sha512.96eb611483f49c55f7fa74df61b588de9e213f80a256728e6798ddc67176c7b07e4a1cfc7de8922422cbce02543714367037536955221fa451b0c4fefaf20c66"
 }
