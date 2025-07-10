@@ -1,21 +1,41 @@
 describe('template spec', () => {
+  it('opens', () => {
+    cy.visit('http://localhost:8082/?server=http://localhost/api/')
+  })
+  it('createAccount', () => {
+    cy.visit('http://localhost:8082/?server=http://localhost/api/')
+    cy.get('#side-nav-show-login-button').click();
+    /* ==== End Cypress Studio ==== */
+    /* ==== Generated with Cypress Studio ==== */
+    cy.get('.is-dark').click();
+    cy.get(':nth-child(1) > .control > .input').clear();
+    cy.get(':nth-child(1) > .control > .input').type('name');
+    cy.get(':nth-child(2) > .control > .input').clear();
+    cy.get(':nth-child(2) > .control > .input').type('email@email.com');
+    cy.get(':nth-child(3) > .control > .input').clear();
+    cy.get(':nth-child(3) > .control > .input').type('username');
+    cy.get('.is-grouped > :nth-child(1) > .input').clear();
+    cy.get('.is-grouped > :nth-child(1) > .input').type('password');
+    cy.get(':nth-child(2) > .input').clear();
+    cy.get(':nth-child(2) > .input').type('password');
+    cy.get('.buttons > .is-expanded > :nth-child(2)').click();
+    cy.get('.logo-container > .button > span').click();
+    cy.get('.my-2 > .button > :nth-child(2)').click();
+    cy.get('.is-secondary > :nth-child(2)').click();
+    cy.get('#side-nav-show-login-button > :nth-child(2)').click();
+    cy.get(':nth-child(1) > .control > .input').clear('u');
+    cy.get(':nth-child(1) > .control > .input').type('username');
+    cy.get(':nth-child(2) > .control > .input').clear();
+    cy.get(':nth-child(2) > .control > .input').type('password');
+    cy.get('.is-primary > .icon > .fa').click();
+    cy.get('.logo-container > .button > span').click();
+    cy.get('.px-3 > .my-2 > .button').click();
+    cy.get('.modal-card-foot > .buttons > .is-primary > :nth-child(2)').click();
+    cy.get(':nth-child(1) > .control > .input').clear('us');
+    cy.get(':nth-child(1) > .control > .input').type('username');
+    cy.get(':nth-child(2) > .control > .input').clear();
+    cy.get(':nth-child(2) > .control > .input').type('password');
+    cy.get('.is-primary > :nth-child(2)').click();
+    /* ==== End Cypress Studio ==== */
+  })
 })
-
-/* ==== Test Created with Cypress Studio ==== */
-it('create and delete framework', function () {
-  /* ==== Generated with Cypress Studio ==== */
-  cy.visit('http://localhost:8082?server=https://dev.cassproject.org/api/');
-  cy.get('#side-nav-frameworks-link').click();
-  cy.get('#add-new-dropdown-toggle-button').click();
-  cy.get('#add-new-dropdown-framework').click();
-  cy.get('section.modal-card-body').click();
-  cy.get('#http\\:\\/\\/schema\\.org\\/description-0 > .field > .control.is-expanded > #property-string-computed-text').click();
-  cy.get('#http\\:\\/\\/schema\\.org\\/description-0 > .field > .control.is-expanded > #property-string-computed-text').clear('');
-  cy.get('#http\\:\\/\\/schema\\.org\\/description-0 > .field > .control.is-expanded > #property-string-computed-text').type("This is a test framework created by Cypress. It should be deleted.");
-  cy.get('#thing-editing-done-editing-button').click();
-  cy.get('#edit-node-button').click({ force: true }); // The window should be scrolled such that this is visible. It may be visible, maybe not. This is a design principle issue?
-  cy.wait(2000); // This is a bug, it should be either invisible while binding or bound immediately.
-  cy.get('#cancel-create-new-thing-button').click();
-  cy.get('#delete-framework-confirm-delete-button').click();
-  /* ==== End Cypress Studio ==== */
-});
