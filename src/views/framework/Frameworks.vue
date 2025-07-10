@@ -34,6 +34,7 @@
                             @toggle="createDropDownActive = !createDropDownActive"
                             :active="createDropDownActive" />
                         <router-link
+                            id="import-concept-scheme-button"
                             :to="{path: '/import', query: queryParams}"
                             @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
                             class="button is-hidden-touch is-outlined is-primary">
@@ -42,6 +43,7 @@
                             </span><span>import {{ conceptSchemeStringForButton }}</span>
                         </router-link>
                         <router-link
+                            id="import-concept-scheme-mobile-button"
                             :to="{path: '/import', query: queryParams}"
                             @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
                             class="button is-hidden-desktop is-outlined is-primary">
@@ -84,6 +86,7 @@
                             @toggle="createDropDownActive = !createDropDownActive"
                             :active="createDropDownActive" />
                         <router-link
+                            id="import-progression-model-button"
                             :to="{path: '/import', query: queryParams}"
                             @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', true); $store.dispatch('app/clearImport');"
                             class="button is-hidden-touch is-outlined is-primary">
@@ -92,6 +95,7 @@
                             </span><span>import Progression Model</span>
                         </router-link>
                         <router-link
+                            id="import-progression-model-mobile-button"
                             :to="{path: '/import', query: queryParams}"
                             @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', true); $store.dispatch('app/clearImport');"
                             class="button is-hidden-desktop is-outlined is-primary">
@@ -138,6 +142,7 @@
                             :active="createDropDownActive" />
                         <!-- upload -->
                         <router-link
+                            id="import-framework-button"
                             :to="{path: '/import', query: queryParams}"
                             @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
                             class="button is-outlined is-hidden-desktop is-primary">
@@ -146,6 +151,7 @@
                             </span>
                         </router-link>
                         <router-link
+                            id="import-framework-button-mobile"
                             :to="{path: '/import', query: queryParams}"
                             @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
                             class="button is-outlined is-hidden-touch is-primary">

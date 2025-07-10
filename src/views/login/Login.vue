@@ -31,6 +31,7 @@
                             <div class="section box py-2 px-2">
                                 <div class="modal-card-body has-text-centered">
                                     <div
+                                        id="login-login-button"
                                         class="button is-outlined is-primary"
                                         @click="attemptExternalCassLogin">
                                         <span class="icon">
@@ -44,6 +45,7 @@
                             <div class="section box py-2 px-2">
                                 <div class="modal-card-body has-text-centered">
                                     <div
+                                        id="login-create-account-button"
                                         class="button is-outlined is-dark"
                                         @click="goToCreateAccount">
                                         <span class="icon">

@@ -109,6 +109,7 @@
                                 <div class="container">
                                     <h2 class="title is-size-1">
                                         <span
+                                            id="apply-alignments-button"
                                             v-if="workingAlignmentsChanged"
                                             @click="applyWorkingAlignmentChanges"
                                             class="button is-pulled-right is-outlined is-primary">
@@ -120,6 +121,7 @@
                                             </span>
                                         </span>
                                         <span
+                                            id="save-review-button"
                                             v-if="(alignmentsToSave.length > 0 || alignmentsToDelete.length > 0) && sourceState === 'ready'"
                                             @click="goToSummaryAndSave"
                                             class="button  is-pulled-right is-outlined is-primary">
@@ -327,6 +329,7 @@
                                         class="buttons is-spaced"
                                         v-if="saveToSourceFramework || saveToTargetFramework">
                                         <div
+                                            id="return-to-crosswalk-editing-button"
                                             class="button is-outlined is-dark"
                                             @click="returnToCrosswalkEditing">
                                             <span class="icon">
@@ -337,6 +340,7 @@
                                             </span>
                                         </div>
                                         <div
+                                            id="save-alignments-button"
                                             class="button is-outlined is-primary"
                                             @click="saveAlignments">
                                             <span class="icon">

@@ -33,12 +33,16 @@
                     aria-label="breadcrumbs has-text-dark">
                     <ul>
                         <li>
-                            <router-link :to="{path: '/frameworks', query: queryParams}">
+                            <router-link 
+                                id="import-home-link"
+                                :to="{path: '/frameworks', query: queryParams}">
                                 CaSS
                             </router-link>
                         </li>
                         <li>
-                            <a href="#">Import</a>
+                            <a 
+                                id="import-link"
+                                href="#">Import</a>
                         </li>
                     </ul>
                 </div>
@@ -72,7 +76,7 @@
                                     </span>
                                     <span v-if="!conceptMode && !progressionMode">Import a framework</span>
                                     <span
-
+                                        id="file-import-file-info-button"
                                         @click="showRightAside"
                                         class="button is-outlined is-primary is-pulled-right">
                                         <span class="icon">
@@ -264,6 +268,7 @@
                                         Import a framework
                                     </span>
                                     <span
+                                        id="server-import-file-info-button"
                                         @click="showRightAside"
                                         class="button is-outlined is-primary is-pulled-right">
                                         <span class="icon">
@@ -446,6 +451,7 @@
                                     </span>
                                     <span v-if="!conceptMode && !progressionMode">Import a framework</span>
                                     <span
+                                        id="url-import-file-info-button"
                                         @click="showRightAside"
                                         class="button is-outlined is-primary is-pulled-right">
                                         <span class="icon">
@@ -630,6 +636,7 @@
                                         Import a framework
                                     </span>
                                     <span
+                                        id="text-import-file-info-button"
                                         @click="showRightAside"
                                         class="button is-outlined is-primary is-pulled-right">
                                         <span class="icon">
@@ -723,6 +730,7 @@
                                 class="columns pt-4 is-multiline">
                                 <div class="column is-narrow">
                                     <button
+                                        id="pdf-import-button"
                                         @click="showImportModal('pdf')"
                                         class="button  is-warning is-light is-outlined is-small"
                                         v-if="!conceptMode && !progressionMode">
@@ -736,6 +744,7 @@
                                 </div>
                                 <div class="column is-narrow">
                                     <button
+                                        id="docx-import-button"
                                         @click="showImportModal('docx')"
                                         class="button  is-warning is-light is-outlined is-small"
                                         v-if="!conceptMode && !progressionMode">
@@ -749,6 +758,7 @@
                                 </div>
                                 <div class="column is-narrow">
                                     <button
+                                        id="html-import-button"
                                         @click="showImportModal('html')"
                                         class="button  is-warning is-light is-outlined is-small"
                                         v-if="!conceptMode && !progressionMode">
@@ -762,6 +772,7 @@
                                 </div>
                                 <div class="column is-narrow">
                                     <button
+                                        id="csv-import-button"
                                         @click="showImportModal('csv')"
                                         class="button  is-success is-light is-outlined is-small">
                                         <span
@@ -774,6 +785,7 @@
                                 </div>
                                 <div class="column is-narrow">
                                     <button
+                                        id="xml-import-button"
                                         @click="showImportModal('xml')"
                                         class="button  is-success is-light is-outlined is-small"
                                         v-if="!conceptMode && !progressionMode">
@@ -787,6 +799,7 @@
                                 </div>
                                 <div class="column is-narrow">
                                     <button
+                                        id="json-import-button"
                                         @click="showImportModal('json')"
                                         class="button  is-success is-light is-outlined is-small">
                                         <span

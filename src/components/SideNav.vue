@@ -94,6 +94,7 @@
                 v-else-if="loginEnabled && displayName == 'No user'"
                 class="mx-3">
                 <button
+                    id="side-nav-show-login-button"
                     v-if="showSideNav"
                     class="my-2 button is-outlined is-white is-fullwidth"
                     @click="performApplicationLogin">
@@ -105,6 +106,7 @@
                     v-if="!showSideNav"
                     class="buttons is-centered">
                     <button
+                        id="side-nav-login-button"
                         class="button is-outlined is-white"
                         @click="performApplicationLogin"
                         title="Login">
