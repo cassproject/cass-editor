@@ -8,12 +8,14 @@
                 <!-- CONTROLS FOR EXPAND  -->
                 <div class="column is-narrow">
                     <div
+                        id="collapse-button"
                         v-if="expanded && hierarchyEnabled"
                         class="icon is-vcentered"
                         @click="expanded=false">
                         <i class="fa fa-caret-down has-text-primary is-size-2" />
                     </div>
                     <div
+                        id="expand-button"
                         v-else-if="!expanded && hierarchyEnabled"
                         class="icon is-vcentered"
                         @click="expanded=true">
@@ -25,6 +27,7 @@
                         <i class="fa fa-circle is-size-7 has-text-light" />
                     </div>
                     <div
+                        id="select-button"
                         v-if="selectButtonText"
                         @click="$emit('select-button-click', selectedArray)"
                         class="button is-outlined is-primary">
@@ -39,8 +42,9 @@
                         <div
                             class="field">
                             <input
+                                id="select-all-checkbox"
                                 class="is-checkradio"
-                                id="selectAllCheckbox"
+                                id="select-all-checkbox"
                                 type="checkbox"
                                 name="selectAllCheckbox"
                                 v-model="selectAll">
@@ -54,6 +58,7 @@
                     v-if="view === 'crosswalk'">
                     <div class="buttons is-right">
                         <div
+                            id="show-aligned-button"
                             @click="filterHierarchy('showAligned')"
                             title="show aligned only"
                             class="button is-small is-outlined is-primary"
@@ -63,6 +68,7 @@
                             </span>
                         </div>
                         <div
+                            id="show-unaligned-button"
                             @click="filterHierarchy('showUnaligned')"
                             title="show unaligned only"
                             class="button is-small is-outlined is-primary"
@@ -72,6 +78,7 @@
                             </span>
                         </div>
                         <div
+                            id="show-all-button"
                             @click="filterHierarchy('showAll')"
                             title="show all"
                             class="button is-outlined is-small is-primary"
@@ -81,6 +88,7 @@
                             </span>
                         </div>
                         <button
+                            id="change-source-button"
                             @click="changeFrameworkSource"
                             title="change source"
                             v-if="subview === 'crosswalkSource' && alignmentsToSave.length === 0"
@@ -90,6 +98,7 @@
                             </span>
                         </button>
                         <button
+                            id="change-target-button"
                             @click="changeFrameworkTarget"
                             title="change target"
                             v-else-if="subview === 'crosswalkTarget' && alignmentsToSave.length === 0"
@@ -107,6 +116,7 @@
                     <div
                         class="buttons">
                         <div
+                            id="edit-multiple-button"
                             v-if="multipleSelected && view !== 'import' && canEdit"
                             @click="$emit('edit-multiple-event')"
                             class="button is-outlined is-primary">
@@ -119,6 +129,7 @@
                         </div>
                         <!-- if multiple are selected allow for edit multiple -->
                         <div
+                            id="add-competency-button"
                             @click="addingNode = true;"
                             v-if="!addingNode && canEdit && !multipleSelected"
                             class="button is-outlined is-primary">
@@ -131,6 +142,7 @@
                         </div>
                         <!-- delete item -->
                         <div
+                            id="delete-competency-button"
                             v-if="!addingNode && canEdit && !multipleSelected && canCopyOrCut"
                             @click="deleteSelected"
                             class="button is-outlined is-danger">
@@ -142,6 +154,7 @@
                             </span>
                         </div>
                         <div
+                            id="cancel-add-competency-button"
                             v-if="addingNode"
                             @click="addingNode = false;"
                             class="button is-outlined is-dark ">
@@ -151,6 +164,7 @@
                             <span>cancel</span>
                         </div>
                         <div
+                            id="create-new-competency-button"
                             v-if="addingNode"
                             @click="onClickCreateNew"
                             :class="{'is-loading': loading}"
@@ -163,6 +177,7 @@
                             </span>
                         </div>
                         <div
+                            id="search-competency-button"
                             v-if="addingNode"
                             @click="clickToSearch"
                             class="button is-outlined is-primary ">
@@ -172,6 +187,7 @@
                             <span>search</span>
                         </div>
                         <div
+                            id="copy-competency-button"
                             v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             :disabled="!canCopyOrCut"
                             title="Copy competency"
@@ -183,6 +199,7 @@
                             </span>
                         </div>
                         <div
+                            id="cut-competency-button"
                             v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             title="Cut competency"
                             :disabled="!canCopyOrCut"
@@ -194,6 +211,7 @@
                             </span>
                         </div>
                         <div
+                            id="paste-competency-button"
                             v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             :disabled="!canPaste"
                             class="button is-outlined "
@@ -205,6 +223,7 @@
                             </span>
                         </div>
                         <div
+                            id="clear-clipboard-button"
                             v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             :disabled="!clipboardContainsItem"
                             class="button is-outlined "
@@ -227,6 +246,7 @@
                             class="buttons is-small is-right">
                             <!-- cancel button -->
                             <div
+                                id="cancel-import-button"
                                 @click="cancelImport"
                                 class=" button is-light is-small is-pulled-right is-dark is-outlined">
                                 <span>
@@ -238,6 +258,7 @@
                             </div>
                             <!-- export -->
                             <div
+                                id="export-import-button"
                                 v-if="view === 'importLight' && (importType !== 'text' || (importType === 'text' && importStatus === 'Competency detected'))"
                                 class="button is-small is-dark is-outlined is-pulled-right"
                                 @click="showModal('export')">
@@ -250,6 +271,7 @@
                             </div>
                             <!--  start over -->
                             <div
+                                id="import-again-button"
                                 v-if="view === 'importLight' && (importType !== 'text' || (importType === 'text' && importStatus === 'Competency detected'))"
                                 @click="$store.dispatch('app/clearImport')"
                                 class="button is-small is-dark is-outlined is-pulled-right">
@@ -262,6 +284,7 @@
                             </div>
                             <!-- open in editor -->
                             <div
+                                id="open-in-editor-button"
                                 v-if="view === 'importLight' && (importType !== 'text' || (importType === 'text' && importStatus === 'Competency detected'))"
                                 @click="openFramework"
                                 class="button is-small is-dark is-outlined is-pulled-right">
@@ -272,6 +295,7 @@
                             </div>
                             <!--  accept preview -->
                             <div
+                                id="done-editing-import-button"
                                 @click="$store.commit('app/importTransition', 'light')"
                                 v-if="view === 'importPreview'"
                                 class="button  is-small is-primary is-outlined is-pulled-right">
@@ -284,6 +308,7 @@
                             </div>
                             <!--  home -->
                             <router-link
+                                id="done-import-button"
                                 v-if="view === 'importLight' && (importType !== 'text' || (importType === 'text' && importStatus === 'Competency detected'))"
                                 class="button is-small is-primary is-outlined is -pulled-right"
                                 :to="{path: '/frameworks', query: queryParams}">
@@ -304,6 +329,7 @@
                 <div class="column is-narrow assertion-subject-select">
                     <span>Manage Assertions for: </span>
                     <button
+                        id="select-subject-button"
                         v-if="selectedSubject"
                         class="button is-outlined is-primary assertion-subject-select-button"
                         @click="openSelectSubjectModal">
@@ -382,6 +408,7 @@
                 <div
                     class="field">
                     <input
+                        id="search-persons"
                         type="text"
                         class="input"
                         v-model="personFilter"

@@ -3,6 +3,7 @@
         class="breadcrumb is-small is-black"
         aria-label="breadcrumbs">
         <ul
+            :id="framework.id"
             v-for="framework in breadCrumbInfo"
             :key="framework.id">
             <li
