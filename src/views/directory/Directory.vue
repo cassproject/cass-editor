@@ -67,6 +67,7 @@
                     <div class="control">
                         <div class="control">
                             <input
+                                id="new-resource-name"
                                 class="input"
                                 placeholder="Name of new resource"
                                 v-model="resourceName">
@@ -81,6 +82,7 @@
                     <div class="control">
                         <div class="control">
                             <input
+                                id="new-resource-url"
                                 class="input"
                                 placeholder="Url of new resource"
                                 v-model="resourceUrl">

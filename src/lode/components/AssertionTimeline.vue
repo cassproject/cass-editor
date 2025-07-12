@@ -4,6 +4,7 @@
             class="timeline"
             v-if="assertions && !loading">
             <TimelineElement
+                :id="item.id"
                 v-for="item in assertions"
                 :key="item.id"
                 :uri="item.id" />

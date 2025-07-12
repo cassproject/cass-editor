@@ -16,8 +16,9 @@
                     <div class="control">
                         <div class="control">
                             <input
+                                id="new-level-name-input"
                                 class="input"
-                                placeholder="Name of new directory"
+                                placeholder="Name of new level"
                                 v-model="newLevelName">
                         </div>
                     </div>
@@ -25,11 +26,13 @@
             </template>
             <template slot="modal-foot">
                 <button
+                    id="add-new-level-button"
                     @click="addNewLevel"
                     class="is-outlined button">
                     Create
                 </button>
                 <button
+                    id="cancel-new-level-button"
                     @click="closeNewLevelNameModal"
                     class="is-dark button">
                     Cancel
@@ -62,6 +65,7 @@
                     class="title is-size-3 has-text-weight-normal">
                     {{ selectedPropertyToAdd.label }}
                     <span
+                        id="add-property-back-button"
                         @click="selectedPropertyToAdd = ''; addRelationBy = '';"
 
                         class="button is-pulled-right is-text has-text-primary">
@@ -147,11 +151,13 @@
                                                 <div class="buttons">
                                                     <button 
                                                         class="button is-small is-info" 
+                                                        id="edit-version-identifier-button"
                                                         @click="editVersionIdentifier(index)"
                                                         :disabled="editingVersionIdentifierIndex >= 0 && editingVersionIdentifierIndex !== index">
                                                         {{ editingVersionIdentifierIndex === index ? 'Editing...' : 'Edit' }}
                                                     </button>
                                                     <button 
+                                                        id="remove-version-identifier-button"
                                                         class="button is-small is-danger" 
                                                         @click="removeVersionIdentifier(index)"
                                                         :disabled="editingVersionIdentifierIndex >= 0">
@@ -168,6 +174,7 @@
                                     <label class="label">Identifier Value Code</label>
                                     <div class="control">
                                         <input 
+                                            id="version-identifier-value-input"
                                             class="input" 
                                             v-model="versionIdentifierData.identifierValue">
                                     </div>
@@ -196,6 +203,7 @@
                                     <label class="label">Identifier Type</label>
                                     <div class="control">
                                         <input 
+                                            id="version-identifier-type-input"
                                             class="input" 
                                             v-model="versionIdentifierData.identifierType">
                                     </div>
@@ -205,6 +213,7 @@
                                     <div class="control">
                                         <button 
                                             class="button is-primary" 
+                                            id="add-version-identifier-button"
                                             @click="editingVersionIdentifierIndex >= 0 ? saveVersionIdentifierEdit() : addVersionIdentifier()"
                                             :disabled="!canAddVersionIdentifier">
                                             {{ editingVersionIdentifierIndex >= 0 ? 'Save Changes' : 'Add Version Identifier' }}
@@ -214,6 +223,7 @@
                                         v-if="editingVersionIdentifierIndex >= 0">
                                         <button 
                                             class="button" 
+                                            id="cancel-version-identifier-edit-button"
                                             @click="cancelVersionIdentifierEdit()">
                                             Cancel Edit
                                         </button>
@@ -230,6 +240,7 @@
                     class="add-property__field">
                     <div class="buttons is-left">
                         <div
+                            id="add-new-level-button"
                             v-if="selectedPropertyRange && selectedPropertyRange[0].toLowerCase().indexOf('level') !== -1 && !editingMultipleCompetencies"
                             @click="getNewLevelName"
                             type="text"
@@ -257,6 +268,7 @@
                         </div>
                         <!-- add by url -->
                         <div
+                            id="add-by-url-button"
                             v-if="!(limitedConcepts.length > 0)"
                             @click="addRelationBy = 'url'"
                             type="text"
@@ -270,6 +282,7 @@
                         </div>
                         <!-- add by search -->
                         <div
+                            id="add-by-search-button"
                             v-if="!(limitedConcepts.length > 0)"
                             @click="search"
                             type="button"
@@ -292,18 +305,21 @@
                             class="buttons"
                             v-if="selectedPropertyToAdd === ''">
                             <div
+                                id="filter-all-button"
                                 class="button is-small"
                                 :class="filterProperties === 'all' ? 'is-primary' : ''"
                                 @click="filterProperties = 'all'">
                                 all
                             </div>
                             <div
+                                id="filter-resources-button"
                                 class="button is-small"
                                 :class="filterProperties === 'relationships' ? 'is-primary' : ''"
                                 @click="filterProperties = 'relationships'">
                                 relationships
                             </div>
                             <div
+                                id="filter-general-button"
                                 class="button is-small"
                                 :class="filterProperties === 'general' ? 'is-primary' : ''"
                                 @click="filterProperties = 'general'">
@@ -316,12 +332,14 @@
                             class="buttons is-right"
                             v-if="selectedPropertyToAdd === ''">
                             <div
+                                id="filter-list-button"
                                 class="button is-small"
                                 :class="propertyView === 'list' ? 'is-primary' : ''"
                                 @click="propertyView = 'list'">
                                 <span class="icon"><i class="fa fa-list-alt" /></span>
                             </div>
                             <div
+                                id="filter-grid-button"
                                 class="button is-small"
                                 :class="propertyView === 'grid' ? 'is-primary' : ''"
                                 @click="propertyView = 'grid'">
@@ -338,11 +356,13 @@
                             :class="{ 'collapsed': !showGeneral}">
                             <div class="columns is-mobile is-multiline">
                                 <div
+                                    :id="option.label"
                                     v-for="option in showProperties"
                                     :key="option"
                                     class="column property"
                                     :class="propertyView === 'grid' ? 'is-3' : 'is-12'">
                                     <div
+                                        id="property-option"
                                         @click="selectedPropertyToAdd = option"
                                         class="property-button"
                                         :title="option.description"
@@ -368,6 +388,7 @@
                 v-if="$store.state.featuresEnabled.configurationsEnabled">
                 <p class="subtitle">
                     Note: Property options are determined by your <router-link
+                        id="configuration-settings-link"
                         target="_blank"
                         :to="{path: '/configuration', query: queryParams}">
                         configuration settings.
