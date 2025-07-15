@@ -140,6 +140,18 @@ export default {
                     "isRequired": "true",
                     "heading": "General"
                 },
+                "https://purl.org/ctdlasn/terms/codedNotation": {
+                    "@id": "https://purl.org/ctdlasn/terms/codedNotation",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "An alphanumeric notation or ID code identifying this framework in common use among end-users."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Coded Notation"}],
+                    "max": 1,
+                    "heading": "Context"
+                },
                 "http://schema.org/keywords": {
                     "@id": "https://purl.org/ctdlasn/terms/conceptKeyword",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -484,7 +496,8 @@ export default {
                 "headings": ["General", "Tagging", "Connections", "Context", "Rights", "Keys"],
                 "primaryProperties": [
                     "http://schema.org/name",
-                    "http://schema.org/description"
+                    "http://schema.org/description",
+                    "https://purl.org/ctdlasn/terms/codedNotation"
                 ],
                 "secondaryProperties": [
                     "http://schema.org/creator",
