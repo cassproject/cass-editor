@@ -505,7 +505,8 @@ export default {
                             "@value": `Alphanumeric identifier of the version of the resource that is unique within the organizational context of its owner and which does not need the context of other information in order to be interpreted.`}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Code"}],
-                    "heading": "Tagging"
+                    "heading": "Tagging",
+                    "max": 1
                 },
                 "headings": ["General", "Tagging", "Connections", "Context", "Rights", "Keys"],
                 "primaryProperties": [
@@ -878,7 +879,8 @@ export default {
                             "@value": `Alphanumeric identifier of the version of the resource that is unique within the organizational context of its owner and which does not need the context of other information in order to be interpreted.`}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Code"}],
-                    "heading": "Tagging"
+                    "heading": "Tagging",
+                    "max": 1
                 },
                 "headings": ["General", "Tagging", "Keys"],
                 "primaryProperties": [
@@ -1697,7 +1699,8 @@ export default {
                             "@value": `Alphanumeric identifier of the version of the resource that is unique within the organizational context of its owner and which does not need the context of other information in order to be interpreted.`}
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Code"}],
-                    "heading": "Tagging"
+                    "heading": "Tagging",
+                    "max": 1
                 },
                 "headings": ["General", "Context", "Tagging", "Scales", "Connections", "Keys"],
                 "primaryProperties": [
