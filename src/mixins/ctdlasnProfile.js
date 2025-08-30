@@ -140,6 +140,18 @@ export default {
                     "isRequired": "true",
                     "heading": "General"
                 },
+                "https://purl.org/ctdlasn/terms/codedNotation": {
+                    "@id": "https://purl.org/ctdlasn/terms/codedNotation",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "An alphanumeric notation or ID code identifying this framework in common use among end-users."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Coded Notation"}],
+                    "max": 1,
+                    "heading": "Context"
+                },
                 "http://schema.org/keywords": {
                     "@id": "https://purl.org/ctdlasn/terms/conceptKeyword",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -481,10 +493,25 @@ export default {
                     "max": 1,
                     "heading": "Tagging"
                 },
+                "https://purl.org/ctdl/terms/versionCode": {
+                    "@id": "https://purl.org/ctdl/terms/versionCode",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Alphanumeric identifier of the version of the resource that is unique within the organizational context of its owner and which does not need the context of other information in order to be interpreted.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Code"}],
+                    "heading": "Tagging"
+                },
                 "headings": ["General", "Tagging", "Connections", "Context", "Rights", "Keys"],
                 "primaryProperties": [
                     "http://schema.org/name",
-                    "http://schema.org/description"
+                    "http://schema.org/description",
+                    "https://purl.org/ctdlasn/terms/codedNotation"
                 ],
                 "secondaryProperties": [
                     "http://schema.org/creator",
@@ -505,7 +532,8 @@ export default {
                     "https://purl.org/ctdl/terms/versionIdentifier",
                     "https://purl.org/ctdl/terms/latestVersion",
                     "https://purl.org/ctdl/terms/previousVersion",
-                    "https://purl.org/ctdl/terms/nextVersion"
+                    "https://purl.org/ctdl/terms/nextVersion",
+                    "https://purl.org/ctdl/terms/versionCode"
                 ],
                 "tertiaryProperties": [
                     "@id",
@@ -838,6 +866,20 @@ export default {
                     "max": 1,
                     "heading": "Tagging"
                 },
+                "https://purl.org/ctdl/terms/versionCode": {
+                    "@id": "https://purl.org/ctdl/terms/versionCode",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Alphanumeric identifier of the version of the resource that is unique within the organizational context of its owner and which does not need the context of other information in order to be interpreted.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Code"}],
+                    "heading": "Tagging"
+                },
                 "headings": ["General", "Tagging", "Keys"],
                 "primaryProperties": [
                     "http://schema.org/name",
@@ -862,7 +904,8 @@ export default {
                     "https://purl.org/ctdl/terms/versionIdentifier",
                     "https://purl.org/ctdl/terms/latestVersion",
                     "https://purl.org/ctdl/terms/previousVersion",
-                    "https://purl.org/ctdl/terms/nextVersion"
+                    "https://purl.org/ctdl/terms/nextVersion",
+                    "https://purl.org/ctdl/terms/versionCode"
                 ],
                 "tertiaryProperties": [
                     "@id",
@@ -1642,6 +1685,20 @@ export default {
                     "max": 1,
                     "heading": "Tagging"
                 },
+                "https://purl.org/ctdl/terms/versionCode": {
+                    "@id": "https://purl.org/ctdl/terms/versionCode",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Alphanumeric identifier of the version of the resource that is unique within the organizational context of its owner and which does not need the context of other information in order to be interpreted.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Version Code"}],
+                    "heading": "Tagging"
+                },
                 "headings": ["General", "Context", "Tagging", "Scales", "Connections", "Keys"],
                 "primaryProperties": [
                     "https://purl.org/ctdlasn/terms/competencyLabel",
@@ -1670,7 +1727,8 @@ export default {
                     "https://purl.org/ctdl/terms/versionIdentifier",
                     "https://purl.org/ctdl/terms/latestVersion",
                     "https://purl.org/ctdl/terms/previousVersion",
-                    "https://purl.org/ctdl/terms/nextVersion"
+                    "https://purl.org/ctdl/terms/nextVersion",
+                    "https://purl.org/ctdl/terms/versionCode"
                 ],
                 "tertiaryProperties": [
                     "@id",
