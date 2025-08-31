@@ -15,6 +15,7 @@
                         class="input is-small"
                         type="text"
                         v-model="localLabel"
+                        id="framework-competency-property-label-input"
                         @change="changeLabel">
                 </div>
             </div>
@@ -31,6 +32,7 @@
                         type="text"
                         class="input is-small"
                         v-model="localDescription"
+                        id="framework-competency-property-description-input"
                         @change="changeDescription">
                 </div>
             </div>
@@ -47,6 +49,7 @@
                         type="text"
                         class="input is-small"
                         v-model="localHeading"
+                        id="framework-competency-property-heading-input"
                         @change="changeHeading">
                 </div>
             </div>
@@ -75,7 +78,8 @@
                 v-if="!readOnly && !enforcePrimary">
                 <select
                     v-model="localPriority"
-                    @change="changePriority">
+                    @change="changePriority"
+                    id="framework-competency-property-priority-select">
                     <option value="primary">
                         primary
                     </option>
@@ -92,7 +96,8 @@
             <div v-if="custom && readOnly">
                 <div
                     class="button"
-                    @click="$emit('manage', propertyParent, propertyIndex)">
+                    @click="$emit('manage', propertyParent, propertyIndex)"
+                    id="framework-competency-property-manage-button">
                     <div class="icon">
                         <i class="fa fa-cog" />
                     </div>
@@ -101,7 +106,8 @@
             <div v-if="custom && !readOnly">
                 <div
                     class="button is-small is-outlined is-primary"
-                    @click="$emit('manage', propertyParent, propertyIndex)">
+                    @click="$emit('manage', propertyParent, propertyIndex)"
+                    id="framework-competency-property-manage-button">
                     <span class="icon">
                         <i class="fa fa-cog" />
                     </span>
@@ -112,7 +118,8 @@
             <div v-if="custom && !readOnly">
                 <div
                     class="button is-small is-outlined is-danger"
-                    @click="$emit('delete', propertyParent, propertyIndex)">
+                    @click="$emit('delete', propertyParent, propertyIndex)"
+                    id="framework-competency-property-delete-button">
                     <span class="icon">
                         <i class="fa fa-trash" />
                     </span>

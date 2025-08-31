@@ -25,7 +25,8 @@
                     v-model="searchTerm"
                     :disabled="isFirstSearchProcessing"
                     :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
-                    @input="updateSearchTerm(searchTerm)">
+                    @input="updateSearchTerm(searchTerm)"
+                    id="search-bar-input" />
                 <span
                     v-if="searchTerm === ''"
                     class="icon is-small is-right">
@@ -38,6 +39,7 @@
                 class="control">
                 <div
                     @click="clearAllFilters()"
+                    id="clear-all-filters-button"
                     title="Clear filters"
                     class="button is-dark is-outlined">
                     <span class="icon clear-filters">
@@ -52,7 +54,8 @@
                 <div
                     class="button is-outlined is-dark"
                     title="Filters"
-                    @click="store.app().showRightAside('FilterAndSort')">
+                    @click="$store.commit('app/showRightAside', 'FilterAndSort')"
+                    id="open-filters-side-bar-button">
                     <span class="icon">
                         <i class="fa fa-filter" />
                     </span>

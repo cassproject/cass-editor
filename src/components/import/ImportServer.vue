@@ -21,6 +21,7 @@
                                 <div
                                     v-for="item in serverDetails"
                                     :key="item"
+                                    :id="item.label"
                                     class="field">
                                     <label class="label">
                                         {{ item.label }}
@@ -30,6 +31,7 @@
                                             <input
                                                 class="input is-large"
                                                 v-model="importServerUrl"
+                                                id="import-server-url-input"
                                                 type="url">
                                         </div>
                                     </div>
@@ -39,7 +41,8 @@
                                             <div
                                                 class="button is-large is-outlined is-primary"
                                                 :disabled="importServerUrl === ''"
-                                                @click="$store.commit('app/importTransition', 'connectToServer'); serverType='case';">
+                                                @click="$store.commit('app/importTransition', 'connectToServer'); serverType='case';"
+                                                id="import-server-connect-case-button">
                                                 <span class="icon">
                                                     <i class="fas fa-network-wired" />
                                                 </span>
@@ -54,7 +57,8 @@
                                             <div
                                                 class="button is-large is-outlined is-primary"
                                                 :disabled="importServerUrl === ''"
-                                                @click="$store.commit('app/importTransition', 'connectToServer'); serverType='cass';">
+                                                @click="$store.commit('app/importTransition', 'connectToServer'); serverType='cass';"
+                                                id="import-server-connect-cass-button">
                                                 <span class="icon">
                                                     <i class="fas fa-network-wired" />
                                                 </span>
@@ -110,7 +114,8 @@
                                     <li
                                         class="is-size-6"
                                         v-for="(error, index) in importErrors"
-                                        :key="index">
+                                        :key="index"
+                                        :id="'import-error-' + index">
                                         <span class="">
                                             <span class="icon">
                                                 <i class="fa fa-times" />
@@ -123,6 +128,7 @@
                                 <div class="buttons is-centered">
                                     <div
                                         @click="cancelImport()"
+                                        id="import-server-start-over-button"
                                         class="button is-primary">
                                         <span class="icon">
                                             <i class="fa fa-redo" />
@@ -144,7 +150,8 @@
                                 <div
                                     class="field is-grouped"
                                     v-for="doc in caseDocs"
-                                    :key="doc.id">
+                                    :key="doc.id"
+                                    :id="'import-case-doc-' + doc.id">
                                     <input
                                         class="is-checkradio is-small"
                                         type="checkbox"
@@ -173,13 +180,15 @@
                                 <div class="buttons is-right">
                                     <div
                                         class="button is-outlined is-dark"
-                                        @click="cancelImport">
+                                        @click="cancelImport"
+                                        id="import-server-cancel-button">
                                         Cancel
                                     </div>
                                     <div
                                         v-if="importTransition !== 'importingCaseFrameworks'"
                                         class="button is-outlined is-primary"
-                                        @click="importCaseDocs()">
+                                        @click="importCaseDocs()"
+                                        id="import-server-import-button">
                                         Import
                                     </div>
                                 </div>
@@ -205,7 +214,8 @@
                                             <select v-model="selectDirectory">
                                                 <label>Directories</label>
                                                 <option
-                                                    value="all">
+                                                    value="all"
+                                                    id="import-cass-all-directories-option">
                                                     <span v-if="!conceptMode"
                                                         class="has-text-dark">All frameworks</span>
                                                     <span v-else
@@ -214,6 +224,7 @@
                                                 <option
                                                     v-for="directory in cassDirectories"
                                                     :key="directory.id"
+                                                    :id="'import-cass-directory-' + directory.id + '-option'"
                                                     :value="directory">
                                                     <span class="has-text-dark">{{ directory.getName() }}</span>
                                                 </option>
@@ -227,7 +238,8 @@
                                         <ul>
                                             <li
                                                 v-for="each in directoryTrail"
-                                                :key="each.id">
+                                                :key="each.id"
+                                                :id="'import-cass-directory-trail-' + each.id">
                                                 <a>{{ each.name }}</a>
                                             </li>
                                             <li>
@@ -239,7 +251,8 @@
                                         <div class="buttons is-right">
                                             <div
                                                 class="button is-primary"
-                                                @click="selectAllFrameworks">
+                                                @click="selectAllFrameworks"
+                                                id="import-server-select-all-button">
                                                 Select all
                                             </div>
                                         </div>
@@ -252,7 +265,8 @@
                                             <select
                                                 multiple
                                                 size="6"
-                                                v-model="selectedFrameworks">
+                                                v-model="selectedFrameworks"
+                                                id="import-cass-frameworks-multiselect">
                                                 <option
                                                     v-for="doc in cassFrameworks"
                                                     :key="doc.id"
@@ -273,7 +287,8 @@
                                             <select
                                                 multiple
                                                 size="6"
-                                                v-model="selectedTaxonomies">
+                                                v-model="selectedTaxonomies"
+                                                id="import-cass-taxonomies-multiselect">
                                                 <option
                                                     v-for="doc in cassTaxonomies"
                                                     :key="doc.id"
@@ -292,19 +307,22 @@
                                     <div class="buttons is-right">
                                         <div
                                             class="button is-outlined is-dark"
-                                            @click="cancelImport">
+                                            @click="cancelImport"
+                                            id="import-server-cancel-button">
                                             Cancel
                                         </div>
                                         <div
                                             class="button is-outlined is-dark"
                                             v-if="directoryThatsOpen"
-                                            @click="goBack">
+                                            @click="goBack"
+                                            id="import-cass-go-back-button">
                                             Back
                                         </div>
                                         <div
                                             v-if="importTransition !== 'importingCassFrameworks'"
                                             class="button is-outlined is-primary"
-                                            @click="conceptMode ? importCassTaxonomies() : importCassFrameworks()">
+                                            @click="conceptMode ? importCassTaxonomies() : importCassFrameworks()"
+                                            id="import-server-import-button">
                                             Import
                                         </div>
                                     </div>

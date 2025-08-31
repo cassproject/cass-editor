@@ -253,6 +253,7 @@
                     v-if="!readOnly">
                     <button
                         class="button is-outlined is-dark"
+                        id="configuration-details-cancel-select-permission-entities-button"
                         @click="closeSelectPermissionEntitiesModal">
                         <span class="icon">
                             <i class="fa fa-times" />
@@ -263,6 +264,7 @@
                     </button>
                     <button
                         class="button is-outlined is-primary"
+                        id="configuration-details-apply-select-permission-entities-button"
                         @click="applySelectPermissionEntities">
                         <span class="icon">
                             <i class="fa fa-save" />
@@ -293,6 +295,7 @@
                                 class="input"
                                 type="text"
                                 v-model="selectedLevelFilter"
+                                id="selected-level-filter-input"
                                 placeholder="level filter">
                         </div>
                     </div>
@@ -307,6 +310,7 @@
                                     <input
                                         class="input"
                                         type="text"
+                                        id="new-level-name-input"
                                         v-model="newLevelName">
                                 </div>
                             </div>
@@ -318,6 +322,7 @@
                                     <input
                                         class="input"
                                         type="text"
+                                        id="new-level-description-input"
                                         v-model="newLevelDescription">
                                 </div>
                             </div>
@@ -381,12 +386,14 @@
                         v-if="!readOnly">
                         <button
                             class="button is-outlined is-dark"
-                            @click="closeSelectLevelModal">
+                            @click="closeSelectLevelModal"
+                            id="configuration-details-cancel-select-levels-button">
                             cancel
                         </button>
                         <button
                             class="button is-outlined is-primary"
-                            @click="showAddNewLevel">
+                            @click="showAddNewLevel"
+                            id="configuration-details-show-add-level-section-button">
                             <span class="icon">
                                 <i class="fa fa-plus" />
                             </span>
@@ -394,7 +401,8 @@
                         </button>
                         <button
                             class="button is-outlined is-primary"
-                            @click="applySelectLevels">
+                            @click="applySelectLevels"
+                            id="configuration-details-apply-select-levels-button">
                             <span class="icon">
                                 <i class="fa fa-save" />
                             </span>
@@ -412,7 +420,8 @@
                         v-if="!readOnly && !savingLevelBusy">
                         <button
                             class="button is-outlined"
-                            @click="cancelAddNewLevel">
+                            @click="cancelAddNewLevel"
+                            id="configuration-details-cancel-add-level-button">
                             <span class="icon">
                                 <i class="fa fa-save" />
                             </span>
@@ -422,7 +431,8 @@
                         </button>
                         <button
                             class="button is-outlined"
-                            @click="saveAddNewLevel">
+                            @click="saveAddNewLevel"
+                            id="configuration-details-save-add-level-button">
                             <span class="icon">
                                 <i class="fa fa-save" />
                             </span>
@@ -462,7 +472,9 @@
                         class="control"
                         v-if="!readOnly && customPropertyIsNew">
                         <div class="select is-fullwidth">
-                            <select v-model="customPropertyContext">
+                            <select 
+                                v-model="customPropertyContext"
+                                id="custom-property-context-select">
                                 <option
                                     title="https://schema.cassproject.org/0.4/ (default)"
                                     value="https://schema.cassproject.org/0.4/">
@@ -543,7 +555,9 @@
                                 <div
                                     class="select"
                                     v-if="!readOnly && customPropertyIsNew">
-                                    <select v-model="customPropertyRange">
+                                    <select 
+                                        v-model="customPropertyRange"
+                                        id="custom-property-range-select">
                                         <option value="http://www.w3.org/2000/01/rdf-schema#langString">
                                             Lang-String
                                         </option>
@@ -583,7 +597,9 @@
                                 class="control"
                                 v-if="!readOnly">
                                 <div class="select">
-                                    <select v-model="customPropertyPriority">
+                                    <select 
+                                        v-model="customPropertyPriority"
+                                        id="custom-property-priority-select">
                                         <option value="primary">
                                             primary
                                         </option>
@@ -629,6 +645,7 @@
                             class="input"
                             type="text"
                             v-model="customPropertyPropertyName"
+                            id="custom-property-property-name-input"
                             @change="simplifyCustomPropertyName">
                     </div>
                 </div>
@@ -643,6 +660,7 @@
                         <input
                             class="input"
                             type="text"
+                            id="custom-property-label-input"
                             v-model="customPropertyLabel">
                     </div>
                 </div>
@@ -657,6 +675,7 @@
                         <input
                             class="input"
                             type="text"
+                            id="custom-property-description-input"
                             v-model="customPropertyDescription">
                     </div>
                 </div>
@@ -675,6 +694,7 @@
                         <input
                             class="input"
                             type="text"
+                            id="custom-property-heading-input"
                             v-model="customPropertyHeading">
                     </div>
                 </div>
@@ -776,9 +796,9 @@
                                             class="control">
                                             <input
                                                 class="input"
-
                                                 type="text"
-                                                v-model="ev.display">
+                                                v-model="ev.display"
+                                                :id="'custom-property-permitted-value-display-input-' + idx">
                                         </div>
                                     </th>
                                     <td>
@@ -791,14 +811,16 @@
                                                 v-if="!readOnly"
                                                 type="text"
                                                 class="input "
-                                                v-model="ev.value">
+                                                v-model="ev.value"
+                                                :id="'custom-property-permitted-value-input-' + idx">
                                         </div>
                                     </td>
                                     <td>
                                         <div
                                             class="button is-outlined is-danger is-outlined "
                                             v-if="!readOnly"
-                                            @click="deleteCustomPropertyPermittedValue(idx)">
+                                            @click="deleteCustomPropertyPermittedValue(idx)"
+                                            :id="'delete-custom-property-permitted-value-button-' + idx">
                                             <span class="icon">
                                                 <i class="fa fa-trash" />
                                             </span>
@@ -815,7 +837,8 @@
                         <button
                             class="button is-outlined  is-primary"
                             v-if="!readOnly && customPropertyValuesLimited"
-                            @click="addCustomPropertyPermittedValue">
+                            @click="addCustomPropertyPermittedValue"
+                            id="add-custom-property-permitted-value-button">
                             <span class="icon">
                                 <i class="fa fa-plus" />
                             </span>
@@ -869,6 +892,7 @@
                                 <span :title="concept.value">{{ concept.display }}</span>
                                 <button
                                     @click="removeConcept(index)"
+                                    :id="'remove-concept-button-' + index"
                                     title="Remove"
                                     class="delete is-small" />
                             </span>
@@ -881,6 +905,7 @@
                                     placeholder="search"
                                     class="input share is-fullwidth"
                                     v-model="search"
+                                    id="custom-property-concept-search-input"
                                     @input="filterConcepts">
                                 <div
                                     v-show="isOpenAutocomplete"
@@ -889,7 +914,8 @@
                                         <li
                                             v-for="(result, i) in filteredConcepts"
                                             :key="i"
-                                            @mousedown="selectConcept(result)">
+                                            @mousedown="selectConcept(result)"
+                                            :id="'custom-property-concept-result-' + i">
                                             {{ result.display }}
                                         </li>
                                     </ul>
@@ -944,6 +970,7 @@
                                 <span :title="type.value">{{ type.display }}</span>
                                 <button
                                     @click="removeType(index)"
+                                    :id="'remove-type-button-' + index"
                                     title="Remove"
                                     class="delete is-small" />
                             </span>
@@ -956,7 +983,8 @@
                                     placeholder="search"
                                     class="input share is-fullwidth"
                                     v-model="search"
-                                    @input="filterTypes">
+                                    @input="filterTypes"
+                                    id="custom-property-type-search-input">
                                 <div
                                     v-show="isOpenAutocomplete"
                                     class="auto">
@@ -964,7 +992,8 @@
                                         <li
                                             v-for="(result, i) in filteredTypes"
                                             :key="i"
-                                            @mousedown="selectType(result)">
+                                            @mousedown="selectType(result)"
+                                            :id="'custom-property-type-result-' + i">
                                             {{ result.display }}
                                         </li>
                                     </ul>
@@ -1012,7 +1041,8 @@
                     v-if="!readOnly">
                     <button
                         class="button is-outlined is-dark"
-                        @click="closeCustomPropertyModal">
+                        @click="closeCustomPropertyModal"
+                        id="close-custom-property-modal-button">
                         <span class="icon">
                             <i class="fa fa-times" />
                         </span>
@@ -1022,7 +1052,8 @@
                     </button>
                     <button
                         class="button is-outlined is-primary"
-                        @click="applyCustomPropertyEdits">
+                        @click="applyCustomPropertyEdits"
+                        id="apply-custom-property-edits-button">
                         <span class="icon">
                             <i class="fa fa-save" />
                         </span>
@@ -1048,7 +1079,8 @@
                     <a
                         class="panel-block"
                         :class="{'is-active': tab === 'general'}"
-                        @click="tab ='general'">
+                        @click="tab ='general'"
+                        id="configuration-details-general-tab">
                         <span class="panel-icon">
                             <i
                                 class="fas fa-list-alt"
@@ -1059,7 +1091,8 @@
                     <a
                         class="panel-block"
                         :class="{'is-active': tab === 'framework'}"
-                        @click="tab ='framework'">
+                        @click="tab ='framework'"
+                        id="configuration-details-framework-tab">
                         <span class="panel-icon">
                             <i
                                 class="fas fa-list-alt"
@@ -1072,7 +1105,8 @@
                         v-if="tab === 'framework'">
                         <a
                             class="panel-block is-active"
-                            @click="$scrollTo('#framework-properties', '400', scrollOptions)">
+                            @click="$scrollTo('#framework-properties', '400', scrollOptions)"
+                            id="configuration-details-framework-properties-button">
                             <span class="panel-icon">
                                 <i
                                     class="fas fa-circle"
@@ -1084,7 +1118,8 @@
                     <a
                         :class="{'is-active': tab === 'competency'}"
                         class="panel-block"
-                        @click="tab = 'competency'">
+                        @click="tab = 'competency'"
+                        id="configuration-details-competency-settings-tab">
                         <span class="panel-icon">
                             <i
                                 class="fas fa-list-alt"
@@ -1098,7 +1133,8 @@
                         <a
                             class="panel-block is-active"
                             :class="{'is-active': tab === 'framework'}"
-                            @click="$scrollTo('#competency-properties', '400', scrollOptions)">
+                            @click="$scrollTo('#competency-properties', '400', scrollOptions)"
+                            id="configuration-details-competency-properties-button">
                             <span class="panel-icon">
                                 <i
                                     class="fas fa-circle"
@@ -1109,7 +1145,8 @@
                         <a
                             class="panel-block is-active"
                             :class="{'is-active': tab === 'framework'}"
-                            @click="$scrollTo('#enforce-competency-types', '400', scrollOptions)">
+                            @click="$scrollTo('#enforce-competency-types', '400', scrollOptions)"
+                            id="configuration-details-enforce-competency-types-button">
                             <span class="panel-icon">
                                 <i
                                     class="fas fa-circle"
@@ -1120,7 +1157,8 @@
                         <a
                             class="panel-block is-active"
                             :class="{'is-active': tab === 'framework'}"
-                            @click="$scrollTo('#allow-levels', '400', scrollOptions)">
+                            @click="$scrollTo('#allow-levels', '400', scrollOptions)"
+                            id="configuration-details-allow-levels-button">
                             <span class="panel-icon">
                                 <i
                                     class="fas fa-circle"
@@ -1131,6 +1169,7 @@
                     </div>
                     <a
                         @click="tab = 'relationships'"
+                        id="configuration-details-competency-relationships-tab"
                         :class="{'is-active': tab === 'relationships'}"
                         class="panel-block">
                         <span class="panel-icon">
@@ -1145,7 +1184,8 @@
                         v-if="tab === 'relationships'">
                         <a
                             class="panel-block is-active"
-                            @click="$scrollTo('#relationship-display-category', '400', scrollOptions)">
+                            @click="$scrollTo('#relationship-display-category', '400', scrollOptions)"
+                            id="configuration-details-relationship-display-category-button">
                             <span class="panel-icon">
                                 <i
                                     class="fas fa-circle"
@@ -1155,7 +1195,8 @@
                         </a>
                         <a
                             class="panel-block is-active"
-                            @click="$scrollTo('#relationship-display-priority', '400', scrollOptions)">
+                            @click="$scrollTo('#relationship-display-priority', '400', scrollOptions)"
+                            id="configuration-details-relationship-display-priority-button">
                             <span class="panel-icon">
                                 <i
                                     class="fas fa-circle"
@@ -1165,7 +1206,8 @@
                         </a>
                         <a
                             class="panel-block is-active"
-                            @click="$scrollTo('#relationship-types', '400', scrollOptions)">
+                            @click="$scrollTo('#relationship-types', '400', scrollOptions)"
+                            id="configuration-details-relationship-types-button">
                             <span class="panel-icon">
                                 <i
                                     class="fas fa-circle"
@@ -1176,6 +1218,7 @@
                     </div>
                     <a
                         @click="tab = 'alignments'"
+                        id="configuration-details-resource-alignments-tab"
                         :class="{'is-active': tab === 'alignments'}"
                         class="panel-block">
                         <span class="panel-icon">
@@ -1190,7 +1233,8 @@
                         class="sub-list">
                         <a
                             class="panel-block is-active"
-                            @click="$scrollTo('#alignment-types', '400', scrollOptions)">
+                            @click="$scrollTo('#alignment-types', '400', scrollOptions)"
+                            id="configuration-details-alignment-types-button">
                             <span class="panel-icon">
                                 <i
                                     class="fas fa-circle"
@@ -1201,6 +1245,7 @@
                     </div>
                     <a
                         @click="tab = 'taxonomy'"
+                        id="configuration-details-taxonomy-settings-tab"
                         :class="{'is-active': tab === 'taxonomy'}"
                         class="panel-block">
                         <span class="panel-icon">
@@ -1215,7 +1260,8 @@
                         v-if="tab === 'taxonomy'">
                         <a
                             class="panel-block is-active"
-                            @click="$scrollTo('#taxonomy-properties', '400', scrollOptions)">
+                            @click="$scrollTo('#taxonomy-properties', '400', scrollOptions)"
+                            id="configuration-details-taxonomy-properties-button">
                             <span class="panel-icon">
                                 <i
                                     class="fas fa-circle"
@@ -1226,6 +1272,7 @@
                     </div>
                     <a
                         @click="tab = 'taxon'"
+                        id="configuration-details-taxon-settings-tab"
                         :class="{'is-active': tab === 'taxon'}"
                         class="panel-block">
                         <span class="panel-icon">
@@ -1240,7 +1287,8 @@
                         v-if="tab === 'taxon'">
                         <a
                             class="panel-block is-active"
-                            @click="$scrollTo('#taxonomy-properties', '400', scrollOptions)">
+                            @click="$scrollTo('#taxonomy-properties', '400', scrollOptions)"
+                            id="configuration-details-taxon-properties-button">
                             <span class="panel-icon">
                                 <i
                                     class="fas fa-circle"
@@ -1251,6 +1299,7 @@
                     </div>
                     <a
                         @click="tab = 'users'"
+                        id="configuration-details-users-tab"
                         :class="{'is-active': tab === 'users'}"
                         class="panel-block">
                         <span class="panel-icon">
@@ -1265,7 +1314,8 @@
                         v-if="tab === 'users'">
                         <a
                             class="panel-block is-active"
-                            @click="$scrollTo('#default-owners', '400', scrollOptions)">
+                            @click="$scrollTo('#default-owners', '400', scrollOptions)"
+                            id="configuration-details-default-owners-button">
                             <span class="panel-icon">
                                 <i
                                     class="fas fa-list-alt"
@@ -1275,7 +1325,8 @@
                         </a>
                         <a
                             class="panel-block is-active"
-                            @click="$scrollTo('#default-readers', '400', scrollOptions)">
+                            @click="$scrollTo('#default-readers', '400', scrollOptions)"
+                            id="configuration-details-default-readers-button">
                             <span class="panel-icon">
                                 <i
                                     class="fas fa-list-alt"
@@ -1291,7 +1342,8 @@
                             class="buttons is-fullwidth is-right">
                             <div
                                 class="button is-outlined is-primary"
-                                @click="$emit('back')">
+                                @click="$emit('back')"
+                                id="configuration-details-back-button">
                                 back
                             </div>
                         </div>
@@ -1301,7 +1353,8 @@
                         v-if="!readOnly">
                         <div
                             class="button is-fullwidth is-outlined is-dark"
-                            @click="$emit('cancel')">
+                            @click="$emit('cancel')"
+                            id="configuration-details-cancel-button">
                             <span class="icon">
                                 <i class="fa fa-arrow-left" />
                             </span>
@@ -1313,7 +1366,8 @@
                         v-if="!readOnly">
                         <div
                             class="button is-fullwidth  is-outlined is-primary"
-                            @click="validateCurrentConfigAndEmitSave">
+                            @click="validateCurrentConfigAndEmitSave"
+                            id="configuration-details-save-configuration-button">
                             <span class="icon">
                                 <i class="fa fa-save" />
                             </span><span>save configuration</span>
@@ -1344,6 +1398,7 @@
                                     <input
                                         type="text "
                                         class="input"
+                                        id="configuration-details-configuration-name-input"
                                         v-model="config.name">
                                 </div>
                             </div>
@@ -1358,6 +1413,7 @@
                                     <input
                                         type="text "
                                         class="input"
+                                        id="configuration-details-configuration-description-input"
                                         v-model="config.description">
                                 </div>
                             </div>
@@ -1441,7 +1497,8 @@
                             <div
                                 v-if="!readOnly"
                                 class="button is-family-primary is-outlined is-pulled-right  is-primary"
-                                @click="addCustomFrameworkProperty">
+                                @click="addCustomFrameworkProperty"
+                                id="add-custom-framework-property-button">
                                 <span class="icon">
                                     <i class="fa fa-plus" />
                                 </span>
@@ -1581,7 +1638,8 @@
                             <span
                                 v-if="!readOnly"
                                 class="button is-family-primary is-outlined is-pulled-right is-primary"
-                                @click="addCustomCompetencyProperty">
+                                @click="addCustomCompetencyProperty"
+                                id="add-custom-competency-property-button">
                                 <span class="icon">
                                     <i class="fa fa-plus" />
                                 </span>
@@ -1762,7 +1820,8 @@
                                 <span
                                     v-if="config.compEnforceTypes && !readOnly"
                                     class="button is-family-primary is-outlined is-pulled-right is-primary "
-                                    @click="addCompetencyEnforcedTypeDataHolder">
+                                    @click="addCompetencyEnforcedTypeDataHolder"
+                                    id="add-competency-enforced-type-button">
                                     <span class="icon">
                                         <i class="fa fa-plus" />
                                     </span>
@@ -1795,7 +1854,8 @@
                                                 class="input "
                                                 v-if="!readOnly"
                                                 type="text"
-                                                v-model="et.display">
+                                                v-model="et.display"
+                                                :id="'competency-enforced-type-display-' + idx">
                                         </th>
                                         <td>
                                             <p v-if="readOnly">
@@ -1805,13 +1865,15 @@
                                                 class="input "
                                                 v-if="!readOnly"
                                                 type="text"
-                                                v-model="et.value">
+                                                v-model="et.value"
+                                                :id="'competency-enforced-type-value-' + idx">
                                         </td>
                                         <td>
                                             <div
                                                 class="button is-outlined is-danger "
                                                 v-if="!readOnly"
-                                                @click="deleteCompetencyEnforcedType(idx)">
+                                                @click="deleteCompetencyEnforcedType(idx)"
+                                                :id="'delete-competency-enforced-type-button-' + idx">
                                                 <span class="icon">
                                                     <i class="fa fa-trash" />
                                                 </span>
@@ -1873,7 +1935,8 @@
                                         <input
                                             class="input"
                                             type="text"
-                                            v-model="config.levelLabel">
+                                            v-model="config.levelLabel"
+                                            id="configuration-details-level-label-input">
                                     </div>
                                 </div>
                             </div>
@@ -1895,7 +1958,8 @@
                                         <input
                                             class="input "
                                             type="text"
-                                            v-model="config.levelDescription">
+                                            v-model="config.levelDescription"
+                                            id="configuration-details-level-description-input">
                                     </div>
                                 </div>
                             </div>
@@ -1920,7 +1984,8 @@
                                         <input
                                             class="input "
                                             type="text"
-                                            v-model="config.levelHeading">
+                                            v-model="config.levelHeading"
+                                            id="configuration-details-level-heading-input">
                                     </div>
                                 </div>
                             </div>
@@ -1942,7 +2007,9 @@
                                     <div
                                         v-if="!readOnly"
                                         class="select">
-                                        <select v-model="config.levelPriority">
+                                        <select 
+                                            v-model="config.levelPriority"
+                                            id="configuration-details-level-priority-select">
                                             <option value="primary">
                                                 primary
                                             </option>
@@ -2003,7 +2070,8 @@
                                     <span
                                         class="button is-outlined is-family-primary is-primary is-pulled-right"
                                         v-if="config.enforceLevelValues && !readOnly"
-                                        @click="showSelectLevelsModal">
+                                        @click="showSelectLevelsModal"
+                                        id="configuration-details-manage-levels-button">
                                         <span class="icon">
                                             <i class="fa fa-cog" />
                                         </span>
@@ -2081,7 +2149,8 @@
                                         <input
                                             class="input "
                                             type="text"
-                                            v-model="config.relationshipsHeading">
+                                            v-model="config.relationshipsHeading"
+                                            id="configuration-details-relationship-heading-input">
                                     </div>
                                 </div>
                             </div>
@@ -2108,7 +2177,9 @@
                                         <div
                                             v-if="!readOnly"
                                             class="select">
-                                            <select v-model="config.relationshipsPriority">
+                                            <select 
+                                                v-model="config.relationshipsPriority"
+                                                id="configuration-details-relationship-priority-select">
                                                 <option value="primary">
                                                     primary
                                                 </option>
@@ -2133,6 +2204,7 @@
                             Relationship types
                             <div
                                 @click="showManageRelations()"
+                                id="configuration-details-manage-relationships-button"
                                 class="button is-family-primary is-pulled-right is-primary is-outlined">
                                 <span class="icon">
                                     <i class="fa fa-cog" />
@@ -2324,7 +2396,8 @@
                             <div
                                 v-if="!readOnly"
                                 class="button is-family-primary is-outlined is-pulled-right  is-primary"
-                                @click="addCustomTaxonomyProperty">
+                                @click="addCustomTaxonomyProperty"
+                                id="configuration-details-add-custom-taxonomy-property-button">
                                 <span class="icon">
                                     <i class="fa fa-plus" />
                                 </span>
@@ -2504,7 +2577,8 @@
                             <div
                                 v-if="!readOnly"
                                 class="button is-family-primary is-outlined is-pulled-right  is-primary"
-                                @click="addCustomTaxonProperty">
+                                @click="addCustomTaxonProperty"
+                                id="configuration-details-add-custom-taxon-property-button">
                                 <span class="icon">
                                     <i class="fa fa-plus" />
                                 </span>
@@ -2819,7 +2893,8 @@
                             <div
                                 class="button is-outlined is-primary "
                                 v-if="!readOnly"
-                                @click="openSelectPermissionEntitiesModal('owner')">
+                                @click="openSelectPermissionEntitiesModal('owner')"
+                                id="configuration-details-manage-default-owners-button">
                                 <span class="icon">
                                     <i class="fa fa-cog" />
                                 </span><span>manage default owners</span>
@@ -2887,7 +2962,8 @@
                                 <div
                                     class="button is-outlined is-primary "
                                     v-if="!readOnly"
-                                    @click="openSelectPermissionEntitiesModal('reader')">
+                                    @click="openSelectPermissionEntitiesModal('reader')"
+                                    id="configuration-details-manage-default-readers-button">
                                     <span class="icon">
                                         <i class="fa fa-cog" />
                                     </span>
@@ -2957,7 +3033,8 @@
                             <div
                                 class="button is-outlined is-primary "
                                 v-if="!readOnly"
-                                @click="openSelectPermissionEntitiesModal('commenter')">
+                                @click="openSelectPermissionEntitiesModal('commenter')"
+                                id="configuration-details-manage-default-commenters-button">
                                 <span class="icon">
                                     <i class="fa fa-cog" />
                                 </span>

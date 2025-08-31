@@ -30,6 +30,7 @@
                                         placeholder="paste your url here..."
                                         class="input is-large"
                                         v-model="importUrl"
+                                        id="import-url-input"
                                         type="url">
                                 </p>
                             </div>
@@ -39,7 +40,8 @@
                                         tabindex="0"
                                         class="button is-outlined is-centered is-large is-primary"
                                         :class="{'is-loading': processing}"
-                                        @click="doImportFromUrl">
+                                        @click="doImportFromUrl"
+                                        id="import-url-import-button">
                                         <span class="file-icon">
                                             <i class="fas fa-upload" />
                                         </span>
@@ -58,7 +60,8 @@
                                         <span
                                             tabindex="0"
                                             class="custom-link local"
-                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c257d6-9119-11e8-b852-782bcb5df6ac'">
+                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c257d6-9119-11e8-b852-782bcb5df6ac'"
+                                            id="import-url-example-1-link">
                                             Abilities Competency Framework
                                         </span>
                                     </li>
@@ -66,7 +69,8 @@
                                         <span
                                             tabindex="0"
                                             class="custom-link local"
-                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c25f74-9119-11e8-b852-782bcb5df6ac'">
+                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c25f74-9119-11e8-b852-782bcb5df6ac'"
+                                            id="import-url-example-2-link">
                                             Basic Skills Competency Framework
                                         </span>
                                     </li>
@@ -74,7 +78,8 @@
                                         <span
                                             tabindex="0"
                                             class="custom-link local"
-                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c264d7-9119-11e8-b852-782bcb5df6ac'">
+                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c264d7-9119-11e8-b852-782bcb5df6ac'"
+                                            id="import-url-example-3-link">
                                             Cross-Functional Skills Competency Framework
                                         </span>
                                     </li>
@@ -82,7 +87,8 @@
                                         <span
                                             tabindex="0"
                                             class="custom-link local"
-                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c27a0f-9119-11e8-b852-782bcb5df6ac'">
+                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-07c27a0f-9119-11e8-b852-782bcb5df6ac'"
+                                            id="import-url-example-4-link">
                                             Knowledge Competency Framework
                                         </span>
                                     </li>
@@ -90,7 +96,8 @@
                                         <span
                                             tabindex="0"
                                             class="custom-link local"
-                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-9fab4187-d8e7-11e9-8250-782bcb5df6ac'">
+                                            @click="importUrl='https://www.onetcenter.org/ctdlasn/graph/ce-9fab4187-d8e7-11e9-8250-782bcb5df6ac'"
+                                            id="import-url-example-5-link">
                                             Technology Skills Competency Framework
                                         </span>
                                     </li>
@@ -136,6 +143,7 @@
                                 <div class="buttons is-centered">
                                     <div
                                         @click="cancelImport()"
+                                        id="import-url-start-over-button"
                                         class="button is-primary">
                                         <span class="icon">
                                             <i class="fa fa-redo" />

@@ -16,7 +16,8 @@
                     v-if="objectShortId !== selectedDirectoryId">
                     <div
                         class="button is-small is-rounded is-primary"
-                        @click="openObject">
+                        @click="openObject"
+                        id="list-item-info-open-object-button">
                         <span>Open {{ objectTypeForDisplay }}</span>
                         <span class="icon">
                             <i class="fa fa-folder-open" />
@@ -34,6 +35,7 @@
                     <template v-if="objectType === 'Directory' || objectType === 'Framework' || objectType === 'ConceptScheme'">
                         <button
                             @click="clickAccordion('details')"
+                            id="list-item-info-details-accordion-button"
                             class="cass__right-side--accordion details">
                             Details {{ isCeasn ? "(in CaSS)" : "" }}
                             <span class="icon is-pulled-right">
@@ -63,7 +65,8 @@
                                     {{ getName(object.directory) }}
                                     <span
                                         class="button is-primary is-outlined is-small"
-                                        @click="goToParentDirectory">
+                                        @click="goToParentDirectory"
+                                        id="list-item-info-directory-open-button">
                                         Open
                                     </span>
                                 </div>
@@ -78,7 +81,8 @@
                                     <span
                                         title="Navigate to parent directory"
                                         class="inline-link is-small"
-                                        @click="goToParentDirectory">
+                                        @click="goToParentDirectory"
+                                        id="list-item-info-parent-directory-open-button">
                                         <span>Go to parent</span>
                                         <span class="icon">
                                             <i class="fa fa-folder-open" />
@@ -197,6 +201,7 @@
                     <template v-if="objectType === 'CreativeWork' || canEditObject && objectType === 'Directory'">
                         <button
                             @click="clickAccordion('properties')"
+                            id="list-item-info-properties-accordion-button"
                             class="cass__right-side--accordion details">
                             Properties
                             <span class="icon is-pulled-right">
@@ -237,6 +242,7 @@
                                 <div class="cass__right-aside--property flex-end">
                                     <div
                                         @click="$emit('editResourceDetails', object)"
+                                        id="list-item-info-edit-resource-button"
                                         class="button is-pulled-right is-primary is-outlined">
                                         <span>Edit</span>
                                         <span class="icon">
@@ -270,6 +276,7 @@
                                         class="cass__right-aside--property flex-end">
                                         <div
                                             @click="editDirectory"
+                                            id="list-item-info-edit-directory-button"
                                             class="button is-pulled-right is-primary is-outlined">
                                             <span>Edit</span>
                                             <span class="icon">
@@ -289,6 +296,7 @@
                         <button
                             :class="accordion === 'users' ? 'active' : ''"
                             @click="clickAccordion('users')"
+                            id="list-item-info-users-accordion-button"
                             class="cass__right-side--accordion">
                             Users
                             <span class="icon is-pulled-right">
@@ -308,6 +316,7 @@
                                 <div class="buttons is-centered">
                                     <div
                                         @click="manageUsers"
+                                        id="list-item-info-manage-users-button"
                                         class="button is-primary is-rounded">
                                         <span>Manage Permissions / Share Framework</span>
                                         <span
@@ -324,6 +333,7 @@
                         <button
                             :class="accordion === 'description' ? 'active' : ''"
                             @click="clickAccordion('description')"
+                            id="list-item-info-description-accordion-button"
                             class="cass__right-side--accordion">
                             Description
                             <span class="icon is-pulled-right">
@@ -355,6 +365,7 @@
                         <button
                             :class=" accordion === 'copy' ? 'active' : ''"
                             @click="clickAccordion('copy');"
+                            id="list-item-info-copy-accordion-button"
                             class="cass__right-side--accordion">
                             Copy {{ objectTypeForDisplay }}
                             <span class="icon is-pulled-right">
@@ -381,6 +392,7 @@
                                 </span>
                                 <span
                                     @click="copyOrMove(directory, 'copy')"
+                                    :id="'list-item-info-copy-directory-' + directory.id"
                                     :class="{'is-loading': processingCopyOrMove}"
                                     :disabled="processingCopyOrMove"
                                     class="button is-primary is-outlined is-small is-pulled-right">
@@ -394,6 +406,7 @@
                         <button
                             :class=" accordion === 'move' ? 'active' : ''"
                             @click="clickAccordion('move');"
+                            id="list-item-info-move-accordion-button"
                             class="cass__right-side--accordion">
                             Move {{ objectTypeForDisplay }}
                             <span class="icon is-pulled-right">
@@ -418,6 +431,7 @@
                                 </span>
                                 <span
                                     @click="copyOrMove(directory, 'move')"
+                                    :id="'list-item-info-move-directory-' + directory.id"
                                     :class="{'is-loading': processingCopyOrMove}"
                                     class="button is-primary is-v-centered is-outlined is-small is-pulled-right">
                                     move here
@@ -432,6 +446,7 @@
                                 </span>
                                 <span
                                     @click="removeFromDirectory"
+                                    :id="'list-item-info-remove-from-directory-' + object.id"
                                     :class="{'is-loading': processingRemove}"
                                     class="button is-danger is-outlined is-small is-pulled-right">
                                     remove
@@ -444,6 +459,7 @@
                         <div class="">
                             <div
                                 @click="deleteDirectory"
+                                id="list-item-info-delete-directory-button"
                                 class="buttons is-pulled-right p-2">
                                 <div class="button is-danger is-outlined">
                                     delete directory

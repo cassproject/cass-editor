@@ -67,6 +67,7 @@
                                     <div class="buttons is-centered">
                                         <div
                                             @click="cancelImport()"
+                                            id="import-file-start-over-button"
                                             class="button is-primary">
                                             <span class="icon">
                                                 <i class="fa fa-redo" />
@@ -94,6 +95,7 @@
                                     <input
                                         class="input"
                                         v-model="item.value"
+                                        :id="item.id + '-input'"
                                         @change="updateColumn(item)">
                                 </div>
                                 <div
@@ -102,6 +104,7 @@
                                     <div class="select is-smal">
                                         <select
                                             v-model="item.value"
+                                            :id="item.id + '-select'"
                                             @change="updateColumn(item)">
                                             <option
                                                 value
@@ -125,6 +128,7 @@
                                             class="file-input"
                                             type="file"
                                             name="relation-file"
+                                            :id="item.id + '-file-input'"
                                             @change="analyzeCsvRelation">
                                         <span class="file-cta">
                                             <span class="file-icon">
@@ -148,7 +152,9 @@
                                             {{ item.label }}
                                         </label>
                                         <div class="select is-small">
-                                            <select v-model="item.value">
+                                            <select 
+                                                :id="item.label.replace(/ /g, '-') + '-select'"
+                                                v-model="item.value">
                                                 <option
                                                     value
                                                     selected>
@@ -157,6 +163,7 @@
                                                 <option
                                                     v-for="(column, i) in csvRelationColumns"
                                                     :key="i"
+                                                    :id="'import-csv-relation-' + item.label.replace(/ /g, '-') + '-option-' + i"
                                                     :value="column">
                                                     {{ column.name }}
                                                 </option>
@@ -179,6 +186,7 @@
                                     <input
                                         v-if="item.type === 'string'"
                                         class="input"
+                                        :id="item.label.replace(/ /g, '-') + '-input'"
                                         v-model="item.value">
                                 </div>
                             </div>
@@ -227,7 +235,8 @@
                             <div
                                 class="button is-pulled-right is-outlined is-dark"
                                 v-if="(importFile && importType === 'file' && importFileType!=='pdf') || importAllowCancel"
-                                @click="cancelImport">
+                                @click="cancelImport"
+                                id="import-file-cancel-button">
                                 <span class="icon">
                                     <i class="fas fa-times" />
                                 </span>
@@ -238,7 +247,8 @@
                             <div
                                 class="button is-pulled-right is-outlined is-primary"
                                 v-if="(importFile && importType === 'file' && importFileType!=='pdf') && !importAllowCancel"
-                                @click="prepareToImportNonPdf">
+                                @click="prepareToImportNonPdf"
+                                id="import-file-import-button">
                                 <span class="icon">
                                     <i class="fas fa-upload" />
                                 </span>
