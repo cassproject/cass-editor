@@ -11,6 +11,7 @@
                         <div
                             title="View only primary properties"
                             @click="changeProperties('primary')"
+                            id="property-view-primary-button"
                             :class="activeView === 'primary' ? 'has-text-primary' : 'has-text-dark'"
                             class="button is-text has-text-dark ">
                             <span class="icon">
@@ -23,6 +24,7 @@
                         <div
                             title="View primary and secondary properties"
                             @click="changeProperties('secondary')"
+                            id="property-view-secondary-button"
                             :class="activeView === 'secondary' ? 'has-text-primary' : 'has-text-dark'"
                             class="button is-text ">
                             <span
@@ -43,6 +45,7 @@
                             title="View all properties"
                             :class="activeView === 'tertiary' ? 'has-text-primary' : 'has-text-dark'"
                             @click="changeProperties('tertiary')"
+                            id="property-view-tertiary-button"
                             class="button is-text ">
                             <span
                                 v-if="activeView === 'tertiary'"
@@ -71,6 +74,7 @@
                         <div
                             title="View all comments"
                             v-if="showViewComments"
+                            id="view-comments-button"
                             @click="$store.commit('app/showRightAside', 'Comments')"
                             class="button is-text  has-text-dark">
                             <span class="icon">
@@ -91,6 +95,7 @@
                         <div
                             title="Undo recent change"
                             class="button  is-text has-text-dark"
+                            id="undo-button"
                             @click="onClickUndo">
                             <span class="icon">
                                 <i class="fas fa-undo-alt " />
@@ -120,6 +125,7 @@
                         title="Export framework"
                         :class="{ 'is-disabled': !canExport}"
                         @click="handleExportClick()"
+                        id="export-framework-button"
                         class="button is-text has-text-dark ">
                         <span class="icon">
                             <i class="fas fa-file-export" />
@@ -147,6 +153,7 @@
                     <div
                         v-if="loggedIn"
                         title="Manage users"
+                        id="manage-users-button"
                         @click="showManageUsersModal(); showShareDropdown = false;"
                         class="button is-text has-text-dark ">
                         <span class="icon">
@@ -157,6 +164,7 @@
                     <div
                         v-else-if="shareEnabled || shareLink"
                         title="Get shareable link"
+                        id="get-shareable-link-button"
                         @click="showManageUsersModal(); showShareDropdown = false;"
                         class="button is-text has-text-dark ">
                         <span class="icon">
@@ -171,6 +179,7 @@
                     <div
                         v-if="shareEnabled || shareLink"
                         title="Get shareable link"
+                        id="get-shareable-link-button"
                         @click="showManageUsersModal(); showShareDropdown = false;"
                         class="button is-text has-text-dark ">
                         <span class="icon">
@@ -191,6 +200,7 @@
                         title="Framework configuration"
                         class="button  is-text has-text-dark is-pulled-right not-lowercase"
                         v-if="canEditFramework && !progressionMode"
+                        id="manage-configuration-button"
                         @click="showManageConfigurationModal(); showShareDropdown = false;">
                         <span class="icon">
                             <i class="fas fa-cog" />
@@ -207,6 +217,7 @@
                 <div
                     v-if="directoryId"
                     class="column is-narrow"
+                    id="go-to-directory-button"
                     @click="goToDirectory">
                     <div class="button is-text has-text-dark">
                         Go to directory
@@ -247,6 +258,7 @@
                         class="buttons is-pulled-right">
                         <a
                             href="docs/authoring/competency-and-framework-management/#creating-a-new-competency-framework"
+                            id="framework-editor-help-button"
                             target="_blank"
                             title="Go to documentation on creating a new competency framework"
                             class="button is-primary is-outlined">

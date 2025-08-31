@@ -23,8 +23,8 @@
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'file'}">
                                 <button
-
-                                    @click="$store.commit('app/importType', 'file')">
+                                    @click="$store.commit('app/importType', 'file')"
+                                    id="import-file-tab-button">
                                     <i
                                         class="fa fa-2x fa-file has-text-centered is-block"
                                         aria-hidden="true" />
@@ -42,8 +42,8 @@
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'server'}">
                                 <button
-
-                                    @click="$store.commit('app/importType', 'server')">
+                                    @click="$store.commit('app/importType', 'server')"
+                                    id="import-server-tab-button">
                                     <i
                                         class="fa fa-2x fa-server is-block has-text-centered"
                                         aria-hidden="true" />
@@ -61,8 +61,8 @@
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'text'}">
                                 <button
-
-                                    @click="$store.commit('app/importType', 'text')">
+                                    @click="$store.commit('app/importType', 'text')"
+                                    id="import-text-tab-button">
                                     <i
                                         class="fa fa-2x fa-paste has-text-centered is-block"
                                         aria-hidden="true" />
@@ -80,8 +80,8 @@
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'url'}">
                                 <button
-
-                                    @click="$store.commit('app/importType', 'url')">
+                                    @click="$store.commit('app/importType', 'url')"
+                                    id="import-url-tab-button">
                                     <i
                                         class="fa fa-link has-text-centered is-block fa-2x"
                                         aria-hidden="true" />

@@ -12,6 +12,7 @@
         <p class="subtitle is-size-4">
             <span
                 @click="$store.commit('app/closeRightAside')"
+                id="versions-close-button"
                 class="icon">
                 <i class="fa fa-caret-right" />
             </span>

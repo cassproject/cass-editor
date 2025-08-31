@@ -51,6 +51,7 @@
             <div class="buttons is-right">
                 <div
                     @click="cancelImport"
+                    id="import-details-cancel-button"
                     class=" button is-light is-small is-pulled-right is-dark is-outlined">
                     <span>
                         Cancel
@@ -61,6 +62,7 @@
                 </div>
                 <div
                     @click="$store.commit('app/importTransition', 'preview')"
+                    id="import-details-accept-details-button"
                     v-if="importTransition === 'detail'"
                     class="button is-small is-primary is-outlined">
                     <span>
