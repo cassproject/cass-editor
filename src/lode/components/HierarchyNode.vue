@@ -39,6 +39,7 @@
                                 id="hierarchy-node-expand-button"
                                 v-if="!collapse && hasChild.length > 0"
                                 @click="onExpandEvent()"
+                                id="expand-button"
                                 class="icon is-vcentered">
                                 <i
                                     class="fa fa-caret-down has-text-primary is-size-2"
@@ -48,6 +49,7 @@
                                 id="hierarchy-node-expand-button"
                                 v-else-if="hasChild.length > 0"
                                 @click="onExpandEvent()"
+                                id="expand-button"
                                 class="icon is-vcentered">
                                 <i
                                     class="fa fa-caret-right has-text-primary is-size-2"
@@ -177,6 +179,7 @@
                 <div
                     id="hierarchy-node-set-alignment-source"
                     @click="setWorkingAlignmentsSource"
+                    id="select-source-button"
                     :disabled="sourceState !== 'ready'"
                     class="button is-outlined is-small is-primary crosswalk-buttons__source__create">
                     <span class="icon">
@@ -218,6 +221,7 @@
                             <button
                                 id="hierarchy-node-remove-competency-source"
                                 @click="removeSourceCompetency"
+                                id="remove-source-button"
                                 class="delete is-small" />
                         </span>
                     </p>
@@ -230,6 +234,7 @@
                     id="hierarchy-node-add-target"
                     v-show="!isInWorkingAlignmentsTargets"
                     @click="addToWorkingAlignmentsTargets(obj.shortId())"
+                    id="add-to-working-alignments-target-button"
                     class="button  is-fullwidth is-small is-text has-text-primary">
                     <span
                         class="icon">
@@ -240,6 +245,7 @@
                     id="hierarchy-node-remove-target"
                     v-show="isInWorkingAlignmentsTargets"
                     @click="removeFromWorkingAlignmentsTargets(obj.shortId())"
+                    id="remove-from-working-alignments-target-button"
                     class="button is-fullwidth is-small  is-text has-text-link">
                     <span
                         class="icon">
@@ -257,6 +263,7 @@
                     v-if="!addingNode"
                     class="add-new-node__line"
                     title="Add competency"
+                    id="add-new-node-button"
                     @click="addingNode = true;">
                     <hr>
                     <div class="button is-small is-outlined is-primary">
@@ -283,6 +290,7 @@
                         <div
                             id="hierarchy-node-create-button"
                             v-if="!hasChild.length"
+                            id="create-new-node-button"
                             @click="$emit('create-new-node-event', parent.shortId(), obj.shortId()); addingNode = false;"
                             class="button is-outlined is-small is-primary ">
                             <span class="icon">
@@ -307,6 +315,7 @@
                         <div
                             id="hierarchy-node-search-button"
                             v-if="obj && obj.type !== 'Concept'"
+                            id="search-button"
                             @click="clickToSearch"
                             class="button is-outlined is-small is-primary ">
                             <span class="icon">

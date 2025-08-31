@@ -20,6 +20,7 @@
                         v-for="(item) in results"
                         :id="'list-item-' + item.id"
                         :key="item.id"
+                        :id="item.id"
                         :class="[
                             {'source-framework': crosswalkAlignmentSource && item.id === crosswalkAlignmentSource.id},
                             rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : '']"
