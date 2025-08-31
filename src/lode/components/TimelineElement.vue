@@ -54,6 +54,7 @@
                         <a
                             href="#"
                             class="competencyLink"
+                            id="timeline-element-goto-competency-link"
                             @click="gotoCompetency"
                             :title="assertion.competency">
                             {{ competencyName }}
@@ -85,6 +86,7 @@
                     <div>
                         <div
                             :style="invisible"
+                            id="timeline-element-delete-assertion-button"
                             @click="deleteMe"
                             class="button is-text"
                             title="Delete this claim.">

@@ -17,7 +17,8 @@
             <button
                 class="button is-dark is-outlined is-small is-pulled-right"
                 v-if="(selectedIds && selectedIds.length) || selectedFramework"
-                @click="clickClearFramework">
+                @click="clickClearFramework"
+                id="search-modal-clear-selection-button">
                 <span class="icon">
                     <i class="fa fa-times" />
                 </span>
@@ -38,7 +39,8 @@
             <div class="buttons">
                 <button
                     class="button is-outlined is-dark"
-                    @click="closeModal">
+                    @click="closeModal"
+                    id="search-modal-cancel-button">
                     <span class="icon">
                         <i class="fa fa-times" />
                     </span>
@@ -48,7 +50,8 @@
                     class="button is-outlined is-primary"
                     v-if="copyOrLink"
                     :disabled="!selectedIds || selectedIds.length === 0"
-                    @click="copyCompetencies">
+                    @click="copyCompetencies"
+                    id="search-modal-copy-button">
                     <span class="icon">
                         <i class="fa fa-copy" />
                     </span>
@@ -60,7 +63,8 @@
                     class="button is-outlined is-primary"
                     v-if="copyOrLink && linkEnabled"
                     :disabled="!selectedIds || selectedIds.length === 0"
-                    @click="appendCompetencies">
+                    @click="appendCompetencies"
+                    id="search-modal-link-button">
                     <span class="icon">
                         <i class="fa fa-link" />
                     </span>

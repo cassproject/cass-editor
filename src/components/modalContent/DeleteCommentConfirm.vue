@@ -20,11 +20,13 @@
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
+                    id="delete-comment-cancel-button"
                     @click="closeModal">
                     Cancel
                 </button>
                 <button
                     class="button is-outlined is-primary"
+                    id="delete-comment-confirm-button"
                     @click="confirmDelete">
                     Confirm
                 </button>

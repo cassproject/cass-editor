@@ -19,12 +19,14 @@
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
-                    @click="$emit('cancel')">
+                    @click="$emit('cancel')"
+                    id="configuration-not-permitted-cancel-button">
                     OK
                 </button>
                 <button
                     class="button is-outlined is-danger"
-                    @click="$router.push({name: 'login', query: queryParams})">
+                    @click="$router.push({name: 'login', query: queryParams})"
+                    id="configuration-not-permitted-login-button">
                     Login
                 </button>
             </div>

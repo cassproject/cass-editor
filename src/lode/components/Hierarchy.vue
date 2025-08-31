@@ -44,7 +44,6 @@
                             <input
                                 id="select-all-checkbox"
                                 class="is-checkradio"
-                                id="select-all-checkbox"
                                 type="checkbox"
                                 name="selectAllCheckbox"
                                 v-model="selectAll">
@@ -436,6 +435,7 @@
                             <tbody>
                                 <tr
                                     style="cursor: pointer;"
+                                    :id="'person-' + index"
                                     @click="setSubject(prs.owner[0])"
                                     v-for="(prs, index) in filteredAvailablePersons"
                                     :key="index">
@@ -450,6 +450,7 @@
             <template slot="modal-foot">
                 <div
                     class="button is-outlined is-small"
+                    id="cancel-select-subject-button"
                     @click="closeSelectSubjectModal"
                     title="Cancel">
                     <span class="icon">

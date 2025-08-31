@@ -13,7 +13,8 @@
                         <div class="buttons is-fullwidth is-right">
                             <div
                                 class="button is-outlined is-primary"
-                                @click="$emit('back')">
+                                @click="$emit('back')"
+                                id="plugin-details-back-button">
                                 <span class="icon">
                                     <i class="fa fa-arrow-left" />
                                 </span>
@@ -26,7 +27,8 @@
                         v-if="!readOnly">
                         <div
                             class="button is-fullwidth is-outlined is-dark"
-                            @click="$emit('cancel')">
+                            @click="$emit('cancel')"
+                            id="plugin-details-cancel-button">
                             <span class="icon">
                                 <i class="fa fa-arrow-left" />
                             </span>
@@ -38,7 +40,8 @@
                         v-if="!readOnly">
                         <div
                             class="button is-fullwidth is-outlined is-primary"
-                            @click="validateCurrentPluginAndEmitSave">
+                            @click="validateCurrentPluginAndEmitSave"
+                            id="plugin-details-save-button">
                             <span class="icon">
                                 <i class="fa fa-save" />
                             </span><span>save plugin</span>
@@ -61,6 +64,7 @@
                             v-if="!readOnly">
                             <input
                                 class="input"
+                                id="plugin-details-url-input"
                                 type="url"
                                 v-model="plugin.url">
                         </div>
@@ -94,7 +98,8 @@
                                 <div class="buttons is-fullwidth is-left">
                                     <div
                                         class="button is-outlined is-primary"
-                                        @click="loadManifestData">
+                                        @click="loadManifestData"
+                                        id="plugin-details-load-manifest-button">
                                         <span class="icon">
                                             <i class="fa fa-sync-alt" />
                                         </span>
@@ -111,7 +116,8 @@
                                     <div class="buttons is-fullwidth is-left">
                                         <div
                                             class="button is-outlined is-primary"
-                                            @click="loadManifestData">
+                                            @click="loadManifestData"
+                                            id="plugin-details-retry-manifest-button">
                                             <span class="icon">
                                                 <i class="fa fa-sync-alt" />
                                             </span>

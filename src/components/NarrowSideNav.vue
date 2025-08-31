@@ -51,24 +51,30 @@
         <ul
             class="menu-list">
             <li class="has-text-white">
-                <router-link :to="{path: '/frameworks', query: queryParams}">
+                <router-link
+                    id="narrow-side-nav-frameworks-link"
+                    :to="{path: '/frameworks', query: queryParams}">
                     Frameworks
                 </router-link>
             </li>
             <li
                 class="has-text-white"
+                id="narrow-side-nav-new-framework"
                 @click="$emit('create-new-framework')">
                 <a> New Framework</a>
             </li>
             <!-- hidding this for now -->
             <li
                 class="has-text-white">
-                <router-link :to="{path: '/crosswalk', query: queryParams}">
+                <router-link 
+                    id="narrow-side-nav-crosswalk-link"
+                    :to="{path: '/crosswalk', query: queryParams}">
                     Crosswalk Frameworks
                 </router-link>
             </li>
             <li class="has-text-white">
                 <router-link
+                    id="narrow-side-nav-import-link"
                     :to="{path: '/import', query: queryParams}"
                     @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false)">
                     Import
@@ -83,17 +89,21 @@
         <ul
             class="menu-list">
             <li class="has-text-white">
-                <router-link :to="{path: '/concepts', query: queryParams}">
+                <router-link 
+                    id="narrow-side-nav-concepts-link"
+                    :to="{path: '/concepts', query: queryParams}">
                     Concepts
                 </router-link>
             </li>
             <li
                 class="has-text-white"
+                id="narrow-side-nav-new-concept-scheme"
                 @click="$emit('create-new-concept-scheme')">
                 <a> New Concept Scheme</a>
             </li>
             <li class="has-text-white">
                 <router-link
+                    id="narrow-side-nav-import-concepts-link"
                     :to="{path: '/import', query: queryParams}"
                     @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false)">
                     Import
@@ -108,17 +118,21 @@
         <ul
             class="menu-list">
             <li class="has-text-white">
-                <router-link :to="{path: '/progressionLevels', query: queryParams}">
+                <router-link 
+                    id="narrow-side-nav-progression-models-link"
+                    :to="{path: '/progressionLevels', query: queryParams}">
                     Progression Levels
                 </router-link>
             </li>
             <li
                 class="has-text-white"
+                id="narrow-side-nav-new-progression-model"
                 @click="$emit('create-new-progression-model')">
                 <a> New Progression Models</a>
             </li>
             <li class="has-text-white">
                 <router-link
+                    id="narrow-side-nav-import-progression-models-link"
                     :to="{path: '/import', query: queryParams}"
                     @click.native="$store.commit('editor/progressionMode', true); $store.commit('editor/conceptMode', false)">
                     Import
@@ -133,17 +147,23 @@
         <ul
             class="menu-list">
             <li>
-                <router-link :to="{path: '/configuration', query: queryParams}">
+                <router-link 
+                    id="narrow-side-nav-configurations-link"
+                    :to="{path: '/configuration', query: queryParams}">
                     Configurations
                 </router-link>
             </li>
             <li>
-                <router-link :to="{path: '/pluginManager', query: queryParams}">
+                <router-link 
+                    id="narrow-side-nav-plugins-link"
+                    :to="{path: '/pluginManager', query: queryParams}">
                     Plugins
                 </router-link>
             </li>
             <li v-if="isLoggedOn">
-                <router-link :to="{path: '/users', query: queryParams}">
+                <router-link 
+                    id="narrow-side-nav-users-link"
+                    :to="{path: '/users', query: queryParams}">
                     Users/Groups
                 </router-link>
             </li>

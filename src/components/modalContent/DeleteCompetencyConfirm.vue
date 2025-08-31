@@ -25,11 +25,13 @@
         <template slot="modal-foot">
             <button
                 @click="deleteItem()"
+                id="delete-competency-confirm-delete-button"
                 class="is-danger is-outlined button">
                 Delete Competency
             </button>
             <button
                 @click="closeModal()"
+                id="delete-competency-confirm-cancel-button"
                 class="is-dark button">
                 Cancel
             </button>

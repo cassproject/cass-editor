@@ -19,6 +19,7 @@
                 class="buttons is-spaced">
                 <button
                     class="button is-secondary is-outlined"
+                    id="logout-success-close-button"
                     @click="$store.commit('app/closeModal')">
                     <span class="icon">
                         <i class="fa fa-times-circle" />
@@ -27,6 +28,7 @@
                 </button>
                 <button
                     class="button is-primary is-outlined"
+                    id="logout-success-login-button"
                     @click="close">
                     <span class="icon">
                         <i class="fa fa-sign-in-alt" />

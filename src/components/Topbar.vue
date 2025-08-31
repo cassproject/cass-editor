@@ -5,6 +5,7 @@
         aria-label="main navigation">
         <div class="navbar-brand">
             <div
+                id="topbar-hamburger-menu"
                 @click="$store.commit('app/showSideNav')"
                 v-if="!showSideNav"
                 class="navbar-item">
@@ -14,6 +15,7 @@
             </div>
             <div
                 v-else
+                id="topbar-close-menu"
                 @click="$store.commit('app/closeSideNav')"
                 class="navbar-item">
                 <div class="icon has-text-white">
@@ -21,7 +23,9 @@
                 </div>
             </div>
             <div class="navbar-item">
-                <router-link :to="{path: '/frameworks', query: queryParams}">
+                <router-link 
+                    id="topbar-title-link" 
+                    :to="{path: '/frameworks', query: queryParams}">
                     <h2 class="has-text-white subtitle has-text-weight-bold">
                         CaSS
                     </h2>
