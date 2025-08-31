@@ -38,6 +38,7 @@
                             <div
                                 v-if="!collapse && hasChild.length > 0"
                                 @click="onExpandEvent()"
+                                id="expand-button"
                                 class="icon is-vcentered">
                                 <i
                                     class="fa fa-caret-down has-text-primary is-size-2"
@@ -46,6 +47,7 @@
                             <div
                                 v-else-if="hasChild.length > 0"
                                 @click="onExpandEvent()"
+                                id="expand-button"
                                 class="icon is-vcentered">
                                 <i
                                     class="fa fa-caret-right has-text-primary is-size-2"
@@ -121,6 +123,7 @@
                                     <div
                                         v-if="view !== 'crosswalk' && canEditThing"
                                         @click="onEditNode()"
+                                        :id="'edit-'+obj.shortId()"
                                         class="edit-button button is-text  is-small has-text-primary">
                                         <div class="icon ">
                                             <i class="fa fa-edit " />
@@ -137,6 +140,7 @@
                                     <div
                                         v-if="showAddComments && view !== 'crosswalk' && view !== 'search'"
                                         @click="handleClickAddComment"
+                                        :id="'add-comment-'+obj.shortId()"
                                         class=" comment-button button is-text  is-small has-text-primary">
                                         <div class="icon">
                                             <i class="fa fa-comment-medical" />
@@ -158,6 +162,7 @@
                     :key="idx"
                     class="tag is-small is-link crosswalk__align_link"
                     :title="crosswalkOptions[sac.alignType].label"
+                    :id="'existing-alignments-button-' + sac.alignType"
                     @click="setRelationTypeByLinkClick(sac.alignType)">
                     <!--<i :class="crosswalkOptions[sac.alignType].icon" />-->
                     <span>{{ crosswalkOptions[sac.alignType].label }}</span>
@@ -171,6 +176,7 @@
                 class="crosswalk-buttons__source">
                 <div
                     @click="setWorkingAlignmentsSource"
+                    id="select-source-button"
                     :disabled="sourceState !== 'ready'"
                     class="button is-outlined is-small is-primary crosswalk-buttons__source__create">
                     <span class="icon">
@@ -210,6 +216,7 @@
                             <span class="has-text-weight-bold">{{ crosswalkOptions[workingAlignmentsType].label }}</span>
                             <button
                                 @click="removeSourceCompetency"
+                                id="remove-source-button"
                                 class="delete is-small" />
                         </span>
                     </p>
@@ -221,6 +228,7 @@
                 <div
                     v-show="!isInWorkingAlignmentsTargets"
                     @click="addToWorkingAlignmentsTargets(obj.shortId())"
+                    id="add-to-working-alignments-target-button"
                     class="button  is-fullwidth is-small is-text has-text-primary">
                     <span
                         class="icon">
@@ -230,6 +238,7 @@
                 <div
                     v-show="isInWorkingAlignmentsTargets"
                     @click="removeFromWorkingAlignmentsTargets(obj.shortId())"
+                    id="remove-from-working-alignments-target-button"
                     class="button is-fullwidth is-small  is-text has-text-link">
                     <span
                         class="icon">
@@ -246,6 +255,7 @@
                     v-if="!addingNode"
                     class="add-new-node__line"
                     title="Add competency"
+                    id="add-new-node-button"
                     @click="addingNode = true;">
                     <hr>
                     <div class="button is-small is-outlined is-primary">
@@ -261,6 +271,7 @@
                     class="add-node__options">
                     <div class="buttons is-centered">
                         <div
+                            id="cancel-add-node-button"
                             @click="$store.commit('lode/competencySearchModalOpen', false); addingNode = false;"
                             class="button is-outlined is-small is-dark ">
                             <span class="icon">
@@ -270,6 +281,7 @@
                         </div>
                         <div
                             v-if="!hasChild.length"
+                            id="create-new-node-button"
                             @click="$emit('create-new-node-event', parent.shortId(), obj.shortId()); addingNode = false;"
                             class="button is-outlined is-small is-primary ">
                             <span class="icon">
@@ -281,6 +293,7 @@
                         </div>
                         <div
                             v-else
+                            id="create-new-node-button-2"
                             @click="$emit('create-new-node-event', obj.shortId()); addingNode = false;"
                             class="button is-outlined is-small is-primary ">
                             <span class="icon">
@@ -292,6 +305,7 @@
                         </div>
                         <div
                             v-if="obj && obj.type !== 'Concept'"
+                            id="search-button"
                             @click="clickToSearch"
                             class="button is-outlined is-small is-primary ">
                             <span class="icon">

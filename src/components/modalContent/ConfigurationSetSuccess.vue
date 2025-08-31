@@ -21,7 +21,8 @@
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
-                    @click="$emit('ok')">
+                    @click="$emit('ok')"
+                    id="configuration-set-success-ok-button">
                     Ok
                 </button>
             </div>

@@ -13,6 +13,7 @@
         <template slot="modal-foot">
             <button
                 @click="closeModal"
+                id="import-error-cancel-button"
                 class="is-dark button">
                 Cancel
             </button>

@@ -20,11 +20,13 @@
         <template slot="modal-foot">
             <button
                 @click="deleteItem()"
+                id="delete-framework-confirm-delete-button"
                 class="is-danger is-outlined button">
                 Delete {{ obj.subType === 'Collection' ? "Collection" : "Framework" }}
             </button>
             <button
                 @click="closeModal()"
+                id="delete-framework-confirm-cancel-button"
                 class="is-dark button">
                 Cancel
             </button>

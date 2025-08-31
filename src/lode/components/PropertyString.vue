@@ -14,11 +14,13 @@
             </template>
             <template slot="modal-foot">
                 <button
+                    id="confirm-remove-property-button"
                     @click="clickConfirmRemove"
                     class="is-danger is-outlined button">
                     Confirm Remove Property
                 </button>
                 <button
+                    id="cancel-remove-property-button"
                     @click="closeModal"
                     class="is-dark button">
                     Cancel
@@ -38,6 +40,7 @@
                     class="textarea is-expanded "
                     rows="1"
                     v-model="computedText"
+                    id="language-tag-set-textarea-input"
                     @blur="blur" />
             </p>
             <div
@@ -47,6 +50,7 @@
                     ref="language"
                     class="input is-narrow"
                     v-model="search"
+                    id="search-input-language"
                     @input="onSearchChange"
                     @blur="blur">
                 <span class="auto-complete">
@@ -63,6 +67,7 @@
             <div
                 class="control is-narrow">
                 <div
+                    id="language-tag-remove-button"
                     @click="showModal('remove')"
                     v-if="!addSingle"
                     class="button is-text has-text-danger">
@@ -83,6 +88,7 @@
                     class="textarea is-expanded "
                     rows="1"
                     v-model="search"
+                    id="search-input-language-autocomplete"
                     @input="onSearchChange"
                     @blur="blur" />
                 <span class="auto-complete">
@@ -100,6 +106,7 @@
                 class="control is-narrow">
                 <label class="label is-transparent">delete</label>
                 <div
+                    id="in-language-tag-remove-button"
                     @click="showModal('remove')"
                     v-if="!addSingle"
                     class="button is-text has-text-danger">
@@ -127,6 +134,7 @@
                     class="textarea is-expanded "
                     rows="1"
                     v-model="computedResourceName"
+                    id="resource-name-textarea-input"
                     @blur="blur" />
             </div>
         </div>
@@ -139,10 +147,12 @@
                 <input
                     class="input is-small is-fullwidth date-time"
                     v-model="computedText"
+                    id="datetime-input-computed"
                     type="datetime-local"
                     @blur="blur">
                 <div
                     v-if="ceasnUser"
+                    id="remove-timestamp-property-button"
                     @click="showModal('remove')"
                     class="button is-small is-text has-text-danger is-pulled-right">
                     <i class="fa fa-times" />
@@ -157,10 +167,12 @@
                 <input
                     class="input is-small is-fullwidth date-time"
                     v-model="computedText"
+                    id="date-input-computed"
                     type="date"
                     @blur="blur">
                 <div
                     v-if="ceasnUser"
+                    id="remove-date-property-button"
                     @click="showModal('remove')"
                     class="button is-small is-text has-text-danger is-pulled-right">
                     <i class="fa fa-times" />
@@ -176,6 +188,7 @@
             <div
                 class="select is-small">
                 <select
+                    id="computed-text-select"
                     v-model="computedText"
                     @change="blur">
                     <option
@@ -191,6 +204,7 @@
                 v-if="!newProperty">
                 <div
                     @click="showModal('remove')"
+                    id="remove-option-property-button"
                     class="button is-small is-text has-text-danger is-pulled-right">
                     <i class="fa fa-times" />
                 </div>
@@ -208,6 +222,7 @@
                     ref="textarea"
                     class="textarea is-expanded "
                     rows="1"
+                    id="string-textarea-input"
                     v-model="computedText"
                     @blur="blur" />
             </div>
@@ -216,6 +231,7 @@
                 v-if="!addSingle && view !== 'single'">
                 <div
                     @click="showModal('remove')"
+                    id="remove-string-textarea-property-button"
                     class="button is-small is-text has-text-danger is-pulled-right">
                     <i class="fa fa-times" />
                 </div>

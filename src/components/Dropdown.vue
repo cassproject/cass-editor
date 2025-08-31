@@ -5,7 +5,8 @@
         :class="active ? 'is-active' : ''">
         <div
             class="dropdown-trigger"
-            @click="$emit('showDropdown')">
+            @click="$emit('showDropdown')"
+            id="dropdown-trigger-button">
             <button
                 class="button is-fullwidth is-large"
                 aria-haspopup="true"

@@ -43,6 +43,7 @@
                             type="text"
                             class="input"
                             v-model="subjectFilter"
+                            id="share-assertions-subject-search"
                             placeholder="search for person...">
                     </div>
                     <div v-if="filteredAvailableSubjects.length === 0 && subjectFilter === ''">
@@ -56,6 +57,7 @@
                                         <th title="Select">
                                             <input
                                                 data-id="share-assertions-select-all-subjects"
+                                                id="share-assertions-select-all-subjects"
                                                 type="checkbox"
                                                 @change="selectAllSubjects">
                                         </th>
@@ -72,11 +74,13 @@
                                         data-id="share-assertions-subject-option"
                                         style="cursor: pointer;"
                                         @click="setSubject(prs.owner[0])"
+                                        id="share-assertions-subject-option"
                                         v-for="(prs, index) in filteredAvailableSubjects"
                                         :key="index">
                                         <td>
                                             <input
                                                 type="checkbox"
+                                                id="share-assertions-subject-checkbox"
                                                 @click.stop="setSubject(prs.owner[0])"
                                                 :checked="shareSubjects[prs.owner[0]]">
                                         </td>
@@ -99,6 +103,7 @@
                             data-id="share-assertions-target-search"
                             type="text"
                             class="input"
+                            id="share-assertions-target-search"
                             v-model="targetFilter"
                             placeholder="search for person...">
                     </div>
@@ -113,6 +118,7 @@
                                         <th title="Select">
                                             <input
                                                 data-id="share-assertions-select-all-targets"
+                                                id="share-assertions-select-all-targets"
                                                 type="checkbox"
                                                 @change="selectAllTargets">
                                         </th>
@@ -129,12 +135,14 @@
                                         data-id="share-assertions-target-option"
                                         style="cursor: pointer;"
                                         @click="setTarget(prs.owner[0])"
+                                        id="share-assertions-target-option"
                                         v-for="(prs, index) in filteredAvailableTargets"
                                         :key="index">
                                         <td>
                                             <input
                                                 type="checkbox"
                                                 @click.stop="setTarget(prs.owner[0])"
+                                                id="share-assertions-target-checkbox"
                                                 :checked="shareTargets[prs.owner[0]]">
                                         </td>
                                         <td> {{ prs.getName() }} </td>
@@ -161,7 +169,8 @@
                 <button
                     :disabled="isProcessing"
                     class="button is-secondary is-outlined"
-                    @click="$store.commit('app/closeModal')">
+                    @click="$store.commit('app/closeModal')"
+                    id="share-assertions-cancel-button">
                     <span>Cancel</span>
                     <span class="icon">
                         <i class="fa fa-times-circle" />
@@ -171,7 +180,8 @@
                     v-if="isDone"
                     data-id="share-more-assertions-button"
                     class="button is-primary is-outlined"
-                    @click="isDone = false;">
+                    @click="isDone = false;"
+                    id="share-assertions-share-more-button">
                     Share More
                 </button>
                 <button
@@ -179,7 +189,8 @@
                     data-id="share-assertions-button"
                     :disabled="isProcessing || notSelected"
                     class="button is-primary is-outlined"
-                    @click="shareAssertions">
+                    @click="shareAssertions"
+                    id="share-assertions-button">
                     <span>Share</span>
                     <span class="icon">
                         <i class="fa fa-share" />
