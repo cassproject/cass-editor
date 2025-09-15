@@ -123,6 +123,7 @@
                                 @set-checkbox="setCheckbox">
                                 <div class="hierarchy-item__buttons">
                                     <div
+                                        id="hierarchy-node-edit-button"
                                         v-if="view !== 'crosswalk' && canEditThing"
                                         @click="onEditNode()"
                                         :id="'edit-'+obj.shortId()"
@@ -140,6 +141,7 @@
                                         </span>
                                     </div>
                                     <div
+                                        id="hierarchy-node-add-comment-button"
                                         v-if="showAddComments && view !== 'crosswalk' && view !== 'search'"
                                         @click="handleClickAddComment"
                                         :id="'add-comment-'+obj.shortId()"
@@ -160,6 +162,7 @@
                 v-if="(view === 'crosswalk' && subview === 'crosswalkSource') && sourceAlignmentCountByType.length > 0"
                 class="column is-12 crosswalk-tags">
                 <span
+                    id="hierarchy-node-set-relation-type"
                     v-for="(sac, idx) in sourceAlignmentCountByType"
                     :key="idx"
                     class="tag is-small is-link crosswalk__align_link"
