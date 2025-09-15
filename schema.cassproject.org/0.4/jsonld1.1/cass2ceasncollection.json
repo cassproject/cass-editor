@@ -120,6 +120,10 @@
 		"ceterms:previousVersion": {
 			"@id": "ceterms:previousVersion",
 			"@type": "@id"
+		},
+		"ceterms:versionCode": {
+			"@id": "ceterms:versionCode",
+			"@type": "xsd:string"
 		}
 	}
 }

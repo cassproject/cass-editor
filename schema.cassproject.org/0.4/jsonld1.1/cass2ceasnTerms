@@ -48,5 +48,6 @@
 	"evidence": "cass:evidence",
 	"ceterms:latestVersion": "ceterms:latestVersion",
 	"ceterms:nextVersion": "ceterms:nextVersion",
-	"ceterms:previousVersion": "ceterms:previousVersion"
+	"ceterms:previousVersion": "ceterms:previousVersion",
+	"ceterms:versionCode": "ceterms:versionCode"
 }
