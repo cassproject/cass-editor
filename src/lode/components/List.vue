@@ -18,6 +18,7 @@
                     <li
                         class="cass--list--item"
                         v-for="(item) in results"
+                        :id="'list-item-' + item.id"
                         :key="item.id"
                         :id="item.id"
                         :class="[

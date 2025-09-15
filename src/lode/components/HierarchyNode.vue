@@ -36,6 +36,7 @@
                         <!-- CONTROLS FOR EXPAND -->
                         <div class="expand-column column is-narrow is-vcentered">
                             <div
+                                id="hierarchy-node-expand-button"
                                 v-if="!collapse && hasChild.length > 0"
                                 @click="onExpandEvent()"
                                 id="expand-button"
@@ -45,6 +46,7 @@
                                     :class="{'is-size-4': view === 'crosswalk'}" />
                             </div>
                             <div
+                                id="hierarchy-node-expand-button"
                                 v-else-if="hasChild.length > 0"
                                 @click="onExpandEvent()"
                                 id="expand-button"
@@ -121,6 +123,7 @@
                                 @set-checkbox="setCheckbox">
                                 <div class="hierarchy-item__buttons">
                                     <div
+                                        id="hierarchy-node-edit-button"
                                         v-if="view !== 'crosswalk' && canEditThing"
                                         @click="onEditNode()"
                                         :id="'edit-'+obj.shortId()"
@@ -138,6 +141,7 @@
                                         </span>
                                     </div>
                                     <div
+                                        id="hierarchy-node-add-comment-button"
                                         v-if="showAddComments && view !== 'crosswalk' && view !== 'search'"
                                         @click="handleClickAddComment"
                                         :id="'add-comment-'+obj.shortId()"
@@ -158,6 +162,7 @@
                 v-if="(view === 'crosswalk' && subview === 'crosswalkSource') && sourceAlignmentCountByType.length > 0"
                 class="column is-12 crosswalk-tags">
                 <span
+                    id="hierarchy-node-set-relation-type"
                     v-for="(sac, idx) in sourceAlignmentCountByType"
                     :key="idx"
                     class="tag is-small is-link crosswalk__align_link"
@@ -175,6 +180,7 @@
                 v-if="view === 'crosswalk' && subview === 'crosswalkSource'"
                 class="crosswalk-buttons__source">
                 <div
+                    id="hierarchy-node-set-alignment-source"
                     @click="setWorkingAlignmentsSource"
                     id="select-source-button"
                     :disabled="sourceState !== 'ready'"
@@ -190,6 +196,7 @@
                     <div class="control">
                         <div class="select is-small is-primary has-text-primary crosswalk-buttons__source__select">
                             <select
+                                id="hierarchy-node-remove-alignment-source"
                                 ref="alignmentOptions"
                                 @blur="ifNoWorkingAlignmentsTypeRemoveSourceCompetency"
                                 v-model="workingAlignmentsType">
@@ -215,6 +222,7 @@
                             class="tag is-small is-fullwidth is-link crosswalk-buttons__source__type">
                             <span class="has-text-weight-bold">{{ crosswalkOptions[workingAlignmentsType].label }}</span>
                             <button
+                                id="hierarchy-node-remove-competency-source"
                                 @click="removeSourceCompetency"
                                 id="remove-source-button"
                                 class="delete is-small" />
@@ -226,6 +234,7 @@
                 v-if="view === 'crosswalk' && subview === 'crosswalkTarget' && sourceState === 'selectTargets'"
                 class="crosswalk-buttons__target">
                 <div
+                    id="hierarchy-node-add-target"
                     v-show="!isInWorkingAlignmentsTargets"
                     @click="addToWorkingAlignmentsTargets(obj.shortId())"
                     id="add-to-working-alignments-target-button"
@@ -236,6 +245,7 @@
                     </span>
                 </div>
                 <div
+                    id="hierarchy-node-remove-target"
                     v-show="isInWorkingAlignmentsTargets"
                     @click="removeFromWorkingAlignmentsTargets(obj.shortId())"
                     id="remove-from-working-alignments-target-button"
@@ -252,6 +262,7 @@
                 v-if="view !== 'crosswalk' && canEdit && false"
                 class="add-node-section">
                 <div
+                    id="hierarchy-node-add-competency"
                     v-if="!addingNode"
                     class="add-new-node__line"
                     title="Add competency"
@@ -280,6 +291,7 @@
                             <span>cancel</span>
                         </div>
                         <div
+                            id="hierarchy-node-create-button"
                             v-if="!hasChild.length"
                             id="create-new-node-button"
                             @click="$emit('create-new-node-event', parent.shortId(), obj.shortId()); addingNode = false;"
@@ -304,6 +316,7 @@
                             </span>
                         </div>
                         <div
+                            id="hierarchy-node-search-button"
                             v-if="obj && obj.type !== 'Concept'"
                             id="search-button"
                             @click="clickToSearch"
