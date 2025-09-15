@@ -7,8 +7,8 @@
     let email = `testuser${rando}@example.com`
     let password = 'testpassword'
     /* ==== Generated with Cypress Studio ==== */
-    cy.get('#side-nav-show-login-button > :nth-child(2)').click();
-    cy.get('#legacy-login-create-account-button > :nth-child(2)').click();
+    cy.get('#side-nav-show-login-button').click();
+    cy.get('#legacy-login-create-account-button').click();
     cy.get('#legacy-login-create-link-person-name').clear();
     cy.get('#legacy-login-create-link-person-name').type(user);
     cy.get('#legacy-login-create-link-person-email').clear();

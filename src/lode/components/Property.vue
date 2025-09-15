@@ -167,6 +167,7 @@ TO DO MAYBE: Separate out property by editing or not.
                             v-if="!editingProperty">{{ displayLabel }}</span>
                         <p class="control">
                             <span
+                                id="property-read-only-link-copy-button"
                                 class="icon"
                                 title="Copy URL to the clipboard."
                                 v-clipboard="getURL(item)"
@@ -192,6 +193,7 @@ TO DO MAYBE: Separate out property by editing or not.
                             class="control"
                             v-if="editingProperty">
                             <div
+                                id="property-editing-remove-button-3"
                                 :disabled="shortType === 'id'"
                                 id="read-only-property-remove-button"
                                 @click="showModal('remove', index)"
@@ -246,6 +248,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     <div
                         v-if="editingProperty && limitedConcepts.length > 0">
                         <PropertyString
+                            :id="expandedProperty + '-' + index"
                             :index="index"
                             :propertyValue="expandedThing[expandedProperty][index]"
                             :expandedProperty="expandedProperty"
@@ -267,6 +270,7 @@ TO DO MAYBE: Separate out property by editing or not.
                                 v-if="!editingProperty">{{ displayLabel }}</span>
                             <p class="control">
                                 <span
+                                    id="property-read-only-link-copy-button-2"
                                     class="icon"
                                     title="Copy URL to the clipboard."
                                     v-clipboard="getURL(item)"
@@ -292,6 +296,7 @@ TO DO MAYBE: Separate out property by editing or not.
                                 class="control"
                                 v-if="editingProperty">
                                 <div
+                                    id="property-editing-remove-button-5"
                                     :disabled="shortType === 'id'"
                                     id="concept-property-remove-button"
                                     @click="showModal('remove', index)"
@@ -311,6 +316,7 @@ TO DO MAYBE: Separate out property by editing or not.
                             v-if="!editingProperty">{{ displayLabel }}</span>
                         <p class="control">
                             <span
+                                id="property-read-only-link-copy-button-3"
                                 class="icon"
                                 title="Copy URL to the clipboard."
                                 v-clipboard="getURL(item)"
@@ -336,6 +342,7 @@ TO DO MAYBE: Separate out property by editing or not.
                             class="control"
                             v-if="editingProperty">
                             <div
+                                id="property-editing-remove-button-6"
                                 :disabled="shortType === 'id'"
                                 id="direct-link-property-remove-button"
                                 @click="showModal('remove', index)"
@@ -350,6 +357,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     class="property"
                     v-else-if="editingProperty && !checkedOptions && !(limitedConcepts.length > 0) && !(limitedTypes.length > 0)">
                     <PropertyString
+                        :id="expandedProperty + '-' + index"
                         :index="index"
                         :propertyValue="expandedThing[expandedProperty][index]"
                         :expandedProperty="expandedProperty"
@@ -448,6 +456,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     class="add-property-button"
                     v-if="canEdit">
                     <button
+                        id="property-add-button"
                         v-if="range.length == 0 && addOrSearch !== 'search'"
                         class="button is-small is-link has-text-info"
                         :title="'Add New '+ displayLabel"
@@ -463,6 +472,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         </span>
                     </button>
                     <button
+                        :id="'property-add-button-' + targetType"
                         v-for="(targetType) in range"
                         :key="targetType"
                         v-else-if="addOrSearch !== 'search'"
