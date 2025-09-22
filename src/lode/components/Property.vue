@@ -196,7 +196,6 @@ TO DO MAYBE: Separate out property by editing or not.
                             <div
                                 id="property-editing-remove-button-3"
                                 :disabled="shortType === 'id'"
-                                id="read-only-property-remove-button"
                                 @click="showModal('remove', index)"
                                 class="button disabled is-text has-text-danger">
                                 <i class="fa fa-times" />
@@ -300,7 +299,6 @@ TO DO MAYBE: Separate out property by editing or not.
                                 <div
                                     id="property-editing-remove-button-5"
                                     :disabled="shortType === 'id'"
-                                    id="concept-property-remove-button"
                                     @click="showModal('remove', index)"
                                     class="button disabled is-text has-text-danger">
                                     <i class="fa fa-times" />
@@ -347,7 +345,6 @@ TO DO MAYBE: Separate out property by editing or not.
                             <div
                                 id="property-editing-remove-button-6"
                                 :disabled="shortType === 'id'"
-                                id="direct-link-property-remove-button"
                                 @click="showModal('remove', index)"
                                 class="button disabled is-text has-text-danger">
                                 <i class="fa fa-times" />
@@ -467,7 +464,6 @@ TO DO MAYBE: Separate out property by editing or not.
                         v-if="range.length == 0 && addOrSearch !== 'search'"
                         class="button is-small is-link has-text-info"
                         :title="'Add New '+ displayLabel"
-                        id="add-string-property-start-editing-button"
                         @click.stop="add('string'); startEditing();">
                         <span class="icon">
                             <i
@@ -484,7 +480,6 @@ TO DO MAYBE: Separate out property by editing or not.
                         :key="targetType"
                         v-else-if="addOrSearch !== 'search'"
                         class="button is-small is-text has-text-info"
-                        id="add-string-property-start-editing-button-2"
                         @click.stop="add(targetType); startEditing();"
                         :title="'Add New '+ displayLabel">
                         <span class="icon has-text-dark">
