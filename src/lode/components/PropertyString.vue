@@ -41,7 +41,6 @@
                     class="textarea is-expanded "
                     rows="1"
                     v-model="computedText"
-                    id="language-tag-set-textarea-input"
                     @blur="blur" />
             </p>
             <div
@@ -52,7 +51,6 @@
                     ref="language"
                     class="input is-narrow"
                     v-model="search"
-                    id="search-input-language"
                     @input="onSearchChange"
                     @blur="blur">
                 <span class="auto-complete">
@@ -92,7 +90,6 @@
                     class="textarea is-expanded "
                     rows="1"
                     v-model="search"
-                    id="search-input-language-autocomplete"
                     @input="onSearchChange"
                     @blur="blur" />
                 <span class="auto-complete">
@@ -140,7 +137,6 @@
                     class="textarea is-expanded "
                     rows="1"
                     v-model="computedResourceName"
-                    id="resource-name-textarea-input"
                     @blur="blur" />
             </div>
         </div>
@@ -154,13 +150,11 @@
                     id="property-string-date-time"
                     class="input is-small is-fullwidth date-time"
                     v-model="computedText"
-                    id="datetime-input-computed"
                     type="datetime-local"
                     @blur="blur">
                 <div
                     id="property-string-remove-button-x-3"
                     v-if="ceasnUser"
-                    id="remove-timestamp-property-button"
                     @click="showModal('remove')"
                     class="button is-small is-text has-text-danger is-pulled-right">
                     <i class="fa fa-times" />
@@ -176,13 +170,11 @@
                     id="property-string-computed-text-date"
                     class="input is-small is-fullwidth date-time"
                     v-model="computedText"
-                    id="date-input-computed"
                     type="date"
                     @blur="blur">
                 <div
                     id="property-string-remove-button-x-4"
                     v-if="ceasnUser"
-                    id="remove-date-property-button"
                     @click="showModal('remove')"
                     class="button is-small is-text has-text-danger is-pulled-right">
                     <i class="fa fa-times" />
