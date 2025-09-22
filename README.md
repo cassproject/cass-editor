@@ -4,6 +4,11 @@ Competency and Skills Service -- Competency Framework Editor
 
 Create, edit, modify CASS frameworks and competencies using an easy to use, embeddable iframe.
 
+# Getting Started (development)
+ * `npm i`
+ * `npm run serve`
+ * (if testing) `npm run cypress`
+
 # Features
  * View and edit public or permissioned competency frameworks on a CASS instance.
  * Concurrent editing - Changes are shown on multiple people's screens concurrently.
