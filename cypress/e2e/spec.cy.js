@@ -4,7 +4,7 @@ describe('template spec', () => {
 /* ==== Test Created with Cypress Studio ==== */
 it('create and delete framework', function() {
   /* ==== Generated with Cypress Studio ==== */
-  cy.visit('http://localhost:8082?server=http://localhost/api');
+  cy.visit('http://localhost:8082?server=http://dev.cassproject.org/api/');
   cy.get(':nth-child(2) > :nth-child(1) > a > :nth-child(2)').click();
   cy.get('.dropdown-trigger > .is-hidden-touch > :nth-child(2)').click();
   cy.get('[href="#"]').click();
