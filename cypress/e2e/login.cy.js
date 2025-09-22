@@ -1,6 +1,6 @@
 
   it('createAccount', () => {
-    cy.visit('http://localhost:8082/?server=http://localhost/api/')
+    cy.visit('http://localhost:8082/?server=http://dev.cassproject.org/api/')
 
     let rando = Math.floor(Math.random() * 1000000)
     let user = `testuser${rando}`
