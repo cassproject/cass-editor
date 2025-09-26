@@ -86,6 +86,9 @@ export default {
             var obj = {};
             obj[framework.shortId()] = [{"@value": this.getCTID(framework.shortId())}];
             var subCtids = async function(ary) {
+                if (!Array.isArray(ary)) {
+                    ary = [ary];
+                }
                 for (var i = 0; i < ary.length; i++) {
                     obj[ary[i]] = [{"@value": me.getCTID(ary[i])}];
                     var concept = await EcConcept.get(ary[i]);

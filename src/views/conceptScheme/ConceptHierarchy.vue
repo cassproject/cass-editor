@@ -312,6 +312,16 @@ export default {
     },
     mixins: [common, competencyEdits],
     computed: {
+        processedContainer: function() {
+            if (this.container == null) return null;
+            let container = this.container;
+            if (container["skos:hasTopConcept"] != null) {
+                if (!Array.isArray(container["skos:hasTopConcept"])) {
+                    container["skos:hasTopConcept"] = [container["skos:hasTopConcept"]];
+                }
+            }
+            return container;
+        },
         canCopyOrCut: function() {
             if (this.selectedArray && this.selectedArray.length === 1) {
                 return true;
@@ -334,16 +344,17 @@ export default {
         },
         hierarchy: function() {
             var me = this;
-            if (this.container == null) return null;
+            if (this.processedContainer == null) return null;
             if (!this.once) return this.structure;
             appLog("Computing hierarchy.");
             var precache = [];
-            if (this.container["skos:hasTopConcept"] != null) {
-                precache = precache.concat(this.container["skos:hasTopConcept"]);
+            appLog(this.processedContainer);
+            if (this.processedContainer["skos:hasTopConcept"] != null) {
+                precache = precache.concat(this.processedContainer["skos:hasTopConcept"]);
             }
             if (precache.length > 0) {
-                if (this.container["skos:hasTopConcept"] != null) {
-                    EcConcept.search(this.repo, "skos\\:inScheme:\"" + this.container.shortId() + "\"", function(results) {
+                if (this.processedContainer["skos:hasTopConcept"] != null) {
+                    EcConcept.search(this.repo, "skos\\:inScheme:\"" + this.processedContainer.shortId() + "\"", function(results) {
                         if (results.length > 200) {
                             me.hasLargeNumberOfItems = true;
                         }
@@ -369,7 +380,7 @@ export default {
             if (this.viewOnly === true) {
                 return false;
             }
-            return this.canEditAny(this.container);
+            return this.canEditAny(this.processedContainer);
         },
         recomputeHierarchy: function() {
             return this.$store.getters['editor/recomputeHierarchy'];
@@ -512,11 +523,11 @@ export default {
             let structure = [];
             let allChildrenIds = new Set(); // Track all nodes that are children
             
-            if (this.container == null) { return r; }
-            if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
+            if (this.processedContainer == null) { return r; }
+            if (this.processedContainer["skos:hasTopConcept"] !== null && this.processedContainer["skos:hasTopConcept"] !== undefined) {
                 // First pass - collect all children IDs from both narrower and broader relationships
-                for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
-                    var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
+                for (var i = 0; i < this.processedContainer["skos:hasTopConcept"].length; i++) {
+                    var c = await EcConcept.get(this.processedContainer["skos:hasTopConcept"][i]);
                     if (c && c["skos:narrower"]) {
                         for (var j = 0; j < c["skos:narrower"].length; j++) {
                             allChildrenIds.add(c["skos:narrower"][j]);
@@ -525,16 +536,16 @@ export default {
                 }
                 
                 // Additional pass to include broader relationships
-                for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
-                    var conceptId = this.container["skos:hasTopConcept"][i];
+                for (var i = 0; i < this.processedContainer["skos:hasTopConcept"].length; i++) {
+                    var conceptId = this.processedContainer["skos:hasTopConcept"][i];
                     var topConcept = await EcConcept.get(conceptId);
                     
                     // Check all concepts in the scheme for broader relationships pointing to this concept
-                    if (this.container["skos:hasTopConcept"]) {
-                        for (var j = 0; j < this.container["skos:hasTopConcept"].length; j++) {
+                    if (this.processedContainer["skos:hasTopConcept"]) {
+                        for (var j = 0; j < this.processedContainer["skos:hasTopConcept"].length; j++) {
                             if (i === j) continue; // Skip self
                             
-                            var otherConceptId = this.container["skos:hasTopConcept"][j];
+                            var otherConceptId = this.processedContainer["skos:hasTopConcept"][j];
                             var otherConcept = await EcConcept.get(otherConceptId);
                             
                             if (otherConcept && otherConcept["skos:broader"]) {
@@ -559,11 +570,11 @@ export default {
                     }
                 }
                 // Second pass - only add nodes that aren't children of other nodes
-                for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
-                    var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
+                for (var i = 0; i < this.processedContainer["skos:hasTopConcept"].length; i++) {
+                    var c = await EcConcept.get(this.processedContainer["skos:hasTopConcept"][i]);
                     if (c) {
                         // Only add this node if it's not a child of another node
-                        if (!allChildrenIds.has(this.container["skos:hasTopConcept"][i])) {
+                        if (!allChildrenIds.has(this.processedContainer["skos:hasTopConcept"][i])) {
                             structure.push({"obj": c, "children": []});
                             if (c["skos:narrower"]) {
                                 await this.addChildren(structure, c, structure.length - 1);
@@ -663,18 +674,18 @@ export default {
             }
             
             // Determine if containers are ConceptSchemes or Concepts
-            var fromContainer = fromContainerId ? await EcRepository.get(fromContainerId) : this.container;
-            var toContainer = toContainerId ? await EcRepository.get(toContainerId) : this.container;
+            var fromContainer = fromContainerId ? await EcRepository.get(fromContainerId) : this.processedContainer;
+            var toContainer = toContainerId ? await EcRepository.get(toContainerId) : this.processedContainer;
             
             var isFromConceptScheme = fromContainer.type === "ConceptScheme";
             var isToConceptScheme = toContainer.type === "ConceptScheme";
             
             // Use the actual concept scheme if needed
             if (isFromConceptScheme) {
-                fromContainer = this.container;
+                fromContainer = this.processedContainer;
             }
             if (isToConceptScheme) {
-                toContainer = this.container;
+                toContainer = this.processedContainer;
             }
             
             // Determine property names based on container types
@@ -858,39 +869,39 @@ export default {
             if (EcIdentityManager.default.ids != null && EcIdentityManager.default.ids.length > 0) {
                 c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
-            if (this.container.owner && this.container.owner.length > 0) {
-                for (var j = 0; j < this.container.owner.length; j++) {
-                    var owner = this.container.owner[j];
+            if (this.processedContainer.owner && this.processedContainer.owner.length > 0) {
+                for (var j = 0; j < this.processedContainer.owner.length; j++) {
+                    var owner = this.processedContainer.owner[j];
                     c.addOwner(EcPk.fromPem(owner));
                 }
             }
-            if (this.container.reader && this.container.reader.length > 0) {
-                for (var j = 0; j < this.container.reader.length; j++) {
-                    var reader = this.container.reader[j];
+            if (this.processedContainer.reader && this.processedContainer.reader.length > 0) {
+                for (var j = 0; j < this.processedContainer.reader.length; j++) {
+                    var reader = this.processedContainer.reader[j];
                     r.addReader(EcPk.fromPem(reader));
                 }
             }
             this.setDefaultLanguage();
             c["skos:prefLabel"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept"};
-            c["skos:inScheme"] = this.container.shortId();
-            if (containerId === this.container.shortId()) {
-                var initialValue = this.container["skos:hasTopConcept"] ? this.container["skos:hasTopConcept"].slice() : null;
-                if (!EcArray.isArray(this.container["skos:hasTopConcept"])) {
-                    this.container["skos:hasTopConcept"] = [];
+            c["skos:inScheme"] = this.processedContainer.shortId();
+            if (containerId === this.processedContainer.shortId()) {
+                var initialValue = this.processedContainer["skos:hasTopConcept"] ? this.processedContainer["skos:hasTopConcept"].slice() : null;
+                if (!EcArray.isArray(this.processedContainer["skos:hasTopConcept"])) {
+                    this.processedContainer["skos:hasTopConcept"] = [];
                 }
                 if (previousSibling == null || previousSibling === undefined) {
-                    this.container["skos:hasTopConcept"].push(c.shortId());
+                    this.processedContainer["skos:hasTopConcept"].push(c.shortId());
                 } else {
                     // Insert immediately after the sibling
-                    var index = this.container["skos:hasTopConcept"].indexOf(previousSibling);
-                    this.container["skos:hasTopConcept"].splice(index + 1, 0, c.shortId());
+                    var index = this.processedContainer["skos:hasTopConcept"].indexOf(previousSibling);
+                    this.processedContainer["skos:hasTopConcept"].splice(index + 1, 0, c.shortId());
                 }
-                c["skos:topConceptOf"] = this.container.shortId();
+                c["skos:topConceptOf"] = this.processedContainer.shortId();
                 me.$store.commit('editor/addEditsToUndo', [
                     {operation: "addNew", id: c.shortId()},
-                    {operation: "update", id: this.container.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]}
+                    {operation: "update", id: this.processedContainer.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]}
                 ]);
-                this.container["schema:dateModified"] = new Date().toISOString();
+                this.processedContainer["schema:dateModified"] = new Date().toISOString();
                 c["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
                     c = await EcEncryptedValue.toEncryptedValue(c);
@@ -922,7 +933,7 @@ export default {
                     {operation: "addNew", id: c.shortId()},
                     {operation: "update", id: parent.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]}
                 ]);
-                this.container["schema:dateModified"] = new Date().toISOString();
+                this.processedContainer["schema:dateModified"] = new Date().toISOString();
                 c["schema:dateModified"] = new Date().toISOString();
                 parent["schema:dateModified"] = new Date().toISOString();
                 if (this.$store.state.editor.private === true) {
@@ -955,16 +966,16 @@ export default {
             this.isDraggable = checked;
         },
         cancelImport: function() {
-            this.deleteObject(this.container);
+            this.deleteObject(this.processedContainer);
             this.$store.dispatch('app/clearImport');
         },
         openFramework: async function() {
-            var f = await EcConceptScheme.get(this.container.shortId());
+            var f = await EcConceptScheme.get(this.processedContainer.shortId());
             this.$store.commit('editor/framework', f);
-            this.$router.push({name: "conceptScheme", params: {frameworkId: this.container.id}});
+            this.$router.push({name: "conceptScheme", params: {frameworkId: this.processedContainer.id}});
         },
         onClickCreateNew: async function() {
-            let parent = this.container.shortId();
+            let parent = this.processedContainer.shortId();
             if (this.selectedArray.length === 1) {
                 parent = this.selectedArray[0];
             }
