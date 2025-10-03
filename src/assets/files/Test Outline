@@ -1,0 +1,27 @@
+Preconditions for all tests:
+Need Config for every field
+Need frameworks and directories and taxonomies setup for search tests
+
+
+A1 Login
+A2 Logout
+
+B1 Search for Framework
+B2 Filter and Sort (and clear filter)
+B3 Apply search term
+B4 Create new directory
+B5 Click on help
+
+
+
+
+Frameworks
+Import
+Crosswalk Frameworks
+Timeline
+Share
+Taxonomies
+Import
+Configurations
+Groups
+Plugins (N/A)
