@@ -597,6 +597,45 @@ export default {
             let me = this;
             me.$store.commit('app/importAllowCancel', true);
             let skip = this.$store.getters['app/importSkip'];
+
+            // Define validation rules based on import type
+            var validationRules = null;
+            if (this.queryParams.ceasnDataFields === 'true') {
+                if (me.importFileType === 'collectioncsv') {
+                    // Validation rules for Collections
+                    validationRules = {
+                        requiredProps: {
+                            "ceterms:Collection": ["@id", "ceasn:name", "ceasn:description", "ceasn:inLanguage", "ceterms:ownedBy", "ceterms:hasMember"],
+                            "ceasn:Competency": ["@id", "ceasn:competencyText", "ceterms:isMemberOf"]
+                        },
+                        hierarchyRules: {
+                            "ceterms:Collection": {
+                                requiredProperties: ["ceterms:hasMember"],
+                                childProperties: ["ceterms:isMemberOf"],
+                                errorMessage: "CSV must contain at least one of: ceterms:hasMember (for collection level) or ceterms:isMemberOf (for competency level)"
+                            }
+                        },
+                        validateHierarchy: true
+                    };
+                } else {
+                    // Validation rules for Frameworks
+                    validationRules = {
+                        requiredProps: {
+                            "ceasn:CompetencyFramework": ["@id", "ceasn:name", "ceasn:description", "ceasn:inLanguage", "ceasn:publisher", "ceasn:hasTopChild"],
+                            "ceasn:Competency": ["@id", "ceasn:competencyText", "ceasn:isPartOf"]
+                        },
+                        hierarchyRules: {
+                            "ceasn:CompetencyFramework": {
+                                requiredProperties: ["ceasn:hasTopChild"],
+                                childProperties: ["ceasn:isPartOf", "ceasn:isTopChildOf"],
+                                errorMessage: "CSV must contain at least one of: ceasn:hasTopChild (for framework level) or ceasn:isPartOf/ceasn:isTopChildOf (for competency level)"
+                            }
+                        },
+                        validateHierarchy: true
+                    };
+                }
+            }
+
             CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies, relations) {
                 me.$store.commit('app/importAllowCancel', false);
                 for (var i = 0; i < frameworks.length; i++) {
@@ -644,7 +683,7 @@ export default {
                 me.$store.commit('app/importStatus', failure);
                 me.$store.commit('app/importTransition', 'process');
                 me.$store.commit('app/addImportError', failure);
-            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'collectioncsv', skip);
+            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'collectioncsv', skip, validationRules);
         },
         importPdf: function() {
             var me = this;
@@ -942,6 +981,45 @@ export default {
             }
             me.$store.commit('app/importStatus', 'process');
             me.$store.commit('app/importAllowCancel', true);
+
+            // Define validation rules based on import type
+            var validationRules = null;
+            if (this.queryParams.ceasnDataFields === 'true') {
+                if (me.importFileType === 'progressioncsv') {
+                    // Validation rules for Progression Models
+                    validationRules = {
+                        requiredProps: {
+                            "asn:ProgressionModel": ["@id", "ceasn:name", "ceasn:description", "ceasn:inLanguage", "ceasn:publicationStatusType", "skos:hasTopConcept"],
+                            "asn:ProgressionLevel": ["@id", "skos:prefLabel", "ceasn:inProgressionModel"]
+                        },
+                        hierarchyRules: {
+                            "asn:ProgressionModel": {
+                                requiredProperties: ["skos:hasTopConcept"],
+                                childProperties: ["ceasn:inProgressionModel"],
+                                errorMessage: "CSV must contain at least one of: skos:hasTopConcept (for Progression Model level) or ceasn:inProgressionModel (for progression level)"
+                            }
+                        },
+                        validateHierarchy: true
+                    };
+                } else {
+                    // Validation rules for Concept Schemes
+                    validationRules = {
+                        requiredProps: {
+                            "skos:ConceptScheme": ["@id", "ceasn:name", "ceasn:description", "ceasn:inLanguage", "ceasn:publicationStatusType", "skos:hasTopConcept"],
+                            "skos:Concept": ["@id", "skos:prefLabel", "skos:inScheme"]
+                        },
+                        hierarchyRules: {
+                            "skos:ConceptScheme": {
+                                requiredProperties: ["skos:hasTopConcept"],
+                                childProperties: ["skos:inScheme"],
+                                errorMessage: "CSV must contain at least one of: skos:hasTopConcept (for Concept Scheme level) or skos:inScheme (for concept level)"
+                            }
+                        },
+                        validateHierarchy: true
+                    };
+                }
+            }
+
             CTDLASNCSVConceptImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies) {
                 me.$store.commit('app/importAllowCancel', false);
                 if (me.queryParams.ceasnDataFields === 'true') {
@@ -978,7 +1056,7 @@ export default {
                 me.$store.commit('app/importTransition', 'process');
                 me.$store.commit('app/addImportError', failure);
                 appError(failure);
-            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'progressioncsv');
+            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'progressioncsv', validationRules);
         },
         importFromFile: function() {
             let me = this;
