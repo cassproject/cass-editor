@@ -72,7 +72,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-    @import './../../scss/variables.scss';
+    @use './../../scss/variables.scss' as *;
     .close-right-aside-button {
         position: absolute;
         left: 0rem;

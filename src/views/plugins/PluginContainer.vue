@@ -82,11 +82,11 @@ export default {
                 this.pluginName = this.pluginToLaunch.launchName;
                 this.iFrameSource = this.pluginToLaunch.launchUrl + this.buildQueryParameterString(this.pluginToLaunch.queryParams);
             } else {
-                appLog('Cannot determine launch plugin');
+                console.log('Cannot determine launch plugin');
             }
         },
         sendIdentityToPlugin(origin) {
-            appLog('Sending "' + this.INIT_IDENTITY_ACTION + '" message to plugin');
+            console.log('Sending "' + this.INIT_IDENTITY_ACTION + '" message to plugin');
             let messageObj = {
                 action: this.INIT_IDENTITY_ACTION,
                 serverParm: window.repo.selectedServer,

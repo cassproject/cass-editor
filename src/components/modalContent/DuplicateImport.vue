@@ -118,7 +118,7 @@ export default {
                             me.resetImportModal();
                         }
                     }, function(error) {
-                        appError(error);
+                        console.error(error);
                         me.resetImportModal();
                     });
                 }

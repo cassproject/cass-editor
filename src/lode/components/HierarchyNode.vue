@@ -363,7 +363,7 @@
     </li>
 </template>
 <script>
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
 import common from '@/mixins/common.js';
 
 export default {
@@ -603,7 +603,7 @@ export default {
     // used to help the parent know when nodes stop rendering
     mounted() {
         this.$emit('mounting-node');
-        appLog("hierarchyNode.vue is mounted");
+        console.log("hierarchyNode.vue is mounted");
         this.collapse = this.largeNumberOfItems;
         if (this.expandAll) {
             this.collapse = false;
@@ -657,7 +657,7 @@ export default {
             }
         },
         focusHierarchyItem: function() {
-            appLog("tab");
+            console.log("tab");
             this.isItemFocused = true;
         },
         unfocusHierarchyItem: function() {
@@ -669,7 +669,7 @@ export default {
             }
         },
         handleClickAddComment: function() {
-            appLog("object is: ", this.obj.shortId());
+            console.log("object is: ", this.obj.shortId());
             this.$store.commit('editor/setAddCommentAboutId', this.obj.shortId());
             this.$store.commit('editor/setAddCommentType', 'new');
             this.$store.commit('app/showModal', {component: 'AddComment'});
@@ -799,7 +799,7 @@ export default {
             if (foo.to.id === 'framework_drag') {
                 return;
             }
-            appLog(foo.oldIndex, foo.newIndex);
+            console.log(foo.oldIndex, foo.newIndex);
             var toId = null;
             var plusup = 0;
             if (this.shiftKey) {
@@ -925,7 +925,7 @@ export default {
                 if (this.containerSubType === 'Collection') {
                     this.getCanEditInCollection();
                 }
-                appLog("node is visible");
+                console.log("node is visible");
             }
         }
     },
@@ -950,7 +950,7 @@ export default {
         // this doesn't work...nor does a regular watcher on relevantExistingAlignmentsMap..wtf vue???
         // relevantExistingAlignmentsMap: {
         //     handler(val) {
-        //         appLog("WATCH relevantExistingAlignmentsMap !!!!!!");
+        //         console.log("WATCH relevantExistingAlignmentsMap !!!!!!");
         //         if (this.view === 'crosswalk' && this.subview === 'crosswalkSource') {
         //             this.calculateSourceAlignmentCountByType();
         //         }

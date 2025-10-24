@@ -1,4 +1,4 @@
-@import './variables.scss';
+@use 'variables.scss';
 
 /* 
 handle dragging icon on ghost 
@@ -50,7 +50,7 @@ drag, drag, and chosen states
     }
 }
 .chosen-drag {
-    border: dashed 2px $link !important;
+    border: dashed 2px variables.$link !important;
     background-color: white;
     min-height: 32px;
     .no-child {
@@ -151,7 +151,7 @@ drag, drag, and chosen states
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
-        color: $text;
+        color: variables.$text;
     }
 }
 .lode__thing:hover {
@@ -185,7 +185,7 @@ drag, drag, and chosen states
         text-overflow: ellipsis;
         white-space: nowrap;
         overflow: hidden;
-        color: $text;
+        color: variables.$text;
     }
     background-color: transparent;
     .modal-card {
@@ -240,7 +240,7 @@ drag, drag, and chosen states
         }
         .lode__Property.lode__name, .lode__Property.lode__competencyLabel {
             font-size: 1rem;
-            font-family: $family-primary;
+            font-family: variables.$family-primary;
             font-weight: 600;
         }
     }
@@ -254,7 +254,7 @@ drag, drag, and chosen states
         background-color: white;
         z-index: 10;
         padding: .25rem .5rem !important;
-        border-bottom: 1px solid rgba($dark, .5);
+        border-bottom: 1px solid rgba(variables.$dark, .5);
     }
     .check-radio-all-column label {
         padding-left: 0rem !important;
@@ -326,9 +326,9 @@ drag, drag, and chosen states
                         display: inline-block;
                         height: 1px;
                         border-width: 1px;
-                        background-color: rgba($primary, .5) !important;
-                        color: $black !important;
-                        border-color: $primary !important;
+                        background-color: rgba(variables.$primary, .5) !important;
+                        color: variables.$black !important;
+                        border-color: variables.$primary !important;
                     }
                 }
                 .lode__thing {
@@ -339,26 +339,26 @@ drag, drag, and chosen states
                             
                         }
                         .highlighted {
-                            background-color: $highlight;
+                            background-color: variables.$highlight;
                             padding: .5rem;
                             border-radius: 5px;
-                            box-shadow: $one-dp;
+                            box-shadow: variables.$one-dp;
                         }
                     }
                     .lode__name, .lode__competencyLabel {
                         font-size: 1.1rem; // top level competencies
                         font-weight: 700;
-                        color: rgba($text, .95);   
+                        color: rgba(variables.$text, .95);   
                     }
                     .lode__prefLabel {
                         font-size: 1.1rem; // top level competencies
                         font-weight: 700;
-                        color: rgba($text, .95);   
+                        color: rgba(variables.$text, .95);   
                     }
                     .lode__description {
                         font-size: .9rem; // top level competencies
                         font-weight: 400;   
-                        font-family: $family-primary;
+                        font-family: variables.$family-primary;
                     }
                 }
                 .lode__thing-editing {
@@ -366,22 +366,22 @@ drag, drag, and chosen states
                 
             }
             .lode__hierarchy-item.is-focused {
-                background-color: rgba($link, .2);
+                background-color: rgba(variables.$link, .2);
                 border-radius: 0rem;
             }
             .lode__hierarchy-item.is-selected {
-                background-color: rgba($link, .2);
+                background-color: rgba(variables.$link, .2);
                 border-radius: 0rem;
             }
             .lode__hierarchy-item.is-cut {
                 border-radius: 0rem;
-                border: dashed 2px $dark;
+                border: dashed 2px variables.$dark;
                 opacity: 50%;
             }
             .lode__hierarchy-item.can-paste {
                 background-color: white;
                 border-radius: 0rem;
-                border: dashed 2px $black;
+                border: dashed 2px variables.$black;
             }
             ul.lode__hierarchy-sub-ul {
                 margin-left: 1.25rem;
@@ -390,7 +390,7 @@ drag, drag, and chosen states
                     border: solid 2px transparent;
                     .lode__name {
                         font-size: 1rem; // top level competencies
-                        color: rgba($text, .95);
+                        color: rgba(variables.$text, .95);
                         font-weight: 700;   
                     }
                     
@@ -411,7 +411,7 @@ ul.processing-list {
             height: 24px;
             margin-top: 16px;
             width: 100%;
-            background-color: rgba($light, .5);
+            background-color: rgba(variables.$light, .5);
         }
     }
 }
@@ -422,7 +422,7 @@ ul.processing-list {
     flex-wrap: wrap;
     flex-direction: column;
     .busy-hierarchy__list-item {
-        background-color: rgba($light, .5);
+        background-color: rgba(variables.$light, .5);
         //animation: pulse 4s infinite;
         width: 100%;
         height: 48px;
@@ -433,17 +433,17 @@ ul.processing-list {
     ul li {
         height: 24px;
         margin: 8px 8px 8px 24px;
-        background-color: rgba($light, .5);
+        background-color: rgba(variables.$light, .5);
         //animation: pulse 4s infinite;
     }
 }
 
 @keyframes pulse {
     0% {
-        background-color: rgba($dark, .5);
+        background-color: rgba(variables.$dark, .5);
     }
     100% {
-        background-color: rgba($dark, .3);
+        background-color: rgba(variables.$dark, .3);
     }
 }
 .framework-content {
@@ -454,7 +454,7 @@ ul.processing-list {
     }
     #framework-drag {}
     .parent-object {
-        background-color: $white;
+        background-color: variables.$white;
         z-index: 9;
         width: 100%;
         transition: height .5s;
@@ -496,7 +496,7 @@ ul.processing-list {
                     text-overflow: ellipsis;
                     white-space: nowrap;
                     overflow: hidden;
-                    color: $dark;
+                    color: variables.$dark;
                 }
             }
         }
@@ -513,7 +513,7 @@ ul.processing-list {
                 width: calc(100% - 0rem);
                 h3 {
                     font-weight: 600;
-                    font-size: $size-3;
+                    font-size: variables.$size-3;
                 }
                 .lode__Property {
                     .property-section {
@@ -540,7 +540,7 @@ ul.processing-list {
             }
             .lode__Property.lode__name, .lode__Property.lode__title {
                 font-size: 1.1rem;
-                font-family: $family-secondary;
+                font-family: variables.$family-secondary;
                 font-weight: 600;
             }
         }
@@ -601,7 +601,7 @@ ul.processing-list {
     .lode__thing:hover {
         .lode__Property.lode__name,
         .lode__Property.lode__prefLabel{
-            color: $primary !important;
+            color: variables.$primary !important;
         }
         .edit-button, .comment-button, .handle-button {
             visibility: visible;
@@ -639,7 +639,7 @@ ul.processing-list {
         .lode__Competency,
         .lode__Concept {
             .lode__Property.lode__name{
-                color: $primary;
+                color: variables.$primary;
             }
         }
     }
@@ -647,7 +647,7 @@ ul.processing-list {
 }
 .add-property {
     background-color: white;
-    border: solid 1px rgba($dark, .2);
+    border: solid 1px rgba(variables.$dark, .2);
     border-radius: 2px;
     padding: 6px;
     margin: .5rem;
@@ -677,23 +677,23 @@ ul.processing-list {
 .lode__Hierarchy {
     .lode__Property {
         .control {
-            font-size: $size-6;
+            font-size: variables.$size-6;
         }
     }
     .lode__Property.lode__name {
         .control {
-            font-size: $size-6;
+            font-size: variables.$size-6;
         }
 
     }
     .lode__Property.lode__id {
         .control {
-            font-size: $size-6;
+            font-size: variables.$size-6;
         }
     }
     .lode__Property.lode__description .field {
         .control {
-            font-size: $size-6;
+            font-size: variables.$size-6;
         }
     }
     /* relationships as properties */
@@ -713,7 +713,7 @@ ul.processing-list {
         padding-left: 3rem;
         .edit-button .icon {
             display: none;
-            color: $link !important;
+            color: variables.$link !important;
         }
     }
 }
@@ -726,7 +726,7 @@ ul.processing-list {
         .thing-as-property__text {
             text-align: left;
             padding-left: .25rem;
-            font-size: $size-6;
+            font-size: variables.$size-6;
             width: 100%;
             display: inline-block;
             direction: ltr;
@@ -734,11 +734,11 @@ ul.processing-list {
             text-overflow: ellipsis;
             white-space: nowrap;
             overflow: hidden;
-            color: $dark;
+            color: variables.$dark;
         }
         .competency-as-property {
             cursor: pointer;
-            color: $text;
+            color: variables.$text;
             vertical-align: super;
         }
         .icon {
@@ -760,7 +760,7 @@ ul.processing-list {
         .lode__thing-heading {
             padding-left: 0rem !important; // related 
             h3 {
-                font-size: $size-3;
+                font-size: variables.$size-3;
                 font-weight: 600;
             }
             .lode__Property {
@@ -798,7 +798,7 @@ ul.processing-list {
             .lode__property {
                 padding: .125rem 0rem;
                 .active {
-                    color: $link;
+                    color: variables.$link;
                 }
             }
         }
@@ -813,5 +813,4 @@ ul.processing-list {
             width: 100%;
         }
     }
-}
 }

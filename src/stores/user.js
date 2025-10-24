@@ -1,8 +1,3 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-Vue.use(Vuex);
-
-
 const state = {
     loggedOnPerson: {},
     repoInit: {
@@ -31,21 +26,22 @@ const actions = {
 
 };
 const getters = {
-    loggedOnPerson: function(state) {
+    loggedOnPerson: function (state) {
         return state.loggedOnPerson;
     },
-    repositorySsoOptions: function(state) {
+    repositorySsoOptions: function (state) {
         return state.repoInit;
     },
-    lastLogin: function(state) {
+    lastLogin: function (state) {
         return state.lastLogin;
     }
 };
 
-export default {
-    namespaced: true,
+import { defineStore } from 'pinia';
+
+export default defineStore('user', {
     state,
     mutations,
     actions,
     getters
-};
+});

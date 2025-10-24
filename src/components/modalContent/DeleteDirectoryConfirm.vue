@@ -76,7 +76,7 @@ export default {
     },
     methods: {
         deleteDirectory: async function(obj) {
-            appLog("deleting " + obj.id);
+            console.log("deleting " + obj.id);
             var me = this;
             let children = await this.$store.dispatch('editor/getDirectoryChildren', obj);
             window.repo.multiget(children, function(success) {
@@ -84,7 +84,7 @@ export default {
                     if (obj.type === 'Framework') {
                         me.deleteFramework(obj, done);
                     } else if (obj.type === 'CreativeWork') {
-                        me.repo.deleteRegistered(obj, appLog, appError);
+                        me.repo.deleteRegistered(obj, console.log, console.error);
                         done();
                     } else if (obj.type === "Directory") {
                         me.numDirectories++;
@@ -93,7 +93,7 @@ export default {
                     }
                 }, function(objs) {
                     me.repo.deleteRegistered(obj, function(success) {
-                        appLog(success);
+                        console.log(success);
                         me.numDirectories--;
                         if (me.numDirectories === 0) {
                             me.$store.dispatch('app/refreshDirectories');
@@ -107,7 +107,7 @@ export default {
                             me.$store.commit('app/closeModal');
                         }
                     }, function(error) {
-                        appError(error);
+                        console.error(error);
                         me.numDirectories--;
                         if (me.numDirectories === 0) {
                             if (me.$route.name !== "frameworks") {
@@ -120,7 +120,7 @@ export default {
                         }
                     });
                 });
-            }, appError);
+            }, console.error);
         },
         deleteFramework: function(framework, callback) {
             let me = this;
@@ -143,7 +143,7 @@ export default {
                     }
                 }
                 callback();
-            }, appLog);
+            }, console.log);
         },
         closeModal: function() {
             this.$store.commit('app/closeModal');

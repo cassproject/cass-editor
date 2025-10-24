@@ -475,7 +475,6 @@ TO DO MAYBE: Separate out property by editing or not.
     </div>
 </template>
 <script>
-import '@/scss/property.scss';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 
 export default {
@@ -878,7 +877,7 @@ export default {
                     }
                     me.expandedValueNames.push(name);
                 }, function(error) {
-                    appLog(error);
+                    console.log(error);
                 });
             });
         },
@@ -1116,14 +1115,14 @@ export default {
             return false;
         },
         isVersionIdentifier: function(type) {
-            appLog("isVersionIdentifier", type);
+            console.log("isVersionIdentifier", type);
             if (type && (type['https://purl.org/ctdl/terms/identifierTypeName'] || (Array.isArray(type) && type[0] && type[0]['https://purl.org/ctdl/terms/identifierTypeName']))) {
                 return true;
             }
             return false;
         },
         isLink: function(type) {
-            appLog("isLink", type);
+            console.log("isLink", type);
             if (EcObject.keys(type).length === 1) {
                 if (type["@id"] != null && type["@id"] !== undefined) {
                     return true;
@@ -1240,6 +1239,6 @@ export default {
 };
 </script>
 <style lang="scss">
-    @import '@/scss/variables.scss';
-
+    @use '@/scss/variables.scss' as *;
+    @use '@/scss/property.scss' as *;
 </style>

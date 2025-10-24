@@ -1,4 +1,4 @@
-@import './variables.scss';
+@use 'variables.scss';
 
 #directory,
 #directoryList,
@@ -72,14 +72,14 @@
                 }
             }
             .cass--list--item{
-                border-radius: $border-radius;
+                border-radius: variables.$border-radius;
                 padding: .0rem .5rem .25rem .125rem;
                 margin-top: .5rem;
                 .framework-list-item__details {
-                    color: $text;
+                    color: variables.$text;
                     font-weight: 300;
-                    font-size: $size-6;
-                    font-family: $family-primary;
+                    font-size: variables.$size-6;
+                    font-family: variables.$family-primary;
                     .details-label {
                         font-weight: 600;
                     }
@@ -100,7 +100,7 @@
                     cursor: pointer;
                     font-weight: 600;
                     font-size: 1rem;
-                    font-family: $family-secondary;
+                    font-family: variables.$family-secondary;
                     .lode__Thing-ul {
                         padding: 0rem .5rem;
                         width: 100%;
@@ -161,9 +161,9 @@
                     .field {
                         display: block;
                         font-weight: 500;
-                        font-family: $family-secondary;
+                        font-family: variables.$family-secondary;
                         width: 100%;
-                        font-size: $size-3;
+                        font-size: variables.$size-3;
                     }
                 }
             }
@@ -179,18 +179,18 @@
                 font-size: .8rem;
                 margin: .125em 0em;
     
-                color: rgba($dark, .9);
+                color: rgba(variables.$dark, .9);
                 .lode__description {
                     font-weight: 400;
-                    font-size: $size-6;
+                    font-size: variables.$size-6;
                 }
                 .lode__name{
                     font-weight: 600;
-                    font-size: $size-4;
+                    font-size: variables.$size-4;
                 }
     
                 label {
-                    font-size: $size-6;
+                    font-size: variables.$size-6;
                     font-weight: 500;
                 }
             }
@@ -198,7 +198,7 @@
         .lode__description {
             display: none;
             .lode__Property-text  {
-                font-size: $size-6;
+                font-size: variables.$size-6;
             }
             .lode__Property-ul {
                 margin: 0rem;
@@ -231,7 +231,7 @@
             }
         }
         .cass--list--item:hover {
-            background-color: rgba($light, .5);
+            background-color: rgba(variables.$light, .5);
             .lode__Competency .search-selection__add-icon,
             .lode__Level .search-selection__add-icon {
                 visibility: visible !important;
@@ -262,7 +262,7 @@
     width: 100%;
     .lode__name {
         font-weight: 600;
-        font-family: $family-secondary;
+        font-family: variables.$family-secondary;
     }
 }
 .cass--list-item--hover {

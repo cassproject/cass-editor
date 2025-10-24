@@ -1,4 +1,4 @@
-import {mapGetters} from 'vuex';
+import { mapGetters } from 'pinia';
 export const configuration = {
     name: 'configuration',
     computed: {
@@ -19,7 +19,7 @@ export const configuration = {
         }
     },
     methods: {
-        closeModal: function() {
+        closeModal: function () {
             this.$store.commit('app/closeModal');
         },
         showListView() {
@@ -51,7 +51,7 @@ export const configuration = {
             this.$store.commit('configuration/setCurrentConfig', currentConfig);
         },
         sortConfigList() {
-            this.configList.sort(function(c1, c2) {
+            this.configList.sort(function (c1, c2) {
                 if (c1.isOwned !== c2.isOwned) {
                     if (c2.isOwned) return 1;
                     else return -1;
@@ -563,7 +563,7 @@ export const configuration = {
         },
         generateCustomPropertyAvailableConcepts() {
             repo.searchWithParams('@type:ConceptScheme',
-                {size: 10000},
+                { size: 10000 },
                 null,
                 null,
                 null,
@@ -578,7 +578,7 @@ export const configuration = {
                 }
                 this.$store.commit('configuration/setAvailableConcepts', concepts);
             }).catch((err) => {
-                appLog("failed to retrieve concepts: " + err);
+                console.log("failed to retrieve concepts: " + err);
             });
         },
         generateCustomPropertyAvailableTypes() {
@@ -591,8 +591,8 @@ export const configuration = {
             this.$store.commit('configuration/setAvailableTypes', types);
         },
         searchRepositoryForConfigsSuccess(ecRemoteLda) {
-            appLog("Config search success: ");
-            appLog(ecRemoteLda);
+            console.log("Config search success: ");
+            console.log(ecRemoteLda);
             this.configList = [];
             for (let ecrld of ecRemoteLda) {
                 let t = new schema.Thing();
@@ -605,7 +605,7 @@ export const configuration = {
             this.configBusy = false;
         },
         searchRepositoryForConfigsFailure(msg) {
-            appLog("Config search failure: " + msg);
+            console.log("Config search failure: " + msg);
             this.configBusy = false;
         },
         buildConfigListFromRepository() {

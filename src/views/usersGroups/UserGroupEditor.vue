@@ -940,12 +940,12 @@ export default {
             }
         },
         handleDeleteUserGroupSuccess() {
-            appLog("Delete user group success...");
+            console.log("Delete user group success...");
             this.numberOfUserGroupsDeleted++;
             this.checkUserGroupDeleteStatus();
         },
         handleDeleteUserGroupFailure(msg) {
-            appLog("Delete user group failure: " + msg);
+            console.log("Delete user group failure: " + msg);
             this.numberOfUserGroupsDeleted++;
             this.checkUserGroupDeleteStatus();
         },
@@ -991,19 +991,19 @@ export default {
             }
         },
         handleSaveUserGroupSuccess() {
-            appLog("Save user group success...");
+            console.log("Save user group success...");
             this.numberOfUserGroupsSaved++;
             this.checkUserGroupSaveStatus();
         },
         handleSaveUserGroupFailure(msg) {
-            appLog("Save user group failure: " + msg);
+            console.log("Save user group failure: " + msg);
             this.numberOfUserGroupsSaved++;
             this.checkUserGroupSaveStatus();
         },
         saveUserGroup(ugIdx) {
             let grp = this.userGroupsToSave[ugIdx];
             if (this.currentUserGroupNeedsRekey) {
-                appLog('Calling group save with rekey: ' + grp.shortId());
+                console.log('Calling group save with rekey: ' + grp.shortId());
                 setTimeout(() => {
                     grp.rekeyAndSave(this.handleSaveUserGroupSuccess, this.handleSaveUserGroupFailure, window.repo);
                 }, 300);
@@ -1195,7 +1195,7 @@ export default {
                 this.showGroupDetails(userGroup, null);
                 this.groupsDropdownActive = false;
             } else {
-                appLog('Cannot find user group: ' + id);
+                console.log('Cannot find user group: ' + id);
             }
         },
         showConfirmLoseChanges(val) {
@@ -1357,7 +1357,7 @@ export default {
             this.userGroupBusy = false;
         },
         searchRepositoryForGroupsFailure(msg) {
-            appLog("Group search failure: " + msg);
+            console.log("Group search failure: " + msg);
             this.userGroupBusy = false;
         },
         buildGroupListData() {
@@ -1385,7 +1385,7 @@ export default {
             this.buildGroupListData();
         },
         fetchPersonListForDetailViewFailure(msg) {
-            appLog("Person search failure: " + msg);
+            console.log("Person search failure: " + msg);
             this.userGroupBusy = false;
         },
         buildUserGroupData() {

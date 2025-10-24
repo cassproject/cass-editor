@@ -37,17 +37,17 @@
                 <span
                     v-if="slotProps.item['schema:dateCreated']"
                     :title="new Date(slotProps.item['schema:dateCreated'])">
-                    Created {{ $moment(slotProps.item['schema:dateCreated']).fromNow() }}
+                    Created {{ moment(slotProps.item['schema:dateCreated']).fromNow() }}
                 </span>
                 <span
                     v-if="slotProps.item.getTimestamp()"
                     :title="new Date(slotProps.item.getTimestamp())">
-                    Last modified {{ $moment(slotProps.item.getTimestamp()).fromNow() }}
+                    Last modified {{ moment(slotProps.item.getTimestamp()).fromNow() }}
                 </span>
                 <span
                     v-else-if="slotProps.item['schema:dateModified']"
                     :title="new Date(slotProps.item['schema:dateModified'])">
-                    Last modified {{ $moment(slotProps.item['schema:dateModified']).fromNow() }}
+                    Last modified {{ moment(slotProps.item['schema:dateModified']).fromNow() }}
                 </span>
             </template>
         </List>
@@ -110,7 +110,7 @@ export default {
             EcOrganization.get(organization.id, function(success) {
                 me.$store.commit('editor/organization', success);
                 me.$router.push({name: "organization", params: {organizationId: organization.id}});
-            }, appError);
+            }, console.error);
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];

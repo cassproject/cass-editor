@@ -230,10 +230,12 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
 import casslogo from '@/assets/cass-logo-white.svg';
 import common from '@/mixins/common.js';
-import harvard from 'file-loader!../../files/Harvard Emotional Intelligence.csv';
+
+//Use vue3 file-loader syntax
+import harvard from '@/assets/files/Harvard Emotional Intelligence.csv?url';
 
 export default {
     name: 'Welcome',

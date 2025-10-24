@@ -288,7 +288,7 @@ export default {
                 this.createUserServerError = false;
                 this.userCreated = true;
             } else {
-                appLog('Unexpected create user response status: ' + createUserResponse.status);
+                console.log('Unexpected create user response status: ' + createUserResponse.status);
             }
             this.createAccountBusy = false;
         },
@@ -323,7 +323,7 @@ export default {
             }
         },
         handleCheckUsernameConfigureFromServerSuccess: function(obj) {
-            appLog("Fetching identity for username check...");
+            console.log("Fetching identity for username check...");
             // Creates the hashes for storage and retrieval of keys.
             this.ecRemoteIdentMgr.startLogin(this.inputUserName, this.inputPassword);
             // Retrieves the identities and encryption keys from the server.
@@ -331,18 +331,18 @@ export default {
         },
         handleCheckUsernameConfigureFromServerFail: function(failMsg) {
             this.createAccountBusy = false;
-            appLog('New account configure from server for username check failure: ' + failMsg);
+            console.log('New account configure from server for username check failure: ' + failMsg);
         },
         checkForExistingUsername: function() {
-            appLog("Check if new account username already exists");
+            console.log("Check if new account username already exists");
             this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
             this.ecRemoteIdentMgr.server = window.repo.selectedServer;
             // Retrieves username and password salts from the serve
             this.ecRemoteIdentMgr.configureFromServer(this.handleCheckUsernameConfigureFromServerSuccess, this.handleCheckUsernameConfigureFromServerFail);
         },
         searchPersonsForNewAccountSuccess(ecRemoteLda) {
-            appLog("New account person search success: ");
-            appLog(ecRemoteLda);
+            console.log("New account person search success: ");
+            console.log(ecRemoteLda);
             let emailExists = false;
             for (let ecrld of ecRemoteLda) {
                 let ep = new EcPerson();

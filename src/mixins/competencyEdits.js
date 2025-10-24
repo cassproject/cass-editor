@@ -2,33 +2,33 @@ import common from '@/mixins/common.js';
 export default {
     mixins: [common],
     methods: {
-        removeObject: function(thing) {
+        removeObject: function (thing) {
             // Remove from container but don't delete
-            appLog("removing " + thing.id);
+            console.log("removing " + thing.id);
             var me = this;
             var thisFramework = this.$store.getters['editor/framework'];
             var initialCompetencies = thisFramework.competency ? thisFramework.competency.slice() : null;
             var initialRelations = thisFramework.relation ? thisFramework.relation.slice() : null;
             var initialLevels = thisFramework.level ? thisFramework.level.slice() : null;
             thisFramework["schema:dateModified"] = new Date().toISOString();
-            thisFramework.removeCompetency(thing.shortId(), async function() {
+            thisFramework.removeCompetency(thing.shortId(), async function () {
                 var framework = me.framework;
-                me.$store.commit('editor/addEditsToUndo', [{operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels]}]);
+                me.$store.commit('editor/addEditsToUndo', [{ operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels] }]);
                 if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[f.id] !== true) {
                     framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
-                window.repo.saveTo(framework, function() {
+                window.repo.saveTo(framework, function () {
                     me.$store.commit('editor/framework', thisFramework);
-                }, appError);
-            }, appLog);
+                }, console.error);
+            }, console.log);
         },
-        deleteObject: function(thing) {
-            appLog("deleting " + thing.id);
+        deleteObject: function (thing) {
+            console.log("deleting " + thing.id);
             var me = this;
             var framework = this.$store.getters['editor/framework'];
             if (thing.shortId() === framework.shortId()) {
                 // delete framework
-                window.repo.deleteRegistered(framework, function(success) {
+                window.repo.deleteRegistered(framework, function (success) {
                     me.spitEvent("frameworkDeleted", framework.shortId(), "editFrameworkSection");
                     // Delete the framework, delete all non-used stuff.
                     if (framework.competency != null) {
@@ -51,9 +51,9 @@ export default {
                         // Calling function from import page
                         me.$store.commit('app/importFramework', null);
                     } else {
-                        me.$router.push({name: "frameworks"});
+                        me.$router.push({ name: "frameworks" });
                     }
-                }, appLog);
+                }, console.log);
             } else {
                 // Delete competency and relations
                 var initialCompetencies = framework.competency ? framework.competency.slice() : null;
@@ -61,11 +61,11 @@ export default {
                 var initialLevels = framework.level ? framework.level.slice() : null;
                 this.$store.commit('editor/selectedCompetency', thing);
                 framework["schema:dateModified"] = new Date().toISOString();
-                framework.removeCompetency(thing.shortId(), async function() {
+                framework.removeCompetency(thing.shortId(), async function () {
                     framework.removeLevel(thing.shortId());
                     me.$store.commit('editor/addEditsToUndo', [
-                        {operation: "delete", obj: thing},
-                        {operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level]}
+                        { operation: "delete", obj: thing },
+                        { operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level] }
                     ]);
                     me.conditionalDelete(thing.shortId());
                     me.spitEvent("competencyDeleted", thing.shortId(), "editFrameworkSection");
@@ -74,10 +74,10 @@ export default {
                     if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                         frameworkToSave = await EcEncryptedValue.toEncryptedValue(framework);
                     }
-                    window.repo.saveTo(frameworkToSave, function() {
+                    window.repo.saveTo(frameworkToSave, function () {
                         me.$store.commit('editor/framework', framework);
-                    }, appError);
-                }, appLog);
+                    }, console.error);
+                }, console.log);
             }
         }
     }

@@ -83,7 +83,7 @@ export default {
 
             var statement = "";
             if (this.timestamp != null) {
-                statement += this.$moment(this.timestamp).fromNow() + ", ";
+                statement += moment(this.timestamp).fromNow() + ", ";
             }
 
             statement += this.agent + " claimed " + this.subject;
@@ -101,7 +101,7 @@ export default {
             if (this.timestamp == null) {
                 return null;
             }
-            return this.$moment(this.timestamp).fromNow();
+            return moment(this.timestamp).fromNow();
         },
         competencyText: function() {
             if (this.competency == null) {
@@ -160,36 +160,36 @@ export default {
                     } else {
                         assertion.getSubjectName(window.repo).then((name) => {
                             this.subject = name;
-                        }).catch(appError);
+                        }).catch(console.error);
                         assertion.getSubjectAsync((pk) => {
                             this.subjectPk = pk.toPem();
-                        }, appError);
+                        }, console.error);
                     }
                     if (assertion.agent == null) {
                         this.agent = "nobody";
                     } else {
                         assertion.getAgentName(window.repo).then((name) => {
                             this.agent = name;
-                        }).catch(appError);
+                        }).catch(console.error);
                     }
                     assertion.getAgentAsync((pk) => {
                         this.agentPk = pk.toPem();
                         this.getAgent();
-                    }, appError);
+                    }, console.error);
                     if (assertion.assertionDate != null) {
                         assertion.getAssertionDateAsync((assertionDate) => {
                             this.timestamp = assertionDate;
-                        }, appError);
+                        }, console.error);
                     }
                     if (assertion.expirationDate != null) {
                         assertion.getExpirationDateAsync((expirationDate) => {
                             this.expiry = expirationDate;
-                        }, appError);
+                        }, console.error);
                     }
                     if (assertion.negative != null) {
                         assertion.getNegativeAsync((negative) => {
                             this.negative = negative;
-                        }, appError);
+                        }, console.error);
                     } else {
                         this.negative = false;
                     }
@@ -202,14 +202,14 @@ export default {
                                     }
                                     this.evidence.push(evidence);
                                     this.evidenceExplanation = null;
-                                }, appError);
+                                }, console.error);
                             })(i);
                         }
                     }
                     EcCompetency.get(assertion.competency, (competency) => {
                         this.competency = competency;
-                    }, appError);
-                }, appError);
+                    }, console.error);
+                }, console.error);
             }
         },
         gotoCompetency: function() {
@@ -227,7 +227,7 @@ export default {
             //                 })
             //             }, 1000);
             //     }
-            // }, appError);
+            // }, console.error);
         },
         getAgent: function() {
             this.agentPerson = null;

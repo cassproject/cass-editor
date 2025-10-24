@@ -491,14 +491,14 @@ export default {
             }
         },
         successfulClip({value, event}) {
-            appLog('success', value);
+            console.log('success', value);
             this.clipStatus = 'success';
             setTimeout(() => {
                 this.clipStatus = 'ready';
             }, 1000);
         },
         errorClip({value, event}) {
-            appLog('error', value);
+            console.log('error', value);
             this.clipStatus = 'error';
             setTimeout(() => {
                 this.clipStatus = 'ready';
@@ -539,7 +539,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: me.object.id}});
-                }, appError);
+                }, console.error);
             } else if (this.$store.getters['editor/progressionMode']) {
                 this.$store.commit('app/selectDirectory', null);
                 EcConceptScheme.get(this.object.id, function(success) {
@@ -548,7 +548,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "progressionModel", params: {frameworkId: me.object.id}});
-                }, appError);
+                }, console.error);
             } else if (this.objectType === "ConceptScheme") {
                 this.$store.commit('app/selectDirectory', null);
                 this.$store.commit('editor/conceptMode', true);
@@ -558,7 +558,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: me.object.id}});
-                }, appError);
+                }, console.error);
             } else {
                 this.$store.commit('app/selectDirectory', null);
                 EcFramework.get(this.object.id, function(success) {
@@ -567,7 +567,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: me.object.id}});
-                }, appError);
+                }, console.error);
             }
         },
         getName: function(field) {
@@ -587,7 +587,7 @@ export default {
                     me.$router.push({name: "directory"});
                 }
                 me.$store.commit('app/closeRightAside');
-            }, appError);
+            }, console.error);
         },
         copyOrMove: async function(directory, copyOrMove) {
             if (copyOrMove === 'copy') {
@@ -1102,7 +1102,7 @@ export default {
                     }
                     done.push(child);
                 } catch (e) {
-                    appError(e);
+                    console.error(e);
                 }
             }
             if (done.length === 0) {
@@ -1147,7 +1147,7 @@ export default {
                 toSave.push(...[taxonomy, directory]);
                 await this.multiput(toSave, true);
             } catch (e) {
-                appError(e);
+                console.error(e);
             }
         },
         moveFrameworkToDirectory: async function(directory, framework, toSaveFromSubdirectory) {
@@ -1198,7 +1198,7 @@ export default {
                     await this.multiput(toSave, true);
                 }
             } catch (e) {
-                appError(e);
+                console.error(e);
             }
         },
         moveSubobjectsToDirectory: async function(subobjects, directory, toSave) {
@@ -1561,16 +1561,16 @@ export default {
         },
         lastModified: function() {
             if (this.object.getTimestamp()) {
-                return this.$moment(new Date(this.object.getTimestamp())).format("MMM D YYYY");
+                return moment(new Date(this.object.getTimestamp())).format("MMM D YYYY");
             }
             if (this.object["schema:dateModified"]) {
-                return this.$moment(new Date(this.object['schema:dateModified'])).format("MMM D YYYY");
+                return moment(new Date(this.object['schema:dateModified'])).format("MMM D YYYY");
             }
             return "unknown";
         },
         dateCreated: function() {
             if (this.object["schema:dateCreated"]) {
-                return this.$moment(new Date(this.object['schema:dateCreated'])).format("MMM D YYYY");
+                return moment(new Date(this.object['schema:dateCreated'])).format("MMM D YYYY");
             }
             return "unknown";
         },
@@ -1673,5 +1673,5 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './../../scss/list-item-info.scss';
+    @use './../../scss/list-item-info.scss' as *;
 </style>

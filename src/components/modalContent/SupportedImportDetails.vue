@@ -470,20 +470,21 @@
 
 <script>
 import ModalTemplate from './ModalTemplate.vue';
-import ctdlAsnCsvExample from 'file-loader!../../../files/Example of a Mininum Data Competency Framework Upload - HIST 101, SURVEY OF AMERICAN HISTORY I.csv';
-import ctdlAsnCsvTemplate from 'file-loader!../../../files/Template of a Mininum Data Competency Framework.csv';
-import ctdlAsnCsvBenchmarkExample from 'file-loader!../../../files/Example of a Benchmark Competency Framework - DOLWorkCharacteristicsDownloadfromCaSSAug25_2021.csv';
-import ctdlAsnCsvBenchmarkTemplate from 'file-loader!../../../files/Template of a Benchmark Competency Framework.csv';
-import csvExampleCompetencies from 'file-loader!../../../files/CAP Software Engineering - Competencies.csv';
-import csvExampleRelations from 'file-loader!../../../files/CAP Software Engineering - Relations.csv';
-import csvTemplateCompetencies from 'file-loader!../../../files/Template - Competencies.csv';
-import csvTemplateRelations from 'file-loader!../../../files/Template - Relations.csv';
-import csvConceptExample from 'file-loader!../../../files/Concept Scheme Example.csv';
-import csvConceptTemplate from 'file-loader!../../../files/Concept Scheme Template.csv';
-import ctdlAsnJsonldConcepts from 'file-loader!../../../files/ConnectingCredentialsLevels.jsonld';
-import ctdlAsnJsonld from 'file-loader!../../../files/DQP.jsonld';
-import asnRdfJson from 'file-loader!../../../files/D2695955';
-import medbiquitous from 'file-loader!../../../files/educational_achievement_sample_1June2012.xml';
+
+import ctdlAsnCsvExample from '../../../files/Example of a Mininum Data Competency Framework Upload - HIST 101, SURVEY OF AMERICAN HISTORY I.csv';
+import ctdlAsnCsvTemplate from '../../../files/Template of a Mininum Data Competency Framework.csv';
+import ctdlAsnCsvBenchmarkExample from '../../../files/Example of a Benchmark Competency Framework - DOLWorkCharacteristicsDownloadfromCaSSAug25_2021.csv';
+import ctdlAsnCsvBenchmarkTemplate from '../../../files/Template of a Benchmark Competency Framework.csv';
+import csvExampleCompetencies from '../../../files/CAP Software Engineering - Competencies.csv';
+import csvExampleRelations from '../../../files/CAP Software Engineering - Relations.csv';
+import csvTemplateCompetencies from '../../../files/Template - Competencies.csv';
+import csvTemplateRelations from '../../../files/Template - Relations.csv';
+import csvConceptExample from '../../../files/Concept Scheme Example.csv';
+import csvConceptTemplate from '../../../files/Concept Scheme Template.csv';
+import ctdlAsnJsonldConcepts from '../../../files/ConnectingCredentialsLevels.jsonld';
+import ctdlAsnJsonld from '../../../files/DQP.jsonld';
+import asnRdfJson from '../../../files/D2695955';
+import medbiquitous from '../../../files/educational_achievement_sample_1June2012.xml';
 
 export default {
     name: 'SupportedImportDetails',

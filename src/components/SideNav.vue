@@ -483,7 +483,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
 import casslogo from '@/assets/cass-logo-white.svg';
 import casslogoSquare from '@/assets/cass-logo-square.png';
 import {cassUtil} from './../mixins/cassUtil';
@@ -599,11 +599,11 @@ export default {
             dir["schema:dateModified"] = new Date().toISOString();
             // To do: Add other owners and readers
             dir.save(function(success) {
-                appLog("Directory saved: " + dir.id);
+                console.log("Directory saved: " + dir.id);
                 me.directoryName = '';
                 me.$store.dispatch('app/refreshDirectories');
                 me.selectDirectory(dir);
-            }, appError, window.repo);
+            }, console.error, window.repo);
         },
         shareAssertions: function() {
             this.$store.commit('app/showModal', {component: 'ShareAssertions'});
@@ -618,15 +618,19 @@ export default {
         }
     },
     computed: {
-        ...mapState({
-            crosswalkEnabled: state => state.featuresEnabled.crosswalkEnabled,
-            userManagementEnabled: state => state.featuresEnabled.userManagementEnabled,
-            configurationsEnabled: state => state.featuresEnabled.configurationsEnabled,
-            pluginsEnabled: state => state.featuresEnabled.pluginsEnabled,
-            loginEnabled: state => state.featuresEnabled.loginEnabled,
-            queryParams: state => state.editor.queryParams,
-            pluginLastUpdate: state => state.app.pluginLastUpdate,
-            directoryList: state => state.app.directories.directoryList
+        ...mapState("featuresEnabled",{
+            crosswalkEnabled: state => state.crosswalkEnabled,
+            userManagementEnabled: state => state.userManagementEnabled,
+            configurationsEnabled: state => state.configurationsEnabled,
+            pluginsEnabled: state => state.pluginsEnabled,
+            loginEnabled: state => state.loginEnabled,
+        }),
+        ...mapState("editor",{
+            queryParams: state => state.queryParams
+        }),
+        ...mapState("app",{
+            pluginLastUpdate: state => state.pluginLastUpdate,
+            directoryList: state => state.directories.directoryList
         }),
         hideLogoutButton: function() {
             let loginInfo = this.$store.getters['user/repositorySsoOptions'];
@@ -701,8 +705,8 @@ export default {
 };
 </script>
 <style lang="scss">
- @import '../scss/variables.scss';
- @import '../scss/side-nav.scss';
+@use '../scss/variables.scss' as *;
+@use '../scss/side-nav.scss' as *;
 
 .cass--main-nav--list-item a {
     text-overflow: ellipsis;

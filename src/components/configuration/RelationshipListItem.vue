@@ -77,7 +77,7 @@ export default {
             // let retVal = false;
             // if (evt.srcElement.value.equals('true')) retVal = true;
             let retVal = evt.target.checked;
-            appLog("evt", evt);
+            console.log("evt", evt);
             this.$emit('change', this.relationship, 'enabled', retVal);
         }
     },

@@ -77,7 +77,7 @@
 import ModalTemplate from './ModalTemplate.vue';
 import Search from '@/components/framework/Search.vue';
 import common from '@/mixins/common.js';
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
 
 export default {
     name: 'SearchModal',
@@ -221,7 +221,7 @@ export default {
                                 me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             }, function(error) {
-                                appError(error);
+                                console.error(error);
                                 me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             });
@@ -253,7 +253,7 @@ export default {
                                 me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             }, function(error) {
-                                appError(error);
+                                console.error(error);
                                 me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             });
@@ -311,7 +311,7 @@ export default {
                                         callback();
                                     },
                                     function(error) {
-                                        appError(error);
+                                        console.error(error);
                                         me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     });
@@ -369,7 +369,7 @@ export default {
                                         callback();
                                     },
                                     function(error) {
-                                        appError(error);
+                                        console.error(error);
                                         me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     });
@@ -394,7 +394,7 @@ export default {
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
-                this.repo.saveTo(framework, function() {}, appError);
+                this.repo.saveTo(framework, function() {}, console.error);
                 this.closeModal();
             }
         },
@@ -431,7 +431,7 @@ export default {
                     initialLevelCompetency.push({id: thingId, competency: thing.competency.splice()});
                     thing.competency.push(selectedCompetency.shortId());
                     afterLevelCompetency.push({id: thingId, competency: thing.competency});
-                    this.repo.saveTo(thing, function() {}, appError);
+                    this.repo.saveTo(thing, function() {}, console.error);
                 }
             }
             for (var i = 0; i < results.length; i++) {
@@ -482,7 +482,7 @@ export default {
                             if (this.$store.state.editor.private === true) {
                                 r = await EcEncryptedValue.toEncryptedValue(r);
                             }
-                            this.repo.saveTo(r, function() {}, appError);
+                            this.repo.saveTo(r, function() {}, console.error);
                         }
                     }
                 }
@@ -504,7 +504,7 @@ export default {
             this.repo.saveTo(framework, async function() {
                 me.$store.commit('editor/framework', await EcFramework.get(framework.id));
                 me.closeModal();
-            }, appError);
+            }, console.error);
         }
     }
 };

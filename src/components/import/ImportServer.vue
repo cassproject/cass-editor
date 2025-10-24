@@ -328,7 +328,7 @@
 </template>
 
 <script>
-import ImportTabs from '@/components/import/ImportTabs';
+import ImportTabs from '@/components/import/ImportTabs.vue';
 import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
 import SearchBar from '../framework/SearchBar.vue';
@@ -409,7 +409,7 @@ export default {
             return true;
         },
         connectToServer: function() {
-            appLog("connecting to server 1");
+            console.log("connecting to server 1");
             this.$store.commit('app/clearImportErrors');
             let error = {
                 message: "Unable to import from the URL Endpoint provided.",
@@ -462,7 +462,7 @@ export default {
                 me.cassDirectories.splice(0, me.cassDirectories.length);
                 me.cassSearchSuccess(success, "directory");
             }, function(error) {
-                appLog(error);
+                console.log(error);
                 me.cassDirectories.splice(0, me.cassDirectories.length);
             }, paramObj);
             if (!this.conceptMode) {
@@ -471,7 +471,7 @@ export default {
                     me.cassSearchSuccess(success, "framework");
                 }, function(error) {
                     me.cassFrameworks.splice(0, me.cassFrameworks.length);
-                    appLog(error);
+                    console.log(error);
                     me.cassSearchError();
                 }, paramObj);
             } else {
@@ -480,7 +480,7 @@ export default {
                     me.cassSearchSuccess(success, "taxonomy");
                 }, function(error) {
                     me.cassTaxonomies.splice(0, me.cassTaxonomies.length);
-                    appLog(error);
+                    console.log(error);
                     me.cassSearchError();
                 }, paramObj);
             }
@@ -697,7 +697,7 @@ export default {
                     }, done);
                 }, callback);
             }, function(error) {
-                appError(error);
+                console.error(error);
             });
         },
         async continueCassTaxonomyImport(dataArray) {
@@ -949,7 +949,7 @@ export default {
                     var me = this;
                     var id = this.caseDocs[firstIndex].id;
                     me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
-                        appLog(frameworks);
+                        console.log(frameworks);
                         if (frameworks.length > 0) {
                             me.$store.commit('app/importStatus', 'framework found...');
                             me.showModal('duplicateOverwriteOnly', [[me.caseDocs[firstIndex], firstIndex], frameworks[0]]);
@@ -977,7 +977,7 @@ export default {
             EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.importServerUrl + "&dId=" + uuid, formData, null, function(success) {
                 me.caseDocs[firstIndex].loading = false;
                 me.caseDocs[firstIndex].success = true;
-                appLog(id);
+                console.log(id);
                 EcFramework.get(id, function(f) {
                     // me.$store.commit('app/importFramework', f);
                     // Preserve the framework so we can set it as importFramework when they're all done
@@ -985,7 +985,7 @@ export default {
                     me.spitEvent("importFinished", f.shortId(), "importPage");
                     me.importCase();
                 }, function(error) {
-                    appError(error);
+                    console.error(error);
                     me.importCase();
                 });
             }, function(failure) {
@@ -1016,7 +1016,7 @@ export default {
                 EcRepository.get(this.directoryThatsOpen.parentDirectory, function(success) {
                     me.openDirectory(success);
                 }, function(error) {
-                    appError(error);
+                    console.error(error);
                     me.directoryThatsOpen = null;
                     me.cassSearchEndpoint();
                 });
@@ -1035,7 +1035,7 @@ export default {
                         me.directoryTrail.unshift(parent);
                         me.findDirectoryTrail(parent);
                     }
-                }, appError);
+                }, console.error);
             }
         }
     },

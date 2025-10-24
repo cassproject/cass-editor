@@ -1,6 +1,4 @@
-global.jsonld = require('jsonld');
-
-
+import jsonld from 'jsonld';
 const state = {
     schemata: {},
     isSavingProperty: false,
@@ -210,14 +208,6 @@ jsonld.documentLoader = async function(url) {
             documentUrl: url // this is the actual context URL after redirects
         };
     } else {
-        var context;
-        var xmlhttp = new XMLHttpRequest();
-        xmlhttp.onreadystatechange = function() {
-            if (this.readyState === 4 && this.status === 200) {
-                context = JSON.parse(this.responseText);
-                state.rawSchemata[originalUrl] = context;
-            }
-        };
         let originalUrl = url;
         let index = url.indexOf('schema.cassproject.org');
         let ending = "";
@@ -228,9 +218,13 @@ jsonld.documentLoader = async function(url) {
             url = url.substring(index);
             url = window.location.origin + window.location.pathname + url + ending;
         }
-        xmlhttp.open("GET", url, false);
-        xmlhttp.setRequestHeader("Accept", "application/json");
-        xmlhttp.send();
+        console.trace(url);
+        await fetch(url, {method: 'GET', headers: {'Accept': 'application/json'}}).then(response => {
+            return response.text();
+        }).then(data => {
+            context = JSON.parse(data);
+            state.rawSchemata[originalUrl] = context;
+        });
         return {
             contextUrl: null, // this is for a context via a link header
             document: context, // this is the actual document that was loaded
@@ -239,10 +233,10 @@ jsonld.documentLoader = async function(url) {
     }
 };
 
-export default {
-    namespaced: true,
+import { defineStore } from 'pinia';
+export default defineStore('lode', { 
     state,
-    getters,
+    mutations,
     actions,
-    mutations
-};
+    getters
+});

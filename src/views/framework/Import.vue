@@ -981,7 +981,7 @@
 </template>
 
 <script>
-import RightAside from '@/components/framework/RightAside';
+import RightAside from '@/components/framework/RightAside.vue';
 import MainLayout from './../../layouts/MainLayout.vue';
 import ImportFile from '@/components/import/ImportFile.vue';
 import ImportServer from '@/components/import/ImportServer.vue';
