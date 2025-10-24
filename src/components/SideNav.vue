@@ -510,7 +510,6 @@
 
 <script>
 import {mapState} from 'pinia';
-import store from '@/stores/index.js';
 import casslogo from '@/assets/cass-logo-white.svg';
 import casslogoSquare from '@/assets/cass-logo-square.png';
 import {cassUtil} from './../mixins/cassUtil';
@@ -641,31 +640,20 @@ export default {
         }
     },
     computed: {
-        store: function() {
-            return store;
-        },
-        ...mapState(store.featuresEnabled,{
+        ...mapState("featuresEnabled",{
             crosswalkEnabled: state => state.crosswalkEnabled,
             userManagementEnabled: state => state.userManagementEnabled,
             configurationsEnabled: state => state.configurationsEnabled,
             pluginsEnabled: state => state.pluginsEnabled,
             loginEnabled: state => state.loginEnabled,
         }),
-        ...mapState(store.editor,{
-            queryParams: state => state.queryParams,
-            conceptMode: state => state.conceptMode,
-            progressionMode: state => state.progressionMode
+        ...mapState("editor",{
+            queryParams: state => state.queryParams
         }),
-        ...mapState(store.app,{
+        ...mapState("app",{
             pluginLastUpdate: state => state.pluginLastUpdate,
             directoryList: state => state.directories.directoryList
         }),
-        ...mapState(store.user,{
-            loggedOnPerson: state => state.loggedOnPerson,
-            repositorySsoOptions: state => state.repositorySsoOptions,
-            lastLogin: state => state.lastLogin
-        }),
-        availableIdentities: ()=>window.EcIdentityManager.default.ids,
         hideLogoutButton: function() {
             let loginInfo = this.repositorySsoOptions;
             if (loginInfo) {

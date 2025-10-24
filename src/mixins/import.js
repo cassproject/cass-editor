@@ -947,8 +947,10 @@ export default {
                             }
                         }
                     }
-                }, function(failure) {
-                    me.handleImportErrors(failure);
+                }, function (failure) {
+                    me.$store.commit('app/importStatus', failure);
+                    me.$store.commit('app/importTransition', 'process');
+                    me.$store.commit('app/addImportError', failure);
                 });
             }, function(failure) {
                 me.handleImportErrors(failure);

@@ -16,6 +16,9 @@ import {createPinia} from 'pinia';
 import moment from 'moment';
 global.moment = moment;
 
+import moment from 'moment';
+global.moment = moment;
+
 const {fetch: originalFetch} = global;
 
 let PENDING_REQUESTS = 0;
