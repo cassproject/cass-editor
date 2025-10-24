@@ -359,13 +359,13 @@ export default {
             var me = this;
             if (this.container == null) return null;
             if (!this.once) return this.structure;
-            appLog("Computing hierarchy.");
+            console.log("Computing hierarchy.");
             var precache = [];
             if (this.container["skos:hasTopConcept"] != null) { precache = precache.concat(this.container["skos:hasTopConcept"]); }
             if (precache.length > 0) {
                 this.repo.multiget(precache, function(success) {
                     me.computeHierarchy(false);
-                }, appError);
+                }, console.error);
             } else {
                 me.computeHierarchy(false);
             }
@@ -607,7 +607,7 @@ export default {
         addChildren: async function(structure, c, parentIndex, deletePrecedence) {
             return new Promise(async(resolve) => {
                 if (!structure[parentIndex]) {
-                    appError(`Structure at index ${parentIndex} is undefined`);
+                    console.error(`Structure at index ${parentIndex} is undefined`);
                     resolve();
                     return;
                 }
@@ -624,7 +624,7 @@ export default {
                 for (var j = 0; j < c["skos:narrower"].length; j++) {
                     var subC = await EcConcept.get(c["skos:narrower"][j]);
                     if (!subC) {
-                        appLog(`Could not find child concept: ${c["skos:narrower"][j]}`);
+                        console.log(`Could not find child concept: ${c["skos:narrower"][j]}`);
                         continue;
                     }
                     
@@ -770,7 +770,7 @@ export default {
                 let parentStructure = await this.findSubStructure(structure, node1);
                 if (!parentStructure) {
                     // This condition should never be reached.
-                    appLog('Error: No parent structure found');
+                    console.log('Error: No parent structure found');
                     return false;
                 }
                 let node1Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(node1.id));
@@ -801,14 +801,14 @@ export default {
                     let parentStructure = await this.findSubStructure(structure, node2);
                     if (!parentStructure) {
                         // This condition should never be reached.
-                        appLog('Error: No parent structure found');
+                        console.log('Error: No parent structure found');
                         return false;
                     }
                     let node1Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(sibling.id));
                     let node2Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(node2.id));
                     if ((node1Index < 0) || (node1Index >= parentStructure.length) ||
                         (node2Index < 0) || (node2Index >= parentStructure.length)) {
-                        appLog('Node index not found');
+                        console.log('Node index not found');
                         return false;
                     }
                     node2 = ({"obj": parentStructure[node2Index].obj, "children": parentStructure[node2Index].children});
@@ -838,7 +838,7 @@ export default {
                         return (this.setProrgressionOrder(structure, nodeParent, node2, property));
                     } else {
                         // This condition should never be reached.
-                        appLog('Error: No common ancestry found');
+                        console.log('Error: No common ancestry found');
                         return false;
                     }
                 }
@@ -915,7 +915,7 @@ export default {
                 this.dragging = false;
                 return;
             }
-            appLog(foo.oldIndex, foo.newIndex);
+            console.log(foo.oldIndex, foo.newIndex);
             var toId = null;
             var toLast = false;
             if (this.shiftKey) {
@@ -1230,7 +1230,7 @@ export default {
             return new Promise(async(resolve) => {
                 this.repo.saveTo(obj, function() {
                     resolve();
-                }, appError);
+                }, console.error);
             });
         },
         move: async function(fromId, toId, fromContainerId, toContainerId, removeOldRelations, toLast) {
@@ -1238,7 +1238,7 @@ export default {
             var me = this;
             
             // Debug logging to track the move operation
-            appLog("Moving progression level", {
+            console.log("Moving progression level", {
                 fromId: fromId,
                 toId: toId,
                 fromContainerId: fromContainerId,
@@ -1250,7 +1250,7 @@ export default {
             // Get the concept being moved
             var movingConcept = await EcConcept.get(fromId);
             if (!movingConcept) {
-                appError("Cannot find progression level to move: " + fromId);
+                console.error("Cannot find progression level to move: " + fromId);
                 return;
             }
             
@@ -1336,7 +1336,7 @@ export default {
                 // If it's already a top concept, don't add it again
                 if (toContainer[toProperty] && toContainer[toProperty].includes(fromId)) {
                     // Concept is already at root level, no need to add again
-                    appLog("Progression level is already a top concept, not adding again");
+                    console.log("Progression level is already a top concept, not adding again");
                 } else {
                     // Add to concept scheme
                     if (!toContainer[toProperty]) {
@@ -1425,14 +1425,14 @@ export default {
             // Save all objects
             try {
                 await me.repo.multiput(objectsToSave, function() {
-                    appLog("Move complete", {
+                    console.log("Move complete", {
                         concept: movingConcept.shortId(),
                         objectsSaved: objectsToSave.map(o => o.shortId())
                     });
                     me.computeHierarchy(false);
-                }, appError);
+                }, console.error);
             } catch (e) {
-                appError("Error saving changes:", e);
+                console.error("Error saving changes:", e);
             }
             
             this.dragging = false;
@@ -1496,7 +1496,7 @@ export default {
                     await this.repo.multiput([c, me.container]);
                     me.once = true;
                 } catch (e) {
-                    appError(e);
+                    console.error(e);
                 }
             } else {
                 c["skos:broader"] = [containerId];
@@ -1532,11 +1532,11 @@ export default {
                     await this.repo.multiput([c, parent, me.container]);
                     me.once = true;
                 } catch (e) {
-                    appError(e);
+                    console.error(e);
                 }
             }
             this.$store.commit("editor/newCompetency", c.shortId());
-            appLog("Added node: ", JSON.parse(c.toJson()));
+            console.log("Added node: ", JSON.parse(c.toJson()));
         },
         select: function(objId, checked) {
             if (checked) {
@@ -1567,7 +1567,7 @@ export default {
             try {
                 await this.add(parent, null);
             } catch (e) {
-                appError(e);
+                console.error(e);
             }
             this.loading = false;
 
@@ -1579,7 +1579,7 @@ export default {
             this.selectedArray.splice(0, this.selectedArray.length);
         },
         deleteLevel: function(thing) {
-            appLog("deleting " + thing.id);
+            console.log("deleting " + thing.id);
             this.deleteLevelInner(thing);
             this.framework["schema:dateModified"] = new Date().toISOString();
             this.$store.commit('editor/selectedCompetency', null);
@@ -1601,7 +1601,7 @@ export default {
                         await repo.saveTo(level);
                         me.$store.commit('editor/framework', me.framework);
                     } catch (e) {
-                        appError(e);
+                        console.error(e);
                     }
                 }
             }
@@ -1611,7 +1611,7 @@ export default {
                         let level = await EcConcept.get(c["skos:narrower"][i]);
                         me.deleteLevelInner(level);
                     } catch (e) {
-                        appError(e);
+                        console.error(e);
                     }
                 }
             }
@@ -1628,7 +1628,7 @@ export default {
                     await repo.saveTo(framework);
                     me.$store.commit('editor/framework', me.framework);
                 } catch (e) {
-                    appError(e);
+                    console.error(e);
                 }
             }
             this.spitEvent("levelDeleted", c.shortId(), "editFrameworkPage");
@@ -1637,7 +1637,7 @@ export default {
                 me.$store.commit('editor/framework', me.framework);
                 me.$store.commit('editor/addEditsToUndo', JSON.parse(JSON.stringify(editsToUndo)));
                 editsToUndo.splice(0, editsToUndo.length);
-            }, appError);
+            }, console.error);
         }
     }
 };

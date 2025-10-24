@@ -219,7 +219,7 @@ export default {
         },
         quickFilters: {
             handler() {
-                appLog('watched');
+                console.log('watched');
                 this.$store.commit('app/quickFilters', this.quickFilters);
             },
             deep: true

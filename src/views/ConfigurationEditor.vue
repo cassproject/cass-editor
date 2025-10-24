@@ -164,14 +164,14 @@ export default {
     },
     methods: {
         handleDeleteConfigurationSuccess() {
-            appLog("Config delete success");
+            console.log("Config delete success");
             this.configToDelete = {};
             this.buildConfigList();
             this.configBusy = false;
             this.showListView();
         },
         handleDeleteConfigurationFailure(msg) {
-            appError("failed to delete configuration: " + msg);
+            console.error("failed to delete configuration: " + msg);
             this.configToDelete = {};
             this.configBusy = false;
         },
@@ -251,7 +251,7 @@ export default {
             this.complexConfigObject = cco;
         },
         saveCurrentConfig(enforcedLevels, defaultOwners, defaultReaders, defaultCommenters) {
-            appLog("saveCurrentConfig: ");
+            console.log("saveCurrentConfig: ");
             if (enforcedLevels && enforcedLevels.length > 0) {
                 this.currentConfig.enforceLevelValues = true;
                 this.currentConfig.enforcedLevelValues = enforcedLevels;
@@ -260,19 +260,19 @@ export default {
             this.currentConfig.defaultReaders = defaultReaders;
             this.currentConfig.defaultCommenters = defaultCommenters;
             this.generateComplexConfigObjectFromCurrentConfig();
-            appLog("complexConfigObject: ");
-            appLog(JSON.stringify(this.complexConfigObject));
+            console.log("complexConfigObject: ");
+            console.log(JSON.stringify(this.complexConfigObject));
             this.configBusy = true;
             window.repo.saveTo(this.complexConfigObject, this.saveConfigToRepositorySuccess, this.saveConfigToRepositoryFailure);
         },
         saveConfigToRepositorySuccess(msg) {
-            appLog("Config save success");
+            console.log("Config save success");
             this.buildConfigList();
             this.configBusy = false;
             this.showListView();
         },
         saveConfigToRepositoryFailure(msg) {
-            appLog("Config save failure: " + msg);
+            console.log("Config save failure: " + msg);
             this.configBusy = false;
             this.showListView();
         },

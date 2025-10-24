@@ -430,7 +430,7 @@ export default {
                     success();
                 });
             }, function(error) {
-                appError(error);
+                console.error(error);
                 done();
             });
         },
@@ -446,7 +446,7 @@ export default {
                 }, function(all) {
                     done();
                 }, function(error) {
-                    appError(error);
+                    console.error(error);
                     done();
                 });
             }, function() {
@@ -520,7 +520,7 @@ export default {
                                 if (termAdded && success.length > 0) {
                                     search += " OR ";
                                 }
-                                appLog(success);
+                                console.log(success);
                                 for (var i = 0; i < success.length; i++) {
                                     search += "\\*owner:\"" + me.getPersonEcPk(success[i]).toPem() + "\"";
                                     if (i < success.length - 1) {
@@ -528,7 +528,7 @@ export default {
                                     }
                                 }
                                 EcOrganization.search(window.repo, 'name:' + me.searchTerm, async function(success) {
-                                    appLog(success);
+                                    console.log(success);
                                     for (var i = 0; i < success.length; i++) {
                                         search += "\\*owner:\"" + (await me.getOrganizationEcPk(success[i])).toPem() + "\"";
                                         termAdded = true;
@@ -543,11 +543,11 @@ export default {
                                     }
                                     callback(search);
                                 }, function(failure) {
-                                    appError(failure);
+                                    console.error(failure);
                                     callback(null);
                                 }, paramObj);
                             }, function(failure) {
-                                appError(failure);
+                                console.error(failure);
                                 callback(null);
                             }, paramObj);
                         }
@@ -617,7 +617,7 @@ export default {
                                         } else if ($state) {
                                             $state.complete();
                                         }
-                                    }, appError);
+                                    }, console.error);
                                 } else {
                                     me.start += me.paramObj.size;
                                     if (results.length < 10) {
@@ -640,7 +640,7 @@ export default {
                             }
                         }
                     }, function(err) {
-                        appError(err);
+                        console.error(err);
                         me.firstSearchProcessing = false;
                     });
                 } else {

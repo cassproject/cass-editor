@@ -109,10 +109,10 @@ export const pluginUtil = {
             else manifestUrl = pluginUrl + "/manifest.json";
             this.mdPluginCurrentUrl = pluginUrl;
             this.$http.get(manifestUrl).then(
-                function(response) {
+                function (response) {
                     this.getManifestDataForPluginSuccess(response.data);
                 },
-                function(error) {
+                function (error) {
                     this.getManifestDataForPluginFailure(error);
                 }
             );
@@ -219,7 +219,7 @@ export const pluginUtil = {
             this.buildPluginListSuccessCallback();
         },
         getPluginsFromRepoFailure() {
-            appLog("Plugin search failure: " + msg);
+            console.log("Plugin search failure: " + msg);
             this.buildPluginListSuccessCallback();
         },
         buildPluginListItemFromRepoPlugin(repoPlug) {

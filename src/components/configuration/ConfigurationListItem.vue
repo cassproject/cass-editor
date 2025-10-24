@@ -117,7 +117,7 @@ export default {
                 }
             },
             set(val) {
-                appLog("val", val);
+                console.log("val", val);
                 if (val) {
                     this.$emit('set-browser-default', this.id);
                 } else {

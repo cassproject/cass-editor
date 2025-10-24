@@ -269,7 +269,7 @@ export default {
             try {
                 await this.evidenceAssertion();
             } catch (e) {
-                appError(e);
+                console.error(e);
             } finally {
                 this.$nextTick(() => {
                     this.loading = false;
@@ -281,7 +281,7 @@ export default {
             try {
                 await this.unevidenceAssertion(url);
             } catch (e) {
-                appError(e);
+                console.error(e);
             } finally {
                 this.$nextTick(() => {
                     this.loading = false;
@@ -297,7 +297,7 @@ export default {
                     await this.generateBadge();
                 }
             } catch (e) {
-                appError(e);
+                console.error(e);
             } finally {
                 this.$nextTick(() => {
                     this.loading = false;
@@ -320,7 +320,7 @@ export default {
                     await this.generateCanAssertion();
                 }
             } catch (e) {
-                appError(e);
+                console.error(e);
             } finally {
                 this.$nextTick(() => {
                     this.loading = false;
@@ -344,7 +344,7 @@ export default {
                     await this.generateCannotAssertion();
                 }
             } catch (e) {
-                appError(e);
+                console.error(e);
             } finally {
                 this.$nextTick(() => {
                     this.loading = false;

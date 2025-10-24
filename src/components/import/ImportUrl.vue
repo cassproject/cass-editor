@@ -201,7 +201,7 @@ export default {
             try {
                 await this.importFromUrl();
             } catch (e) {
-                appError(e);
+                console.error(e);
             }
             this.processing = false;
         }

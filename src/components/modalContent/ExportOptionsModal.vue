@@ -268,7 +268,7 @@ export default {
                 let success = await this.get(link, null, {"Accept": "text/n4"});
                 await this.download(fileName + ".n4", success);
             } catch (e) {
-                appLog(e);
+                console.log(e);
             }
         },
         exportRdfXml: async function(link) {
@@ -284,7 +284,7 @@ export default {
                 let success = await this.get(link, null, {"Accept": "application/rdf+xml"});
                 await this.download(fileName + ".rdf.xml", success);
             } catch (e) {
-                appLog(e);
+                console.log(e);
             }
         },
         exportTurtle: async function(link) {
@@ -300,7 +300,7 @@ export default {
                 let success = await this.get(link, null, {"Accept": "text/turtle"});
                 await this.download(fileName + ".turtle", success);
             } catch (e) {
-                appLog(e);
+                console.log(e);
             }
         },
         exportCtdlasnJsonld: function(link) {
@@ -315,11 +315,11 @@ export default {
                 let success = await EcRemote.getExpectingString(link.replace("/data/", "/ceasn/"), null);
                 CSVExport.exportCTDLASN(success, me.obj.getName());
             } catch (e) {
-                appLog(e);
+                console.log(e);
             }
         },
         exportCsv: function() {
-            CSVExport.exportFramework(this.obj.id, appLog, appLog);
+            CSVExport.exportFramework(this.obj.id, console.log, console.log);
         },
         exportCasePackages: function(guid) {
             window.open(this.repo.selectedServer + "ims/case/v1p0/CFPackages/" + guid, '_blank');

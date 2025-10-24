@@ -374,7 +374,7 @@ export default {
                             if (termAdded && success.length > 0) {
                                 search += " OR ";
                             }
-                            appLog(success);
+                            console.log(success);
                             for (var i = 0; i < success.length; i++) {
                                 search += "\\*owner:\"" + me.getPersonEcPk(success[i]).toPem() + "\"";
                                 if (i < success.length - 1) {
@@ -382,7 +382,7 @@ export default {
                                 }
                             }
                             EcOrganization.search(window.repo, 'name:' + me.searchTerm + '*', async function(success) {
-                                appLog(success);
+                                console.log(success);
                                 for (var i = 0; i < success.length; i++) {
                                     search += "\\*owner:\"" + (await me.getOrganizationEcPk(success[i])).toPem() + "\"";
                                     termAdded = true;
@@ -396,11 +396,11 @@ export default {
                                 }
                                 callback(search);
                             }, function(failure) {
-                                appError(failure);
+                                console.error(failure);
                                 callback(null);
                             }, paramObj);
                         }, function(failure) {
-                            appError(failure);
+                            console.error(failure);
                             callback(null);
                         }, paramObj);
                     } else if (type === "Framework") {
@@ -478,7 +478,7 @@ export default {
                         $state.complete();
                     }
                 }, function(err) {
-                    appError(err);
+                    console.error(err);
                     me.$store.commit('editor/setFirstSearchProcessing', false);
                     if ($state) {
                         $state.complete();
@@ -551,7 +551,7 @@ export default {
                             }
                         }
                     }, function(err) {
-                        appError(err);
+                        console.error(err);
                         me.$store.commit('editor/setFirstSearchProcessing', false);
                     });
                 });
@@ -647,7 +647,7 @@ export default {
                             $state.complete();
                         }
                     }, function(err) {
-                        appError(err);
+                        console.error(err);
                         $state.complete();
                     });
                 });
@@ -693,7 +693,7 @@ export default {
                     }
                     me.subStart += me.paramObj.size;
                 }, function(err) {
-                    appError(err);
+                    console.error(err);
                     if ($state) {
                         $state.complete();
                     }

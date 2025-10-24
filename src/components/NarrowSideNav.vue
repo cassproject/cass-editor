@@ -172,7 +172,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
 import {cassUtil} from './../mixins/cassUtil';
 export default {
     name: 'NarrowSideNav',

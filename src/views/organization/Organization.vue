@@ -12,7 +12,7 @@
         <span
             class="info-tag"
             v-if="organization['schema:dateCreated']"
-            :title="new Date(organization['schema:dateCreated'])">Created {{ $moment(organization['schema:dateCreated']).fromNow() }}</span>
+            :title="new Date(organization['schema:dateCreated'])">Created {{ moment(organization['schema:dateCreated']).fromNow() }}</span>
         <span
             class="info-tag"
             v-if="organization['Approved']"
@@ -53,7 +53,7 @@ export default {
         lastModified: function() {
             if (this.organization == null) return "Unknown.";
             if (this.timestamp) {
-                return this.$moment(this.timestamp).fromNow();
+                return moment(this.timestamp).fromNow();
             } else {
                 return null;
             }

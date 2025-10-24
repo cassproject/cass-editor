@@ -331,7 +331,7 @@
     </div>
 </template>
 <script>
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
 import Property from './Property.vue';
 import AddProperty from './AddProperty.vue';
 import Search from '@/components/framework/Search.vue';
@@ -963,7 +963,7 @@ export default {
             this.$store.commit('lode/setAddingValues', []);
         },
         handleMove: function(e) {
-            appLog(e);
+            console.log(e);
             let move = e.target.value;
             if (move === 'movedown') {
                 this.moveDown();
@@ -974,7 +974,7 @@ export default {
             } else if (move === 'moveup') {
                 this.moveUp();
             } else {
-                appLog("error: move not allowed");
+                console.log("error: move not allowed");
             }
             this.selectedMove = '';
         },
@@ -983,7 +983,7 @@ export default {
          * have values for this competency
          */
         showEnteredProperties: function() {
-            appLog("showing entered properties");
+            console.log("showing entered properties");
             this.showAlways = false;
             this.showPossible = null;
         },
@@ -996,7 +996,7 @@ export default {
             this.showPossible = true;
         },
         emitExpandEvent: function(e) {
-            appLog("expand", e.target);
+            console.log("expand", e.target);
             this.$emit('expand-event');
         },
         handleMouseOverThing: function() {
@@ -1166,7 +1166,7 @@ export default {
                 me.expandedThing = me.reactify(expanded[0]);
                 me.populateRequiredFields();
             } catch (err) {
-                appError(err);
+                console.error(err);
             }
         },
         // Loads the schema (not the context!) for this object, if available and if it is where it should be (at the url of the fully qualified @type).
@@ -1227,7 +1227,7 @@ export default {
                                 let expanded = await jsonld.expand(JSON.parse(values[i].toJson()));
                                 newProperties.push(me.reactify(expanded[0]));
                             } catch (err) {
-                                appError(err);
+                                console.error(err);
                             }
                         } else {
                             newProperties.push(value);
@@ -1275,8 +1275,8 @@ export default {
                 await this.saveThing();
                 this.refreshProperties = true;
             } else {
-                appLog('Unable to find property to remove');
-                appLog(value);
+                console.log('Unable to find property to remove');
+                console.log(value);
             }
         },
         // Changes a piece of data. Invoked by child components, in order to change a piece of data to something else (for reactivity reasons).
@@ -1351,12 +1351,12 @@ export default {
                             me.spitEvent('viewChanged');
                         }
                     } catch (ex) {
-                        appError(ex);
+                        console.error(ex);
                         me.errorSaving = true;
                     }
                 }
             } catch (err) {
-                appError(err);
+                console.error(err);
             } finally {
                 me.saving = false;
             }
@@ -1485,7 +1485,7 @@ export default {
                 }
                 me.name = name;
             }, function(error) {
-                appLog(error);
+                console.log(error);
             });
         },
         get: function(server, service, headers, success, failure) {
@@ -1681,7 +1681,7 @@ export default {
                 this.isSearching = false;
                 this.showAddPropertyContent = false;
             } catch (e) {
-                appError(e);
+                console.error(e);
             } finally {
                 this.loading = false;
             }
@@ -1710,7 +1710,7 @@ export default {
                         if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
                             resource = await EcEncryptedValue.toEncryptedValue(resource);
                         }
-                        await this.repo.saveTo(resource, function() {}, appError);
+                        await this.repo.saveTo(resource, function() {}, console.error);
                     }
                 }
             }

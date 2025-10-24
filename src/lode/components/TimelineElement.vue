@@ -139,7 +139,7 @@ export default {
             if (this.timestamp === null) {
                 return null;
             }
-            return this.$moment(this.timestamp).fromNow();
+            return moment(this.timestamp).fromNow();
         },
         assertions: function() {
             return this.$store.getters['editor/assertions'];
@@ -299,7 +299,7 @@ export default {
                     assertion.getSubjectAsync((pk) => {
                         this.subjectPk = pk.toPem();
                         this.getSubject();
-                    }, appError);
+                    }, console.error);
                 }
                 if (assertion.agent === null) {
                     this.agent = "nobody";
@@ -311,21 +311,21 @@ export default {
                 assertion.getAgentAsync((pk) => {
                     this.agentPk = pk.toPem();
                     this.getAgent();
-                }, appError);
+                }, console.error);
                 if (assertion.assertionDate != null) {
                     assertion.getAssertionDateAsync((assertionDate) => {
                         this.timestamp = assertionDate;
-                    }, appError);
+                    }, console.error);
                 }
                 if (assertion.expirationDate != null) {
                     assertion.getExpirationDateAsync((expirationDate) => {
                         this.expiry = expirationDate;
-                    }, appError);
+                    }, console.error);
                 }
                 if (assertion.negative != null) {
                     assertion.getNegativeAsync((negative) => {
                         this.negative = negative;
-                    }, appError);
+                    }, console.error);
                 } else {
                     this.negative = false;
                 }
@@ -338,14 +338,14 @@ export default {
                                 }
                                 this.evidence.push(evidence);
                                 this.evidenceExplanation = null;
-                            }, appError);
+                            }, console.error);
                         })(i);
                     }
                 }
                 if (assertion.framework != null) {
                     EcFramework.get(assertion.framework, (framework) => {
                         this.framework = framework;
-                    }, appError);
+                    }, console.error);
                 }
                 EcCompetency.get(assertion.competency, (competency) => {
                     this.competency = competency;
@@ -367,7 +367,7 @@ export default {
                     this.$store.commit('app/setCanAddComments', this.canAddCommentsCurrentFramework());
                     this.$router.push({name: "framework", params: {frameworkId: success[0].id}});
                 }
-            }).catch(appError);
+            }).catch(console.error);
         },
         getAgent: function() {
             this.agentPerson = null;
@@ -436,7 +436,7 @@ export default {
                 EcRepository.get(this.uri, (resource) => {
                     EcRepository._delete(resource, () => {
                         this.$store.commit('editor/removeAssertion', resource);
-                    }, appError);
+                    }, console.error);
                 });
             }
         }

@@ -1,5 +1,5 @@
-@import './variables.scss';
-@import './framework.scss';
+@use 'variables.scss';
+@use 'framework.scss';
 
 textarea {
     resize: vertical !important;
@@ -28,7 +28,7 @@ button {
     }
     .parent-object:not(.lode__thing-editing) {
         position: sticky;
-        background-color: $white;
+        background-color: variables.$white;
         top: 0px;
         z-index: 9;
         width: 100%;
@@ -67,7 +67,7 @@ button {
 
     .lode__Competency:hover {
         .lode__thing-heading .lode__Property {
-            color: $primary !important;
+            color: variables.$primary !important;
         }
         .hierarchy-item__buttons {
             visibility: visible;
@@ -90,7 +90,7 @@ button {
         top: 0;
         right: 0;
         bottom: 0;
-        background-color: $light;
+        background-color: variables.$light;
         position: absolute;
  
     }
@@ -118,7 +118,7 @@ ul.processing-list {
     flex-wrap: wrap;
     flex-direction: column;
     .busy-hierarchy__list-item {
-        background-color: $light;
+        background-color: variables.$light;
         //animation: pulse 2s infinite;
         width: 100%;
         height: 48px;
@@ -129,26 +129,26 @@ ul.processing-list {
     ul li {
         height: 24px;
         margin: 8px 8px 8px 24px;
-        background-color: $light;
+        background-color: variables.$light;
         //animation: pulse 4s infinite;
     }
 }
 
 @keyframes pulse {
     0% {
-        background-color: rgba($dark, .5);
+        background-color: rgba(variables.$dark, .5);
     }
     100% {
-        background-color: rgba($dark, .3);
+        background-color: rgba(variables.$dark, .3);
     }
 }
 
 @keyframes pulse {
     0% {
-      background-color: $light;
+      background-color: variables.$light;
     }
     100% {
-      background-color: rgba($light, .5);
+      background-color: rgba(variables.$light, .5);
     }
   }
 
@@ -167,7 +167,7 @@ ul.processing-list {
             width:100%;
             height: 100%;
             display:block;
-            border: 2px dashed $white;
+            border: 2px dashed variables.$white;
             border-radius:1rem;
             padding:100px;
             margin: auto;
@@ -184,7 +184,7 @@ ul.processing-list {
             }
         }
         #drop-area:hover {
-            background-color:rgba($light, 1)
+            background-color:rgba(variables.$light, 1)
         }
         #add-node-section:hover .add-new-node {
             visibility: visible;
@@ -203,9 +203,9 @@ ul.processing-list {
                 margin-left: auto;
                 margin-right: auto;
                 border-width: 1px;
-                background-color: $primary !important;
-                color: $black !important;
-                border: 1px dashed $primary !important;
+                background-color: variables.$primary !important;
+                color: variables.$black !important;
+                border: 1px dashed variables.$primary !important;
             }
         }
         .add-new-node:hover {
@@ -216,7 +216,7 @@ ul.processing-list {
     .import-tab {
         margin-top: -40px;
         height: 120px;
-        color: $dark;
+        color: variables.$dark;
         width: 100%;
         display: flex;
         flex-direction: column;
@@ -227,22 +227,22 @@ ul.processing-list {
         background-color: transparent;
         border:none;
         button { 
-            color: $dark;
+            color: variables.$dark;
             border: none;
             background-color: transparent;
         }
         div {
-            color: $dark;
+            color: variables.$dark;
         }
         
     }
     .is-active-tab{
-        color: $link;
+        color: variables.$link;
         button {
             height: 140px;
             width: 140px;
             border-radius: 100px;
-            color: $secondary;
+            color: variables.$secondary;
             z-index: 2;
             background-color: transparent;
             border: none;
@@ -255,21 +255,21 @@ ul.processing-list {
             transform: translateX(-66px);
             z-index: -2;
             position: absolute;
-            background-color: $light;
+            background-color: variables.$light;
             content: '';
         }
 
         div {
-            color: $secondary;
+            color: variables.$secondary;
             font-weight: 500;
         }
     }
     .import-tab:hover {
         a {
-            color: $primary;
+            color: variables.$primary;
         }
         div {
-            color: $primary;
+            color: variables.$primary;
         }
     }
     .menu-list_list-item {
@@ -311,7 +311,7 @@ ul.processing-list {
             cursor: not-allowed;
         }
         div {
-            color: rgba($dark, .5);
+            color: rgba(variables.$dark, .5);
         }
     }
     .tile {
@@ -320,7 +320,7 @@ ul.processing-list {
     // framework title is a separate component from hierarchy
     .lode__thing.framework-title {
             padding: .5rem .5rem;
-            font-size: $size-6;
+            font-size: variables.$size-6;
             ul {
                 padding: .25rem;
             }
@@ -328,9 +328,9 @@ ul.processing-list {
                 span {
                     padding: 0rem .25rem;
                     width: auto;
-                    font-size: $size-6;
+                    font-size: variables.$size-6;
                     font-weight: 600;
-                    color: rgba($dark, .6);
+                    color: rgba(variables.$dark, .6);
                 }
             }
             .lode-type, .top-actions, .bottom-actions, label {
@@ -414,7 +414,7 @@ ul.processing-list {
         }
     }
     .import-details {
-        border: 2px solid rgba($black, .5);
+        border: 2px solid rgba(variables.$black, .5);
         border-radius: 1rem;
         margin: 0rem 1rem;
     }

@@ -179,7 +179,7 @@ export default {
                 }
                 me.computeParentCompetencies();
             }, function(failure) {
-                appError(failure);
+                console.error(failure);
                 me.frameworks = [];
             }, null);
         },
@@ -199,7 +199,7 @@ export default {
                             }
                         });
                     }, function(failure) {
-                        appError(failure);
+                        console.error(failure);
                     });
                 }
             }
@@ -247,7 +247,7 @@ export default {
                         me.parentConcepts.unshift(parent);
                         me.findDirectoryTrail(parent);
                     }
-                }, appError);
+                }, console.error);
             }
         },
         findFrameworkTrail: function(framework) {
@@ -260,7 +260,7 @@ export default {
                         me.parentConcepts.unshift(parent);
                         me.findDirectoryTrail(parent);
                     }
-                }, appError);
+                }, console.error);
             }
         },
         findFrameworkTrailForCompetency: function(framework) {
@@ -274,7 +274,7 @@ export default {
                             me.findDirectoryTrailForCompetency(parent, framework.id);
                         }
                     }
-                }, appError);
+                }, console.error);
             }
         },
         findDirectoryTrailForCompetency: function(directory, frameworkId) {
@@ -287,7 +287,7 @@ export default {
                             me.findDirectoryTrailForCompetency(parent, frameworkId);
                         }
                     }
-                }, appError);
+                }, console.error);
             }
         },
         getName: function(object) {

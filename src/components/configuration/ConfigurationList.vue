@@ -48,7 +48,7 @@
 import ConfigurationListItem from '@/components/configuration/ConfigurationListItem';
 import {cassUtil} from '@/mixins/cassUtil';
 import {configuration} from '@/mixins/configuration';
-import {mapGetters} from 'vuex';
+import {mapGetters} from 'pinia';
 
 export default {
     name: 'ConfigurationList',

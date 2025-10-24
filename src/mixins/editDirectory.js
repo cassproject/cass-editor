@@ -1,32 +1,32 @@
 export default {
     methods: {
-        deleteObject: async function(obj) {
-            appLog("deleting " + obj.id);
+        deleteObject: async function (obj) {
+            console.log("deleting " + obj.id);
             var me = this;
             let children = await this.$store.dispatch('editor/getDirectoryChildren', obj);
-            window.repo.multiget(children, function(success) {
-                new EcAsyncHelper().each(success, function(obj, done) {
+            window.repo.multiget(children, function (success) {
+                new EcAsyncHelper().each(success, function (obj, done) {
                     if (obj.type === 'Framework') {
                         me.deleteFramework(obj);
                     } else if (obj.type === 'CreativeWork') {
-                        me.repo.deleteRegistered(obj, appLog, appError);
+                        me.repo.deleteRegistered(obj, console.log, console.error);
                     } else if (obj.type === "Directory") {
                         me.deleteObject(obj);
                     }
                     done();
-                }, function(objs) {
-                    me.repo.deleteRegistered(obj, function() {
+                }, function (objs) {
+                    me.repo.deleteRegistered(obj, function () {
                         me.$store.dispatch('app/refreshDirectories');
-                    }, appError);
+                    }, console.error);
                     if (obj.shortId() === me.directory.shortId()) {
-                        me.$router.push({name: "frameworks"});
+                        me.$router.push({ name: "frameworks" });
                     }
                 });
-            }, appError);
+            }, console.error);
         },
-        deleteFramework: function(framework) {
+        deleteFramework: function (framework) {
             let me = this;
-            this.repo.deleteRegistered(framework, function(success) {
+            this.repo.deleteRegistered(framework, function (success) {
                 me.spitEvent("frameworkDeleted", framework.shortId(), "directoryPage");
                 // Delete the framework, delete all non-used stuff.
                 if (framework.competency != null) {
@@ -44,23 +44,23 @@ export default {
                         me.conditionalDelete(framework.level[i]);
                     }
                 }
-            }, appLog);
+            }, console.log);
         },
-        onDoneEditingNode: function() {
+        onDoneEditingNode: function () {
             let me = this;
             if (this.$store.getters['app/rightAsideObject']) {
-                EcRepository.get(this.$store.getters['app/rightAsideObject'].shortId(), function(success) {
+                EcRepository.get(this.$store.getters['app/rightAsideObject'].shortId(), function (success) {
                     me.$store.commit('app/rightAsideObject', success);
-                }, appError);
+                }, console.error);
             }
             this.$store.commit('app/editDirectory', false);
         }
     },
     computed: {
-        editDirectory: function() {
+        editDirectory: function () {
             return this.$store.getters['app/editDirectory'];
         },
-        canEditDirectory: function() {
+        canEditDirectory: function () {
             if (!this.directory) {
                 return false;
             }
@@ -71,41 +71,41 @@ export default {
             }
             return true;
         },
-        directory: function() {
+        directory: function () {
             return this.$store.getters['app/rightAsideObject'];
         },
-        directoryProfile: function() {
+        directoryProfile: function () {
             return {
                 "http://schema.org/name": {
                     "@id": "http://schema.org/name",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "https://schema.cassproject.org/0.4/Directory"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                        [{ "@id": "https://schema.cassproject.org/0.4/Directory" }],
+                    "http://schema.org/rangeIncludes": [{ "@id": "http://schema.org/Text" }],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The name of the directory."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Name"}],
+                        [{ "@language": "en", "@value": "The name of the directory." }],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{ "@language": "en", "@value": "Name" }],
                     "isRequired": "true"
                 },
                 "http://schema.org/description": {
                     "@id": "http://schema.org/description",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "https://schema.cassproject.org/0.4/Directory"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/Text"}],
+                        [{ "@id": "https://schema.cassproject.org/0.4/Directory" }],
+                    "http://schema.org/rangeIncludes": [{ "@id": "http://schema.org/Text" }],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The description of the directory."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Description"}]
+                        [{ "@language": "en", "@value": "The description of the directory." }],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{ "@language": "en", "@value": "Description" }]
                 },
                 "@id": {
                     "@id": "https://schema.cassproject.org/0.4/Framework/id",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
                     "http://schema.org/domainIncludes":
-                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
-                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                        [{ "@id": "https://schema.cassproject.org/0.4/Framework" }],
+                    "http://schema.org/rangeIncludes": [{ "@id": "http://schema.org/URL" }],
                     "http://www.w3.org/2000/01/rdf-schema#comment":
-                    [{"@language": "en", "@value": "The URL of the framework."}],
-                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Framework URL"}],
+                        [{ "@language": "en", "@value": "The URL of the framework." }],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{ "@language": "en", "@value": "Framework URL" }],
                     "readOnly": "true",
                     "max": 1,
                     "heading": "Keys"
@@ -118,15 +118,15 @@ export default {
                 "tertiaryProperties": []
             };
         },
-        changedObject: function() {
+        changedObject: function () {
             return this.$store.getters['editor/changedObject'];
         }
     },
     watch: {
-        changedObject: function() {
+        changedObject: function () {
             if (this.changedObject && this.directory && this.changedObject === this.directory.shortId()) {
                 let me = this;
-                EcRepository.get(this.directory.shortId(), function(dir) {
+                EcRepository.get(this.directory.shortId(), function (dir) {
                     if (me.$store.getters['app/selectedDirectory'] && me.$store.getters['app/selectedDirectory'].shortId() === dir.shortId()) {
                         me.$store.commit('app/selectDirectory', dir);
                     } else {
@@ -136,7 +136,7 @@ export default {
                         me.$store.commit('app/rightAsideObject', dir);
                     }
                     me.$store.dispatch('app/refreshDirectories');
-                }, appError);
+                }, console.error);
                 this.$store.commit('editor/changedObject', null);
             }
         }

@@ -1,8 +1,3 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-Vue.use(Vuex);
-
-
 const state = {
     crosswalkEnabled: true,
     userManagementEnabled: true,
@@ -58,21 +53,21 @@ const actions = {
 };
 
 const getters = {
-    legacyLoginEnabled: function(state) {
+    legacyLoginEnabled: function (state) {
         return state.legacyLoginEnabled;
     },
-    apiLoginEnabled: function(state) {
+    apiLoginEnabled: function (state) {
         return state.apiLoginEnabled;
     },
-    ownedByMe: function(state) {
+    ownedByMe: function (state) {
         return state.ownedByMe;
     }
 };
 
-export default {
-    namespaced: true,
+import { defineStore } from 'pinia';
+export default defineStore('featuresEnabled', { 
     state,
     mutations,
     actions,
     getters
-};
+});

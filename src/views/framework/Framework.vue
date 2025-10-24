@@ -66,7 +66,7 @@
                                                     class="tag is-medium-grey has-text-dark"
                                                     v-if="framework['schema:dateCreated']"
                                                     :title="new Date(framework['schema:dateCreated'])">
-                                                    Created  {{ isCeasn ? "(in CaSS)" : "" }} {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
+                                                    Created  {{ isCeasn ? "(in CaSS)" : "" }} {{ moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
                                                 </span>
                                                 <span
                                                     class="tag is-medium-grey has-text-dark"
@@ -255,7 +255,7 @@ export default {
         lastModified: function() {
             if (this.framework == null) return "Unknown.";
             if (this.timestamp) {
-                return this.$moment(this.timestamp).format("MMM D YYYY");
+                return moment(this.timestamp).format("MMM D YYYY");
             } else {
                 return null;
             }
@@ -770,7 +770,7 @@ export default {
     },
     methods: {
         handleDoneLoading: function() {
-            appLog("done loading");
+            console.log("done loading");
             this.hierarchyIsdoneLoading = true;
         },
         scrollFunction(e) {
@@ -791,13 +791,13 @@ export default {
             var me = this;
             if (this.framework.configuration) {
                 var c = await EcRepository.get(this.framework.configuration);
-                appLog("c is: ", c);
+                console.log("c is: ", c);
                 if (c) {
-                    appLog("c is: ", c);
+                    console.log("c is: ", c);
                     this.config = c;
                     this.configSetOnFramework = true;
                 }
-                appLog("c is: ", c);
+                console.log("c is: ", c);
             }
             if (!this.config && localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
                 // If no framework configuration, use browser default
@@ -844,7 +844,7 @@ export default {
         },
         refreshPage: function() {
             if (!this.framework) {
-                appLog("no framework to refresh");
+                console.log("no framework to refresh");
                 return;
             }
             this.setDefaultLanguage();
@@ -899,7 +899,7 @@ export default {
                     let edits = [{operation: "addNew", id: c.shortId()}];
                     me.$store.commit('editor/addEditsToUndo', edits);
                     me.$store.commit('editor/refreshAlignments', true);
-                }, appError);
+                }, console.error);
             }
         },
         updateResourceAlignments: async function(alignmentType, value) {
@@ -914,7 +914,7 @@ export default {
                     let edits = [{operation: "update", id: c.shortId(), fieldChanged: ["name", "url"], initialValue: [initialName, initialUrl], changedValue: [c.name, c.url]}];
                     me.$store.commit('editor/addEditsToUndo', edits);
                     me.$store.commit('editor/refreshAlignments', true);
-                }, appError);
+                }, console.error);
             }
         },
         removeResourceAlignment: async function(resourceId) {
@@ -923,7 +923,7 @@ export default {
             this.repo.deleteRegistered(c, function() {
                 me.$store.commit('editor/addEditsToUndo', [{operation: "delete", obj: c}]);
                 me.$store.commit('editor/refreshAlignments', true);
-            }, appError);
+            }, console.error);
         },
         moveToTopLevel: async function(id) {
             var me = this;
@@ -934,7 +934,7 @@ export default {
                     if (a.target == null) continue;
                     if (a.source == null) continue;
                     if (a.source !== id) continue;
-                    appLog("Identified edge to remove: ", JSON.parse(a.toJson()));
+                    console.log("Identified edge to remove: ", JSON.parse(a.toJson()));
                     this.framework.relation.splice(i--, 1);
                 }
                 repo.saveTo(this.framework, function() {

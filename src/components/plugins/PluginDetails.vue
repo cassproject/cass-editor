@@ -250,7 +250,7 @@ export default {
                 pluginUrls.push(this.plugin.url);
                 this.loadManifestDataForPluginUrlList(pluginUrls, this.loadManifestDataComplete);
             } else {
-                appLog('invalid URL');
+                console.log('invalid URL');
             }
         },
         validatePluginFields() {

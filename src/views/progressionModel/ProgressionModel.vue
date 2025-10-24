@@ -40,7 +40,7 @@
                                 class="tag is-medium-grey has-text-dark"
                                 v-if="framework['schema:dateCreated']"
                                 :title="new Date(framework['schema:dateCreated'])">
-                                Created {{ isCeasn ? "(in CaSS)" : "" }} {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
+                                Created {{ isCeasn ? "(in CaSS)" : "" }} {{ moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
                             </span>
                             <span
                                 class="tag is-medium-grey has-text-dark"
@@ -157,7 +157,7 @@ export default {
         lastModified: function() {
             if (this.framework == null) return "Unknown.";
             if (this.timestamp) {
-                return this.$moment(this.timestamp).format("MMM D YYYY");
+                return moment(this.timestamp).format("MMM D YYYY");
             } else {
                 return null;
             }
@@ -268,7 +268,7 @@ export default {
         },
         refreshPage: function() {
             if (!this.framework) {
-                appLog("no framework to refresh");
+                console.log("no framework to refresh");
                 return;
             }
             this.setDefaultLanguage();

@@ -335,17 +335,17 @@ export default {
                                     } else {
                                         after();
                                     }
-                                }, appError);
+                                }, console.error);
                             } else {
                                 after();
                             }
-                        }, appError);
+                        }, console.error);
                     }, () => {
                         this.isProcessing = false;
                         this.isDone = true;
                     });
                 });
-            }).catch(appError);
+            }).catch(console.error);
         }
     },
     watch: {}

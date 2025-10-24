@@ -1,10 +1,7 @@
-import Vue from 'vue';
-import Router from 'vue-router';
+import { createRouter, createWebHashHistory } from 'vue-router';
 
-
-Vue.use(Router);
-export default new Router({
-    base: process.env.BASE_URL,
+export default createRouter({
+    history: createWebHashHistory(process.env.BASE_URL),
     scrollBehavior(to, from, savedPosition) {
         if (to.hash) {
             return {
@@ -79,7 +76,7 @@ export default new Router({
             path: '/configuration',
             name: 'configuration',
             components: {
-                default: () => import(/* webpackChunkName: "configurationEditor" */ './views/ConfigurationEditor'),
+                default: () => import(/* webpackChunkName: "configurationEditor" */ './views/ConfigurationEditor.vue'),
                 sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
                 topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
@@ -88,7 +85,7 @@ export default new Router({
             path: '/users',
             name: 'users',
             components: {
-                default: () => import(/* webpackChunkName: "userGroupEditor" */ './views/usersGroups/UserGroupEditor'),
+                default: () => import(/* webpackChunkName: "userGroupEditor" */ './views/usersGroups/UserGroupEditor.vue'),
                 sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
                 topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
@@ -106,7 +103,7 @@ export default new Router({
             path: '/pluginManager',
             name: 'pluginManager',
             components: {
-                default: () => import(/* webpackChunkName: "pluginManager" */ './views/plugins/PluginManager'),
+                default: () => import(/* webpackChunkName: "pluginManager" */ './views/plugins/PluginManager.vue'),
                 sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
                 topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
@@ -115,7 +112,7 @@ export default new Router({
             path: '/crosswalk',
             name: 'crosswalk',
             components: {
-                default: () => import(/* webpackChunkName: "crosswalk" */ './views/framework/Crosswalk'),
+                default: () => import(/* webpackChunkName: "crosswalk" */ './views/framework/Crosswalk.vue'),
                 sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
                 topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }
@@ -124,7 +121,7 @@ export default new Router({
             path: '/timeline',
             name: 'timeline',
             components: {
-                default: () => import(/* webpackChunkName: "timeline" */ './views/framework/Timeline'),
+                default: () => import(/* webpackChunkName: "timeline" */ './views/framework/Timeline.vue'),
                 sidebar: () => import(/* webpackChunkName: "sidenav" */ './components/SideNav.vue'),
                 topbar: () => import(/* webpackChunkName: "topbar" */ './components/Topbar.vue')
             }

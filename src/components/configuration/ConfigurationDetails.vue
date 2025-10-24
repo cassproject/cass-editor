@@ -3119,7 +3119,7 @@ import FrameworkCompetencyPropertyListItem from "./FrameworkCompetencyPropertyLi
 import RelationshipListItem from "./RelationshipListItem";
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import {cassUtil} from '../../mixins/cassUtil';
-import {mapGetters} from 'vuex';
+import {mapGetters} from 'pinia';
 
 export default {
     mixins: [cassUtil],
@@ -3327,7 +3327,7 @@ export default {
             this.setDataFieldsFromAddLevelToSelectLevel();
         },
         buildLevelListForLevelSaveFailure(msg) {
-            appLog("Level search failure: " + msg);
+            console.log("Level search failure: " + msg);
             this.configDetailsBusy = false;
         },
         createAndSaveNewLevelSuccess() {
@@ -3336,7 +3336,7 @@ export default {
             EcLevel.search(window.repo, '', this.buildLevelListForLevelSaveSuccess, this.buildLevelListForLevelSaveFailure, paramObj);
         },
         createAndSaveNewLevelFailure(msg) {
-            appLog('Failed to save new level: ' + msg);
+            console.log('Failed to save new level: ' + msg);
             this.setDataFieldsFromAddLevelToSelectLevel();
         },
         createAndSaveNewLevel() {
@@ -3672,7 +3672,7 @@ export default {
         },
         updateExistingConfigCustomProperty() {
             let propToUpdate = this.getCustomProperty(this.customPropertyParent, this.customPropertyPropertyName);
-            if (!propToUpdate) appLog('!!!!Could not find existing custom property to update');
+            if (!propToUpdate) console.log('!!!!Could not find existing custom property to update');
             else {
                 propToUpdate.description = this.customPropertyDescription;
                 propToUpdate.label = this.customPropertyLabel;
@@ -4299,7 +4299,7 @@ export default {
             this.configDetailsBusy = false;
         },
         fetchGroupListForPermissionEntityFailure(msg) {
-            appLog("Group search failure: " + msg);
+            console.log("Group search failure: " + msg);
             this.configDetailsBusy = false;
         },
         fetchPersonListForPermissionEntitySuccess(ecpa) {
@@ -4312,7 +4312,7 @@ export default {
             EcOrganization.search(window.repo, '', this.fetchGroupListForPermissionEntitySuccess, this.fetchGroupListForPermissionEntityFailure, paramObj);
         },
         fetchPersonListForPermissionEntityFailure(msg) {
-            appLog("Person search failure: " + msg);
+            console.log("Person search failure: " + msg);
             this.configDetailsBusy = false;
         },
         initializePermissionEntityList() {
@@ -4333,7 +4333,7 @@ export default {
             this.initializePermissionEntityList();
         },
         initializeLevelListFailure(msg) {
-            appLog("Level search failure: " + msg);
+            console.log("Level search failure: " + msg);
             this.configDetailsBusy = false;
             // this.initializePermissionEntityList();
         },
@@ -4452,7 +4452,7 @@ export default {
                 }
             },
             set(val) {
-                appLog("val", val);
+                console.log("val", val);
                 if (val) {
                     this.$emit('set-browser-default', this.config.id);
                 } else {

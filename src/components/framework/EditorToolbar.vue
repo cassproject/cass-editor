@@ -373,7 +373,7 @@ export default {
             this.repo.deleteRegistered(obj, function() {
                 me.editsFinishedCounter++;
             }, function(failure) {
-                appLog(failure);
+                console.log(failure);
                 me.editsFinishedCounter++;
                 me.$Progress.fail();
             });
@@ -390,7 +390,7 @@ export default {
                 me.editsFinishedCounter++;
                 me.$Progress.finish();
             }, function(failure) {
-                appLog(failure);
+                console.log(failure);
                 me.editsFinishedCounter++;
                 me.$Progress.fail();
             });
@@ -414,7 +414,7 @@ export default {
                 });
                 me.$store.commit('editor/changedObject', success.shortId());
             }, function(error) {
-                appError(error);
+                console.error(error);
                 me.editsFinishedCounter++;
                 me.$Progress.fail();
             });
@@ -467,12 +467,12 @@ export default {
                     me.repo.saveTo(rld, function() {
                         me.editsFinishedCounter++;
                     }, function(error) {
-                        appError(error);
+                        console.error(error);
                         me.editsFinishedCounter++;
                     });
                 }
             } catch (err) {
-                appError(err);
+                console.error(err);
             }
         },
         // Compact operation removes arrays when length is 1, but some fields need to be arrays in the data that's saved
@@ -494,7 +494,7 @@ export default {
             EcDirectory.get(this.directoryId, function(success) {
                 me.$store.commit('app/selectDirectory', success);
                 me.$router.push({name: "directory"});
-            }, appError);
+            }, console.error);
         },
         checkIsPrivate: function() {
             let obj = this.framework;
@@ -507,7 +507,7 @@ export default {
                     me.privateFramework = false;
                 }
             }, function(failure) {
-                appError(failure);
+                console.error(failure);
             });
         },
         manageAssertions: async function() {

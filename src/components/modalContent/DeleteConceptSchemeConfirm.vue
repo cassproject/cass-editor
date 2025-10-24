@@ -66,7 +66,7 @@ export default {
             this.$store.commit('editor/setItemToDelete', {});
         },
         deleteObject: function(thing) {
-            appLog("deleting " + thing.id);
+            console.log("deleting " + thing.id);
             var me = this;
             // delete scheme
             var framework = this.obj;
@@ -75,12 +75,12 @@ export default {
                 // Delete the framework, delete all non-used stuff.
                 EcConcept.search(me.repo, "(skos\\:inScheme:\"" + framework.shortId() + "\") OR (ceasn\\:inProgressionModel:\"" + framework.shortId() + "\")", function(concepts) {
                     for (var i = 0; i < concepts.length; i++) {
-                        me.repo.deleteRegistered(concepts[i], appLog, appError);
+                        me.repo.deleteRegistered(concepts[i], console.log, console.error);
                     }
-                }, appError);
+                }, console.error);
                 me.$store.commit('editor/framework', null);
                 me.$router.push({name: "concepts"});
-            }, appLog);
+            }, console.log);
         }
     }
 };

@@ -1,8 +1,3 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-Vue.use(Vuex);
-
-
 const state = {
     cassApiLocation: ''
 };
@@ -17,15 +12,16 @@ const actions = {
 };
 
 const getters = {
-    cassApiLocation: function(state) {
+    cassApiLocation: function (state) {
         return state.cassApiLocation;
     }
 };
 
-export default {
-    namespaced: true,
+import { defineStore } from 'pinia';
+
+export default defineStore('environment', {
     state,
     mutations,
     actions,
     getters
-};
+});

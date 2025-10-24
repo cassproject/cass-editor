@@ -91,78 +91,78 @@ const state = {
             "url": "https://raw.githubusercontent.com/cassproject/cass-vlrc/master/"
         }
     ]
-};
-const mutations = {
-    showSideNav: function() {
-        state.showSideNav = true;
-        state.showRightAside = false;
+}; 
+const actions = {
+    showSideNav: function () {
+        this.showSideNav = true;
+        this.showRightAside = false;
     },
-    closeSideNav: function() {
-        state.showSideNav = false;
+    closeSideNav: function () {
+        this.showSideNav = false;
     },
-    showRightAside: function(state, payload) {
-        state.showRightAside = true;
-        state.rightAsideContent = payload;
-        // state.showSideNav = false;
+    showRightAside: function (payload) {
+        this.showRightAside = true;
+        this.rightAsideContent = payload;
+        // this.showSideNav = false;
     },
-    closeRightAside: function(state) {
-        state.showRightAside = false;
-        state.rightAsideContent = '';
-        state.rightAsideObject = null;
+    closeRightAside: function () {
+        this.showRightAside = false;
+        this.rightAsideContent = '';
+        this.rightAsideObject = null;
     },
-    rightAsideObject: async function(state, payload) {
+    rightAsideObject: async function (payload) {
         if (payload.encryptedType) {
             let type = "Ec" + payload.encryptedType;
             let obj = new window[type]();
             obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(payload));
-            state.rightAsideObject = obj;
+            this.rightAsideObject = obj;
         } else {
-            state.rightAsideObject = payload;
+            this.rightAsideObject = payload;
         }
     },
-    showModal: function(state, payload) {
-        state.modal.showModal = true;
-        state.modal.dynamicModalContent = payload;
+    showModal: function (payload) {
+        this.modal.showModal = true;
+        this.modal.dynamicModalContent = payload;
     },
-    closeModal: function(state) {
-        state.modal.showModal = false;
-        state.modal.dynamicModalContent = {};
+    closeModal: function () {
+        this.modal.showModal = false;
+        this.modal.dynamicModalContent = {};
     },
-    objForShareModal: function(state, payload) {
-        state.modal.objForShareModal = payload;
+    objForShareModal: function (payload) {
+        this.modal.objForShareModal = payload;
     },
-    draggingEnabled: function(state, value) {
-        state.framework.draggingEnabled = value;
+    draggingEnabled: function (value) {
+        this.framework.draggingEnabled = value;
     },
-    isDragging: function(state, value) {
-        state.framework.isDragging = value;
+    isDragging: function (value) {
+        this.framework.isDragging = value;
     },
-    draggable: function(state, value) {
-        state.framework.draggable = value;
+    draggable: function (value) {
+        this.framework.draggable = value;
     },
-    importFiles: function(state, value) {
-        state.import.files = value;
+    importFiles: function (value) {
+        this.import.files = value;
     },
-    setCanViewComments: function(state, value) {
-        state.canViewComments = value;
+    setCanViewComments: function (value) {
+        this.canViewComments = value;
     },
-    setCanAddComments: function(state, value) {
-        state.canAddComments = value;
+    setCanAddComments: function (value) {
+        this.canAddComments = value;
     },
-    clearImportFiles: function(state) {
-        state.import.files = [];
+    clearImportFiles: function () {
+        this.import.files = [];
     },
-    pluginLastUpdate: function(state, value) {
-        state.pluginLastUpdate = value;
+    pluginLastUpdate: function (value) {
+        this.pluginLastUpdate = value;
     },
-    pluginToLaunch: function(state, value) {
-        state.pluginToLaunch = value;
+    pluginToLaunch: function (value) {
+        this.pluginToLaunch = value;
     },
-    pluginToLaunchLastUpdate: function(state, value) {
-        state.pluginToLaunchLastUpdate = value;
+    pluginToLaunchLastUpdate: function (value) {
+        this.pluginToLaunchLastUpdate = value;
     },
-    resetImport: function(state) {
-        state.import = {
+    resetImport: function () {
+        this.import = {
             files: [],
             transition: 'upload', // upload, process, detail, preview, light
             status: '', // success, failure, edit
@@ -194,126 +194,126 @@ const mutations = {
             importModalParams: null
         };
     },
-    importTransition: function(state, value) {
-        state.import.transition = value;
+    importTransition: function (value) {
+        this.import.transition = value;
     },
-    importFileType: function(state, value) {
-        state.import.fileType = value;
+    importFileType: function (value) {
+        this.import.fileType = value;
     },
-    importType: function(state, value) {
-        state.import.type = value;
+    importType: function (value) {
+        this.import.type = value;
     },
-    firstImport: function(state, val) {
-        state.import.firstImport = val;
+    firstImport: function (val) {
+        this.import.firstImport = val;
     },
-    addImportError: function(state, val) {
-        state.import.errors.push(val);
+    addImportError: function (val) {
+        this.import.errors.push(val);
     },
-    clearImportErrors: function(state) {
-        state.import.errors = [];
+    clearImportErrors: function () {
+        this.import.errors = [];
     },
-    importStatus: function(state, val) {
-        state.import.status = val;
+    importStatus: function (val) {
+        this.import.status = val;
     },
-    importAllowCancel: function(state, val) {
-        state.allowCancel = val;
+    importAllowCancel: function (val) {
+        this.allowCancel = val;
     },
-    importFeedback: function(state, val) {
-        state.import.feedback = val;
+    importFeedback: function (val) {
+        this.import.feedback = val;
     },
-    importDuplicates: function(state, val) {
-        state.import.duplicates = val;
+    importDuplicates: function (val) {
+        this.import.duplicates = val;
     },
-    importSkip: function(state, val) {
-        state.import.skip = val;
+    importSkip: function (val) {
+        this.import.skip = val;
     },
-    importFramework: function(state, val) {
-        state.import.framework = val;
+    importFramework: function (val) {
+        this.import.framework = val;
     },
-    importFrameworkName: function(state, val) {
-        state.import.frameworkName = val;
+    importFrameworkName: function (val) {
+        this.import.frameworkName = val;
     },
-    importFrameworkNameColumn: function(state, val) {
-        state.import.frameworkNameColumn = val;
+    importFrameworkNameColumn: function (val) {
+        this.import.frameworkNameColumn = val;
     },
-    importFrameworkScopeColumn: function(state, val) {
-        state.import.frameworkScopeColumn = val;
+    importFrameworkScopeColumn: function (val) {
+        this.import.frameworkScopeColumn = val;
     },
-    importFrameworkIdColumn: function(state, val) {
-        state.import.frameworkIdColumn = val;
+    importFrameworkIdColumn: function (val) {
+        this.import.frameworkIdColumn = val;
     },
-    importFrameworkDescription: function(state, val) {
-        state.import.frameworkDescription = val;
+    importFrameworkDescription: function (val) {
+        this.import.frameworkDescription = val;
     },
-    importText: function(state, val) {
-        state.import.importText = val;
+    importText: function (val) {
+        this.import.importText = val;
     },
-    importServerUrl: function(state, val) {
-        state.import.serverUrl = val;
+    importServerUrl: function (val) {
+        this.import.serverUrl = val;
     },
-    importUrl: function(state, val) {
-        state.import.url = val;
+    importUrl: function (val) {
+        this.import.url = val;
     },
-    importNameColumn: function(state, val) {
-        state.import.importCsv.nameColumn = val;
+    importNameColumn: function (val) {
+        this.import.importCsv.nameColumn = val;
     },
-    importDescriptionColumn: function(state, val) {
-        state.import.importCsv.descriptionColumn = val;
+    importDescriptionColumn: function (val) {
+        this.import.importCsv.descriptionColumn = val;
     },
-    importScopeColumn: function(state, val) {
-        state.import.importCsv.scopeColumn = val;
+    importScopeColumn: function (val) {
+        this.import.importCsv.scopeColumn = val;
     },
-    importSourceColumn: function(state, val) {
-        state.import.importCsv.sourceColumn = val;
+    importSourceColumn: function (val) {
+        this.import.importCsv.sourceColumn = val;
     },
-    importTargetColumn: function(state, val) {
-        state.import.importCsv.targetColumn = val;
+    importTargetColumn: function (val) {
+        this.import.importCsv.targetColumn = val;
     },
-    importRelationColumn: function(state, val) {
-        state.import.importCsv.relationColumn = val;
+    importRelationColumn: function (val) {
+        this.import.importCsv.relationColumn = val;
     },
-    importIdColumn: function(state, val) {
-        state.import.importCsv.idColumn = val;
+    importIdColumn: function (val) {
+        this.import.importCsv.idColumn = val;
     },
-    csvColumns: function(state, val) {
-        state.import.csvColumns = val;
+    csvColumns: function (val) {
+        this.import.csvColumns = val;
     },
-    csvRelationColumns: function(state, val) {
-        state.import.csvRelationColumns = val;
+    csvRelationColumns: function (val) {
+        this.import.csvRelationColumns = val;
     },
-    csvRelationFile: function(state, val) {
-        state.import.csvRelationFile = val;
+    csvRelationFile: function (val) {
+        this.import.csvRelationFile = val;
     },
-    importModalParams: function(state, val) {
-        state.import.importModalParams = val;
+    importModalParams: function (val) {
+        this.import.importModalParams = val;
     },
-    searchTerm: function(state, value) {
-        state.frameworks.searchTerm = value;
+    searchTerm: function (value) {
+        this.frameworks.searchTerm = value;
     },
-    applySearchTo: function(state, value) {
-        state.frameworks.applySearchTo = value;
+    applySearchTo: function (value) {
+        this.frameworks.applySearchTo = value;
     },
-    refreshSearch: function(state, value) {
-        state.frameworks.refreshSearch = value;
+    refreshSearch: function (value) {
+        this.frameworks.refreshSearch = value;
     },
-    sortResults: function(state, value) {
-        state.frameworks.sortResults = value;
+    sortResults: function (value) {
+        this.frameworks.sortResults = value;
     },
-    quickFilters: function(state, value) {
-        state.frameworks.quickFilters = value;
+    quickFilters: function (value) {
+        this.frameworks.quickFilters = value;
     },
-    singleQuickFilter: function(state, value) {
-        let i = state.frameworks.quickFilters.findIndex((filter) => filter.id === value.id);
+    singleQuickFilter: function (value) {
+        let i = this.frameworks.quickFilters.findIndex((filter) => filter.id === value.id);
         if (i >= 0) {
-            state.frameworks.quickFilters[i].checked = value.checked;
+            this.frameworks.quickFilters[i].checked = value.checked;
         } else {
-            state.frameworks.quickFilters.push(value);
+            this.frameworks.quickFilters.push(value);
         }
     },
-    clearSearchFilters: function(state) {
-        let quickFilters = state.frameworks.quickFilters;
-        let sortResults = state.frameworks.sortResults;
-        let applySearchTo = state.frameworks.applySearchTo;
+    clearSearchFilters: function () {
+        let quickFilters = this.frameworks.quickFilters;
+        let sortResults = this.frameworks.sortResults;
+        let applySearchTo = this.frameworks.applySearchTo;
 
         for (let i = 0; i < quickFilters.length; i++) {
             quickFilters[i].checked = false;
@@ -324,50 +324,48 @@ const mutations = {
         for (let i = 0; i < applySearchTo.length; i++) {
             applySearchTo[i].checked = false;
         }
-        state.frameworks.quickFilters = quickFilters;
-        state.frameworks.sortResults = sortResults;
-        state.frameworks.applySearchTo = applySearchTo;
+        this.frameworks.quickFilters = quickFilters;
+        this.frameworks.sortResults = sortResults;
+        this.frameworks.applySearchTo = applySearchTo;
     },
-    selectDirectory: function(state, value) {
-        state.directories.selectedDirectory = value;
+    selectDirectory: function (value) {
+        this.directories.selectedDirectory = value;
     },
-    directoryList: function(state, list) {
-        state.directories.directoryList = list;
+    directoryList: function (list) {
+        this.directories.directoryList = list;
     },
-    searchingInDirectory: function(state, bool) {
-        state.directories.searchingInDirectory = bool;
+    searchingInDirectory: function (bool) {
+        this.directories.searchingInDirectory = bool;
     },
-    editDirectory: function(state, bool) {
-        state.directories.editDirectory = bool;
+    editDirectory: function (bool) {
+        this.directories.editDirectory = bool;
     },
-    searchFrameworksInCompetencySearch: function(state, bool) {
-        state.frameworks.searchFrameworksInCompetencySearch = bool;
+    searchFrameworksInCompetencySearch: function (bool) {
+        this.frameworks.searchFrameworksInCompetencySearch = bool;
     },
-    setBanner: function(state, payload) {
+    setBanner: function (payload) {
         if (payload.message) {
-            state.banner.message = payload.message;
+            this.banner.message = payload.message;
         }
         if (payload.color) {
-            state.banner.color = payload.color;
+            this.banner.color = payload.color;
         }
         if (payload.background) {
-            state.banner.background = payload.background;
+            this.banner.background = payload.background;
         }
     },
-    setMotd: function(state, payload) {
+    setMotd: function (payload) {
         if (payload.message) {
-            state.motd.message = payload.message;
+            this.motd.message = payload.message;
         }
         if (payload.title) {
-            state.motd.title = payload.title;
+            this.motd.title = payload.title;
         }
     },
-    setCuratedPlugins: function(state, payload) {
-        state.curatedPlugins = payload;
-    }
-};
-const actions = {
-    clearImport: function({commit}) {
+    setCuratedPlugins: function (payload) {
+        this.curatedPlugins = payload;
+    },
+    clearImport: function ({ commit }) {
         commit('importFramework', null);
         commit('clearImportFiles');
         commit('clearImportErrors');
@@ -379,11 +377,11 @@ const actions = {
         commit('importDuplicates', []);
         commit('importSkip', []);
     },
-    refreshDirectories: function({commit}) {
+    refreshDirectories: function ({ commit }) {
         let directories = [];
         let directoryIds = [];
-        let paramObj = {size: 10000};
-        EcDirectory.search(window.repo, "", function(dirs) {
+        let paramObj = { size: 10000 };
+        EcDirectory.search(window.repo, "", function (dirs) {
             for (let i = 0; i < dirs.length; i++) {
                 if (dirs[i].canEditAny(EcIdentityManager.default.getMyPks()) && !EcArray.has(directoryIds, dirs[i].id)) {
                     directories.push(dirs[i]);
@@ -391,7 +389,7 @@ const actions = {
                 }
             }
             commit('directoryList', directories);
-        }, appError, paramObj);
+        }, console.error, paramObj);
     }
 };
 const getters = {
@@ -622,10 +620,10 @@ const getters = {
     }
 };
 
-export default {
-    namespaced: true,
+import { defineStore } from 'pinia';
+
+export default defineStore('app',{
     state,
-    mutations,
     actions,
     getters
-};
+});

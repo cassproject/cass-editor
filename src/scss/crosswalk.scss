@@ -1,4 +1,4 @@
-@import './variables.scss';
+@use 'variables.scss';
 // required to adjust to side bar open
 #crosswalk.clear-side-bar {
     .hierarchy-buttons {
@@ -22,8 +22,8 @@
     .lode__Framework {
         .lode__name {
             font-weight: 600;
-            font-family: $family-secondary;
-            font-size: $size-5;
+            font-family: variables.$family-secondary;
+            font-size: variables.$size-5;
             .language {
                 display: none;
             }
@@ -52,7 +52,7 @@
     .step-container {
         transform:translateX(0);
         hr.step_line {
-            border-top: 1px solid $primary;
+            border-top: 1px solid variables.$primary;
             z-index: -3;
             height: 4px;
             width: 100%;
@@ -170,7 +170,7 @@
                 text-overflow: ellipsis;
                 white-space: nowrap;
                 overflow: hidden;
-                color: $dark;
+                color: variables.$dark;
             }
         }
         .columns {
@@ -276,7 +276,7 @@
                     }
                     .lode__hierarchy-item.crosswalkSource:hover {
                         min-height: 2.5rem;
-                        background-color: $light;
+                        background-color: variables.$light;
                         .lode__thing {
                             .lode__Competency {
                                 .lode__thing-heading {
@@ -295,7 +295,7 @@
                     }
                     .lode__hierarchy-item.crosswalkTarget.target-enabled {
                         min-height: 2rem;
-                        background-color: $white;
+                        background-color: variables.$white;
                         .lode__thing {
                             .lode__Competency {
                                 .lode__thing-heading {
@@ -307,7 +307,7 @@
                     }
                     .lode__hierarchy-item.crosswalkTarget.target-enabled:hover {
                         min-height: 2rem;
-                        background-color: $light;
+                        background-color: variables.$light;
                         .lode__thing {
                             .lode__Competency {
                                 .lode__thing-heading {
@@ -343,12 +343,12 @@
                     }
                     .is-selected-competency-source.lode__hierarchy-item,
                     .is-selected-competency-source.lode__hierarchy-item:hover {
-                        background-color: $white;
-                        border: solid 1px $link;
-                        color: $dark !important;
+                        background-color: variables.$white;
+                        border: solid 1px variables.$link;
+                        color: variables.$dark !important;
                         min-height: 2.5rem;
                         .expand-column .icon .fa {
-                            color: $dark !important;
+                            color: variables.$dark !important;
                         }
                         .lode__hierarchy {
                             padding-right: 7rem;
@@ -369,9 +369,9 @@
                         }
                     }
                     .is-selected-competency-target.lode__hierarchy-item {
-                        background-color: $white;
-                        border: solid 1px $link;
-                        color: $dark !important;
+                        background-color: variables.$white;
+                        border: solid 1px variables.$link;
+                        color: variables.$dark !important;
                         min-height: 1.5rem;
                         .lode__thing {
                             margin-right: 0rem;
@@ -384,9 +384,9 @@
                         }
                     }
                     .is-selected-competency-target.lode__hierarchy-item:hover {
-                        background-color: $white;
-                        border: solid 1px $link;
-                        color: $dark !important;
+                        background-color: variables.$white;
+                        border: solid 1px variables.$link;
+                        color: variables.$dark !important;
                         .lode__thing {
                             margin-right: 0rem;
                             .lode__Competency {
@@ -431,14 +431,14 @@
                 }
             }
             .list-ul__item{
-                border-radius: $border-radius;
+                border-radius: variables.$border-radius;
                 padding: .0rem .5rem .25rem .125rem;
                 margin-bottom: .5rem;
                 .framework-list-item__details {
-                    color: rgba($dark, .6);
+                    color: rgba(variables.$dark, .6);
                     padding-right: .5rem;
                     padding-left: 0rem;
-                    font-size: $size-6;
+                    font-size: variables.$size-6;
                     .details-value {
 
                     }
