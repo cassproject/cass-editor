@@ -346,9 +346,9 @@ export default {
             var me = this;
             if (this.processedContainer == null) return null;
             if (!this.once) return this.structure;
-            appLog("Computing hierarchy.");
+            console.log("Computing hierarchy.");
             var precache = [];
-            appLog(this.processedContainer);
+            console.log(this.processedContainer);
             if (this.processedContainer["skos:hasTopConcept"] != null) {
                 precache = precache.concat(this.processedContainer["skos:hasTopConcept"]);
             }
@@ -363,12 +363,12 @@ export default {
                         }
                         me.repo.multiget(precache, function(success) {
                             me.computeHierarchy();
-                        }, appError);
+                        }, console.error);
                     }, null, {size: 10000});
                 } else {
                     this.repo.multiget(precache, function(success) {
                         me.computeHierarchy();
-                    }, appError);
+                    }, console.error);
                 }
             } else {
                 me.computeHierarchy();
@@ -588,7 +588,7 @@ export default {
         },
         addChildren: async function(structure, c, parentIndex) {
             if (!structure[parentIndex]) {
-                appError(`Structure at index ${parentIndex} is undefined`);
+                console.error(`Structure at index ${parentIndex} is undefined`);
                 return;
             }
             if (!structure[parentIndex].children) {
@@ -624,7 +624,7 @@ export default {
                 this.dragging = false;
                 return;
             }
-            appLog(foo.oldIndex, foo.newIndex);
+            console.log(foo.oldIndex, foo.newIndex);
             var toId = null;
             var toLast = false;
             if (this.shiftKey) {
@@ -657,7 +657,7 @@ export default {
             var me = this;
             
             // Debug logging to track the move operation
-            appLog("Moving concept", {
+            console.log("Moving concept", {
                 fromId: fromId,
                 toId: toId,
                 fromContainerId: fromContainerId,
@@ -669,7 +669,7 @@ export default {
             // Get the concept being moved
             var movingConcept = await EcConcept.get(fromId);
             if (!movingConcept) {
-                appError("Cannot find concept to move: " + fromId);
+                console.error("Cannot find concept to move: " + fromId);
                 return;
             }
             
@@ -755,7 +755,7 @@ export default {
                 // If it's already a top concept, don't add it again
                 if (toContainer[toProperty] && toContainer[toProperty].includes(fromId)) {
                     // Concept is already at root level, no need to add again
-                    appLog("Concept is already a top concept, not adding again");
+                    console.log("Concept is already a top concept, not adding again");
                 } else {
                     // Add to concept scheme
                     if (!toContainer[toProperty]) {
@@ -844,14 +844,14 @@ export default {
             // Save all objects
             try {
                 await me.repo.multiput(objectsToSave, function() {
-                    appLog("Move complete", {
+                    console.log("Move complete", {
                         concept: movingConcept.shortId(),
                         objectsSaved: objectsToSave.map(o => o.shortId())
                     });
                     me.computeHierarchy();
-                }, appError);
+                }, console.error);
             } catch (e) {
-                appError("Error saving changes:", e);
+                console.error("Error saving changes:", e);
             }
             
             this.dragging = false;
@@ -913,7 +913,7 @@ export default {
                     await this.repo.multiput([c, me.container]);
                     me.once = true;
                 } catch (e) {
-                    appError(e);
+                    console.error(e);
                 }
             } else {
                 c["skos:broader"] = [containerId];
@@ -949,11 +949,11 @@ export default {
                     await this.repo.multiput([c, parent, me.container]);
                     me.once = true;
                 } catch (e) {
-                    appError(e);
+                    console.error(e);
                 }
             }
             this.$store.commit("editor/newCompetency", c.shortId());
-            appLog("Added node: ", JSON.parse(c.toJson()));
+            console.log("Added node: ", JSON.parse(c.toJson()));
         },
         select: function(objId, checked) {
             if (checked) {
@@ -984,7 +984,7 @@ export default {
             try {
                 await this.add(parent, null);
             } catch (e) {
-                appError(e);
+                console.error(e);
             }
             this.loading = false;
             this.addingNode = false;
@@ -995,7 +995,7 @@ export default {
             this.selectedArray.splice(0, this.selectedArray.length);
         },
         deleteConcept: function(thing) {
-            appLog("deleting " + thing.id);
+            console.log("deleting " + thing.id);
             this.deleteConceptInner(thing);
 
             this.framework["schema:dateModified"] = new Date().toISOString();
@@ -1018,7 +1018,7 @@ export default {
                         await repo.saveTo(concept);
                         me.$store.commit('editor/framework', me.framework);
                     } catch (e) {
-                        appError(e);
+                        console.error(e);
                     }
                 }
             }
@@ -1028,7 +1028,7 @@ export default {
                         let concept = await EcConcept.get(c["skos:narrower"][i]);
                         me.deleteConceptInner(concept);
                     } catch (e) {
-                        appError(e);
+                        console.error(e);
                     }
                 }
             }
@@ -1045,7 +1045,7 @@ export default {
                     await repo.saveTo(framework);
                     me.$store.commit('editor/framework', me.framework);
                 } catch (e) {
-                    appError(e);
+                    console.error(e);
                 }
             }
             this.spitEvent("conceptDeleted", c.shortId(), "editFrameworkPage");
@@ -1054,7 +1054,7 @@ export default {
                 me.$store.commit('editor/framework', me.framework);
                 me.$store.commit('editor/addEditsToUndo', JSON.parse(JSON.stringify(editsToUndo)));
                 editsToUndo.splice(0, editsToUndo.length);
-            }, appError);
+            }, console.error);
         }
     }
 };

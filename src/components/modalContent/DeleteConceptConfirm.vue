@@ -60,7 +60,7 @@ export default {
             this.$store.commit('editor/setItemToDelete', {});
         },
         deleteObject: function(thing) {
-            appLog("deleting " + thing.id);
+            console.log("deleting " + thing.id);
             this.deleteConceptInner(thing);
 
             this.framework["schema:dateModified"] = new Date().toISOString();
@@ -82,7 +82,7 @@ export default {
                         await repo.saveTo(concept);
                         me.$store.commit('editor/framework', me.framework);
                     } catch (e) {
-                        appError(e);
+                        console.error(e);
                     }
                 }
             }
@@ -92,7 +92,7 @@ export default {
                         let concept = await EcConcept.get(c["skos:narrower"][i]);
                         me.deleteConceptInner(concept);
                     } catch (e) {
-                        appError(e);
+                        console.error(e);
                     }
                 }
             }
@@ -109,7 +109,7 @@ export default {
                     await repo.saveTo(framework);
                     me.$store.commit('editor/framework', me.framework);
                 } catch (e) {
-                    appError(e);
+                    console.error(e);
                 }
             }
             this.spitEvent("conceptDeleted", c.shortId(), "editFrameworkPage");
@@ -118,7 +118,7 @@ export default {
                 me.$store.commit('editor/framework', me.framework);
                 me.$store.commit('editor/addEditsToUndo', JSON.parse(JSON.stringify(me.editsToUndo)));
                 me.editsToUndo.splice(0, me.editsToUndo.length);
-            }, appError);
+            }, console.error);
         }
     }
 };

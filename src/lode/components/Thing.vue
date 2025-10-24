@@ -819,7 +819,7 @@ export default {
                 let expanded = await jsonld.expand(toExpand);
                 me.expandedThing = me.reactify(expanded[0]);
             } catch (err) {
-                appError(err);
+                console.error(err);
             }
         },
         // Loads the schema (not the context!) for this object, if available and if it is where it should be (at the url of the fully qualified @type).
@@ -870,7 +870,7 @@ export default {
                         let expanded = await jsonld.expand(JSON.parse(value.toJson()));
                         me.expandedThing[property].push(me.reactify(expanded[0]));
                     } catch (err) {
-                        appError(err);
+                        console.error(err);
                     }
                 } else {
                     me.expandedThing[property].push(value);
@@ -921,10 +921,10 @@ export default {
                     if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                         rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
-                    repo.saveTo(rld, appLog, appError);
+                    repo.saveTo(rld, console.log, console.error);
                 }
             } catch (err) {
-                appError(err);
+                console.error(err);
             }
         },
         // Supports save() by removing reactify arrays.
@@ -1025,7 +1025,7 @@ export default {
                 }
                 me.name = name;
             }, function(error) {
-                appLog(error);
+                console.log(error);
             });
         },
         resolveNameFromUrl: function(url) {
@@ -1158,7 +1158,7 @@ export default {
                     this.obj = thing;
                     this.load();
                 } else if (type && window[type]) {
-                    appLog("Can't get type: " + type);
+                    console.log("Can't get type: " + type);
                 }
                 this.$store.commit('editor/changedObject', null);
             }

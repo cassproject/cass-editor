@@ -138,10 +138,10 @@ const getters = {
     }
 };
 
-export default {
-    namespaced: true,
+import { defineStore } from 'pinia';
+export default defineStore('configuration',{ 
     state,
     mutations,
     actions,
     getters
-};
+});

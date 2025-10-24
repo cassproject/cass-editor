@@ -97,7 +97,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
 export default {
     name: 'AddNewDropdown',
     props: {
@@ -147,8 +147,8 @@ export default {
         };
     },
     computed: {
-        ...mapState({
-            queryParams: state => state.editor.queryParams
+        ...mapState("editor",{
+            queryParams: state => state.queryParams
         })
     },
     methods: {

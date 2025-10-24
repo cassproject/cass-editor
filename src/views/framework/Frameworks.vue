@@ -265,7 +265,7 @@
                                         Created {{ isCeasn ? "(in CaSS)" : "" }}:
                                     </span>
                                     <span class="has-text-weight-light">
-                                        &nbsp; {{ $moment(new Date(slotProps.item['schema:dateCreated'])).format("MMM D YYYY") }}
+                                        &nbsp; {{ moment(new Date(slotProps.item['schema:dateCreated'])).format("MMM D YYYY") }}
                                     </span>
                                 </span>
                                 <span
@@ -276,7 +276,7 @@
                                         Last modified {{ isCeasn ? "(in CaSS)" : "" }}:
                                     </span>
                                     <span class="has-text-weight-light">
-                                        &nbsp; {{ $moment(slotProps.item.getTimestamp()).format("MMM D YYYY") }}
+                                        &nbsp; {{ moment(slotProps.item.getTimestamp()).format("MMM D YYYY") }}
                                     </span>
                                 </span>
                                 <span
@@ -287,7 +287,7 @@
                                         Last modified {{ isCeasn ? "(in CaSS)" : "" }}:
                                     </span>
                                     <span class="has-text-weight-light">
-                                        {{ $moment(new Date(slotProps.item['schema:dateModified'])).format("MMM D YYYY") }}
+                                        {{ moment(new Date(slotProps.item['schema:dateModified'])).format("MMM D YYYY") }}
                                     </span>
                                 </span>
                                 <span
@@ -512,6 +512,9 @@ export default {
         ThingEditing: () => import('@/lode/components/ThingEditing.vue')
     },
     methods: {
+        moment: function(date) {
+            return moment(date);
+        },
         refocusSearch: function() {
             this.setFocus = !this.setFocus;
         },
@@ -528,7 +531,7 @@ export default {
                     if (success && success[0]) {
                         me.openItem(success[0]);
                     }
-                }, appError, null);
+                }, console.error, null);
             } else if (object.type === "Concept") {
                 this.findConceptTrail(object);
             } else if (this.conceptMode) {
@@ -538,7 +541,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: object.id}});
-                }, appError);
+                }, console.error);
             } else if (this.progressionMode) {
                 EcConceptScheme.get(object.id, function(success) {
                     me.$store.commit('editor/framework', success);
@@ -546,7 +549,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "progressionModel", params: {frameworkId: object.id}});
-                }, appError);
+                }, console.error);
             } else {
                 EcFramework.get(object.id, function(success) {
                     me.$store.commit('editor/framework', success);
@@ -554,7 +557,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: object.id}});
-                }, appError);
+                }, console.error);
             }
         },
         findConceptTrail: function(concept) {
@@ -562,14 +565,14 @@ export default {
             if (concept["skos:topConceptOf"]) {
                 EcConceptScheme.get(concept["skos:topConceptOf"], function(scheme) {
                     me.openItem(scheme);
-                }, appError);
+                }, console.error);
             } else if (concept["skos:broader"]) {
                 if (!EcArray.isArray(concept["skos:broader"])) {
                     concept["skos:broader"] = [concept["skos:broader"]];
                 }
                 EcConcept.get(concept["skos:broader"][0], function(parent) {
                     me.findConceptTrail(parent);
-                }, appError);
+                }, console.error);
             }
         },
         frameworkClick: function(framework) {
@@ -655,7 +658,8 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './../../scss/frameworks.scss';
+    @use './../../scss/frameworks.scss' as *;
+    @use './../../scss/variables.scss' as *;
 .frameworks-sticky {
     position: sticky;
     background-color: $white;

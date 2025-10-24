@@ -78,7 +78,7 @@ import List from '@/lode/components/List.vue';
 import Hierarchy from '@/lode/components/Hierarchy.vue';
 import Thing from '@/lode/components/Thing.vue';
 import common from '@/mixins/common.js';
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
 import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: 'CompetencySearch',

@@ -1,9 +1,4 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-
-Vue.use(Vuex);
-
-const state = {
+const state = () => ({
     framework: null,
     organization: null,
     selectedCompetency: null,
@@ -61,7 +56,7 @@ const state = {
     people: [],
     firstSearchProcessing: true,
     searchingAssertions: false
-};
+});
 const mutations = {
     framework(state, f) {
         state.framework = f;
@@ -260,7 +255,7 @@ const mutations = {
     }
 };
 const actions = {
-    getDirectoryChildren: function(instance, directory) {
+    getDirectoryChildren: function (instance, directory) {
         let children = [];
         if (directory.frameworks) {
             children.push(...directory.frameworks);
@@ -273,7 +268,7 @@ const actions = {
         }
         return children;
     },
-    lastEditToUndo: function(context) {
+    lastEditToUndo: function (context) {
         context.commit('setLastEditToUndo', context.state.editsToUndo.pop());
         return context.state.lastEditToUndo;
     },
@@ -300,12 +295,12 @@ const actions = {
         return new Promise((resolve, reject) => {
             instance.state.searchingAssertions = true;
             var assertions = [];
-            let doSearch = async function(start, count) {
+            let doSearch = async function (start, count) {
                 return new Promise((resolve, reject) => {
-                    EcAssertion.search(window.repo, "\"" + instance.state.me + "\"", async(results) => {
+                    EcAssertion.search(window.repo, "\"" + instance.state.me + "\"", async (results) => {
                         assertions.push(...results);
                         resolve();
-                    }, reject, {size: count, start: start});
+                    }, reject, { size: count, start: start });
                 });
             };
 
@@ -321,12 +316,12 @@ const actions = {
                         }, callback);
                     }
                 },
-                (assertions) => {
-                    instance.state.assertions = assertions;
-                    instance.state.searchingAssertions = false;
-                    resolve();
-                });
-            }).catch(appError);
+                    (assertions) => {
+                        instance.state.assertions = assertions;
+                        instance.state.searchingAssertions = false;
+                        resolve();
+                    });
+            }).catch(console.error);
         });
     },
     computeBecause: (instance, evidences) => {
@@ -370,11 +365,11 @@ const actions = {
                         }
                     }
                     if (evidenceString !== "") {
-                        explanations.push({text: evidenceString, original: eoriginal});
+                        explanations.push({ text: evidenceString, original: eoriginal });
                     }
                     callback();
                 } else if (e.startsWith != null && e.startsWith("http")) {
-                    let failureFunc = function() {
+                    let failureFunc = function () {
                         explanations.push({
                             text: "did this",
                             url: e,
@@ -405,7 +400,7 @@ const actions = {
                         callback();
                     });
                 } else {
-                    explanations.push({text: "\"" + e + "\"", original: eoriginal});
+                    explanations.push({ text: "\"" + e + "\"", original: eoriginal });
                     callback();
                 }
             }, (evidences) => {
@@ -415,170 +410,170 @@ const actions = {
     }
 };
 const getters = {
-    framework: function(state) {
+    framework: function (state) {
         return state.framework;
     },
-    organization: function(state) {
+    organization: function (state) {
         return state.organization;
     },
-    selectedCompetency: function(state) {
+    selectedCompetency: function (state) {
         return state.selectedCompetency;
     },
-    queryParams: function(state) {
+    queryParams: function (state) {
         return state.queryParams;
     },
-    defaultLanguage: function(state) {
+    defaultLanguage: function (state) {
         return state.defaultLanguage;
     },
-    webSocketBackoff: function(state) {
+    webSocketBackoff: function (state) {
         return state.webSocketBackoff;
     },
-    selectCompetencyRelation: function(state) {
+    selectCompetencyRelation: function (state) {
         return state.selectCompetencyRelation;
     },
-    selectingCompetencies: function(state) {
+    selectingCompetencies: function (state) {
         return state.selectingCompetencies;
     },
-    private: function(state) {
+    private: function (state) {
         return state.private;
     },
-    newCompetency: function(state) {
+    newCompetency: function (state) {
         return state.newCompetency;
     },
-    newFramework: function(state) {
+    newFramework: function (state) {
         return state.newFramework;
     },
-    t3Profile: function(state) {
+    t3Profile: function (state) {
         return state.t3Profile;
     },
-    changedObject: function(state) {
+    changedObject: function (state) {
         return state.changedObject;
     },
-    configuration: function(state) {
+    configuration: function (state) {
         return state.configuration;
     },
-    addCommentAboutId: function(state) {
+    addCommentAboutId: function (state) {
         return state.addCommentAboutId;
     },
-    addCommentType: function(state) {
+    addCommentType: function (state) {
         return state.addCommentType;
     },
-    commentToEdit: function(state) {
+    commentToEdit: function (state) {
         return state.commentToEdit;
     },
-    commentToReply: function(state) {
+    commentToReply: function (state) {
         return state.commentToReply;
     },
-    commentsToDelete: function(state) {
+    commentsToDelete: function (state) {
         return state.commentsToDelete;
     },
-    frameworkCommentDataLoaded: function(state) {
+    frameworkCommentDataLoaded: function (state) {
         return state.frameworkCommentDataLoaded;
     },
-    frameworkCommentList: function(state) {
+    frameworkCommentList: function (state) {
         return state.frameworkCommentList;
     },
-    frameworkCommentPersonMap: function(state) {
+    frameworkCommentPersonMap: function (state) {
         return state.frameworkCommentPersonMap;
     },
-    commentScrollTo: function(state) {
+    commentScrollTo: function (state) {
         return state.commentScrollTo;
     },
-    recomputeHierarchy: function(state) {
+    recomputeHierarchy: function (state) {
         return state.recomputeHierarchy;
     },
-    recomputePrecedence: function(state) {
+    recomputePrecedence: function (state) {
         return state.recomputePrecedence;
     },
-    recomputePrecedenceAfterReorder: function(state) {
+    recomputePrecedenceAfterReorder: function (state) {
         return state.recomputePrecedenceAfterReorder;
     },
-    selectedCompetenciesAsProperties: function(state) {
+    selectedCompetenciesAsProperties: function (state) {
         return state.selectedCompetenciesAsProperties;
     },
-    refreshLevels: function(state) {
+    refreshLevels: function (state) {
         return state.refreshLevels;
     },
-    refreshAlignments: function(state) {
+    refreshAlignments: function (state) {
         return state.refreshAlignments;
     },
-    refreshProperties: function(state) {
+    refreshProperties: function (state) {
         return state.refreshProperties;
     },
-    conceptMode: function(state) {
+    conceptMode: function (state) {
         return state.conceptMode;
     },
-    collectionMode: function(state) {
+    collectionMode: function (state) {
         return state.collectionMode;
     },
-    progressionMode: function(state) {
+    progressionMode: function (state) {
         return state.progressionMode;
     },
-    cutId: function(state) {
+    cutId: function (state) {
         return state.cutId;
     },
-    copyId: function(state) {
+    copyId: function (state) {
         return state.copyId;
     },
-    paste: function(state) {
+    paste: function (state) {
         return state.paste;
     },
-    cutOrCopyContainerId: function(state) {
+    cutOrCopyContainerId: function (state) {
         return state.cutOrCopyContainerId;
     },
-    nodeInFocus: function(state) {
+    nodeInFocus: function (state) {
         return state.nodeInFocus;
     },
-    relations: function(state) {
+    relations: function (state) {
         return state.relations;
     },
-    setPropertyLevel: function(state) {
+    setPropertyLevel: function (state) {
         return state.setPropertyLevel;
     },
-    addAnother: function(state) {
+    addAnother: function (state) {
         return state.addAnother;
     },
-    itemToDelete: function(state) {
+    itemToDelete: function (state) {
         return state.itemToDelete;
     },
-    itemToRemove: function(state) {
+    itemToRemove: function (state) {
         return state.itemToRemove;
     },
-    itemToExport: function(state) {
+    itemToExport: function (state) {
         return state.itemToExport;
     },
-    manageAssertions: function(state) {
+    manageAssertions: function (state) {
         return state.manageAssertions;
     },
-    assertions: function(state) {
+    assertions: function (state) {
         return state.assertions.sort((a, b) => {
             return b.assertionDateDecrypted - a.assertionDateDecrypted;
         });
     },
-    badgePk: function(state) {
+    badgePk: function (state) {
         return state.badgePk;
     },
-    getMe: function(state) {
+    getMe: function (state) {
         return state.me;
     },
-    getSubject: function(state) {
+    getSubject: function (state) {
         return state.subject;
     },
-    people: function(state) {
+    people: function (state) {
         return state.people;
     },
-    firstSearchProcessing: function(state) {
+    firstSearchProcessing: function (state) {
         return state.firstSearchProcessing;
     },
-    searchingAssertions: function(state) {
+    searchingAssertions: function (state) {
         return state.searchingAssertions;
     }
 };
 
-export default {
-    namespaced: true,
+import { defineStore } from 'pinia';
+export default defineStore('editor',{ 
     state,
     mutations,
     actions,
     getters
-};
+});

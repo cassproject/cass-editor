@@ -24,7 +24,6 @@
             @create-new-progression-model="createNewProgressionModel"
             @create-new-collection="createNewCollection"
             name="sidebar" />
-        <vue-progress-bar />
         <div
             v-if="bannerMessage"
             :style="bannerStyle"
@@ -35,11 +34,11 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import { mapState } from 'pinia';
+import store from '@/stores/index.js';
 import common from '@/mixins/common.js';
 import DynamicModal from './components/modals/DynamicModal.vue';
 import {version} from '../package.json';
-
 export default {
     mixins: [common],
     name: "App",
@@ -86,7 +85,7 @@ export default {
                 for (let key in window.queryParams) {
                     queryParams[key] = window.queryParams[key];
                 }
-                this.$store.commit('editor/queryParams', queryParams);
+                store.editor.queryParams = queryParams;
                 if (this.queryParams.server) {
                     if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
                         this.queryParams.server += "/";
@@ -94,8 +93,8 @@ export default {
                     server = this.queryParams.server;
                 }
                 if (this.queryParams.concepts === 'true') {
-                    this.$store.commit('editor/conceptMode', true);
-                    this.$store.commit('editor/progressionMode', false);
+                    store.editor.conceptMode = true;
+                    store.editor.progressionMode = false;
                 }
                 if (this.queryParams.ceasnDataFields === 'true') {
                     this.$store.commit('featuresEnabled/configurationsEnabled', false);
@@ -117,7 +116,7 @@ export default {
             var r = new EcRepository();
             r.selectedServer = server;
             r.init(server, function() {
-                appLog("Repository initialized");
+                console.log("Repository initialized");
                 if (EcIdentityManager.default.ids.length === 0) {
                     EcIdentityManager.default.readContacts();
                     EcIdentityManager.default.readIdentities();
@@ -136,8 +135,8 @@ export default {
                     }
                     me.$store.commit('app/setCuratedPlugins', plugins);
                 }
-            }, appError, async(loginInfo) => {
-                r.fetchServerAdminKeys(() => {}, appError);
+            }, console.error, async(loginInfo) => {
+                r.fetchServerAdminKeys(() => {}, console.error);
                 this.$store.commit('user/repositorySsoOptions', loginInfo);
                 if (loginInfo.ssoPublicKey != null && loginInfo.ssoLogin == null && loginInfo.ssoViaP1 == null) {
                     this.$store.commit('featuresEnabled/loginEnabled', false);
@@ -192,7 +191,7 @@ export default {
             try {
                 window.addEventListener('message', this.cappend, false);
             } catch (e) {
-                appError(e);
+                console.error(e);
             }
 
             this.openWebSocket(r);
@@ -219,7 +218,7 @@ export default {
                                     me.$store.commit('editor/progressionMode', false);
                                     me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
                                 }
-                            }, appError);
+                            }, console.error);
                         } else {
                             EcFramework.get(me.queryParams.frameworkId, function(success) {
                                 me.$store.commit('editor/framework', success);
@@ -227,14 +226,14 @@ export default {
                                 me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                                 me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                                 me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
-                            }, appError);
+                            }, console.error);
                         }
                     }
                     if (me.queryParams.directoryId) {
                         EcDirectory.get(me.queryParams.directoryId, function(success) {
                             me.$store.commit('app/selectDirectory', success);
                             me.$router.push({name: "directory"});
-                        }, appError);
+                        }, console.error);
                     }
                     if (me.queryParams.action === "import") {
                         me.$router.push({name: "import"});
@@ -297,7 +296,7 @@ export default {
                         try {
                             expanded = await jsonld.expand(context);
                         } catch (err) {
-                            appError(err);
+                            console.error(err);
                         }
                         me.$store.dispatch('lode/schemata', {id: type, obj: expanded});
                     }, function() {});
@@ -305,7 +304,7 @@ export default {
             }
             EcRemote.getExpectingString(window.repo.selectedServer, "badge/pk", (badgePk) => {
                 this.$store.commit('editor/setBadgePk', EcPk.fromPem(badgePk));
-            }, appError);
+            }, console.error);
             setTimeout(() => {
                 // If crypto workers haven't loaded forgeAsync.js at repo init, need to try again to load the identity.
                 if (this.linkedPerson == null && EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
@@ -317,15 +316,15 @@ export default {
             this.showSideNav = !this.showSideNav;
         },
         findLinkedPersonForIdentity: function() {
-            appLog("Finding linked person for identity...");
+            console.log("Finding linked person for identity...");
             window.EcPerson.getByPk(window.repo, window.EcIdentityManager.default.ids[0].ppk.toPk(), this.findLinkedPersonPersonSearchSuccess, this.findLinkedPersonPersonSearchFailure);
         },
         findLinkedPersonPersonSearchSuccess(ecRemoteLda) {
             if (!EcArray.isArray(ecRemoteLda)) {
                 ecRemoteLda = [ecRemoteLda];
             }
-            appLog("Linked person person search success: ");
-            appLog(ecRemoteLda);
+            console.log("Linked person person search success: ");
+            console.log(ecRemoteLda);
             let matchingPersonRecordFound = false;
             for (let ecrld of ecRemoteLda) {
                 let ep = new EcPerson();
@@ -334,14 +333,14 @@ export default {
                     matchingPersonRecordFound = true;
                     this.$store.commit('user/loggedOnPerson', ep);
                     this.linkedPerson = ep;
-                    appLog('Matching person record found: ');
-                    appLog(ep);
+                    console.log('Matching person record found: ');
+                    console.log(ep);
                 }
             }
             if (matchingPersonRecordFound) this.addGroupIdentities();
         },
         findLinkedPersonPersonSearchFailure(msg) {
-            appLog('Linked person person search failure: ' + msg);
+            console.log('Linked person person search failure: ' + msg);
         },
         searchRepositoryForGroupsSuccess: function(ecoa) {
             let linkedPersonShortId = this.linkedPerson.shortId();
@@ -363,10 +362,10 @@ export default {
             }
         },
         searchRepositoryForGroupsFailure: function(msg) {
-            appLog("Group search failure: " + msg);
+            console.log("Group search failure: " + msg);
         },
         addGroupIdentities: function() {
-            appLog("Finding assigned groups...");
+            console.log("Finding assigned groups...");
             let paramObj = {};
             paramObj.size = this.GROUP_SEARCH_SIZE;
             EcOrganization.search(window.repo, '', this.searchRepositoryForGroupsSuccess, this.searchRepositoryForGroupsFailure, paramObj);
@@ -375,7 +374,7 @@ export default {
             try {
                 // add all available group keys to identity manager
                 let groupPpkSet = await group.getOrgKeys();
-                appLog("Adding group identities: " + "(" + group.shortId() + ") - " + group.getName() + " - (" + groupPpkSet.length + ") keys");
+                console.log("Adding group identities: " + "(" + group.shortId() + ") - " + group.getName() + " - (" + groupPpkSet.length + ") keys");
                 for (let i = 0; i < groupPpkSet.length; i++) {
                     let gPpk = groupPpkSet[i];
                     let grpIdent = new EcIdentity();
@@ -402,7 +401,7 @@ export default {
             dir["schema:dateModified"] = new Date().toISOString();
             // To do: Add other owners and readers
             dir.save(function(success) {
-                appLog("Directory saved: " + dir.id);
+                console.log("Directory saved: " + dir.id);
                 me.$store.commit('app/closeModal');
                 me.$store.dispatch('app/refreshDirectories');
                 if (me.addAnotherDirectory) {
@@ -413,7 +412,7 @@ export default {
                 } else {
                     me.selectDirectory(dir);
                 }
-            }, appError, window.repo);
+            }, console.error, window.repo);
         },
         saveDirectoryAndAddAnother: function(e) {
             this.addAnotherDirectory = true;
@@ -438,8 +437,8 @@ export default {
                         selectedIds.push(event.data.selected[i]);
                     }
                 }
-                appLog("I got " + event.data.selected.length + " selected items from the iframe");
-                appLog(event.data.selected);
+                console.log("I got " + event.data.selected.length + " selected items from the iframe");
+                console.log(event.data.selected);
             } else if (event.data.message === "back") {
                 this.$router.push({name: "framework", params: {frameworkId: this.$store.state.editor.framework.id}});
             } else if (event.data.message === "highlightedCompetencies") {
@@ -464,16 +463,16 @@ export default {
             }
 
             connection.onopen = function() {
-                appLog("WebSocket open.");
+                console.log("WebSocket open.");
             };
 
             connection.onerror = function(error) {
-                appLog(error);
+                console.log(error);
             };
 
             // Re-establish connection on close.
             connection.onclose = function(evt) {
-                appLog(evt);
+                console.log(evt);
                 me.$store.commit('editor/webSocketBackoffIncrease');
                 setTimeout(function() {
                     me.openWebSocket(r);
@@ -579,7 +578,7 @@ export default {
 
             connection.onmessage = function(e) {
                 var resp = e.data;
-                appLog('Server: ' + resp);
+                console.log('Server: ' + resp);
                 if (!EcArray.isArray(resp) && resp.startsWith("[")) {
                     resp = JSON.parse(resp);
                 }
@@ -592,14 +591,14 @@ export default {
                     if (me.$store.state.editor.framework == null) return;
                     me.repo.precache(resp, function() {
                         for (var i = 0; i < resp.length; i++) {
-                            EcRepository.get(resp[i], connection.changedObject, appError);
+                            EcRepository.get(resp[i], connection.changedObject, console.error);
                         }
                     });
                 } else {
                     delete EcRepository.cache[resp];
                     delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp)];
                     delete EcRepository.cache[EcRemoteLinkedData.veryShortId(repo.selectedServer, EcCrypto.md5(resp))];
-                    EcRepository.get(resp, connection.changedObject, appError);
+                    EcRepository.get(resp, connection.changedObject, console.error);
                 }
             };
         },
@@ -641,7 +640,7 @@ export default {
                 if (me.$route.name !== 'framework') {
                     me.$router.push({name: "framework"});
                 }
-            }, appError);
+            }, console.error);
         },
         createNewCollection: async function() {
             let me = this;
@@ -673,7 +672,7 @@ export default {
                 if (me.$route.name !== 'framework') {
                     me.$router.push({name: "framework"});
                 }
-            }, appError);
+            }, console.error);
         },
         createNewConceptScheme: async function() {
             let me = this;
@@ -707,7 +706,7 @@ export default {
                 if (me.$route.name !== 'conceptScheme') {
                     me.$router.push({name: "conceptScheme"});
                 }
-            }, appError);
+            }, console.error);
         },
         createNewProgressionModel: async function() {
             let me = this;
@@ -739,7 +738,7 @@ export default {
                 if (me.$route.name !== 'progressionModel') {
                     me.$router.push({name: "progressionModel"});
                 }
-            }, appError);
+            }, console.error);
         },
         createNew: function() {
             this.setDefaultLanguage();
@@ -788,7 +787,7 @@ export default {
                             action: "response",
                             message: "identityOk"
                         };
-                        appLog(message);
+                        console.log(message);
                         parent.postMessage(message, me.queryParams.origin);
                     }
                 };
@@ -800,7 +799,7 @@ export default {
                 var message = {
                     message: "waiting"
                 };
-                appLog(message);
+                console.log(message);
                 parent.postMessage(message, this.queryParams.origin);
             } else {
                 callback();
@@ -836,7 +835,7 @@ export default {
                         action: "response",
                         message: "templateOk"
                     };
-                    appLog(message);
+                    console.log(message);
                     parent.postMessage(message, this.queryParams.origin);
                 } else if (data.action === "set") {
                     if (data.id != null) {
@@ -856,14 +855,14 @@ export default {
                             action: "response",
                             message: "setOk"
                         };
-                        appLog(message);
+                        console.log(message);
                         parent.postMessage(message, me.queryParams.origin);
                     }, function(failure) {
                         var message = {
                             action: "response",
                             message: "setFail"
                         };
-                        appLog(message);
+                        console.log(message);
                         parent.postMessage(message, me.queryParams.origin);
                     });
                 } else if (data.action === "export") {
@@ -927,7 +926,7 @@ export default {
                                 data: data
                             }, me.queryParams.origin);
                         }, function(failure) {
-                            appLog(failure);
+                            console.log(failure);
                         });
                     } else if (v === "cassrdfxml") {
                         this.get(link, null, {"Accept": "application/rdf+xml"}, function(success) {
@@ -940,7 +939,7 @@ export default {
                                 data: data
                             }, me.queryParams.origin);
                         }, function(failure) {
-                            appLog(failure);
+                            console.log(failure);
                         });
                     } else if (v === "cassturtle") {
                         this.get(link, null, {"Accept": "text/turtle"}, function(success) {
@@ -953,7 +952,7 @@ export default {
                                 data: data
                             }, me.queryParams.origin);
                         }, function(failure) {
-                            appLog(failure);
+                            console.log(failure);
                         });
                     } else if (v === "ceasn" || v === "ctdlasn") {
                         this.get(fid.replace("/data/", "/ceasn/"), null, null, function(success) {
@@ -978,7 +977,7 @@ export default {
                                     data: data
                                 }, me.queryParams.origin);
                             }, function(failure) {
-                                appLog(failure);
+                                console.log(failure);
                             });
                         } else {
                             this.get(this.repo.selectedServer + "ims/case/v1p0/CFItems/" + guid, null, null, function(success) {
@@ -991,7 +990,7 @@ export default {
                                     data: data
                                 }, me.queryParams.origin);
                             }, function(failure) {
-                                appLog(failure);
+                                console.log(failure);
                             });
                         }
                     }
@@ -1044,7 +1043,7 @@ export default {
             if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
                 resource = await EcEncryptedValue.toEncryptedValue(resource);
             }
-            this.repo.saveTo(resource, function() {}, appError);
+            this.repo.saveTo(resource, function() {}, console.error);
         },
         copyOrLink(choice, selectedIds) {
             if (choice === "Copy") {
@@ -1099,7 +1098,7 @@ export default {
                                 me.afterCopy();
                                 callback();
                             }, function(error) {
-                                appError(error);
+                                console.error(error);
                                 me.afterCopy();
                                 callback();
                             });
@@ -1130,7 +1129,7 @@ export default {
                                 me.afterCopy();
                                 callback();
                             }, function(error) {
-                                appError(error);
+                                console.error(error);
                                 me.afterCopy();
                                 callback();
                             });
@@ -1188,7 +1187,7 @@ export default {
                                         callback();
                                     },
                                     function(error) {
-                                        appError(error);
+                                        console.error(error);
                                         me.afterCopy();
                                         callback();
                                     });
@@ -1245,7 +1244,7 @@ export default {
                                         callback();
                                     },
                                     function(error) {
-                                        appError(error);
+                                        console.error(error);
                                         me.afterCopy();
                                         callback();
                                     });
@@ -1264,7 +1263,7 @@ export default {
                 if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
-                this.repo.saveTo(framework, function() {}, appError);
+                this.repo.saveTo(framework, function() {}, console.error);
             }
         },
         appendCompetencies: async function(results, newLink) {
@@ -1281,7 +1280,7 @@ export default {
                         thing.competency = [thing.competency];
                     }
                     thing.competency.push(selectedCompetency.shortId());
-                    this.repo.saveTo(thing, function() {}, appError);
+                    this.repo.saveTo(thing, function() {}, console.error);
                 }
             }
             for (var i = 0; i < results.length; i++) {
@@ -1332,7 +1331,7 @@ export default {
                             if (this.$store.state.editor.private === true) {
                                 r = await EcEncryptedValue.toEncryptedValue(r);
                             }
-                            this.repo.saveTo(r, function() {}, appError);
+                            this.repo.saveTo(r, function() {}, console.error);
                         }
                     }
                 }
@@ -1342,7 +1341,7 @@ export default {
             }
             this.repo.saveTo(framework, async function() {
                 me.$store.commit('editor/framework', await EcFramework.get(framework.id));
-            }, appError);
+            }, console.error);
         },
         importParentStyles: function() {
             var parentStyleSheets = parent.document.styleSheets;
@@ -1411,21 +1410,24 @@ export default {
             if (this.$route.name === 'login') return true;
             else return false;
         },
-        ...mapState({
-            loggedInPerson: state => state.user.loggedOnPerson,
-            queryParams: state => state.editor.queryParams
-        })
+        loggedInPerson: function() {
+            return store.user().loggedOnPerson;
+        },
+        queryParams: function() {
+            return store.editor().queryParams;
+        }
     },
     mounted: function() {
     },
     watch: {
         currentRoute: function(val) {
-            // appLog("logged in", this.loggedInPerson);
+            // console.log("logged in", this.loggedInPerson);
             if (!this.isLoggedIn && val === '/users') {
                 this.$router.push({path: '/'});
             }
         },
         '$route'(to, from) {
+            store.app().closeRightAside();
             this.$store.commit('app/closeRightAside');
             // this.$store.commit('app/closeSideNav');
             this.$store.commit('app/closeModal');
@@ -1461,8 +1463,8 @@ export default {
 
 
 <style lang="scss">
- @import './scss/variables.scss';
- .banner {
+@use './scss/variables.scss' as *;
+.banner {
     height: 15px;
     color: $light-color;
     display: flex;
@@ -1470,11 +1472,11 @@ export default {
     justify-content: center;
     align-items: center;
     width: 100%;
- }
- .banner-bot {
-     position: fixed;
-     bottom: 0;
- }
+}
+.banner-bot {
+    position: fixed;
+    bottom: 0;
+}
 .pagesFull {
     margin-top:40px;
 }

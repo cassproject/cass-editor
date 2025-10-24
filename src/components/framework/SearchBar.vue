@@ -166,7 +166,7 @@ export default {
             this.searchTerm = this.storeSearchTerm;
         },
         basicSort: function(val) {
-            appLog(val);
+            console.log(val);
             this.$store.commit("app/sortResults", {id: val});
         },
         basicFilter: function(val) {
@@ -221,7 +221,7 @@ export default {
         },
         filteredSearchTo: function() {
             let filterValues = this.applySearchTo.filter(item => item.checked === true);
-            appLog('filtered value', filterValues);
+            console.log('filtered value', filterValues);
             return filterValues;
         },
         sortResults: function() {

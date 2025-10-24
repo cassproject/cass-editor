@@ -149,7 +149,7 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
 import ModalTemplate from './ModalTemplate.vue';
 import common from '@/mixins/common.js';
 import Thing from '@/lode/components/Thing.vue';
@@ -266,7 +266,7 @@ export default {
                     me.$store.commit('app/refreshSearch', true);
                     me.$store.commit('app/closeModal');
                 }, function(err) {
-                    appError(err);
+                    console.error(err);
                     me.error = "Error deleting";
                 });
             }
@@ -280,7 +280,7 @@ export default {
                     me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
                 }
             }, function(failure) {
-                appError(failure);
+                console.error(failure);
                 me.parentFrameworks = [];
             }, null);
         } else if (this.dynamicModalContent.objectType === "Competency") {
@@ -289,7 +289,7 @@ export default {
                     me.parentFrameworks.push({name: success[i].getName(), url: success[i].shortId()});
                 }
             }, function(failure) {
-                appError(failure);
+                console.error(failure);
                 me.parentFrameworks = [];
             }, null);
         } else {
@@ -306,7 +306,7 @@ export default {
                 me.canEditContent = false;
             }
         }, function(err) {
-            appError(err);
+            console.error(err);
             me.canEditContent = false;
         });
     }

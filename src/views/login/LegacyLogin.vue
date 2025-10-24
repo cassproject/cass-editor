@@ -288,7 +288,7 @@ export default {
             try {
                 // add all available group keys to identity manager
                 let groupPpkSet = await group.getOrgKeys();
-                appLog("Adding group identities: " + "(" + group.shortId() + ") - " + group.getName() + " - (" + groupPpkSet.length + ") keys");
+                console.log("Adding group identities: " + "(" + group.shortId() + ") - " + group.getName() + " - (" + groupPpkSet.length + ") keys");
                 for (let i = 0; i < groupPpkSet.length; i++) {
                     let gPpk = groupPpkSet[i];
                     let grpIdent = new EcIdentity();
@@ -318,11 +318,11 @@ export default {
             }
         },
         searchRepositoryForGroupsFailure(msg) {
-            appLog("Group search failure: " + msg);
+            console.log("Group search failure: " + msg);
             this.goToAppHome();
         },
         addGroupIdentities: function() {
-            appLog(" Adding group identities...");
+            console.log(" Adding group identities...");
             let paramObj = {};
             paramObj.size = this.GROUP_SEARCH_SIZE;
             EcOrganization.search(window.repo, '', this.searchRepositoryForGroupsSuccess, this.searchRepositoryForGroupsFailure, paramObj);
@@ -402,25 +402,25 @@ export default {
             this.validateLinkPersonData();
         },
         handleCreatePersonSuccess() {
-            appLog("Person created.");
+            console.log("Person created.");
             if (this.amCreatingAccount) {
                 this.goToAppHome();
             } else this.addGroupIdentities();
         },
         createPersonObjectToLinkToIdentity() {
-            appLog("Creating person object for identity...");
+            console.log("Creating person object for identity...");
             let p = new EcPerson();
             p.assignId(window.repo.selectedServer, this.identityToLinkToPerson.ppk.toPk().fingerprint());
             p.addOwner(this.identityToLinkToPerson.ppk.toPk());
             p.name = this.createLinkPersonName;
             p.email = this.createLinkPersonEmail;
-            appLog(p);
+            console.log(p);
             this.$store.commit('user/loggedOnPerson', p);
             this.linkedPerson = p;
             EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailure);
         },
         handleCreateAccountFetchIdentitySuccess() {
-            appLog("Creating new account identity object...");
+            console.log("Creating new account identity object...");
             let ident = new EcIdentity();
             ident.displayName = this.createLinkPersonName;
             ident.ppk = EcPpk.generateKey();
@@ -431,24 +431,24 @@ export default {
             this.ecRemoteIdentMgr.commit(this.createPersonObjectToLinkToIdentity, this.handleAttemptLoginFetchIdentityFailure);
         },
         handleCreateAccountRemoteIdentityMgrCreateSuccess() {
-            appLog("Creating new account manager fetch...");
+            console.log("Creating new account manager fetch...");
             this.ecRemoteIdentMgr.fetch(this.handleCreateAccountFetchIdentitySuccess, this.handleAttemptLoginFetchIdentityFailure);
         },
         handleCreateAccountConfigureFromServerSuccess: function(obj) {
-            appLog("EcRemoteIdentityManager creating...");
-            appLog("Creating new account login...");
+            console.log("EcRemoteIdentityManager creating...");
+            console.log("Creating new account login...");
             this.ecRemoteIdentMgr.startLogin(this.createAccountUsername, this.createAccountPassword);
             this.ecRemoteIdentMgr.create(this.handleCreateAccountRemoteIdentityMgrCreateSuccess, this.handleAttemptLoginFetchIdentityFailure);
         },
         createNewAccountIdentityAndPerson() {
-            appLog("Creating new account...");
-            appLog("EcRemoteIdentityManager Configuring from server...");
+            console.log("Creating new account...");
+            console.log("EcRemoteIdentityManager Configuring from server...");
             this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
             this.ecRemoteIdentMgr.server = window.repo.selectedServer;
             this.ecRemoteIdentMgr.configureFromServer(this.handleCreateAccountConfigureFromServerSuccess, this.handleAttemptLoginConfigureFromServerFail);
         },
         handleCheckUsernameFetchIdentitySuccess: function(obj) {
-            appLog('handleCheckUsernameFetchIdentitySuccess !!!!');
+            console.log('handleCheckUsernameFetchIdentitySuccess !!!!');
             this.createAccountOrLinkPersonDataInvalid = true;
             this.createAccountUsernameUnavailable = true;
             this.loginBusy = false;
@@ -456,7 +456,7 @@ export default {
             EcIdentityManager.default.clearContacts();
         },
         handleCheckUsernameFetchIdentityFailure: function(failMsg) {
-            appLog('handleCheckUsernameFetchIdentityFailure: ' + failMsg);
+            console.log('handleCheckUsernameFetchIdentityFailure: ' + failMsg);
             if (failMsg && failMsg.toString().toLowerCase().indexOf('user does not exist') !== -1) {
                 this.createNewAccountIdentityAndPerson();
             } else {
@@ -468,23 +468,23 @@ export default {
             }
         },
         handleCheckUsernameConfigureFromServerSuccess: function(obj) {
-            appLog("Fetching identity for username check...");
+            console.log("Fetching identity for username check...");
             this.ecRemoteIdentMgr.startLogin(this.createAccountUsername, this.createAccountPassword); // Creates the hashes for storage and retrieval of keys.
             this.ecRemoteIdentMgr.fetch(this.handleCheckUsernameFetchIdentitySuccess, this.handleCheckUsernameFetchIdentityFailure); // Retrieves the identities and encryption keys from the server.
         },
         handleCheckUsernameConfigureFromServerFail: function(failMsg) {
             this.loginBusy = false;
-            appLog('New account configure from server for username check failure: ' + msg);
+            console.log('New account configure from server for username check failure: ' + msg);
         },
         checkForExistingUsername: function() {
-            appLog("Check if new account username already exists");
+            console.log("Check if new account username already exists");
             this.ecRemoteIdentMgr = new EcRemoteIdentityManager();
             this.ecRemoteIdentMgr.server = window.repo.selectedServer;
             this.ecRemoteIdentMgr.configureFromServer(this.handleCheckUsernameConfigureFromServerSuccess, this.handleCheckUsernameConfigureFromServerFail); // Retrieves username and password salts from the serve
         },
         searchPersonsForNewAccountSuccess(ecRemoteLda) {
-            appLog("New account person search success: ");
-            appLog(ecRemoteLda);
+            console.log("New account person search success: ");
+            console.log(ecRemoteLda);
             let emailExists = false;
             for (let ecrld of ecRemoteLda) {
                 let ep = new EcPerson();
@@ -549,7 +549,7 @@ export default {
             }
         },
         verifyEmailAddressForLinkPersonAndGo() {
-            appLog('Validating link person email...');
+            console.log('Validating link person email...');
             let paramObj = {};
             paramObj.size = this.PERSON_SEARCH_SIZE;
             window.repo.searchWithParams("@type:Person AND email:\"" + this.createLinkPersonEmail + "\"", paramObj, null,
@@ -568,8 +568,8 @@ export default {
             return true;
         },
         findLinkedPersonPersonSearchSuccess(ecRemoteLda) {
-            appLog("Linked person person search success: ");
-            appLog(ecRemoteLda);
+            console.log("Linked person person search success: ");
+            console.log(ecRemoteLda);
             this.identityToLinkToPerson = EcIdentityManager.default.ids[0];
             let matchingPersonRecordFound = false;
             for (let ecrld of ecRemoteLda) {
@@ -579,24 +579,24 @@ export default {
                     matchingPersonRecordFound = true;
                     this.$store.commit('user/loggedOnPerson', ep);
                     this.linkedPerson = ep;
-                    appLog('Matching person record found: ');
-                    appLog(ep);
+                    console.log('Matching person record found: ');
+                    console.log(ep);
                     EcIdentityManager.default.saveContacts();
                     EcIdentityManager.default.saveIdentities();
                 }
             }
             if (matchingPersonRecordFound) this.addGroupIdentities();
             else {
-                appLog('Matching person record NOT found');
+                console.log('Matching person record NOT found');
                 this.showCreateLinkedPerson();
             }
         },
         findLinkedPersonPersonSearchFailure(msg) {
             this.loginBusy = false;
-            appLog('Linked person person search failure: ' + msg);
+            console.log('Linked person person search failure: ' + msg);
         },
         findLinkedPersonForIdentity: function() {
-            appLog("Finding linked person for identity...");
+            console.log("Finding linked person for identity...");
             let identFingerprint = EcIdentityManager.default.ids[0].ppk.toPk().fingerprint();
             let paramObj = {};
             paramObj.size = this.PERSON_SEARCH_SIZE;
@@ -609,13 +609,13 @@ export default {
             } else this.findLinkedPersonForIdentity();
         },
         handleAttemptLoginFetchIdentityFailure: function(failMsg) {
-            appError(failMsg);
+            console.error(failMsg);
             this.identityFailMsg = failMsg;
             this.identityFetchFailed = true;
             this.loginBusy = false;
         },
         handleAttemptLoginConfigureFromServerSuccess: async function(obj) {
-            appLog("Fetching identity...");
+            console.log("Fetching identity...");
             this.ecRemoteIdentMgr.startLogin(this.username, this.password); // Creates the hashes for storage and retrieval of keys.
             await this.ecRemoteIdentMgr.fetch(null, this.handleAttemptLoginFetchIdentityFailure).then((ident) => {
                 if (ident) {
@@ -634,7 +634,7 @@ export default {
             this.identityFetchFailed = false;
             this.configRetrieveFailed = false;
             if (this.areLoginParamsValid()) {
-                appLog("Attempting CaSS login....");
+                console.log("Attempting CaSS login....");
                 this.loginBusy = true;
                 EcIdentityManager.default.clearContacts();
                 EcIdentityManager.default.clearIdentities();

@@ -8,7 +8,7 @@ export const cassApi = {
         LOGOUT_REDIRECT_URL: window.location.origin + "/cass-editor/#/login"
     }),
     methods: {
-        parseCredentialsFromProfileResponse: function(profileResponse) {
+        parseCredentialsFromProfileResponse: function (profileResponse) {
             let pro = JSON.parse(profileResponse.responseText);
             let credentials = {};
             credentials.username = pro["preferred_username"];
@@ -27,7 +27,7 @@ export const cassApi = {
             }
             return credentials;
         },
-        performCreateUser: function(userInfo, responseCallback) {
+        performCreateUser: function (userInfo, responseCallback) {
             let oReq = new XMLHttpRequest();
             oReq.addEventListener("load", (x) => responseCallback(x.currentTarget));
             oReq.withCredentials = true;
@@ -42,7 +42,7 @@ export const cassApi = {
                 lastName: userInfo.lastName
             }));
         },
-        getUserProfile: function(responseCallback) {
+        getUserProfile: function (responseCallback) {
             let oReq = new XMLHttpRequest();
             oReq.addEventListener("load", (x) => responseCallback(x.currentTarget));
             oReq.withCredentials = true;
@@ -50,29 +50,29 @@ export const cassApi = {
             oReq.open("GET", serviceEndpoint);
             oReq.send();
         },
-        redirectToExternalLogin: function() {
-            appLog("Redirecting to external login...");
+        redirectToExternalLogin: function () {
+            console.log("Redirecting to external login...");
             window.location = this.repositorySsoOptions.ssoLogin + "?redirectUrl=" + encodeURIComponent(window.location);
         },
-        redirectToExternalLogout: function() {
-            appLog("Redirecting to external logout...");
+        redirectToExternalLogout: function () {
+            console.log("Redirecting to external logout...");
             window.location = this.repositorySsoOptions.ssoLogout + "?redirectUrl=" + encodeURIComponent(window.location);
         },
-        goToLogin: function() {
+        goToLogin: function () {
             if (this.apiLoginEnabled) {
-                this.$router.push({path: '/login'});
+                this.$router.push({ path: '/login' });
             } else {
-                this.$router.push({path: '/legacyLogin'});
+                this.$router.push({ path: '/legacyLogin' });
             }
         },
-        checkExternalLogoutStatus: function(logoutResponse) {
+        checkExternalLogoutStatus: function (logoutResponse) {
             if (logoutResponse.status !== 200) {
-                appLog('Logout fired but returned an unexpected response code: ' + logoutResponse.status);
+                console.log('Logout fired but returned an unexpected response code: ' + logoutResponse.status);
             }
             this.goToLogin();
         },
-        performExternalLogout: function() {
-            appLog("Performing external logout...");
+        performExternalLogout: function () {
+            console.log("Performing external logout...");
             let oReq = new XMLHttpRequest();
             oReq.addEventListener("load", (x) => this.checkExternalLogoutStatus(x.currentTarget));
             oReq.withCredentials = true;
@@ -80,16 +80,16 @@ export const cassApi = {
             oReq.open("GET", serviceEndpoint);
             oReq.send();
         },
-        performApplicationLogout: function() {
-            appLog("Performing application logout...");
+        performApplicationLogout: function () {
+            console.log("Performing application logout...");
             EcIdentityManager.default.clearContacts();
             EcIdentityManager.default.clearIdentities();
             let clearPerson = {};
             this.$store.commit('user/loggedOnPerson', clearPerson);
-            this.$store.commit('app/showModal', {component: 'LogoutSuccess'});
+            this.$store.commit('app/showModal', { component: 'LogoutSuccess' });
         },
-        performApplicationLogin: function() {
-            appLog("Performing application login...");
+        performApplicationLogin: function () {
+            console.log("Performing application login...");
             EcIdentityManager.default.clearContacts();
             EcIdentityManager.default.clearIdentities();
             let clearPerson = {};
@@ -97,7 +97,7 @@ export const cassApi = {
             if (this.apiLoginEnabled) this.redirectToExternalLogin();
             else this.goToLogin();
         },
-        addQueryParams: function() {
+        addQueryParams: function () {
             let paramObj = this.$store.getters['editor/queryParams'];
             let keys = EcObject.keys(paramObj);
             if (paramObj && keys.length) {
@@ -126,13 +126,13 @@ export const cassApi = {
         }
     },
     computed: {
-        cassApiLocation: function() {
+        cassApiLocation: function () {
             return this.$store.getters['environment/cassApiLocation'];
         },
-        repositorySsoOptions: function() {
+        repositorySsoOptions: function () {
             return this.$store.getters['user/repositorySsoOptions'];
         },
-        apiLoginEnabled: function() {
+        apiLoginEnabled: function () {
             return this.$store.getters['featuresEnabled/apiLoginEnabled'];
         }
     }

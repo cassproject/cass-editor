@@ -417,7 +417,7 @@ export default {
         },
         filteredQuickFilters: function() {
             let filterValues = this.quickFilters.filter(item => item.checked === true);
-            appLog('filtered value', filterValues);
+            console.log('filtered value', filterValues);
             return filterValues;
         },
         shareLink: function() {
@@ -485,7 +485,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: object.id}});
-                }, appError);
+                }, console.error);
             } else if (this.$store.getters['editor/progressionMode']) {
                 this.$store.commit('app/selectDirectory', null);
                 EcConceptScheme.get(object.id, function(success) {
@@ -494,7 +494,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "progressionModel", params: {frameworkId: object.id}});
-                }, appError);
+                }, console.error);
             } else {
                 this.$store.commit('app/selectDirectory', null);
                 EcFramework.get(object.id, function(success) {
@@ -503,7 +503,7 @@ export default {
                     me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
                     me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: object.id}});
-                }, appError);
+                }, console.error);
             }
         },
         getName: function(field) {
@@ -571,7 +571,7 @@ export default {
             // To do: Add other owners and readers
             // To do: add parentDirectory if button is being used to add a subdirectory
             dir.save(function(success) {
-                appLog("Directory saved: " + dir.id);
+                console.log("Directory saved: " + dir.id);
                 me.subdirectoryName = '';
                 if (me.addAnother) {
                     me.addAnother = false;
@@ -581,21 +581,21 @@ export default {
                     me.$store.commit('app/selectDirectory', dir);
                     me.$store.commit('app/rightAsideObject', dir);
                 }
-            }, appError, this.repo);
+            }, console.error, this.repo);
         },
         saveNewSubdirectoryAndAddAnother: function() {
             this.addAnother = true;
             this.saveNewSubdirectory();
         },
         successfulClip({value, event}) {
-            appLog('success', value);
+            console.log('success', value);
             this.clipStatus = 'success';
             setTimeout(() => {
                 this.clipStatus = 'ready';
             }, 1000);
         },
         errorClip({value, event}) {
-            appLog('error', value);
+            console.log('error', value);
             this.clipStatus = 'error';
             setTimeout(() => {
                 this.clipStatus = 'ready';
@@ -605,7 +605,7 @@ export default {
             let me = this;
             EcDirectory.get(this.directory.parentDirectory, function(success) {
                 me.$store.commit('app/selectDirectory', success);
-            }, appError);
+            }, console.error);
         },
         saveNewResource: function() {
             let me = this;
@@ -624,13 +624,13 @@ export default {
                 c.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             this.repo.saveTo(c, function() {
-                appLog("Resource saved: " + c.id);
+                console.log("Resource saved: " + c.id);
                 me.resourceName = '';
                 me.resourceUrl = '';
                 me.createResource = false;
                 me.$store.commit('app/refreshSearch', true);
                 me.$store.commit('app/rightAsideObject', c);
-            }, appError);
+            }, console.error);
         },
         saveEditedResource: function() {
             let me = this;
@@ -641,7 +641,7 @@ export default {
                 me.$store.commit('app/rightAsideObject', resource);
                 me.editResource = false;
                 me.resource = null;
-            }, appError);
+            }, console.error);
         },
         showManageUsersModal() {
             this.$store.commit('app/showModal', {component: 'Share'});
@@ -660,7 +660,7 @@ export default {
                         me.directoryTrail.unshift(parent);
                         me.findDirectoryTrail(parent);
                     }
-                }, appError);
+                }, console.error);
             }
         }
     },

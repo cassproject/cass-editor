@@ -103,7 +103,7 @@ export default {
 
 
 <style lang="scss">
-    @import '@/scss/frameworks.scss';
+    @use '@/scss/frameworks.scss';
 
 
 </style>

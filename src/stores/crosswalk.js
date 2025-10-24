@@ -1,8 +1,3 @@
-import Vue from 'vue';
-import Vuex from 'vuex';
-Vue.use(Vuex);
-
-
 const state = {
     step: 0,
     frameworkSource: null,
@@ -245,28 +240,28 @@ const actions = {
 
 };
 const getters = {
-    enabledRelationshipTypesLastUpdate: function(state) {
+    enabledRelationshipTypesLastUpdate: function (state) {
         return state.enabledRelationshipTypesLastUpdate;
     },
-    enabledRelationshipTypes: function(state) {
+    enabledRelationshipTypes: function (state) {
         return state.enabledRelationshipTypes;
     },
-    frameworkSource: function(state) {
+    frameworkSource: function (state) {
         return state.frameworkSource;
     },
-    frameworkTarget: function(state) {
+    frameworkTarget: function (state) {
         return state.frameworkTarget;
     },
-    frameworkSourceRelationships: function(state) {
+    frameworkSourceRelationships: function (state) {
         return state.frameworkSourceRelationships;
     },
-    frameworkTargetRelationships: function(state) {
+    frameworkTargetRelationships: function (state) {
         return state.frameworkTargetRelationships;
     },
-    relevantExistingAlignmentsMap: function(state) {
+    relevantExistingAlignmentsMap: function (state) {
         return state.relevantExistingAlignmentsMap;
     },
-    relevantExistingAlignmentsMapLastUpdate: function(state) {
+    relevantExistingAlignmentsMapLastUpdate: function (state) {
         return state.relevantExistingAlignmentsMapLastUpdate;
     },
     workingAlignmentsSource(state) {
@@ -295,10 +290,10 @@ const getters = {
     }
 };
 
-export default {
-    namespaced: true,
+import { defineStore } from 'pinia';
+export default defineStore('crosswalk',{ 
     state,
     mutations,
     actions,
     getters
-};
+});

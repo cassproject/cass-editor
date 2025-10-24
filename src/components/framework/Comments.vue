@@ -196,7 +196,7 @@ export default {
             this.$store.commit('editor/setFrameworkCommentList', this.localFrameworkCommentList); // this SHOULD trigger parseComments
         },
         buildFrameworkCommentPersonMapFailure: function(msg) {
-            appLog('buildFrameworkCommentPersonMapFailure: ' + msg);
+            console.log('buildFrameworkCommentPersonMapFailure: ' + msg);
             this.isCommentsBusy = false;
         },
         buildCommentCreatorList: function() {
@@ -225,7 +225,7 @@ export default {
             this.buildFrameworkCommentPersonMap();
         },
         buildFrameworkCommentListFailure: function(msg) {
-            appLog('buildFrameworkCommentListFailure: ' + msg);
+            console.log('buildFrameworkCommentListFailure: ' + msg);
             this.isCommentsBusy = false;
         },
         clearAllFrameworkCommentData: function() {
@@ -288,7 +288,7 @@ export default {
 </script>
 
 <style lang="scss">
-    @import './../../scss/comments-side-bar.scss';
+    @use './../../scss/comments-side-bar.scss' as *;
 
 </style>
 

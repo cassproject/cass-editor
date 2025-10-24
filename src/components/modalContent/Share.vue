@@ -527,21 +527,21 @@ export default {
                     }
                 }
             }, function(failure) {
-                appError(failure);
+                console.error(failure);
             });
         },
         closeAutoComplete: function() {
             this.isOpenAutocomplete = false;
         },
         successfulClip({value, event}) {
-            appLog('success', value);
+            console.log('success', value);
             this.clipStatus = 'success';
             setTimeout(() => {
                 this.clipStatus = 'ready';
             }, 1000);
         },
         errorClip({value, event}) {
-            appLog('error', value);
+            console.log('error', value);
             this.clipStatus = 'error';
             setTimeout(() => {
                 this.clipStatus = 'ready';
@@ -551,7 +551,7 @@ export default {
             var pk = EcPk.fromPem(ownerPem);
             let me = this;
             EcPerson.getByPk(window.repo, pk, function(success) {
-                appLog(success);
+                console.log(success);
                 if (success) {
                     let currentUser = false;
                     if (me.loggedOnPerson.shortId() === success.shortId()) {
@@ -568,7 +568,7 @@ export default {
             }, function(failure) {
                 // If it's not a Person, check organizations
                 me.getOrganizationByEcPk(pk, function(success) {
-                    appLog(success);
+                    console.log(success);
                     if (success) {
                         let ownerFingerprint = pk.fingerprint();
                         let currentUser = false;
@@ -586,7 +586,7 @@ export default {
                         }
                     }
                 }, function(error) {
-                    appError(error);
+                    console.error(error);
                 });
             });
         },
@@ -594,7 +594,7 @@ export default {
             let me = this;
             var pk = EcPk.fromPem(readerPem);
             EcPerson.getByPk(window.repo, pk, function(success) {
-                appLog(success);
+                console.log(success);
                 if (success) {
                     var user = {header: success.name, email: success.email, view: "view", id: success.shortId(), changed: false, pk: pk};
                     if ((me.users.filter(each => each.id === user.id)).length === 0) {
@@ -604,7 +604,7 @@ export default {
             }, function(failure) {
                 // If it's not a Person, check organizations
                 me.getOrganizationByEcPk(pk, function(success) {
-                    appLog(success);
+                    console.log(success);
                     if (success) {
                         var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
                         if ((me.groups.filter(each => each.id === org.id)).length === 0) {
@@ -612,7 +612,7 @@ export default {
                         }
                     }
                 }, function(error) {
-                    appError(error);
+                    console.error(error);
                 });
             });
         },
@@ -645,16 +645,16 @@ export default {
             paramObj.size = 10000;
             let me = this;
             EcPerson.search(window.repo, '', function(success) {
-                appLog(success);
+                console.log(success);
                 for (var i = 0; i < success.length; i++) {
                     let person = {id: success[i].shortId(), name: success[i].name, email: success[i].email, pk: me.getPersonEcPk(success[i])};
                     me.possibleGroupsAndUsers.push(person);
                 }
             }, function(failure) {
-                appError(failure);
+                console.error(failure);
             }, paramObj);
             EcOrganization.search(window.repo, '', async function(success) {
-                appLog(success);
+                console.log(success);
                 for (var i = 0; i < success.length; i++) {
                     let pk = await me.getOrganizationEcPk(success[i]);
                     if (pk) {
@@ -663,7 +663,7 @@ export default {
                     }
                 }
             }, function(failure) {
-                appError(failure);
+                console.error(failure);
             }, paramObj);
         },
         filterResults: function() {
@@ -729,7 +729,7 @@ export default {
                     if (callback) {
                         callback();
                     }
-                }, appError);
+                }, console.error);
             }
         },
         addAndRemoveFromAllObjects: function() {
@@ -777,7 +777,7 @@ export default {
                         me.multiput(me.toSave);
                     }
                 });
-            }, appError);
+            }, console.error);
         },
         addAndRemoveFromResource: function(resource) {
             for (let i = 0; i < this.removeReader.length; i++) {
@@ -984,8 +984,8 @@ export default {
                                 me.multiput(me.toSave);
                             }
                         });
-                    }, appError);
-                }, appError);
+                    }, console.error);
+                }, console.error);
             }
         },
         handleMakePrivateResource: function(resource) {
@@ -1001,7 +1001,7 @@ export default {
                 EcEncryptedValue.toEncryptedValue(resource, false, function(eresource) {
                     me.toSave.push(eresource);
                     me.multiput(me.toSave);
-                }, appError);
+                }, console.error);
             }
         },
         handleMakePrivateFramework: function(framework) {
@@ -1091,7 +1091,7 @@ export default {
                         me.multiput(me.toSave);
                     }
                 });
-            }, appError);
+            }, console.error);
         },
         handleMakePublicResource: async function(resource) {
             let cw = new schema.CreativeWork();
@@ -1187,7 +1187,7 @@ export default {
                         me.toSave.splice(0, me.toSave.length);
                     }
                 });
-            }, appError);
+            }, console.error);
         },
         handleMakePrivateConceptScheme: async function() {
             var me = this;
@@ -1210,7 +1210,7 @@ export default {
                     me.confirmMakePrivate = false;
                     me.isProcessing = false;
                     me.toSave.splice(0, me.toSave.length);
-                }, appError);
+                }, console.error);
             }
         },
         handleMakePublicConceptScheme: async function() {
@@ -1253,7 +1253,7 @@ export default {
                     me.confirmMakePrivate = false;
                     me.isProcessing = false;
                     me.toSave.splice(0, me.toSave.length);
-                }, appError);
+                }, console.error);
             });
         },
         decryptConcepts: function(c) {
@@ -1315,7 +1315,7 @@ export default {
                         me.multiput(me.toSave);
                     }
                 });
-            }, appError);
+            }, console.error);
         },
         makeCurrentUserResourceOwner: function(resource) {
             resource.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());

@@ -661,7 +661,7 @@ export default {
         if (precache.length > 0) {
             this.repo.multiget(precache, function(success) {
                 me.computeHierarchy();
-            }, appError);
+            }, console.error);
         } else {
             me.computeHierarchy();
         }
@@ -831,7 +831,7 @@ export default {
                             delete top[a[this.edgeSourceProperty]];
                         }
                     } else {
-                        appLog("Hierarchy: Could not find edge: " + this.container[this.containerEdgeProperty][i]);
+                        console.log("Hierarchy: Could not find edge: " + this.container[this.containerEdgeProperty][i]);
                     }
                 }
             }
@@ -887,7 +887,7 @@ export default {
                 this.dragging = false;
                 return;
             }
-            appLog(foo.oldIndex, foo.newIndex);
+            console.log(foo.oldIndex, foo.newIndex);
             var toId = null;
             var toLast = false;
             if (this.shiftKey) {
@@ -928,7 +928,7 @@ export default {
             }
             if (fromId !== toId) {
                 var fromIndex = this.container[this.containerNodeProperty].indexOf(fromId);
-                appLog(fromIndex);
+                console.log(fromIndex);
                 if ((toId == null || toId === undefined) && (fromContainerId === toContainerId) && (fromIndex >= this.container[this.containerNodeProperty].length - 2)) {
                     last = true;
                 }
@@ -939,7 +939,7 @@ export default {
                 } else {
                     toIndex = this.container[this.containerNodeProperty].indexOf(toId);
                 }
-                appLog(toIndex);
+                console.log(toIndex);
                 if (last) {
                     this.container[this.containerNodeProperty].push(fromId);
                 } else {
@@ -962,7 +962,7 @@ export default {
                             if (a[this.edgeTargetProperty] == null) continue;
                             if (a[this.edgeSourceProperty] == null) continue;
                             if (a[this.edgeSourceProperty] !== fromId && (this.$store.getters['editor/cutId'] ? (this.$store.getters['editor/cutId'] && a[this.edgeTargetProperty] !== fromId) : true)) continue;
-                            appLog("Identified edge to remove: ", JSON.parse(a.toJson()));
+                            console.log("Identified edge to remove: ", JSON.parse(a.toJson()));
                             this.container[this.containerEdgeProperty].splice(i--, 1);
                         }
                     }
@@ -995,11 +995,11 @@ export default {
                         a.relationType = this.edgeRelationLiteral;
                         this.container[this.containerEdgeProperty].push(a.shortId());
                         addedEdges.push(a.shortId());
-                        appLog("Added edge: ", JSON.parse(a.toJson()));
+                        console.log("Added edge: ", JSON.parse(a.toJson()));
                         if (this.$store.state.editor && this.$store.state.editor.private === true) {
                             a = await EcEncryptedValue.toEncryptedValue(a);
                         }
-                        this.repo.saveTo(a, appLog, appError);
+                        this.repo.saveTo(a, console.log, console.error);
                     }
                 }
             }
@@ -1016,7 +1016,7 @@ export default {
             if (this.$store.state.editor && this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[stripped.id] !== true) {
                 stripped = await EcEncryptedValue.toEncryptedValue(stripped);
             }
-            this.repo.saveTo(stripped, appLog, appError);
+            this.repo.saveTo(stripped, console.log, console.error);
             this.dragging = false;
         },
         add: async function(containerId, previousSibling) {
@@ -1060,7 +1060,7 @@ export default {
             c["schema:dateCreated"] = new Date().toISOString();
             c["schema:dateModified"] = new Date().toISOString();
             this.container["schema:dateModified"] = new Date().toISOString();
-            appLog("Added node: ", JSON.parse(c.toJson()));
+            console.log("Added node: ", JSON.parse(c.toJson()));
             if (this.$store.state.editor) {
                 this.$store.commit("editor/newCompetency", c.shortId());
             }
@@ -1121,7 +1121,7 @@ export default {
                             me.container[me.containerEdgeProperty] = [];
                         }
                         me.container[me.containerEdgeProperty].push(a.shortId());
-                        appLog("Added edge: ", JSON.parse(a.toJson()));
+                        console.log("Added edge: ", JSON.parse(a.toJson()));
                         me.$store.commit('editor/addEditsToUndo', [
                             {operation: "addNew", id: c.shortId()},
                             {operation: "update", id: me.container.shortId(), fieldChanged: ["competency", "relation"], initialValue: [initialCompetencies, initialRelations], changedValue: [me.container.competency, me.container.relation]}
@@ -1139,7 +1139,7 @@ export default {
                     }
                 }
             } catch (e) {
-                appError(e);
+                console.error(e);
             }
         },
         // Supports save() by removing reactify arrays.
@@ -1210,7 +1210,7 @@ export default {
             try {
                 await this.add(parent, null);
             } catch (e) {
-                appError(e);
+                console.error(e);
             }
             this.loading = false;
 
