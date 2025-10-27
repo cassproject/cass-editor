@@ -30,7 +30,7 @@
                                 Navigate to the <router-link
                                     :to="{path: '/login', query: queryParams}"
                                     class="custom-link local"
-                                    v-if="$store.getters['featuresEnabled/apiLoginEnabled']">
+                                    v-if="apiLoginEnabled">
                                     login screen
                                 </router-link>
                                 <router-link
@@ -231,6 +231,7 @@
 
 <script>
 import {mapState} from 'pinia';
+import store from '@/stores/index.js';
 import casslogo from '@/assets/cass-logo-white.svg';
 import common from '@/mixins/common.js';
 
@@ -255,9 +256,14 @@ export default {
         this.baseRepoUrl = this.repo.selectedServer.slice(0, index);
     },
     computed: {
-        ...mapState({
-            loggedInPerson: state => state.user.loggedOnPerson,
-            queryParams: state => state.editor.queryParams
+        ...mapState(store.user, {
+            loggedInPerson: state => state.loggedOnPerson
+        }),
+        ...mapState(store.editor, {
+            queryParams: state => state.queryParams
+        }),
+        ...mapState(store.featuresEnabled, {
+            apiLoginEnabled: state => state.apiLoginEnabled
         }),
         linkToLegacyDemos: function() {
             return (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0);

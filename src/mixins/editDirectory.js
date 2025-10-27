@@ -1,9 +1,11 @@
+import store from "@/stores/index.js"
+import { mapState } from "pinia";
 export default {
     methods: {
         deleteObject: async function (obj) {
             console.log("deleting " + obj.id);
             var me = this;
-            let children = await this.$store.dispatch('editor/getDirectoryChildren', obj);
+            let children = await store.editor().getDirectoryChildren(obj);
             window.repo.multiget(children, function (success) {
                 new EcAsyncHelper().each(success, function (obj, done) {
                     if (obj.type === 'Framework') {
@@ -16,7 +18,7 @@ export default {
                     done();
                 }, function (objs) {
                     me.repo.deleteRegistered(obj, function () {
-                        me.$store.dispatch('app/refreshDirectories');
+                        store.app().refreshDirectories();
                     }, console.error);
                     if (obj.shortId() === me.directory.shortId()) {
                         me.$router.push({ name: "frameworks" });
@@ -47,19 +49,22 @@ export default {
             }, console.log);
         },
         onDoneEditingNode: function () {
-            let me = this;
-            if (this.$store.getters['app/rightAsideObject']) {
-                EcRepository.get(this.$store.getters['app/rightAsideObject'].shortId(), function (success) {
-                    me.$store.commit('app/rightAsideObject', success);
+            if (this.rightAsideObject) {
+                EcRepository.get(this.rightAsideObject.shortId(), function (success) {
+                    store.app().setRightAsideObject(success);
                 }, console.error);
             }
-            this.$store.commit('app/editDirectory', false);
+            store.app().setEditDirectory(false);
         }
     },
     computed: {
-        editDirectory: function () {
-            return this.$store.getters['app/editDirectory'];
-        },
+        ...mapState(store.app, {
+            editDirectory: state => state.editDirectory,
+            rightAsideObject: state => state.rightAsideObject,
+        }),
+        ...mapState(store.editor, {
+            changedObject: state => state.changedObject
+        }),
         canEditDirectory: function () {
             if (!this.directory) {
                 return false;
@@ -70,9 +75,6 @@ export default {
                 return false;
             }
             return true;
-        },
-        directory: function () {
-            return this.$store.getters['app/rightAsideObject'];
         },
         directoryProfile: function () {
             return {
@@ -117,9 +119,6 @@ export default {
                 "secondaryProperties": ["@id"],
                 "tertiaryProperties": []
             };
-        },
-        changedObject: function () {
-            return this.$store.getters['editor/changedObject'];
         }
     },
     watch: {

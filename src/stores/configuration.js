@@ -1,4 +1,4 @@
-const state = {
+const state = ()=>({
     CONFIG_SEARCH_SIZE: 10000,
     DEFAULT_CONFIGURATION_TYPE: 'Configuration',
     DEFAULT_CONFIGURATION_CONTEXT: 'https://schema.cassproject.org/0.4/',
@@ -20,7 +20,7 @@ const state = {
     showBrowserConfigSetModal: false,
     configToDelete: {},
     availableConcepts: []
-};
+});
 
 const mutations = {
     setConfigToDelete(state, val) {

@@ -1,4 +1,7 @@
+import store from "@/stores/index.js"
+import { mapState } from "pinia";
 import dateFormat from 'dateformat';
+import { map } from "lodash";
 
 export default {
     data() {
@@ -8,15 +11,23 @@ export default {
         };
     },
     computed: {
+        ...mapState(store.editor, {
+            framework: state => state.framework,
+            queryParams: state => state.queryParams,
+            selectedCompetency: state => state.selectedCompetency,
+            conceptMode: state => state.conceptMode,
+            progressionMode: state => state.progressionMode,
+            private: state => state.private
+        }),
+        ...mapState(store.user, {
+            loggedOnPerson: state => state.loggedOnPerson
+        }),
         ctids: function () {
             let framework = this.framework;
-            if (!framework) {
-                framework = this.$store.getters['editor/framework'];
-            }
             if (!framework || !framework.id) {
                 return null;
             }
-            if (this.$store.getters['editor/queryParams'] && (this.$store.getters['editor/queryParams'].ceasnDataFields !== "true")) {
+            if (this.queryParams && (this.queryParams.ceasnDataFields !== "true")) {
                 return null;
             }
             var obj = {};
@@ -30,13 +41,10 @@ export default {
         },
         registryURLs: function () {
             let framework = this.framework;
-            if (!framework) {
-                framework = this.$store.getters['editor/framework'];
-            }
             if (!framework || !framework.id) {
                 return null;
             }
-            if (this.$store.getters['editor/queryParams'] && (this.$store.getters['editor/queryParams'].ceasnDataFields !== "true")) {
+            if (this.queryParams && (this.queryParams.ceasnDataFields !== "true")) {
                 return null;
             }
             var obj = {};
@@ -73,9 +81,6 @@ export default {
         getConceptCtids: async function () {
             this.conceptCtids = null;
             let framework = this.framework;
-            if (!framework) {
-                framework = this.$store.getters['editor/framework'];
-            }
             if (!framework || !framework.id) {
                 return;
             }
@@ -105,9 +110,6 @@ export default {
         getConceptRegistryUrls: async function () {
             this.conceptRegistryUrls = null;
             let framework = this.framework;
-            if (!framework) {
-                framework = this.$store.getters['editor/framework'];
-            }
             if (!framework || !framework.id) {
                 return;
             }
@@ -132,8 +134,8 @@ export default {
             this.conceptRegistryUrls = obj;
         },
         spitEvent: function (message, id, page) {
-            var framework = this.framework ? this.framework : this.$store.state.editor.framework;
-            var selectedCompetency = this.$store.state.editor.selectedCompetency;
+            let framework = this.framework;
+            let selectedCompetency = this.selectedCompetency;
             let frameworkName = null;
             if (framework) {
                 if (framework["dcterms:title"]) {
@@ -150,7 +152,7 @@ export default {
                     compName = selectedCompetency.getName();
                 }
             }
-            var evt = {
+            let evt = {
                 message: message,
                 changed: id,
                 selectedFramework: framework == null ? null : framework.shortId(),
@@ -194,10 +196,7 @@ export default {
         },
         setDefaultLanguage: function () {
             let framework = this.framework;
-            if (!framework) {
-                framework = this.$store.getters['editor/framework'];
-            }
-            var defaultLanguage;
+            let defaultLanguage;
             if (framework && framework["schema:inLanguage"]) {
                 defaultLanguage = EcArray.isArray(framework["schema:inLanguage"]) ? framework["schema:inLanguage"][0] : framework["schema:inLanguage"];
             } else if (framework && framework["ceasn:inLanguage"]) {
@@ -209,22 +208,22 @@ export default {
             } else {
                 defaultLanguage = "en";
             }
-            this.$store.commit('editor/defaultLanguage', defaultLanguage);
+            store.editor().setDefaultLanguage(defaultLanguage);
         },
         get: function (server, service, headers, success, failure) {
-            var url = EcRemote.urlAppend(server, service);
+            let url = EcRemote.urlAppend(server, service);
             url = EcRemote.upgradeHttpToHttps(url);
-            var xhr = null;
+            let xhr = null;
             if ((typeof httpStatus) === "undefined") {
                 xhr = new XMLHttpRequest();
                 xhr.open("GET", url, true);
                 if (headers != null) {
-                    var keys = EcObject.keys(headers);
-                    for (var i = 0; i < keys.length; i++) {
+                    let keys = EcObject.keys(headers);
+                    for (let i = 0; i < keys.length; i++) {
                         xhr.setRequestHeader(keys[i], headers[keys[i]]);
                     }
                 }
-                var xhrx = xhr;
+                let xhrx = xhr;
                 xhr.onreadystatechange = function () {
                     if (xhrx.readyState === 4 && xhrx.status === 200) {
                         if (success != null) {
@@ -258,7 +257,7 @@ export default {
         },
         resolveNameFromUrl: function (url) {
             this.get(url, null, null, function (data) {
-                var name = null;
+                let name = null;
                 if (data) {
                     if (data[0] === "<") {
                         return;
@@ -319,7 +318,7 @@ export default {
                                 let obj = await EcRepository.get(id);
                                 window.repo.deleteRegistered(obj, function (success) {
                                     if (obj.type === "Level") {
-                                        me.$store.commit('editor/refreshLevels', true);
+                                        store.editor().setRefreshLevels(true);
                                     }
                                     callback();
                                 }, function (failure) {
@@ -341,14 +340,14 @@ export default {
             })(id, depth);
         },
         selectButton: async function (selectedArray) {
-            var ary = [];
+            let ary = [];
             if (!selectedArray) {
                 selectedArray = this.selectedArray;
             }
-            for (var i = 0; i < selectedArray.length; i++) {
-                if (this.queryParams.selectVerbose === "true" && this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true) {
+            for (let i = 0; i < selectedArray.length; i++) {
+                if (this.queryParams.selectVerbose === "true" && this.conceptMode !== true && this.progressionMode !== true) {
                     if (this.queryParams.selectExport === "ctdlasn") {
-                        var link;
+                        let link;
                         if (EcRepository.shouldTryUrl(selectedArray[i]) === false && selectedArray[i].indexOf(window.repo.selectedServer) === -1) {
                             link = window.repo.selectedServer + "ceasn/" + EcCrypto.md5(selectedArray[i]);
                         } else {
@@ -379,10 +378,10 @@ export default {
                     }
                 }
             }
-            var currentFramework = this.framework;
-            if (this.queryParams.selectExport === "ctdlasn" && this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true) {
+            let currentFramework = this.framework;
+            if (this.queryParams.selectExport === "ctdlasn" && this.conceptMode !== true && this.progressionMode !== true) {
                 if (this.framework != null) {
-                    var link;
+                    let link;
                     if (EcRepository.shouldTryUrl(this.framework.id) === false && this.framework.id.indexOf(window.repo.selectedServer) === -1) {
                         link = window.repo.selectedServer + "ceasn/" + EcCrypto.md5(this.framework.shortId());
                     } else {
@@ -397,10 +396,10 @@ export default {
                     }
                 }
             }
-            var message = {
+            let message = {
                 message: "selected",
                 selected: ary,
-                type: ((this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) ? 'Concept' : 'Competency'),
+                type: ((this.conceptMode === true || this.progressionMode === true) ? 'Concept' : 'Competency'),
                 selectedFramework: currentFramework
             };
             message = JSON.parse(JSON.stringify(message));
@@ -408,10 +407,10 @@ export default {
             parent.postMessage(message, this.queryParams.origin);
         },
         addLevel: async function (selectedCompetency, optionalLevelUrlOrName) {
-            var c;
-            var me = this;
-            var framework = this.framework ? this.framework : this.$store.getters['editor/framework'];
-            var initialLevels = framework.level ? framework.level.slice() : null;
+            let c;
+            let me = this;
+            let framework = this.framework;
+            let initialLevels = framework.level ? framework.level.slice() : null;
             if (!optionalLevelUrlOrName || !optionalLevelUrlOrName.includes('http')) {
                 c = new EcLevel();
                 if (this.queryParams.newObjectEndpoint != null) {
@@ -424,7 +423,7 @@ export default {
                 c.competency = selectedCompetency;
             } else {
                 optionalLevelUrlOrName = optionalLevelUrlOrName[0];
-                var c = await EcRepository.get(optionalLevelUrlOrName);
+                c = await EcRepository.get(optionalLevelUrlOrName);
                 if (!c.competency) {
                     c.competency = [];
                 } else if (!EcArray.isArray(c.competency)) {
@@ -440,16 +439,16 @@ export default {
                     edits.push({ operation: "addNew", id: c.shortId() });
                 }
                 edits.push({ operation: "update", id: framework.shortId(), fieldChanged: ["level"], initialValue: [initialLevels], changedValue: [framework.level] });
-                me.$store.commit('editor/addEditsToUndo', edits);
-                me.$store.commit('editor/framework', framework);
-                if (me.$store.state.editor.private === true) {
+                store.editor().addEditsToRedo(edits);
+                store.editor().setFramework(framework);
+                if (me.private === true) {
                     if (EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                         framework = await EcEncryptedValue.toEncryptedValue(framework);
                     }
                 }
                 window.repo.saveTo(framework, function () {
-                    me.$store.commit('lode/setIsAddingProperty', false);
-                    me.$store.commit('editor/refreshLevels', true);
+                    store.lode().setIsAddingProperty(false);
+                    store.editor().setRefreshLevels(true);
                 }, console.error);
             }, console.error);
         },
@@ -485,7 +484,7 @@ export default {
                     if (levelChanged) {
                         edits.push({ operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency] });
                         window.repo.saveTo(level, function () {
-                            me.$store.commit('editor/refreshLevels', true);
+                            store.editor().setRefreshLevels(true);
                         }, console.error);
                     }
                     if (this.framework.level.indexOf(level.shortId()) === -1) {
@@ -506,7 +505,7 @@ export default {
                     if (levelChanged) {
                         edits.push({ operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency] });
                         window.repo.saveTo(level, function () {
-                            me.$store.commit('editor/refreshLevels', true);
+                            store.editor().setRefreshLevels(true);
                         }, console.error);
                     }
                     // If level doesn't have any competencies attached, remove it from the framework.
@@ -520,15 +519,15 @@ export default {
                 edits.push({ operation: "update", id: this.framework.shortId(), fieldChanged: ["level"], initialValue: [initialLevels], changedValue: [this.framework.level] });
                 this.saveFramework();
             }
-            this.$store.commit('editor/addEditsToUndo', edits);
-            this.$store.commit('lode/setAddingChecked', []);
-            this.$store.commit('lode/setIsAddingProperty', false);
+            store.editor().addEditsToUndo(edits);
+            store.lode().setAddingChecked([])
+            store.lode().setIsAddingProperty(false);
         },
         saveFramework: async function () {
             this.framework["schema:dateModified"] = new Date().toISOString();
             var framework = this.framework;
-            this.$store.commit('editor/framework', framework);
-            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+            store.editor().setFramework(framework);
+            if (this.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             window.repo.saveTo(framework, function () { }, console.error);
@@ -537,13 +536,13 @@ export default {
             var initialLevels = this.framework.level ? this.framework.level.slice() : null;
             this.framework.removeLevel(levelId);
             var level = await EcRepository.get(levelId);
-            this.$store.commit('editor/addEditsToUndo', [
+            store.editor().addEditsToUndo([
                 { operation: "delete", obj: level },
                 { operation: "update", id: this.framework.shortId(), fieldChanged: [this.framework.level], initialValue: [initialLevels], changedValue: [this.framework.level] }
-            ]);
+            ])
             this.conditionalDelete(levelId);
             this.saveFramework();
-            this.$store.commit('editor/refreshLevels', true);
+            store.editor().setRefreshLevels(true);
         },
         addRelationsToFramework: async function (selectedCompetency, property, values) {
             if (values.length > 0) {
@@ -552,9 +551,6 @@ export default {
             }
         },
         addAlignments: async function (targets, thing, relationType, allowSave) {
-            // if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
-            //     return this.addConceptAlignments(targets, thing, relationType);
-            // }
             let urlProperties = [
                 "ceasn:knowledgeEmbodied",
                 "ceasn:skillEmbodied",
@@ -572,13 +568,13 @@ export default {
                 return this.addRelationAsCompetencyField(targets, thing, relationType, allowSave);
             }
             return new Promise(async (resolve, reject) => {
-                var framework = this.$store.state.editor.framework;
+                var framework = this.framework;
                 var edits = [];
                 var initialRelations = framework.relation ? framework.relation.slice() : null;
                 for (var i = 0; i < targets.length; i++) {
                     var r = new EcAlignment();
-                    if (this.$store.getters['editor/queryParams'].newObjectEndpoint != null) {
-                        r.generateShortId(this.$store.getters['editor/queryParams'].newObjectEndpoint);
+                    if (this.queryParams.newObjectEndpoint != null) {
+                        r.generateShortId(this.queryParams.newObjectEndpoint);
                     } else {
                         r.generateId(window.repo.selectedServer);
                     }
@@ -615,7 +611,7 @@ export default {
                             r.addReader(EcPk.fromPem(reader));
                         }
                     }
-                    if (this.$store.state.editor.private === true) {
+                    if (this.private === true) {
                         r = await EcEncryptedValue.toEncryptedValue(r);
                     }
                     await new Promise((res, rej) => {
@@ -641,9 +637,9 @@ export default {
                     }
                 }
                 edits.push({ operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation] });
-                this.$store.commit('editor/addEditsToUndo', edits);
-                this.$store.commit('editor/framework', framework);
-                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                store.editor().addEditsToUndo(edits);
+                store.editor().setFramework(framework);
+                if (this.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
                 window.repo.saveTo(framework, resolve, reject);
@@ -658,9 +654,9 @@ export default {
                     }
                     thing[relationType].push(targets[i]);
                 }
-                this.$store.commit('editor/addEditsToUndo', [{ operation: "update", id: thing.shortId(), fieldChanged: [relationType], initialValue: [initialValue], changedValue: [thing[relationType]] }]);
+                store.editor().addEditsToUndo([{ operation: "update", id: thing.shortId(), fieldChanged: [relationType], initialValue: [initialValue], changedValue: [thing[relationType]] }]);
                 thing["schema:dateModified"] = new Date().toISOString();
-                if (this.$store.state.editor.private === true) {
+                if (this.private === true) {
                     if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
                         thing = await EcEncryptedValue.toEncryptedValue(thing);
                     }
@@ -696,9 +692,9 @@ export default {
                 }, async function () {
                     var framework = me.framework;
                     edits.push({ operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation] });
-                    me.$store.commit('editor/framework', framework);
-                    me.$store.commit('editor/addEditsToUndo', edits);
-                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    store.editor().setFramework(framework);
+                    store.editor().addEditsToUndo(edits);
+                    if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                         framework = await EcEncryptedValue.toEncryptedValue(framework);
                     }
                     window.repo.saveTo(framework, resolve, reject);
@@ -707,7 +703,7 @@ export default {
         },
         ceasnRegistryUriTransform: function (uri) {
             var endpoint = null;
-            if (this.$store.getters['editor/queryParams'] && (this.$store.getters['editor/queryParams'].newObjectEndpoint)) {
+            if (this.queryParams && this.queryParams.newObjectEndpoint) {
                 endpoint = this.queryParams.newObjectEndpoint;
             }
             if (endpoint == null) {
@@ -737,13 +733,13 @@ export default {
         },
         canViewCommentsCurrentFramework: function () {
             // TODO expand on this
-            let lop = this.$store.state.user.loggedOnPerson;
+            let lop = this.loggedOnPerson;
             if (lop && lop.id && lop.id !== '') return true;
             else return false;
         },
         canAddCommentsCurrentFramework: function () {
             // TODO expand on this
-            let lop = this.$store.state.user.loggedOnPerson;
+            let lop = this.loggedOnPerson;
             if (lop && lop.id && lop.id !== '') return true;
             else return false;
         },
