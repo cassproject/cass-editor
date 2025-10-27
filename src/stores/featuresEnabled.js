@@ -1,4 +1,4 @@
-const state = {
+const state = ()=>({
     crosswalkEnabled: true,
     userManagementEnabled: true,
     configurationsEnabled: true,
@@ -10,64 +10,50 @@ const state = {
     shareEnabled: true,
     shareLink: false,
     ownedByMe: false
-};
-
-const mutations = {
-    crosswalkEnabled(state, bool) {
-        state.crosswalkEnabled = bool;
-    },
-    userManagementEnabled(state, bool) {
-        state.userManagementEnabled = bool;
-    },
-    configurationsEnabled(state, bool) {
-        state.configurationsEnabled = bool;
-    },
-    searchByOwnerNameEnabled(state, bool) {
-        state.searchByOwnerNameEnabled = bool;
-    },
-    pluginsEnabled(state, bool) {
-        state.pluginsEnabled = bool;
-    },
-    loginEnabled(state, bool) {
-        state.loginEnabled = bool;
-    },
-    apiLoginEnabled(state, bool) {
-        state.apiLoginEnabled = bool;
-    },
-    legacyLoginEnabled(state, bool) {
-        state.legacyLoginEnabled = bool;
-    },
-    shareEnabled(state, bool) {
-        state.shareEnabled = bool;
-    },
-    shareLink(state, bool) {
-        state.shareLink = bool;
-    },
-    ownedByMe(state, bool) {
-        state.ownedByMe = bool;
-    }
-};
+});
 
 const actions = {
-
+    setCrosswalkEnabled(bool) {
+        this.crosswalkEnabled = bool;
+    },
+    setUserManagementEnabled(bool) {
+        this.userManagementEnabled = bool;
+    },
+    setConfigurationsEnabled(bool) {
+        this.configurationsEnabled = bool;
+    },
+    setSearchByOwnerNameEnabled(bool) {
+        this.searchByOwnerNameEnabled = bool;
+    },
+    setPluginsEnabled(bool) {
+        this.pluginsEnabled = bool;
+    },
+    setLoginEnabled(bool) {
+        this.loginEnabled = bool;
+    },
+    setApiLoginEnabled(bool) {
+        this.apiLoginEnabled = bool;
+    },
+    setLegacyLoginEnabled(bool) {
+        this.legacyLoginEnabled = bool;
+    },
+    setShareEnabled(bool) {
+        this.shareEnabled = bool;
+    },
+    setShareLink(bool) {
+        this.shareLink = bool;
+    },
+    setOwnedByMe(bool) {
+        this.ownedByMe = bool;
+    }
 };
 
 const getters = {
-    legacyLoginEnabled: function (state) {
-        return state.legacyLoginEnabled;
-    },
-    apiLoginEnabled: function (state) {
-        return state.apiLoginEnabled;
-    },
-    ownedByMe: function (state) {
-        return state.ownedByMe;
-    }
 };
 
 import { defineStore } from 'pinia';
 export default defineStore('featuresEnabled', { 
     state,
-    mutations,
     actions,
     getters
 });

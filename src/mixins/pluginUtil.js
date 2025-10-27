@@ -1,3 +1,4 @@
+import store from '@/stores/index.js';
 export const pluginUtil = {
     name: 'pluginUtil',
     data: () => ({
@@ -250,7 +251,7 @@ export const pluginUtil = {
             return p;
         },
         getPluginsFromCuratedList() {
-            for (let p of this.$store.getters['app/curatedPlugins']) {
+            for (let p of store.app().curatedPlugins) {
                 this.pluginList.push(this.buildPluginListItemFromCuratedPlugin(p));
             }
         },

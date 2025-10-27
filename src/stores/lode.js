@@ -1,5 +1,5 @@
 import jsonld from 'jsonld';
-const state = {
+const state = ()=>({
     schemata: {},
     isSavingProperty: false,
     isSavingThing: false,
@@ -18,21 +18,111 @@ const state = {
     numPropertyComponentsVisible: {},
     searchType: null,
     includeRelations: true
-};
+});
 const actions = {
-    schemata({state, commit}, schema) {
-        commit('setSchemata', schema);
+    setIsSavingProperty(value) {
+        this.isSavingProperty = value;
+    },
+    setIsSavingThing(value) {
+        this.isSavingThing = value;
+    },
+    setIsAddingProperty(value) {
+        this.isAddingProperty = value;
+    },
+    setAddingProperty(value) {
+        this.addingProperty = value;
+    },
+    setAddingValues(values) {
+        let newValues = [];
+        if (Array.isArray(values)) {
+            values.forEach((value) => {
+                if (value) {
+                    let newValue = trimUrl(value);
+                    if (newValue) newValues.push(newValue);
+                }
+            });
+        } else {
+            if (values) {
+                let newValue = trimUrl(values);
+                if (newValue) newValues.push(newValue);
+            }
+        }
+        this.addingValues = newValues;
+    },
+    addToAddingValues(value) {
+        let newValue = trimUrl(value);
+        if (!this.addingValues) {
+            this.addingValues = [];
+        }
+        if (newValue) {
+            this.addingValues.push(newValue);
+        }
+    },
+    setAddingRange(value) {
+        this.addingRange = value;
+    },
+    setAddingChecked(value) {
+        this.addingChecked = value;
+    },
+    removeAddingValueAtIndex(value) {
+        this.removeAddingValueAtIndex = value;
+    },
+    setSchemata(schema) {
+        this.schemata[schema.id] = schema.obj;
+    },
+    setSchemataLookup(payload) {
+        let i = payload.index;
+        let schema = payload.schema;
+        this.schemataLookup[schema.id][schema.obj[i]["@id"]] = schema.obj[i];
+    },
+    setEmptySchemataLookup(schema) {
+        this.schemataLookup[schema.id] = {};
+    },
+    setObjectModel(payload) {
+        let domainType = payload.type;
+        let val = payload.val;
+        this.objectModel[domainType["@id"]] = val;
+    },
+    setRawSchemata(schema) {
+        this.rawSchemata[schema.id] = schema.obj;
+    },
+    setCompetencySearchModalOpen(bool) {
+        this.competencySearchModalOpen = bool;
+    },
+    setCopyOrLink(bool) {
+        this.copyOrLink = bool;
+    },
+    incrementNumPropertyComponents(thingId) {
+        if (!this.numPropertyComponentsVisible[thingId]) {
+            this.numPropertyComponentsVisible[thingId] = 0;
+        }
+        this.numPropertyComponentsVisible[thingId]++;
+    },
+    decrementNumPropertyComponents(thingId) {
+        this.numPropertyComponentsVisible[thingId]--;
+        if (this.numPropertyComponentsVisible[thingId] === 0) {
+            delete this.numPropertyComponentsVisible[thingId];
+        }
+    },
+    setSearchType(type) {
+        this.searchType = type;
+    },
+    setIncludeRelations(bool) {
+        this.includeRelations = bool;
+    },
+    schemata(schema) {
+        this.setSchemata(schema);
         if (EcArray.isArray(schema.obj)) {
-            commit('setEmptySchemataLookup', schema);
+            this.setEmptySchemataLookup(schema);
             for (var i = 0; i < schema.obj.length; i++) {
                 let scheme = schema.obj[i];
-                commit('setSchemataLookup', {'index': i, 'schema': schema});
+                this.setSchemataLookup({'index': i, 'schema': schema});
                 if (scheme["http://schema.org/domainIncludes"] != null) {
                     for (var domainType of scheme["http://schema.org/domainIncludes"]) {
-                        if (state.objectModel[domainType["@id"]] == null) {
-                            commit('setObjectModel', {'type': domainType, 'val': {}});
+                        if (this.objectModel[domainType["@id"]] == null) {
+                            this.setObjectModel({'type': domainType, 'val': {}});
                         }
-                        let om = state.objectModel[domainType["@id"]];
+                        let om = this.objectModel[domainType["@id"]];
                         om[scheme["@id"]] = scheme;
                     }
                 }
@@ -56,125 +146,8 @@ const actions = {
     }
 };
 const mutations = {
-    setIsSavingProperty(state, value) {
-        state.isSavingProperty = value;
-    },
-    setIsSavingThing(state, value) {
-        state.isSavingThing = value;
-    },
-    setIsAddingProperty(state, value) {
-        state.isAddingProperty = value;
-    },
-    setAddingProperty(state, value) {
-        state.addingProperty = value;
-    },
-    setAddingValues(state, values) {
-        let newValues = [];
-        if (Array.isArray(values)) {
-            values.forEach((value) => {
-                if (value) {
-                    let newValue = trimUrl(value);
-                    if (newValue) newValues.push(newValue);
-                }
-            });
-        } else {
-            if (values) {
-                let newValue = trimUrl(values);
-                if (newValue) newValues.push(newValue);
-            }
-        }
-        state.addingValues = newValues;
-    },
-    addToAddingValues(state, value) {
-        let newValue = trimUrl(value);
-        if (!state.addingValues) {
-            state.addingValues = [];
-        }
-        if (newValue) {
-            state.addingValues.push(newValue);
-        }
-    },
-    setAddingRange(state, value) {
-        state.addingRange = value;
-    },
-    setAddingChecked(state, value) {
-        state.addingChecked = value;
-    },
-    removeAddingValueAtIndex(state, value) {
-        state.removeAddingValueAtIndex = value;
-    },
-    setSchemata(state, schema) {
-        state.schemata[schema.id] = schema.obj;
-    },
-    setSchemataLookup(state, payload) {
-        let i = payload.index;
-        let schema = payload.schema;
-        state.schemataLookup[schema.id][schema.obj[i]["@id"]] = schema.obj[i];
-    },
-    setEmptySchemataLookup(state, schema) {
-        state.schemataLookup[schema.id] = {};
-    },
-    setObjectModel(state, payload) {
-        let domainType = payload.type;
-        let val = payload.val;
-        state.objectModel[domainType["@id"]] = val;
-    },
-    rawSchemata(state, schema) {
-        state.rawSchemata[schema.id] = schema.obj;
-    },
-    competencySearchModalOpen(state, bool) {
-        state.competencySearchModalOpen = bool;
-    },
-    copyOrLink(state, bool) {
-        state.copyOrLink = bool;
-    },
-    incrementNumPropertyComponents(state, thingId) {
-        if (!state.numPropertyComponentsVisible[thingId]) {
-            state.numPropertyComponentsVisible[thingId] = 0;
-        }
-        state.numPropertyComponentsVisible[thingId]++;
-    },
-    decrementNumPropertyComponents(state, thingId) {
-        state.numPropertyComponentsVisible[thingId]--;
-        if (state.numPropertyComponentsVisible[thingId] === 0) {
-            delete state.numPropertyComponentsVisible[thingId];
-        }
-    },
-    searchType(state, type) {
-        state.searchType = type;
-    },
-    includeRelations(state, bool) {
-        state.includeRelations = bool;
-    }
 };
 const getters = {
-    isSavingProperty(state) {
-        return state.isSavingProperty;
-    },
-    isSavingThing(state) {
-        return state.isSavingThing;
-    },
-    isAddingProperty(state) {
-        return state.isAddingProperty;
-    },
-    addingProperty(state) {
-        return state.addingProperty;
-    },
-    addingValues(state) {
-        return state.addingValues;
-    },
-    addingRange(state) {
-        return state.addingRange;
-    },
-    addingChecked(state) {
-        return state.addingChecked;
-    },
-    removeAddingValueAtIndex(state) {
-        return state.removeAddingValueAtIndex;
-    },
-    includeRelations(state) {
-        return state.includeRelations;
-    }
 };
 
 function trimUrl(url) {

@@ -59,9 +59,9 @@
                     {{ loggedOnPerson.email }}
                 </p>
                 <p
-                    v-if="showSideNav && $store.getters['user/lastLogin']"
+                    v-if="showSideNav && lastLogin"
                     class="is-size-7">
-                    Last Login: {{ new Date($store.getters['user/lastLogin']).toLocaleString() }}
+                    Last Login: {{ new Date(lastLogin).toLocaleString() }}
                 </p>
                 <!-- <p
                     v-if="showSideNav"
@@ -160,7 +160,7 @@
                     <router-link
                         :to="{path: '/frameworks', query: queryParams}"
                         id="side-nav-frameworks-link"
-                        @click.native="$store.commit('editor/collectionMode', false)"
+                        @click.native="store.editor().setCollectionMode(false)"
                         :title="showSideNav ? '' : 'Frameworks'">
                         <span class="icon">
                             <i class="fa fa-th-list" />
@@ -174,7 +174,7 @@
                     <router-link
                         :to="{path: '/collections', query: queryParams}"
                         id="side-nav-collections-link"
-                        @click.native="$store.commit('editor/collectionMode', true)"
+                        @click.native="store.editor().setCollectionMode(true)"
                         :title="showSideNav ? '' : 'Collections'">
                         <span class="icon">
                             <i class="fa fa-th-list" />
@@ -186,7 +186,7 @@
                     <router-link
                         :to="{path: '/import', query: queryParams}"
                         id="side-nav-import-link"
-                        @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                        @click.native="store.editor().setConceptMode(false); store.editor().setProgressionMode(false); store.app().clearImport();"
                         :title="showSideNav ? '' : 'Import Framework'">
                         <span class="icon">
                             <i class="fa fa-upload" />
@@ -318,7 +318,7 @@
                     <router-link
                         :to="{path: '/import', query: queryParams}"
                         id="side-nav-import-schemes-link"
-                        @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                        @click.native="store.editor().setConceptMode(true); store.editor().setProgressionMode(false); store.app().clearImport();"
                         :title="showSideNav ? '' : queryParams.ceasnDataFields === 'true' ? 'Import Concept Schemes' : 'Import Taxonomies'">
                         <span class="icon">
                             <i class="fa fa-upload" />
@@ -369,7 +369,7 @@
                     <router-link
                         :to="{path: '/import', query: queryParams}"
                         id="side-nav-import-link-2"
-                        @click.native="$store.commit('editor/progressionMode', true); $store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
+                        @click.native="store.editor().setProgressionMode(true); store.editor().setConceptMode(false); store.app().clearImport();"
                         :title="showSideNav ? '' : 'Import'">
                         <span class="icon">
                             <i class="fa fa-upload" />
@@ -484,7 +484,7 @@
                     class="has-text-white">
                     <a 
                         id="side-nav-collapse-button"
-                        @click="$store.commit('app/closeSideNav')">
+                        @click="store.app().closeSideNav()">
                         <span class="icon">
                             <i class="fa-regular fa-square-caret-left" />
                         </span>
@@ -496,7 +496,7 @@
                     class="has-text-white">
                     <a
                         id="side-nav-expand-button"
-                        @click="$store.commit('app/showSideNav')"
+                        @click="store.app().showSideNav()"
                         title="Expand sidebar">
                         <span class="icon">
                             <i class="fa-regular fa-square-caret-right" />
@@ -510,11 +510,13 @@
 
 <script>
 import {mapState} from 'pinia';
+import store from '@/stores/index.js';
 import casslogo from '@/assets/cass-logo-white.svg';
 import casslogoSquare from '@/assets/cass-logo-square.png';
 import {cassUtil} from './../mixins/cassUtil';
 import {cassApi} from './../mixins/cassApi';
 import {pluginUtil} from './../mixins/pluginUtil';
+import { last } from 'lodash';
 
 export default {
     mixins: [cassUtil, cassApi, pluginUtil],
@@ -539,7 +541,6 @@ export default {
             casslogoSquare: casslogoSquare,
             pluginLinkMap: {},
             addFrameworkOrDirectory: false,
-            availableIdentities: [],
             addNewDirectory: false,
             directoryName: "",
             showUserInfo: false
@@ -561,12 +562,11 @@ export default {
             }
             this.identityDropdownActive = false;
             let person = await window.EcPerson.getByPk(window.repo, window.EcIdentityManager.default.ids[0].ppk.toPk());
-            this.$store.commit('user/loggedOnPerson', person);
-            this.availableIdentities = window.EcIdentityManager.default.ids;
+            store.user().setLoggedOnPerson(person);
         },
         setLaunchPluginValues(pluginShortcut) {
-            this.$store.commit('app/pluginToLaunch', pluginShortcut);
-            this.$store.commit('app/pluginToLaunchLastUpdate', Date.now());
+            store.app().setPluginToLaunch(pluginShortcut);
+            store.app().setPluginToLaunchLastUpdate(Date.now());
             if (!this.$router.currentRoute.name.equals(this.PLUGIN_CONTAINER_ROUTE)) this.$router.push({path: '/pluginContainer'});
         },
         buildPluginLinkMap() {
@@ -606,8 +606,8 @@ export default {
             return pem;
         },
         selectDirectory: function(directory) {
-            this.$store.commit('app/selectDirectory', directory);
-            this.$store.commit('app/rightAsideObject', directory);
+            store.app().selectDirectory(directory);
+            store.app().rightAsideObject(directory);
             if (this.$router.currentRoute.name !== "directory") {
                 this.$router.push({name: "directory"});
             }
@@ -627,48 +627,50 @@ export default {
             dir.save(function(success) {
                 console.log("Directory saved: " + dir.id);
                 me.directoryName = '';
-                me.$store.dispatch('app/refreshDirectories');
+                store.app().refreshDirectories();
                 me.selectDirectory(dir);
             }, console.error, window.repo);
         },
         shareAssertions: function() {
-            this.$store.commit('app/showModal', {component: 'ShareAssertions'});
+            store.app().setShowModal({component: 'ShareAssertions'});
         }
     },
     watch: {
-        loggedOnPerson: function() {
-            this.availableIdentities = window.EcIdentityManager.default.ids;
-        },
         pluginLastUpdate: function() {
             this.buildPluginList(this.buildPluginListComplete);
         }
     },
     computed: {
-        ...mapState("featuresEnabled",{
+        ...mapState(store.featuresEnabled,{
             crosswalkEnabled: state => state.crosswalkEnabled,
             userManagementEnabled: state => state.userManagementEnabled,
             configurationsEnabled: state => state.configurationsEnabled,
             pluginsEnabled: state => state.pluginsEnabled,
             loginEnabled: state => state.loginEnabled,
         }),
-        ...mapState("editor",{
-            queryParams: state => state.queryParams
+        ...mapState(store.editor,{
+            queryParams: state => state.queryParams,
+            conceptMode: state => state.conceptMode,
+            progressionMode: state => state.progressionMode
         }),
-        ...mapState("app",{
+        ...mapState(store.app,{
             pluginLastUpdate: state => state.pluginLastUpdate,
             directoryList: state => state.directories.directoryList
         }),
+        ...mapState(store.user,{
+            loggedOnPerson: state => state.loggedOnPerson,
+            repositorySsoOptions: state => state.repositorySsoOptions,
+            lastLogin: state => state.lastLogin
+        }),
+        availableIdentities: ()=>window.EcIdentityManager.default.ids,
         hideLogoutButton: function() {
-            let loginInfo = this.$store.getters['user/repositorySsoOptions'];
+            let loginInfo = this.repositorySsoOptions;
             if (loginInfo) {
                 if (loginInfo.ssoPublicKey && !loginInfo.ssoLogout) {
                     return true;
                 }
             }
             return false;
-        },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
         },
         isLoggedOn: function() {
             if (this.loggedOnPerson && this.loggedOnPerson.name) {
@@ -690,10 +692,7 @@ export default {
             return this.$route.path;
         },
         supportedFiles: function() {
-            return (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) ? this.supportedConceptFileTypes : this.supportedFileTypes;
-        },
-        loggedOnPerson: function() {
-            return this.$store.getters['user/loggedOnPerson'];
+            return (this.conceptMode === true || this.progressionMode === true) ? this.supportedConceptFileTypes : this.supportedFileTypes;
         },
         getNonStandardNavCategoriesFromPlugins: function() {
             let nonStandardNavCats = [];
@@ -725,8 +724,7 @@ export default {
     },
     mounted() {
         this.buildPluginList(this.buildPluginListComplete);
-        this.$store.dispatch('app/refreshDirectories');
-        this.availableIdentities = window.EcIdentityManager.default.ids;
+        store.app().refreshDirectories();
     }
 };
 </script>

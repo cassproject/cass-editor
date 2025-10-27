@@ -2,7 +2,7 @@
 // such as displaying certain modals
 // and transitions
 
-const state = {
+const state = ()=>({
     sideNavEnabled: true,
     showSideNav: true,
     showRightAside: false,
@@ -91,9 +91,9 @@ const state = {
             "url": "https://raw.githubusercontent.com/cassproject/cass-vlrc/master/"
         }
     ]
-}; 
+}); 
 const actions = {
-    showSideNav: function () {
+    openSideNav: function () {
         this.showSideNav = true;
         this.showRightAside = false;
     },
@@ -110,7 +110,7 @@ const actions = {
         this.rightAsideContent = '';
         this.rightAsideObject = null;
     },
-    rightAsideObject: async function (payload) {
+    setRightAsideObject: async function (payload) {
         if (payload.encryptedType) {
             let type = "Ec" + payload.encryptedType;
             let obj = new window[type]();
@@ -120,7 +120,7 @@ const actions = {
             this.rightAsideObject = payload;
         }
     },
-    showModal: function (payload) {
+    setShowModal: function (payload) {
         this.modal.showModal = true;
         this.modal.dynamicModalContent = payload;
     },
@@ -128,19 +128,19 @@ const actions = {
         this.modal.showModal = false;
         this.modal.dynamicModalContent = {};
     },
-    objForShareModal: function (payload) {
+    setObjForShareModal: function (payload) {
         this.modal.objForShareModal = payload;
     },
-    draggingEnabled: function (value) {
+    setDraggingEnabled: function (value) {
         this.framework.draggingEnabled = value;
     },
-    isDragging: function (value) {
+    setIsDragging: function (value) {
         this.framework.isDragging = value;
     },
-    draggable: function (value) {
+    setDraggable: function (value) {
         this.framework.draggable = value;
     },
-    importFiles: function (value) {
+    setImportFiles: function (value) {
         this.import.files = value;
     },
     setCanViewComments: function (value) {
@@ -194,16 +194,16 @@ const actions = {
             importModalParams: null
         };
     },
-    importTransition: function (value) {
+    setImportTransition: function (value) {
         this.import.transition = value;
     },
-    importFileType: function (value) {
+    setImportFileType: function (value) {
         this.import.fileType = value;
     },
-    importType: function (value) {
+    setImportType: function (value) {
         this.import.type = value;
     },
-    firstImport: function (val) {
+    setFirstImport: function (val) {
         this.import.firstImport = val;
     },
     addImportError: function (val) {
@@ -212,97 +212,97 @@ const actions = {
     clearImportErrors: function () {
         this.import.errors = [];
     },
-    importStatus: function (val) {
+    setImportStatus: function (val) {
         this.import.status = val;
     },
-    importAllowCancel: function (val) {
+    setImportAllowCancel: function (val) {
         this.allowCancel = val;
     },
-    importFeedback: function (val) {
+    setImportFeedback: function (val) {
         this.import.feedback = val;
     },
-    importDuplicates: function (val) {
+    setImportDuplicates: function (val) {
         this.import.duplicates = val;
     },
-    importSkip: function (val) {
+    setImportSkip: function (val) {
         this.import.skip = val;
     },
-    importFramework: function (val) {
+    setImportFramework: function (val) {
         this.import.framework = val;
     },
-    importFrameworkName: function (val) {
+    setImportFrameworkName: function (val) {
         this.import.frameworkName = val;
     },
-    importFrameworkNameColumn: function (val) {
+    setImportFrameworkNameColumn: function (val) {
         this.import.frameworkNameColumn = val;
     },
-    importFrameworkScopeColumn: function (val) {
+    setImportFrameworkScopeColumn: function (val) {
         this.import.frameworkScopeColumn = val;
     },
-    importFrameworkIdColumn: function (val) {
+    setImportFrameworkIdColumn: function (val) {
         this.import.frameworkIdColumn = val;
     },
-    importFrameworkDescription: function (val) {
+    setImportFrameworkDescription: function (val) {
         this.import.frameworkDescription = val;
     },
-    importText: function (val) {
+    setImportText: function (val) {
         this.import.importText = val;
     },
-    importServerUrl: function (val) {
+    setImportServerUrl: function (val) {
         this.import.serverUrl = val;
     },
-    importUrl: function (val) {
+    setImportUrl: function (val) {
         this.import.url = val;
     },
-    importNameColumn: function (val) {
+    setImportNameColumn: function (val) {
         this.import.importCsv.nameColumn = val;
     },
-    importDescriptionColumn: function (val) {
+    setImportDescriptionColumn: function (val) {
         this.import.importCsv.descriptionColumn = val;
     },
-    importScopeColumn: function (val) {
+    setImportScopeColumn: function (val) {
         this.import.importCsv.scopeColumn = val;
     },
-    importSourceColumn: function (val) {
+    setImportSourceColumn: function (val) {
         this.import.importCsv.sourceColumn = val;
     },
-    importTargetColumn: function (val) {
+    setImportTargetColumn: function (val) {
         this.import.importCsv.targetColumn = val;
     },
-    importRelationColumn: function (val) {
+    setImportRelationColumn: function (val) {
         this.import.importCsv.relationColumn = val;
     },
-    importIdColumn: function (val) {
+    setImportIdColumn: function (val) {
         this.import.importCsv.idColumn = val;
     },
-    csvColumns: function (val) {
+    setCsvColumns: function (val) {
         this.import.csvColumns = val;
     },
-    csvRelationColumns: function (val) {
+    setCsvRelationColumns: function (val) {
         this.import.csvRelationColumns = val;
     },
-    csvRelationFile: function (val) {
+    setCsvRelationFile: function (val) {
         this.import.csvRelationFile = val;
     },
-    importModalParams: function (val) {
+    setImportModalParams: function (val) {
         this.import.importModalParams = val;
     },
-    searchTerm: function (value) {
+    setSearchTerm: function (value) {
         this.frameworks.searchTerm = value;
     },
-    applySearchTo: function (value) {
+    setApplySearchTo: function (value) {
         this.frameworks.applySearchTo = value;
     },
-    refreshSearch: function (value) {
+    setRefreshSearch: function (value) {
         this.frameworks.refreshSearch = value;
     },
-    sortResults: function (value) {
+    setSortResults: function (value) {
         this.frameworks.sortResults = value;
     },
-    quickFilters: function (value) {
+    setQuickFilters: function (value) {
         this.frameworks.quickFilters = value;
     },
-    singleQuickFilter: function (value) {
+    setSingleQuickFilter: function (value) {
         let i = this.frameworks.quickFilters.findIndex((filter) => filter.id === value.id);
         if (i >= 0) {
             this.frameworks.quickFilters[i].checked = value.checked;
@@ -331,16 +331,16 @@ const actions = {
     selectDirectory: function (value) {
         this.directories.selectedDirectory = value;
     },
-    directoryList: function (list) {
+    setDirectoryList: function (list) {
         this.directories.directoryList = list;
     },
-    searchingInDirectory: function (bool) {
+    setSearchingInDirectory: function (bool) {
         this.directories.searchingInDirectory = bool;
     },
-    editDirectory: function (bool) {
+    setEditDirectory: function (bool) {
         this.directories.editDirectory = bool;
     },
-    searchFrameworksInCompetencySearch: function (bool) {
+    setSearchFrameworksInCompetencySearch: function (bool) {
         this.frameworks.searchFrameworksInCompetencySearch = bool;
     },
     setBanner: function (payload) {
@@ -365,58 +365,34 @@ const actions = {
     setCuratedPlugins: function (payload) {
         this.curatedPlugins = payload;
     },
-    clearImport: function ({ commit }) {
-        commit('importFramework', null);
-        commit('clearImportFiles');
-        commit('clearImportErrors');
-        commit('importTransition', 'upload');
-        commit('importStatus', '');
-        commit('importAllowCancel', false);
-        commit('importFeedback', '');
-        commit('importFileType', '');
-        commit('importDuplicates', []);
-        commit('importSkip', []);
+    clearImport: function () {
+        this.importFramework(null);
+        this.clearImportFiles();
+        this.clearImportErrors();
+        this.setImportTransition('upload');
+        this.setImportStatus('');
+        this.setImportAllowCancel(false);
+        this.setImportFeedback('');
+        this.setImportFileType('');
+        this.setImportDuplicates([]);
+        this.setImportSkip([]);
     },
-    refreshDirectories: function ({ commit }) {
+    refreshDirectories: function () {
         let directories = [];
         let directoryIds = [];
         let paramObj = { size: 10000 };
-        EcDirectory.search(window.repo, "", function (dirs) {
+        EcDirectory.search(window.repo, "", (dirs) => {
             for (let i = 0; i < dirs.length; i++) {
                 if (dirs[i].canEditAny(EcIdentityManager.default.getMyPks()) && !EcArray.has(directoryIds, dirs[i].id)) {
                     directories.push(dirs[i]);
                     directoryIds.push(dirs[i].id);
                 }
             }
-            commit('directoryList', directories);
+            this.setDirectoryList(directories);
         }, console.error, paramObj);
     }
 };
 const getters = {
-    canViewComments: state => {
-        return state.canViewComments;
-    },
-    canAddComments: state => {
-        return state.canAddComments;
-    },
-    sideNavEnabled: state => {
-        return state.sideNavEnabled;
-    },
-    showSideNav: state => {
-        return state.showSideNav;
-    },
-    showRightAside: state => {
-        return state.showRightAside;
-    },
-    rightAsideContent: state => {
-        return state.rightAsideContent;
-    },
-    rightAsideObject: state => {
-        return state.rightAsideObject;
-    },
-    framework: state => {
-        return state.framework;
-    },
     showModal: state => {
         return state.modal.showModal;
     },
@@ -576,15 +552,6 @@ const getters = {
     csvRelationFile: state => {
         return state.import.csvRelationFile;
     },
-    pluginLastUpdate: state => {
-        return state.pluginLastUpdate;
-    },
-    pluginToLaunch: state => {
-        return state.pluginToLaunch;
-    },
-    pluginToLaunchLastUpdate: state => {
-        return state.pluginToLaunchLastUpdate;
-    },
     selectedDirectory: state => {
         return state.directories.selectedDirectory;
     },
@@ -614,9 +581,6 @@ const getters = {
     },
     motdMessage: state => {
         return state.motd.message;
-    },
-    curatedPlugins: state => {
-        return state.curatedPlugins;
     }
 };
 
