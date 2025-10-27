@@ -349,6 +349,8 @@ import common from '@/mixins/common.js';
 import editDirectory from '@/mixins/editDirectory.js';
 import SearchBar from '@/components/framework/SearchBar.vue';
 import AddNewDropdown from '@/components/AddNewDropdown.vue';
+import store from '@/stores/index.js';
+import { mapState } from 'pinia';
 
 export default {
     name: "Frameworks",
@@ -366,18 +368,14 @@ export default {
     },
     created: function() {
         this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
-        this.$store.commit("editor/t3Profile", false);
-        this.$store.commit('editor/framework', null);
+        store.editor().setT3Profile(false);
+        store.editor().setFramework(null);
         this.spitEvent('viewChanged');
         this.setDefaultConfig();
     },
     computed: {
         isCeasn: function() {
-            if (this.queryParams["ceasnDataFields"] && this.queryParams["ceasnDataFields"] === 'true') {
-                return true;
-            } else {
-                return false;
-            }
+            return this.queryParams["ceasnDataFields"] && this.queryParams["ceasnDataFields"] === 'true';
         },
         conceptSchemeString: function() {
             if (this.isCeasn) {
@@ -392,15 +390,6 @@ export default {
             } else {
                 return "Taxonomy";
             }
-        },
-        showRightAside: function() {
-            return this.$store.getters['app/showRightAside'];
-        },
-        frameworkSearchTerm: function() {
-            return this.$store.getters['app/searchTerm'];
-        },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
         },
         type: function() {
             return this.conceptMode ? "ConceptScheme" : (this.progressionMode ? "ConceptScheme" : "Framework");
@@ -475,33 +464,24 @@ export default {
             }
             return obj;
         },
-        sortResults: function() {
-            return this.$store.getters['app/sortResults'];
-        },
-        quickFilters: function() {
-            return this.$store.getters['app/quickFilters'];
-        },
-        filterByOwnedByMe: function() {
-            return this.$store.getters['app/filterByOwnedByMe'];
-        },
-        filterByNotOwnedByMe: function() {
-            return this.$store.getters['app/filterByNotOwnedByMe'];
-        },
-        filterByConfigMatchDefault: function() {
-            return this.$store.getters['app/filterByConfigMatchDefault'];
-        },
-        conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
-        },
-        progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
-        },
-        collectionMode: function() {
-            return this.$store.getters['editor/collectionMode'];
-        },
-        initialOwnedByMe: function() {
-            return this.$store.getters['featuresEnabled/ownedByMe'];
-        }
+        ...mapState(store.app,{
+            sortResults: state => state.sortResults,
+            quickFilters: state => state.quickFilters,
+            filterByOwnedByMe: state => state.filterByOwnedByMe,
+            filterByNotOwnedByMe: state => state.filterByNotOwnedByMe,
+            filterByConfigMatchDefault: state => state.filterByConfigMatchDefault,
+            showRightAside: state => state.showRightAside,
+            searchTerm: state => state.searchTerm
+        }),
+        ...mapState(store.editor, {
+            conceptMode: state => state.conceptMode,
+            progressionMode: state => state.progressionMode,
+            collectionMode: state => state.collectionMode,
+            queryParams: state => state.queryParams
+        }),
+        ...mapState(store.featuresEnabled, {
+            initialOwnedByMe: state => state.ownedByMe
+        })
     },
     components: {
         List,

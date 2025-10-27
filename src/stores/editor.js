@@ -57,204 +57,202 @@ const state = () => ({
     firstSearchProcessing: true,
     searchingAssertions: false
 });
-const mutations = {
-    framework(state, f) {
-        state.framework = f;
+const actions = {
+    setFramework(f) {
+        this.framework = f;
     },
-    organization(state, f) {
-        state.organization = f;
+    setOrganization(f) {
+        this.organization = f;
     },
-    selectedCompetency(state, comp) {
-        state.selectedCompetency = comp;
+    setSelectedCompetency(comp) {
+        this.selectedCompetency = comp;
     },
-    queryParams(state, params) {
-        state.queryParams = params;
+    setQueryParams(params) {
+        this.queryParams = params;
     },
-    defaultLanguage(state, lang) {
-        state.defaultLanguage = lang;
+    setDefaultLanguage(lang) {
+        this.defaultLanguage = lang;
     },
     webSocketBackoffIncrease(state) {
-        state.webSocketBackoff *= 2;
+        this.webSocketBackoff *= 2;
     },
-    private(state, bool) {
-        state.private = bool;
+    setPrivate(bool) {
+        this.private = bool;
     },
-    selectCompetencyRelation(state, r) {
-        state.selectCompetencyRelation = r;
+    setSelectCompetencyRelation(r) {
+        this.selectCompetencyRelation = r;
     },
-    selectingCompetencies(state, bool) {
-        state.selectingCompetencies = bool;
+    setSelectingCompetencies(bool) {
+        this.selectingCompetencies = bool;
     },
-    newCompetency(state, id) {
-        state.newCompetency = id;
+    setNewCompetency(id) {
+        this.newCompetency = id;
     },
-    newFramework(state, id) {
-        state.newFramework = id;
+    setNewFramework(id) {
+        this.newFramework = id;
     },
-    t3Profile(state, bool) {
-        state.t3Profile = bool;
+    setT3Profile(bool) {
+        this.t3Profile = bool;
     },
-    changedObject(state, id) {
-        state.changedObject = id;
+    setChangedObject(id) {
+        this.changedObject = id;
     },
-    configuration(state, config) {
-        state.configuration = config;
+    setConfiguration(config) {
+        this.configuration = config;
     },
-    commonPathIframe(state, val) {
-        state.commonPathIframe = val;
+    setCommonPathIframe(val) {
+        this.commonPathIframe = val;
     },
-    iframeCompetencyPathInterframework(state, val) {
-        state.iframeCompetencyPathInterframework = val;
+    setIframeCompetencyPathInterframework(val) {
+        this.iframeCompetencyPathInterframework = val;
     },
-    iframeConceptPath(state, val) {
-        state.iframeConceptPath = val;
+    setIframeConceptPath(val) {
+        this.iframeConceptPath = val;
     },
-    setAddCommentAboutId(state, val) {
-        state.addCommentAboutId = val;
+    setAddCommentAboutId(val) {
+        this.addCommentAboutId = val;
     },
-    setAddCommentType(state, val) {
-        state.addCommentType = val;
+    setAddCommentType(val) {
+        this.addCommentType = val;
     },
-    setCommentToEdit(state, val) {
-        state.commentToEdit = val;
+    setCommentToEdit(val) {
+        this.commentToEdit = val;
     },
-    setCommentToReply(state, val) {
-        state.commentToReply = val;
+    setCommentToReply(val) {
+        this.commentToReply = val;
     },
-    setCommentsToDelete(state, val) {
-        state.commentsToDelete = val;
+    setCommentsToDelete(val) {
+        this.commentsToDelete = val;
     },
     clearFrameworkCommentData(state) {
-        state.frameworkCommentDataLoaded = false;
-        state.frameworkCommentList = [];
-        state.frameworkCommentPersonMap = {};
+        this.frameworkCommentDataLoaded = false;
+        this.frameworkCommentList = [];
+        this.frameworkCommentPersonMap = {};
     },
-    setFrameworkCommentDataLoaded(state, val) {
-        state.frameworkCommentDataLoaded = val;
+    setFrameworkCommentDataLoaded(val) {
+        this.frameworkCommentDataLoaded = val;
     },
-    setFrameworkCommentList(state, val) {
-        state.frameworkCommentList = val;
+    setFrameworkCommentList(val) {
+        this.frameworkCommentList = val;
     },
-    setFrameworkCommentPersonMap(state, val) {
-        state.frameworkCommentPersonMap = val;
+    setFrameworkCommentPersonMap(val) {
+        this.frameworkCommentPersonMap = val;
     },
-    setCommentScrollTo(state, val) {
-        state.commentScrollTo = val;
+    setCommentScrollTo(val) {
+        this.commentScrollTo = val;
     },
-    addEditsToUndo(state, edits) {
-        state.editsToUndo.push(edits);
+    addEditsToUndo(edits) {
+        this.editsToUndo.push(edits);
     },
-    setLastEditToUndo(state, edit) {
-        state.lastEditToUndo = edit;
+    setLastEditToUndo(edit) {
+        this.lastEditToUndo = edit;
     },
-    recomputeHierarchy(state, boolean) {
-        state.recomputeHierarchy = boolean;
+    setRecomputeHierarchy(boolean) {
+        this.recomputeHierarchy = boolean;
     },
-    recomputePrecedence(state, boolean) {
-        state.recomputePrecedence = boolean;
+    setRecomputePrecedence(boolean) {
+        this.recomputePrecedence = boolean;
     },
-    recomputePrecedenceAfterReorder(state, boolean) {
-        state.recomputePrecedenceAfterReorder = boolean;
+    setRecomputePrecedenceAfterReorder(boolean) {
+        this.recomputePrecedenceAfterReorder = boolean;
     },
-    selectedCompetenciesAsProperties(state, comps) {
-        state.selectedCompetenciesAsProperties = comps;
+    setSelectedCompetenciesAsProperties(comps) {
+        this.selectedCompetenciesAsProperties = comps;
     },
-    refreshLevels(state, boolean) {
-        state.refreshLevels = boolean;
+    setRefreshLevels(boolean) {
+        this.refreshLevels = boolean;
     },
-    refreshAlignments(state, boolean) {
-        state.refreshAlignments = boolean;
+    setRefreshAlignments(boolean) {
+        this.refreshAlignments = boolean;
     },
-    refreshProperties(state, boolean) {
-        state.refreshProperties = boolean;
+    setRefreshProperties(boolean) {
+        this.refreshProperties = boolean;
     },
-    conceptMode(state, boolean) {
+    setConceptMode(boolean) {
         if (boolean) {
-            state.conceptMode = true;
-            state.progressionMode = false;
+            this.conceptMode = true;
+            this.progressionMode = false;
         } else {
-            state.conceptMode = false;
+            this.conceptMode = false;
         }
     },
-    collectionMode(state, boolean) {
-        state.collectionMode = boolean;
+    setCollectionMode(boolean) {
+        this.collectionMode = boolean;
     },
-    progressionMode(state, boolean) {
+    setProgressionMode(boolean) {
         if (boolean) {
-            state.progressionMode = true;
-            state.conceptMode = false;
+            this.progressionMode = true;
+            this.conceptMode = false;
         } else {
-            state.progressionMode = false;
+            this.progressionMode = false;
         }
     },
-    cutId(state, id) {
-        state.cutId = id;
+    setCutId(id) {
+        this.cutId = id;
     },
-    copyId(state, id) {
-        state.copyId = id;
+    setCopyId(id) {
+        this.copyId = id;
     },
-    paste(state, id) {
-        state.paste = id;
+    setPaste(id) {
+        this.paste = id;
     },
-    cutOrCopyContainerId(state, id) {
-        state.cutOrCopyContainerId = id;
+    setCutOrCopyContainerId(id) {
+        this.cutOrCopyContainerId = id;
     },
-    nodeInFocus(state, id) {
-        state.nodeInFocus = id;
+    setNodeInFocus(id) {
+        this.nodeInFocus = id;
     },
-    relations(state, obj) {
-        state.relations = obj;
+    setRelations(obj) {
+        this.relations = obj;
     },
-    setPropertyLevel(state, level) {
-        state.setPropertyLevel = level;
+    setSetPropertyLevel(level) {
+        this.setPropertyLevel = level;
     },
-    addAnother(state, bool) {
-        state.addAnother = bool;
+    setAddAnother(bool) {
+        this.addAnother = bool;
     },
-    setItemToDelete(state, val) {
-        state.itemToDelete = val;
+    setItemToDelete(val) {
+        this.itemToDelete = val;
     },
-    setItemToRemove(state, val) {
-        state.itemToRemove = val;
+    setItemToRemove(val) {
+        this.itemToRemove = val;
     },
-    setItemToExport(state, val) {
-        state.itemToExport = val;
+    setItemToExport(val) {
+        this.itemToExport = val;
     },
-    setManageAssertions(state, val) {
-        state.manageAssertions = val;
+    setManageAssertions(val) {
+        this.manageAssertions = val;
     },
-    setAssertions(state, val) {
-        state.assertions = val;
+    setAssertions(val) {
+        this.assertions = val;
     },
-    removeAssertion(state, val) {
-        EcArray.setRemove(state.assertions, val);
+    removeAssertion(val) {
+        EcArray.setRemove(this.assertions, val);
     },
-    removeAssertionAtIndex(state, val) {
-        state.assertions.splice(val, 1);
+    removeAssertionAtIndex(val) {
+        this.assertions.splice(val, 1);
     },
-    addAssertion(state, val) {
-        EcArray.setAdd(state.assertions, val);
+    addAssertion(val) {
+        EcArray.setAdd(this.assertions, val);
     },
-    setBadgePk(state, val) {
-        state.badgePk = val;
+    setBadgePk(val) {
+        this.badgePk = val;
     },
-    setMe(state, val) {
-        state.me = val;
+    setMe(val) {
+        this.me = val;
     },
-    setSubject(state, val) {
-        state.subject = val;
+    setSubject(val) {
+        this.subject = val;
     },
-    setPeople(state, val) {
-        state.people = val;
+    setPeople(val) {
+        this.people = val;
     },
-    setFirstSearchProcessing(state, val) {
-        state.firstSearchProcessing = val;
+    setFirstSearchProcessing(val) {
+        this.firstSearchProcessing = val;
     },
-    setSearchingAssertions(state, val) {
-        state.searchingAssertions = val;
-    }
-};
-const actions = {
+    setSearchingAssertions(val) {
+        this.searchingAssertions = val;
+    },
     getDirectoryChildren: function (instance, directory) {
         let children = [];
         if (directory.frameworks) {
@@ -410,170 +408,22 @@ const actions = {
     }
 };
 const getters = {
-    framework: function (state) {
-        return state.framework;
-    },
-    organization: function (state) {
-        return state.organization;
-    },
-    selectedCompetency: function (state) {
-        return state.selectedCompetency;
-    },
-    queryParams: function (state) {
-        return state.queryParams;
-    },
-    defaultLanguage: function (state) {
-        return state.defaultLanguage;
-    },
-    webSocketBackoff: function (state) {
-        return state.webSocketBackoff;
-    },
-    selectCompetencyRelation: function (state) {
-        return state.selectCompetencyRelation;
-    },
-    selectingCompetencies: function (state) {
-        return state.selectingCompetencies;
-    },
-    private: function (state) {
-        return state.private;
-    },
-    newCompetency: function (state) {
-        return state.newCompetency;
-    },
-    newFramework: function (state) {
-        return state.newFramework;
-    },
-    t3Profile: function (state) {
-        return state.t3Profile;
-    },
-    changedObject: function (state) {
-        return state.changedObject;
-    },
-    configuration: function (state) {
-        return state.configuration;
-    },
-    addCommentAboutId: function (state) {
-        return state.addCommentAboutId;
-    },
-    addCommentType: function (state) {
-        return state.addCommentType;
-    },
-    commentToEdit: function (state) {
-        return state.commentToEdit;
-    },
-    commentToReply: function (state) {
-        return state.commentToReply;
-    },
-    commentsToDelete: function (state) {
-        return state.commentsToDelete;
-    },
-    frameworkCommentDataLoaded: function (state) {
-        return state.frameworkCommentDataLoaded;
-    },
-    frameworkCommentList: function (state) {
-        return state.frameworkCommentList;
-    },
-    frameworkCommentPersonMap: function (state) {
-        return state.frameworkCommentPersonMap;
-    },
-    commentScrollTo: function (state) {
-        return state.commentScrollTo;
-    },
-    recomputeHierarchy: function (state) {
-        return state.recomputeHierarchy;
-    },
-    recomputePrecedence: function (state) {
-        return state.recomputePrecedence;
-    },
-    recomputePrecedenceAfterReorder: function (state) {
-        return state.recomputePrecedenceAfterReorder;
-    },
-    selectedCompetenciesAsProperties: function (state) {
-        return state.selectedCompetenciesAsProperties;
-    },
-    refreshLevels: function (state) {
-        return state.refreshLevels;
-    },
-    refreshAlignments: function (state) {
-        return state.refreshAlignments;
-    },
-    refreshProperties: function (state) {
-        return state.refreshProperties;
-    },
-    conceptMode: function (state) {
-        return state.conceptMode;
-    },
-    collectionMode: function (state) {
-        return state.collectionMode;
-    },
-    progressionMode: function (state) {
-        return state.progressionMode;
-    },
-    cutId: function (state) {
-        return state.cutId;
-    },
-    copyId: function (state) {
-        return state.copyId;
-    },
-    paste: function (state) {
-        return state.paste;
-    },
-    cutOrCopyContainerId: function (state) {
-        return state.cutOrCopyContainerId;
-    },
-    nodeInFocus: function (state) {
-        return state.nodeInFocus;
-    },
-    relations: function (state) {
-        return state.relations;
-    },
-    setPropertyLevel: function (state) {
-        return state.setPropertyLevel;
-    },
-    addAnother: function (state) {
-        return state.addAnother;
-    },
-    itemToDelete: function (state) {
-        return state.itemToDelete;
-    },
-    itemToRemove: function (state) {
-        return state.itemToRemove;
-    },
-    itemToExport: function (state) {
-        return state.itemToExport;
-    },
-    manageAssertions: function (state) {
-        return state.manageAssertions;
-    },
-    assertions: function (state) {
+    sortedAssertions: function (state) {
         return state.assertions.sort((a, b) => {
             return b.assertionDateDecrypted - a.assertionDateDecrypted;
         });
-    },
-    badgePk: function (state) {
-        return state.badgePk;
     },
     getMe: function (state) {
         return state.me;
     },
     getSubject: function (state) {
         return state.subject;
-    },
-    people: function (state) {
-        return state.people;
-    },
-    firstSearchProcessing: function (state) {
-        return state.firstSearchProcessing;
-    },
-    searchingAssertions: function (state) {
-        return state.searchingAssertions;
     }
 };
 
 import { defineStore } from 'pinia';
 export default defineStore('editor',{ 
     state,
-    mutations,
     actions,
     getters
 });

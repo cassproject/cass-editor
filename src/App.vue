@@ -78,39 +78,39 @@ export default {
                 server = process.env.VUE_APP_SELECTEDSERVER;
             }
             var cassApiLocation = "https://dev.rest.api.cassproject.org/";
-            this.$store.commit('environment/cassApiLocation', cassApiLocation);
+            store.environment().setCassApiLocation(cassApiLocation);
             var me = this;
             if (this.$route.query) {
                 let queryParams = JSON.parse(JSON.stringify(this.$route.query));
                 for (let key in window.queryParams) {
                     queryParams[key] = window.queryParams[key];
                 }
-                store.editor.queryParams = queryParams;
-                if (this.queryParams.server) {
-                    if (this.queryParams.server.endsWith && this.queryParams.server.endsWith("/") === false) {
-                        this.queryParams.server += "/";
+                store.editor().setQueryParams(queryParams);
+                if (store.editor().queryParams.server) {
+                    if (store.editor().queryParams.server.endsWith && store.editor().queryParams.server.endsWith("/") === false) {
+                        store.editor().queryParams.server += "/";
                     }
-                    server = this.queryParams.server;
+                    server = store.editor().queryParams.server;
                 }
-                if (this.queryParams.concepts === 'true') {
-                    store.editor.conceptMode = true;
-                    store.editor.progressionMode = false;
+                if (store.editor().queryParams.concepts === 'true') {
+                    store.editor().conceptMode = true;
+                    store.editor().progressionMode = false;
                 }
                 if (this.queryParams.ceasnDataFields === 'true') {
-                    this.$store.commit('featuresEnabled/configurationsEnabled', false);
-                    this.$store.commit('featuresEnabled/userManagementEnabled', false);
-                    this.$store.commit('featuresEnabled/searchByOwnerNameEnabled', false);
-                    this.$store.commit('featuresEnabled/loginEnabled', false);
-                    this.$store.commit('featuresEnabled/pluginsEnabled', false);
+                    store.featuresEnabled().configurationsEnabled(false);
+                    store.featuresEnabled().userManagementEnabled(false);
+                    store.featuresEnabled().searchByOwnerNameEnabled(false);
+                    store.featuresEnabled().loginEnabled(false);
+                    store.featuresEnabled().pluginsEnabled(false);
                 }
                 if (this.queryParams.user === "wait") {
-                    this.$store.commit('featuresEnabled/shareEnabled', false);
-                    this.$store.commit('featuresEnabled/shareLink', true);
+                    store.featuresEnabled().shareEnabled(false);
+                    store.featuresEnabled().shareLink(true);
                 }
                 // Add support for show=mine. This param was already being used by CE, but was no longer functioning as expected.
                 //  OwnedByMe offers the expected functionality. Including show=mine for compatibility with existing clients.
                 if (this.queryParams.ownedByMe === "true" || this.queryParams.show === "mine") {
-                    this.$store.commit('featuresEnabled/ownedByMe', true);
+                    store.featuresEnabled().ownedByMe(true);
                 }
             }
             var r = new EcRepository();
@@ -133,25 +133,25 @@ export default {
                         }
                         plugins.push({"id": each, "url": url});
                     }
-                    me.$store.commit('app/setCuratedPlugins', plugins);
+                    store.app().setCuratedPlugins(plugins);
                 }
             }, console.error, async(loginInfo) => {
                 r.fetchServerAdminKeys(() => {}, console.error);
-                this.$store.commit('user/repositorySsoOptions', loginInfo);
+                store.user().setRepositorySsoOptions(loginInfo);
                 if (loginInfo.ssoPublicKey != null && loginInfo.ssoLogin == null && loginInfo.ssoViaP1 == null) {
-                    this.$store.commit('featuresEnabled/loginEnabled', false);
-                    this.$store.commit('featuresEnabled/userManagementEnabled', false);
+                    store.featuresEnabled().loginEnabled(false);
+                    store.featuresEnabled().userManagementEnabled(false);
                 }
                 if (loginInfo.ssoLogin != null) {
-                    this.$store.commit('featuresEnabled/apiLoginEnabled', true);
+                    store.featuresEnabled().apiLoginEnabled(true);
                 }
                 if (loginInfo.banner) {
-                    this.$store.commit('app/setBanner', loginInfo.banner);
+                    store.app().setBanner(loginInfo.banner);
                 }
                 if (loginInfo.motd) {
-                    this.$store.commit('app/setMotd', loginInfo.motd);
+                    store.app().setMotd(loginInfo.motd);
                     if (loginInfo.motd.message) {
-                        this.$store.commit('app/showModal', {component: 'MessageOfTheDay'});
+                        store.app().setShowModal({component: 'MessageOfTheDay'});
                     }
                 }
                 if (loginInfo.corsOrigins) {
@@ -183,7 +183,7 @@ export default {
                         window.EcIdentityManager.default.addIdentity(ident);
                     }
                 }
-                this.$store.dispatch('app/refreshDirectories');
+                store.app().refreshDirectories();
             });
             window.repo = r;
             this.repo = r;
@@ -203,35 +203,35 @@ export default {
             this.loadIdentity(function() {
                 if (me.queryParams) {
                     if (me.queryParams.frameworkId) {
-                        if ((me.$store.getters['editor/conceptMode'] === true)) {
+                        if ((store.editor().conceptMode === true)) {
                             EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
-                                me.$store.commit('editor/framework', success);
-                                me.$store.commit('editor/clearFrameworkCommentData');
-                                me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                                me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                                store.editor().framework(success);
+                                store.editor().clearFrameworkCommentData();
+                                store.app().setCanViewComments(me.canViewCommentsCurrentFramework());
+                                store.app().setCanAddComments(me.canAddCommentsCurrentFramework());
                                 if (success.subType === 'Progression') {
-                                    me.$store.commit('editor/conceptMode', false);
-                                    me.$store.commit('editor/progressionMode', true);
+                                    store.editor().conceptMode(false);
+                                    store.editor().progressionMode(true);
                                     me.$router.push({name: "progressionModel", params: {frameworkId: me.queryParams.frameworkId}});
                                 } else {
-                                    me.$store.commit('editor/conceptMode', true);
-                                    me.$store.commit('editor/progressionMode', false);
+                                    store.editor().conceptMode(true);
+                                    store.editor().progressionMode(false);
                                     me.$router.push({name: "conceptScheme", params: {frameworkId: me.queryParams.frameworkId}});
                                 }
                             }, console.error);
                         } else {
                             EcFramework.get(me.queryParams.frameworkId, function(success) {
-                                me.$store.commit('editor/framework', success);
-                                me.$store.commit('editor/clearFrameworkCommentData');
-                                me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                                me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                                store.editor().framework(success);
+                                store.editor().clearFrameworkCommentData();
+                                store.app().setCanViewComments(me.canViewCommentsCurrentFramework());
+                                store.app().setCanAddComments(me.canAddCommentsCurrentFramework());
                                 me.$router.push({name: "framework", params: {frameworkId: me.queryParams.frameworkId}});
                             }, console.error);
                         }
                     }
                     if (me.queryParams.directoryId) {
                         EcDirectory.get(me.queryParams.directoryId, function(success) {
-                            me.$store.commit('app/selectDirectory', success);
+                            store.app().selectDirectory(success);
                             me.$router.push({name: "directory"});
                         }, console.error);
                     }
@@ -243,11 +243,11 @@ export default {
                     }
                     if ((me.queryParams.ceasnDataFields === "true" || me.queryParams.frameworksPage === "true") && (!me.queryParams.action && !me.queryParams.frameworkId)) {
                         if (me.queryParams.collections === "true") {
-                            me.$store.commit('editor/collectionMode', true);
+                            store.editor().collectionMode(true);
                             me.$router.push({name: "collections"});
-                        } else if (me.$store.getters['editor/conceptMode'] === true) {
+                        } else if (store.editor().conceptMode === true) {
                             me.$router.push({name: "concepts"});
-                        } else if (me.$store.getters['editor/progressionMode'] === true) {
+                        } else if (store.editor().progressionMode === true) {
                             me.$router.push({name: "progressionLevels"});
                         } else if (me.$route.name !== 'frameworks' && me.$route.name !== 'concepts' && me.$route.name !== 'progressionLevels') {
                             me.$router.push({name: "frameworks"});
@@ -283,7 +283,7 @@ export default {
                 "https://schema.cassproject.org/0.4/skos/ConceptScheme", "https://schema.cassproject.org/0.4/skos/Concept", "https://schema.cassproject.org/0.4/skos", "https://schema.cassproject.org/0.4/Framework", "https://schema.cassproject.org/0.4/Competency", "https://schema.cassproject.org/0.4/skos/Concept/", "https://schema.cassproject.org/0.4/Competency/"
             ];
             for (let type of types) {
-                if (this.$store.state.lode.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
+                if (store.lode().schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
                     let index = type.indexOf('schema.cassproject.org');
                     let url = type;
                     if (index !== -1) {
@@ -291,19 +291,19 @@ export default {
                         url = window.location.origin + window.location.pathname + url + "/index.json-ld";
                     }
                     EcRemote.getExpectingObject("", url, async function(context) {
-                        me.$store.commit('lode/rawSchemata', {id: type, obj: context});
+                        store.lode().setRawSchemata({id: type, obj: context});
                         let expanded;
                         try {
                             expanded = await jsonld.expand(context);
                         } catch (err) {
                             console.error(err);
                         }
-                        me.$store.dispatch('lode/schemata', {id: type, obj: expanded});
+                        store.lode().schemata({id: type, obj: expanded});
                     }, function() {});
                 }
             }
             EcRemote.getExpectingString(window.repo.selectedServer, "badge/pk", (badgePk) => {
-                this.$store.commit('editor/setBadgePk', EcPk.fromPem(badgePk));
+                store.editor().setBadgePk(EcPk.fromPem(badgePk));
             }, console.error);
             setTimeout(() => {
                 // If crypto workers haven't loaded forgeAsync.js at repo init, need to try again to load the identity.
@@ -313,7 +313,7 @@ export default {
             }, 1000);
         },
         onSidebarEvent: function() {
-            this.showSideNav = !this.showSideNav;
+            store.app().setShowSideNav(!this.showSideNav);
         },
         findLinkedPersonForIdentity: function() {
             console.log("Finding linked person for identity...");
@@ -331,7 +331,7 @@ export default {
                 ep.copyFrom(ecrld);
                 if (ep.getGuid().equals(EcIdentityManager.default.ids[0].ppk.toPk().fingerprint())) {
                     matchingPersonRecordFound = true;
-                    this.$store.commit('user/loggedOnPerson', ep);
+                    store.user().setLoggedOnPerson(ep);
                     this.linkedPerson = ep;
                     console.log('Matching person record found: ');
                     console.log(ep);
@@ -356,8 +356,8 @@ export default {
                     }
                 }
                 if (this.$route.name === 'frameworks' || this.$route.name === 'concepts' || this.$route.name === 'progressionLevels') {
-                    this.$store.dispatch('app/refreshDirectories');
-                    this.$store.commit('app/refreshSearch', true);
+                    store.app().refreshDirectories();
+                    store.app().refreshSearch(true);
                 }
             }
         },
@@ -402,12 +402,12 @@ export default {
             // To do: Add other owners and readers
             dir.save(function(success) {
                 console.log("Directory saved: " + dir.id);
-                me.$store.commit('app/closeModal');
-                me.$store.dispatch('app/refreshDirectories');
+                store.app().closeModal();
+                store.app().refreshDirectories();
                 if (me.addAnotherDirectory) {
                     me.addAnotherDirectory = false;
                     me.$nextTick(() => {
-                        me.$store.commit('app/showModal', {component: 'AddDirectory'});
+                        store.app().setShowModal({component: 'AddDirectory'});
                     });
                 } else {
                     me.selectDirectory(dir);
@@ -419,8 +419,8 @@ export default {
             this.saveDirectory(e);
         },
         selectDirectory: function(directory) {
-            this.$store.commit('app/selectDirectory', directory);
-            this.$store.commit('app/rightAsideObject', directory);
+            store.app().selectDirectory(directory);
+            store.app().rightAsideObject(directory);
             if (this.$router.currentRoute.name !== "directory") {
                 this.$router.push({name: "directory"});
             }
@@ -480,12 +480,12 @@ export default {
             };
 
             connection.changedObject = async function(wut) {
-                me.$store.commit('editor/changedObject', wut.shortId());
+                store.editor().changedObject(wut.shortId());
                 // Add new assertions as they come in
                 if (wut.type === 'Assertion') {
                     let a = await EcAssertion.get(wut.shortId());
                     a.assertionDateDecrypted = await a.getAssertionDate();
-                    me.$store.commit('editor/addAssertion', a);
+                    store.editor().addAssertion(a);
                 }
                 if (me.$route.name !== 'framework' && me.$route.name !== 'conceptScheme' && me.$route.name !== 'progressionModel') {
                     return;
@@ -1375,32 +1375,26 @@ export default {
         }
     },
     computed: {
-        bannerMessage: function() {
-            return this.$store.getters['app/bannerMessage'];
+        bannerMessage: () => {
+            return store.app().bannerMessage;
         },
-        bannerStyle: function() {
+        bannerStyle: () => {
             return {
-                'color': this.$store.getters['app/bannerColor'],
-                'background-color': this.$store.getters['app/bannerBackground']
+                'color': store.app().bannerColor,
+                'background-color': store.app().bannerBackground
             };
         },
-        editorClass: function() {
+        editorClass: () => {
             return {
-                'ceasn-editor': this.queryParams.ceasnDataFields === 'true',
-                'has-banner': this.$store.getters['app/bannerMessage']
+                'ceasn-editor': store.editor().queryParams.ceasnDataFields === 'true',
+                'has-banner': store.app().bannerMessage
             };
-        },
-        showRightAside: function() {
-            return this.$store.getters['app/showRightAside'];
-        },
-        showSideNav: function() {
-            return this.$store.getters['app/showSideNav'];
         },
         currentRoute: function() {
             return this.$route.path;
         },
         isLoggedIn: function() {
-            if (!this.loggedInPerson || (this.loggedInPerson && !this.loggedInPerson.name)) {
+            if (!this.loggedOnPerson || (this.loggedOnPerson && !this.loggedOnPerson.name)) {
                 return false;
             } else {
                 return true;
@@ -1410,27 +1404,29 @@ export default {
             if (this.$route.name === 'login') return true;
             else return false;
         },
-        loggedInPerson: function() {
-            return store.user().loggedOnPerson;
-        },
-        queryParams: function() {
-            return store.editor().queryParams;
-        }
+        ...mapState(store.app, {
+            showRightAside: state => state.showRightAside,
+            showSideNav: state => state.showSideNav
+        }),
+        ...mapState(store.user, {
+            loggedOnPerson: state => state.loggedOnPerson
+        }),
+        ...mapState(store.editor, {
+            queryParams: state => state.queryParams
+        })
     },
     mounted: function() {
     },
     watch: {
         currentRoute: function(val) {
-            // console.log("logged in", this.loggedInPerson);
+            // console.log("logged in", this.loggedOnPerson);
             if (!this.isLoggedIn && val === '/users') {
                 this.$router.push({path: '/'});
             }
         },
         '$route'(to, from) {
             store.app().closeRightAside();
-            this.$store.commit('app/closeRightAside');
-            // this.$store.commit('app/closeSideNav');
-            this.$store.commit('app/closeModal');
+            store.app().closeModal();
             let navigationTo = to;
             if (navigationTo) {
                 this.navBarActive = false;
@@ -1440,22 +1436,22 @@ export default {
                 this.initializeApp();
             }
             if (to.name === 'concepts') {
-                this.$store.commit('editor/conceptMode', true);
-                this.$store.commit('editor/progressionMode', false);
+                store.editor().setConceptMode(true);
+                store.editor().setProgressionMode(false);
             }
             if (to.name === 'progressionLevels') {
-                this.$store.commit('editor/progressionMode', true);
-                this.$store.commit('editor/conceptMode', false);
+                store.editor().setProgressionMode(true);
+                store.editor().setConceptMode(false);
             }
             if (to.name === 'frameworks') {
-                this.$store.commit('editor/conceptMode', false);
-                this.$store.commit('editor/progressionMode', false);
+                store.editor().setConceptMode(false);
+                store.editor().setProgressionMode(false);
             }
         },
-        loggedInPerson: function() {
-            this.$store.commit('editor/setMe', EcIdentityManager.default.ids[0].ppk.toPk().toPem());
-            this.$store.commit('editor/setSubject', EcIdentityManager.default.ids[0].ppk.toPk().toPem());
-            this.$store.commit('editor/setManageAssertions', false); // Turn off managing assertions when logging in / switching users
+        loggedOnPerson: function() {
+            store.editor().setMe(EcIdentityManager.default.ids[0].ppk.toPk().toPem());
+            store.editor().setSubject(EcIdentityManager.default.ids[0].ppk.toPk().toPem());
+            store.editor().setManageAssertions(false); // Turn off managing assertions when logging in / switching users
         }
     }
 };

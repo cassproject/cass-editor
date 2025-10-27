@@ -160,6 +160,8 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
+import {mapState} from 'pinia';
 import Thing from './Thing.vue';
 import common from '@/mixins/common.js';
 import Breadcrumbs from './Breadcrumbs.vue';
@@ -276,7 +278,7 @@ export default {
         refreshSearch: function() {
             if (this.refreshSearch) {
                 this.searchRepo();
-                this.$store.commit('app/refreshSearch', false);
+                store.app().setRefreshSearch(false);
             }
         },
         timeOffset: function() {
@@ -287,36 +289,30 @@ export default {
         }
     },
     computed: {
-        crosswalkAlignmentSource: function() {
-            return this.$store.getters['crosswalk/frameworkSource'];
-        },
-        searchTerm: function(val) {
-            return this.$store.getters['app/searchTerm'];
-        },
-        refreshSearch: function(val) {
-            return this.$store.getters['app/refreshSearch'];
-        },
+        ...mapState(store.crosswalk,{
+            crosswalkAlignmentSource: state => state.frameworkSource
+        }),
+        ...mapState(store.app,{
+            searchTerm: state => state.searchTerm,
+            refreshSearch: state => state.refreshSearch,
+            storeApplySearchTo: state => state.applySearchTo,
+            rightAsideObjectId: state => state.rightAsideObject?.shortId()
+        }),
+        ...mapState(store.editor,{
+            firstSearchProcessing: state => state.firstSearchProcessing
+        }),
         applySearchTo: function() {
-            let options = this.$store.getters['app/applySearchTo'];
+            let options = this.storeApplySearchTo;
             if (!options) return null;
             let filterValues = options.filter(item => item.checked === true);
             if (filterValues.length <= 0) return null;
             return filterValues;
-        },
-        rightAsideObjectId: function() {
-            if (this.$store.getters['app/rightAsideObject']) {
-                return this.$store.getters['app/rightAsideObject'].shortId();
-            }
-            return null;
         },
         timeOffset: function() {
             return this.repo.timeOffset;
         },
         numIdentities: function() {
             return EcIdentityManager.default.ids?.length;
-        },
-        firstSearchProcessing: function() {
-            return this.$store.getters['editor/firstSearchProcessing'];
         }
     },
     methods: {
@@ -334,7 +330,7 @@ export default {
                     parentName: null,
                     canEdit: false
                 };
-                this.$store.commit('app/showModal', modalObject);
+                store.app().setShowModal(modalObject);
             }
         },
         buildSearch: function(type, callback) {
@@ -457,7 +453,7 @@ export default {
                             }
                         }
                     }
-                    me.$store.commit('editor/setFirstSearchProcessing', false);
+                    store.editor().setFirstSearchProcessing(false);
                     if (directories && directories.length > 0) {
                         me.results = me.results.concat(directories);
                         if ($state) {
@@ -475,7 +471,7 @@ export default {
                     }
                 }, function(err) {
                     console.error(err);
-                    me.$store.commit('editor/setFirstSearchProcessing', false);
+                    store.editor().setFirstSearchProcessing(false);
                     if ($state) {
                         $state.complete();
                     }
@@ -486,7 +482,7 @@ export default {
             var me = this;
             this.start = 0;
             this.subStart = 0;
-            me.$store.commit('editor/setFirstSearchProcessing', true);
+            store.editor().setFirstSearchProcessing(true);
             this.results.splice(0, this.results.length);
             this.subResults.splice(0, this.subResults.length);
             this.resultIds.splice(0, this.resultIds.length);
@@ -540,7 +536,7 @@ export default {
                                 }
                             }
                         }
-                        me.$store.commit('editor/setFirstSearchProcessing', false);
+                        store.editor().setFirstSearchProcessing(false);
                         if (results.length < 10 && (me.type === "Framework" || me.type === "ConceptScheme")) {
                             if (me.searchCompetencies) {
                                 me.searchForSubObjects();
@@ -548,11 +544,11 @@ export default {
                         }
                     }, function(err) {
                         console.error(err);
-                        me.$store.commit('editor/setFirstSearchProcessing', false);
+                        store.editor().setFirstSearchProcessing(false);
                     });
                 });
             } else {
-                me.$store.commit('editor/setFirstSearchProcessing', false);
+                store.editor().setFirstSearchProcessing(false);
             }
             if (!this.searchFrameworks && !this.searchDirectories && (this.searchTerm !== "" || !this.displayFirst || this.displayFirst.length === 0)) {
                 // Only competency fields were selected

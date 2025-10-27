@@ -8,11 +8,10 @@ import App from './App.vue';
 import './scss/theme.scss';
 import './scss/styles.scss';
 import router from './router';
-import store from './stores/index.js';
 import VueObserveVisibility from 'vue-observe-visibility';
 import AsyncComputed from 'vue-async-computed'; 
 import InfiniteLoading from "v3-infinite-loading";
-
+import {createPinia} from 'pinia';
 
 import moment from 'moment';
 global.moment = moment;
@@ -47,6 +46,31 @@ global.fetch = async(...args) => {
     }
 };
 
+EcRepository.caching = true;
+EcRepository.cachingL2 = true;
+
+var queryParams = function() {
+    if (window.document.location.search == null) { return {}; }
+    var hashSplit = (window.document.location.search.split("?"));
+    if (hashSplit.length > 1) {
+        var o = {};
+        var paramString = hashSplit[1];
+        var parts = (paramString).split("&");
+        for (var i = 0; i < parts.length; i++) {
+            if (o[parts[i].split("=")[0]]) {
+                // Allow multiple values
+                o[parts[i].split("=")[0]] = [o[parts[i].split("=")[0]]];
+                o[parts[i].split("=")[0]].push(decodeURIComponent(parts[i].replace(parts[i].split("=")[0] + "=", "")));
+            } else {
+                o[parts[i].split("=")[0]] = decodeURIComponent(parts[i].replace(parts[i].split("=")[0] + "=", ""));
+            }
+        }
+        return o;
+    }
+    return {};
+};
+
+window.queryParams = queryParams();
 
 // const options = {
 //     color: '#68C8DB',
@@ -62,7 +86,9 @@ global.fetch = async(...args) => {
 //     inverse: false
 // };
 
+const pinia = createPinia();
 const app = global.app = createApp(App)
+app.use(pinia);
 
 // app.use(VueProgressBar, options);
 // app.use(require('vue-moment'));
@@ -103,33 +129,8 @@ app.directive('click-outside', {
     }
 });
 
-EcRepository.caching = true;
-EcRepository.cachingL2 = true;
-
 app.config.productionTip = false;
-var queryParams = function() {
-    if (window.document.location.search == null) { return {}; }
-    var hashSplit = (window.document.location.search.split("?"));
-    if (hashSplit.length > 1) {
-        var o = {};
-        var paramString = hashSplit[1];
-        var parts = (paramString).split("&");
-        for (var i = 0; i < parts.length; i++) {
-            if (o[parts[i].split("=")[0]]) {
-                // Allow multiple values
-                o[parts[i].split("=")[0]] = [o[parts[i].split("=")[0]]];
-                o[parts[i].split("=")[0]].push(decodeURIComponent(parts[i].replace(parts[i].split("=")[0] + "=", "")));
-            } else {
-                o[parts[i].split("=")[0]] = decodeURIComponent(parts[i].replace(parts[i].split("=")[0] + "=", ""));
-            }
-        }
-        return o;
-    }
-    return {};
-};
-window.queryParams = queryParams();
 
 app.use(router);
-app.use(store);
 
 window.app = app.mount('#app');
