@@ -177,6 +177,7 @@
                 <div class="buttons is-right">
                     <a
                         :href="csvExampleCompetenciesFile"
+                        id="supported-import-details-csv-competencies-example"
                         target="_blank"
                         download="CAP Software Engineering - Competencies.csv"
                         class="button is-small is-outlined is-primary">
@@ -189,6 +190,7 @@
                     </a>
                     <a
                         :href="csvTemplateCompetenciesFile"
+                        id="supported-import-details-csv-competencies-template"
                         target="_blank"
                         download="Template - Competencies.csv"
                         class="button is-small is-outlined is-primary">
@@ -201,6 +203,7 @@
                     </a>
                     <a
                         :href="csvExampleRelationsFile"
+                        id="supported-import-details-csv-relations-example"
                         target="_blank"
                         download="CAP Software Engineering - Relations.csv"
                         class="button is-small is-outlined is-primary">
@@ -213,6 +216,7 @@
                     </a>
                     <a
                         :href="csvTemplateRelationsFile"
+                        id="supported-import-details-csv-relations-template"
                         target="_blank"
                         download="Template - Relations.csv"
                         class="button is-small is-outlined is-primary">
@@ -236,6 +240,7 @@
                 <div class="buttons is-right">
                     <a
                         :href="ctdlAsnCsvExampleFile"
+                        id="supported-import-details-ctdl-asn-csv-minimum-example"
                         target="_blank"
                         download="Example of a Mininum Data Competency Framework Upload - HIST 101, SURVEY OF AMERICAN HISTORY I.csv"
                         class="button is-small is-outlined is-primary">
@@ -248,6 +253,7 @@
                     </a>
                     <a
                         :href="ctdlAsnCsvTemplateFile"
+                        id="supported-import-details-ctdl-asn-csv-minimum-template"
                         target="_blank"
                         download="Template of a Mininum Data Competency Framework.csv"
                         class="button is-small is-outlined is-primary">
@@ -260,6 +266,7 @@
                     </a>
                     <a
                         :href="ctdlAsnCsvBenchmarkExampleFile"
+                        id="supported-import-details-ctdl-asn-csv-benchmark-example"
                         target="_blank"
                         download="Example of a Benchmark Competency Framework - DOLWorkCharacteristicsDownloadfromCaSSAug25_2021.csv"
                         class="button is-small is-outlined is-primary">
@@ -272,6 +279,7 @@
                     </a>
                     <a
                         :href="ctdlAsnCsvBenchmarkTemplateFile"
+                        id="supported-import-details-ctdl-asn-csv-benchmark-template"
                         target="_blank"
                         download="Template of a Benchmark Competency Framework.csv"
                         class="button is-small is-outlined is-primary">
@@ -308,6 +316,7 @@
                 <div class="buttons is-right">
                     <a
                         :href="csvConceptExampleFile"
+                        id="supported-import-details-csv-concept-scheme-example"
                         target="_blank"
                         download="Concept Scheme Example.csv"
                         class="button is-small is-outlined is-primary">
@@ -320,6 +329,7 @@
                     </a>
                     <a
                         :href="csvConceptTemplateFile"
+                        id="supported-import-details-csv-concept-scheme-template"
                         target="_blank"
                         download="Concept Scheme Template.csv"
                         class="button is-small is-outlined is-primary">
@@ -355,6 +365,7 @@
                 <div class="buttons is-right">
                     <a
                         :href="medbiquitousFile"
+                        id="supported-import-details-medbiquitous-xml-example"
                         target="_blank"
                         download="educational_achievement_sample_1June2012.xml"
                         class="button is-small is-outlined is-primary">
@@ -388,6 +399,7 @@
                 <div class="buttons is-right">
                     <a
                         :href="asnRdfJsonFile"
+                        id="supported-import-details-asn-rdf-json-example"
                         target="_blank"
                         download="D2695955.json"
                         class="button is-small is-outlined is-primary">
@@ -410,6 +422,7 @@
                 <div class="buttons is-right">
                     <a
                         :href="ctdlAsnJsonldFile"
+                        id="supported-import-details-ctdl-asn-jsonld-example"
                         target="_blank"
                         download="DQP.jsonld"
                         class="button is-small is-outlined is-primary">
@@ -443,6 +456,7 @@
                 <div class="buttons is-right">
                     <a
                         :href="ctdlAsnJsonldConceptsFile"
+                        id="supported-import-details-ctdl-asn-jsonld-concepts-example"
                         target="_blank"
                         download="ConnectingCredentialsLevels.jsonld"
                         class="button is-small is-outlined is-primary">
@@ -459,6 +473,7 @@
         <template slot="modal-foot">
             <div
                 @click="$store.commit('app/closeModal')"
+                id="supported-import-details-back-button"
                 class="buttons is-right">
                 <button class="button is-primary is-large is-outlined">
                     Back to import screen

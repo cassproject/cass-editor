@@ -19,6 +19,7 @@
                 class="buttons is-spaced">
                 <button
                     class="button is-primary is-outlined"
+                    id="message-of-the-day-confirm-button"
                     @click="close">
                     <span>Confirm</span>
                 </button>

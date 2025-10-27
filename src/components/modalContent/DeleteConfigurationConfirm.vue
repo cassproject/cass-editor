@@ -21,12 +21,14 @@
             <div class="buttons is-spaced">
                 <button
                     class="button is-outlined is-danger"
-                    @click="$emit('confirm')">
+                    @click="$emit('confirm')"
+                    id="delete-configuration-confirm-button">
                     Yes, Delete Configuration
                 </button>
                 <button
                     class="button is-dark"
-                    @click="$emit('cancel')">
+                    @click="$emit('cancel')"
+                    id="delete-configuration-cancel-button">
                     Cancel
                 </button>
             </div>

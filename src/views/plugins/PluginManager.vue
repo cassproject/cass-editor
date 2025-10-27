@@ -24,6 +24,7 @@
                         </span>
                     </p>
                     <button
+                        id="plugin-delete-close-button"
                         class="delete"
                         @click="cancelPluginDelete"
                         aria-label="close" />
@@ -34,11 +35,13 @@
                 <footer class="modal-card-foot">
                     <div class="buttons is-spaced">
                         <button
+                            id="plugin-delete-cancel-button"
                             class="button is-dark is-outlined"
                             @click="cancelPluginDelete">
                             Cancel
                         </button>
                         <button
+                            id="plugin-delete-confirm-button"
                             class="button is-outlined is-primary"
                             @click="deletePlugin">
                             Remove
@@ -103,6 +106,7 @@
                 </div>
                 <div class="buttons is-right">
                     <div
+                        id="plugin-manager-add-new-plugin-button"
                         class="button is-outlined is-primary"
                         @click="addNewPlugin"
                         title="Add New Plugin">

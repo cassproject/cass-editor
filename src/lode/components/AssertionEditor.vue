@@ -4,6 +4,7 @@
         <div class="assertions-buttons">
             <div class="left-buttons">
                 <div
+                    id="can-assertion-button"
                     data-id="positiveAssertionButton"
                     class="button is-text"
                     :disabled="loading"
@@ -13,6 +14,7 @@
                     {{ canButtonText }}
                 </div>
                 <div
+                    id="cannot-assertion-button"
                     data-id="negativeAssertionButton"
                     class="button is-text"
                     :disabled="loading"
@@ -24,6 +26,7 @@
             </div>
             <div class="right-button">
                 <div
+                    id="badge-button"
                     data-id="badgeButton"
                     class="button is-text"
                     :disabled="loading"
@@ -37,6 +40,7 @@
                     </template>
                 </div>
                 <div
+                    id="view-badge-button"
                     data-id="viewBadgeButton"
                     class="button is-text"
                     @click="viewBadge"
@@ -47,6 +51,7 @@
         </div>
         <div class="assertions-input">
             <input
+                id="add-evidence-input"
                 :disabled="loading"
                 class="input is-narrow"
                 type="text"
@@ -72,6 +77,7 @@
                     </a>
                     <span v-else>{{ evidenceThing.text }}</span>
                     <div
+                        id="remove-evidence-button"
                         data-id="removeEvidenceButton"
                         class="button is-text"
                         @click="handleUnevidenceAssertion(evidenceThing.original)">
@@ -84,6 +90,7 @@
             v-if="assertionsByOthers && assertionsByOthers.length > 0"
             class="assertions-others">
             <Assertion
+                :id="item.id"
                 v-for="item in assertionsByOthers"
                 :key="uri+item.id"
                 :uri="item.id"

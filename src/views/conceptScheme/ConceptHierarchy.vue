@@ -23,12 +23,14 @@
             <!-- CONTROLS FOR EXPAND  -->
             <div class="column is-narrow">
                 <div
+                    id="collapse-button"
                     v-if="expanded"
                     class="icon is-vcentered"
                     @click="expanded=false">
                     <i class="fa fa-caret-down has-text-primary is-size-2" />
                 </div>
                 <div
+                    id="expand-button"
                     v-else-if="!expanded"
                     class="icon is-vcentered"
                     @click="expanded=true">
@@ -40,6 +42,7 @@
                     <i class="fa fa-circle is-size-6 has-text-light" />
                 </div>
                 <div
+                    id="select-button"
                     v-if="selectButtonText"
                     @click="$emit('select-button-click', selectedArray)"
                     class="button is-outlined is-primary">
@@ -51,6 +54,7 @@
                 <div
                     class="buttons">
                     <div
+                        id="edit-multiple-button"
                         v-if="multipleSelected && !addingNode && view !== 'import' && canEdit"
                         @click="$emit('edit-multiple-event')"
                         class="button is-outlined is-primary">
@@ -63,6 +67,7 @@
                     </div>
                     <!-- if multiple are selected allow for edit multiple -->
                     <div
+                        id="add-concept-button"
                         @click="addingNode = true;"
                         v-if="!addingNode && canEdit && !multipleSelected"
                         class="button is-outlined is-primary">
@@ -75,6 +80,7 @@
                     </div>
                     <!-- delete item -->
                     <div
+                        id="delete-item-button"
                         v-if="!addingNode && canEdit && !multipleSelected && canCopyOrCut"
                         @click="deleteSelected"
                         class="button is-outlined is-danger">
@@ -86,6 +92,7 @@
                         </span>
                     </div>
                     <div
+                        id="cancel-add-node-button"
                         v-if="addingNode"
                         @click="addingNode = false;"
                         class="button is-outlined is-dark ">
@@ -95,6 +102,7 @@
                         <span>cancel</span>
                     </div>
                     <div
+                        id="create-new-button"
                         v-if="addingNode"
                         @click="onClickCreateNew"
                         :class="{'is-loading': loading}"
@@ -107,6 +115,7 @@
                         </span>
                     </div>
                     <div
+                        id="copy-concept-button"
                         v-if="view === 'framework' || view === 'concept'"
                         :disabled="!canCopyOrCut"
                         title="Copy concept"
@@ -118,6 +127,7 @@
                         </span>
                     </div>
                     <div
+                        id="cut-concept-button"
                         v-if="view === 'framework' || view === 'concept'"
                         title="Cut concept"
                         :disabled="!canCopyOrCut"
@@ -129,6 +139,7 @@
                         </span>
                     </div>
                     <div
+                        id="paste-concept-button"
                         v-if="view === 'framework' || view === 'concept'"
                         :disabled="!canPaste"
                         class="button is-outlined "
@@ -151,6 +162,7 @@
                         class="buttons is-right">
                         <!-- cancel button -->
                         <div
+                            id="cancel-import-button"
                             @click="cancelImport"
                             class=" button is-light is-pulled-right is-dark is-outlined">
                             <span>
@@ -162,6 +174,7 @@
                         </div>
                         <!--  start over -->
                         <div
+                            id="import-again-button"
                             @click="$store.dispatch('app/clearImport')"
                             class="button is-dark is-outlined is-pulled-right">
                             <span>
@@ -173,6 +186,7 @@
                         </div>
                         <!-- open in editor -->
                         <div
+                            id="view-in-editor-button"
                             @click="openFramework"
                             class="button is-dark is-outlined is-pulled-right">
                             <span>view in editor</span>
@@ -182,6 +196,7 @@
                         </div>
                         <!--  home -->
                         <router-link
+                            id="navigate-to-concepts-button"
                             class="button is-primary is-outlined is -pulled-right"
                             :to="{path: '/concepts', query: queryParams}">
                             <span>

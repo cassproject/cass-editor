@@ -15,6 +15,7 @@
                                 </h3>
                                 <div class="buttons">
                                     <div
+                                        id="create-new-user-group-button"
                                         class="button is-rounded is-primary is-small"
                                         @click="createNewUserGroup(null)"
                                         :disabled="!amLoggedIn"
@@ -108,6 +109,7 @@
                                             </thead>
                                             <tbody>
                                                 <tr
+                                                    :id="'member-' + member.id"
                                                     v-for="(member, memberIdx) in allGroupMembersList"
                                                     :key="memberIdx">
                                                     <th>
@@ -122,7 +124,9 @@
                                                             <br>
                                                             <span v-for="(memMgrOf, memMgrOfIdx) in member.managerOf">
                                                                 <span v-if="memMgrOfIdx > 0">, </span>
-                                                                <a @click="showGroupDetailsById(memMgrOf.id)">
+                                                                <a 
+                                                                    :id="'member-list-group-link-manager-' + memMgrOf.id"
+                                                                    @click="showGroupDetailsById(memMgrOf.id)">
                                                                     {{ memMgrOf.name }}
                                                                 </a>
                                                             </span>
@@ -132,7 +136,9 @@
                                                             <br>
                                                             <span v-for="(memMemOf, memMemOfIdx) in member.memberOf">
                                                                 <span v-if="memMemOfIdx > 0">, </span>
-                                                                <a @click="showGroupDetailsById(memMemOf.id)">
+                                                                <a 
+                                                                    :id="'member-list-group-link-member-' + memMemOf.id"
+                                                                    @click="showGroupDetailsById(memMemOf.id)">
                                                                     {{ memMemOf.name }}
                                                                 </a>
                                                             </span>
@@ -155,7 +161,9 @@
                                         <li
                                             v-for="lineageObj in currentUserGroupLineage"
                                             :key="lineageObj.id">
-                                            <a @click="showGroupDetailsById(lineageObj.id)">
+                                            <a 
+                                                :id="'group-lineage-link-' + lineageObj.id"
+                                                @click="showGroupDetailsById(lineageObj.id)">
                                                 {{ lineageObj.name }}
                                             </a>
                                         </li>
@@ -187,6 +195,7 @@
                                             </div>
                                             <div class="column is-narrow">
                                                 <span
+                                                    id="edit-current-group-name-icon"
                                                     class="icon is-size-7 users-edit-icon"
                                                     v-if="currentUserGroupIsManager"
                                                     @click="isEditingCurrentGroupName = true">
@@ -203,6 +212,7 @@
                                                 <label class="label">Group Name</label>
                                                 <p class="control is-expanded">
                                                     <input
+                                                        id="current-user-group-name-input"
                                                         @keypress="setCurrentUserGroupAsChanged"
                                                         type="text"
                                                         class="input"
@@ -215,6 +225,7 @@
                                                 </p>
                                             </div>
                                             <span
+                                                id="done-editing-current-group-name-button"
                                                 :disabled="currentUserGroupName.length > 60"
                                                 @click="isEditingCurrentGroupName = false"
                                                 class="button is-primary is-rounded is-small is-outlined">
@@ -248,13 +259,15 @@
                                                                 {{ currentUserGroupDescription.trim(0, 300) }}
                                                             </span>
                                                             <span
+                                                                id="hide-more-description-button"
                                                                 v-if="showMore && currentUserGroupDescription.trim().length > 300"
-                                                                title="Show more"
+                                                                title="Hide more"
                                                                 @click="showMore = false"
                                                                 class="button is-small is-text has-text-primary">
                                                                 <b>hide</b>
                                                             </span>
                                                             <span
+                                                                id="show-more-description-button"
                                                                 v-else-if="currentUserGroupDescription.trim().length > 300"
                                                                 title="Show more"
                                                                 @click="showMore = true"
@@ -268,6 +281,7 @@
                                                     </div>
                                                     <div class="column is-narrow">
                                                         <span
+                                                            id="edit-current-group-description-icon"
                                                             class="icon"
                                                             v-if="currentUserGroupIsManager"
                                                             @click="isEditingCurrentGroupDescription = true">
@@ -284,6 +298,7 @@
                                                     class="field">
                                                     <p class="control is-expanded">
                                                         <textarea
+                                                            id="current-user-group-description-input"
                                                             @keyup="setCurrentUserGroupAsChanged"
                                                             type="text"
                                                             :rows="3"
@@ -293,6 +308,7 @@
                                                 </div>
                                                 <div class="buttons">
                                                     <span
+                                                        id="done-editing-current-group-description-button"
                                                         @click="isEditingCurrentGroupDescription = false"
                                                         class="button is-rounded is-primary is-small is-outlined"
                                                         :class="currentUserGroupChanged ? '' : 'is-disabled'"
@@ -321,6 +337,7 @@
                                                 </h5>
                                                 <!-- group action buttons -->
                                                 <div
+                                                    id="add-group-members-button"
                                                     v-if="currentUserGroupIsManager"
                                                     class="button my-1 is-small is-rounded is-small  is-fullwidth is-primary"
                                                     @click="showAddGroupMembersModal"
@@ -333,6 +350,7 @@
                                                     </span>
                                                 </div>
                                                 <div
+                                                    id="save-current-group-button"
                                                     v-if="currentUserGroupIsManager && currentUserGroupChanged"
                                                     :disabled="!currentUserGroupChanged"
                                                     :class=" currentUserGroupIsManager && currentUserGroupChanged ? '' : 'is-disabled'"
@@ -347,6 +365,7 @@
                                                     </span>
                                                 </div>
                                                 <div
+                                                    id="discard-current-group-changes-button"
                                                     v-if="currentUserGroupIsManager && currentUserGroupChanged"
                                                     :disabled="!currentUserGroupChanged"
                                                     class="button is-fullwidth my-1 is-outlined is-rounded is-small"
@@ -361,6 +380,7 @@
                                                     </span>
                                                 </div>
                                                 <div
+                                                    id="create-sub-group-for-current-user-group-button"
                                                     v-if="currentUserGroupIsManager && !currentUserGroupIsNewGroup"
                                                     class="button my-1 is-fullwidth is-rounded is-primary is-small"
                                                     @click="createSubGroupForCurrentUserGroup"
@@ -373,6 +393,7 @@
                                                     </span>
                                                 </div>
                                                 <div
+                                                    id="delete-current-user-group-button"
                                                     v-if="currentUserGroupIsManager && !currentUserGroupIsNewGroup"
                                                     class="button my-1 is-outlined is-fullwidth is-rounded is-small is-danger"
                                                     @click="showDeleteCurrentUserGroupConfirmModal"
@@ -416,6 +437,7 @@
                                             <tbody>
                                                 <!-- group managers -->
                                                 <tr
+                                                    :id="'manager-' + manager.shortId()"
                                                     v-for="(manager, managerIdx) in currentUserGroupManagers"
                                                     :key="managerIdx + '_mgr'">
                                                     <th>
@@ -432,6 +454,7 @@
                                                             v-if="!areAnyIdentitiesThisPerson(manager)"
                                                             class="buttons is-right">
                                                             <div
+                                                                id="change-manager-to-member-button"
                                                                 class="button is-small is-outlined is-primary"
                                                                 @click="changeManagerToMember(manager.shortId())"
                                                                 title="Change role to member">
@@ -443,6 +466,7 @@
                                                                 </span>
                                                             </div>
                                                             <div
+                                                                id="remove-manager-from-current-user-group-button"
                                                                 v-if="isPersonRemovableFromCurrentUserGroup(manager.shortId())"
                                                                 class="button is-small is-outlined is-warning"
                                                                 @click="removeMemberFromCurrentUserGroup(manager.shortId())"
@@ -465,6 +489,7 @@
                                                 </tr>
                                                 <!-- group members/non-managers -->
                                                 <tr
+                                                    :id="'member-' + member.shortId()"
                                                     v-for="(member, memberIdx) in currentUserGroupMembers"
                                                     :key="memberIdx + '_mem'">
                                                     <th>
@@ -479,6 +504,7 @@
                                                     <td v-if="currentUserGroupIsManager">
                                                         <div class="buttons is-right">
                                                             <div
+                                                                id="change-member-to-manager-button"
                                                                 class="button is-small is-outlined is-primary"
                                                                 @click="changeMemberToManager(member.shortId())"
                                                                 title="Change role to manager">
@@ -490,6 +516,7 @@
                                                                 </span>
                                                             </div>
                                                             <div
+                                                                id="remove-member-from-current-user-group-button"
                                                                 v-if="isPersonRemovableFromCurrentUserGroup(member.shortId())"
                                                                 class="button is-small is-outlined is-warning"
                                                                 @click="removeMemberFromCurrentUserGroup(member.shortId())"
@@ -533,18 +560,21 @@
             </template>
             <template slot="modal-foot">
                 <button
+                    id="confirm-lose-changes-and-nav-button"
                     class="button is-primary is-outlined"
                     v-if="toRoute !== ''"
                     @click="confirmLoseChangesAndNav">
                     Confirm
                 </button>
                 <button
+                    id="confirm-lose-changes-button"
                     class="button is-primary is-outlined"
                     v-else
                     @click="confirmLoseChanges">
                     Confirm
                 </button>
                 <button
+                    id="cancel-lose-changes-button"
                     class="button is-info"
                     @click="cancelLoseChanges">
                     cancel
@@ -580,6 +610,7 @@
                     v-if="!(filteredAvailablePersonsForMembership.length === 0 && addMemberPersonFilter === '')"
                     class="field">
                     <input
+                        id="add-member-person-filter-input"
                         type="text"
                         class="input"
                         v-model="addMemberPersonFilter"
@@ -644,6 +675,7 @@
             </template>
             <template slot="modal-foot">
                 <div
+                    id="apply-selected-new-members-to-current-user-group-button"
                     v-if="selectedNewMembers.length > 0 || selectedNewManagers.length > 0"
                     class="button is-outlined is-primary is-small"
                     @click="applySelectedNewMembersToCurrentUserGroup"
@@ -656,6 +688,7 @@
                     </span>
                 </div>
                 <div
+                    id="close-add-group-member-modal-button"
                     class="button is-outlined is-small"
                     @click="closeAddGroupMemberModal"
                     title="Cancel add new members">
@@ -688,6 +721,7 @@
             </template>
             <template slot="modal-foot">
                 <div
+                    id="cancel-user-group-delete-button"
                     class="button is-outlined"
                     @click="closeDeleteGroupConfirmModal"
                     title="Cancel user group delete">
@@ -699,6 +733,7 @@
                     </span>
                 </div>
                 <div
+                    id="confirm-user-group-delete-button"
                     class="button is-outlined is-warning"
                     @click="deleteCurrentUserGroupAndSubGroups"
                     title="Confirm user group delete">

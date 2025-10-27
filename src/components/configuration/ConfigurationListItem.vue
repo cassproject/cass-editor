@@ -30,7 +30,8 @@
             <div
                 class="button is-outlined is-primary is-small"
                 :disabled="defaultFrameworkConfigId !== null && defaultFrameworkConfigId !== undefined && defaultFrameworkConfigId.equals(id)"
-                @click="$emit('set-framework-default', id)">
+                @click="$emit('set-framework-default', id)"
+                id="configuration-list-item-set-framework-default-button">
                 set as framework default
             </div>
         </td>
@@ -39,7 +40,8 @@
                 v-if="isOwned"
                 title="Manage configuration"
                 class="button is-outlined is-small is-primary"
-                @click="$emit('show-details', id)">
+                @click="$emit('show-details', id)"
+                id="configuration-list-item-manage-configuration-button">
                 <span class="icon">
                     <i class="fas fa-cog" />
                 </span>
@@ -48,7 +50,8 @@
                 v-if="isOwned && !isDefault"
                 title="Delete configuration"
                 class="button is-outlined is-small is-danger delete-btn"
-                @click="$emit('show-delete', id)">
+                @click="$emit('show-delete', id)"
+                id="configuration-list-item-delete-configuration-button">
                 <span class="icon">
                     <i class="fas fa-trash" />
                 </span>
@@ -57,7 +60,8 @@
                 v-if="!isOwned"
                 title="View configuration"
                 class="button is-outlined is-small is-primary"
-                @click="$emit('show-details', id)">
+                @click="$emit('show-details', id)"
+                id="configuration-list-item-view-configuration-button">
                 <span class="icon">
                     <i class="fas fa-eye" />
                 </span>

@@ -17,7 +17,8 @@
             <div class="buttons is-spaced">
                 <button
                     class="button is-primary"
-                    @click="$store.commit('app/closeModal')">
+                    @click="$store.commit('app/closeModal')"
+                    id="manage-framework-configuration-modal-done-button">
                     Done
                 </button>
             </div>

@@ -53,6 +53,7 @@
                 :configList="configList"
                 v-if="configViewMode.equals('list')" />
             <div
+                id="create-new-configuration-button"
                 class="button is-outlined is-primary is-pulled-right"
                 v-if="configViewMode.equals('list')"
                 @click="createNewConfig">

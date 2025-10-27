@@ -18,6 +18,7 @@
                     <li
                         class="cass--list--item"
                         v-for="(item) in results"
+                        :id="'list-item-' + item.id"
                         :key="item.id"
                         :class="[
                             {'source-framework': crosswalkAlignmentSource && item.id === crosswalkAlignmentSource.id},
@@ -53,6 +54,7 @@
                             <Thing
                                 :parent="parent"
                                 :obj="item"
+                                :id="'list-click-'+item.id"
                                 @dblclick.native="$emit('dblclick', item)"
                                 :view="view"
                                 :profile="profile"
@@ -97,6 +99,7 @@
                         :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass-list-item--selected' : ''"
                         v-for="(item) in subResults"
                         :key="item.id"
+                        :id="'sub-item-click-'+item.id"
                         @click="subObjectClick(item)">
                         <div class="cass--list-item--icon">
                             <div class="cass--list-item--icon-wrap has-background-dark">
@@ -127,6 +130,7 @@
                                 :ref="item.id" />
                             <Thing
                                 :obj="item"
+                                :id="'breadcrumb-click-'+item.id"
                                 @dblclick.native="$emit('dblclick', item)"
                                 :view="view"
                                 :profile="profile"

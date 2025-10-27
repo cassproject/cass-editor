@@ -36,6 +36,7 @@
                         <!-- CONTROLS FOR EXPAND -->
                         <div class="expand-column column is-narrow is-vcentered">
                             <div
+                                id="hierarchy-node-expand-button"
                                 v-if="!collapse && hasChild.length > 0"
                                 @click="onExpandEvent()"
                                 class="icon is-vcentered">
@@ -44,6 +45,7 @@
                                     :class="{'is-size-4': view === 'crosswalk'}" />
                             </div>
                             <div
+                                id="hierarchy-node-expand-button"
                                 v-else-if="hasChild.length > 0"
                                 @click="onExpandEvent()"
                                 class="icon is-vcentered">
@@ -121,6 +123,7 @@
                                     <div
                                         v-if="view !== 'crosswalk' && canEditThing"
                                         @click="onEditNode()"
+                                        :id="'edit-'+obj.shortId()"
                                         class="edit-button button is-text  is-small has-text-primary">
                                         <div class="icon ">
                                             <i class="fa fa-edit " />
@@ -137,6 +140,7 @@
                                     <div
                                         v-if="showAddComments && view !== 'crosswalk' && view !== 'search'"
                                         @click="handleClickAddComment"
+                                        :id="'add-comment-'+obj.shortId()"
                                         class=" comment-button button is-text  is-small has-text-primary">
                                         <div class="icon">
                                             <i class="fa fa-comment-medical" />
@@ -158,6 +162,7 @@
                     :key="idx"
                     class="tag is-small is-link crosswalk__align_link"
                     :title="crosswalkOptions[sac.alignType].label"
+                    :id="'existing-alignments-button-' + sac.alignType"
                     @click="setRelationTypeByLinkClick(sac.alignType)">
                     <!--<i :class="crosswalkOptions[sac.alignType].icon" />-->
                     <span>{{ crosswalkOptions[sac.alignType].label }}</span>
@@ -170,6 +175,7 @@
                 v-if="view === 'crosswalk' && subview === 'crosswalkSource'"
                 class="crosswalk-buttons__source">
                 <div
+                    id="hierarchy-node-set-alignment-source"
                     @click="setWorkingAlignmentsSource"
                     :disabled="sourceState !== 'ready'"
                     class="button is-outlined is-small is-primary crosswalk-buttons__source__create">
@@ -184,6 +190,7 @@
                     <div class="control">
                         <div class="select is-small is-primary has-text-primary crosswalk-buttons__source__select">
                             <select
+                                id="hierarchy-node-remove-alignment-source"
                                 ref="alignmentOptions"
                                 @blur="ifNoWorkingAlignmentsTypeRemoveSourceCompetency"
                                 v-model="workingAlignmentsType">
@@ -209,6 +216,7 @@
                             class="tag is-small is-fullwidth is-link crosswalk-buttons__source__type">
                             <span class="has-text-weight-bold">{{ crosswalkOptions[workingAlignmentsType].label }}</span>
                             <button
+                                id="hierarchy-node-remove-competency-source"
                                 @click="removeSourceCompetency"
                                 class="delete is-small" />
                         </span>
@@ -219,6 +227,7 @@
                 v-if="view === 'crosswalk' && subview === 'crosswalkTarget' && sourceState === 'selectTargets'"
                 class="crosswalk-buttons__target">
                 <div
+                    id="hierarchy-node-add-target"
                     v-show="!isInWorkingAlignmentsTargets"
                     @click="addToWorkingAlignmentsTargets(obj.shortId())"
                     class="button  is-fullwidth is-small is-text has-text-primary">
@@ -228,6 +237,7 @@
                     </span>
                 </div>
                 <div
+                    id="hierarchy-node-remove-target"
                     v-show="isInWorkingAlignmentsTargets"
                     @click="removeFromWorkingAlignmentsTargets(obj.shortId())"
                     class="button is-fullwidth is-small  is-text has-text-link">
@@ -243,6 +253,7 @@
                 v-if="view !== 'crosswalk' && canEdit && false"
                 class="add-node-section">
                 <div
+                    id="hierarchy-node-add-competency"
                     v-if="!addingNode"
                     class="add-new-node__line"
                     title="Add competency"
@@ -261,6 +272,7 @@
                     class="add-node__options">
                     <div class="buttons is-centered">
                         <div
+                            id="cancel-add-node-button"
                             @click="$store.commit('lode/competencySearchModalOpen', false); addingNode = false;"
                             class="button is-outlined is-small is-dark ">
                             <span class="icon">
@@ -269,6 +281,7 @@
                             <span>cancel</span>
                         </div>
                         <div
+                            id="hierarchy-node-create-button"
                             v-if="!hasChild.length"
                             @click="$emit('create-new-node-event', parent.shortId(), obj.shortId()); addingNode = false;"
                             class="button is-outlined is-small is-primary ">
@@ -281,6 +294,7 @@
                         </div>
                         <div
                             v-else
+                            id="create-new-node-button-2"
                             @click="$emit('create-new-node-event', obj.shortId()); addingNode = false;"
                             class="button is-outlined is-small is-primary ">
                             <span class="icon">
@@ -291,6 +305,7 @@
                             </span>
                         </div>
                         <div
+                            id="hierarchy-node-search-button"
                             v-if="obj && obj.type !== 'Concept'"
                             @click="clickToSearch"
                             class="button is-outlined is-small is-primary ">

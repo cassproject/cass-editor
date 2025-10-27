@@ -11,6 +11,7 @@
             type="file"
             :disabled="!uploadDisabled"
             @change="fileChange"
+            id="drag-and-drop-file-input"
             ref="file"
             style="display: none;">
         <div class="section">
@@ -46,6 +47,7 @@
                                 <button
                                     title="Remove"
                                     @click="removeFile(file)"
+                                    id="drag-and-drop-remove-file-button"
                                     class="button is-small is-text">
                                     <span class="icon">
                                         <i class="fa fa-times" />
@@ -58,7 +60,8 @@
                     <button
                         class="button is-outlined is-primary is-medium"
                         :disabled="uploadDisabled"
-                        @click="process">
+                        @click="process"
+                        id="drag-and-drop-process-files-button">
                         <span>
                             Process Files
                         </span>

@@ -19,6 +19,7 @@
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
+                    id="manage-framework-configuration-modal-done-button"
                     @click="$emit('close')">
                     Done
                 </button>

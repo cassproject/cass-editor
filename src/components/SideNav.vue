@@ -22,6 +22,7 @@
                 <!-- User icon -->
                 <button
                     class="button is-rounded is-light cass-editor__logged-in-user-icon"
+                    id="side-nav-user-icon-button"
                     @click="showUserInfo = !showUserInfo">
                     <span
                         :title="'Signed in as: ' + displayName">
@@ -31,7 +32,8 @@
             </div>
 
             <!-- User info -->
-            <div class="px-3 mb-3 pb-1 cass-editor__logged-in-user-info"
+            <div 
+                class="px-3 mb-3 pb-1 cass-editor__logged-in-user-info"
                 v-if="showUserInfo && displayName !== 'No user'">
                 <h3
                     v-if="availableIdentities.length < 2"
@@ -71,6 +73,7 @@
                     class="my-2">
                     <button
                         class="button is-primary is-small is-fullwidth"
+                        id="side-nav-logout-button"
                         @click="performApplicationLogout">
                         <span class="icon">
                             <i class="fa fa-sign-out-alt" />
@@ -78,10 +81,13 @@
                         <span v-if="showSideNav">logout</span>
                     </button>
                 </div>
-                <ul class="menu-list"
+                <ul 
+                    class="menu-list"
                     v-else-if="!hideLogoutButton">
                     <li class="mt-1 has-text-white">
-                        <a @click="performApplicationLogout"
+                        <a 
+                            id="side-nav-logout-icon-button"
+                            @click="performApplicationLogout"
                             title="Logout">
                             <span class="icon">
                                 <i class="fa fa-sign-out-alt" />
@@ -94,6 +100,7 @@
                 v-else-if="loginEnabled && displayName == 'No user'"
                 class="mx-3">
                 <button
+                    id="side-nav-show-login-button"
                     v-if="showSideNav"
                     class="my-2 button is-outlined is-white is-fullwidth"
                     @click="performApplicationLogin">
@@ -105,6 +112,7 @@
                     v-if="!showSideNav"
                     class="buttons is-centered">
                     <button
+                        id="side-nav-login-button"
                         class="button is-outlined is-white"
                         @click="performApplicationLogin"
                         title="Login">
@@ -151,6 +159,7 @@
                 <li class="has-text-white">
                     <router-link
                         :to="{path: '/frameworks', query: queryParams}"
+                        id="side-nav-frameworks-link"
                         @click.native="store.editor().setCollectionMode(false)"
                         :title="showSideNav ? '' : 'Frameworks'">
                         <span class="icon">
@@ -164,6 +173,7 @@
                     v-if="queryParams.ceasnDataFields === 'true' && showSideNav">
                     <router-link
                         :to="{path: '/collections', query: queryParams}"
+                        id="side-nav-collections-link"
                         @click.native="store.editor().setCollectionMode(true)"
                         :title="showSideNav ? '' : 'Collections'">
                         <span class="icon">
@@ -175,6 +185,7 @@
                 <li class="has-text-white">
                     <router-link
                         :to="{path: '/import', query: queryParams}"
+                        id="side-nav-import-link"
                         @click.native="store.editor().setConceptMode(false); store.editor().setProgressionMode(false); store.app().clearImport();"
                         :title="showSideNav ? '' : 'Import Framework'">
                         <span class="icon">
@@ -202,7 +213,9 @@
                     class="has-text-white"
                     v-show="showSideNav && pluginsEnabled"
                     :key="navLink">
-                    <a @click="setLaunchPluginValues(navLink)"
+                    <a 
+                        :id="'side-nav-plugin-link-' + navLink.launchName.replace(/\s+/g, '-').toLowerCase()"
+                        @click="setLaunchPluginValues(navLink)"
                         :title="showSideNav ? '' : '{{ navLink.launchName }}'">
                         <span class="icon">
                             <i class="fa fa-plug" />
@@ -234,6 +247,7 @@
                         class="has-text-white">
                         <a
                             data-id="share-assertions-button"
+                            id="side-nav-share-assertions-button"
                             @click="shareAssertions"
                             :title="showSideNav ? '' : 'Share'">
                             <span class="icon">
@@ -303,6 +317,7 @@
                 <li class="has-text-white">
                     <router-link
                         :to="{path: '/import', query: queryParams}"
+                        id="side-nav-import-link"
                         @click.native="store.editor().setConceptMode(true); store.editor().setProgressionMode(false); store.app().clearImport();"
                         :title="showSideNav ? '' : queryParams.ceasnDataFields === 'true' ? 'Import Concept Schemes' : 'Import Taxonomies'">
                         <span class="icon">
@@ -317,6 +332,7 @@
                     v-show="showSideNav && pluginsEnabled"
                     :key="navLink">
                     <a
+                        :id="'side-nav-plugin-link-' + navLink.launchName.replace(/\s+/g, '-').toLowerCase()"
                         @click="setLaunchPluginValues(navLink)"
                         :title="showSideNav ? '' : '{{ navLink.launchName }}'">
                         <span class="icon">
@@ -336,7 +352,8 @@
                 class="menu-list"
                 v-if="queryParams.ceasnDataFields === 'true' && showConcepts">
                 <li class="has-text-white">
-                    <router-link :to="{path: '/progressionLevels', query: queryParams}"
+                    <router-link 
+                        :to="{path: '/progressionLevels', query: queryParams}"
                         :title="showSideNav && queryParams.ceasnDataFields === 'true' ? '' : 'Progression Models'">
                         <span class="icon">
                             <i class="fa fa-layer-group" />
@@ -351,6 +368,7 @@
                     v-if="showSideNav && queryParams.ceasnDataFields === 'true' && showConcepts">
                     <router-link
                         :to="{path: '/import', query: queryParams}"
+                        id="side-nav-import-link-2"
                         @click.native="store.editor().setProgressionMode(true); store.editor().setConceptMode(false); store.app().clearImport();"
                         :title="showSideNav ? '' : 'Import'">
                         <span class="icon">
@@ -364,7 +382,9 @@
                     class="has-text-white"
                     v-show="showSideNav && pluginsEnabled"
                     :key="navLink">
-                    <a @click="setLaunchPluginValues(navLink)"
+                    <a 
+                        :id="'side-nav-plugin-link-2-' + navLink.launchName.replace(/\s+/g, '-').toLowerCase()"
+                        @click="setLaunchPluginValues(navLink)"
                         :title="showSideNav ? '' : '{{ navLink.launchName }}'">
                         <span class="icon">
                             <i class="fa fa-plug" />
@@ -383,7 +403,8 @@
             <ul
                 class="menu-list">
                 <li v-if="configurationsEnabled">
-                    <router-link :to="{path: '/configuration', query: queryParams}"
+                    <router-link 
+                        :to="{path: '/configuration', query: queryParams}"
                         :title="showSideNav ? '' : 'Configurations'">
                         <span class="icon">
                             <i class="fa fa-cog" />
@@ -414,6 +435,7 @@
                     v-show="showSideNav && pluginsEnabled"
                     :key="navLink">
                     <a
+                        :id="'side-nav-plugin-link-3-' + navLink.launchName.replace(/\s+/g, '-').toLowerCase()"
                         @click="setLaunchPluginValues(navLink)"
                         :title="showSideNav ? '' : '{{ navLink.launchName }}'">
                         <span class="icon">
@@ -442,6 +464,7 @@
                         class="has-text-white"
                         :key="navLink">
                         <a
+                            :id="'side-nav-plugin-link-4-' + navLink.launchName.replace(/\s+/g, '-').toLowerCase()"
                             @click="setLaunchPluginValues(navLink)"
                             :title="showSideNav ? '' : '{{ navLink.launchName }}'">
                             <span class="icon">
@@ -459,7 +482,9 @@
                 <li
                     v-if="showSideNav"
                     class="has-text-white">
-                    <a @click="store.app().closeSideNav()">
+                    <a 
+                        id="side-nav-collapse-button"
+                        @click="store.app().closeSideNav()">
                         <span class="icon">
                             <i class="fa-regular fa-square-caret-left" />
                         </span>
@@ -470,6 +495,7 @@
                     v-else
                     class="has-text-white">
                     <a
+                        id="side-nav-expand-button"
                         @click="store.app().showSideNav()"
                         title="Expand sidebar">
                         <span class="icon">

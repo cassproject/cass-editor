@@ -95,7 +95,8 @@
                         <a
                             :title="parentFramework.name"
                             class="single__li-a button is-text"
-                            @click="goToFramework(parentFramework)">
+                            @click="goToFramework(parentFramework)"
+                            id="single-goto-parent-framework-button">
                             <div>{{ parentFramework.name }}</div>
                             <div
                                 :title="parentFramework.name"
@@ -118,6 +119,7 @@
                     edit is made -->
                 <button
                     @click="edit=true"
+                    id="single-edit-button"
                     class="button is-outlined is-primary"
                     v-if="dynamicModalContent.objectType==='Level' && canEditContent">
                     Edit {{ dynamicModalContent.type }}
@@ -125,18 +127,21 @@
                 <button
                     v-if="numberOfParentFrameworks !== 0"
                     @click="$store.commit('app/closeModal')"
+                    id="single-return-to-framework-button"
                     class="button is-outlined is-primary">
                     return to framework editor
                 </button>
                 <button
                     v-else
                     @click="$store.commit('app/closeModal')"
+                    id="single-done-button"
                     class="button is-outlined is-primary">
                     done
                 </button>
                 <button
                     v-if="numberOfParentFrameworks === 0 && canEditContent"
                     @click="deleteOrphan"
+                    id="single-delete-orphan-button"
                     class="button is-danger is-outlined">
                     Delete
                 </button>

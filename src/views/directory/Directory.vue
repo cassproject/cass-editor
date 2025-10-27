@@ -16,6 +16,7 @@
                     <div class="control">
                         <div class="control">
                             <input
+                                id="new-directory-name"
                                 class="input"
                                 placeholder="Name of new directory"
                                 v-model="subdirectoryName">
@@ -28,11 +29,13 @@
                     class="field">
                     <div class="buttons">
                         <div
+                            id="cancel-new-directory-button"
                             class="button is-dark is-outlined"
                             @click="createSubdirectory = false">
                             Cancel
                         </div>
                         <div
+                            id="create-new-directory-button"
                             class="button is-primary"
                             :class="subdirectoryName.length === 0 ? 'is-disabled' : ''"
                             :disabled="subdirectoryName.length === 0"
@@ -40,6 +43,7 @@
                             Create
                         </div>
                         <div
+                            id="create-and-add-another-button"
                             class="button is-primary"
                             :class="subdirectoryName.length === 0 ? 'is-disabled' : ''"
                             :disabled="subdirectoryName.length === 0"
@@ -63,6 +67,7 @@
                     <div class="control">
                         <div class="control">
                             <input
+                                id="new-resource-name"
                                 class="input"
                                 placeholder="Name of new resource"
                                 v-model="resourceName">
@@ -77,6 +82,7 @@
                     <div class="control">
                         <div class="control">
                             <input
+                                id="new-resource-url"
                                 class="input"
                                 placeholder="Url of new resource"
                                 v-model="resourceUrl">

@@ -16,6 +16,7 @@
                     type="text"
                     class="input is-small"
                     v-model="localLabel"
+                    id="relationship-label-input"
                     @change="changeLabel">
             </div>
         </td>

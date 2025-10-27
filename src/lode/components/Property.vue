@@ -26,11 +26,13 @@ TO DO MAYBE: Separate out property by editing or not.
             </template>
             <template slot="modal-foot">
                 <button
+                    id="confirm-remove-property"
                     @click="clickConfirmRemove"
                     class="is-danger is-outlined button">
                     Confirm Remove Property
                 </button>
                 <button
+                    id="cancel-remove-property"
                     @click="closeModal"
                     class="is-dark button">
                     Cancel
@@ -83,6 +85,7 @@ TO DO MAYBE: Separate out property by editing or not.
                                 <div class="control">
                                     <label><br></label>
                                     <div
+                                        id="remove-property-button"
                                         @click="showModal('remove', item)"
                                         class="button is-text has-text-danger">
                                         <i class="fa fa-times" />
@@ -119,6 +122,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         <div class="control">
                             <label><br></label>
                             <div
+                                id="editing-remove-property-button"
                                 @click="showModal('remove', item)"
                                 class="button is-text has-text-danger">
                                 <i class="fa fa-times" />
@@ -143,6 +147,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         <div class="control">
                             <label><br></label>
                             <div
+                                id="remove-property-component-button"
                                 @click="showModal('remove', item)"
                                 class="button is-outlined has-text-danger">
                                 <i class="fa fa-times" />
@@ -162,6 +167,7 @@ TO DO MAYBE: Separate out property by editing or not.
                             v-if="!editingProperty">{{ displayLabel }}</span>
                         <p class="control">
                             <span
+                                id="property-read-only-link-copy-button"
                                 class="icon"
                                 title="Copy URL to the clipboard."
                                 v-clipboard="getURL(item)"
@@ -187,6 +193,7 @@ TO DO MAYBE: Separate out property by editing or not.
                             class="control"
                             v-if="editingProperty">
                             <div
+                                id="property-editing-remove-button-3"
                                 :disabled="shortType === 'id'"
                                 @click="showModal('remove', index)"
                                 class="button disabled is-text has-text-danger">
@@ -213,6 +220,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         <div class="control">
                             <label><br></label>
                             <div
+                                id="non-editable-string-remove-button"
                                 @click="showModal('remove', item)"
                                 class="button is-text has-text-danger">
                                 <i class="fa fa-times" />
@@ -239,6 +247,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     <div
                         v-if="editingProperty && limitedConcepts.length > 0">
                         <PropertyString
+                            :id="expandedProperty + '-' + index"
                             :index="index"
                             :propertyValue="expandedThing[expandedProperty][index]"
                             :expandedProperty="expandedProperty"
@@ -260,6 +269,7 @@ TO DO MAYBE: Separate out property by editing or not.
                                 v-if="!editingProperty">{{ displayLabel }}</span>
                             <p class="control">
                                 <span
+                                    id="property-read-only-link-copy-button-2"
                                     class="icon"
                                     title="Copy URL to the clipboard."
                                     v-clipboard="getURL(item)"
@@ -285,6 +295,7 @@ TO DO MAYBE: Separate out property by editing or not.
                                 class="control"
                                 v-if="editingProperty">
                                 <div
+                                    id="property-editing-remove-button-5"
                                     :disabled="shortType === 'id'"
                                     @click="showModal('remove', index)"
                                     class="button disabled is-text has-text-danger">
@@ -303,6 +314,7 @@ TO DO MAYBE: Separate out property by editing or not.
                             v-if="!editingProperty">{{ displayLabel }}</span>
                         <p class="control">
                             <span
+                                id="property-read-only-link-copy-button-3"
                                 class="icon"
                                 title="Copy URL to the clipboard."
                                 v-clipboard="getURL(item)"
@@ -328,6 +340,7 @@ TO DO MAYBE: Separate out property by editing or not.
                             class="control"
                             v-if="editingProperty">
                             <div
+                                id="property-editing-remove-button-6"
                                 :disabled="shortType === 'id'"
                                 @click="showModal('remove', index)"
                                 class="button disabled is-text has-text-danger">
@@ -341,6 +354,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     class="property"
                     v-else-if="editingProperty && !checkedOptions && !(limitedConcepts.length > 0) && !(limitedTypes.length > 0)">
                     <PropertyString
+                        :id="expandedProperty + '-' + index"
                         :index="index"
                         :propertyValue="expandedThing[expandedProperty][index]"
                         :expandedProperty="expandedProperty"
@@ -363,11 +377,13 @@ TO DO MAYBE: Separate out property by editing or not.
                         class="tag is-size-7 is-light"
                         v-if="expandedProperty !== 'http://schema.org/name' && expandedProperty !== 'dcterms:title' && expandedProperty !== 'skos:prefLabel'">{{ displayLabel }}</span>
                     <span
+                        id="language-tag-set-checkbox"
                         @click="setCheckbox($event)"
                         class="tag is-size-7 is-light language">
                         {{ expandedValue[index]["@language"] }}
                     </span>
                     <span
+                        id="language-tag-set-value"
                         :title="expandedValue[index]['@value']"
                         @click="setCheckbox($event)"
                         class="value">
@@ -437,6 +453,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     class="add-property-button"
                     v-if="canEdit">
                     <button
+                        id="property-add-button"
                         v-if="range.length == 0 && addOrSearch !== 'search'"
                         class="button is-small is-link has-text-info"
                         :title="'Add New '+ displayLabel"
@@ -451,6 +468,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         </span>
                     </button>
                     <button
+                        :id="'property-add-button-' + targetType"
                         v-for="(targetType) in range"
                         :key="targetType"
                         v-else-if="addOrSearch !== 'search'"

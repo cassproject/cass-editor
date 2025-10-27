@@ -20,6 +20,7 @@
             v-else-if="!isSearching">
             <div
                 v-for="(item,idx) in addedPropertiesAndValues"
+                :id="'multi-edit-property-' + idx"
                 :key="item">
                 <AddProperty
                     :profile="profile"
@@ -47,6 +48,7 @@
             <div class="buttons is-spaced">
                 <button
                     @click="onCancel"
+                    id="multi-edit-cancel-button"
                     class="button is-outlined is-dark">
                     <span class="icon">
                         <i class="fa fa-times" />
@@ -57,6 +59,7 @@
                     v-if="!isSearching"
                     class="button is-outlined is-success"
                     @click="applyToMultiple"
+                    id="multi-edit-apply-to-multiple-button"
                     :disabled="disableApplyButton">
                     <span class="icon">
                         <i class="fa fa-save" />
@@ -67,6 +70,7 @@
             <template v-if="isSearching">
                 <div
                     @click="addSelected"
+                    id="multi-edit-add-selected-button"
                     title="Add Competency as Property"
                     class="button is-outlined is-primary">
                     <span class="icon">

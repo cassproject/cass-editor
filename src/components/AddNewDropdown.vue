@@ -6,6 +6,7 @@
         <div class="dropdown-trigger">
             <button
                 @click="$emit('toggle')"
+                id="add-new-dropdown-toggle-button"
                 :class="'is-' + color"
                 class="button is-hidden-touch"
                 aria-haspopup="true"
@@ -22,6 +23,7 @@
             </button>
             <button
                 @click="$emit('toggle')"
+                id="add-new-dropdown-toggle-button-mobile"
                 :class="'is-' + color"
                 class="button is-hidden-desktop is-outlined"
                 aria-haspopup="true"
@@ -45,48 +47,56 @@
                     v-if="frameworkEnabled"
                     href="#"
                     @click="$emit('framework')"
+                    id="add-new-dropdown-framework"
                     class="dropdown-item">
                     Framework
                 </a>
                 <a
                     v-if="collectionEnabled"
                     @click="$emit('collection')"
+                    id="add-new-dropdown-collection"
                     class="dropdown-item">
                     Collection
                 </a>
                 <a
                     v-if="subdirectoryEnabled"
                     @click="$emit('subdirectory')"
+                    id="add-new-dropdown-subdirectory"
                     class="dropdown-item">
                     Sub directory
                 </a>
                 <a
                     v-if="directoryEnabled"
                     @click="$emit('directory')"
+                    id="add-new-dropdown-directory"
                     class="dropdown-item">
                     Directory
                 </a>
                 <a
                     v-if="conceptEnabled && queryParams.ceasnDataFields === 'true'"
                     @click="$emit('concept')"
+                    id="add-new-dropdown-concept-scheme"
                     class="dropdown-item">
                     Concept Scheme
                 </a>
                 <a
                     v-if="conceptEnabled && queryParams.ceasnDataFields === 'true'"
                     @click="$emit('progression')"
+                    id="add-new-dropdown-progression-model"
                     class="dropdown-item">
                     Progression Model
                 </a>
                 <a
                     v-else-if="conceptEnabled"
                     @click="$emit('concept')"
+                    id="add-new-dropdown-concept-scheme"
                     class="dropdown-item">
                     Taxonomy
                 </a>
                 <a
                     v-if="resourceEnabled"
                     @click="$emit('resource')"
+                    id="add-new-dropdown-resource"
                     href="#"
                     class="dropdown-item">
                     Resource

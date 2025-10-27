@@ -16,7 +16,8 @@
                             <span
                                 class="button is-pulled-right is-large is-primary is-outlined mr-4"
                                 :disabled="!importFrameworkName || !importText || importFrameworkName.trim().length === 0"
-                                @click="$store.commit('app/importStatus', 'parseText')">
+                                @click="$store.commit('app/importStatus', 'parseText')"
+                                id="import-text-import-button">
                                 Import
                             </span>
                         </h3>
@@ -38,6 +39,7 @@
                                     <input
                                         class="input"
                                         v-model="importFrameworkName"
+                                        id="import-framework-name-input"
                                         placeholder="Framework Name">
                                 </div>
                             </div>
@@ -50,7 +52,8 @@
                                         placeholder="Start typing or paste your text here..."
                                         @keypress="handleKeydown($event)"
                                         class="textarea import-text-textarea"
-                                        v-model="rawImportText" />
+                                        v-model="rawImportText"
+                                        id="import-text-paste-textarea" />
                                 </div>
                             </div>
                         </div>

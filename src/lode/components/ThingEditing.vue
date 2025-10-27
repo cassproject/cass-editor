@@ -57,6 +57,7 @@
                 </p>
                 <button
                     v-if="errorValidating"
+                    id="close-error-validation-button"
                     @click="closeWithoutSaving"
                     class="delete"
                     aria-label="close" />
@@ -158,6 +159,7 @@
                     v-if="frameworkEditable || editingThing">
                     <div
                         :title="'Delete this ' + (shortType ? shortType.toLowerCase() : '')"
+                        id="cancel-create-new-thing-button"
                         @click.stop="clickToDelete"
                         class="button is-outlined is-danger"
                         v-if="canEdit && !isSearching">
@@ -215,6 +217,7 @@
                     </div>
                     <!-- remove object -->
                     <div
+                        id="remove-thing-from-framework-button"
                         @click.stop="showModal('removeObject')"
                         class="button is-outlined is-warning"
                         title="Remove competency from framework"
@@ -229,6 +232,7 @@
                     <!-- export -->
                     <div
                         v-if="!isSearching && shortType !== 'Level'"
+                        id="export-thing-button"
                         @click.stop="showModal('export')"
                         :title="'Export ' + shortType"
                         class="button is-outlined is-info">
@@ -239,6 +243,7 @@
 
                     <div
                         v-if="!showAddPropertyContent && (view === 'framework' || view === 'concept') && hasAdditionalProperty"
+                        id="thing-editing-add-property-button"
                         @click="onClickToAddProperty"
                         class="button is-outlined is-primary">
                         <span class="icon">
@@ -250,6 +255,7 @@
                     </div>
                     <div
                         v-if="showAddPropertyContent"
+                        id="thing-editing-cancel-add-property-button"
                         @click="onCancelAddProperty"
                         class="button is-outlined is-dark">
                         <span
@@ -271,6 +277,7 @@
                     </div>
                     <div
                         v-if="showAddPropertyContent && !isSearching"
+                        id="thing-editing-save-property-button"
                         @click="saveNewProperty"
                         class="button is-outlined is-primary">
                         <span class="icon">
@@ -282,6 +289,7 @@
                     </div>
                     <div
                         v-if="!showAddPropertyContent"
+                        id="thing-editing-done-editing-button"
                         @click="saveOnce"
                         :disabled="disableDoneEditingButton || saving"
                         title="Done editing"
@@ -293,6 +301,7 @@
                     </div>
                     <div
                         v-if="!showAddPropertyContent && $store.state.editor.newCompetency"
+                        id="thing-editing-save-and-add-another-button"
                         @click="saveAndAddAnother"
                         :disabled="saving"
                         title="Done editing"
@@ -304,6 +313,7 @@
                     </div>
                     <template v-if="isSearching">
                         <div
+                            id="thing-editing-add-selected-button"
                             @click="addSelected"
                             title="Add Competency as Property"
                             :disabled="saving"

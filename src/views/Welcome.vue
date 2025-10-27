@@ -13,6 +13,7 @@
                         CaSS supports authoring frameworks, importing existing frameworks from supported
                         document types, and editing frameworks of competencies, skills, and other capabilities.  You can navigate to the
                         <router-link
+                            id="welcome-frameworks-link"
                             class="custom-link local"
                             :to="{path: '/frameworks', query: queryParams}">
                             frameworks page
@@ -28,12 +29,14 @@
                             </h4>
                             <p class="is-size-6">
                                 Navigate to the <router-link
+                                    id="welcome-login-link"
                                     :to="{path: '/login', query: queryParams}"
                                     class="custom-link local"
                                     v-if="apiLoginEnabled">
                                     login screen
                                 </router-link>
                                 <router-link
+                                    id="welcome-legacy-login-link"
                                     :to="{path: '/legacyLogin', query: queryParams}"
                                     class="custom-link local"
                                     v-else>
@@ -49,6 +52,7 @@
                             <p class="is-size-6">
                                 If your team members have also created their account, and you are logged in, you can navigate to
                                 the <router-link
+                                    id="welcome-users-groups-link"
                                     :to="{path: '/users', query: queryParams}"
                                     class="custom-link local">
                                     user/groups page
@@ -61,6 +65,7 @@
                             </h4>
                             <p class="is-size-6">
                                 The <router-link
+                                    id="welcome-configuration-link"
                                     class="custom-link local"
                                     :to="{path: '/configuration', query: queryParams}">
                                     configuration manager
@@ -75,6 +80,7 @@
                             </h4>
                             <p class="is-size-6">
                                 Navigate to the <router-link
+                                    id="welcome-frameworks-link"
                                     class="custom-link local"
                                     :to="{path: '/frameworks', query: queryParams}">
                                     framework page
@@ -103,6 +109,7 @@
                     <ul>
                         <li>
                             <a
+                                id="welcome-framework-properties-link"
                                 class="custom-link external"
                                 href="docs/authoring/framework-properties/"
                                 target="_blank">Framework properties
@@ -110,6 +117,7 @@
                         </li>
                         <li>
                             <a
+                                id="welcome-competency-properties-link"
                                 class="custom-link external"
                                 href="docs/authoring/competency-properties/"
                                 target="_blank">
@@ -117,6 +125,7 @@
                         </li>
                         <li>
                             <a
+                                id="welcome-relationship-types-link"
                                 class="custom-link external"
                                 href="docs/authoring/configuration/"
                                 target="_blank">
@@ -124,6 +133,7 @@
                         </li>
                         <li>
                             <a
+                                id="welcome-user-groups-link"
                                 class="custom-link external"
                                 href="docs/authoring/users-and-groups/"
                                 target="_blank">
@@ -138,36 +148,42 @@
                     <ul>
                         <li>
                             <a
+                                id="welcome-authoring-report-link"
                                 class="custom-link external"
                                 href="https://adlnet.gov/resources/publications/2020/03/Competency-Framework-Development-Process-Report/"
                                 target="_blank">Authoring Report</a>
                         </li>
                         <li>
                             <a
+                                id="welcome-cassproject-link"
                                 class="custom-link external"
                                 href="https://cassproject.org"
                                 target="_blank">cassproject.org</a>
                         </li>
                         <li>
                             <a
+                                id="welcome-cass-developer-guide-link"
                                 class="custom-link external"
                                 href="http://devs.cassproject.org/"
                                 target="_blank">CaSS Developer Guide</a>
                         </li>
                         <li>
                             <a
+                                id="welcome-cass-official-documentation-link"
                                 class="custom-link external"
                                 href="http://docs.cassproject.org/"
                                 target="_blank">CaSS Official Documentation</a>
                         </li>
                         <li>
                             <a
+                                id="welcome-cass-on-github-link"
                                 class="custom-link external"
                                 href="https://github.com/cassproject"
                                 target="_blank">CaSS on Github</a>
                         </li>
                         <li>
                             <a
+                                id="welcome-adlnet-link"
                                 class="custom-link external"
                                 href="https://adlnet.gov/"
                                 target="_blank">Advanced Distributed Learning Initiative</a>
@@ -189,18 +205,21 @@
                     <ul>
                         <li>
                             <a
+                                id="welcome-onet-basic-skills-link"
                                 class="custom-link external"
                                 @click="importOnetBasicSkills"
                                 target="_blank">ONET: Basic Skills</a>
                         </li>
                         <li>
                             <a
+                                id="welcome-harvard-emotional-intelligence-link"
                                 class="custom-link external"
                                 @click="importHarvardEmotionalIntelligence"
                                 target="_blank">Harvard: Emotional Intelligence</a>
                         </li>
                         <li>
                             <a
+                                id="welcome-act-collaborative-problem-solving-link"
                                 class="custom-link external"
                                 @click="importACTCollaborativeProblemSolving"
                                 target="_blank">ACT: Collaborative Problem Solving</a>
@@ -212,12 +231,14 @@
                     <ul>
                         <li>
                             <a
+                                id="welcome-cass-slack-link"
                                 class="custom-link external"
                                 href="https://docs.google.com/a/eduworks.com/forms/viewform?bc=transparent&embedded=true&f=Arial%252C%2BVerdana%252C%2Bsans-serif&hl=en&htc=%2523666666&id=1BMaboapV0IaS8iGnCJut2obPZ9y3CWkxXuvy-7krcgE&lc=%2523003965&pli=1&tc=%2523444444&ttl=0"
                                 target="_blank">Join the Slack Channel</a>
                         </li>
                         <li>
                             <a
+                                id="welcome-cass-issues-link"
                                 class="custom-link external"
                                 href="mailto:cass@eduworks.com"
                                 target="_blank">Email us</a>

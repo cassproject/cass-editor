@@ -9,6 +9,7 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs"
+    "cypress": "cypress open"
   },
   "main": "/theme.scss",
   "dependencies": {
@@ -38,6 +39,7 @@
     "@vitejs/plugin-vue": "^5.2.4",
     "compression-webpack-plugin": "^11.1.0",
     "eslint": "^8.57.1",
+    "cypress": "^14.5.1",
     "eslint-plugin-vue": "^8.7.1",
     "sass": "^1.92.0",
     "vite": "^6.0.6",
