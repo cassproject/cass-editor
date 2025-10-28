@@ -367,6 +367,10 @@
 		"ceterms:versionCode": {
 			"@id": "ceterms:versionCode",
 			"@type": "xsd:string"
+		},
+		"ceterms:hasGlossary": {
+			"@id": "ceterms:hasGlossary",
+			"@type": "@id"
 		}
 	}
 }
