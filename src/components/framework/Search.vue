@@ -125,7 +125,7 @@ export default {
         if (this.addingRange.includes("https://schema.cassproject.org/0.4/Competency")) {
             this.sortBy = "name.keyword";
         } else {
-            this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true || this.searchType === "Concept") ? "skos:prefLabel.keyword" : "name.keyword";
+            this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true || this.searchType === "Concept" || this.searchType === "ConceptScheme") ? "skos:prefLabel.keyword" : "name.keyword";
         }
         
         this.$store.commit('app/searchTerm', "");
@@ -217,12 +217,11 @@ export default {
             let obj = {};
             obj.size = 20;
             var searchTerm = this.$store.getters['app/searchTerm'];
-            if (!searchTerm || searchTerm.length === 0) {
+            // Sort is not included when there's no search term
+            if (searchTerm && searchTerm.length > 0) {
                 var order = (this.sortBy === "name.keyword" || this.sortBy === "skos:prefLabel.keyword") ? "asc" : "desc";
                 let type = (this.sortBy === "name.keyword" || this.sortBy === "skos:prefLabel.keyword") ? "text" : "date";
                 obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
-            } else {
-                delete obj.sort;
             }
             if ((this.showMine && (this.$store.getters['editor/conceptMode'] !== true) && (this.$store.getters['editor/progressionMode'] !== true)) ||
                 ((this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) && this.queryParams.conceptShow === "mine")) {
@@ -340,7 +339,7 @@ export default {
                 this.sortBy = "name.keyword";
                 this.displayFirst.splice(0, this.displayFirst.length);
             } else {
-                this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true || this.searchType === "Concept") ? "skos:prefLabel.keyword" : "name.keyword";
+                this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true || this.searchType === "Concept" || this.searchType === "ConceptScheme") ? "skos:prefLabel.keyword" : "name.keyword";
                 this.displayFirst.splice(0, this.displayFirst.length);
             }
         },

@@ -508,6 +508,20 @@ export default {
                     "heading": "Tagging",
                     "max": 1
                 },
+                "https://purl.org/ctdl/terms/hasGlossary": {
+                    "@id": "https://purl.org/ctdl/terms/hasGlossary",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/skos/ConceptScheme"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [
+                        {"@language": "en",
+                            "@value": `Terms and definitions applicable to the resource.`}
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Has Glossary"}],
+                    "heading": "Tagging"
+                },
                 "headings": ["General", "Tagging", "Connections", "Context", "Rights", "Keys"],
                 "primaryProperties": [
                     "http://schema.org/name",
@@ -534,7 +548,8 @@ export default {
                     "https://purl.org/ctdl/terms/latestVersion",
                     "https://purl.org/ctdl/terms/previousVersion",
                     "https://purl.org/ctdl/terms/nextVersion",
-                    "https://purl.org/ctdl/terms/versionCode"
+                    "https://purl.org/ctdl/terms/versionCode",
+                    "https://purl.org/ctdl/terms/hasGlossary"
                 ],
                 "tertiaryProperties": [
                     "@id",

@@ -1659,7 +1659,7 @@ export default {
                     "https://purl.org/ctdlasn/terms/alignFrom",
                     "https://purl.org/ctdl/terms/facetedDescription"
                 ];
-                if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "DirectLink" || urlProperties.includes(relationType)) {
+                if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "ConceptScheme" || this.$store.state.lode.searchType === "DirectLink" || urlProperties.includes(relationType)) {
                     this.attachUrlProperties(ids);
                 } else if (this.$store.state.lode.searchType === "Competency") {
                     await this.addAlignments(ids, this.$store.state.editor.selectedCompetency, relationType);
@@ -1684,7 +1684,7 @@ export default {
             let addValueAndSave = false;
             for (var i = 0; i < results.length; i++) {
                 var thing = await EcRepository.get(results[i]);
-                if (thing.isAny(new EcConcept().getTypes()) || thing.isAny(new EcCompetency().getTypes())) {
+                if (thing.isAny(new EcConcept().getTypes()) || thing.isAny(new EcCompetency().getTypes()) || thing.isAny(new EcConceptScheme().getTypes())) {
                     var relation = this.$store.state.editor.selectCompetencyRelation;
                     // Check if expanded version of property
                     if (relation.indexOf("http") !== -1) {
