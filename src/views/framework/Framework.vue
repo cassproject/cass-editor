@@ -602,6 +602,18 @@ export default {
                         "remove": async function(source, target) { await me.removeRelationFromFramework(source, "requires", target); },
                         "heading": "Connections"
                     },
+                    "implies": {
+                        "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                        "http://www.w3.org/2000/01/rdf-schema#comment":
+                        [{"@language": "en", "@value": "Another competency is implied by this."}],
+                        "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Implies"}],
+                        "valuesIndexed": function() { return me.relations["implies"]; },
+                        "noTextEditing": "true",
+                        "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "implies", values); },
+                        "save": function() {},
+                        "remove": async function(source, target) { await me.removeRelationFromFramework(source, "implies", target); },
+                        "heading": "Connections"
+                    },
                     "isRequiredBy": {
                         "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
                         "http://www.w3.org/2000/01/rdf-schema#comment":
@@ -679,6 +691,7 @@ export default {
                         "broadens",
                         "isEquivalentTo",
                         "requires",
+                        "implies",
                         "isEnabledBy",
                         "isRelatedTo",
                         "desires",

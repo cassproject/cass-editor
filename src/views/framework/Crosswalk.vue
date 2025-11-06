@@ -873,6 +873,7 @@ export default {
             fallbackRelTypes.push({relationship: 'isEquivalentTo', label: 'is equivalent to'});
             fallbackRelTypes.push({relationship: 'desires', label: 'desires'});
             fallbackRelTypes.push({relationship: 'requires', label: 'requires'});
+            fallbackRelTypes.push({relationship: 'implies', label: 'implies'});
             fallbackRelTypes.push({relationship: 'isRelatedTo', label: 'is related to'});
             return fallbackRelTypes;
         },
@@ -893,6 +894,8 @@ export default {
                     if (relationshipContainerObj.isSimilarTo) enabledRelTypes.push({relationship: 'isSimilarTo', label: this.getLabelForRelationship(relationshipContainerObj.isSimilarTo, 'is similar to')});
                     if (relationshipContainerObj.isPartiallySameAs) enabledRelTypes.push({relationship: 'isPartiallySameAs', label: this.getLabelForRelationship(relationshipContainerObj.isPartiallySameAs, 'is partially the same as')});
                     if (relationshipContainerObj.enables) enabledRelTypes.push({relationship: 'enables', label: this.getLabelForRelationship(relationshipContainerObj.enables, 'enables')});
+                    if (relationshipContainerObj.implies) enabledRelTypes.push({relationship: 'implies', label: this.getLabelForRelationship(relationshipContainerObj.implies, 'implies')});
+                    if (relationshipContainerObj.isImpliedBy) enabledRelTypes.push({relationship: 'isImpliedBy', label: this.getLabelForRelationship(relationshipContainerObj.isImpliedBy, 'is implied by')});
                     if (relationshipContainerObj.hasChild) enabledRelTypes.push({relationship: 'hasChild', label: this.getLabelForRelationship(relationshipContainerObj.hasChild, 'has child')});
                     if (relationshipContainerObj.isChildOf) enabledRelTypes.push({relationship: 'isChildOf', label: this.getLabelForRelationship(relationshipContainerObj.isChildOf, 'is child of')});
                     return enabledRelTypes;

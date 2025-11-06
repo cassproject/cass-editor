@@ -353,7 +353,7 @@ export default {
                     label: `Select a relation file (optional).
                                 The relation source/target must be in the
                                 form of ID or Name, and the relation types
-                                should be "requires", "desires", "narrows",
+                                should be "requires", "desires", "narrows", "implies", "isImpliedBy",
                                 "isEnabledBy", "isRelatedTo", or "isEquivalentTo`,
                     value: '',
                     type: 'file'
