@@ -304,16 +304,12 @@ const actions = {
                 return new Promise((resolve, reject) => {
                     EcAssertion.search(window.repo, "\"" + instance.state.me + "\"", async(results) => {
                         assertions.push(...results);
-                        start += count;
-                        if (results.length > 0) {
-                            await doSearch(start, count);
-                        }
                         resolve();
                     }, reject, {size: count, start: start});
                 });
             };
 
-            doSearch(0, 5000).then(() => {
+            doSearch(0, 10000).then(() => {
                 var eah = new EcAsyncHelper();
                 eah.each(assertions, (assertion, callback) => {
                     if (assertion.assertionDateDecrypted != null) {
@@ -345,28 +341,26 @@ const actions = {
                 if (EcObject.isObject(e)) {
                     if (e.verb != null) {
                         if (e.verb.display != null) {
-                            if (e.verb.display.en != null) {
-                                evidenceString += e.verb.display.en + " ";
+                            if ((e.verb.display.en || e.verb.display["en-US"]) != null) {
+                                evidenceString += (e.verb.display.en || e.verb.display["en-US"]) + " ";
                             }
                         }
                     }
                     if (e.object != null) {
                         if (e.object.definition != null) {
-                            if (e.object.definition.type === "http://adlnet.gov/expapi/activities/assessment") {
-                                evidenceString += "\"" + e.object.definition.name.en + "\" quiz with a ";
+                            if (e.object.definition.type === "http://adlnet.gov/expapi/activities/assessment" || e.object.definition.type === "https://w3id.org/xapi/tla/activity-types/assessment") {
+                                evidenceString += "\"" + (e.object.definition.name.en || e.object.definition.name["en-US"]) + "\" assessment with a ";
                                 if (e.result != null) {
                                     if (e.result.success != null) {
                                         evidenceString += e.result.success ? " passing " : " not passing ";
                                         evidenceString += Math.round(e.result.score.scaled * 100.0) + "%";
                                     }
+                                    if (e.result.response != null) {
+                                        evidenceString += e.result.response;
+                                    }
                                 }
-                            }
-                        }
-                    }
-                    if (e.object != null) {
-                        if (e.object.definition != null) {
-                            if (e.object.definition.interactionType != null) {
-                                evidenceString += "\"" + e.object.definition.name.en + "\" ";
+                            } else if (e.object.definition.interactionType != null) {
+                                evidenceString += "\"" + (e.object.definition.name.en || e.object.definition.name["en-US"]) + "\" ";
                                 if (e.result != null) {
                                     if (e.result.success != null) {
                                         evidenceString += e.result.success ? " correctly" : " incorrectly";
