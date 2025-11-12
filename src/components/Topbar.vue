@@ -6,7 +6,7 @@
         <div class="navbar-brand">
             <div
                 id="topbar-hamburger-menu"
-                @click="$store.commit('app/showSideNav')"
+                @click="store.app().showSideNav()"
                 v-if="!showSideNav"
                 class="navbar-item">
                 <div class="icon has-text-white">
@@ -16,7 +16,7 @@
             <div
                 v-else
                 id="topbar-close-menu"
-                @click="$store.commit('app/closeSideNav')"
+                @click="store.app().closeSideNav()"
                 class="navbar-item">
                 <div class="icon has-text-white">
                     <i class="fa fa-chevron-down has-text-white" />
@@ -37,11 +37,12 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 export default {
     name: 'Topbar',
     props: {
         showSideNav: {
-            dafault: false,
+            default: false,
             type: Boolean
         }
     },
@@ -52,8 +53,11 @@ export default {
         };
     },
     computed: {
+        store: function() {
+            return store;
+        },
         queryParams() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         }
     }
 };

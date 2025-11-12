@@ -496,7 +496,7 @@
                     class="has-text-white">
                     <a
                         id="side-nav-expand-button"
-                        @click="store.app().showSideNav()"
+                        @click="store.app().openSideNav()"
                         title="Expand sidebar">
                         <span class="icon">
                             <i class="fa-regular fa-square-caret-right" />
@@ -641,6 +641,9 @@ export default {
         }
     },
     computed: {
+        store: function() {
+            return store;
+        },
         ...mapState(store.featuresEnabled,{
             crosswalkEnabled: state => state.crosswalkEnabled,
             userManagementEnabled: state => state.userManagementEnabled,
