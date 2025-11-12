@@ -641,6 +641,9 @@ export default {
         }
     },
     computed: {
+        store: function() {
+            return store;
+        },
         ...mapState(store.featuresEnabled,{
             crosswalkEnabled: state => state.crosswalkEnabled,
             userManagementEnabled: state => state.userManagementEnabled,

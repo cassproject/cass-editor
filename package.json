@@ -9,13 +9,6 @@
     "lint": "eslint --ext .js,.vue --ignore-path .gitignore --fix src",
     "docs:dev": "vuepress dev docs",
     "docs:build": "vuepress build docs",
-    "serve": "vue-cli-service serve --port=8082 --fix",
-    "serveLocal": "npm run serve",
-    "build": "vue-cli-service build --mode production",
-    "lint": "vue-cli-service lint",
-    "buildDev": "vue-cli-service build --mode development",
-    "serveDev": "vue-cli-service serve --port=8082 --mode development",
-    "test:unit": "vue-cli-service test:unit",
     "cypress": "cypress open"
   },
   "main": "/theme.scss",

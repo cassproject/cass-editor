@@ -942,7 +942,7 @@ export default {
                     repo.saveTo(rld, console.log, console.error);
                 }
             } catch (err) {
-                console.error(err);
+            console.error(err);
             }
         },
         // Supports save() by removing reactify arrays.
