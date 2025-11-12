@@ -1,5 +1,6 @@
 import jsonld from 'jsonld';
-const state = ()=>({
+let stateActual = null;
+const state = ()=>(stateActual = {
     schemata: {},
     isSavingProperty: false,
     isSavingThing: false,
@@ -174,10 +175,10 @@ function trimUrl(url) {
 }
 
 jsonld.documentLoader = async function(url) {
-    if (url in state.rawSchemata) {
+    if (url in stateActual.rawSchemata) {
         return {
             contextUrl: null, // this is for a context via a link header
-            document: state.rawSchemata[url], // this is the actual document that was loaded
+            document: stateActual.rawSchemata[url], // this is the actual document that was loaded
             documentUrl: url // this is the actual context URL after redirects
         };
     } else {
@@ -196,7 +197,7 @@ jsonld.documentLoader = async function(url) {
             return response.text();
         }).then(data => {
             context = JSON.parse(data);
-            state.rawSchemata[originalUrl] = context;
+            stateActual.rawSchemata[originalUrl] = context;
         });
         return {
             contextUrl: null, // this is for a context via a link header
