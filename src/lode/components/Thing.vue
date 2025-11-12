@@ -169,6 +169,8 @@
 <script>
 
 import common from '@/mixins/common.js';
+import store from '@/stores/index.js';
+import {mapState} from 'pinia';
 export default {
     // Thing represents a JSON-LD object. Does not have to be based on http://schema.org/Thing.
     name: 'Thing',
@@ -254,7 +256,7 @@ export default {
     },
     mounted: function() {
         this.load();
-        if (this.uri && this.$store.state.editor) {
+        if (this.uri && store.editor) {
             this.resolveNameFromUrl(this.uri);
         }
         if (this.properties === "secondary") {
@@ -266,6 +268,24 @@ export default {
         }
     },
     computed: {
+        ...mapState(store.editor,{
+            framework: state=>state.framework,
+            queryParams: state=>state.queryParams,
+            conceptMode: state=>state.conceptMode,
+            progressionMode: state=>state.progressionMode,
+            changedObject: state=>state.changedObject,
+            manageAssertions: state=>state.manageAssertions,
+            private: state=>state.private
+        }),
+        ...mapState(store.app,{
+            canAddComments: state=>state.canAddComments
+        }),
+        ...mapState(store.lode,{
+            schemata: state=>state.schemata,
+            rawSchemata: state=>state.rawSchemata,
+            schemaFallback: state=>state.schemaFallback,
+            objectModel: state=>state.objectModel
+        }),
         thingAsPropertyModalObject: function() {
             var name = this.$parent.$parent.obj.name;
             if (!name) {
@@ -280,9 +300,6 @@ export default {
                 canEdit: this.canEdit
             };
             return object;
-        },
-        framework: function() {
-            return this.$store.getters['editor/framework'];
         },
         thingAsPropertyIcon: function() {
             let type;
@@ -320,10 +337,10 @@ export default {
             return icon;
         },
         showAddComments() {
-            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
+            if (this.queryParams.concepts === "true" || this.conceptMode === true || this.progressionMode === true) {
                 return false;
             }
-            return this.$store.state.app.canAddComments;
+            return this.canAddComments;
         },
         competencyAsPropertyClass: function() {
             if (this.competencyAsPropertyIsExternal) {
@@ -448,9 +465,9 @@ export default {
         },
         // Fetches a map of fully qualified property identifiers to the full @graph property specifications.
         schema: function() {
-            var schema = this.$store.state.lode.schemata[this.type];
+            var schema = this.schemata[this.type];
             if (schema == null) {
-                schema = this.$store.state.lode.schemata[this.context];
+                schema = this.schemata[this.context];
             }
             var result = {};
             if (schema !== null && schema !== undefined) {
@@ -557,7 +574,7 @@ export default {
                 if (result[""] == null || result[""] === undefined) {
                     result[""] = {};
                 }
-                result[""][key] = this.$store.state.lode.schemaFallback[key];
+                result[""][key] = this.schemaFallback[key];
             }
             if (this.profile) {
                 for (var key in this.profile) {
@@ -640,7 +657,7 @@ export default {
                     if (result[""] == null || result[""] === undefined) {
                         result[""] = {};
                     }
-                    result[""][key] = this.$store.state.lode.schemaFallback[key];
+                    result[""][key] = this.schemaFallback[key];
                 }
             }
             return result;
@@ -660,27 +677,24 @@ export default {
             return false;
         },
         changedObject: function() {
-            if (this.$store.state.editor) {
-                return this.$store.state.editor.changedObject;
-            }
-            return null;
+            return this.changedObject;
         },
         managingAssertions: function() {
-            return this.$store.getters['editor/manageAssertions'] && this.shortType === 'Competency' && this.$route.name === 'framework';
+            return this.manageAssertions && this.shortType === 'Competency' && this.$route.name === 'framework';
         }
     },
     methods: {
         clickShowDetails() {
-            this.$store.commit('app/showModal', this.thingAsPropertyModalObject);
+            store.app().showModal(this.thingAsPropertyModalObject);
         },
         goToCompetencyWithinThisFramework: function() {
             // Scroll to competency
             this.$scrollTo("#scroll-" + this.uri.split('/').pop());
         },
         handleClickAddComment: function() {
-            this.$store.commit('editor/setAddCommentAboutId', EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
-            this.$store.commit('editor/setAddCommentType', 'new');
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            store.editor().setAddCommentAboutId(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
+            store.editor().setAddCommentType('new');
+            store.app().showModal({component: 'AddComment'});
         },
         editNode: function() {
             this.$emit('edit-node-event', true);
@@ -792,7 +806,7 @@ export default {
             var objectModel = null;
             var fullType = o["@type"];
             if (EcArray.isArray(fullType) && fullType.length > 0) fullType = fullType[0];
-            var objectModel = this.$store.state.lode.objectModel[fullType];
+            var objectModel = this.objectModel[fullType];
             if (objectModel != null) {
                 for (let key in objectModel) {
                     if (o[key] == null) {
@@ -840,14 +854,14 @@ export default {
             } else if (type.indexOf("skos") !== -1) {
                 type = "https://schema.cassproject.org/0.4/skos";
             }
-            if (this.$store.state.lode.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
+            if (this.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
                 var augmentedType = type;
                 augmentedType += (type.indexOf("schema.org") !== -1 ? ".jsonld" : "");
                 EcRemote.getExpectingObject("", augmentedType, async function(context) {
-                    me.$store.commit('lode/rawSchemata', {id: type, obj: context});
+                    store.lode().setRawSchemata({id: type, obj: context});
                     try {
                         let expanded = await jsonld.expand(context);
-                        me.$store.dispatch('lode/schemata', {id: type, obj: expanded});
+                        store.lode().setSchemata({id: type, obj: expanded});
                         if (after != null) after();
                     } catch (err) {
                         after();
@@ -910,7 +924,7 @@ export default {
             }
             // When we save, we need to remove all the extreneous arrays that we added to support reactivity.
             try {
-                let compacted = await jsonld.compact(this.stripEmptyArrays(this.expandedThing), this.$store.state.lode.rawSchemata[this.context]);
+                let compacted = await jsonld.compact(this.stripEmptyArrays(this.expandedThing), this.rawSchemata[this.context]);
                 if (compacted) {
                     var rld = new EcRemoteLinkedData();
                     rld.copyFrom(compacted);
@@ -922,13 +936,13 @@ export default {
                     if (rld.owner && !EcArray.isArray(rld.owner)) {
                         rld.owner = [rld.owner];
                     }
-                    if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
+                    if (me.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                         rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     repo.saveTo(rld, console.log, console.error);
                 }
             } catch (err) {
-                console.error(err);
+            console.error(err);
             }
         },
         // Supports save() by removing reactify arrays.
@@ -1054,8 +1068,8 @@ export default {
                 me.resolveNameFromUrlNotInCass(url);
             });
         },
-        get: function(server, service, headers, success, failure) {
-            this.$store.dispatch('editor/getThing', {
+        get: async function(server, service, headers, success, failure) {
+            return await store.editor().getThing({
                 server: server,
                 service: service,
                 headers: headers,
@@ -1112,13 +1126,13 @@ export default {
                 if (result[heading] == null && result[heading] === undefined) {
                     result[heading] = {};
                 }
-                if ((this.$store.getters['editor/conceptMode']) && (prop === "http://www.w3.org/2004/02/skos/core#broader" || prop === "http://www.w3.org/2004/02/skos/core#narrower")) {
+                if ((this.conceptMode) && (prop === "http://www.w3.org/2004/02/skos/core#broader" || prop === "http://www.w3.org/2004/02/skos/core#narrower")) {
                     continue;
                 }
                 if (this.profile[prop] && this.profile[prop]["valuesIndexed"]) {
-                    if (this.$store.state.editor.queryParams.ceasnDataFields === "true" && (prop === "hasChild" || prop === "isChildOf")) {
+                    if (this.queryParams.ceasnDataFields === "true" && (prop === "hasChild" || prop === "isChildOf")) {
                         continue;
-                    } else if (this.$store.state.editor.queryParams.ceasnDataFields !== "true" && (prop === "narrows" || prop === "broadens")) {
+                    } else if (this.queryParams.ceasnDataFields !== "true" && (prop === "narrows" || prop === "broadens")) {
                         continue;
                     }
                     var f = this.profile[prop]["valuesIndexed"];
@@ -1144,7 +1158,7 @@ export default {
         changedObject: async function() {
             if (this.changedObject && this.view === "importLight") {
                 this.load();
-                this.$store.commit('editor/changedObject', null);
+                store.editor().changedObject(null);
             } else if (this.changedObject && (this.changedObject === this.uri || (this.originalThing && this.changedObject === this.originalThing.shortId()))) {
                 if (this.uri) {
                     this.resolveNameFromUrl(this.uri);
@@ -1164,7 +1178,7 @@ export default {
                 } else if (type && window[type]) {
                     console.log("Can't get type: " + type);
                 }
-                this.$store.commit('editor/changedObject', null);
+                store.editor().changedObject(null);
             }
         },
         properties: function() {
