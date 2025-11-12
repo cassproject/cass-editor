@@ -509,6 +509,7 @@ export const configuration = {
             simpleConfigObj.relationships = {};
             this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isEnabledBy", "is enabled by");
             this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "requires", "requires");
+            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isRequiredBy", "is required by");
             this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "desires", "desires");
             this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "narrows", "narrows");
             this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isRelatedTo", "is related to");
@@ -519,6 +520,8 @@ export const configuration = {
             this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isSimilarTo", "is similar to");
             this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isPartiallySameAs", "is partially the same as");
             this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "enables", "enables");
+            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "implies", "implies");
+            this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isImpliedBy", "is implied by");
             this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "hasChild", "has child");
             this.buildSimpleRelationshipConfigObject(simpleConfigObj, cro, "isChildOf", "is child of");
         },
@@ -738,6 +741,12 @@ export const configuration = {
             newConfigObj.relationships.enables = {};
             newConfigObj.relationships.enables.label = 'enables';
             newConfigObj.relationships.enables.enabled = false;
+            newConfigObj.relationships.implies = {};
+            newConfigObj.relationships.implies.label = 'implies';
+            newConfigObj.relationships.implies.enabled = false;
+            newConfigObj.relationships.isImpliedBy = {};
+            newConfigObj.relationships.isImpliedBy.label = 'is implied by';
+            newConfigObj.relationships.isImpliedBy.enabled = false;
             newConfigObj.relationships.hasChild = {};
             newConfigObj.relationships.hasChild.label = 'has child';
             newConfigObj.relationships.hasChild.enabled = false;

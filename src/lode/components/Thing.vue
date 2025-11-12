@@ -323,6 +323,8 @@ export default {
                 icon = 'fa fa-crosshairs';
             } else if (type === 'requires') {
                 icon = 'fa fa-asterisk';
+            } else if (type === 'implies') {
+                icon = 'fa fa-arrow-right';
             } else if (type === 'Level' || type === 'level' || this.objectType === "Level" || this.objectType === 'level') {
                 icon = 'fa fa-layer-group';
             } else if (type === 'is related to') {

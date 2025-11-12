@@ -616,7 +616,10 @@ export default {
         search: async function() {
             this.addRelationBy = 'search';
             this.$emit('is-searching', true);
-            if (this.selectedPropertyRange[0].toLowerCase().indexOf("concept") !== -1) {
+            if (this.selectedPropertyRange[0].toLowerCase().indexOf("conceptscheme") !== -1) {
+                this.$store.commit('lode/searchType', "ConceptScheme");
+                this.$store.commit('lode/copyOrLink', false);
+            } else if (this.selectedPropertyRange[0].toLowerCase().indexOf("concept") !== -1) {
                 this.$store.commit('lode/searchType', "Concept");
                 this.$store.commit('lode/copyOrLink', false);
             } else if (this.selectedPropertyRange[0].toLowerCase().indexOf("level") !== -1) {

@@ -3226,7 +3226,7 @@ export default {
             localDefaultOwners: this.config.defaultOwners,
             localDefaultReaders: this.config.defaultReaders,
             localDefaultCommenters: this.config.defaultCommenters,
-            cassRelations: ['isEnabledBy', 'narrows', 'broadens', 'requires', 'desires', 'isEquivalentTo', 'isRelatedTo', 'enables'],
+            cassRelations: ['isEnabledBy', 'narrows', 'broadens', 'requires', 'desires', 'isEquivalentTo', 'isRelatedTo', 'enables', 'implies', 'isImpliedBy'],
             asnRelations: ['majorRelated', 'minorRelated'],
             gemqRelations: ['hasChild', 'isChildOf'],
             filteredConcepts: [],

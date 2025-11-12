@@ -186,8 +186,26 @@ export default {
                     "valuesIndexed": function() { return me.relations["enables"]; },
                     "noTextEditing": "true",
                     "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "enables", values); },
-                    "save": function() {},
+                    "save": function() { },
                     "remove": async function(source, target) { await me.removeRelationFromFramework(source, "enables", target); }
+                },
+                "implies": {
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Implies"}],
+                    "valuesIndexed": function() { return me.relations["implies"]; },
+                    "noTextEditing": "true",
+                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "implies", values); },
+                    "save": function() { },
+                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "implies", target); }
+                },
+                "isImpliedBy": {
+                    "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Implied By"}],
+                    "valuesIndexed": function() { return me.relations["isImpliedBy"]; },
+                    "noTextEditing": "true",
+                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "isImpliedBy", values); },
+                    "save": function() { },
+                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "isImpliedBy", target); }
                 },
                 "isEnabledBy": {
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
@@ -218,6 +236,8 @@ export default {
                     "isPartiallySameAs",
                     "isRelatedTo",
                     "enables",
+                    "implies",
+                    "isImpliedBy",
                     "isEnabledBy"
                 ],
                 "tertiaryProperties": []

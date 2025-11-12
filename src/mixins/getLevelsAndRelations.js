@@ -105,6 +105,8 @@ export default {
                             reciprocalRelation = "isEquivalentTo";
                         } else if (relationType === "requires") {
                             reciprocalRelation = "isRequiredBy";
+                        } else if (relationType === "implies") {
+                            reciprocalRelation = "isImpliedBy";
                         } else if (relationType === "desires") {
                             reciprocalRelation = "isDesiredBy";
                         } else if (relationType === "isRelatedTo") {

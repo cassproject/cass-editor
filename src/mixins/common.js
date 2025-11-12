@@ -596,6 +596,12 @@ export default {
                         r.source = dosedo;
                         r.relationType = "narrows";
                     }
+                    if (r.relationType === "isImpliedBy") {
+                        var dosedo = r.target;
+                        r.target = r.source;
+                        r.source = dosedo;
+                        r.relationType = "implies";
+                    }
                     if (EcIdentityManager.default.ids.length > 0) {
                         r.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                     }
