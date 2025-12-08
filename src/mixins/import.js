@@ -1011,7 +1011,7 @@ export default {
                         hierarchyRules: {
                             "skos:ConceptScheme": {
                                 requiredProperties: ["skos:hasTopConcept"],
-                                childProperties: ["skos:inScheme"],
+                                childProperties: ["skos:inScheme", "skos:topConceptOf"],
                                 errorMessage: "CSV must contain at least one of: skos:hasTopConcept (for Concept Scheme level) or skos:inScheme (for concept level)"
                             }
                         },
