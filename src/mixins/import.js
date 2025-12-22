@@ -142,6 +142,20 @@ export default {
             this.$store.commit('app/addImportError', error);
             me.$store.commit('app/importTransition', 'process');
         },
+        // Helper method to handle both single errors and arrays of errors
+        handleImportErrors: function(errors) {
+            if (Array.isArray(errors)) {
+                for (let error of errors) {
+                    this.$store.commit('app/addImportError', error);
+                }
+                // Set status to show error count
+                this.$store.commit('app/importStatus', `${errors.length} error(s) found in import file`);
+            } else {
+                this.$store.commit('app/addImportError', errors);
+                this.$store.commit('app/importStatus', errors);
+            }
+            this.$store.commit('app/importTransition', 'process');
+        },
         /* When an import is "successful" */
         importSuccess: function() {
             if (!this.conceptMode && !this.progressionMode) {
@@ -675,14 +689,10 @@ export default {
                         }
                     }
                 }, function(failure) {
-                    me.$store.commit('app/importStatus', failure);
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', failure);
+                    me.handleImportErrors(failure);
                 });
             }, function(failure) {
-                me.$store.commit('app/importStatus', failure);
-                me.$store.commit('app/importTransition', 'process');
-                me.$store.commit('app/addImportError', failure);
+                me.handleImportErrors(failure);
             }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'collectioncsv', skip, validationRules);
         },
         importPdf: function() {
@@ -1053,8 +1063,7 @@ export default {
                     appError(failure);
                 });
             }, function(failure) {
-                me.$store.commit('app/importTransition', 'process');
-                me.$store.commit('app/addImportError', failure);
+                me.handleImportErrors(failure);
                 appError(failure);
             }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'progressioncsv', validationRules);
         },
