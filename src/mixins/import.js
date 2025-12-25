@@ -499,7 +499,7 @@ export default {
                 me.$store.commit('app/addImportError', error);
             });
         },
-      analyzeJsonLdFramework: function(file, success, failure) {
+        analyzeJsonLdFramework: function(file, success, failure) {
             if (file == null) {
                 failure("No file to analyze");
                 return;
@@ -563,7 +563,6 @@ export default {
                     contextString === "http://credreg.net/ctdl/schema/context/json" ||
                     contextString === "https://credreg.net/ctdlasn/schema/context/json" || 
                     contextString === "https://credreg.net/ctdl/schema/context/json") {
-                    
                     var typeString = framework["@type"];
                     if (!typeString) {
                         success(data, null);
