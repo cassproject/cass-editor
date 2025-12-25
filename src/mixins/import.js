@@ -499,7 +499,7 @@ export default {
                 me.$store.commit('app/addImportError', error);
             });
         },
-        analyzeJsonLdFramework: function(file, success, failure) {
+      analyzeJsonLdFramework: function(file, success, failure) {
             if (file == null) {
                 failure("No file to analyze");
                 return;
@@ -512,23 +512,75 @@ export default {
             reader.onload = function(e) {
                 var result = ((e)["target"])["result"];
                 var jsonObj = JSON.parse(result);
+                
+                var data;
+                var framework;
+                var contextToCheck;
+                
+                // FIX BUG #2: Handle both @graph and embedded structures
                 if (jsonObj["@graph"]) {
-                    if (jsonObj["@context"] === "http://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] === "http://credreg.net/ctdl/schema/context/json" ||
-                        jsonObj["@context"] === "https://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] === "https://credreg.net/ctdl/schema/context/json") {
-                        if (jsonObj["@graph"][0]["@type"].indexOf("Concept") !== -1) {
-                            success(jsonObj["@graph"], "ctdlasnConcept");
-                        } else if (jsonObj["@graph"][0]["@type"].indexOf("Progression") !== -1) {
-                            success(jsonObj["@graph"], "ctdlasnProgression");
-                        } else if (jsonObj["@graph"][0]["@type"].indexOf("Collection") !== -1) {
-                            success(jsonObj["@graph"], "ctdlasnCollection");
-                        } else {
-                            success(jsonObj["@graph"], "ctdlasn");
+                    data = jsonObj["@graph"];
+                    framework = data[0];
+                    contextToCheck = jsonObj["@context"];
+                } else if (jsonObj["@type"]) {
+                    framework = jsonObj;
+                    data = [];
+                    if (jsonObj["ceterms:competencies"]) {
+                        data = jsonObj["ceterms:competencies"];
+                    } else if (jsonObj["ceasn:competencies"]) {
+                        data = jsonObj["ceasn:competencies"];
+                    }
+                    contextToCheck = jsonObj["@context"];
+                } else {
+                    failure("Invalid file - no @graph or @type found");
+                    return;
+                }
+                
+                // FIX BUG #1: Normalize context (handle both string and array)
+                var context = contextToCheck;
+                var contextString = "";
+                var hasCtdlContext = false;
+                
+                if (Array.isArray(context)) {
+                    contextString = context[0];
+                    hasCtdlContext = context.some(function(c) {
+                        if (typeof c === 'string') {
+                            return c.indexOf('credreg.net/ctdl') !== -1 || 
+                                   c.indexOf('credreg.net/ctdlasn') !== -1 ||
+                                   c.indexOf('purl.org/ctdl') !== -1;
                         }
+                        return false;
+                    });
+                } else if (typeof context === 'string') {
+                    contextString = context;
+                    hasCtdlContext = context.indexOf('credreg.net/ctdl') !== -1 || 
+                                    context.indexOf('credreg.net/ctdlasn') !== -1 ||
+                                    context.indexOf('purl.org/ctdl') !== -1;
+                }
+                
+                if (hasCtdlContext || 
+                    contextString === "http://credreg.net/ctdlasn/schema/context/json" || 
+                    contextString === "http://credreg.net/ctdl/schema/context/json" ||
+                    contextString === "https://credreg.net/ctdlasn/schema/context/json" || 
+                    contextString === "https://credreg.net/ctdl/schema/context/json") {
+                    
+                    var typeString = framework["@type"];
+                    if (!typeString) {
+                        success(data, null);
+                        return;
+                    }
+                    
+                    if (typeString.indexOf("Concept") !== -1) {
+                        success(data, "ctdlasnConcept");
+                    } else if (typeString.indexOf("Progression") !== -1) {
+                        success(data, "ctdlasnProgression");
+                    } else if (typeString.indexOf("Collection") !== -1) {
+                        success(data, "ctdlasnCollection");
                     } else {
-                        success(jsonObj["@graph"], null);
+                        success(data, "ctdlasn");
                     }
                 } else {
-                    failure("Invalid file");
+                    success(data, null);
                 }
             };
             reader.readAsText(file, "UTF-8");
