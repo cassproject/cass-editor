@@ -240,7 +240,6 @@ export default {
                  jsonObj["@type"].indexOf("ConceptScheme") !== -1 ||
                  jsonObj["@type"].indexOf("ProgressionModel") !== -1 ||
                  jsonObj["@type"].indexOf("Collection") !== -1)) {
-                
                 // Extract embedded items based on type
                 var embeddedItems = jsonObj["ceterms:competencies"] || 
                                    jsonObj["ceasn:competencies"] ||
@@ -250,7 +249,7 @@ export default {
                 // Build framework object (everything except the embedded items)
                 var framework = {};
                 for (var key in jsonObj) {
-                    if (jsonObj.hasOwnProperty(key) &&
+                    if (Object.prototype.hasOwnProperty.call(jsonObj, key) &&
                         key !== "ceterms:competencies" && 
                         key !== "ceasn:competencies" &&
                         key !== "skos:hasTopConcept" &&
@@ -1063,59 +1062,92 @@ export default {
         importJsonLd: function(importData) {
             return new Promise((resolve, reject) => {
                 this.$store.commit('app/importTransition', 'process');
-                var formData = new FormData();
-                if (importData != null && importData !== undefined) {
+                var me = this;
+                
+                // Helper to process and send data
+                var sendData = function(jsonData) {
                     // CTDL-ASN Import Fix: Convert embedded to @graph before sending to backend
-                    // The backend expects @graph structure, but CTDL-ASN spec allows embedded competencies
-                    var convertedData = this.convertToGraphStructure(importData);
+                    var convertedData = me.convertToGraphStructure(jsonData);
+                    var formData = new FormData();
                     formData.append('data', JSON.stringify(convertedData));
-                } else {
-                    var file = this.importFile[0];
-                    formData.append('file', file);
-                }
-                var identity = EcIdentityManager.default.ids[0];
-                if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
-                let me = this;
-                me.$store.commit('app/importAllowCancel', true);
-                me.$store.commit('app/importFramework', null);
-                EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
-                    me.$store.commit('app/importAllowCancel', false);
-                    var framework;
-                    if (EcRepository.cache) {
-                        delete EcRepository.cache[data];
-                    }
-                    if (me.conceptMode || me.progressionMode) {
-                        framework = await EcConceptScheme.get(data);
-                    } else {
-                        framework = await EcFramework.get(data);
+                    
+                    var identity = EcIdentityManager.default.ids[0];
+                    if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
+                    me.$store.commit('app/importAllowCancel', true);
+                    me.$store.commit('app/importFramework', null);
+                    
+                    EcRemote.postInner(me.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
+                        me.$store.commit('app/importAllowCancel', false);
+                        //console.log("=== BACKEND RESPONSE ===");
+                        //console.log("Backend returned URL:", data);
+                        //console.log("Type:", typeof data);
+                        //console.log("Data:", data);
+                        //console.log("Type:", typeof data);
+                        //console.log("Length:", data ? data.length : 0);
+                        //console.log("=======================");
+                        var framework;
+                        if (EcRepository.cache) {
+                            delete EcRepository.cache[data];
+                        }
+                        if (me.conceptMode || me.progressionMode) {
+                            framework = await EcConceptScheme.get(data);
+                        } else {
+                            framework = await EcFramework.get(data);
+                            me.$store.commit('app/importFramework', framework);
+                        }
+                        me.$store.commit('editor/framework', framework);
                         me.$store.commit('app/importFramework', framework);
-                    }
-                    me.$store.commit('editor/framework', framework);
-                    me.$store.commit('app/importFramework', framework);
-                    me.spitEvent("importFinished", framework.shortId(), "importPage");
-                    if (me.importFile != null) {
-                        me.importFile.splice(0, 1);
-                    }
-                    if (me.importFile && me.importFile.length > 0) {
-                        me.firstImport = false;
-                        me.analyzeImportFile();
-                    } else {
-                        me.importSuccess();
-                        resolve();
-                    }
-                }, function(failure) {
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
-                    appLog(failure.statusText);
-                    me.$store.commit('app/addImportError', failure);
-                    reject(failure.statusText);
-                }).catch((err) => {
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
-                    appLog(err);
-                    me.$store.commit('app/addImportError', err);
-                    reject(err);
-                });
+                        me.spitEvent("importFinished", framework.shortId(), "importPage");
+                        if (me.importFile != null) {
+                            me.importFile.splice(0, 1);
+                        }
+                        if (me.importFile && me.importFile.length > 0) {
+                            me.firstImport = false;
+                            me.analyzeImportFile();
+                        } else {
+                            me.importSuccess();
+                            resolve();
+                        }
+                    }, function(failure) {
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
+                        appLog(failure.statusText);
+                        me.$store.commit('app/addImportError', failure);
+                        reject(failure.statusText);
+                    }).catch((err) => {
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
+                        appLog(err);
+                        me.$store.commit('app/addImportError', err);
+                        reject(err);
+                    });
+                };
+                
+                if (importData != null && importData !== undefined) {
+                    // URL import - data already parsed
+                    sendData(importData);
+                } else {
+                    // File upload - need to read and parse first
+                    var file = this.importFile[0];
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            var jsonData = JSON.parse(e.target.result);
+                            sendData(jsonData);
+                        } catch (error) {
+                            me.$store.commit('app/importTransition', 'process');
+                            me.$store.commit('app/addImportError', "Failed to parse JSON file: " + error);
+                            reject(new Error("Failed to parse JSON file: " + error));
+                        }
+                    };
+                    reader.onerror = function() {
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/addImportError', "Failed to read file");
+                        reject(new Error("Failed to read file"));
+                    };
+                    reader.readAsText(file, "UTF-8");
+                }
+                
                 if (me.conceptMode || me.progressionMode) {
                     if (me.importFileType === 'ctdlasnjsonldprogression') {
                         me.$store.commit('app/importStatus', "Importing Progression Model");
