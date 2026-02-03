@@ -3197,6 +3197,28 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Faceted Description"}],
                     "heading": "Documentation"
                 },
+                "https://purl.org/ctdl/terms/sameAs": {
+                    "@id": "https://purl.org/ctdl/terms/sameAs",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes": [
+                        {
+                            "@id": "http://schema.cassproject.org/0.4/skos/Concept"
+                        }
+                    ],
+                    "http://schema.org/rangeIncludes": [
+                        {
+                            "@id": "http://schema.org/URL"
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#comment": [
+                        {
+                            "@language": "en",
+                            "@value": "Another source of information about the entity being described."
+                        }
+                    ],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Same As"}],
+                    "heading": "Connections"
+                },
                 "headings": ["General", "Other Labels", "Documentation", "Connections", "Keys"],
                 "primaryProperties": [
                     "http://www.w3.org/2004/02/skos/core#prefLabel",
@@ -3215,7 +3237,8 @@ export default {
                     "http://www.w3.org/2004/02/skos/core#note",
                     "https://purl.org/ctdl/terms/precededBy",
                     "https://purl.org/ctdl/terms/precedes",
-                    "https://purl.org/ctdl/terms/facetedDescription"
+                    "https://purl.org/ctdl/terms/facetedDescription",
+                    "https://purl.org/ctdl/terms/sameAs"
                 ]
             };
         }
