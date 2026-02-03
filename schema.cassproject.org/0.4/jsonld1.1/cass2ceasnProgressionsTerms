@@ -15,5 +15,6 @@
 	"dcterms:title": "ceasn:name",
 	"dc:source": "ceasn:source",
 	"schema:dateCreated": "ceasn:dateCreated",
-	"schema:dateModified": "ceasn:dateModified"
+	"schema:dateModified": "ceasn:dateModified",
+	"ceterms:sameAs": "ceterms:sameAs"
 }

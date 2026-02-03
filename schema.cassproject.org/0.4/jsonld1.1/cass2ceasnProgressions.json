@@ -163,6 +163,10 @@
 		"ceasn:inLanguage": {
 			"@id": "ceasn:inLanguage",
 			"@type": "xsd:language"
+		},
+		"ceterms:sameAs": {
+			"@id": "ceterms:sameAs",
+			"@type": "@id"
 		}
 	}
 }
