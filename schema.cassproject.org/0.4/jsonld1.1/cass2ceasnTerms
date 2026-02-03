@@ -50,5 +50,6 @@
 	"ceterms:nextVersion": "ceterms:nextVersion",
 	"ceterms:previousVersion": "ceterms:previousVersion",
 	"ceterms:versionCode": "ceterms:versionCode",
-	"ceterms:hasGlossary": "ceterms:hasGlossary"
+	"ceterms:hasGlossary": "ceterms:hasGlossary",
+	"ceterms:sameAs": "ceterms:sameAs"
 }

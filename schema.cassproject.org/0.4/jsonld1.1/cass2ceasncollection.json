@@ -124,6 +124,10 @@
 		"ceterms:versionCode": {
 			"@id": "ceterms:versionCode",
 			"@type": "xsd:string"
+		},
+		"ceterms:sameAs": {
+			"@id": "ceterms:sameAs",
+			"@type": "@id"
 		}
 	}
 }

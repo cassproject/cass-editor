@@ -371,6 +371,10 @@
 		"ceterms:hasGlossary": {
 			"@id": "ceterms:hasGlossary",
 			"@type": "@id"
+		},
+		"ceterms:sameAs": {
+			"@id": "ceterms:sameAs",
+			"@type": "@id"
 		}
 	}
 }
