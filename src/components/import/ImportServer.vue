@@ -836,7 +836,7 @@ export default {
                     message: "Unable to import from the URL Endpoint provided.",
                     details: ""
                 };
-                this.get(serverUrl, `ims/case/v1p0/CFDocuments/?limit=${limit}&offset=${offset}`, {"Accept": "application/json"}, function(result) {
+                this.get(serverUrl, `ims/case/v1p0/CFDocuments?limit=${limit}&offset=${offset}`, {"Accept": "application/json"}, function(result) {
                     const success = me.caseGetDocsSuccess(result);
                     resolve(success);
                 }, function() {
