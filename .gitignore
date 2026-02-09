@@ -19,3 +19,8 @@ docs/.vuepress/dist/
 /public/docs/
 .env.local
 coverage/
+.nyc_output/
+
+playwright-report/
+
+test-results/

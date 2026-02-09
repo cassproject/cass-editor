@@ -20,7 +20,10 @@ module.exports = {
         ca: fs.readFileSync('ca.pem'),
         disableHostCheck: true
     },
-    chainWebpack: config => config.optimization.minimize(false),
+    chainWebpack: config => {
+        config.optimization.minimize(false);
+        config.devtool('source-map');
+    },
     configureWebpack: {
         plugins: [new CompressionPlugin()],
         resolve: {
@@ -30,12 +33,14 @@ module.exports = {
             rules: [
                 {
                     test: /\.m?js$/,
-                    exclude: {test: /node_modules/, // Exclude libraries in node_modules ...
+                    exclude: {
+                        test: /node_modules/, // Exclude libraries in node_modules ...
                         not: [
                             // Except for a few of them that need to be transpiled because they use modern syntax
                             /cassproject/,
                             /yocto-queue/
-                        ]},
+                        ]
+                    },
                     use: {
                         loader: 'babel-loader'
                     }
