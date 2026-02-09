@@ -29,9 +29,11 @@
                 <div
                     v-for="(commentWrapper, index) in commentWrapperList"
                     :key="index"
+                    :id="'comment-' + commentWrapper.commentId"
                     class="comment-list">
                     <h4
                         class="comment-list__about"
+                        :id="'comment-' + commentWrapper.commentId + '-about'"
                         @click="setUpScroll(commentWrapper)">
                         {{ commentWrapper.aboutName }}
                     </h4>
@@ -43,6 +45,7 @@
                         <div
                             class="button is-small is-outlined is-primary"
                             title="reply"
+                            :id="'comment-reply-button-' + commentWrapper.commentId"
                             @click="handleClickReply(commentWrapper)">
                             <span class="icon">
                                 <i class="fa fa-reply" />

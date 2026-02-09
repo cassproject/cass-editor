@@ -13,6 +13,7 @@
             <button
                 class="delete has-text-white"
                 @click="$store.commit('app/closeRightAside')"
+                id="close-right-aside-button"
                 aria-label="close">
                 <span class="icon">
                     <i class="fa fa-times" />

@@ -11,6 +11,7 @@
         <div class="section">
             <div class="buttons is-centered">
                 <router-link
+                    id="internal-error-return-home-button"
                     :to="{path: '/frameworks', query: queryParams}"
                     class="button is-primary is-centered">
                     return home

@@ -30,6 +30,7 @@
                             <div class="control">
                                 <label class="label">first name</label>
                                 <input
+                                    id="create-account-first-name"
                                     class="input"
                                     type="text "
                                     v-model="inputFirstName">
@@ -39,6 +40,7 @@
                             <div class="control">
                                 <label class="label">last name</label>
                                 <input
+                                    id="create-account-last-name"
                                     class="input"
                                     type="text "
                                     v-model="inputLastName">
@@ -48,6 +50,7 @@
                             <div class="control">
                                 <label class="label">email</label>
                                 <input
+                                    id="create-account-email"
                                     class="input"
                                     type="text "
                                     v-model="inputEmail">
@@ -57,6 +60,7 @@
                             <div class="control">
                                 <label class="label">username</label>
                                 <input
+                                    id="create-account-username"
                                     type="text"
                                     class="input"
                                     v-model="inputUserName">
@@ -66,6 +70,7 @@
                             <div class="control is-expanded">
                                 <label class="label">password</label>
                                 <input
+                                    id="create-account-password"
                                     type="password"
                                     class="input"
                                     v-model="inputPassword">
@@ -73,6 +78,7 @@
                             <div class="control is-expanded">
                                 <label class="label">confirm password</label>
                                 <input
+                                    id="create-account-password-confirm"
                                     class="input"
                                     type="password"
                                     v-model="inputPasswordConfirm">
@@ -131,6 +137,7 @@
                 <footer class="modal-card-foot has-background-white">
                     <div class="buttons is-spaced">
                         <div
+                            id="create-account-cancel-button"
                             class="button is-dark is-outlined"
                             @click="goToLogin">
                             <span class="icon">
@@ -138,6 +145,7 @@
                             </span><span>cancel</span>
                         </div>
                         <div
+                            id="create-account-create-button"
                             class="button is-dark is-primary"
                             @click="attemptAccountCreate">
                             <span class="icon">
@@ -164,6 +172,7 @@
                 <footer class="modal-card-foot has-background-white">
                     <div class="buttons is-spaced">
                         <div
+                            id="create-account-user-created-ok-button"
                             class="button is-dark is-outlined"
                             @click="goToLogin">
                             <span class="icon">
@@ -190,6 +199,7 @@
                 <footer class="modal-card-foot has-background-white">
                     <div class="buttons is-spaced">
                         <div
+                            id="create-account-user-server-error-ok-button"
                             class="button is-dark is-outlined"
                             @click="goToLogin">
                             <span class="icon">

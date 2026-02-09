@@ -27,6 +27,7 @@ should be componentized and imported into the screen that needs it.
                     v-if="canClose"
                     class="delete"
                     @click="$store.commit('app/closeModal'); $emit('close')"
+                    id="modal-template-close-button"
                     aria-label="close" />
             </header>
             <div class="modal-card-body has-text-dark">

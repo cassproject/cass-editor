@@ -22,6 +22,7 @@
                                 <option
                                     v-for="(option, index) in exportOptions"
                                     :value="option.value"
+                                    :id="'export-option-' + index"
                                     :key="index">
                                     {{ option.name }}
                                 </option>

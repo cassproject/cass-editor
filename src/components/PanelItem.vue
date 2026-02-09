@@ -9,6 +9,7 @@
             <span
                 v-if="nodes.length >0"
                 class="icon is-pulled-right"
+                id="toggle-children"
                 @click="showChildren = !showChildren">
                 <i
                     v-if="showChildren"

@@ -25,6 +25,7 @@
                                     <option
                                         v-for="(option, index) in importModalParams.options"
                                         :value="option"
+                                        :id="'import-option-' + option"
                                         :key="index">
                                         {{ option }}
                                     </option>
@@ -35,6 +36,7 @@
                     <input
                         class="input"
                         placeholder="Enter a new name"
+                        id="duplicate-import-new-name-input"
                         v-if="selectedOption==='Save import as a new framework'"
                         v-model="newName">
                     <div v-if="invalidName">
@@ -46,12 +48,14 @@
         <template slot="modal-foot">
             <button
                 @click="clickConfirmFromImportModal"
+                id="duplicate-import-confirm-button"
                 :disabled="confirmDisabledModal"
                 class="is-danger is-outlined button">
                 Confirm
             </button>
             <button
                 @click="closeImportModal"
+                id="duplicate-import-cancel-button"
                 class="is-dark button">
                 Cancel
             </button>

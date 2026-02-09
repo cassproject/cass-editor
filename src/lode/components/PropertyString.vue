@@ -14,11 +14,13 @@
             </template>
             <template slot="modal-foot">
                 <button
+                    id="confirm-remove-property-button"
                     @click="clickConfirmRemove"
                     class="is-danger is-outlined button">
                     Confirm Remove Property
                 </button>
                 <button
+                    id="cancel-remove-property-button"
                     @click="closeModal"
                     class="is-dark button">
                     Cancel
@@ -34,6 +36,7 @@
                 class="control is-expanded">
                 <!-- to do match to property name -->
                 <textarea
+                    id="property-string-computed-text"
                     ref="textarea"
                     class="textarea is-expanded "
                     rows="1"
@@ -43,6 +46,7 @@
             <div
                 class="control is-narrow auto-complete__control">
                 <input
+                    id="property-string-search-box"
                     v-if="showLanguage"
                     ref="language"
                     class="input is-narrow"
@@ -52,6 +56,7 @@
                 <span class="auto-complete">
                     <ul v-show="isOpen">
                         <li
+                            :id="'property-string-set-language-' + result"
                             v-for="(result, i) in filtered"
                             :key="i"
                             @mousedown="setLanguage(result)">
@@ -63,6 +68,7 @@
             <div
                 class="control is-narrow">
                 <div
+                    id="language-tag-remove-button"
                     @click="showModal('remove')"
                     v-if="!addSingle"
                     class="button is-text has-text-danger">
@@ -79,6 +85,7 @@
             <div
                 class="control is-expanded auto-complete__control">
                 <textarea
+                    id="property-string-search-area"
                     ref="language"
                     class="textarea is-expanded "
                     rows="1"
@@ -88,6 +95,7 @@
                 <span class="auto-complete">
                     <ul v-show="isOpen">
                         <li
+                            :id="'property-string-set-language-' + result"
                             v-for="(result, i) in filtered"
                             :key="i"
                             @mousedown="setInLanguage(result)">
@@ -100,6 +108,7 @@
                 class="control is-narrow">
                 <label class="label is-transparent">delete</label>
                 <div
+                    id="in-language-tag-remove-button"
                     @click="showModal('remove')"
                     v-if="!addSingle"
                     class="button is-text has-text-danger">
@@ -124,6 +133,7 @@
                 class="control">
                 <label class="label">Resource Name</label>
                 <textarea
+                    id="property-string-resource-name"
                     class="textarea is-expanded "
                     rows="1"
                     v-model="computedResourceName"
@@ -137,11 +147,13 @@
                 class="label">date/time</label>
             <div class="field is-grouped">
                 <input
+                    id="property-string-date-time"
                     class="input is-small is-fullwidth date-time"
                     v-model="computedText"
                     type="datetime-local"
                     @blur="blur">
                 <div
+                    id="property-string-remove-button-x-3"
                     v-if="ceasnUser"
                     @click="showModal('remove')"
                     class="button is-small is-text has-text-danger is-pulled-right">
@@ -155,11 +167,13 @@
                 class="label">date</label>
             <div class="field is-grouped">
                 <input
+                    id="property-string-computed-text-date"
                     class="input is-small is-fullwidth date-time"
                     v-model="computedText"
                     type="date"
                     @blur="blur">
                 <div
+                    id="property-string-remove-button-x-4"
                     v-if="ceasnUser"
                     @click="showModal('remove')"
                     class="button is-small is-text has-text-danger is-pulled-right">
@@ -176,6 +190,7 @@
             <div
                 class="select is-small">
                 <select
+                    id="computed-text-select"
                     v-model="computedText"
                     @change="blur">
                     <option
@@ -191,6 +206,7 @@
                 v-if="!newProperty">
                 <div
                     @click="showModal('remove')"
+                    id="remove-option-property-button"
                     class="button is-small is-text has-text-danger is-pulled-right">
                     <i class="fa fa-times" />
                 </div>
@@ -208,6 +224,7 @@
                     ref="textarea"
                     class="textarea is-expanded "
                     rows="1"
+                    id="string-textarea-input"
                     v-model="computedText"
                     @blur="blur" />
             </div>
@@ -216,6 +233,7 @@
                 v-if="!addSingle && view !== 'single'">
                 <div
                     @click="showModal('remove')"
+                    id="remove-string-textarea-property-button"
                     class="button is-small is-text has-text-danger is-pulled-right">
                     <i class="fa fa-times" />
                 </div>

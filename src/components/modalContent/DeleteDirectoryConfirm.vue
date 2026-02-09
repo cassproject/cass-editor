@@ -29,6 +29,7 @@
                     <div class="control">
                         <input
                             v-model="typedInName"
+                            id="delete-directory-name-input"
                             class="input">
                     </div>
                 </div>
@@ -38,13 +39,15 @@
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
-                    @click="closeModal">
+                    @click="closeModal"
+                    id="delete-directory-cancel-button">
                     Cancel
                 </button>
                 <button
                     :disabled="deleteDirectoryDisabled"
                     class="button is-outlined is-danger"
-                    @click="deleteDirectory(directory)">
+                    @click="deleteDirectory(directory)"
+                    id="delete-directory-confirm-button">
                     Delete Directory
                 </button>
             </div>

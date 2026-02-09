@@ -21,6 +21,7 @@
                 <div class="dropdown-trigger">
                     <button
                         @click="commentListDropDownActive = !commentListDropDownActive"
+                        :id="'comment-dropdown-button-' + comment.commentId"
                         aria-haspopup="true"
                         aria-controls="dropdown-menu"
                         class="button is-text has-text-dark">
@@ -36,12 +37,14 @@
                     <div class="dropdown-content">
                         <a
                             @click="handleClickEdit"
+                            :id="'comment-edit-button-' + comment.commentId"
                             href="#"
                             class="dropdown-item">
                             edit
                         </a>
                         <a
                             @click="handleClickDelete"
+                            :id="'comment-delete-button-' + comment.commentId"
                             class="dropdown-item">
                             delete
                         </a>
@@ -59,12 +62,14 @@
                 <div
                     v-if="showMore"
                     @click="showMore=false"
+                    :id="'comment-show-less-button-' + comment.commentId"
                     class="button is-text has-text-primary">
                     show less
                 </div>
                 <div
                     v-else
                     @click="showMore=true"
+                    :id="'comment-show-more-button-' + comment.commentId"
                     class="button is-text has-text-primary">
                     show more
                 </div>

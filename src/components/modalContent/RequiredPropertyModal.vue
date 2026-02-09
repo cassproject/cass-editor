@@ -18,6 +18,7 @@
         <template slot="modal-foot">
             <button
                 @click="closeModal()"
+                id="required-property-modal-ok-button"
                 class="is-dark button">
                 Ok
             </button>

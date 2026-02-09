@@ -20,11 +20,13 @@
         <template slot="modal-foot">
             <button
                 @click="deleteItem()"
+                id="delete-level-confirm-delete-button"
                 class="is-danger is-outlined button">
                 Delete Level
             </button>
             <button
                 @click="closeModal()"
+                id="delete-level-confirm-cancel-button"
                 class="is-dark button">
                 Cancel
             </button>

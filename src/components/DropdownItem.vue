@@ -2,6 +2,7 @@
     <div class="cass-dropdown--item">
         <a
             @click="showDetails"
+            id="dropdown-item-show-details"
             class="dropdown-item">
             {{ label }}
         </a>

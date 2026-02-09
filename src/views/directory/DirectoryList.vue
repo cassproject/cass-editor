@@ -21,6 +21,7 @@
                             :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
                             v-for="(item) in directory"
                             :key="item.id"
+                            :id="item.id"
                             @click="click(item)">
                             <div class="cass--list-item--icon">
                                 <div class="cass--list-item--icon-wrap has-background-dark">
@@ -57,6 +58,7 @@
                             :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
                             v-for="(item) in framework"
                             :key="item.id"
+                            :id="item.id"
                             @click="click(item)">
                             <div class="cass--list-item--icon">
                                 <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
@@ -93,6 +95,7 @@
                             :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
                             v-for="(item) in conceptscheme"
                             :key="item.id"
+                            :id="item.id"
                             @click="click(item)">
                             <div class="cass--list-item--icon">
                                 <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
@@ -130,6 +133,7 @@
                             :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
                             v-for="(item) in competency"
                             :key="item.id"
+                            :id="item.id"
                             @click="competencyClick(item)">
                             <div class="cass--list-item--icon">
                                 <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
@@ -165,6 +169,7 @@
                             v-for="item in creativework"
                             @dblclick="$emit('dblclick', item)"
                             :key="item.id"
+                            :id="item.id"
                             @click="click(item)"
                             class="cass--list--item">
                             <div class="cass--list-item--icon">

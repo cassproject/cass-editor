@@ -27,6 +27,7 @@
                 </span>
                 <div
                     @click="goToCompetencyWithinThisFramework()"
+                    id="scroll-to-competency-button"
                     v-if="!competencyAsPropertyIsExternal && thingAsPropertyModalObject.type !== 'Level'"
                     class="button  is-small is-outlined is-primary">
                     <span class="has-text-weight-bold">scroll to</span>
@@ -37,6 +38,7 @@
                 </div>
                 <button
                     @click="clickShowDetails"
+                    id="view-competency-details-button"
                     class="button  is-small is-outlined is-link"
                     v-if="thingAsPropertyModalObject.objectType === 'Competency' || thingAsPropertyModalObject.objectType === 'Concept' || thingAsPropertyModalObject.objectType === 'Level'">
                     <span class="has-text-weight-bold">details</span>
@@ -65,6 +67,7 @@
                     <div
                         v-if="view !== 'crosswalk' && canEdit"
                         class="edit-button button is-small is-text has-text-primary"
+                        id="edit-node-button"
                         @click="editNode()">
                         <div class="icon is-small">
                             <i class="fa fa-edit is-size-5" />
@@ -75,6 +78,7 @@
                         class="comment-button">
                         <div
                             class="button is-text has-text-primary is-small"
+                            id="add-comment-button"
                             @click="handleClickAddComment">
                             <div class="icon is-small">
                                 <i class="fa fa-comment-medical is-size-5" />

@@ -29,6 +29,7 @@
                 <div class="control">
                     <textarea
                         v-model="commentText"
+                        id="add-comment-text-input"
                         class="textarea"
                         row="3" />
                 </div>
@@ -45,13 +46,15 @@
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
-                    @click="closeModal">
+                    @click="closeModal"
+                    id="add-comment-cancel-button">
                     Cancel
                 </button>
                 <button
                     :disabled="commentIsBusy"
                     class="button is-outlined is-primary"
-                    @click="saveComment">
+                    @click="saveComment"
+                    id="add-comment-save-button">
                     Save comment
                 </button>
             </div>

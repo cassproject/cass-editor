@@ -14,7 +14,8 @@
                         <input
                             class="input"
                             placeholder="Name of new directory"
-                            v-model="directoryName">
+                            v-model="directoryName"
+                            id="add-directory-name-input">
                     </div>
                 </div>
             </div>
@@ -25,21 +26,24 @@
                 <div class="buttons">
                     <div
                         class="button is-dark is-outlined"
-                        @click="$store.commit('app/closeModal')">
+                        @click="$store.commit('app/closeModal')"
+                        id="add-directory-cancel-button">
                         Cancel
                     </div>
                     <div
                         class="button is-primary"
                         :class="directoryName.length === 0 ? 'is-disabled' : ''"
                         :disabled="directoryName.length === 0"
-                        @click="$emit('create-directory', directoryName)">
+                        @click="$emit('create-directory', directoryName)"
+                        id="add-directory-create-button">
                         Create
                     </div>
                     <div
                         class="button is-primary"
                         :class="directoryName.length === 0 ? 'is-disabled' : ''"
                         :disabled="directoryName.length === 0"
-                        @click="$emit('create-another-directory', directoryName)">
+                        @click="$emit('create-another-directory', directoryName)"
+                        id="add-directory-create-another-button">
                         Create and add another
                     </div>
                 </div>

@@ -17,11 +17,13 @@
         <template slot="modal-foot">
             <button
                 @click="deleteItem()"
+                id="delete-concept-scheme-confirm-delete-button"
                 class="is-danger is-outlined button">
                 Delete {{ type }}
             </button>
             <button
                 @click="closeModal()"
+                id="delete-concept-scheme-confirm-cancel-button"
                 class="is-dark button">
                 Cancel
             </button>

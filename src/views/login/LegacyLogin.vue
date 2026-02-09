@@ -53,6 +53,7 @@
                             <div class="control">
                                 <label class="label">Username</label>
                                 <input
+                                    id="legacy-login-username"
                                     type="text"
                                     class="input"
                                     v-model="username"
@@ -63,6 +64,7 @@
                             <div class="control">
                                 <label class="label">Password</label>
                                 <input
+                                    id="legacy-login-password"
                                     type="password"
                                     class="input"
                                     v-model="password"
@@ -80,6 +82,7 @@
                             <div class="control">
                                 <label class="label">name</label>
                                 <input
+                                    id="legacy-login-create-link-person-name"
                                     class="input"
                                     type="text "
                                     v-model="createLinkPersonName">
@@ -91,6 +94,7 @@
                             <div class="control">
                                 <label class="label">email</label>
                                 <input
+                                    id="legacy-login-create-link-person-email"
                                     class="input"
                                     type="text "
                                     v-model="createLinkPersonEmail">
@@ -102,6 +106,7 @@
                             <div class="control">
                                 <label class="label">username</label>
                                 <input
+                                    id="legacy-login-create-account-username"
                                     type="text"
                                     class="input"
                                     v-model="createAccountUsername">
@@ -114,6 +119,7 @@
                             <div class="control is-expanded">
                                 <label class="label">password</label>
                                 <input
+                                    id="legacy-login-create-account-password"
                                     type="password"
                                     class="input"
                                     v-model="createAccountPassword">
@@ -121,6 +127,7 @@
                             <div class="control is-expanded">
                                 <label class="label">Confirm password</label>
                                 <input
+                                    id="legacy-login-create-account-password-confirm"
                                     class="input"
                                     type="password"
                                     v-model="createAccountPasswordRetype">
@@ -189,6 +196,7 @@
                 <footer class="modal-card-foot has-background-white">
                     <div class="buttons is-spaced">
                         <div
+                            id="legacy-login-cancel-button"
                             class="button is-dark is-outlined"
                             v-if="amCreatingLinkedPerson || amCreatingAccount"
                             @click="setDataToBaseLogin(true)">
@@ -198,6 +206,7 @@
                         </div>
                         <template v-if="amJustLoggingIn">
                             <div
+                                id="legacy-login-create-account-button"
                                 v-if="!apiLoginEnabled"
                                 class="button is-outlined is-dark"
                                 @click="showCreateAccount">
@@ -206,6 +215,7 @@
                                 </span><span>create account</span>
                             </div>
                             <div
+                                id="legacy-login-button"
                                 class="button is-outlined is-primary"
                                 @click="attemptCassLogin">
                                 <span class="icon">
@@ -214,6 +224,7 @@
                             </div>
                         </template>
                         <div
+                            id="legacy-login-create-link-person-button"
                             class="button is-expanded is-primary is-outlined"
                             v-if="amCreatingAccount"
                             @click="createNewAccount">
@@ -222,6 +233,7 @@
                             </span><span>create</span>
                         </div>
                         <div
+                            id="legacy-login-link-person-button"
                             class="button is-success is-outlined"
                             v-if="amCreatingLinkedPerson"
                             @click="linkPerson">
@@ -232,6 +244,7 @@
                     </div>
                 </footer>
                 <div
+                    id="legacy-login-return-to-standard-login"
                     v-if="apiLoginEnabled"
                     class="has-text-centered">
                     <a @click="goToStandardLogin">Return to Standard Login</a>
@@ -474,7 +487,7 @@ export default {
         },
         handleCheckUsernameConfigureFromServerFail: function(failMsg) {
             this.loginBusy = false;
-            appLog('New account configure from server for username check failure: ' + msg);
+            appLog('New account configure from server for username check failure: ' + failMsg);
         },
         checkForExistingUsername: function() {
             appLog("Check if new account username already exists");

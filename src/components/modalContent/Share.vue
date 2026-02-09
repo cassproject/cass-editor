@@ -69,7 +69,8 @@
                         title="Copy URL to the clipboard."
                         v-clipboard="shareableFrameworkInEditor"
                         v-clipboard:success="successfulClip"
-                        v-clipboard:error="errorClip">
+                        v-clipboard:error="errorClip"
+                        id="shareable-link-copy-button">
                         <i
                             v-if="clipStatus === 'ready'"
                             class="fa fa-copy" />
@@ -88,7 +89,9 @@
                 <!-- end share link -->
                 <div v-if="ownerCount === 0">
                     To add users or groups or to make your {{ objectType }} private, first add yourself as an owner.
-                    <button @click="makeCurrentUserAnOwner">
+                    <button 
+                        @click="makeCurrentUserAnOwner"
+                        id="share-make-me-owner-button">
                         Make me an owner
                     </button>
                 </div>
@@ -106,12 +109,14 @@
                             <div class="buttons has-addons is-pulled-right">
                                 <button
                                     @click="handlePublicClick"
+                                    id="share-make-public-button"
                                     :class="{'is-outlined': privateFramework}"
                                     class="button is-small is-link">
                                     Public
                                 </button>
                                 <button
                                     @click="handlePrivateClick"
+                                    id="share-make-private-button"
                                     :class="{'is-outlined': !privateFramework}"
                                     class="button is-small is-link">
                                     Private
@@ -127,6 +132,7 @@
                                 placeholder="search"
                                 class="input share is-fullwidth"
                                 v-model="search"
+                                id="share-search-input"
                                 @input="filterResults">
                             <div
                                 v-show="isOpenAutocomplete"
@@ -135,6 +141,7 @@
                                     <li
                                         v-for="(result, i) in filtered"
                                         :key="i"
+                                        :id="'share-search-option-' + i"
                                         @mousedown="selectUserOrGroup(result)">
                                         {{ result.name + " (" + result.email + ")" }}
                                     </li>
@@ -147,6 +154,7 @@
                                     <option
                                         v-for="(option, index) in viewOptions"
                                         :key="index"
+                                        :id="'share-view-option-' + index"
                                         :value="option.value"
                                         :disabled="option.disabled"
                                         :title="option.title">
@@ -158,6 +166,7 @@
                         <div class="control is-narrow">
                             <div
                                 @click="saveSettings"
+                                id="share-add-selection-button"
                                 class="button is-outlined is-primary">
                                 <span class="icon">
                                     <i class="fa fa-save" />
@@ -192,10 +201,12 @@
                                         <div class="select is-small is-primary">
                                             <select
                                                 v-model="group.view"
+                                                :id="'share-group-view-select-' + group.id"
                                                 @change="group.changed=true;saveSettings()">
                                                 <option
                                                     :value="option.value"
                                                     v-for="option in viewOptions"
+                                                    :id="'share-group-view-option-' + option.value + '-' + group.id"
                                                     :key="option">
                                                     {{ option.label }}
                                                 </option>
@@ -206,6 +217,7 @@
                                         <div
                                             class="button is-text is-small has-text-danger"
                                             @click="removeOwnerOrReader(group, 'group')"
+                                            :id="'share-remove-group-button-' + group.id"
                                             :disabled="group.currentUser && numGroupsAsOwner === 1 && group.view == 'admin' && cantRemoveCurrentUserAsOwner && !userIsOwner">
                                             <div class="icon">
                                                 <i class="fa fa-trash" />
@@ -243,10 +255,12 @@
                                         <div class="select is-primary is-small">
                                             <select
                                                 v-model="user.view"
+                                                :id="'share-user-view-select-' + user.id"
                                                 @change="user.changed=true;saveSettings()">
                                                 <option
                                                     :value="option.value"
                                                     v-for="option in viewOptions"
+                                                    :id="'share-user-view-option-' + option.value + '-' + user.id"
                                                     :key="option">
                                                     {{ option.label }}
                                                 </option>
@@ -257,6 +271,7 @@
                                         <div
                                             class="button is-text is-small has-text-danger"
                                             @click="removeOwnerOrReader(user, 'user')"
+                                            :id="'share-remove-user-button-' + user.id"
                                             :disabled="cantRemoveCurrentUserAsOwner && user.currentUser && !numGroupsAsOwner">
                                             <div class="icon">
                                                 <i class="fa fa-trash" />
@@ -277,6 +292,7 @@
                 <button
                     :disabled="isProcessing"
                     class="button is-primary is-outlined"
+                    id="share-done-button"
                     @click="$store.commit('app/closeModal')">
                     Done
                 </button>
@@ -286,6 +302,7 @@
                 class="buttons is-centered">
                 <div
                     @click="confirmMakePrivate = false"
+                    id="share-cancel-private-button"
                     :disabled="isProcessing"
                     class="button is-dark is-outlined">
                     <span class="icon">
@@ -295,7 +312,8 @@
                 <div
                     class="button is-primary is-outlined"
                     :disabled="isProcessing"
-                    @click="makePrivate">
+                    @click="makePrivate"
+                    id="share-confirm-make-private-button">
                     <span class="icon">
                         <i class="fa fa-check" />
                     </span><span>confirm make private</span>
@@ -307,7 +325,8 @@
                 <div
                     @click="confirmMakePublic = false"
                     :disabled="isProcessing"
-                    class="button is-dark is-outlined">
+                    class="button is-dark is-outlined"
+                    id="share-cancel-public-button">
                     <span class="icon">
                         <i class="fa fa-times" />
                     </span><span>cancel</span>
@@ -315,7 +334,8 @@
                 <div
                     class="button is-primary is-outlined"
                     :disabled="isProcessing"
-                    @click="makePublic">
+                    @click="makePublic"
+                    id="share-confirm-make-public-button">
                     <span class="icon">
                         <i class="fa fa-check" />
                     </span><span>confirm make public</span>
