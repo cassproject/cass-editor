@@ -1,0 +1,298 @@
+# CaSS Editor Requirements
+
+**Project:** CaSS Editor
+**Intent:** Software Development
+**Author:** Eduworks
+**Executor:** Eduworks
+
+## Software Requirement
+
+- **CA-83**: The CaSS Editor shall have a method for an administrator to define a CaSS Editor configuration.
+- **CA-84**: The CaSS Editor shall have a method for an administrator to select a default CaSS Editor configuration for their instance of CaSS Editor.
+- **CA-85**: The CaSS Editor shall apply the default configuration to a framework upon creation.
+- **CA-86**: The CaSS Editor configuration shall allow an administrator to add links to configuration elements into the configuration, thereby selecting them in the configuration.
+- **CA-87**: The CaSS Editor configuration shall allow an administrator to define a configuration element within a configuration.
+- **CA-88**: The CaSS Editor configuration shall allow an administrator to redefine a configuration element within a configuration.
+- **CA-89**: A RDF class shall be a valid configuration element.
+- **CA-90**: A RDF property shall be a valid configuration element.
+- **CA-91**: A SKOS concept shall be a valid configuration element.
+- **CA-92**: A RDF property shall constrain users to a valid range specified by SKOS concepts, if defined.
+- **CA-93**: The CaSS Editor shall populate the list of classes with a set of relevant defaults from the CaSS Schema and the CaSS Schema mapping.
+- **CA-94**: The CaSS Editor shall populate the list of properties with a set of relevant defaults from the CaSS Schema and the CaSS Schema mapping.
+- **CA-95**: The CaSS Editor configuration shall not have the ability to exclude the identifier/URL of a RDF class.
+- **CA-96**: The RDF property shall specify cardinality requirements on RDF properties that will be enforced by CaSS Editor.
+- **CA-97**: The RDF property may specify headings to place RDF properties under in the CaSS Editor tool.
+- **CA-98**: The RDF property shall specify criticality of the property eg: primary, required, desired, optional
+- **CA-99**: The RDF property shall specify a description
+- **CA-100**: The RDF property shall specify a name
+- **CA-101**: The RDF property shall specify a domain type
+- **CA-102**: The RDF property shall specify a range type
+- **CA-103**: The CaSS Editor shall prevent saving an object missing a required or primary property (as specified by the configuration).
+- **CA-104**: The CaSS Editor shall indicate to the user missing properties (primary or required) in such a way that they can be remedied.
+- **CA-105**: The RDF class shall specify a name of the class
+- **CA-106**: The RDF class shall specify a description of the class
+- **CA-107**: The CaSS Editor configuration shall identify identities that are granted owner access to new objects, and shall provide the user a means to CRUD these identities.
+- **CA-108**: The CaSS Editor configuration shall identify identities that are granted reader access to new objects, and shall provide the user a means to CRUD these identities.
+- **CA-109**: The CaSS Editor configuration shall identify identities that are granted comment access to new objects, and shall provide the user a means to CRUD these identities.
+- **CA-110**: Owner access shall be defined by the @owner field in the KBAC specification.
+- **CA-111**: Reader access shall be defined by the @reader field in the KBAC specification.
+- **CA-112**: The CaSS Editor shall not allow comments to be visible to the user unless the @owner of those comments are in the comment access identity list.
+- **CA-113**: The CaSS Editor shall permit an owner of a configuration to define the rollup processor to be used to process a framework.
+- **CA-114**: The CaSS Editor shall permit an owner of a framework to associate a configuration to that framework.
+- **CA-115**: The CaSS Editor shall permit a user to find an item within the framework.
+- **CA-116**: The CaSS Editor shall have a method for permitting a user to list frameworks
+- **CA-117**: The CaSS Editor shall have a method for permitting a user to view a framework and the competencies within in a hierarchical (or equivalent) form, using the "narrows" relationship as the joining relationship.
+- **CA-118**: The CaSS Editor shall have a method for permitting a user to edit the properties of a framework specified either within the framework's configuration or the current CaSS Editor configuration, hereafter the "configuration".
+- **CA-119**: The editing of properties shall adhere to the cardinality rule specified by the property in the configuration, defaulting to "any number" when omitted.
+- **CA-120**: The editing of properties shall adhere to the criticality rule specified by the property in the configuration, defaulting to "optional" when omitted.
+- **CA-121**: The editing of properties shall adhere to the allowed range specified by the property in the configuration, defaulting to any valid value when omitted.
+- **CA-122**: The editing of properties shall adhere to the allowed type specified by the property in the configuration, defaulting to any valid string when omitted.
+- **CA-123**: The editing of properties, when the type is a valid object type stored within the system, shall list valid values selected first from the current framework, then from anywhere in the system.
+- **CA-124**: The editing of properties, when the type is a valid object type stored within the system, shall allow for the search of a value from anywhere in the system, listing valid values first from the current framework, then from anywhere in the system.
+- **CA-125**: The CaSS Editor shall permit the owner to view historical versions of a framework.
+- **CA-126**: The CaSS Editor shall permit the owner to revert an existing framework to a historical version of the framework.
+- **CA-127**: The CaSS Editor shall permit an administrator to delete versions of an existing framework, thereby reverting the framework to a historical version that is valid.
+- **CA-128**: The CaSS Editor shall permit the owner to save a historical version of a framework as a new framework.
+- **CA-129**: The CaSS Editor shall, when viewing a framework, shall show primary properties as specified by the configuration.
+- **CA-130**: The CaSS Editor shall permit the filtering of framework search results, only displaying the results that have a configuration that matches the current CaSS Editor configuration.
+- **CA-131**: The CaSS Editor shall permit the sorting of framework search results, displaying the results sorted by the last modified date.
+- **CA-132**: The CaSS Editor shall permit the filtering of framework search results, only displaying the results that are owned by the user.
+- **CA-133**: The CaSS Editor shall permit the filtering of framework search results, only displaying the results that are owned by a specific user.
+- **CA-134**: The CaSS Editor shall permit the filtering of framework search results, only displaying frameworks where the search terms appear in the framework.
+- **CA-135**: The CaSS Editor shall, when a search is performed, also perform a competency search with the same terms, displaying frameworks that contain competencies that match the search results after the frameworks that match the search results.
+- **CA-136**: The CaSS Editor shall permit the user to view a framework in more detail when selected, including seeing the competencies within, the ability to edit, if permitted, etc.
+- **CA-137**: The CaSS Editor shall store a list of recently opened frameworks that persists over browser refreshes, that can be used to navigate to a framework.
+- **CA-138**: The CaSS Editor shall allow the user to CRUD competencies, resources and levels within a framework.
+- **CA-139**: The CaSS Editor shall allow for the CRUD of relationships as part of the organization of a hierarchy or the editing of properties that result in relationships.
+- **CA-140**: The CaSS Editor shall apply the framework's configuration, if it exists, upon the opening of the framework.
+- **CA-141**: The CaSS Editor shall save the framework object when properties of the framework are modified.
+- **CA-142**: The CaSS Editor shall revert the framework object to a previous version to achieve an 'undo' type action.
+- **CA-143**: The CaSS Editor shall have a method for listing competencies so they can be browsed and selected.
+- **CA-144**: When selecting an object to include within a framework, CaSS Editor shall permit any object included in any framework to be selectable or to create a new object, prioritizing objects that already exist within the framework (if it makes sense to).
+- **CA-145**: CaSS Editor should permit the search for objects separate from frameworks where a use case has been identified that requires it.
+- **CA-146**: CaSS Editor should permit the editing of objects separate from frameworks where a use case has been identified that requires it.
+- **CA-147**: CaSS Editor shall use breadcrumbs or some other indicator to indicate to the user what frameworks an object is included in, and where in that framework the object exists -- subject to performance demands.
+- **CA-148**: The CaSS Editor shall have a method for permitting a user to edit all properties, hereafter, "properties", of an object specified either within the framework's configuration or the current CaSS Editor configuration, hereafter "configuration".
+- **CA-149**: The editing of properties shall adhere to the cardinality rule specified by the property in the configuration, defaulting to "any number" when omitted.
+- **CA-150**: The editing of properties shall adhere to the criticality rule specified by the property in the configuration, defaulting to "optional" when omitted.
+- **CA-151**: The editing of properties shall adhere to the allowed range specified by the property in the configuration, defaulting to any valid value when omitted.
+- **CA-152**: The editing of properties shall adhere to the allowed type specified by the property in the configuration, defaulting to any valid string when omitted.
+- **CA-153**: The editing of properties, when the type is a valid object type stored within the system, shall list valid values selected first from the current framework (if applicable), then from anywhere in the system.
+- **CA-154**: The editing of properties, when the type is a valid object type stored within the system, shall allow for the search of a value from anywhere in the system, listing valid values (hereafter, "search results") first from the current framework (if applicable)
+- **CA-155**: When selecting objects from search results, two options shall be presented, link and copy. Link means link to an existing object that may be updated by the owner. Copy means take a static copy of the object as it exists at the time the copy is created.
+- **CA-156**: When selecting one or more values from a hierarchy, selecting or deselecting a branch node of the hierarchy shall select child branches and leaves, recursing.
+- **CA-157**: The CaSS Editor shall permit the owner to view historical versions of an object.
+- **CA-158**: The CaSS Editor shall permit the owner to revert an existing object to a historical version of the object.
+- **CA-159**: The CaSS Editor shall permit an administrator to delete versions of an existing object, thereby reverting the object to a historical version that is valid.
+- **CA-160**: The CaSS Editor shall permit the owner to save a historical version of a competency as a new competency.
+- **CA-161**: The CaSS Editor shall, when viewing an object, shall show primary properties as specified by the configuration.
+- **CA-162**: The CaSS Editor shall permit the sorting of search results, displaying the results sorted by the last modified date.
+- **CA-163**: The CaSS Editor shall permit the filtering of search results, only displaying the results that are owned by the user.
+- **CA-164**: The CaSS Editor shall permit the filtering of search results, only displaying the results that are owned by a specific user.
+- **CA-165**: The CaSS Editor shall permit the filtering of search results, only displaying results where the search terms appear in the object.
+- **CA-166**: The CaSS Editor shall permit the bulk updating of properties of all/any selected objects in a hierarchy or list.
+- **CA-167**: The CaSS Editor shall permit the bulk deletion of objects from a hierarchy or list.
+- **CA-168**: The CaSS Editor shall permit the bulk removal of objects from a framework.
+- **CA-169**: The CaSS Editor shall save the object when properties of the object are modified.
+- **CA-170**: The CaSS Editor shall revert the object to the previous version to achieve an 'undo' type action.
+- **CA-171**: The CaSS Editor should show primary properties of an object at all times.
+- **CA-172**: The CaSS Editor should show required, desired, and optional properties that are filled out when intended by the user via a click or two.
+- **CA-173**: The CaSS Editor should show all possible required, desired, and optional fields when editing when intended by the user via a click or two.
+- **CA-174**: Relationships shall have a source and target, and shall associate competency objects within a framework.
+- **CA-175**: Relationships shall be used instead of direct associations between competencies via a property.
+- **CA-176**: Relationships may carry additional data that may be specified in a configuration.
+- **CA-177**: Relationships shall be displayed alongside properties.
+- **CA-178**: Relationships may be displayed in a similar fashion to properties.
+- **CA-179**: In CaSS Editor, objects that appear in a hierarchy shall be draggable and droppable via a handle or some other method.
+- **CA-180**: In CaSS Editor, objects that appear in a list (within or without a hierarchy) shall be movable up and down via a keyboard command, and should be movable up and down via a button.
+- **CA-181**: In CaSS Editor, objects that appear in a hierarchy shall be movable "indent and outdent", changing the parent and location of the object within the hierarchy via a keyboard command, and should be movable "indent and outdent" via a button.
+- **CA-182**: When dragging and dropping, moving the item to the top of the draggable area should scroll up.
+- **CA-183**: When dragging and dropping, moving the item to the bottom of the draggable area should scroll down.
+- **CA-184**: When dragging and dropping, dropping the item should rearrange the hierarchy such that the item appears only in the dropped location.
+- **CA-185**: When dragging and dropping, holding the shift button during dropping should add an additional link or relationship such that the item appears in the dropped location and in the original location.
+- **CA-186**: In CaSS Editor, objects should be 'cuttable' via a CTRL or SHIFT+X key.
+- **CA-187**: In CaSS Editor, objects should be 'copyable' via a CTRL or SHIFT+C key.
+- **CA-188**: In CaSS Editor, objects should be 'pastable' via a CTRL or SHIFT+V key.
+- **CA-189**: In CaSS Editor, objects that appear in a hierarchy should allow for the collapsing of branch nodes.
+- **CA-190**: In CaSS Editor, the user should be able to navigate to a competency in a framework via a relation.
+- **CA-191**: The CaSS Editor shall have a method for a user to define in a resource alignment an xAPI verb and scaled score necessary to grant the assertion.
+- **CA-192**: The CaSS Editor shall have a method for a user to define in a resource alignment a competency.
+- **CA-193**: The CaSS Editor shall have a method to add a resource to a framework.
+- **CA-194**: The CaSS Editor shall have a method for a user to define in a resource alignment a url to a resource.
+- **CA-195**: The CaSS Editor shall have a method for a user to define the relation type of a resource alignment, according to LRMI standards (teaches, assesses, requires).
+- **CA-196**: A resource alignment shall be a Schema.org CreativeWork (resource) with an AlignmentObject as specified by the educationalAlignment property.
+- **CA-197**: The resource URL shall be the url field of the CreativeWork.
+- **CA-198**: The resource name shall be the name field of the CreativeWork.
+- **CA-199**: The resource description shall be the description field of the CreativeWork
+- **CA-200**: The resource competency shall be the targetUrl field of the CreativeWork's AlignmentObject
+- **CA-201**: The resource framework, if specified, shall be the targetFramework field of the CreativeWork's AlignmentObject
+- **CA-202**: CaSS Editor shall provide a means for a user to CRUD a comment on an object.
+- **CA-203**: A comment shall be owned by the comment creator and the owner of the object.
+- **CA-204**: A comment shall include a comment field.
+- **CA-205**: All comments shall be displayable (not necessarily by default) alongside the object they are commenting on.
+- **CA-206**: An owner shall see all comments, others can only see comments made by a commenter or owner.
+- **CA-207**: CaSS Editor shall provide a means for a user to CRUD a comment on a comment (a reply).
+- **CA-208**: CaSS Editor shall provide a suggestion mode that permits a user to make an edit of a property (a suggestion) that they wouldn't normally be able to. This results in a suggestion.
+- **CA-209**: A suggestion shall be a comment.
+- **CA-210**: A suggestion shall contain the property to be edited.
+- **CA-211**: A suggestion shall contain the suggested value of the edit.
+- **CA-212**: A suggestion may be accepted by an owner of an object, which applies the value to the property.
+- **CA-213**: CaSS Editor shall provide, separately from relationship management, a 'crosswalking' process between two frameworks, facilitating and accelerating the process of creating relationships between two frameworks and an optional third framework. All operations disc...
+- **CA-214**: The crosswalking process shall permit the rapid creation of relationships where the source and target do not share a framework.
+- **CA-215**: The crosswalking process may permit the bulk creation of relationships between frameworks where the sources and targets do not share a framework.
+- **CA-216**: The crosswalking process should provide an option to save relationships to each framework involved upon creation.
+- **CA-217**: The crosswalking process should provide an option to save relationships into a third unique and separate framework upon creation.
+- **CA-218**: The crosswalking process shall allow for the selection of two frameworks to crosswalk.
+- **CA-219**: The crosswalking process shall allow for the optional selection or creation of a third framework for relationships, if that option is selected.
+- **CA-220**: The crosswalking process should provide find capabilities for each framework.
+- **CA-221**: The crosswalking process shall permit the rapid deletion of relationships where the source and target do not share a framework.
+- **CA-222**: The crosswalking process shall permit the bulk deletion of all relationships where the source and target do not share a framework.
+- **CA-223**: CaSS Editor shall allow an individual to create a user.
+- **CA-224**: CaSS Editor shall allow, during the creation of a user, the specification of a username and password
+- **CA-225**: CaSS Editor shall create a Person to describe the user.
+- **CA-226**: CaSS Editor shall allow the Person to be described by a name.
+- **CA-227**: CaSS Editor shall allow the Person to be associated with an email address.
+- **CA-228**: CaSS Editor shall allow an individual to create an Organization (specified as a group).
+- **CA-229**: CaSS Editor shall make the creator of the organization the owner of the organization.
+- **CA-230**: CaSS Editor shall allow an owner to add people to the organization.
+- **CA-231**: CaSS Editor shall allow an owner to remove people from the organization.
+- **CA-232**: CaSS Editor shall, upon creation of an organization, create an identity that belongs to the organization and is only accessible by owners or readers of the organization.
+- **CA-233**: CaSS Editor shall, upon login, obtain all keypairs that belong to the organizations that the logged in user belongs to.
+- **CA-234**: CaSS Editor shall permit the organization owner to recycle the organization's identity, modifying all data owned by the identity to a new identity.
+- **CA-235**: CaSS Editor shall allow an owner to add an owner to any linked data object.
+- **CA-236**: CaSS Editor shall allow an owner to remove an owner from any linked data object.
+- **CA-237**: CaSS Editor shall allow an owner to add a reader to any private linked data object.
+- **CA-238**: CaSS Editor shall allow an owner to remove a reader from any private linked data object.
+- **CA-239**: CaSS Editor shall allow an owner to add a commenter to any linked data object.
+- **CA-240**: CaSS Editor shall allow an owner to remove a commenter from any linked data object.
+- **CA-241**: CaSS Editor shall identify the first owner as the owner, and any other owners as editors.
+- **CA-242**: CaSS Editor shall provide a means of importing frameworks from standards defined by CaSS and that are specified in the system design.
+- **CA-243**: CaSS Editor shall provide a means of exporting frameworks into standards and formats defined by CaSS that are specified in the system design.
+- **CA-244**: CaSS Editor shall provide permanent links that can be shared outside of CaSS to review frameworks that brings an individual into the CaSS Editor tool, to that framework (if accessible).
+- **CA-245**: CaSS Editor shall provide existing data properties to indicate whether frameworks are published, as specified, for example, by CTDL-ASN.
+- **CA-246**: CaSS Editor shall provide a link to the framework that can be used in publication platforms, such as RSS, Sitemap, or other broadcasting or federation mechanisms.
+- **CA-247**: The CaSS Editor shall interface with CaSS only via the CaSS Repository API.
+- **CA-248**: The CaSS Editor shall adhere to KBAC security practices.
+- **CA-249**: The CaSS Editor should conform to requirements necessary to integrate it into the Credential Registry.
+- **CA-250**: The CaSS Editor shall operate within an HTML5 environment.
+- **CA-251**: The CaSS Editor should operate as a progressive web application.
+- **CA-252**: The CaSS Editor shall work within a permissioned web environment such as basic auth, client side certificates, or other.
+- **CA-253**: The CaSS Editor shall meet 508 and WCAG criteria.
+- **CA-254**: Any CaSS Editor libraries that are identified as reusable shall be available in Maven Central.
+- **CA-255**: Any CaSS Editor libraries that are identified as reusable shall be available in NPM.
+- **CA-256**: The CaSS Editor shall provide indications that processing is occurring, via wait symbols, disabled buttons, modals, gray-outs, or other means.
+- **CA-257**: The CaSS Editor shall provide progress indicators for processes that take longer than 10 seconds.
+- **CA-258**: The CaSS Editor shall provide time estimates for processes that take longer than 2 minutes.
+- **CA-259**: The CaSS Editor should operate in a touch based environment.
+- **CA-260**: The CaSS Editor shall use linked data and RDF principles and schemata to manage data models.
+- **CA-261**: The CaSS Editor shall use a linked data repository (such as CaSS) to manage stored data.
+- **CA-262**: The CaSS Editor should use established and existing properties in other schema to store data generated or authored in CaSS Editor.
+- **CA-263**: The CaSS Editor may define its own fields, properties, classes, or other RDF compatible data to store CaSS Editor specific data.
+- **CA-264**: Any new schema shall be published at schema.cassproject.org.
+- **CA-265**: The CaSS Editor should operate from startup without an internet connection.
+- **CA-266**: The CaSS Editor should operate in a delayed or degraded form with an intermittent or degraded internet connection.
+- **CA-267**: The CaSS Editor shall use modal dialogs to indicate and confirm deletion of data.
+- **CA-268**: The CaSS Editor shall use version control as specified in the CaSS Repository API to store previous versions of data.
+
+## High Level Requirement
+
+- The CaSS Editor shall have a method for administrators to define a CaSS Editor configurations and for users to select configurations. Configurations shall designate: Properties of frameworks competencies types that competencies can have, and whether authors can define new types relationships that competencies can have levels that competencies can have When a configuration is selected, the CaSS Editor user interface shall reflect the parameters in the configuration and CaSS shall store data in accordance with the configuration (See 2.1.4). This does not mean that frameworks or competencies created in a different configuration will not display or be available. Note that all objects in CaSS have properties such as URLs, creation date, revision date, version, etc. These do not need to be designated in configurations.
+- Configurations shall designate which properties are required, primary, secondary, and tertiary. The CaSS Editor shall prevent users from defining or saving objects with missing required properties The CaSS Editor should always show users the primary properties of an object Users should be able to quickly see (and edit if appropriate) the secondary properties of an object, although they may be omitted from a view Tertiary properties may be omitted from a view but shall be reachable for viewing and editing.
+- Configurations shall include definitions of all properties. Users shall be able to see the definitions of all properties from the CaSS Editor UI (e.g. as tooltips)
+- Configurations shall map each property to the CaSS schema. These mappings shall be documented and shall be reused to the greatest extent possible so that configurations that have the same properties map these properties to the same schema elements. CaSS Editor Users shall not have the ability to define properties or use schema elements that are not in the configuration unless those properties and elements are in the default configuration.
+- Configurations shall define users, groups (roles), and permissions as needed to support CaSS user management and security in accordance with the instance of CaSS and the learning system in which it functions. These elements of the configuration will control which users or user roles can perform what CRUD operations on objects via CaSS Editor. The list of possible permissions for frameworks (and competencies) are: Own Edit Comment View (each subsumes the next – as in Google Drive)
+- As in Google Drive, a configuration shall designate whether an editor can add other editors. (Owners shall always be able to add or delete permissions). As in Google Drive, there shall be a mechanism for owners to make other users into owners and for administrators to change ownership.
+- Configurations may define the types of alignments that competencies can have with resources. These alignments are controlled vocabulary (see default below).
+- Configurations may designate an xAPI profile and connected LRSs. They may also designate how assertions are to be constructed from xAPI statements and alignments, i.e. how an alignment plus a verb in an xAPI statement plus a status in an xAPI statement translates into an assertion.
+- Configurations may define how relationships are to be interpreted vis a vis roll-up. These are default rules that can be overridden or augmented by specific roll-up rules. As an example, if A requires B, the configuration should not allow CaSS to conclude that an entity possesses A but not B.
+- There shall be a default configuration. In the default configuration, Frameworks shall have names, descriptions, owners, and authors. Names are required. The others are primary. Competencies shall have Names as required properties Description and type as primary properties (note: relationships are also primary but handled differently) Levels, associated assessments, rubrics, associated resources as secondary properties Context (with open vocabulary), domain [cognitive, affective, psychomotor] as tertiary properties The types of competencies shall be “competency” “knowledge” “skill” and “ability”. Relationships shall be “Equivalent” “Similar” “Requires” (with inverse “Prerequisite”) “Contains” (with inverse “Is Part Of”). Levels shall be “beginner” “intermediate” and “advanced” (which are optional, and which are attainment levels).
+- In the default configuration: It shall be possible to associate rubrics with competencies. Rubrics shall define criteria for not meeting, meeting, and exceeding expected performance for each competency at each level. It shall be possible to associate resources with competencies using the tags “teaches” “assesses” and “defines.”
+- If an LRS is integrated with CaSS, then there shall be a default xAPI profile in which successful completion of a resource that teaches a competency, or successful completion of an assessment that assesses the competency, generates an assertion to the effect that the learner has the given competency. The “confidence” values for “teaches” and “assesses” shall be configurable. (Default values of .5 and 1 may be reasonable)
+- There shall be a CFD configuration. This configuration shall support DACUM-inspired competency framework development processes.
+- There shall be an AETC configuration.
+- The CaSS Editor shall have a “user-friendly” framework and competency authoring and editing tool that: saves objects when changed stores a history of changes while an object is being edited can undo changes to an object being edited automatically versions frameworks enable users to find older versions revert to them (if their permissions allow this)
+- The CaSS Editor shall enable users to search for existing frameworks. The search function shall search on framework metadata and shall be designed to support rapid searching among thousands of frameworks. Results should be ranked and shall be restricted to frameworks for which the user has “view” permission at minimum.
+- Search results should be sortable by best match (default) / name / last updated / owner
+- Users should be able to search for frameworks: That were developed with the current configuration That are owned by the current owner That are owned by a specific owner That contains competencies whose properties match a given search term.
+- Users shall be able to open a framework that is shown in the results of a search. Opening a framework shall enable the user to quickly begin editing the competencies in the frameworks. The user should be able to see and edit framework properties, but apart from the framework title, it is more important that users get to the actual content of the framework (i.e. the competencies in the framework).
+- The CaSS Editor shall enable users to see a list of their recently opened frameworks and open one from that list
+- The CaSS Editor shall enable users to search for competencies within a framework. Searches should look in required and primary properties. Results should be sortable according to those fields (a good model is Google Flights). Users shall be able to open a competency from the search list.
+- Opening a competency should enable users to quickly get to editing the primary properties of the competency and shall also provide the user with a means of understanding where the competency fits within the framework.
+- Editing should behave as in Google Docs, i.e. changes take place when made, with the possibility of undoing.
+- When a competency is open (i.e. can be edited), secondary properties should be one click away and it should be possible to view and edit all properties.
+- The CaSS Editor shall enable users to search for competencies within a framework. Searches should look in required and primary properties. Results should be sortable according to those fields (a good model is Google Flights).
+- Users shall be able to search in non-primary fields. Such search may require added clicks.
+- The CaSS Editor shall enable authors to search for competencies They have defined that are not in a framework Are in frameworks they own Are in public frameworks Are in frameworks owned by the author’s group (as defined in a configuration) The default behavior when searching for competencies from within an opened framework is to search that framework only. This behavior shall be easily toggled to search across all frameworks. Other choices (as above) shall be selectable.
+- The CaSS Editor shall enable users to search for competencies in a specific set of frameworks
+- When searching for competencies from within an opened framework, authorized users shall be able to add competencies from the results list to the framework. This action shall be simple and intuitive and shall include placing the new competencies within the structure of the opened framework.
+- Existing competencies from other frameworks (or that exist as competencies not in a framework) can be added to an open framework as links or as copies. The owner of a linked competency is the owner of the original competency and it cannot be edited when added to a new framework. A copied competency is owned by the copier. If a user attempts to edit a competency that has been added as a link, the user should be told that it is a link and that the user does not have permission to edit it.
+- The relationships available for competencies in a framework shall default to those specified in the current configuration
+- Administrators shall be able to edit the available relationships for a given framework, overriding the defaults.
+- Relationships shall be actionable or not actionable. An actionable relationship includes logic that applies to the processing of assertions. The CaSS Editor shall support the definition of non-actionable relationships between any competency and any other competency available to the user through the CaSS Editor.
+- A relationship is hierarchical if it defines a hierarchy among competencies in a framework. The CaSS Editor shall enable relationships to be designated as hierarchical and shall associate one of the SKOS terms broadens or narrows with the relationship in accordance with the perceived direction of the hierarchical relationship.
+- The CaSS Editor shall support the definition of actionable equivalence relationships between a competency and any other competency available to the user through the CaSS Editor. When two competencies are equivalent, the default behavior CaSS shall be to automatically interpret an assertion about either of them as an assertion about both.
+- The CaSS Editor shall support the definition of actionable “requires” relationships between a competency and any other competency available to the user through the CaSS Editor. When A requires B, the default behavior CaSS shall be, in the case of “binary” assertion processing where competencies are either held or not, that A cannot be held if B is not held. (It is less clear that the converse should be true, although that is acceptable behavior).
+- The CaSS Editor shall support the definition of roll-up rules that create assertions about a competency A from estimates of whether an individual holds competencies B1,…,Bn, where the Bi are the immediate sub-competencies of A in the directed graph defined by translating all hierarchical relationships into broadens relationships and the assertion about A need only be generated if CaSS has an estimates for all Bi.
+- The CaSS Editor shall support the definition of other types of actionable relationships and corresponding CaSS behaviors.
+- The CaSS Editor shall provide the user with a way to see all competencies related to a given competency. This view shall indicate the relationships. If a user has permission to edit the actions associated with a relationship, the view shall indicate that such actions exist and enable the user to open an action for editing.
+- The CaSS Editor shall provide the user with a method to remove or add relationships to a given competency. This shall be part of the competency editor defined above.
+- A user should be able to see all competencies related to a given competency via a specified relationship or set of relationships.
+- The default number of levels displayed in a hierarchy should be computed to optimize the display. (This will override the default).
+- The CaSS Editor shall provide a separate capability to define relationships among competencies independently of editing the competencies. This capability shall enable the user to search for two competencies and define a relationship between them. The selection of relationships shall be determined by the framework in which the source competency lives or, if the source competency is not in a framework, by the default configuration. The search capabilities shall include the ability to search by keyword, which shall search in the required and primary fields of competencies, and to filter by framework.
+- If a competency has equivalent competencies (linked or related through an equality relationship) in multiple frameworks, the user shall be alerted to this fact and shall be able to see which frameworks contain the competency. Only one copy should appear on the search result list, which shall be the master copy in the case of links.
+- The CaSS Editor shall provide a framework crosswalk tool (FCT) that enables a user to view and edit alignments between competencies in two frameworks F and G. This tool shall allow filtered search for frameworks, and once selected, filtered search in both frameworks and shall provide the user with a way to define any relationship available in F between any competency in F and any competency in G. (This means that the user can search for objects using search terms, can search in specific properties, and can filter search results by those properties – which is also required for other editing functions in CaSS Editor). Filtering shall include all required and primary properties. The tool should allow for users to select a set of competencies in F and one competency in G and define the same relationship between all selected competencies in F and the competency in G.
+- The FCT should behave as other editing tools in the sense that it automatically saves relationships, enable multiple undo actions, and automatically versions BOTH frameworks
+- The FCT should allow the user to select a single competency in F, select multiple competencies in G, define the same relationship between the competency in F an all selected competencies in G. (Note that this is not symmetric with 2.5.15 because the allowable relationships are those allowed in F only.)
+- The FCT should allow administrators to define criteria that are then used to automatically create alignments. Criteria are Boolean combinations of regular expressions involving properties of competencies in two frameworks, an unspecified source framework S and an unspecified target framework T (i.e., S and T are variables whose values are frameworks), that can be applied to pairs of competencies A in S and B in T, plus a relationship R that is available for competencies in S. The Administrators shall be able to create, edit and save criteria and give criteria names. Criteria shall be restricted to properties whose value is text. However, if the property is associated resources, criteria shall include the ability to examine the file name and text in such resources and to restrict such examination to resources that are related via one or more of the alignments teaches, assesses, and defines.
+- Given two frameworks F and G selected in the FCT, a criterion is admissible if the properties it references in the source and target frameworks are properties that exist in F and G. Users shall be able to see and select from among admissible criteria. Users shall be able to select all or some competencies in F and G (via search), select a criterion, and apply the criterion. The CaSS Editor shall then define the relationship R in the criterion for all A in F and B in G that satisfy the criterion.
+- The CaSS Editor shall include a “semantic alignment” criterion that is defined for all frameworks that themselves meet a set of criteria that determine whether semantic alignment is likely to produce acceptable results and that may include the existence of a trained model for extracting meaning in the subject matter of the framework, the presence of sufficient text, and other criteria (to be determined by NLP / ML experts). The semantic alignment criterion shall be available to all users for all frameworks for which semantic alignment is likely to produce acceptable results.
+- The CaSS Editor may also provide the ability to define criteria using a semantic-syntactic matching and other NLP-based methods for determining when a relationship should hold.
+- Users shall be able to inspect the full set of relationships between two selected frameworks F and G in a way that allows the user to browse and delete them. This function shall focus on usability and, in the case of medium to large frameworks, avoid information overload and provide reasonable awareness to the user when there are uninspected relationships.
+- In the above, users should be able to add new relationships between a competency in F and a competency in G if both are visible to the user as the user is inspecting the frameworks.
+- The CaSS Editor shall have a user-friendly Resource Alignment Tool (RAT) that allows resources to be associated with existing competencies. (This accomplishes the same end as doing so from within a framework/competency editor, but with a different perspective.)
+- For the purposes of the RAT, a resource is an object with a URI.
+- The RAT shall have an interface that enables a user to search for and select a competency and optionally a relationship (teaches, assesses, or defines) and to associate one or more resources in an intuitive manner (e.g. via search or drag-and-drop) with the selected competency.
+- The RAT may have a more complex interface that enables authors to search for resources and select a set of resources from the resulting list, search for competencies (filtered search), and associate competencies in the search results with resources in the search results using the tags teaches, assesses, and defines.
+- Users with permission to make comments shall be able to make comments on competencies in an open framework. Users with permission to comment on a framework shall be able to make comments about that framework. Comments on a framework should be clearly scoped to the framework and distinguishable from comments about individual competencies.
+- Users shall be able to edit their own comments (when making them or when returning to them) and shall be able to add a comment to a comment. Comments shall indicate who made the comment (which requires that users be named)
+- Users shall be able to view all comments and users with editing permission shall be able to delete (or “resolve”) comments.
+- The CaSS Editor should support a “suggest” mode in which users can make edits, but the edits are stored as comments and do not affect a framework or competency until they are accepted by a user with edit permission, as in Google Docs.
+- Users shall be able to undo and revise their suggestions. Editors shall be able to see that a comment is a suggested edit and to accept or reject the suggestion.
+- If a resource is associated with a competency, users shall be able to add comments about the resource. These are essentially metadata about the resource and shall be visible when viewing alignments between the competency and resources. They are subject to the same requirements as other types of comments. (Note: This feature can be used to describe how the resource relates to the competency and may be mapped to a field in the CaSS schema. The requirement is that these appear and behave like other comments, not that they be implemented in a particular way.)
+- It is possible that comments and piled-on comments get long. The interface shall not allow comments to dominate a view and may have views where comments are collapsed, partially collapsed, etc. to provide a usable experience.
+- If the configuration supports an approval workflow, the CaSS Editor shall enable frameworks to have and display the status “approved.” If the configuration supports a publishing workflow, the CaSS Editor shall enable frameworks to have and display the status “published.”
+- The CaSS Editor shall provide users with the ability to ask specific users to review, approve, or publish a framework if such action is supported by the configuration. The CaSS Editor shall issue such requests via email.
+- If the configuration supports a review workflow, the CaSS Editor shall provide users with the option to request that a framework be reviewed. If a user makes such a request (and is authorized to do so), the CaSS Editor shall notify reviewers in accordance with the configuration.
+- If the configuration supports an approval workflow, the CaSS Editor shall provide users with the option to request that a framework be approved. If a user makes such a request (and is authorized to do so), the CaSS Editor shall notify approval in accordance with the configuration.
+- If the configuration supports an approval workflow, the CaSS Editor shall authorized provide users with the option to approve a framework. Approval shall change the status to “approved.”
+- If the configuration supports a publication workflow, the CaSS Editor shall provide users with the option to request that a framework be published. If a user makes such a request (and is authorized to do so), the CaSS Editor shall notify the appropriate users in accordance with the configuration.
+- If the configuration supports a publication workflow, the CaSS Editor shall provide authorized users with the option and ability to publish a framework in accordance with the configuration. The CaSS Editor shall provide an interface for the user to designate the parameters needed for publication. The CaSS Editor shall change the status of a framework to “published” after it has been published and the CaSS Editor has received acknowledgement that the publication operation succeeded.
+- If review is supported in the configuration, the CaSS Editor shall enable users to request that a framework be reviewed if review is supported in the configuration.
+- The CaSS Editor shall enable an open framework to be exported in the formats defined in the configuration. This export function shall be readily available from an open framework.
+- Supported formats shall include CTDL-ASN, CASE, and a spreadsheet format (documented in CaSS).
+- Supported formats shall include an AETC Format (if there is one.) In general, any format used by an organization for which a configuration is defined, and identified as important for that organization, shall be supported.
+- Supported formats may include CEDS, PESC, ASN (non-CTDL), and MedBiquitous
+- The CaSS Editor shall enable a user to mash up frameworks. The associated interface shall enable users to define the search for frameworks, search for and select competencies in any framework in the results list, and add those competencies as copies or as links to an open framework or to a newly formed framework.
+- The CaSS Editor shall enable users to import frameworks from sources identified in the configuration if the frameworks are in a supported format.
+- The CaSS Editor shall enable users to import frameworks from spreadsheets (see CaSS documentation)
+- The CaSS Editor shall enable users to import frameworks in formats defined by AETC (or in general, by an organization using the CaSS Editor) as defined in a configuration
+- The CaSS Editor shall integrate the Competency Framework Extraction Module being developed under the T3 PP5.3
+- An installation of CaSS Editor shall have an associated LRS
+- The CaSS Editor shall include the ability to be integrated with a registry and to publish frameworks to the registry
+- The CaSS Editor shall operate in an HTML5 environment as a progressive web application using only HTTPS
+- All objects in the CaSS Editor shall be subject to role-based access control
+- CaSS Editor shall implement security and meet AETC security requirements
+- CaSS Editor shall have an accessible UI, meeting 508 and WCAC criteria
+- CaSS Editor may integrate with a resource repository
+- There shall be no noticeable delays in response time. Any operation that is expected to take more than five seconds shall be accompanied by a progress indicator
+- Operations anticipated to take more than two minutes shall warn the user and provide an estimate of the time required.
+- The CaSS Editor shall be built using standard, widespread technologies selected for maintainability, durability, and scalability.
+- All data in the CaSS Editor shall be exposed as linked open data.
+- The CaSS Editor shall be a module that can be added to existing instances of CaSS.
+- The CaSS Editor shall not require any more memory, processing power, storage, or other server capabilities than a standard CaSS implementation.
+- The CaSS Editor Library shall be available in NPM
+- The CaSS Project shall maintain a demo CaSS Editor server for demonstrating the CaSS Editor.
+- The CaSS Project shall maintain a sandbox CaSS Editor Server that can be used to try out CaSS Editor
+- CaSS Editor shall integrate into the AETC learning ecosystem and make URLs for all frameworks and competencies available to designated components of that ecosystem.
+- Documentation shall include installation instructions (audience = software engineers); end user documentation (tool tips and guides, with an audience of L&D professionals); and public documentation that describes the CaSS Editor, its purpose, and its key features.
+- CaSS Editor shall be deployed as part of a CaSS instance and will follow the CaSS installation instructions, appear as a tool replacing the CaSS Editor, and authenticate using CaSS methods.

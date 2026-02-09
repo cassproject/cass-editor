@@ -6,8 +6,12 @@ if (process.env.NODE_ENV === 'test') {
         extension: ['.js', '.vue'],
         cwd: path.resolve(__dirname),
         include: ['src/**/*'],
+<<<<<<< Updated upstream
         exclude: ['tests/**/*', 'node_modules/**/*'],
         useInlineSourceMaps: false
+=======
+        exclude: ['tests/**/*', 'node_modules/**/*']
+>>>>>>> Stashed changes
     }]);
 }
 
