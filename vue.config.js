@@ -27,10 +27,7 @@ module.exports = {
     configureWebpack: {
         plugins: [new CompressionPlugin()],
         resolve: {
-            symlinks: false,
-            alias: {
-                'node:dns': 'dns'
-            }
+            symlinks: false
         },
         module: {
             rules: [

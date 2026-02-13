@@ -78,7 +78,7 @@ export default {
             } else if (process.env.VUE_APP_SELECTEDSERVER) {
                 server = process.env.VUE_APP_SELECTEDSERVER;
             }
-            var cassApiLocation = "https://dev.rest.api.cassproject.org/";
+            var cassApiLocation = server;
             this.$store.commit('environment/cassApiLocation', cassApiLocation);
             var me = this;
             if (this.$route.query) {
