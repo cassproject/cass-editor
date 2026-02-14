@@ -44,21 +44,25 @@
                             <!-- import errors -->
                             <div
                                 v-else-if="importErrors.length > 0"
-                                class="column has-text-danger">
-                                <ul>
-                                    <li
-                                        class="is-size-6"
-                                        v-for="(error, index) in importErrors"
-                                        :key="index">
-                                        <span class="">
-                                            <span class="icon">
-                                                <i class="fa fa-times" />
+                                class="column has-text-danger import-errors-container">
+                                <p class="has-text-weight-bold mb-2">
+                                    {{ importErrors.length }} error(s) found:
+                                </p>
+                                <div class="import-errors-list">
+                                    <ul>
+                                        <li
+                                            class="is-size-6"
+                                            v-for="(error, index) in importErrors"
+                                            :key="index">
+                                            <span class="">
+                                                <span class="icon">
+                                                    <i class="fa fa-times" />
+                                                </span>
+                                                {{ error }}
                                             </span>
-                                            {{ error }}
-                                        </span>
-                                    </li>
-                                    <li />
-                                </ul>
+                                        </li>
+                                    </ul>
+                                </div>
                                 <div class="section">
                                     <div class="buttons is-centered">
                                         <div
@@ -607,3 +611,38 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.import-errors-container {
+    display: flex;
+    flex-direction: column;
+    max-height: 60vh;
+    padding: 1rem;
+}
+
+.import-errors-list {
+    flex: 1;
+    overflow-y: auto;
+    max-height: 40vh;
+    padding-right: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1px solid rgba(255, 0, 0, 0.2);
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+.import-errors-list ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.import-errors-list li {
+    padding: 0.25rem 0;
+    border-bottom: 1px solid rgba(255, 0, 0, 0.1);
+}
+
+.import-errors-list li:last-child {
+    border-bottom: none;
+}
+</style>

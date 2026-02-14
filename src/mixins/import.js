@@ -142,6 +142,20 @@ export default {
             this.$store.commit('app/addImportError', error);
             me.$store.commit('app/importTransition', 'process');
         },
+        // Helper method to handle both single errors and arrays of errors
+        handleImportErrors: function(errors) {
+            if (Array.isArray(errors)) {
+                for (let error of errors) {
+                    this.$store.commit('app/addImportError', error);
+                }
+                // Set status to show error count
+                this.$store.commit('app/importStatus', `${errors.length} error(s) found in import file`);
+            } else {
+                this.$store.commit('app/addImportError', errors);
+                this.$store.commit('app/importStatus', errors);
+            }
+            this.$store.commit('app/importTransition', 'process');
+        },
         /* When an import is "successful" */
         importSuccess: function () {
             if (!this.conceptMode && !this.progressionMode) {
@@ -1011,7 +1025,7 @@ export default {
                         hierarchyRules: {
                             "skos:ConceptScheme": {
                                 requiredProperties: ["skos:hasTopConcept"],
-                                childProperties: ["skos:inScheme"],
+                                childProperties: ["skos:inScheme", "skos:topConceptOf"],
                                 errorMessage: "CSV must contain at least one of: skos:hasTopConcept (for Concept Scheme level) or skos:inScheme (for concept level)"
                             }
                         },
