@@ -63,4 +63,32 @@ const test = baseTest.extend({
     },
 });
 
-module.exports = { test, expect, loginAndNavigate, navigateToFramework };
+/**
+ * Shared helper: Create a configuration and return to the list.
+ */
+async function createConfig(page, name, description) {
+    await page.click('#create-new-configuration-button');
+    await expect(page.locator('#configuration-details-configuration-name-input')).toBeVisible();
+    await page.fill('#configuration-details-configuration-name-input', name);
+    await page.fill('#configuration-details-configuration-description-input', description);
+    await page.click('#configuration-details-save-configuration-button');
+    await expect(page.locator('#configuration')).toBeVisible();
+}
+
+/**
+ * Shared helper: Login, navigate to configuration page, and create a new config for testing.
+ * Returns the unique ID used in the config name.
+ */
+async function loginAndCreateConfig(page) {
+    await loginAndNavigate(page);
+    await page.goto('/#/configuration?server=http://localhost/api/');
+    await expect(page.locator('#configuration')).toBeVisible();
+    await page.click('#create-new-configuration-button');
+    await expect(page.locator('#configuration-details-configuration-name-input')).toBeVisible();
+    const uid = Date.now();
+    await page.fill('#configuration-details-configuration-name-input', `TestConfig${uid}`);
+    await page.fill('#configuration-details-configuration-description-input', 'E2E test config');
+    return uid;
+}
+
+module.exports = { test, expect, loginAndNavigate, navigateToFramework, createConfig, loginAndCreateConfig };

@@ -164,6 +164,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     <div class="field is-grouped">
                         <span
                             class="tag is-size-7 is-light"
+                            :title="comment"
                             v-if="!editingProperty">{{ displayLabel }}</span>
                         <p class="control">
                             <span
@@ -266,6 +267,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         <div class="field is-grouped">
                             <span
                                 class="tag is-size-7 is-light"
+                                :title="comment"
                                 v-if="!editingProperty">{{ displayLabel }}</span>
                             <p class="control">
                                 <span
@@ -311,6 +313,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     <div class="field is-grouped">
                         <span
                             class="tag is-size-7 is-light"
+                            :title="comment"
                             v-if="!editingProperty">{{ displayLabel }}</span>
                         <p class="control">
                             <span
@@ -375,6 +378,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     v-else-if="isObject(expandedValue[index]) && expandedValue[index]['@language']">
                     <span
                         class="tag is-size-7 is-light"
+                        :title="comment"
                         v-if="expandedProperty !== 'http://schema.org/name' && expandedProperty !== 'dcterms:title' && expandedProperty !== 'skos:prefLabel'">{{ displayLabel }}</span>
                     <span
                         id="language-tag-set-checkbox"
@@ -409,6 +413,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         <template v-else>
                             <span
                                 class="tag is-size-7 is-light"
+                                :title="comment"
                                 v-if="customTitle">{{ displayLabel }}</span>
                             {{ expandedValue[index]["@value"] }}
                         </template>
@@ -417,7 +422,9 @@ TO DO MAYBE: Separate out property by editing or not.
                 <div
                     class="unexpanded-property"
                     v-else>
-                    <span class="tag is-size-7 is-light">{{ displayLabel }}</span>
+                    <span
+                        class="tag is-size-7 is-light"
+                        :title="comment">{{ displayLabel }}</span>
                     <div class="property">
                         {{ expandedValue[index] }}
                     </div>
