@@ -41,6 +41,7 @@
                         <div class="column">
                             <div class="buttons is-right">
                                 <a
+                                    id="crosswalk-help-button"
                                     href="docs/authoring/crosswalk-tool/"
                                     target="_blank"
                                     title="Go to documentation on crosswalking"
@@ -137,6 +138,7 @@
                             </div>
                             <!-- search -->
                             <div
+                                id="crosswalk-search"
                                 class="crosswalk__search column is-8 is-offset-1"
                                 v-if="step < 2 ">
                                 <div class="container">

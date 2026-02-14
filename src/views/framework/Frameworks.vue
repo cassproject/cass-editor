@@ -161,6 +161,7 @@
                         </router-link>
                         <!-- crosswalk -->
                         <router-link
+                            id="crosswalk-button"
                             :to="{path: '/crosswalk', query: queryParams}"
                             class="button is-hidden-touch is-outlined is-primary">
                             <span class="icon">
@@ -171,6 +172,7 @@
                             </span>
                         </router-link>
                         <router-link
+                            id="crosswalk-button-mobile"
                             :to="{path: '/crosswalk', query: queryParams}"
                             class="button is-hidden-desktop is-outlined is-primary">
                             <span class="icon">
@@ -179,6 +181,7 @@
                         </router-link>
                         <!-- help -->
                         <a
+                            id="help-button"
                             href="docs/authoring/competency-and-framework-management/"
                             target="_blank"
                             title="Go to documentation on framework library"

@@ -43,7 +43,9 @@
                                         @done-editing-node-event="onDoneEditingNode()"
                                         :properties="properties">
                                         <template #frameworkDetails>
-                                            <div class="lode__framework__info-bar">
+                                            <div
+                                                id="framework-info-bar"
+                                                class="lode__framework__info-bar">
                                                 <span
                                                     class="tag is-medium-grey has-text-dark"
                                                     v-if="framework.competency && framework.competency.length == 1">
