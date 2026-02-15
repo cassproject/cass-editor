@@ -1,10 +1,8 @@
 const { test, expect, loginAndNavigate, navigateToFramework } = require('./fixtures');
 
-// CA-122: Editing adheres to allowed type
-// Requirement: property fields render with type-appropriate input controls.
-// Property.vue uses isText() to determine if a value is string/URL/text/concept,
-// and renders either text inputs (PropertyString) or object editors (ThingEditing)
-// based on the allowed type from the schema.
+// CA-122: Editing adheres to allowed type specified by property in configuration
+// Property.vue renders type-appropriate controls: text inputs for strings/URLs,
+// object editors for linked objects, concept selectors for SKOS concepts
 test('CA-122: Property editing adheres to allowed type', async ({ page }) => {
     await loginAndNavigate(page);
     await page.goto('/#/frameworks?server=http://localhost/api/');
@@ -16,9 +14,36 @@ test('CA-122: Property editing adheres to allowed type', async ({ page }) => {
     const hierarchyItems = page.locator('.lode__hierarchy-item');
     await hierarchyItems.first().waitFor({ state: 'visible' });
     await hierarchyItems.first().click();
+    await page.waitForTimeout(1000);
 
-    // The hierarchy item name should be text (a langstring type property),
-    // rendered via a text-appropriate input — not an object picker
-    const firstItemText = await hierarchyItems.first().textContent();
-    expect(firstItemText.trim().length).toBeGreaterThan(0);
+    // Verify each property uses type-appropriate rendering based on its range
+    const result = await page.evaluate(() => {
+        const propertyEls = document.querySelectorAll('.lode__Property');
+        const properties = [];
+        for (const el of propertyEls) {
+            const vm = el.__vue__;
+            if (vm && vm.schema) {
+                const range = vm.schema['http://schema.org/rangeIncludes'];
+                const rangeStr = range ? JSON.stringify(range) : '';
+                // Determine if this is a text-type property
+                const isText = typeof vm.isText === 'function' ? vm.isText(vm.expandedProperty) : null;
+                properties.push({
+                    displayLabel: vm.displayLabel,
+                    rangeType: rangeStr.includes('langString') ? 'langString'
+                        : rangeStr.includes('URL') || rangeStr.includes('anyURI') ? 'URL'
+                            : rangeStr.includes('Concept') ? 'concept'
+                                : rangeStr.includes('Competency') ? 'object'
+                                    : 'other',
+                    isText: isText
+                });
+            }
+        }
+        return properties;
+    });
+
+    expect(result.length).toBeGreaterThan(0);
+
+    // Verify at least one langString type property exists (Name/Description are langStrings)
+    const langStringProps = result.filter(p => p.rangeType === 'langString');
+    expect(langStringProps.length).toBeGreaterThan(0);
 });

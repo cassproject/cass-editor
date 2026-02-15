@@ -1,14 +1,24 @@
-const { test, expect } = require('./fixtures');
+const { test, expect, navigateToFramework } = require('./fixtures');
 
 // CA-201: Resource framework is targetFramework field of AlignmentObject
-// Requirement: verify targetFramework references framework
 test('CA-201: Resource framework targetFramework field', async ({ page }) => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await expect(page.locator('#frameworks')).toBeVisible();
+    await navigateToFramework(page);
+    await expect(page.locator('#framework')).toBeVisible();
 
-    // Frameworks list loads, supporting targetFramework references
-    const listItems = page.locator('.cass--list--item');
-    await listItems.first().waitFor({ state: 'visible' });
-    const count = await listItems.count();
-    expect(count).toBeGreaterThan(0);
+    // Verify framework has an ID (the targetFramework reference)
+    const result = await page.evaluate(() => {
+        const store = window.app && window.app.$store;
+        if (!store) return { error: 'no store' };
+        const framework = store.state.editor && store.state.editor.framework;
+        if (!framework) return { error: 'no framework' };
+        return {
+            hasId: framework.id != null,
+            idIsUrl: typeof framework.id === 'string' && framework.id.startsWith('http')
+        };
+    });
+
+    expect(result.hasId).toBe(true);
+    expect(result.idIsUrl).toBe(true);
 });

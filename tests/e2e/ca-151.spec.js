@@ -1,7 +1,7 @@
 const { test, expect, loginAndNavigate, navigateToFramework } = require('./fixtures');
 
-// CA-151: Property editing adheres to allowed range
-// Requirement: Property.vue renders add buttons with range-specific types per rangeIncludes
+// CA-151: Property editing adheres to allowed range (default: any valid value)
+// Analogous to CA-121 but for object-level properties
 test('CA-151: Property editing adheres to allowed range', async ({ page }) => {
     await loginAndNavigate(page);
     await page.goto('/#/frameworks?server=http://localhost/api/');
@@ -9,13 +9,29 @@ test('CA-151: Property editing adheres to allowed range', async ({ page }) => {
     await navigateToFramework(page);
     await expect(page.locator('#framework')).toBeVisible();
 
-    // Click a competency to see property fields with range constraints
     const hierarchyItems = page.locator('.lode__hierarchy-item');
     await hierarchyItems.first().waitFor({ state: 'visible' });
     await hierarchyItems.first().click();
+    await page.waitForTimeout(1000);
 
-    // Property add buttons are range-constrained (id="property-add-button-{targetType}")
-    const addButtons = page.locator('[id^="property-add-button"]');
-    const count = await addButtons.count();
-    expect(count).toBeGreaterThanOrEqual(0);
+    // Verify rangeIncludes is defined in property schemas
+    const result = await page.evaluate(() => {
+        const propertyEls = document.querySelectorAll('.lode__Property');
+        const props = [];
+        for (const el of propertyEls) {
+            const vm = el.__vue__;
+            if (vm && vm.schema) {
+                const range = vm.schema['http://schema.org/rangeIncludes'];
+                props.push({
+                    displayLabel: vm.displayLabel,
+                    hasRange: range != null
+                });
+            }
+        }
+        return props;
+    });
+
+    expect(result.length).toBeGreaterThan(0);
+    const withRange = result.filter(p => p.hasRange);
+    expect(withRange.length).toBeGreaterThan(0);
 });

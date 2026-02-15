@@ -1,8 +1,7 @@
 const { test, expect, loginAndNavigate, navigateToFramework } = require('./fixtures');
 
-// CA-119: Editing adheres to cardinality rules
-// Requirement: auth → open framework → verify cardinality rules are enforced
-// Property.vue enforces max cardinality via canAdd computed property (line 762)
+// CA-119: Editing adheres to cardinality rules (default: "any number" when omitted)
+// Property.vue enforces max cardinality via canAdd computed property
 test('CA-119: Property editing adheres to cardinality rules', async ({ page }) => {
     await loginAndNavigate(page);
     await page.goto('/#/frameworks?server=http://localhost/api/');
@@ -15,10 +14,34 @@ test('CA-119: Property editing adheres to cardinality rules', async ({ page }) =
     const hierarchyItems = page.locator('.lode__hierarchy-item');
     await hierarchyItems.first().waitFor({ state: 'visible' });
     await hierarchyItems.first().click();
+    await page.waitForTimeout(1000);
 
-    // The hierarchy item should have property fields rendered by Property.vue
-    // Property.vue enforces cardinality: when max === 1 and a value exists,
-    // the "Add" button for that property is hidden (canAdd returns false)
-    // Verify that property fields exist in the editing view
-    await expect(hierarchyItems.first()).toBeVisible();
+    // Verify cardinality enforcement: Property.vue has canAdd computed property
+    // that returns false when schema max cardinality is reached.
+    // Check that Property components have the canAdd property computed from schema.
+    const result = await page.evaluate(() => {
+        const propertyEls = document.querySelectorAll('.lode__Property');
+        const properties = [];
+        for (const el of propertyEls) {
+            const vm = el.__vue__;
+            if (vm && vm.schema) {
+                const maxCardinality = vm.schema['http://www.w3.org/2002/07/owl#maxCardinality']
+                    || vm.schema['maxCardinality'];
+                properties.push({
+                    displayLabel: vm.displayLabel,
+                    canAdd: vm.canAdd,
+                    maxCardinality: maxCardinality || 'unlimited'
+                });
+            }
+        }
+        return properties;
+    });
+
+    // There should be properties rendered
+    expect(result.length).toBeGreaterThan(0);
+
+    // Each property should have the canAdd computed property defined (cardinality enforcement)
+    for (const prop of result) {
+        expect(prop.canAdd).toBeDefined();
+    }
 });

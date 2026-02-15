@@ -1,7 +1,7 @@
 const { test, expect, loginAndNavigate, navigateToFramework } = require('./fixtures');
 
-// CA-149: Property editing adheres to cardinality rules
-// Requirement: open competency, verify cardinality rules are enforced (canAdd computed in Property.vue)
+// CA-149: Property editing adheres to cardinality rules (default: "any number")
+// Analogous to CA-119 but for object-level properties
 test('CA-149: Property editing adheres to cardinality rules', async ({ page }) => {
     await loginAndNavigate(page);
     await page.goto('/#/frameworks?server=http://localhost/api/');
@@ -9,12 +9,29 @@ test('CA-149: Property editing adheres to cardinality rules', async ({ page }) =
     await navigateToFramework(page);
     await expect(page.locator('#framework')).toBeVisible();
 
-    // Click a competency to enter the editing view
     const hierarchyItems = page.locator('.lode__hierarchy-item');
     await hierarchyItems.first().waitFor({ state: 'visible' });
     await hierarchyItems.first().click();
+    await page.waitForTimeout(1000);
 
-    // Property.vue's canAdd computed enforces cardinality — verify hierarchy items render
-    const text = await hierarchyItems.first().textContent();
-    expect(text.trim().length).toBeGreaterThan(0);
+    // Verify canAdd computed property on Property components (cardinality enforcement)
+    const result = await page.evaluate(() => {
+        const propertyEls = document.querySelectorAll('.lode__Property');
+        const props = [];
+        for (const el of propertyEls) {
+            const vm = el.__vue__;
+            if (vm && vm.schema) {
+                props.push({
+                    displayLabel: vm.displayLabel,
+                    canAdd: vm.canAdd
+                });
+            }
+        }
+        return props;
+    });
+
+    expect(result.length).toBeGreaterThan(0);
+    for (const prop of result) {
+        expect(prop.canAdd).toBeDefined();
+    }
 });
