@@ -29,20 +29,26 @@ async function loginAndNavigate(page) {
 /**
  * Shared helper: Navigate into the first framework from the frameworks list.
  * Targets the Thing component specifically (which has the @dblclick handler),
- * with a retry to handle intermittent navigation failures.
+ * with retries to handle intermittent navigation failures under load.
  * Assumes the page is already on #/frameworks.
  */
 async function navigateToFramework(page) {
     const thingItems = page.locator('.cass--list--item .cass--list--thing');
-    await thingItems.first().waitFor({ state: 'visible' });
-    // First attempt — target the Thing component where the dblclick handler lives
-    await thingItems.first().dblclick();
-    try {
-        await page.waitForURL(/#\/framework/, { timeout: 5000 });
-    } catch {
-        // Retry once if the first dblclick didn't trigger navigation
+    await thingItems.first().waitFor({ state: 'visible', timeout: 15000 });
+
+    // Try up to 3 times — under heavy parallelism the server can be slow
+    for (let attempt = 0; attempt < 3; attempt++) {
         await thingItems.first().dblclick();
-        await page.waitForURL(/#\/framework/);
+        try {
+            await page.waitForURL(/#\/framework/,);
+            break;
+        } catch {
+            if (attempt === 2) {
+                // Last attempt — let it throw naturally
+                await thingItems.first().dblclick();
+                await page.waitForURL(/#\/framework/,);
+            }
+        }
     }
     await expect(page.locator('#framework')).toBeVisible();
 }

@@ -9,9 +9,9 @@ test('CA-191: Resource alignment xAPI verb and score', async ({ page }) => {
     await expect(page.locator('#framework')).toBeVisible();
 
     const hierarchyItems = page.locator('.lode__hierarchy-item');
-    await hierarchyItems.first().waitFor({ state: 'visible' });
+    await hierarchyItems.first().waitFor({ state: 'visible', timeout: 10000 });
     await hierarchyItems.first().click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 
     // Verify Property components render (framework schema supports alignment data)
     const properties = page.locator('.lode__Property');

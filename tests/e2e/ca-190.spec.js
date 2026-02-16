@@ -9,9 +9,9 @@ test('CA-190: Navigate to competency via relation', async ({ page }) => {
 
     // Click a competency to see its properties (including relation properties)
     const hierarchyItems = page.locator('.lode__hierarchy-item');
-    await hierarchyItems.first().waitFor({ state: 'visible' });
+    await hierarchyItems.first().waitFor({ state: 'visible', timeout: 10000 });
     await hierarchyItems.first().click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 
     // Verify Properties render — relation properties provide navigation links
     const properties = page.locator('.lode__Property');

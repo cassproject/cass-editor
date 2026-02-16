@@ -4,14 +4,16 @@ const { test, expect, loginAndNavigate, createConfig } = require('./fixtures');
 test('CA-83: Create a new configuration', async ({ page }) => {
     await loginAndNavigate(page);
     await page.goto('/#/configuration?server=http://localhost/api/');
-    await expect(page.locator('#configuration')).toBeVisible();
-    const configRows = page.locator('.table tbody tr');
-    await expect(configRows.first()).toBeVisible();
-    const beforeCount = await configRows.count();
+    await expect(page.locator('#configuration')).toBeVisible({ timeout: 10000 });
     const uid = Date.now();
     const configName = `Test Config ${uid}`;
     await createConfig(page, configName, 'Automated test configuration');
-    await expect(configRows.first()).toBeVisible();
-    const afterCount = await configRows.count();
-    expect(afterCount).toBeGreaterThanOrEqual(beforeCount + 1);
+
+    // Navigate back to configuration list and verify the new config exists by name
+    await page.goto('/#/configuration?server=http://localhost/api/');
+    await expect(page.locator('#configuration')).toBeVisible({ timeout: 10000 });
+    await expect(page.locator('.table tbody tr').first()).toBeVisible({ timeout: 10000 });
+    // Look for the config name in the table — more reliable than counting rows
+    const newConfig = page.locator(`.table tbody tr:has-text("${configName}")`);
+    await expect(newConfig).toBeVisible({ timeout: 10000 });
 });
