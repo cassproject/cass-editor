@@ -211,6 +211,63 @@ export default {
             this.$store.commit('app/firstImport', true);
             this.analyzeImportFile();
         },
+        /**
+         * CTDL-ASN Import Fix: Convert embedded structure to @graph
+         * 
+         * The CASS backend expects CTDL-ASN files in @graph structure.
+         * However, the CTDL-ASN spec allows embedded competencies using ceterms:competencies.
+         * This function converts embedded structures to @graph before sending to backend.
+         * 
+         * Supports:
+         * - CompetencyFramework (ceterms:competencies)
+         * - ConceptScheme (skos:hasTopConcept)
+         * - ProgressionModel (skos:hasTopConcept)
+         * - Collection (ceterms:hasMember)
+         * 
+         * @param {Object} jsonObj - The CTDL-ASN JSON-LD object
+         * @returns {Object} JSON-LD in @graph structure
+         */
+        convertToGraphStructure: function(jsonObj) {
+            // If already in @graph format, return as-is
+            if (jsonObj["@graph"]) {
+                return jsonObj;
+            }
+            
+            // If embedded structure (has @type at root level)
+            if (jsonObj["@type"] && 
+                (jsonObj["@type"] === "ceterms:CompetencyFramework" || 
+                 jsonObj["@type"] === "ceasn:CompetencyFramework" ||
+                 jsonObj["@type"].indexOf("ConceptScheme") !== -1 ||
+                 jsonObj["@type"].indexOf("ProgressionModel") !== -1 ||
+                 jsonObj["@type"].indexOf("Collection") !== -1)) {
+                // Extract embedded items based on type
+                var embeddedItems = jsonObj["ceterms:competencies"] || 
+                                   jsonObj["ceasn:competencies"] ||
+                                   jsonObj["skos:hasTopConcept"] ||
+                                   jsonObj["ceterms:hasMember"] || [];
+                
+                // Build framework object (everything except the embedded items)
+                var framework = {};
+                for (var key in jsonObj) {
+                    if (Object.prototype.hasOwnProperty.call(jsonObj, key) &&
+                        key !== "ceterms:competencies" && 
+                        key !== "ceasn:competencies" &&
+                        key !== "skos:hasTopConcept" &&
+                        key !== "ceterms:hasMember") {
+                        framework[key] = jsonObj[key];
+                    }
+                }
+                
+                // Return in @graph structure: [framework, ...items]
+                return {
+                    "@context": jsonObj["@context"],
+                    "@graph": [framework].concat(embeddedItems)
+                };
+            }
+            
+            // Not a recognized structure, return unchanged
+            return jsonObj;
+        },
         analyzeImportFile: function() {
             var me = this;
             var file = this.importFile[0];
@@ -499,6 +556,23 @@ export default {
                 me.$store.commit('app/addImportError', error);
             });
         },
+        /**
+         * CTDL-ASN Detection Fix (PR #1408)
+         * 
+         * Analyzes CTDL-ASN JSON-LD files for import detection.
+         * 
+         * Fixes applied:
+         * 1. Context array handling - Accepts both string and array @context per JSON-LD spec
+         * 2. Embedded structure support - Handles ceterms:competencies alongside @graph
+         * 
+         * Supports multiple CTDL-ASN structures:
+         * - Standard @graph: { "@context": ..., "@graph": [framework, ...competencies] }
+         * - Embedded: { "@context": ..., "@type": "Framework", "ceterms:competencies": [...] }
+         * 
+         * @param {File} file - The file to analyze
+         * @param {Function} success - Callback with (data, ctdlType) on success
+         * @param {Function} failure - Callback with error message on failure
+         */
         analyzeJsonLdFramework: function(file, success, failure) {
             if (file == null) {
                 failure("No file to analyze");
@@ -512,23 +586,88 @@ export default {
             reader.onload = function(e) {
                 var result = ((e)["target"])["result"];
                 var jsonObj = JSON.parse(result);
+                
+                var data;
+                var framework;
+                var contextToCheck;
+                
+                // FIX #2: Handle both @graph and embedded structures
+                // The CTDL-ASN spec allows both formats:
+                // - @graph: Standard JSON-LD named graph structure
+                // - Embedded: Framework with ceterms:competencies array
                 if (jsonObj["@graph"]) {
-                    if (jsonObj["@context"] === "http://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] === "http://credreg.net/ctdl/schema/context/json" ||
-                        jsonObj["@context"] === "https://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] === "https://credreg.net/ctdl/schema/context/json") {
-                        if (jsonObj["@graph"][0]["@type"].indexOf("Concept") !== -1) {
-                            success(jsonObj["@graph"], "ctdlasnConcept");
-                        } else if (jsonObj["@graph"][0]["@type"].indexOf("Progression") !== -1) {
-                            success(jsonObj["@graph"], "ctdlasnProgression");
-                        } else if (jsonObj["@graph"][0]["@type"].indexOf("Collection") !== -1) {
-                            success(jsonObj["@graph"], "ctdlasnCollection");
-                        } else {
-                            success(jsonObj["@graph"], "ctdlasn");
+                    // Standard @graph structure
+                    data = jsonObj["@graph"];
+                    framework = data[0];
+                    contextToCheck = jsonObj["@context"];
+                } else if (jsonObj["@type"]) {
+                    // Embedded structure with competencies at framework level
+                    framework = jsonObj;
+                    data = [];
+                    if (jsonObj["ceterms:competencies"]) {
+                        data = jsonObj["ceterms:competencies"];
+                    } else if (jsonObj["ceasn:competencies"]) {
+                        data = jsonObj["ceasn:competencies"];
+                    }
+                    contextToCheck = jsonObj["@context"];
+                } else {
+                    failure("Invalid file - no @graph or @type found");
+                    return;
+                }
+                
+                // FIX #1: Normalize context (handle both string and array)
+                // Per JSON-LD spec, @context can be:
+                // - A string: "https://credreg.net/ctdl/schema/context/json"
+                // - An array: ["https://...", {...}]
+                // Previous code only checked for exact string match
+                var context = contextToCheck;
+                var contextString = "";
+                var hasCtdlContext = false;
+                
+                if (Array.isArray(context)) {
+                    // Context is an array - check first element and search all elements
+                    contextString = context[0];
+                    hasCtdlContext = context.some(function(c) {
+                        if (typeof c === 'string') {
+                            return c.indexOf('credreg.net/ctdl') !== -1 || 
+                                   c.indexOf('credreg.net/ctdlasn') !== -1 ||
+                                   c.indexOf('purl.org/ctdl') !== -1;
                         }
+                        return false;
+                    });
+                } else if (typeof context === 'string') {
+                    // Context is a string - use directly
+                    contextString = context;
+                    hasCtdlContext = context.indexOf('credreg.net/ctdl') !== -1 || 
+                                    context.indexOf('credreg.net/ctdlasn') !== -1 ||
+                                    context.indexOf('purl.org/ctdl') !== -1;
+                }
+                
+                // Check if this is a CTDL-ASN file
+                // Support both old (credreg.net) and new (purl.org) CTDL contexts
+                if (hasCtdlContext || 
+                    contextString === "http://credreg.net/ctdlasn/schema/context/json" || 
+                    contextString === "http://credreg.net/ctdl/schema/context/json" ||
+                    contextString === "https://credreg.net/ctdlasn/schema/context/json" || 
+                    contextString === "https://credreg.net/ctdl/schema/context/json") {
+                    var typeString = framework["@type"];
+                    if (!typeString) {
+                        success(data, null);
+                        return;
+                    }
+                    
+                    // Determine specific CTDL-ASN type
+                    if (typeString.indexOf("Concept") !== -1) {
+                        success(data, "ctdlasnConcept");
+                    } else if (typeString.indexOf("Progression") !== -1) {
+                        success(data, "ctdlasnProgression");
+                    } else if (typeString.indexOf("Collection") !== -1) {
+                        success(data, "ctdlasnCollection");
                     } else {
-                        success(jsonObj["@graph"], null);
+                        success(data, "ctdlasn");
                     }
                 } else {
-                    failure("Invalid file");
+                    success(data, null);
                 }
             };
             reader.readAsText(file, "UTF-8");
@@ -911,59 +1050,104 @@ export default {
                     }
                 }, false, me.repo);
         },
+        /**
+         * Import CTDL-ASN JSON-LD file
+         * 
+         * Converts embedded structures to @graph before sending to backend.
+         * This works around backend limitation that only accepts @graph format.
+         * 
+         * @param {Object} importData - Optional pre-loaded data (for URL imports)
+         * @returns {Promise} Resolves when import completes
+         */
         importJsonLd: function(importData) {
             return new Promise((resolve, reject) => {
                 this.$store.commit('app/importTransition', 'process');
-                var formData = new FormData();
-                if (importData != null && importData !== undefined) {
-                    formData.append('data', JSON.stringify(importData));
-                } else {
-                    var file = this.importFile[0];
-                    formData.append('file', file);
-                }
-                var identity = EcIdentityManager.default.ids[0];
-                if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
-                let me = this;
-                me.$store.commit('app/importAllowCancel', true);
-                me.$store.commit('app/importFramework', null);
-                EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
-                    me.$store.commit('app/importAllowCancel', false);
-                    var framework;
-                    if (EcRepository.cache) {
-                        delete EcRepository.cache[data];
-                    }
-                    if (me.conceptMode || me.progressionMode) {
-                        framework = await EcConceptScheme.get(data);
-                    } else {
-                        framework = await EcFramework.get(data);
+                var me = this;
+                
+                // Helper to process and send data
+                var sendData = function(jsonData) {
+                    // CTDL-ASN Import Fix: Convert embedded to @graph before sending to backend
+                    var convertedData = me.convertToGraphStructure(jsonData);
+                    var formData = new FormData();
+                    formData.append('data', JSON.stringify(convertedData));
+                    
+                    var identity = EcIdentityManager.default.ids[0];
+                    if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
+                    me.$store.commit('app/importAllowCancel', true);
+                    me.$store.commit('app/importFramework', null);
+                    
+                    EcRemote.postInner(me.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
+                        me.$store.commit('app/importAllowCancel', false);
+                        //console.log("=== BACKEND RESPONSE ===");
+                        //console.log("Backend returned URL:", data);
+                        //console.log("Type:", typeof data);
+                        //console.log("Data:", data);
+                        //console.log("Type:", typeof data);
+                        //console.log("Length:", data ? data.length : 0);
+                        //console.log("=======================");
+                        var framework;
+                        if (EcRepository.cache) {
+                            delete EcRepository.cache[data];
+                        }
+                        if (me.conceptMode || me.progressionMode) {
+                            framework = await EcConceptScheme.get(data);
+                        } else {
+                            framework = await EcFramework.get(data);
+                            me.$store.commit('app/importFramework', framework);
+                        }
+                        me.$store.commit('editor/framework', framework);
                         me.$store.commit('app/importFramework', framework);
-                    }
-                    me.$store.commit('editor/framework', framework);
-                    me.$store.commit('app/importFramework', framework);
-                    me.spitEvent("importFinished", framework.shortId(), "importPage");
-                    if (me.importFile != null) {
-                        me.importFile.splice(0, 1);
-                    }
-                    if (me.importFile && me.importFile.length > 0) {
-                        me.firstImport = false;
-                        me.analyzeImportFile();
-                    } else {
-                        me.importSuccess();
-                        resolve();
-                    }
-                }, function(failure) {
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
-                    appLog(failure.statusText);
-                    me.$store.commit('app/addImportError', failure);
-                    reject(failure.statusText);
-                }).catch((err) => {
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
-                    appLog(err);
-                    me.$store.commit('app/addImportError', err);
-                    reject(err);
-                });
+                        me.spitEvent("importFinished", framework.shortId(), "importPage");
+                        if (me.importFile != null) {
+                            me.importFile.splice(0, 1);
+                        }
+                        if (me.importFile && me.importFile.length > 0) {
+                            me.firstImport = false;
+                            me.analyzeImportFile();
+                        } else {
+                            me.importSuccess();
+                            resolve();
+                        }
+                    }, function(failure) {
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
+                        appLog(failure.statusText);
+                        me.$store.commit('app/addImportError', failure);
+                        reject(failure.statusText);
+                    }).catch((err) => {
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
+                        appLog(err);
+                        me.$store.commit('app/addImportError', err);
+                        reject(err);
+                    });
+                };
+                
+                if (importData != null && importData !== undefined) {
+                    // URL import - data already parsed
+                    sendData(importData);
+                } else {
+                    // File upload - need to read and parse first
+                    var file = this.importFile[0];
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        try {
+                            var jsonData = JSON.parse(e.target.result);
+                            sendData(jsonData);
+                        } catch (error) {
+                            me.$store.commit('app/importTransition', 'process');
+                            me.$store.commit('app/addImportError', "Failed to parse JSON file: " + error);
+                            reject(new Error("Failed to parse JSON file: " + error));
+                        }
+                    };
+                    reader.onerror = function() {
+                        me.$store.commit('app/importTransition', 'process');
+                        me.$store.commit('app/addImportError', "Failed to read file");
+                        reject(new Error("Failed to read file"));
+                    };
+                    reader.readAsText(file, "UTF-8");
+                }
+                
                 if (me.conceptMode || me.progressionMode) {
                     if (me.importFileType === 'ctdlasnjsonldprogression') {
                         me.$store.commit('app/importStatus', "Importing Progression Model");
