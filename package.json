@@ -11,7 +11,7 @@
     "lint": "vue-cli-service lint",
     "buildDev": "vue-cli-service build --mode development",
     "serveDev": "vue-cli-service serve --port=8082 --mode development",
-    "test:e2e": "rimraf .nyc_output coverage playwright-report.json && playwright test",
+    "test:e2e": "rimraf .nyc_output coverage playwright-report.json && playwright test && nyc report",
     "test:e2e:ui": "playwright test --ui",
     "serve:test": "cross-env NODE_ENV=test vue-cli-service serve --port=8082 --fix",
     "serve:coverage": "cross-env NODE_ENV=test vue-cli-service serve --port=8082 --fix",

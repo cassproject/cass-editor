@@ -1,0 +1,117 @@
+---------------------------------------|---------|----------|---------|---------|-------------------
+File                                   | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+---------------------------------------|---------|----------|---------|---------|-------------------
+All files                              |      29 |    23.11 |   41.01 |   29.48 |                   
+ src                                   |   28.77 |    27.19 |   47.25 |   29.54 |                   
+  App.vue                              |   20.78 |    24.33 |   30.55 |   21.55 | ...1377-1378,1391 
+  main.js                              |   94.44 |    81.48 |     100 |   97.01 | 144-145           
+  router.js                            |   66.15 |       50 |   66.66 |   66.15 | ...27-138,172-201 
+ src/components                        |   33.05 |    29.62 |      50 |   34.21 |                   
+  AddNewDropdown.vue                   |     100 |      100 |     100 |     100 |                   
+  Dropdown.vue                         |     100 |      100 |     100 |     100 |                   
+  DropdownItem.vue                     |       0 |      100 |       0 |       0 | 12-16             
+  Panel.vue                            |       0 |        0 |       0 |       0 |                   
+  PanelItem.vue                        |      50 |      100 |      60 |      50 | 25-29             
+  SideNav.vue                          |   31.06 |    29.62 |      50 |   32.32 | ...94-195,201,207 
+  Topbar.vue                           |       0 |      100 |       0 |       0 | 11-18             
+ src/components/configuration          |   21.45 |    18.68 |   26.82 |   26.85 |                   
+  ConfigurationDetails.vue             |   22.03 |     19.3 |   27.71 |   28.08 | ...1355,1376-1377 
+  ConfigurationList.vue                |    2.98 |        0 |    8.69 |    3.22 | 28-67,84-160      
+  ConfigurationListItem.vue            |   28.57 |       25 |      50 |   28.57 | 42,48-52          
+  ...orkCompetencyPropertyListItem.vue |      60 |      100 |      50 |      60 | 76-89             
+  RelationshipListItem.vue             |   16.66 |      100 |      25 |   16.66 | 34-47             
+ src/components/framework              |    9.97 |    10.14 |    24.4 |    9.98 |                   
+  Comment.vue                          |       0 |        0 |       0 |       0 | 8-68              
+  Comments.vue                         |       0 |        0 |       0 |       0 | 9-228             
+  EditorToolbar.vue                    |   28.22 |    37.71 |    38.7 |   28.78 | ...83-391,397-398 
+  ListItemInfo.vue                     |    5.45 |     5.33 |   21.59 |    5.45 | ...1198,1205-1210 
+  RightAside.vue                       |   66.66 |      100 |   66.66 |   66.66 | 26                
+  Search.vue                           |       0 |        0 |       0 |       0 | 40-283            
+  SearchBar.vue                        |   65.85 |       75 |   66.66 |   65.78 | ...90,104,117-120 
+  Versions.vue                         |       0 |      100 |       0 |       0 | 6                 
+ src/components/frameworks             |    56.7 |    49.18 |      84 |   56.98 |                   
+  FilterAndSort.vue                    |    56.7 |    49.18 |      84 |   56.98 | ...10,224-235,281 
+ src/components/import                 |    8.12 |        0 |    26.2 |    8.32 |                   
+  DragAndDrop.vue                      |    9.09 |        0 |   21.42 |    9.37 | 20,28-78          
+  ImportDetails.vue                    |       0 |      100 |       0 |       0 | 12-36             
+  ImportFile.vue                       |   31.91 |        0 |   54.16 |   32.25 | ...91-308,325-328 
+  ImportServer.vue                     |    1.27 |        0 |    7.22 |    1.31 | 42,52,67-753      
+  ImportTabs.vue                       |   31.81 |        0 |      50 |   31.81 | 10-21,32,44,53-63 
+  ImportText.vue                       |      40 |      100 |    37.5 |      40 | 25,32-35,42-58    
+  ImportUrl.vue                        |    12.5 |      100 |      25 |    12.5 | 22-42             
+ src/components/modalContent           |    5.43 |     3.61 |      20 |    5.24 |                   
+  ConfigurationNotPermitted.vue        |       0 |      100 |       0 |       0 | 14-27             
+  ConfigurationSetSuccess.vue          |       0 |        0 |       0 |       0 |                   
+  DeleteConfigurationConfirm.vue       |       0 |      100 |       0 |       0 | 14                
+  ExportOptionsModal.vue               |    4.92 |     3.12 |      20 |    4.92 | ...6,55-66,77-276 
+  ModalTemplate.vue                    |     100 |      100 |     100 |     100 |                   
+  MultiEdit.vue                        |     5.4 |     3.92 |   19.23 |    5.05 | ...8,46-49,60-331 
+ src/components/modals                 |   37.14 |      100 |   24.13 |   37.14 |                   
+  DynamicModal.vue                     |   37.14 |      100 |   24.13 |   37.14 | 15,17-31,33-38    
+ src/components/plugins                |    8.33 |        0 |    37.5 |    8.69 |                   
+  PluginDetails.vue                    |       5 |        0 |   33.33 |    5.26 | 30-56             
+  PluginListItem.vue                   |      25 |        0 |      50 |      25 | 30-33             
+ src/layouts                           |     100 |      100 |     100 |     100 |                   
+  MainLayout.vue                       |     100 |      100 |     100 |     100 |                   
+ src/lode/components                   |   34.23 |    30.85 |   45.61 |   34.47 |                   
+  AddProperty.vue                      |    12.7 |    14.28 |   14.28 |   12.99 | ...32,147,153-387 
+  Breadcrumbs.vue                      |   35.54 |    15.38 |   39.13 |   34.59 | ...50,258,263-269 
+  Hierarchy.vue                        |   37.18 |    29.05 |   53.62 |   37.22 | ...68,775,782-796 
+  HierarchyNode.vue                    |   25.15 |    19.51 |   40.65 |   25.64 | ...53,562,570-724 
+  List.vue                             |   42.08 |    33.67 |   71.42 |   42.05 | ...25,527,531-542 
+  Property.vue                         |   34.47 |    41.33 |    45.2 |   34.72 | ...16-725,731,756 
+  PropertyString.vue                   |   30.89 |    28.88 |   39.28 |   30.57 | ...22,229,236-288 
+  Thing.vue                            |   38.21 |    37.05 |   46.98 |   38.94 | ...-997,1015,1019 
+  ThingEditing.vue                     |   35.25 |    29.14 |   47.32 |   35.88 | ...1490,1494-1500 
+ src/mixins                            |   40.01 |    30.33 |      33 |   39.68 |                   
+  cassApi.js                           |   10.97 |        0 |   16.66 |   11.53 | ...54-124,133-136 
+  cassUtil.js                          |   47.74 |       50 |    62.5 |   49.45 | ...54,160-169,175 
+  common.js                            |   15.63 |    17.35 |   23.52 |   15.62 | ...15-710,723,761 
+  competencyEdits.js                   |       0 |        0 |       0 |       0 | 7-78              
+  configuration.js                     |   81.41 |    60.77 |   92.78 |   86.49 | ...1905-1911,1942 
+  ctdlasnProfile.js                    |       0 |      100 |       0 |       0 | 4-2954            
+  editDirectory.js                     |   10.52 |    13.51 |   31.25 |   11.11 | ...-72,78,128-140 
+  getLevelsAndRelations.js             |   10.52 |     8.69 |   31.57 |   10.81 | ...6,45-73,82-181 
+  import.js                            |     7.8 |     2.52 |   22.64 |    8.03 | ...1253,1255-1302 
+  pluginUtil.js                        |   23.03 |    14.28 |   31.42 |      24 | ...23,243-250,259 
+  t3Profile.js                         |     5.4 |      100 |    2.17 |     5.4 | 92-247            
+  tlaProfile.js                        |       0 |      100 |       0 |       0 | 4-607             
+ src/store                             |     100 |      100 |     100 |     100 |                   
+  index.js                             |     100 |      100 |     100 |     100 |                   
+ src/store/modules                     |   81.85 |    45.07 |   92.36 |   82.12 |                   
+  app.js                               |   94.78 |    66.66 |   97.84 |   94.58 | ...35,539,550,561 
+  configuration.js                     |     100 |      100 |     100 |     100 |                   
+  crosswalk.js                         |   95.89 |    69.04 |   98.03 |   98.52 | 180,198           
+  editor.js                            |   63.08 |    13.23 |   83.21 |   63.08 | 235,281-412,555   
+  environment.js                       |     100 |      100 |     100 |     100 |                   
+  featuresEnabled.js                   |     100 |      100 |     100 |     100 |                   
+  lode.js                              |   64.91 |    50.76 |   91.42 |   65.45 | ...97,200,206-234 
+  user.js                              |      80 |       50 |      60 |      80 | 21,38-41          
+ src/views                             |      40 |       30 |   39.28 |   41.26 |                   
+  ConfigurationEditor.vue              |   64.28 |    46.42 |      50 |   66.03 | ...74,192-194,206 
+  Forbidden.vue                        |     100 |      100 |     100 |     100 |                   
+  InternalError.vue                    |     100 |      100 |     100 |     100 |                   
+  Welcome.vue                          |    6.97 |     9.09 |   20.83 |     7.4 | 35-137            
+ src/views/conceptScheme               |       0 |        0 |       0 |       0 |                   
+  ConceptHierarchy.vue                 |       0 |        0 |       0 |       0 | 34-810            
+ src/views/directory                   |    6.21 |     3.66 |   11.86 |    6.34 |                   
+  Directory.vue                        |   13.16 |       10 |   21.21 |   13.27 | ...15,417,423-450 
+  DirectoryList.vue                    |       0 |        0 |       0 |       0 | 23-464            
+ src/views/framework                   |    27.1 |    32.49 |   36.12 |   28.55 |                   
+  Crosswalk.vue                        |   11.22 |     9.64 |   17.04 |    11.5 | ...03-214,217-630 
+  Framework.vue                        |   29.58 |    37.97 |   38.13 |   31.83 | ...22,726,732-788 
+  Frameworks.vue                       |   58.97 |    62.99 |   70.45 |   59.35 | ...62,266,286,288 
+  Import.vue                           |   34.52 |    25.71 |   34.69 |   34.52 | ...80,283,285,287 
+ src/views/login                       |   26.32 |     17.1 |   32.97 |   26.25 |                   
+  CreateAccount.vue                    |    1.01 |        0 |   11.11 |    1.03 | 32-174            
+  LegacyLogin.vue                      |   45.49 |     33.8 |   51.11 |    45.6 | ...85-366,375-406 
+  Login.vue                            |    8.82 |     5.26 |   19.35 |    8.27 | 24-28,37-226      
+ src/views/organization                |   42.42 |    59.09 |    62.5 |   43.75 |                   
+  Organizations.vue                    |   42.42 |    59.09 |    62.5 |   43.75 | 20,23-32,43,54-65 
+ src/views/plugins                     |   39.65 |     62.5 |      52 |    37.5 |                   
+  PluginManager.vue                    |   39.65 |     62.5 |      52 |    37.5 | ...-69,76-108,137 
+ src/views/progressionModel            |       0 |        0 |       0 |       0 |                   
+  ProgressionHierarchy.vue             |       0 |        0 |       0 |       0 | 34-1369           
+ src/views/usersGroups                 |   34.57 |    16.66 |   34.44 |   35.43 |                   
+  UserGroupEditor.vue                  |   34.57 |    16.66 |   34.44 |   35.43 | ...45-646,673-674 
+---------------------------------------|---------|----------|---------|---------|-------------------
