@@ -1,3 +1,183 @@
+/**
+ * Checks if any competency CTIDs collide with the CTID of an existing framework or concept scheme.
+ * A CTID should be globally unique across object types, so a competency sharing a CTID with a
+ * framework or concept scheme is always an error. Searches in batches of 50.
+ *
+ * @param {EcRepository} repo - Repository to search against
+ * @param {string[]} competencyIds - Array of competency shortIds (used as keys into competencyCtids)
+ * @param {EcFramework[]} frameworkArray - Unused, accepted for consistent check function signature
+ * @param {Object} competencyCtids - Map of competency shortId to original CSV CTID
+ * @returns {Promise<string[]>} Array of error messages for any CTID collisions found
+ */
+async function checkCtidCollisionsWithFrameworksAndConceptSchemes(repo, competencyIds, frameworkArray, competencyCtids) {
+    const errors = [];
+    // Collect unique CTIDs to check
+    const ctidSet = new Set();
+    for (const compId of competencyIds) {
+        const ctid = competencyCtids[compId];
+        if (ctid) ctidSet.add(ctid);
+    }
+    const ctids = Array.from(ctidSet);
+    const BATCH_SIZE = 50;
+    for (let batch = 0; batch < ctids.length; batch += BATCH_SIZE) {
+        const chunk = ctids.slice(batch, batch + BATCH_SIZE);
+        const chunkSet = new Set(chunk);
+        const queryParts = chunk.map(ctid => 'ceterms\\:ctid:"' + ctid + '"');
+        const query = '(' + queryParts.join(' OR ') + ')';
+        // Search for frameworks with matching CTIDs
+        try {
+            const existingFrameworks = await new Promise((resolve, reject) => {
+                EcFramework.search(repo, query, resolve, reject, {size: 10000});
+            });
+            if (existingFrameworks) {
+                for (const existingFw of existingFrameworks) {
+                    const fwCtid = existingFw["ceterms:ctid"];
+                    if (fwCtid && chunkSet.has(fwCtid)) {
+                        errors.push(
+                            `Competency with CTID ${fwCtid} has the same CTID as existing framework "${existingFw.name || existingFw.shortId()}"`
+                        );
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Error checking for CTID collisions with frameworks', e);
+        }
+        // Search for concept schemes with matching CTIDs
+        try {
+            const existingSchemes = await new Promise((resolve, reject) => {
+                EcConceptScheme.search(repo, query, resolve, reject, {size: 10000});
+            });
+            if (existingSchemes) {
+                for (const existingCs of existingSchemes) {
+                    const csCtid = existingCs["ceterms:ctid"];
+                    if (csCtid && chunkSet.has(csCtid)) {
+                        errors.push(
+                            `Competency with CTID ${csCtid} has the same CTID as existing concept scheme "${existingCs.name || existingCs.shortId()}"`
+                        );
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Error checking for CTID collisions with concept schemes', e);
+        }
+    }
+    return errors;
+}
+
+/**
+ * Checks if any competency IDs already exist in a framework other than the ones being imported.
+ * Searches in batches of 50 to avoid overly long queries.
+ *
+ * @param {EcRepository} repo - Repository to search against
+ * @param {string[]} competencyIds - Array of competency shortIds to check
+ * @param {EcFramework[]} frameworkArray - Frameworks being imported (excluded from conflict detection)
+ * @param {Object} competencyCtids - Map of competency shortId to original CSV CTID for error messages
+ * @returns {Promise<string[]>} Array of error messages for any duplicate CTIDs found
+ */
+async function checkDuplicateCtidsInFrameworks(repo, competencyIds, frameworkArray, competencyCtids) {
+    const errors = [];
+    const BATCH_SIZE = 50;
+    for (let batch = 0; batch < competencyIds.length; batch += BATCH_SIZE) {
+        const chunk = competencyIds.slice(batch, batch + BATCH_SIZE);
+        // Build an OR query matching any framework whose competency array contains one of the IDs in this batch
+        const queryParts = [];
+        for (const compId of chunk) {
+            queryParts.push('competency:"' + compId + '"');
+            const noVersion = EcRemoteLinkedData.trimVersionFromUrl(compId);
+            if (noVersion !== compId) {
+                queryParts.push('competency:"' + noVersion + '"');
+            }
+        }
+        try {
+            const existingFrameworks = await new Promise((resolve, reject) => {
+                EcFramework.search(repo, '(' + queryParts.join(' OR ') + ')', resolve, reject, {size: 10000});
+            });
+            if (existingFrameworks) {
+                for (const existingFw of existingFrameworks) {
+                    // Skip frameworks that are part of the current import (e.g. re-importing the same framework)
+                    const isBeingImported = frameworkArray.some(
+                        fw => fw.shortId() === existingFw.shortId()
+                    );
+                    if (!isBeingImported && existingFw.competency) {
+                        // Build a Set of normalized competency IDs for O(1) lookups
+                        const fwCompSet = new Set(existingFw.competency.map(c =>
+                            EcRemoteLinkedData.trimVersionFromUrl(c)
+                        ));
+                        for (const compId of chunk) {
+                            const noVersion = EcRemoteLinkedData.trimVersionFromUrl(compId);
+                            if (fwCompSet.has(compId) || fwCompSet.has(noVersion)) {
+                                errors.push(
+                                    `Competency with CTID ${competencyCtids[compId] || compId} already exists in framework "${existingFw.name || existingFw.shortId()}"`
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Error checking for existing competencies in frameworks', e);
+        }
+    }
+    return errors;
+}
+
+/**
+ * Checks if any competency IDs already exist in a ConceptScheme other than the ones being imported.
+ * Searches the skos:hasTopConcept property in batches of 50.
+ *
+ * @param {EcRepository} repo - Repository to search against
+ * @param {string[]} competencyIds - Array of competency shortIds to check
+ * @param {EcFramework[]} frameworkArray - Frameworks/schemes being imported (excluded from conflict detection)
+ * @param {Object} competencyCtids - Map of competency shortId to original CSV CTID for error messages
+ * @returns {Promise<string[]>} Array of error messages for any duplicate CTIDs found
+ */
+async function checkDuplicateCtidsInConceptSchemes(repo, competencyIds, frameworkArray, competencyCtids) {
+    const errors = [];
+    const BATCH_SIZE = 50;
+    for (let batch = 0; batch < competencyIds.length; batch += BATCH_SIZE) {
+        const chunk = competencyIds.slice(batch, batch + BATCH_SIZE);
+        // Build an OR query matching any concept scheme whose hasTopConcept array contains one of the IDs
+        const queryParts = [];
+        for (const compId of chunk) {
+            queryParts.push('skos\\:hasTopConcept:"' + compId + '"');
+            const noVersion = EcRemoteLinkedData.trimVersionFromUrl(compId);
+            if (noVersion !== compId) {
+                queryParts.push('skos\\:hasTopConcept:"' + noVersion + '"');
+            }
+        }
+        try {
+            const existingSchemes = await new Promise((resolve, reject) => {
+                EcConceptScheme.search(repo, '(' + queryParts.join(' OR ') + ')', resolve, reject, {size: 10000});
+            });
+            if (existingSchemes) {
+                for (const existingCs of existingSchemes) {
+                    // Skip concept schemes that are part of the current import
+                    const isBeingImported = frameworkArray.some(
+                        fw => fw.shortId() === existingCs.shortId()
+                    );
+                    if (!isBeingImported && existingCs["skos:hasTopConcept"]) {
+                        // Build a Set of normalized concept IDs for O(1) lookups
+                        const csCompSet = new Set(existingCs["skos:hasTopConcept"].map(c =>
+                            EcRemoteLinkedData.trimVersionFromUrl(c)
+                        ));
+                        for (const compId of chunk) {
+                            const noVersion = EcRemoteLinkedData.trimVersionFromUrl(compId);
+                            if (csCompSet.has(compId) || csCompSet.has(noVersion)) {
+                                errors.push(
+                                    `Competency with CTID ${competencyCtids[compId] || compId} already exists in concept scheme "${existingCs.name || existingCs.shortId()}"`
+                                );
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Error checking for existing competencies in concept schemes', e);
+        }
+    }
+    return errors;
+}
+
 export default {
     data() {
         return {
@@ -693,7 +873,12 @@ export default {
                 });
             }, function(failure) {
                 me.handleImportErrors(failure);
-            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'collectioncsv', skip, validationRules);
+            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'collectioncsv', skip, validationRules,
+            this.queryParams.ceasnDataFields === 'true' ? [
+                checkDuplicateCtidsInFrameworks,
+                checkDuplicateCtidsInConceptSchemes,
+                checkCtidCollisionsWithFrameworksAndConceptSchemes
+            ] : null);
         },
         importPdf: function() {
             var me = this;
@@ -1065,7 +1250,12 @@ export default {
             }, function(failure) {
                 me.handleImportErrors(failure);
                 appError(failure);
-            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'progressioncsv', validationRules);
+            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'progressioncsv', validationRules,
+            this.queryParams.ceasnDataFields === 'true' ? [
+                checkDuplicateCtidsInFrameworks,
+                checkDuplicateCtidsInConceptSchemes,
+                checkCtidCollisionsWithFrameworksAndConceptSchemes
+            ] : null);
         },
         importFromFile: function() {
             let me = this;
