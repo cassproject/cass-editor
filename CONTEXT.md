@@ -1,286 +1,116 @@
-# CaSS Editor — Full Project & Task Context
+# Context — Current Work
 
-## Project Overview
-CaSS Editor is a **Vue 2** single-page application for managing competency frameworks, concept schemes, progression models, and crosswalks. It connects to a CaSS backend server (Java/Elasticsearch) for data persistence.
+## Active Objective
 
-### Tech Stack
-- **Frontend**: Vue 2, Vuex, Vue Router, Webpack (via Vue CLI)
-- **Testing**: Playwright (E2E), Jest (unit)
-- **Coverage**: babel-plugin-istanbul (instrumentation), nyc (reporting)
-- **Backend**: CaSS server (Java), Elasticsearch — runs in Docker
-- **Package manager**: npm
+Increase CaSS Editor E2E code coverage from **33.89% lines** to **90%**.
 
-### Key Directories
-```
-src/
-├── main.js              — App entry, Vue init, global config
-├── App.vue              — Root component, layout, sidebar
-├── router.js            — All route definitions
-├── store/               — Vuex store modules
-│   ├── app.js           — App-wide state (modals, sidebar)
-│   ├── editor.js        — Framework/competency editing state
-│   ├── featuresFlags.js — Feature flag toggles
-│   ├── lode.js          — LODE component state
-│   └── crosswalk.js     — Crosswalk state
-├── views/               — Page-level components
-│   ├── Welcome.vue
-│   ├── Login.vue, LegacyLogin.vue, CreateAccount.vue
-│   ├── framework/
-│   │   ├── Framework.vue       — Main framework editor
-│   │   ├── Frameworks.vue      — Framework list
-│   │   ├── Import.vue          — Import page (tabs for CSV/JSON/URL/server)
-│   │   ├── ImportServer.vue    — Server-to-server import
-│   │   ├── Crosswalk.vue       — Framework alignment/crosswalk
-│   │   └── DirectoryList.vue   — Directory browsing
-│   ├── conceptScheme/
-│   │   ├── ConceptScheme.vue
-│   │   └── ConceptHierarchy.vue  — 810 lines, concept tree
-│   ├── progressionModel/
-│   │   ├── ProgressionModel.vue
-│   │   └── ProgressionHierarchy.vue — 1369 lines, progression tree
-│   ├── configuration/
-│   │   └── Configuration.vue
-│   └── organization/
-│       └── Organizations.vue
-├── components/          — Reusable UI components
-│   ├── SideNav.vue, NarrowSideNav.vue
-│   ├── framework/       — EditorToolbar, RightAside, FilterAndSort, etc.
-│   └── modals/          — ShareModal, ExportModal, etc.
-├── lode/components/     — LODE framework editor components
-│   ├── Hierarchy.vue    — Tree rendering for frameworks
-│   ├── Thing.vue        — Read-only node display
-│   ├── ThingEditing.vue — Editable node display
-│   ├── Property.vue     — Property editor
-│   └── ...
-└── mixins/              — Shared logic mixed into components
-    ├── common.js           — 761 lines, keyboard shortcuts, clipboard, drag-drop
-    ├── import.js           — 1302 lines, file parsing (CSV, JSON, MEDBIQ, ASN)
-    ├── ctdlasnProfile.js   — 2954 lines, CTDL-ASN schema definitions
-    ├── t3Profile.js        — 247 lines, T3 schema definitions
-    ├── tlaProfile.js       — 607 lines, TLA schema definitions
-    ├── competencyEdits.js  — Framework save/edit operations
-    └── getLevelsAndRelations.js — Loads levels & relations for frameworks
-```
+## Coverage Progression
 
-### Routes (from router.js)
-| Route | Component | Notes |
-|-------|-----------|-------|
-| `/` | Welcome | Landing page |
-| `/frameworks` | Frameworks | Framework list |
-| `/framework` | Framework | Single framework editor |
-| `/crosswalk` | Crosswalk | Alignment editor |
-| `/concepts` | ConceptScheme | Concept scheme list |
-| `/conceptScheme` | ConceptHierarchy | Single concept scheme |
-| `/progressionLevels` | ProgressionModel | Progression model list |
-| `/progressionModel` | ProgressionHierarchy | Single progression model |
-| `/configuration` | Configuration | Config editor |
-| `/users` | Users/Groups | User management |
-| `/directory` | DirectoryList | Directory browser |
-| `/login` | Login | SSO/CAS login |
-| `/legacyLogin` | LegacyLogin | Username/password login |
-| `/import` | Import | Import page |
-| `/plugins` | Plugins | Plugin management |
+| Milestone | Lines | How |
+|-----------|-------|-----|
+| Baseline | 0.15% | No E2E coverage toolchain |
+| Sessions 1–4 | 21.59% | Route visits, feature flags, auth flows, CRUD |
+| Phase 5 Batch 1 | 31.78% | 5 specs for zero-coverage components |
+| Phase 5 Complete | 32.77% | 13 specs across 3 batches |
+| Phase 6 + import fixes | 33.89% | 6 deep workflow specs + CSV/text import fixes |
 
----
+## Top Uncovered Files (by uncovered lines)
 
-## Current Task: Increase Code Coverage to 90%
+| File | Coverage | Uncovered Lines | Notes |
+|------|----------|-----------------|-------|
+| `ctdlasnProfile.js` | 0% | ~2954 | Profile schema constants |
+| `tlaProfile.js` | 0% | ~607 | Profile schema constants |
+| `import.js` | 21% | ~1030 | Import mixin — needs deeper flow |
+| `common.js` | 16% | ~640 | Common mixin — needs interactions |
+| `App.vue` | 26% | ~640 | Main app — route/watcher code |
+| `ConfigurationDetails.vue` | 28% | ~594 | Config editing |
+| `ImportServer.vue` | 1.7% | ~700 | Server import — needs connect flow |
+| `ListItemInfo.vue` | 8.8% | ~686 | Info panel — needs accordion exercise |
+| `ThingEditing.vue` | 36% | ~470 | Property editing |
+| `Search.vue` | 0% | ~283 | Search modal component |
+| `EditorToolbar.vue` | 27% | ~280 | Framework toolbar |
+| `HierarchyNode.vue` | 35% | ~400 | Node-level interactions |
+| `MultiEdit.vue` | 6% | ~310 | Multi-edit modal |
 
-### Current Coverage: ~21.59% lines (before session 5 report merge)
-Session 5 collected data but the combined nyc report hasn't been regenerated yet.
+## What We've Done
 
-### Progress History
+### Infrastructure
+- **Coverage collection**: `fixtures.js` collects `window.__coverage__` after each test, writes JSON to `.nyc_output/`. Run `npx nyc report` to see combined coverage.
+- **Fixtures**: `loginAndNavigate()` creates a fresh account each run. `navigateToFramework()` searches for "Harvard Emotional Intelligence" framework by name, waits for search results, falls back to iterating.
+- **Config**: `playwright.config.js` runs Chromium only, base URL `http://localhost:8082`, 120s timeout, 60s expect timeout, 3 workers, 1 retry.
 
-| Phase | What | Result |
-|-------|------|--------|
-| Baseline | Initial instrumented server check | 0.15% |
-| Session 1 | All routes unauthenticated | 7.76% |
-| Session 2 | Feature flags, SideNav, import tabs, keyboard, postMessage | 12.65% |
-| Session 3 | Auth flows: login, config, users, crosswalk, concepts | 17.27% |
-| Session 4 | Framework CRUD, hierarchy, detail editor, export | 21.59% |
-| E2E suite | 223 Playwright specs (8 workers) | included above |
-| Jest | 47 unit tests | included above |
-| Session 5 | 13 sub-sessions targeting all remaining gaps | **data collected, report pending** |
+### Spec Files Created (in `tests/e2e/coverage/`)
+There are **85 spec files** in total. Key ones from this session:
 
-### Session 5 Results (data in .nyc_output/)
-All 13 sub-sessions completed successfully:
-- `ctdlasn-profile` — 54 files (navigated with `ceasnDataFields=true`)
-- `t3-profile` — 44 files
-- `tla-profile` — 44 files
-- `concept-hierarchy` — 36 files
-- `progression-hierarchy` — 36 files
-- `directory-list` — 40 files (found 3 items)
-- `search` — 38 files
-- `import-deep` — 38 files (0 import tabs found — may need different approach)
-- `common-mixin` — 44 files (keyboard shortcuts: Ctrl+X/C/V, Tab, Delete, Ctrl+Z)
-- `crosswalk-deep` — 41 files (0 crosswalk items)
-- `welcome-deep2` — 59 files (33 buttons/links clicked)
-- `app-deep` — 38 files (viewport resize: 375px, 768px, 1920px)
-- `login-deep` — 17 files
+**Phase 5 — 13 new specs:**
+- `cov-progression-hierarchy.spec.js` → ProgressionHierarchy.vue
+- `cov-concept-hierarchy.spec.js` → ConceptHierarchy.vue
+- `cov-search-component.spec.js` → Search.vue (basic)
+- `cov-comments.spec.js` → Comments.vue
+- `cov-create-account.spec.js` → CreateAccount.vue
+- `cov-import-mixin.spec.js` → import.js mixin (CSV upload + Process Files + text paste + all tabs)
+- `cov-import-server.spec.js` → ImportServer.vue (OpenSalt.net example)
+- `cov-list-item-info.spec.js` → ListItemInfo.vue
+- `cov-multi-edit.spec.js` → MultiEdit.vue (clicks labels with `force: true`)
+- `cov-app-deep.spec.js` → App.vue
+- `cov-config-details.spec.js` → ConfigurationDetails.vue
+- `cov-common-mixin-deep.spec.js` → common.js
+- `cov-crosswalk-deep.spec.js` → Crosswalk.vue
 
----
+**Phase 6 — 6 deep workflow specs (all passing ✅):**
+- `cov-csv-import-workflow.spec.js` — Upload CSV → Process Files → Import (11.1s)
+- `cov-text-import-workflow.spec.js` — Paste text → Name → Import (15.6s)
+- `cov-framework-editing-deep.spec.js` — Select competency, edit properties, toolbar (22.1s)
+- `cov-config-list-crud.spec.js` — Browse, create, edit, delete configs (12.6s)
+- `cov-hierarchy-deep.spec.js` — Expand/collapse, drag, context menu, keyboard (22.2s)
+- `cov-list-info-deep.spec.js` — Filter/sort, accordions, share links (13.6s)
 
-## Profile Mixin Activation — Critical Knowledge
+**Phase 7 — 4 new specs (written, NOT YET VERIFIED):**
+- `cov-import-server-deep.spec.js` — Connect to local CaSS endpoint + invalid URL error
+- `cov-search-modal.spec.js` — Open search modal via add relation/property
+- `cov-full-app-nav.spec.js` — Visit every route, sidebar links, user menu
+- `cov-competency-editing.spec.js` — All property views, property string editing
 
-The profile mixins (`ctdlasnProfile.js`, `t3Profile.js`, `tlaProfile.js`) are **computed properties** that return large schema objects. They only execute when accessed by the component.
+### Key Fixes
+- Fixed `require('./fixtures')` → `require('../fixtures')` in all `tests/e2e/requirement/*.spec.js` files (via sed)
+- Fixed `cov-multi-edit.spec.js`: click `<label>` with `force: true` instead of hidden checkboxes
+- Fixed `cov-import-mixin.spec.js`: added "Process Files" button click after CSV upload (user feedback)
+- Removed URL import button click that triggered blocking external fetch to onetcenter.org
 
-### Framework.vue decides which profile to use (lines 279-291):
-```javascript
-frameworkProfile: function() {
-    // T3 profile — activated by Vuex store state
-    if (this.$store.state.editor.t3Profile === true)
-        return this.t3FrameworkProfile;
+## Commands
 
-    // CTDL-ASN Collection — subType check
-    if (this.isCeasn && this.framework.subType === 'Collection')
-        return this.ctdlAsnCollectionProfile;
-
-    // CTDL-ASN Framework — URL param ceasnDataFields=true
-    if (this.isCeasn && ((this.config && !this.configSetOnFramework) || !this.config))
-        return this.ctdlAsnFrameworkProfile;
-
-    // TLA — URL param tlaProfile=true
-    if (this.queryParams.tlaProfile === "true" && ...)
-        return this.tlaFrameworkProfile;
-
-    // Custom config or default
-    if (this.config) return this.config.frameworkConfig;
-    return { /* default profile */ };
-}
-```
-
-The `isCeasn` computed property checks `this.queryParams["ceasnDataFields"] === 'true'`.
-
-### URL Parameters for Profile Activation:
-| URL Parameter | Profile | Mixin File |
-|---------------|---------|------------|
-| `ceasnDataFields=true` | CTDL-ASN | `ctdlasnProfile.js` |
-| `tlaProfile=true` | TLA | `tlaProfile.js` |
-| Store: `editor.t3Profile=true` | T3 | `t3Profile.js` |
-| `concepts=true` | Concept mode | Activates ConceptHierarchy |
-| `view=true` | View-only mode | Disables editing |
-
-### Example URLs to trigger profiles:
-```
-# CTDL-ASN
-http://localhost:8082/#/frameworks?server=http://localhost/api/&ceasnDataFields=true
-
-# TLA
-http://localhost:8082/#/frameworks?server=http://localhost/api/&tlaProfile=true
-
-# Concept mode
-http://localhost:8082/#/concepts?server=http://localhost/api/
-
-# Progression mode
-http://localhost:8082/#/progressionLevels?server=http://localhost/api/
-
-# View-only
-http://localhost:8082/#/frameworks?server=http://localhost/api/&view=true
-```
-
----
-
-## Coverage Toolchain Details
-
-### Instrumentation
-- `babel-plugin-istanbul` is configured in `babel.config.js` (or similar)
-- It instruments source files during Webpack compilation
-- The `serve:coverage` script runs the dev server with instrumentation enabled on port 8082
-
-### Collection
-- `window.__coverage__` is available on any page served by the instrumented server
-- Coverage data is a JSON object keyed by file path
-- Playwright tests use `tests/e2e/fixtures.js` which wraps the base test to auto-collect coverage after each test
-
-### Reporting
 ```bash
-# Text report
-npx nyc report --reporter=text --include="src/**"
+# Run a single test
+npx playwright test tests/e2e/coverage/cov-import-mixin.spec.js --output=/tmp/test-results
 
-# HTML report (browsable)
-npx nyc report --reporter=html --include="src/**"
+# Run multiple tests
+npx playwright test tests/e2e/coverage/cov-csv-import-workflow.spec.js tests/e2e/coverage/cov-text-import-workflow.spec.js --output=/tmp/test-results
 
-# Report file location
-.nyc_output/          — raw coverage JSON files
-coverage/             — generated HTML report
-coverage-report.txt   — text report snapshot
+# Generate coverage report
+npx nyc report
+
+# Detailed per-file coverage
+npx nyc report --reporter=text
 ```
 
-### Existing E2E Tests
-- **57 coverage tests** in `tests/e2e/coverage/cov-*.spec.js`
-- Use Playwright with custom fixtures for automatic coverage collection
-- Run with: `npx playwright test tests/e2e/coverage/`
+## Current Approach
 
----
+1. Write a spec targeting the largest uncovered file(s)
+2. Run it with Playwright
+3. If it fails, check error context: `cat /tmp/test-results/*/error-context.md`
+4. Fix the spec based on actual page state from the error context
+5. Run `npx nyc report` to check coverage gains
+6. Repeat
 
-## Standalone Coverage Scripts (in project root)
+## Rules (from RULES.md)
+- No `waitForTimeout` — use Playwright auto-waiting
+- No inline `{ timeout: ... }` overrides — use global config
+- One test per file
+- No mocks — test the fully integrated system
+- Run and fix tests one at a time
+- Check `playwright-report.json` for results
 
-These were created during this effort but should be converted to proper E2E tests:
-
-| Script | Purpose |
-|--------|---------|
-| `collect-coverage.js` | Session 1: all routes unauthenticated |
-| `collect-coverage2.js` | Session 2: feature flags, SideNav, import, keyboard |
-| `collect-coverage3.js` | Session 3: authenticated (login, config, users, crosswalk) |
-| `collect-coverage4.js` | Session 4: framework CRUD, LODE components |
-| `collect-coverage5.js` | Session 5: profiles, concepts, progressions, directories, etc. |
-
----
-
-## Remaining Coverage Gaps (before session 5 data merged)
-
-| File | Lines | Pre-S5 Coverage | Session 5 Targeted? |
-|------|-------|-----------------|---------------------|
-| `ctdlasnProfile.js` | 2954 | 0% | ✅ via `ceasnDataFields=true` |
-| `import.js` (mixin) | 1302 | 1.38% | Partially (no file upload) |
-| `ProgressionHierarchy.vue` | 1369 | 0% | ✅ via `/progressionLevels` |
-| `ConceptHierarchy.vue` | 810 | 0% | ✅ via `/concepts` |
-| `common.js` | 761 | 8.95% | ✅ keyboard shortcuts |
-| `ImportServer.vue` | 753 | 0% | Partially |
-| `tlaProfile.js` | 607 | 0% | ✅ via `tlaProfile=true` |
-| `Crosswalk.vue` | 630 | 11.5% | ✅ but 0 items found |
-| `DirectoryList.vue` | 464 | 0% | ✅ via `/directory` |
-| `t3Profile.js` | 247 | 0% | ✅ via store |
-| `Search.vue` | 283 | 0% | ✅ |
-| `Comments.vue` | 228 | 0% | Not yet targeted |
-
----
-
-## Login Flow (for creating authenticated test sessions)
-
-```javascript
-// Navigate to legacy login
-await page.goto('http://localhost:8082/#/legacyLogin?server=http://localhost/api/');
-await page.waitForTimeout(3000);
-
-// Click "Create Account"
-await page.click('#legacy-login-create-account-button');
-
-// Fill form
-const username = 'testuser_' + Date.now();
-await page.fill('#legacy-login-create-link-person-name', username);
-await page.fill('#legacy-login-create-link-person-email', username + '@test.com');
-await page.fill('#legacy-login-create-account-username', username);
-await page.fill('#legacy-login-create-account-password', 'password123');
-await page.fill('#legacy-login-create-account-password-confirm', 'password123');
-
-// Submit
-await page.click('#legacy-login-create-link-person-button');
-
-// Wait for login completion
-await page.waitForSelector('#side-nav-user-icon-button', { timeout: 30000 });
-```
-
----
-
-## Next Steps (Priority Order)
-
-1. **Regenerate coverage report** — `npx nyc report --reporter=text --include="src/**"` to measure impact of session 6
-2. ~~**Convert standalone scripts to proper E2E tests**~~ ✅ Done — 13 new spec files, originals deleted
-3. **Target remaining gaps** — especially `import.js` (needs actual file uploads), `ImportServer.vue`, `Comments.vue`
-4. **Update MYTASKS.md** with new coverage numbers
-5. ~~**Clean up** — remove standalone `collect-coverage*.js` after conversion~~ ✅ Done
-
-## Environment Notes
-- CaSS backend running on **port 80**
-- Editor (instrumented) running on **port 8082**
-- Don't start either server — user manages them manually
+## Blockers
+- **Browser tool unavailable**: CDP connection refused at `127.0.0.1:9222`. Cannot use browser subagent for visual inspection. Using Playwright error context snapshots instead.
+- **WSL filesystem permissions**: `EACCES` errors on `.webm` files in `test-results/`. Workaround: `--output=/tmp/test-results`.
+- **External URLs timeout**: O*Net URLs from ImportUrl examples time out. Don't click the import button for URL imports.

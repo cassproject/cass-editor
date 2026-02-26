@@ -8,7 +8,7 @@ _(Empty)_
 
 ## In Progress
 
-- [/] **Increase code coverage to 90%** — Current: **32.77% lines** (started at 0.15%)
+- [/] **Increase code coverage to 90%** — Current: **33.89% lines** (started at 0.15%)
   - [x] Verify coverage toolchain
   - [x] Sessions 1–4: Route visits, feature flags, auth flows, CRUD → 21.59%
   - [x] Session 6: Converted standalone scripts → 13 new E2E spec files → 31.78%
