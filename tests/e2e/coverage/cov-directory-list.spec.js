@@ -37,6 +37,5 @@ test.describe('Coverage: DirectoryList.vue', () => {
 
         // Clear search
         await page.fill('#search-bar-input', '');
-        await page.waitForTimeout(500);
     });
 });

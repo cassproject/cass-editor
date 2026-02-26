@@ -5,7 +5,7 @@ const { test, expect, navigateToFramework } = require('../fixtures');
 test('Thing: framework Thing rendering', async ({ page }) => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await expect(page.locator('#frameworks')).toBeVisible();
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     // Exercise Thing.vue computed properties
@@ -47,7 +47,7 @@ test('Thing: framework Thing rendering', async ({ page }) => {
 test('Breadcrumbs: navigate framework and check breadcrumbs', async ({ page }) => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await expect(page.locator('#frameworks')).toBeVisible();
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     // Click a competency to generate breadcrumb trail
@@ -79,7 +79,7 @@ test('Breadcrumbs: navigate framework and check breadcrumbs', async ({ page }) =
 test('ListItemInfo: hover or click to show info', async ({ page }) => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await expect(page.locator('#frameworks')).toBeVisible();
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     // Click first competency

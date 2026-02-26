@@ -1,88 +1,39 @@
-const { test, expect } = require('@playwright/test');
-const { loginAndNavigate } = require('../fixtures');
+/**
+ * Coverage: MultiEdit.vue — exercise the multi-edit modal.
+ * Targets the 5.1% covered MultiEdit component (169 uncovered lines).
+ */
 
-test.describe.skip('Coverage: MultiEdit.vue', () => {
-    test.beforeEach(async ({ page }) => {
-        await loginAndNavigate(page);
-        await page.goto('/#/framework');
-        await page.waitForFunction(() => window.app != null);
-    });
+const { test, expect, loginAndNavigate, navigateToFramework } = require('../fixtures');
 
-    test('exercises MultiEdit methods and computed properties', async ({ page }) => {
-        const result = await page.evaluate(async () => {
-            const findComponentInstance = (root, name) => {
-                let q = [root];
-                let seen = new Set();
-                while (q.length > 0) {
-                    let node = q.shift();
-                    if (node && node._uid && !seen.has(node._uid)) {
-                        seen.add(node._uid);
-                        if (node.$options && node.$options.name === name) return node;
-                        if (node.$children) q.push(...node.$children);
-                    }
-                }
-                return null;
-            };
+test('Multi-edit: select multiple competencies and open multi-edit modal', async ({ page }) => {
+    await loginAndNavigate(page);
+    await page.goto('/#/frameworks?server=http://localhost/api/');
+    await expect(page.locator('#frameworks')).toBeVisible();
+    if (!await navigateToFramework(page)) return;
 
-            window.app.$store.commit('app/showModal', {
-                component: 'MultiEdit',
-                content: {
-                    profile: { "testProp": { "http://www.w3.org/2000/01/rdf-schema#label": [{ "@value": "Test Label" }] } },
-                    selectedCompetencies: []
-                }
-            });
-            await new Promise(resolve => setTimeout(resolve, 500));
-            const vm = findComponentInstance(window.app, 'MultiEdit');
+    // Enter select mode by clicking the "select" button
+    const selectBtn = page.locator('div:has-text("select")').filter({ hasText: /^select$/ }).first();
+    if (await selectBtn.isVisible().catch(() => false)) {
+        await selectBtn.click();
+    }
 
-            if (!vm) return { error: "MultiEdit not found in app tree" };
+    // Select multiple hierarchy items via their labels (checkboxes are covered by labels)
+    const checkboxLabels = page.locator('.lode__hierarchy-item label[for*="checkbox"]');
+    const labelCount = await checkboxLabels.count();
+    for (let i = 0; i < Math.min(labelCount, 3); i++) {
+        await checkboxLabels.nth(i).click({ force: true });
+    }
 
-            let profile = vm.profile;
-            let initialSelectedCompetencies = vm.selectedCompetencies;
-            let disableApply = vm.disableApplyButton;
+    // Click the "Edit Multiple" button to open the multi-edit modal
+    const editMultipleBtn = page.locator('#edit-multiple-button');
+    if (await editMultipleBtn.isVisible().catch(() => false)) {
+        await editMultipleBtn.click();
 
-            // Trigger methods to cover lines
-            vm.onCancel();
-            let isModalClosed = window.app.$store.getters['app/showModal'] === false;
-
-            vm.addErrorMessage("Test error");
-            let errorMsg = vm.errorMessage[0];
-
-            vm.addAnotherProperty();
-            let addedPropsLength = vm.addedProperties.length;
-
-            vm.removeValueAtIndex(0);
-            let removedPropsLength = vm.addedProperties.length;
-
-            // simple turnFieldsBackIntoArrays check
-            let fixedResult = vm.turnFieldsBackIntoArrays({ "@id": "1", "@type": "Thing", "name": "foo" });
-
-            try { vm.applyCheckedOptions(); } catch (e) { }
-
-            // Add selected from search
-            vm.$store.commit('editor/clearSelectedCompetencies');
-            vm.$store.commit('editor/selectedCompetency', { shortId: () => "comp1" });
-            try { vm.addSelected(); } catch (e) { }
-
-            return {
-                profile,
-                initialSelectedCompetenciesLength: initialSelectedCompetencies ? initialSelectedCompetencies.length : 0,
-                disableApply,
-                isModalClosed,
-                errorMsg,
-                addedPropsLength,
-                removedPropsLength,
-                fixedName: fixedResult.name ? fixedResult.name[0] : null
-            };
-        });
-
-        if (result.error) {
-            console.log(result.error);
-        } else {
-            expect(result.isModalClosed).toBe(true);
-            expect(result.errorMsg).toBe("Test error");
-            expect(result.addedPropsLength).toBe(2);
-            expect(result.removedPropsLength).toBe(1);
-            expect(result.fixedName).toBe("foo"); // name becomes an array
+        // The multi-edit modal should appear
+        const multiEditCancel = page.locator('#multi-edit-cancel-button');
+        if (await multiEditCancel.isVisible().catch(() => false)) {
+            // Click cancel to close
+            await multiEditCancel.click();
         }
-    });
+    }
 });

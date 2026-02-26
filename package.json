@@ -17,7 +17,8 @@
     "serve:coverage": "cross-env NODE_ENV=test vue-cli-service serve --port=8082 --fix",
     "test:coverage": "start-server-and-test \"npm run serve:coverage\" http://localhost:8082 \"playwright test\" && nyc report",
     "autoTest": "nodemon --watch \"tests/**/*.spec.js\" --watch \"playwright.config.js\" --exec \"npm run test:e2e\"",
-    "cypress": "cypress open"
+    "cypress": "cypress open",
+    "test": "playwright test && nyc report"
   },
   "main": "/theme.scss",
   "dependencies": {

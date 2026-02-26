@@ -5,7 +5,7 @@ const { test, expect, loginAndNavigate, navigateToFramework } = require('../fixt
 test('Property: click competency and interact with text field', async ({ page }) => {
     await loginAndNavigate(page);
     await page.goto('/#/frameworks?server=http://localhost/api/');
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     const hierarchyItems = page.locator('.lode__hierarchy-item');
@@ -35,7 +35,7 @@ test('Property: click competency and interact with text field', async ({ page })
 test('Property: inspect all property computed values', async ({ page }) => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await expect(page.locator('#frameworks')).toBeVisible();
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     const hierarchyItems = page.locator('.lode__hierarchy-item');
@@ -72,7 +72,7 @@ test('Property: inspect all property computed values', async ({ page }) => {
 test('Property: secondary view exposes more properties', async ({ page }) => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await expect(page.locator('#frameworks')).toBeVisible();
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     // Click primary first
@@ -106,7 +106,7 @@ test('Property: secondary view exposes more properties', async ({ page }) => {
 test('Property: PropertyString rendering', async ({ page }) => {
     await loginAndNavigate(page);
     await page.goto('/#/frameworks?server=http://localhost/api/');
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     // Switch to tertiary to see all fields

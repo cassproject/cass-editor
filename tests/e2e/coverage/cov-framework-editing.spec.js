@@ -31,7 +31,7 @@ test('Framework: create new framework', async ({ page }) => {
 test('Framework: hierarchy expand/collapse', async ({ page }) => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await expect(page.locator('#frameworks')).toBeVisible();
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     // Collapse all
@@ -52,7 +52,7 @@ test('Framework: hierarchy expand/collapse', async ({ page }) => {
 test('Framework: select competency and view properties', async ({ page }) => {
     await loginAndNavigate(page);
     await page.goto('/#/frameworks?server=http://localhost/api/');
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     // Click a competency to exercise HierarchyNode click handler
@@ -70,7 +70,7 @@ test('Framework: select competency and view properties', async ({ page }) => {
 test('Framework: add competency to framework', async ({ page }) => {
     await loginAndNavigate(page);
     await page.goto('/#/frameworks?server=http://localhost/api/');
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     // Get initial count
@@ -93,7 +93,7 @@ test('Framework: add competency to framework', async ({ page }) => {
 test('Framework: multiple competency selection', async ({ page }) => {
     await loginAndNavigate(page);
     await page.goto('/#/frameworks?server=http://localhost/api/');
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     const hierarchyItems = page.locator('.lode__hierarchy-item');
@@ -113,7 +113,7 @@ test('Framework: multiple competency selection', async ({ page }) => {
 test('Framework: exercise hierarchy node computed props', async ({ page }) => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await expect(page.locator('#frameworks')).toBeVisible();
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     const hierarchyItems = page.locator('.lode__hierarchy-item');

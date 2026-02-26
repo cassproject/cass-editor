@@ -1,0 +1,319 @@
+
+Running 394 tests using 8 workers
+
+  ✓    3 [chromium] › tests\e2e\ca-107.spec.js:5:5 › CA-107: Owner access identities are manageable (1.8m)
+  ✓    8 [chromium] › tests\e2e\ca-105.spec.js:5:5 › CA-105/106: RDF class specifies name and description (1.8m)
+  ✓    2 [chromium] › tests\e2e\ca-108.spec.js:5:5 › CA-108: Reader access identities are manageable (1.9m)
+  ✘    7 [chromium] › tests\e2e\ca-100.spec.js:5:1 › CA-100: RDF properties specify a name via rdfs:label (35.8s)
+  ✓    6 [chromium] › tests\e2e\ca-104.spec.js:5:5 › CA-104: Missing properties are indicated to the user (2.0m)
+  ✘    5 [chromium] › tests\e2e\ca-101.spec.js:5:1 › CA-101: RDF properties specify a domain type (35.1s)
+  ✘    1 [chromium] › tests\e2e\ca-102.spec.js:5:1 › CA-102: RDF properties specify a range type (35.6s)
+  ✓   11 [chromium] › tests\e2e\ca-111.spec.js:5:1 › CA-111: Reader access via KBAC @reader field (44.2s)
+  -   16 [chromium] › tests\e2e\ca-113.spec.js:5:6 › CA-113: Rollup processor can be defined in configuration (not implemented in client)
+  ✓   10 [chromium] › tests\e2e\ca-110.spec.js:5:1 › CA-110: Owner access via KBAC @owner field (47.9s)
+  ✓   18 [chromium] › tests\e2e\ca-115.spec.js:5:1 › CA-115: Search within framework is available (10.4s)
+  ✓   19 [chromium] › tests\e2e\ca-116.spec.js:5:1 › CA-116: Frameworks list is accessible (8.7s)
+  ✓    9 [chromium] › tests\e2e\ca-109.spec.js:6:1 › CA-109: Comment access identities are manageable (1.2m)
+  ✓   17 [chromium] › tests\e2e\ca-114.spec.js:5:1 › CA-114: Framework can be associated with a configuration (29.5s)
+  ✘   12 [chromium] › tests\e2e\ca-112.spec.js:5:1 › CA-112: Comment visibility is restricted by access (24.5s)
+  ✘    4 [chromium] › tests\e2e\ca-103.spec.js:5:5 › CA-103: Saving is prevented when required properties are missing (2.2m)
+  ✘   13 [chromium] › tests\e2e\ca-100.spec.js:5:1 › CA-100: RDF properties specify a name via rdfs:label (retry #1) (24.9s)
+[31mTesting stopped early after 1 maximum allowed failures.[39m
+  ✘   23 [chromium] › tests\e2e\ca-112.spec.js:5:1 › CA-112: Comment visibility is restricted by access (retry #1) (3ms)
+  ✘   24 [chromium] › tests\e2e\ca-103.spec.js:5:5 › CA-103: Saving is prevented when required properties are missing (retry #1) (0ms)
+  ✘   14 [chromium] › tests\e2e\ca-102.spec.js:5:1 › CA-102: RDF properties specify a range type (retry #1) (26.4s)
+  ✘   15 [chromium] › tests\e2e\ca-101.spec.js:5:1 › CA-101: RDF properties specify a domain type (retry #1) (25.6s)
+  ✘   21 [chromium] › tests\e2e\ca-118.spec.js:5:1 › CA-118: Framework properties are editable via detail view (33.8s)
+  ✘   20 [chromium] › tests\e2e\ca-117.spec.js:5:1 › CA-117: Hierarchical view of competencies (34.8s)
+  ✘   22 [chromium] › tests\e2e\ca-119.spec.js:5:1 › CA-119: Property editing adheres to cardinality rules (26.0s)
+
+
+  1) [chromium] › tests\e2e\ca-100.spec.js:5:1 › CA-100: RDF properties specify a name via rdfs:label 
+
+    TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('.cass--list--item .cass--list--thing').first() to be visible[22m
+
+
+       at fixtures.js:37
+
+      35 | async function navigateToFramework(page) {
+      36 |     const thingItems = page.locator('.cass--list--item .cass--list--thing');
+    > 37 |     await thingItems.first().waitFor({ state: 'visible', timeout: 15000 });
+         |                              ^
+      38 |
+      39 |     // Try up to 3 times — under heavy parallelism the server can be slow
+      40 |     for (let attempt = 0; attempt < 3; attempt++) {
+        at navigateToFramework (C:\workspace\cass-editor\tests\e2e\fixtures.js:37:30)
+        at C:\workspace\cass-editor\tests\e2e\ca-100.spec.js:8:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\ca-100-CA-100-RDF-properties-specify-a-name-via-rdfs-label-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\ca-100-CA-100-RDF-properties-specify-a-name-via-rdfs-label-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\ca-100-CA-100-RDF-properties-specify-a-name-via-rdfs-label-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\ca-100-CA-100-RDF-properties-specify-a-name-via-rdfs-label-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\ca-100-CA-100-RDF-properties-specify-a-name-via-rdfs-label-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('.cass--list--item .cass--list--thing').first() to be visible[22m
+
+
+       at fixtures.js:37
+
+      35 | async function navigateToFramework(page) {
+      36 |     const thingItems = page.locator('.cass--list--item .cass--list--thing');
+    > 37 |     await thingItems.first().waitFor({ state: 'visible', timeout: 15000 });
+         |                              ^
+      38 |
+      39 |     // Try up to 3 times — under heavy parallelism the server can be slow
+      40 |     for (let attempt = 0; attempt < 3; attempt++) {
+        at navigateToFramework (C:\workspace\cass-editor\tests\e2e\fixtures.js:37:30)
+        at C:\workspace\cass-editor\tests\e2e\ca-100.spec.js:8:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\ca-100-CA-100-RDF-properties-specify-a-name-via-rdfs-label-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\ca-100-CA-100-RDF-properties-specify-a-name-via-rdfs-label-chromium-retry1\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\ca-100-CA-100-RDF-properties-specify-a-name-via-rdfs-label-chromium-retry1\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\ca-100-CA-100-RDF-properties-specify-a-name-via-rdfs-label-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\ca-100-CA-100-RDF-properties-specify-a-name-via-rdfs-label-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  2) [chromium] › tests\e2e\ca-101.spec.js:5:1 › CA-101: RDF properties specify a domain type ──────
+
+    TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('.cass--list--item .cass--list--thing').first() to be visible[22m
+
+
+       at fixtures.js:37
+
+      35 | async function navigateToFramework(page) {
+      36 |     const thingItems = page.locator('.cass--list--item .cass--list--thing');
+    > 37 |     await thingItems.first().waitFor({ state: 'visible', timeout: 15000 });
+         |                              ^
+      38 |
+      39 |     // Try up to 3 times — under heavy parallelism the server can be slow
+      40 |     for (let attempt = 0; attempt < 3; attempt++) {
+        at navigateToFramework (C:\workspace\cass-editor\tests\e2e\fixtures.js:37:30)
+        at C:\workspace\cass-editor\tests\e2e\ca-101.spec.js:8:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\ca-101-CA-101-RDF-properties-specify-a-domain-type-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\ca-101-CA-101-RDF-properties-specify-a-domain-type-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\ca-101-CA-101-RDF-properties-specify-a-domain-type-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\ca-101-CA-101-RDF-properties-specify-a-domain-type-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\ca-101-CA-101-RDF-properties-specify-a-domain-type-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Test was interrupted.
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\ca-101-CA-101-RDF-properties-specify-a-domain-type-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\ca-101-CA-101-RDF-properties-specify-a-domain-type-chromium-retry1\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\ca-101-CA-101-RDF-properties-specify-a-domain-type-chromium-retry1\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\ca-101-CA-101-RDF-properties-specify-a-domain-type-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\ca-101-CA-101-RDF-properties-specify-a-domain-type-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  3) [chromium] › tests\e2e\ca-102.spec.js:5:1 › CA-102: RDF properties specify a range type ───────
+
+    TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('.cass--list--item .cass--list--thing').first() to be visible[22m
+
+
+       at fixtures.js:37
+
+      35 | async function navigateToFramework(page) {
+      36 |     const thingItems = page.locator('.cass--list--item .cass--list--thing');
+    > 37 |     await thingItems.first().waitFor({ state: 'visible', timeout: 15000 });
+         |                              ^
+      38 |
+      39 |     // Try up to 3 times — under heavy parallelism the server can be slow
+      40 |     for (let attempt = 0; attempt < 3; attempt++) {
+        at navigateToFramework (C:\workspace\cass-editor\tests\e2e\fixtures.js:37:30)
+        at C:\workspace\cass-editor\tests\e2e\ca-102.spec.js:8:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\ca-102-CA-102-RDF-properties-specify-a-range-type-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\ca-102-CA-102-RDF-properties-specify-a-range-type-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\ca-102-CA-102-RDF-properties-specify-a-range-type-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\ca-102-CA-102-RDF-properties-specify-a-range-type-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\ca-102-CA-102-RDF-properties-specify-a-range-type-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Test was interrupted.
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\ca-102-CA-102-RDF-properties-specify-a-range-type-chromium-retry1\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\ca-102-CA-102-RDF-properties-specify-a-range-type-chromium-retry1\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\ca-102-CA-102-RDF-properties-specify-a-range-type-chromium-retry1\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\ca-102-CA-102-RDF-properties-specify-a-range-type-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\ca-102-CA-102-RDF-properties-specify-a-range-type-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  4) [chromium] › tests\e2e\ca-103.spec.js:5:5 › CA-103: Saving is prevented when required properties are missing 
+
+    [31mTest timeout of 120000ms exceeded.[39m
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\ca-103-CA-103-Saving-is-pr-15f6d-ired-properties-are-missing-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\ca-103-CA-103-Saving-is-pr-15f6d-ired-properties-are-missing-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\ca-103-CA-103-Saving-is-pr-15f6d-ired-properties-are-missing-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\ca-103-CA-103-Saving-is-pr-15f6d-ired-properties-are-missing-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\ca-103-CA-103-Saving-is-pr-15f6d-ired-properties-are-missing-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Test was interrupted.
+
+    attachment #1: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\ca-103-CA-103-Saving-is-pr-15f6d-ired-properties-are-missing-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\ca-103-CA-103-Saving-is-pr-15f6d-ired-properties-are-missing-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5) [chromium] › tests\e2e\ca-112.spec.js:5:1 › CA-112: Comment visibility is restricted by access 
+
+    TimeoutError: locator.waitFor: Timeout 15000ms exceeded.
+    Call log:
+    [2m  - waiting for locator('.cass--list--item .cass--list--thing').first() to be visible[22m
+
+
+       at fixtures.js:37
+
+      35 | async function navigateToFramework(page) {
+      36 |     const thingItems = page.locator('.cass--list--item .cass--list--thing');
+    > 37 |     await thingItems.first().waitFor({ state: 'visible', timeout: 15000 });
+         |                              ^
+      38 |
+      39 |     // Try up to 3 times — under heavy parallelism the server can be slow
+      40 |     for (let attempt = 0; attempt < 3; attempt++) {
+        at navigateToFramework (C:\workspace\cass-editor\tests\e2e\fixtures.js:37:30)
+        at C:\workspace\cass-editor\tests\e2e\ca-112.spec.js:9:11
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results\ca-112-CA-112-Comment-visibility-is-restricted-by-access-chromium\test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results\ca-112-CA-112-Comment-visibility-is-restricted-by-access-chromium\video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results\ca-112-CA-112-Comment-visibility-is-restricted-by-access-chromium\error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\ca-112-CA-112-Comment-visibility-is-restricted-by-access-chromium\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\ca-112-CA-112-Comment-visibility-is-restricted-by-access-chromium\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Retry #1 ───────────────────────────────────────────────────────────────────────────────────────
+
+    Test was interrupted.
+
+    attachment #1: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results\ca-112-CA-112-Comment-visibility-is-restricted-by-access-chromium-retry1\trace.zip
+    Usage:
+
+        npx playwright show-trace test-results\ca-112-CA-112-Comment-visibility-is-restricted-by-access-chromium-retry1\trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  5 failed
+    [chromium] › tests\e2e\ca-100.spec.js:5:1 › CA-100: RDF properties specify a name via rdfs:label 
+    [chromium] › tests\e2e\ca-101.spec.js:5:1 › CA-101: RDF properties specify a domain type ───────
+    [chromium] › tests\e2e\ca-102.spec.js:5:1 › CA-102: RDF properties specify a range type ────────
+    [chromium] › tests\e2e\ca-103.spec.js:5:5 › CA-103: Saving is prevented when required properties are missing 
+    [chromium] › tests\e2e\ca-112.spec.js:5:1 › CA-112: Comment visibility is restricted by access ─
+  3 interrupted
+    [chromium] › tests\e2e\ca-117.spec.js:5:1 › CA-117: Hierarchical view of competencies ──────────
+    [chromium] › tests\e2e\ca-118.spec.js:5:1 › CA-118: Framework properties are editable via detail view 
+    [chromium] › tests\e2e\ca-119.spec.js:5:1 › CA-119: Property editing adheres to cardinality rules 
+  1 skipped
+  375 did not run
+  10 passed (3.7m)
+  1 error was not a part of any test, see above for details

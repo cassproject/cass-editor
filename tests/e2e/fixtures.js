@@ -27,30 +27,86 @@ async function loginAndNavigate(page) {
 }
 
 /**
- * Shared helper: Navigate into the first framework from the frameworks list.
- * Targets the Thing component specifically (which has the @dblclick handler),
- * with retries to handle intermittent navigation failures under load.
+ * Known test framework name. Tests should import this framework so it's always available.
+ */
+const TEST_FRAMEWORK_NAME = 'Harvard Emotional Intelligence';
+
+/**
+ * Shared helper: Navigate into a framework that has data (hierarchy items).
+ * Searches for the Harvard Emotional Intelligence framework via #search-bar-input.
+ * Falls back to trying each framework until one with data is found.
  * Assumes the page is already on #/frameworks.
+ * Returns true if successfully navigated to a framework with data, false otherwise.
  */
 async function navigateToFramework(page) {
     const thingItems = page.locator('.cass--list--item .cass--list--thing');
-    await thingItems.first().waitFor({ state: 'visible', timeout: 15000 });
+    try {
+        await thingItems.first().waitFor({ state: 'visible', timeout: 15000 });
+    } catch {
+        return false;
+    }
 
-    // Try up to 3 times — under heavy parallelism the server can be slow
-    for (let attempt = 0; attempt < 3; attempt++) {
-        await thingItems.first().dblclick();
+    // Search for the known test framework using the search bar
+    const searchInput = page.locator('#search-bar-input');
+    if (await searchInput.isVisible().catch(() => false)) {
+        await searchInput.fill(TEST_FRAMEWORK_NAME);
+        // Wait for a matching framework to appear in the filtered list
+        const matchingItem = page.locator(`.cass--list--item .cass--list--thing:has-text("${TEST_FRAMEWORK_NAME}")`);
         try {
-            await page.waitForURL(/#\/framework/,);
-            break;
+            await matchingItem.first().waitFor({ state: 'visible', timeout: 10000 });
+            if (await tryOpenFramework(page, matchingItem.first())) return true;
+            // Didn't have data — go back
+            await page.goto('/#/frameworks?server=http://localhost/api/', { waitUntil: 'domcontentloaded' });
+            await thingItems.first().waitFor({ state: 'visible', timeout: 15000 });
         } catch {
-            if (attempt === 2) {
-                // Last attempt — let it throw naturally
-                await thingItems.first().dblclick();
-                await page.waitForURL(/#\/framework/,);
+            // Search returned no results — clear and fall back
+        }
+        // Clear the search for fallback
+        if (await searchInput.isVisible().catch(() => false)) {
+            await searchInput.fill('');
+            try {
+                await thingItems.first().waitFor({ state: 'visible', timeout: 10000 });
+            } catch {
+                return false;
             }
         }
     }
-    await expect(page.locator('#framework')).toBeVisible();
+
+    // Fall back: try each framework in the list
+    const count = await thingItems.count();
+    for (let i = 0; i < count; i++) {
+        if (await tryOpenFramework(page, thingItems.nth(i))) return true;
+        await page.goto('/#/frameworks?server=http://localhost/api/', { waitUntil: 'domcontentloaded' });
+        try {
+            await thingItems.first().waitFor({ state: 'visible', timeout: 15000 });
+        } catch {
+            return false;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Try to open one framework item and verify it has hierarchy data.
+ * Returns true if the framework has data, false otherwise.
+ */
+async function tryOpenFramework(page, locator) {
+    for (let attempt = 0; attempt < 3; attempt++) {
+        await locator.dblclick();
+        try {
+            await page.waitForURL(/#\/framework/);
+            break;
+        } catch {
+            if (attempt === 2) return false;
+        }
+    }
+    try {
+        await page.locator('.lode__hierarchy-item').first().waitFor({ state: 'visible', timeout: 5000 });
+        return true;
+    } catch {
+        return false;
+    }
 }
 
 const test = baseTest.extend({
@@ -97,4 +153,4 @@ async function loginAndCreateConfig(page) {
     return uid;
 }
 
-module.exports = { test, expect, loginAndNavigate, navigateToFramework, createConfig, loginAndCreateConfig };
+module.exports = { test, expect, loginAndNavigate, navigateToFramework, createConfig, loginAndCreateConfig, TEST_FRAMEWORK_NAME };

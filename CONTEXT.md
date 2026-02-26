@@ -1,468 +1,286 @@
-# CaSS Editor — Project Knowledge (`CONTEXT.md`)
+# CaSS Editor — Full Project & Task Context
 
-> **Purpose**: Single-file reference capturing all project-specific knowledge for the CaSS Editor.
-> Generated from a full exploration of every source directory, config file, test suite, and project doc.
+## Project Overview
+CaSS Editor is a **Vue 2** single-page application for managing competency frameworks, concept schemes, progression models, and crosswalks. It connects to a CaSS backend server (Java/Elasticsearch) for data persistence.
 
----
+### Tech Stack
+- **Frontend**: Vue 2, Vuex, Vue Router, Webpack (via Vue CLI)
+- **Testing**: Playwright (E2E), Jest (unit)
+- **Coverage**: babel-plugin-istanbul (instrumentation), nyc (reporting)
+- **Backend**: CaSS server (Java), Elasticsearch — runs in Docker
+- **Package manager**: npm
 
-## 1. Project Overview
-
-| Field | Value |
-|---|---|
-| **Name** | CaSS Editor (Competency and Skills Service — Competency Framework Editor) |
-| **Version** | 1.6.11 (`package.json`) |
-| **Author** | CaSS Project / Eduworks |
-| **License** | Apache-2.0 |
-| **Repository** | `cassproject/cass-editor` on GitHub |
-| **Live Demo** | `https://cassproject.github.io/cass-editor/` |
-| **Purpose** | Create, edit, import/export, crosswalk, and manage competency frameworks and concept schemes using linked data (RDF/JSON-LD) stored in a CaSS Repository. Designed to be embeddable in an `<iframe>`. |
-
-### Key Capabilities
-- **Framework CRUD** — browse, create, edit, delete, version, undo, bulk-edit competency frameworks
-- **Concept Schemes** — SKOS-based concept scheme authoring (broadens/narrows, matches)
-- **Crosswalking** — side-by-side alignment creation between two frameworks
-- **Import** — CSV, CTDL-ASN JSON-LD, CASE JSON, ASN, Medbiquitous, OpenSalt URL, plain text, PDF
-- **Export** — CASS JSON-LD, CTDL-ASN, CASE, ASN, RDF/XML, Turtle, N4, CSV
-- **Configuration Management** — admin-definable profiles controlling visible properties, relationship types, value constraints, cardinality, criticality levels
-- **User/Group Management** — user registration, organization (group) creation, KBAC-based ownership, reader, commenter permissions
-- **Concurrent Editing** — WebSocket push for real-time multi-user collaboration
-- **Assertions & Timelines** — xAPI-integrated assertion management and timeline visualization
-- **Comments & Suggestions** — threaded comments, "suggest mode" edits reviewable by owners
-- **Accessibility** — 508/WCAG compliance goal, keyboard shortcuts for all tree operations
-- **Progressive Web App** — operates offline with service worker support
-- **CSS Inheritance** — when embedded in an iframe, imports parent page styles for seamless branding
-
----
-
-## 2. Technology Stack
-
-| Layer | Technology | Notes |
-|---|---|---|
-| **Framework** | **Vue 2** (`vue@^2.6.10`) | Options API, mixins-based architecture |
-| **State** | **Vuex** (`vuex@^3.1.1`) | 8 store modules |
-| **Routing** | **Vue Router** (`vue-router@^3.0.6`) | Hash-mode routing |
-| **CSS** | **Bulma** (`bulma@^0.7.5`) + SCSS | Theme & style files in `src/scss/` |
-| **Data SDK** | **cassproject** (npm) | Client SDK for CaSS Repository API, provides `EcRepository`, `EcFramework`, `EcCompetency`, etc. |
-| **Linked Data** | **jsonld** (`jsonld@^1.6.2`) | JSON-LD processing |
-| **Build** | **Vue CLI / Webpack** | `vue.config.js` config, `compression-webpack-plugin`, Babel transpilation of `cassproject` + `yocto-queue` |
-| **Dev Server** | localhost:8080 (HTTPS) | Uses local certs (`localhost.key`, `localhost.crt`, `ca.pem`) |
-| **E2E Tests** | **Playwright** (`@playwright/test`) | 186 test files, Chromium only, baseURL `http://localhost:8082` |
-| **Unit Tests** | **Jest** (`@vue/cli-plugin-unit-jest`) | 7 unit test files |
-| **Code Coverage** | **NYC / Istanbul** | `.nyc_output` in tests directory |
-| **Documentation** | **VuePress** | In `docs/` with `authoring/`, `dev/`, `guide/` sections |
-| **UUID** | **pure-uuid** | Globally available as `window.UUID` |
-| **Clipboard** | **v-clipboard** | Copy-to-clipboard Vue plugin |
-| **Scroll** | **vue-scrollto** | Smooth scrolling within `#framework` container |
-| **Lazy Loading** | **vue-infinite-loading** | Infinite scroll for framework lists |
-| **HTTP** | **vue-resource** + custom fetch throttle | `main.js` patches `global.fetch` to cap at 10 concurrent requests |
-| **Async Computed** | **vue-async-computed** | Async computed properties in components |
-| **Visibility** | **vue-observe-visibility** | Intersection Observer for lazy rendering |
-
----
-
-## 3. Directory Structure
-
+### Key Directories
 ```
-cass-editor/
-├── CONTEXT.md              ← THIS FILE
-├── README.md               ← Integration guide, URL params, keyboard shortcuts, dev setup
-├── REQUIREMENTS.md          ← 186 formal requirements (CA-83 through CA-268)
-├── CHANGELOG.md             ← 870 lines of version history (v0.4.26 → 1.2.9+)
-├── package.json             ← v1.6.11, scripts, dependencies
-├── vue.config.js            ← Webpack/devServer config
-├── playwright.config.js     ← E2E test config (Chromium, port 8082, 120s timeout)
-├── docs/                    ← VuePress documentation site
-│   ├── authoring/           ← 18 authoring docs
-│   ├── dev/                 ← 49 developer docs
-│   └── guide/               ← 4 guide docs
-├── src/
-│   ├── main.js              ← App bootstrap (Vue instance, plugins, fetch throttle, cassproject init)
-│   ├── App.vue              ← Root component (1523 lines) — WebSocket, identity, postMessage, framework CRUD
-│   ├── router.js            ← 225 lines, 14+ named routes
-│   ├── assets/              ← 44 static assets
-│   ├── scss/                ← 15 SCSS files (theme, styles, component-specific)
-│   ├── store/               ← Vuex store
-│   │   ├── index.js         ← Store root
-│   │   └── modules/         ← 8 modules (see §4)
-│   ├── mixins/              ← 12 mixin files (see §5)
-│   ├── components/          ← Reusable UI components (see §6)
-│   │   ├── SideNav.vue      ← (33 KB) Main sidebar navigation
-│   │   ├── NarrowSideNav.vue
-│   │   ├── Topbar.vue
-│   │   ├── FrameworkButtons.vue
-│   │   ├── AddNewDropdown.vue
-│   │   ├── Dropdown.vue / DropdownItem.vue
-│   │   ├── Panel.vue / PanelItem.vue
-│   │   ├── configuration/   ← 5 config components
-│   │   ├── framework/       ← 8 framework components
-│   │   ├── frameworks/      ← 1 component (list display)
-│   │   ├── import/          ← 7 import components
-│   │   ├── modalContent/    ← 28 modal dialogs
-│   │   ├── modals/          ← 1 modal wrapper (DynamicModal)
-│   │   └── plugins/         ← 2 plugin components
-│   ├── views/               ← Route-level page components (see §7)
-│   │   ├── Welcome.vue      ← Landing page (20 KB)
-│   │   ├── ConfigurationEditor.vue
-│   │   ├── Forbidden/InternalError/NotFound.vue ← Error pages
-│   │   ├── conceptScheme/   ← 2 views
-│   │   ├── directory/       ← 2 views
-│   │   ├── framework/       ← 5 views
-│   │   ├── login/           ← 3 views (Login, LegacyLogin, CreateAccount)
-│   │   ├── organization/    ← 2 views
-│   │   ├── plugins/         ← 2 views
-│   │   ├── progressionModel/← 2 views
-│   │   └── usersGroups/     ← 1 view
-│   ├── lode/                ← Linked Open Data Editor subsystem (see §8)
-│   │   ├── ietf-language-tags_json.json ← 957 KB language tag database
-│   │   └── components/      ← 13 core editing components
-│   └── layouts/             ← 1 layout component
-└── tests/
-    ├── e2e/                 ← 186 Playwright spec files + fixtures.js + coverage/
-    └── unit/                ← 7 Jest unit test files
+src/
+├── main.js              — App entry, Vue init, global config
+├── App.vue              — Root component, layout, sidebar
+├── router.js            — All route definitions
+├── store/               — Vuex store modules
+│   ├── app.js           — App-wide state (modals, sidebar)
+│   ├── editor.js        — Framework/competency editing state
+│   ├── featuresFlags.js — Feature flag toggles
+│   ├── lode.js          — LODE component state
+│   └── crosswalk.js     — Crosswalk state
+├── views/               — Page-level components
+│   ├── Welcome.vue
+│   ├── Login.vue, LegacyLogin.vue, CreateAccount.vue
+│   ├── framework/
+│   │   ├── Framework.vue       — Main framework editor
+│   │   ├── Frameworks.vue      — Framework list
+│   │   ├── Import.vue          — Import page (tabs for CSV/JSON/URL/server)
+│   │   ├── ImportServer.vue    — Server-to-server import
+│   │   ├── Crosswalk.vue       — Framework alignment/crosswalk
+│   │   └── DirectoryList.vue   — Directory browsing
+│   ├── conceptScheme/
+│   │   ├── ConceptScheme.vue
+│   │   └── ConceptHierarchy.vue  — 810 lines, concept tree
+│   ├── progressionModel/
+│   │   ├── ProgressionModel.vue
+│   │   └── ProgressionHierarchy.vue — 1369 lines, progression tree
+│   ├── configuration/
+│   │   └── Configuration.vue
+│   └── organization/
+│       └── Organizations.vue
+├── components/          — Reusable UI components
+│   ├── SideNav.vue, NarrowSideNav.vue
+│   ├── framework/       — EditorToolbar, RightAside, FilterAndSort, etc.
+│   └── modals/          — ShareModal, ExportModal, etc.
+├── lode/components/     — LODE framework editor components
+│   ├── Hierarchy.vue    — Tree rendering for frameworks
+│   ├── Thing.vue        — Read-only node display
+│   ├── ThingEditing.vue — Editable node display
+│   ├── Property.vue     — Property editor
+│   └── ...
+└── mixins/              — Shared logic mixed into components
+    ├── common.js           — 761 lines, keyboard shortcuts, clipboard, drag-drop
+    ├── import.js           — 1302 lines, file parsing (CSV, JSON, MEDBIQ, ASN)
+    ├── ctdlasnProfile.js   — 2954 lines, CTDL-ASN schema definitions
+    ├── t3Profile.js        — 247 lines, T3 schema definitions
+    ├── tlaProfile.js       — 607 lines, TLA schema definitions
+    ├── competencyEdits.js  — Framework save/edit operations
+    └── getLevelsAndRelations.js — Loads levels & relations for frameworks
 ```
 
----
-
-## 4. Vuex Store Modules
-
-| Module | File | Size | Purpose |
-|---|---|---|---|
-| `app` | `app.js` | 19 KB | Global app state: framework list, selected framework/competency, canEdit flag, right-aside panel, banner messages, search text, clipboard, organization, selected directory |
-| `editor` | `editor.js` | 19 KB | Editor state: framework data, competency nodes, hierarchy relations, drag-and-drop, undo/redo, selection tracking, save/load |
-| `crosswalk` | `crosswalk.js` | 11 KB | Crosswalk view state: left/right framework selection, alignment relationships |
-| `lode` | `lode.js` | 8 KB | LODE subsystem state: Thing/Property/Hierarchy data, language tags, schema profiles |
-| `configuration` | `configuration.js` | 4 KB | Configuration management state |
-| `featuresEnabled` | `featuresEnabled.js` | 2 KB | Feature flag toggles based on URL params (`ceasnDataFields`, `concepts`, `disableAssertions`, etc.) |
-| `user` | `user.js` | 1 KB | Logged-in user identity state |
-| `environment` | `environment.js` | <1 KB | Environment variables (selected server URL) |
-
----
-
-## 5. Mixins (Business Logic Layer)
-
-Mixins house the bulk of business logic. They are mixed into components via `mixins: [...]`.
-
-| Mixin | Size | Purpose |
-|---|---|---|
-| `configuration.js` | **131 KB** | Configuration profile definitions: CTDL-ASN, T3, TLA property mappings, schema field definitions, cardinality rules |
-| `ctdlasnProfile.js` | **209 KB** | Full CTDL-ASN schema profile: field definitions, export mappings, field groupings (primary/required/optional/tertiary) |
-| `import.js` | **72 KB** | Import logic for all formats: CSV, CTDL-ASN, CASE, ASN, Medbiquitous, PDF, text |
-| `tlaProfile.js` | **46 KB** | Total Learning Architecture profile |
-| `common.js` | **39 KB** | Shared utilities: framework helpers, language string handling, search, sorting, permissions checks |
-| `t3Profile.js` | **24 KB** | T3 (Training and Testing) profile |
-| `pluginUtil.js` | **12 KB** | Plugin system utilities |
-| `cassUtil.js` | **8 KB** | CaSS Repository API utilities: search, save, delete wrappers |
-| `getLevelsAndRelations.js` | **8 KB** | Level and relation type fetching from configurations |
-| `editDirectory.js` | **7 KB** | Directory/collection editing logic |
-| `cassApi.js` | **6 KB** | Low-level CaSS API helpers |
-| `competencyEdits.js` | **5 KB** | Competency property editing helpers |
+### Routes (from router.js)
+| Route | Component | Notes |
+|-------|-----------|-------|
+| `/` | Welcome | Landing page |
+| `/frameworks` | Frameworks | Framework list |
+| `/framework` | Framework | Single framework editor |
+| `/crosswalk` | Crosswalk | Alignment editor |
+| `/concepts` | ConceptScheme | Concept scheme list |
+| `/conceptScheme` | ConceptHierarchy | Single concept scheme |
+| `/progressionLevels` | ProgressionModel | Progression model list |
+| `/progressionModel` | ProgressionHierarchy | Single progression model |
+| `/configuration` | Configuration | Config editor |
+| `/users` | Users/Groups | User management |
+| `/directory` | DirectoryList | Directory browser |
+| `/login` | Login | SSO/CAS login |
+| `/legacyLogin` | LegacyLogin | Username/password login |
+| `/import` | Import | Import page |
+| `/plugins` | Plugins | Plugin management |
 
 ---
 
-## 6. Component Architecture
+## Current Task: Increase Code Coverage to 90%
 
-### 6.1 LODE (Linked Open Data Editor) — Core Editing Engine
+### Current Coverage: ~21.59% lines (before session 5 report merge)
+Session 5 collected data but the combined nyc report hasn't been regenerated yet.
 
-The `src/lode/components/` directory contains 13 components that form the generic RDF/JSON-LD editing engine:
+### Progress History
 
-| Component | Size | Role |
-|---|---|---|
-| `ThingEditing.vue` | **91 KB** | Main editing surface for any RDF "Thing" — renders all properties, handles save/undo |
-| `Property.vue` | **62 KB** | Renders a single RDF property with appropriate input widget based on range type |
-| `Hierarchy.vue` | **61 KB** | Tree view for hierarchical data (frameworks → competencies → sub-competencies) |
-| `Thing.vue` | **55 KB** | Read-only view of an RDF Thing's properties |
-| `HierarchyNode.vue` | **51 KB** | Individual node in the hierarchy tree — handles expand/collapse, drag-and-drop, selection |
-| `AddProperty.vue` | **43 KB** | "Add property" panel for adding new fields to a Thing |
-| `AssertionEditor.vue` | **37 KB** | xAPI assertion creation and editing |
-| `List.vue` | **36 KB** | List view for flat collections of Things |
-| `PropertyString.vue` | **21 KB** | String/langstring input with language tag support and autocomplete |
-| `TimelineElement.vue` | **17 KB** | Single timeline entry for assertion history |
-| `Breadcrumbs.vue` | **13 KB** | Framework path breadcrumbs showing where a competency sits in the hierarchy |
-| `Assertion.vue` | **12 KB** | Read-only assertion display |
-| `AssertionTimeline.vue` | **1 KB** | Timeline container for assertion history |
+| Phase | What | Result |
+|-------|------|--------|
+| Baseline | Initial instrumented server check | 0.15% |
+| Session 1 | All routes unauthenticated | 7.76% |
+| Session 2 | Feature flags, SideNav, import tabs, keyboard, postMessage | 12.65% |
+| Session 3 | Auth flows: login, config, users, crosswalk, concepts | 17.27% |
+| Session 4 | Framework CRUD, hierarchy, detail editor, export | 21.59% |
+| E2E suite | 223 Playwright specs (8 workers) | included above |
+| Jest | 47 unit tests | included above |
+| Session 5 | 13 sub-sessions targeting all remaining gaps | **data collected, report pending** |
 
-### 6.2 Framework Components (`src/components/framework/`)
-
-| Component | Size | Role |
-|---|---|---|
-| `ListItemInfo.vue` | **84 KB** | Detailed info panel for a selected competency (largest non-LODE component) |
-| `EditorToolbar.vue` | **30 KB** | Toolbar above the editor: add, move, indent/outdent, delete, search, collapse/expand |
-| `Search.vue` | **17 KB** | In-framework search with highlighting |
-| `SearchBar.vue` | **9 KB** | Search input bar |
-| `Comments.vue` | **13 KB** | Comment thread display |
-| `Comment.vue` | **6 KB** | Single comment |
-| `RightAside.vue` | **4 KB** | Right-side details panel |
-| `Versions.vue` | **2 KB** | Version history panel |
-
-### 6.3 Import Components (`src/components/import/`)
-
-| Component | Role |
-|---|---|
-| `ImportTabs.vue` | Tab container for import methods |
-| `ImportFile.vue` | File upload (CSV, JSON-LD, PDF) |
-| `ImportServer.vue` | Import from remote server (CASE, OpenSalt) |
-| `ImportUrl.vue` | Import from a URL |
-| `ImportText.vue` | Paste-in text import |
-| `ImportDetails.vue` | Import preview/mapping |
-| `DragAndDrop.vue` | Drag-and-drop file upload zone |
-
-### 6.4 Configuration Components (`src/components/configuration/`)
-
-| Component | Role |
-|---|---|
-| `ConfigurationDetails.vue` | **256 KB** — Main configuration editor (largest file in project) — field definitions, relations, levels, property constraints |
-| `ConfigurationList.vue` | List of available configurations |
-| `ConfigurationListItem.vue` | Individual config card |
-| `FrameworkCompetencyPropertyListItem.vue` | Property list entry in config |
-| `RelationshipListItem.vue` | Relationship type entry in config |
-
-### 6.5 Modal Dialogs (`src/components/modalContent/`)
-
-28 modal components covering: delete confirmations (competency, concept, framework, config, directory, level, comment), export options, import errors, share/permissions, assertion sharing, search, multi-edit, comments, login/logout, framework configuration, required properties, and message-of-the-day.
-
-Key large modals:
-- `Share.vue` (68 KB) — user/group permission management
-- `SearchModal.vue` (27 KB) — global search overlay
-- `SupportedImportDetails.vue` (28 KB) — import format documentation
-- `MultiEdit.vue` (20 KB) — bulk property editing
-- `Single.vue` (15 KB) — single-item detail modal
-- `ShareAssertions.vue` (17 KB) — assertion sharing controls
-- `ExportOptionsModal.vue` (15 KB) — export format selection
+### Session 5 Results (data in .nyc_output/)
+All 13 sub-sessions completed successfully:
+- `ctdlasn-profile` — 54 files (navigated with `ceasnDataFields=true`)
+- `t3-profile` — 44 files
+- `tla-profile` — 44 files
+- `concept-hierarchy` — 36 files
+- `progression-hierarchy` — 36 files
+- `directory-list` — 40 files (found 3 items)
+- `search` — 38 files
+- `import-deep` — 38 files (0 import tabs found — may need different approach)
+- `common-mixin` — 44 files (keyboard shortcuts: Ctrl+X/C/V, Tab, Delete, Ctrl+Z)
+- `crosswalk-deep` — 41 files (0 crosswalk items)
+- `welcome-deep2` — 59 files (33 buttons/links clicked)
+- `app-deep` — 38 files (viewport resize: 375px, 768px, 1920px)
+- `login-deep` — 17 files
 
 ---
 
-## 7. Routes
+## Profile Mixin Activation — Critical Knowledge
 
-| Path | Name | View Component(s) |
-|---|---|---|
-| `/` | `welcome` | `Welcome.vue` + SideNav + Topbar |
-| `/frameworks` | `frameworks` | Framework list + SideNav + Topbar |
-| `/collections` | `collections` | Collection list + SideNav + Topbar |
-| `/concepts` | `concepts` | Concept scheme list + SideNav + Topbar |
-| `/progressionLevels` | `progressionLevels` | Progression model list + SideNav + Topbar |
-| `/login` | `login` | Login view |
-| `/legacyLogin` | `legacyLogin` | Legacy login form |
-| `/createAccount` | `createAccount` | Account creation |
-| `/configuration` | `configuration` | ConfigurationEditor + SideNav + Topbar |
-| `/users` | `users` | User management + SideNav + Topbar |
-| `/pluginManager` | `pluginManager` | Plugin management + SideNav + Topbar |
-| `/crosswalk` | `crosswalk` | Framework crosswalk tool + SideNav + Topbar |
-| `/timeline` | `timeline` | Assertion timeline + SideNav + Topbar |
-| `/framework` | `framework` | Framework detail/editor + SideNav + Topbar |
-| `/directory` | `directory` | Directory browser + SideNav + Topbar |
-| `/organization` | `organization` | Organization management + SideNav + Topbar |
+The profile mixins (`ctdlasnProfile.js`, `t3Profile.js`, `tlaProfile.js`) are **computed properties** that return large schema objects. They only execute when accessed by the component.
 
----
+### Framework.vue decides which profile to use (lines 279-291):
+```javascript
+frameworkProfile: function() {
+    // T3 profile — activated by Vuex store state
+    if (this.$store.state.editor.t3Profile === true)
+        return this.t3FrameworkProfile;
 
-## 8. Data Model (CaSS / JSON-LD)
+    // CTDL-ASN Collection — subType check
+    if (this.isCeasn && this.framework.subType === 'Collection')
+        return this.ctdlAsnCollectionProfile;
 
-The editor works with RDF objects via the `cassproject` SDK. Core types:
+    // CTDL-ASN Framework — URL param ceasnDataFields=true
+    if (this.isCeasn && ((this.config && !this.configSetOnFramework) || !this.config))
+        return this.ctdlAsnFrameworkProfile;
 
-| RDF Type | SDK Class | Description |
-|---|---|---|
-| `schema:Framework` | `EcFramework` | Container for competencies with `competency[]` and `relation[]` arrays |
-| `schema:Competency` | `EcCompetency` | Individual competency with name, description, coded notation, etc. |
-| `schema:Relation` | `EcAlignment` | Relationship between two competencies (narrows, requires, equivalent, etc.) |
-| `schema:ConceptScheme` | `EcConceptScheme` | SKOS concept scheme container |
-| `schema:Concept` | `EcConcept` | SKOS concept |
-| `schema:Level` | `EcLevel` | Proficiency level |
-| `schema:CreativeWork` | — | Resource alignment (teaches, assesses, defines) |
-| `schema:Person` | `EcPerson` | User identity with linked `EcIdentity` |
-| `schema:Organization` | `EcOrganization` | Group/organization with shared identity |
+    // TLA — URL param tlaProfile=true
+    if (this.queryParams.tlaProfile === "true" && ...)
+        return this.tlaFrameworkProfile;
 
-### Security Model (KBAC)
-- **`@owner`** — RSA public keys of owners (full CRUD)
-- **`@reader`** — RSA public keys of readers (decrypt private objects)
-- Objects without `@owner` are public
-- Private objects are encrypted; only `@owner`/`@reader` key holders can decrypt
-- Group identities: organizations create a shared keypair; members gain the group's identity
+    // Custom config or default
+    if (this.config) return this.config.frameworkConfig;
+    return { /* default profile */ };
+}
+```
 
----
+The `isCeasn` computed property checks `this.queryParams["ceasnDataFields"] === 'true'`.
 
-## 9. URL Parameters (iframe Integration)
+### URL Parameters for Profile Activation:
+| URL Parameter | Profile | Mixin File |
+|---------------|---------|------------|
+| `ceasnDataFields=true` | CTDL-ASN | `ctdlasnProfile.js` |
+| `tlaProfile=true` | TLA | `tlaProfile.js` |
+| Store: `editor.t3Profile=true` | T3 | `t3Profile.js` |
+| `concepts=true` | Concept mode | Activates ConceptHierarchy |
+| `view=true` | View-only mode | Disables editing |
 
-The editor is designed for iframe embedding and extensively configurable via URL parameters:
+### Example URLs to trigger profiles:
+```
+# CTDL-ASN
+http://localhost:8082/#/frameworks?server=http://localhost/api/&ceasnDataFields=true
 
-| Parameter | Purpose |
-|---|---|
-| `server=<url>` | CaSS Repository API endpoint |
-| `view=true` | Read-only mode |
-| `concepts=true` | Concept scheme mode |
-| `select=<label>` | Enable competency selection with button label |
-| `singleSelect=<label>` | Single-select mode |
-| `selectVerbose=true` | Return full competency objects in selection |
-| `selectExport=ctdlasn` | CTDL-ASN schema in selection postMessages |
-| `selectRelations=true` | Include relations in selection |
-| `action=add\|import` | Auto-navigate to create/import workflow |
-| `frameworkId=<url>` | Open specific framework |
-| `filter=<query>` | Pre-filter framework search |
-| `user=self\|wait` | User identity mode |
-| `show=mine` / `ownedByMe=true` | Show only owned frameworks |
-| `private=true` | Default new objects to private |
-| `ceasnDataFields=true` | Enable CTDL-ASN field profiles |
-| `newObjectEndpoint=<url>` | Custom canonical URI prefix |
-| `frameworksPage=true` | Bypass welcome page |
-| `disableAssertions=true` | Hide assertion features |
-| `css=<url>` | Import external CSS |
-| `editorRoot=<path>` | Override root path |
-| `webSocketOverride=<url>` | Custom WebSocket endpoint |
-| `origin=<url>` | PostMessage origin for parent page |
+# TLA
+http://localhost:8082/#/frameworks?server=http://localhost/api/&tlaProfile=true
+
+# Concept mode
+http://localhost:8082/#/concepts?server=http://localhost/api/
+
+# Progression mode
+http://localhost:8082/#/progressionLevels?server=http://localhost/api/
+
+# View-only
+http://localhost:8082/#/frameworks?server=http://localhost/api/&view=true
+```
 
 ---
 
-## 10. PostMessage API
+## Coverage Toolchain Details
 
-The editor communicates with parent pages via `window.postMessage`:
+### Instrumentation
+- `babel-plugin-istanbul` is configured in `babel.config.js` (or similar)
+- It instruments source files during Webpack compilation
+- The `serve:coverage` script runs the dev server with instrumentation enabled on port 8082
 
-### Inbound Messages (from parent)
-| Action | Purpose |
-|---|---|
-| `identity` | Pass RSA private key for user authentication |
-| `template` | Set default properties for new competencies/frameworks/concepts |
-| `export` | Trigger export in specified schema |
-| `select` | Trigger selection action |
-| `set` | Set properties on an object by `@id` |
-| `highlightedCompetencies` | Highlight specific competencies in tree |
+### Collection
+- `window.__coverage__` is available on any page served by the instrumented server
+- Coverage data is a JSON object keyed by file path
+- Playwright tests use `tests/e2e/fixtures.js` which wraps the base test to auto-collect coverage after each test
 
-### Outbound Events (to parent)
-| Message Type | When |
-|---|---|
-| `selected` | User selects competencies |
-| `frameworkChanged` | Framework properties modified |
-| `frameworkClicked` | Framework selected/opened |
-| `competencyChanged` | Competency properties modified |
-| `competencyClicked` | Competency selected |
-| `viewChanged` | Internal view navigation |
-| `response` (export) | Export data ready |
-| `setOk` / `setFail` | Object set operation result |
-
----
-
-## 11. Build & Development
-
-### Scripts
+### Reporting
 ```bash
-npm run serve          # Dev server (localhost:8080, HTTPS)
-npm run build          # Production build
-npm run test:unit      # Jest unit tests
-npm run test:e2e       # Playwright e2e tests (needs app on :8082)
-npm run lint           # ESLint
+# Text report
+npx nyc report --reporter=text --include="src/**"
+
+# HTML report (browsable)
+npx nyc report --reporter=html --include="src/**"
+
+# Report file location
+.nyc_output/          — raw coverage JSON files
+coverage/             — generated HTML report
+coverage-report.txt   — text report snapshot
 ```
 
-### Dev Server Config (`vue.config.js`)
-- HTTPS with local certs
-- Source maps enabled
-- Optimization disabled (development)
-- Babel transpiles `cassproject` and `yocto-queue` from `node_modules`
-- Gzip compression plugin
-- `publicPath: ''` for relative deployment
-
-### Environment Variables
-```
-VUE_APP_SELECTEDSERVER=https://dev.api.cassproject.org/api/  # in .env.local
-```
+### Existing E2E Tests
+- **57 coverage tests** in `tests/e2e/coverage/cov-*.spec.js`
+- Use Playwright with custom fixtures for automatic coverage collection
+- Run with: `npx playwright test tests/e2e/coverage/`
 
 ---
 
-## 12. Testing
+## Standalone Coverage Scripts (in project root)
 
-### E2E Tests (Playwright)
-- **186 spec files** in `tests/e2e/`, named after requirements (e.g., `ca-83.spec.js` through `ca-268.spec.js`)
-- Additional specs: `smoke.spec.js`, `navigation.spec.js`, `content-management.spec.js`, `requirements.spec.js`, `debug_login.spec.js`
-- **Fixtures**: `fixtures.js` provides test helpers, common selectors, and setup routines
-- **Config**: Chromium only, 120s test timeout, 60s expect timeout, 1 retry, 8 workers (1 on CI)
-- **Coverage**: Istanbul/NYC output in `tests/e2e/coverage/`
+These were created during this effort but should be converted to proper E2E tests:
 
-### Unit Tests (Jest)
-- 7 test files in `tests/unit/`
-
----
-
-## 13. Real-Time Collaboration (WebSocket)
-
-`App.vue` method `openWebSocket(r)` establishes a WebSocket to the CaSS server for real-time updates:
-- Receives change notifications for frameworks, competencies, relations
-- `changedObject(wut)` method processes incoming changes and updates the Vuex store
-- Auto-reconnects on close
-- `webSocketOverride` URL param supports reverse proxy configurations
+| Script | Purpose |
+|--------|---------|
+| `collect-coverage.js` | Session 1: all routes unauthenticated |
+| `collect-coverage2.js` | Session 2: feature flags, SideNav, import, keyboard |
+| `collect-coverage3.js` | Session 3: authenticated (login, config, users, crosswalk) |
+| `collect-coverage4.js` | Session 4: framework CRUD, LODE components |
+| `collect-coverage5.js` | Session 5: profiles, concepts, progressions, directories, etc. |
 
 ---
 
-## 14. App Initialization Flow (`App.vue.initializeApp()`)
+## Remaining Coverage Gaps (before session 5 data merged)
 
-1. Parse URL query parameters (`window.queryParams`)
-2. Configure `EcRepository` with the selected server
-3. Set feature flags from URL params → Vuex `featuresEnabled`
-4. Load user identity (from localStorage, postMessage, or SSO)
-5. Search for linked `Person` and group organizations
-6. Add group identities to the identity manager
-7. Open WebSocket for real-time collaboration
-8. Load plugins (if plugin system enabled)
-9. Navigate to appropriate route based on URL params (`frameworkId`, `action`, `concepts`, etc.)
+| File | Lines | Pre-S5 Coverage | Session 5 Targeted? |
+|------|-------|-----------------|---------------------|
+| `ctdlasnProfile.js` | 2954 | 0% | ✅ via `ceasnDataFields=true` |
+| `import.js` (mixin) | 1302 | 1.38% | Partially (no file upload) |
+| `ProgressionHierarchy.vue` | 1369 | 0% | ✅ via `/progressionLevels` |
+| `ConceptHierarchy.vue` | 810 | 0% | ✅ via `/concepts` |
+| `common.js` | 761 | 8.95% | ✅ keyboard shortcuts |
+| `ImportServer.vue` | 753 | 0% | Partially |
+| `tlaProfile.js` | 607 | 0% | ✅ via `tlaProfile=true` |
+| `Crosswalk.vue` | 630 | 11.5% | ✅ but 0 items found |
+| `DirectoryList.vue` | 464 | 0% | ✅ via `/directory` |
+| `t3Profile.js` | 247 | 0% | ✅ via store |
+| `Search.vue` | 283 | 0% | ✅ |
+| `Comments.vue` | 228 | 0% | Not yet targeted |
 
 ---
 
-## 15. Key Implementation Patterns
+## Login Flow (for creating authenticated test sessions)
 
-### Fetch Throttling (`main.js`)
-Global `fetch` is monkey-patched to limit concurrent requests to 10, with 10ms poll intervals for queued requests. This prevents overwhelming the CaSS server.
+```javascript
+// Navigate to legacy login
+await page.goto('http://localhost:8082/#/legacyLogin?server=http://localhost/api/');
+await page.waitForTimeout(3000);
 
-### `v-click-outside` Directive
-Custom Vue directive for detecting clicks outside an element, used for dismissing dropdowns and modals.
+// Click "Create Account"
+await page.click('#legacy-login-create-account-button');
 
-### EcRepository Caching
-```js
-EcRepository.caching = true;     // In-memory L1 cache
-EcRepository.cachingL2 = true;   // Persistent L2 cache
+// Fill form
+const username = 'testuser_' + Date.now();
+await page.fill('#legacy-login-create-link-person-name', username);
+await page.fill('#legacy-login-create-link-person-email', username + '@test.com');
+await page.fill('#legacy-login-create-account-username', username);
+await page.fill('#legacy-login-create-account-password', 'password123');
+await page.fill('#legacy-login-create-account-password-confirm', 'password123');
+
+// Submit
+await page.click('#legacy-login-create-link-person-button');
+
+// Wait for login completion
+await page.waitForSelector('#side-nav-user-icon-button', { timeout: 30000 });
 ```
 
-### Vue Warn Suppression
-Specific known warnings are silenced (Boolean prop type coercion, non-primitive keys, duplicate keys).
-
 ---
 
-## 16. Keyboard Shortcuts
+## Next Steps (Priority Order)
 
-| Shortcut | Action |
-|---|---|
-| ↑/↓ | Navigate framework/competency list |
-| ←/→ | Expand/collapse nested competencies |
-| Space | Select focused element (1.3+) |
-| Tab | Focus navigation |
-| Shift+X | Cut (drag) competency |
-| Shift+C | Copy competency |
-| Shift+V | Paste (drop) competency |
-| Shift+↑/↓ | Move competency up/down |
-| Shift+←/→ | Indent/outdent competency |
+1. **Regenerate coverage report** — `npx nyc report --reporter=text --include="src/**"` to measure impact of session 6
+2. ~~**Convert standalone scripts to proper E2E tests**~~ ✅ Done — 13 new spec files, originals deleted
+3. **Target remaining gaps** — especially `import.js` (needs actual file uploads), `ImportServer.vue`, `Comments.vue`
+4. **Update MYTASKS.md** with new coverage numbers
+5. ~~**Clean up** — remove standalone `collect-coverage*.js` after conversion~~ ✅ Done
 
----
-
-## 17. Past Conversation Context
-
-### Schema Tooltip Fix (Conv. `4f9768ae`)
-Fixed `JsonLdEditor.vue` to correctly render table header descriptions when a schema is selected — tooltips now appear on hover for property headers.
-
-### Documentation Suite (Conv. `a58ca435`)
-Created/updated documentation files: `FILE.md`, `CONFIGURATION.md`, `DEPLOYMENT.md`, `ISSUE_TEMPLATE.md`, `PULL_REQUEST_TEMPLATE.md`.
-
-### Browser Coverage Exploration (Conv. `f1ca5b45`)
-Drove browser-based code coverage exploration targeting zero-coverage components (`Breadcrumbs.vue`, `competencyEdits.js`, `AddProperty.vue`, `ListItemInfo.vue`). Combined manual exploration coverage with automated test coverage.
-
----
-
-## 18. Large / Complex Files (by size)
-
-| File | Size | Notes |
-|---|---|---|
-| `src/components/configuration/ConfigurationDetails.vue` | 256 KB | Configuration editor — largest in project |
-| `src/mixins/ctdlasnProfile.js` | 209 KB | CTDL-ASN field/schema definitions |
-| `src/mixins/configuration.js` | 131 KB | Configuration profile logic |
-| `src/lode/components/ThingEditing.vue` | 91 KB | Core editing surface |
-| `src/lode/components/Hierarchy.vue` | 61 KB | Tree component |
-| `src/lode/components/Property.vue` | 62 KB | Property editor |
-| `src/App.vue` | 76 KB | Root app (1523 lines) |
-| `src/mixins/import.js` | 72 KB | Import logic |
-| `src/components/modalContent/Share.vue` | 68 KB | Permission management |
-| `src/lode/ietf-language-tags_json.json` | 957 KB | Language tag database |
-
----
+## Environment Notes
+- CaSS backend running on **port 80**
+- Editor (instrumented) running on **port 8082**
+- Don't start either server — user manages them manually

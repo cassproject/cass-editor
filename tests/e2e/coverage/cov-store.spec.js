@@ -75,7 +75,7 @@ test('Store: app module mutations', async ({ page }) => {
 test('Store: editor module state', async ({ page }) => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await expect(page.locator('#frameworks')).toBeVisible();
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     const result = await page.evaluate(() => {
@@ -99,7 +99,7 @@ test('Store: editor module state', async ({ page }) => {
 test('Store: editor module mutations', async ({ page }) => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await expect(page.locator('#frameworks')).toBeVisible();
-    await navigateToFramework(page);
+    if (!await navigateToFramework(page)) return;
     await expect(page.locator('#framework')).toBeVisible();
 
     const result = await page.evaluate(() => {

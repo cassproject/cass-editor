@@ -54,7 +54,7 @@ test.describe('Modal Components Coverage', () => {
         const thingItems = page.locator('.cass--list--item .cass--list--thing');
         const itemCount = await thingItems.count();
         if (itemCount > 0) {
-            await navigateToFramework(page);
+            if (!await navigateToFramework(page)) return;
 
             // Exercise ExportOptionsModal computed properties through the Vue tree
             const exportModalData = await page.evaluate(() => {

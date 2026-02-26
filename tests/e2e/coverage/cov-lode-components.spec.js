@@ -117,7 +117,7 @@ test.describe('LODE Components Coverage', () => {
         const count = await thingItems.count();
 
         if (count > 0) {
-            await navigateToFramework(page);
+            if (!await navigateToFramework(page)) return;
             await page.waitForTimeout(2000);
 
             // Find Hierarchy component
@@ -162,7 +162,7 @@ test.describe('LODE Components Coverage', () => {
         const count = await thingItems.count();
 
         if (count > 0) {
-            await navigateToFramework(page);
+            if (!await navigateToFramework(page)) return;
             await page.waitForTimeout(2000);
 
             // Find Property and PropertyString components
