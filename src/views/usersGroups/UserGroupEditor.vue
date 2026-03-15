@@ -582,7 +582,7 @@
             </template>
         </modal-template>
         <!-- busy modal -->
-        <modal-template
+        <modal-template id="user-group-busy-modal"
             :header="false"
             :active="userGroupBusy">
             <template slot="modal-header">
