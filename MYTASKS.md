@@ -14,8 +14,8 @@ _(Empty)_
   - [x] Session 6: Converted standalone scripts → 13 new E2E spec files → 31.78%
   - [x] Improved `navigateToFramework` — search-based, empty-framework tolerant
   - [/] **Phase 5: Target remaining gaps** (top files by uncovered lines):
-    - [ ] `import.js` — 717 uncov lines (10% cov)
-    - [ ] `ProgressionHierarchy.vue` — 706 uncov (0%)
+    - [x] `import.js` — 717 uncov lines (35% cov)
+    - [/] `ProgressionHierarchy.vue` — 706 uncov (0%)
     - [ ] `ListItemInfo.vue` — 686 uncov (8.8%)
     - [ ] `App.vue` — 641 uncov (25.7%)
     - [ ] `ConfigurationDetails.vue` — 594 uncov (28.1%)

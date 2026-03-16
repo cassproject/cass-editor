@@ -96,7 +96,8 @@
             </div>
         </div>
         <!-- import status messages -->
-        <div v-if="importType === 'file'">
+        <div v-if="importType === 'file'"
+            id="import-status-messages">
             <h2 class="is-size-3">
                 Import from file
             </h2>
@@ -131,7 +132,8 @@
                         Please review the competency framework and file details gathered below. To continue with the input of this competency framework, press Accept Details & Review. To cancel and review or change your input file, press cancel.
                     </span>
                 </span>
-                <span v-if="importTransition === 'preview'">
+                <span v-if="importTransition === 'preview'"
+                    id="import-preview">
                     <span
                         class=" is-size-5 has-text-success has-text-weight-bold"
                         v-if="frameworkSize !== null">
@@ -143,7 +145,8 @@
                         Import success, concepts ready to edit.
                     </span>
                 </span>
-                <span v-if="importTransition === 'light' && importType !== 'text'">
+                <span v-if="importTransition === 'light' && importType !== 'text'"
+                    id="import-light">
                     <span
                         class="is-size-5">
                         <span class="has-text-success has-text-weight-bold">
@@ -203,7 +206,8 @@
                 <span v-else-if="importTransition === 'light'">
                     Complete
                 </span>
-                <span v-else-if="importTransition === 'preview'">
+                <span v-else-if="importTransition === 'preview'" 
+                    id="import-preview-processed">
                     Processed, ready to edit
                 </span>
                 <span v-else>

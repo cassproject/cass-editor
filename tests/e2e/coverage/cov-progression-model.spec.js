@@ -15,7 +15,7 @@ test.describe.serial('Progression Model Coverage', () => {
   test('Progression Levels list page loads', async ({
     page
   }) => {
-    await page.goto('/#/progressionLevels?server=http://localhost/api/');
+    await page.goto('/#/progressionLevels?ceasnDataFields=true&server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     // The progressionLevels route uses Frameworks.vue in progression mode
     const modeData = await page.evaluate(() => {
@@ -32,7 +32,7 @@ test.describe.serial('Progression Model Coverage', () => {
   test('Exercise progression mode store mutations', async ({
     page
   }) => {
-    await page.goto('/#/frameworks?server=http://localhost/api/');
+    await page.goto('/#/frameworks?ceasnDataFields=true&server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     const storeData = await page.evaluate(() => {
       const store = window.app && window.app.$store;
@@ -63,7 +63,7 @@ test.describe.serial('Progression Model Coverage', () => {
       window.app.$store.commit('editor/progressionMode', true);
       window.app.$store.commit('editor/conceptMode', false);
     });
-    await page.goto('/#/progressionLevels?server=http://localhost/api/');
+    await page.goto('/#/progressionLevels?ceasnDataFields=true&server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     // Exercise Frameworks.vue computed properties in progression mode
     const frameworksData = await page.evaluate(() => {
@@ -99,7 +99,7 @@ test.describe.serial('Progression Model Coverage', () => {
     });
 
     // Navigate to progression levels
-    await page.goto('/#/progressionLevels?server=http://localhost/api/');
+    await page.goto('/#/progressionLevels?ceasnDataFields=true&server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     // Look for existing progression models
     const thingItems = page.locator('.cass--list--item .cass--list--thing');

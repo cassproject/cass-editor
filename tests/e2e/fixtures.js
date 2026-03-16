@@ -37,6 +37,7 @@ async function loginAndNavigate(page) {
     }
 
     await page.waitForSelector('#side-nav-user-icon-button');
+    await page.waitForSelector('#frameworks');
     return lnuid;
 }
 
