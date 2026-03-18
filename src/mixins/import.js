@@ -178,6 +178,85 @@ async function checkDuplicateCtidsInConceptSchemes(repo, competencyIds, framewor
     return errors;
 }
 
+/**
+ * Checks if any framework/scheme being imported has a CTID that already belongs to
+ * an existing framework or concept scheme of a different type on the server.
+ * Extracts CTIDs directly from the frameworkArray objects via ceterms:ctid.
+ *
+ * @param {EcRepository} repo - Repository to search against
+ * @param {string[]} competencyIds - Unused, accepted for consistent check function signature
+ * @param {EcFramework[]} frameworkArray - Frameworks/schemes being imported
+ * @param {Object} competencyCtids - Unused, accepted for consistent check function signature
+ * @returns {Promise<string[]>} Array of error messages for any CTID collisions found
+ */
+async function checkFrameworkCtidCollisions(repo, competencyIds, frameworkArray, competencyCtids) {
+    const errors = [];
+    // Collect CTIDs from the frameworks/schemes being imported
+    const ctidsToCheck = [];
+    for (const fw of frameworkArray) {
+        const ctid = fw["ceterms:ctid"];
+        if (ctid) {
+            ctidsToCheck.push({ctid, fw});
+        }
+    }
+    if (ctidsToCheck.length === 0) return errors;
+    const BATCH_SIZE = 50;
+    for (let batch = 0; batch < ctidsToCheck.length; batch += BATCH_SIZE) {
+        const chunk = ctidsToCheck.slice(batch, batch + BATCH_SIZE);
+        const chunkCtids = new Set(chunk.map(c => c.ctid));
+        const queryParts = chunk.map(c => 'ceterms\\:ctid:"' + c.ctid + '"');
+        const query = '(' + queryParts.join(' OR ') + ')';
+        // Search for existing frameworks with matching CTIDs
+        try {
+            const existingFrameworks = await new Promise((resolve, reject) => {
+                EcFramework.search(repo, query, resolve, reject, {size: 10000});
+            });
+            if (existingFrameworks) {
+                for (const existingFw of existingFrameworks) {
+                    // Skip if this is the same object being re-imported
+                    const isBeingImported = frameworkArray.some(
+                        fw => fw.shortId() === existingFw.shortId()
+                    );
+                    if (!isBeingImported) {
+                        const fwCtid = existingFw["ceterms:ctid"];
+                        if (fwCtid && chunkCtids.has(fwCtid)) {
+                            errors.push(
+                                `Framework/scheme with CTID ${fwCtid} has the same CTID as existing framework "${existingFw.name || existingFw.shortId()}"`
+                            );
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Error checking for framework CTID collisions with frameworks', e);
+        }
+        // Search for existing concept schemes with matching CTIDs
+        try {
+            const existingSchemes = await new Promise((resolve, reject) => {
+                EcConceptScheme.search(repo, query, resolve, reject, {size: 10000});
+            });
+            if (existingSchemes) {
+                for (const existingCs of existingSchemes) {
+                    const isBeingImported = frameworkArray.some(
+                        fw => fw.shortId() === existingCs.shortId()
+                    );
+                    if (!isBeingImported) {
+                        const csCtid = existingCs["ceterms:ctid"];
+                        if (csCtid && chunkCtids.has(csCtid)) {
+                            errors.push(
+                                `Framework/scheme with CTID ${csCtid} has the same CTID as existing concept scheme "${existingCs.name || existingCs.shortId()}"`
+                            );
+                        }
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('Error checking for framework CTID collisions with concept schemes', e);
+        }
+    }
+    return errors;
+}
+
 export default {
     data() {
         return {
@@ -877,7 +956,8 @@ export default {
             this.queryParams.ceasnDataFields === 'true' ? [
                 checkDuplicateCtidsInFrameworks,
                 checkDuplicateCtidsInConceptSchemes,
-                checkCtidCollisionsWithFrameworksAndConceptSchemes
+                checkCtidCollisionsWithFrameworksAndConceptSchemes,
+                checkFrameworkCtidCollisions
             ] : null);
         },
         importPdf: function() {
@@ -1254,7 +1334,8 @@ export default {
             this.queryParams.ceasnDataFields === 'true' ? [
                 checkDuplicateCtidsInFrameworks,
                 checkDuplicateCtidsInConceptSchemes,
-                checkCtidCollisionsWithFrameworksAndConceptSchemes
+                checkCtidCollisionsWithFrameworksAndConceptSchemes,
+                checkFrameworkCtidCollisions
             ] : null);
         },
         importFromFile: function() {
