@@ -56,10 +56,10 @@ EcRepository.save(a, console.log, console.error);
 
 var myIds = EcIdentityManager.default.ids; // Saving our identities elsewhere.
 EcIdentityManager.default.ids = []; // Removing them from the expected location.
-EcRepository.cache = {}; // Clearing the cache.
+EcRepository.cacheBacking = {}; // Clearing the cache.
 await EcRepository.get(a.id); // Limited Data
 
-EcRepository.cache = {}; // Clearing the cache.
+EcRepository.cacheBacking = {}; // Clearing the cache.
 EcIdentityManager.default.ids = myIds; // Restore our identities
 await EcRepository.get(a.id); // Full Data
 ```

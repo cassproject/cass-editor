@@ -559,7 +559,7 @@ export default {
                 this.$store.commit('app/importStatus', "Import finished.");
             } else {
                 var me = this;
-                EcRepository.cache = {};
+                EcRepository.cacheBacking = {};
                 EcConceptScheme.get(this.cassTaxonomies[firstIndex].shortId(), function(found) {
                     me.$store.commit('app/importStatus', 'taxonomy found...');
                     me.showModal('duplicateOverwriteOnly', [[me.cassTaxonomies[firstIndex], firstIndex], found]);
@@ -608,7 +608,7 @@ export default {
                 this.$store.commit('app/importStatus', "Import finished.");
             } else {
                 var me = this;
-                EcRepository.cache = {};
+                EcRepository.cacheBacking = {};
                 EcFramework.get(this.cassFrameworks[firstIndex].shortId(), function(found) {
                     me.$store.commit('app/importStatus', 'framework found...');
                     me.showModal('duplicateOverwriteOnly', [[me.cassFrameworks[firstIndex], firstIndex], found]);
