@@ -19,7 +19,7 @@
                 <button
                     class="button is-secondary is-outlined"
                     id="logout-success-close-button"
-                    @click="store.app().setCloseModal()">
+                    @click="store.app().closeModal()">
                     <span class="icon">
                         <i class="fa fa-times-circle" />
                     </span>
@@ -45,6 +45,9 @@ import ModalTemplate from './ModalTemplate.vue';
 import {cassApi} from '../../mixins/cassApi';
 export default {
     name: 'LogoutSuccessModal',
+    setup() {
+        return { store };
+    },
     mixins: [cassApi],
     props: {
         isActive: Boolean
@@ -54,7 +57,7 @@ export default {
     },
     methods: {
         close: function() {
-            store.app().setCloseModal();
+            store.app().closeModal();
             if (store.featuresEnabled().apiLoginEnabled) {
                 this.redirectToExternalLogout();
             } else {

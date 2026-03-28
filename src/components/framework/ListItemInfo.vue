@@ -473,6 +473,9 @@ import store from '@/stores/index.js';
 import common from '@/mixins/common.js';
 export default {
     name: 'ListItemInfo',
+    setup() {
+        return { store };
+    },
     mixins: [common],
     components: {
     },

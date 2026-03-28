@@ -126,14 +126,14 @@
                 </button>
                 <button
                     v-if="numberOfParentFrameworks !== 0"
-                    @click="store.app().setCloseModal()"
+                    @click="store.app().closeModal()"
                     id="single-return-to-framework-button"
                     class="button is-outlined is-primary">
                     return to framework editor
                 </button>
                 <button
                     v-else
-                    @click="store.app().setCloseModal()"
+                    @click="store.app().closeModal()"
                     id="single-done-button"
                     class="button is-outlined is-primary">
                     done
@@ -163,6 +163,9 @@ import ThingEditing from '@/lode/components/ThingEditing.vue';
 
 export default {
     name: 'Single',
+    setup() {
+        return { store };
+    },
     mixins: [common],
     components: {Thing, ModalTemplate, ThingEditing},
     data() {
@@ -233,12 +236,12 @@ export default {
                 store.editor().setConceptMode(true);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: framework.url}});
             }
-            store.app().setCloseModal();
+            store.app().closeModal();
         },
         goToCompetencyWithinThisFramework: function() {
             // Scroll to competency
             this.$scrollTo("#scroll-" + this.dynamicModalContent.uri.split('/').pop());
-            store.app().setCloseModal();
+            store.app().closeModal();
         },
         findConceptTrail: async function(conceptId) {
             var concept = await EcRepository.get(conceptId);
@@ -272,7 +275,7 @@ export default {
             if (this.obj) {
                 this.repo.deleteRegistered(this.obj, function() {
                     store.app().setRefreshSearch(true);
-                    store.app().setCloseModal();
+                    store.app().closeModal();
                 }, function(err) {
                     console.error(err);
                     me.error = "Error deleting";

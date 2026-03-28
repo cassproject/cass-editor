@@ -75,6 +75,9 @@ import common from '@/mixins/common.js';
 
 export default {
     name: 'ImportText',
+    setup() {
+        return { store };
+    },
     props: {
     },
     components: {

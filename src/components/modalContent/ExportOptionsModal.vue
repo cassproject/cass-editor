@@ -139,7 +139,7 @@ export default {
             this.working = false;
         },
         closeModal() {
-            store.app().setCloseModal();
+            store.app().closeModal();
         },
         exportObject: async function() {
             if (this.objType.indexOf("conceptscheme") !== -1) {

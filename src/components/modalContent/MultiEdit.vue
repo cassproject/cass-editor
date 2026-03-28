@@ -33,7 +33,7 @@
                 </div>
                 <p
                     class="help is-danger"
-                    v-if="errorMessage !== []">
+                    v-if="errorMessage && errorMessage.length > 0">
                     {{ this.errorMessage[0] }}
                 </p>
             </div>
@@ -83,6 +83,9 @@ import Search from '../framework/Search.vue';
 import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'MultiEdit',
+    setup() {
+        return { store };
+    },
     components: {
         AddProperty,
         Search,
@@ -128,10 +131,10 @@ export default {
             return false;
         },
         removeAddingValueAtIndex: function() {
-            return this.$store.getters['lode/removeAddingValueAtIndex'];
+            return store.lode().removeAddingValueAtIndex;
         },
         addingChecked: function() {
-            return this.$store.getters['lode/addingChecked'];
+            return store.lode().addingChecked;
         }
     },
     methods: {
@@ -139,7 +142,7 @@ export default {
             if (this.isSearching) {
                 this.isSearching = false;
             } else {
-                this.$store.commit('app/closeModal');
+                store.app().closeModal();
             }
         },
         addErrorMessage: function(msg) {
@@ -149,7 +152,7 @@ export default {
             this.addedPropertiesAndValues[index].property = property;
             this.addedPropertiesAndValues[index].value = value;
             this.addedPropertiesAndValues[index].range = range;
-            this.$set(this.addedPropertiesAndValues[index], "error", null);
+            this.addedPropertiesAndValues[index].error = null;
             // Validate input
             if (range.length === 1 && (range[0] === "http://schema.org/URL" ||
             range[0].toLowerCase().indexOf("concept") !== -1 || range[0].toLowerCase().indexOf("competency") !== -1 ||
@@ -337,11 +340,11 @@ export default {
         save: async function(expandedCompetency) {
             var me = this;
             var context = "https://schema.cassproject.org/0.4";
-            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
+            if (store.editor().queryParams.concepts === "true" || store.editor().conceptMode === true || store.editor().progressionMode === true) {
                 context += "/skos";
             }
             try {
-                let compacted = await jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context]);
+                let compacted = await jsonld.compact(expandedCompetency, store.lode().rawSchemata[context]);
                 if (compacted) {
                     compacted = me.turnFieldsBackIntoArrays(compacted);
                     var rld = new EcRemoteLinkedData();
@@ -349,7 +352,7 @@ export default {
                     rld.context = context;
                     delete rld["@context"];
                     rld["schema:dateModified"] = new Date().toISOString();
-                    if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
+                    if (store.editor() && store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                         rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     me.repo.saveTo(rld, console.log, console.error);
@@ -373,15 +376,15 @@ export default {
             return rld;
         },
         addSelected: function() {
-            var ids = this.$store.getters['editor/selectedCompetenciesAsProperties'];
+            var ids = store.editor().selectedCompetenciesAsProperties;
             for (var i = 0; i < ids.length; i++) {
                 if (this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].property.length !== 0) {
                     this.addAnotherProperty();
                 }
-                var property = this.$store.getters['editor/selectCompetencyRelation'];
+                var property = store.editor().selectCompetencyRelation;
                 this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].value = ids[i];
                 this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].property = {value: property, label: this.profile[property]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"]};
-                this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].range = this.$store.getters['lode/addingRange'];
+                this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].range = store.lode().addingRange;
             }
             this.isSearching = false;
         }
@@ -392,17 +395,17 @@ export default {
                 // Done saving, close modal
                 this.isProcessing = false;
                 if (this.changedItemsForUndo) {
-                    this.$store.commit('editor/addEditsToUndo', this.changedItemsForUndo);
+                    store.editor().addEditsToUndo(this.changedItemsForUndo);
                 }
                 if (!this.errorMessage || this.errorMessage.length === 0) {
-                    this.$store.commit('app/closeModal');
+                    store.app().closeModal();
                 }
             }
         },
         removeAddingValueAtIndex: function() {
             if (this.removeAddingValueAtIndex) {
                 this.removeValueAtIndex(this.removeAddingValueAtIndex);
-                this.$store.commit('lode/removeAddingValueAtIndex', null);
+                store.lode().removeAddingValueAtIndex(null);
             }
         },
         addingChecked: function() {

@@ -47,6 +47,9 @@ import FilterAndSort from './../frameworks/FilterAndSort.vue';
 
 export default {
     name: 'RightAside',
+    setup() {
+        return { store };
+    },
     props: {
     },
     data() {

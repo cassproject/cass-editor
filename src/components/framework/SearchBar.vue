@@ -132,6 +132,9 @@ import { map } from "lodash";
 import {mapState} from "pinia";
 export default {
     name: 'SearchBar',
+    setup() {
+        return { store };
+    },
     props: {
         ownedByMe: {
             type: Boolean,

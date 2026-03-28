@@ -281,6 +281,9 @@ import common from '@/mixins/common.js';
 import {cassUtil} from '../../mixins/cassUtil';
 export default {
     name: 'EditorToolbar',
+    setup() {
+        return { store };
+    },
     mixins: [ common, cassUtil ],
     props: {
         properties: {

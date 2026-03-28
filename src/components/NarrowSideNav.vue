@@ -177,6 +177,9 @@ import {mapState} from 'pinia';
 import {cassUtil} from './../mixins/cassUtil';
 export default {
     name: 'NarrowSideNav',
+    setup() {
+        return { store };
+    },
     props: {
         method: {
             default: ''

@@ -262,6 +262,9 @@
 import store from '@/stores/index.js';
 export default {
     name: 'FrameworkButtons',
+    setup() {
+        return { store };
+    },
     computed: {
         queryParams() {
             return store.editor().queryParams;

@@ -87,6 +87,9 @@ import {cassUtil} from '@/mixins/cassUtil.js';
 
 export default {
     name: 'FilterAndSort',
+    setup() {
+        return { store };
+    },
     data() {
         return {
             sortResults: [

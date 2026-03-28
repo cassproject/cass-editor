@@ -59,7 +59,7 @@ export default {
             this.closeModal();
         },
         closeModal() {
-            store.app().setCloseModal();
+            store.app().closeModal();
             store.editor().setItemToDelete({});
         },
         deleteObject: function(thing) {

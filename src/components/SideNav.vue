@@ -521,6 +521,9 @@ import { last } from 'lodash';
 export default {
     mixins: [cassUtil, cassApi, pluginUtil],
     name: 'SideNav',
+    setup() {
+        return { store };
+    },
     props: {
         method: {
             default: '',
@@ -565,8 +568,8 @@ export default {
             store.user().setLoggedOnPerson(person);
         },
         setLaunchPluginValues(pluginShortcut) {
-            store.app().setPluginToLaunch(pluginShortcut);
-            store.app().setPluginToLaunchLastUpdate(Date.now());
+            store.app().pluginToLaunch(pluginShortcut);
+            store.app().pluginToLaunchLastUpdate(Date.now());
             if (this.$route.name !== this.PLUGIN_CONTAINER_ROUTE) this.$router.push({path: '/pluginContainer'});
         },
         buildPluginLinkMap() {

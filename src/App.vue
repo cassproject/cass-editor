@@ -315,7 +315,7 @@ export default {
             }, 1000);
         },
         onSidebarEvent: function() {
-            store.app().setShowSideNav(!this.showSideNav);
+            store.app().showSideNav = !this.showSideNav;
         },
         findLinkedPersonForIdentity: function() {
             console.log("Finding linked person for identity...");
@@ -475,7 +475,7 @@ export default {
             // Re-establish connection on close.
             connection.onclose = function(evt) {
                 console.log(evt);
-                store.editor().setWebSocketBackoffIncrease();
+                store.editor().webSocketBackoffIncrease();
                 setTimeout(function() {
                     me.openWebSocket(r);
                 }, store.editor().webSocketBackoff);

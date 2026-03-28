@@ -573,7 +573,7 @@ export default {
                     }
                 }
             }
-            store.lode().setIncrementNumPropertyComponents(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
+            store.lode().incrementNumPropertyComponents(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
         }
     },
     mounted: async function() {
@@ -629,7 +629,7 @@ export default {
     },
     unmounted: function() {
         if (this.editingThing) {
-            store.lode().setDecrementNumPropertyComponents(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
+            store.lode().decrementNumPropertyComponents(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
         }
     },
     computed: {

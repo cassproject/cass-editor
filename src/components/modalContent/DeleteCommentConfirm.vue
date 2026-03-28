@@ -56,7 +56,7 @@ export default {
     methods: {
         closeModal: function() {
             store.editor().setCommentsToDelete([]);
-            store.app().setCloseModal();
+            store.app().closeModal();
         },
         generateCommentsToDeleteIds() {
             let ctdIds = [];

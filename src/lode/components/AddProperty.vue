@@ -407,6 +407,9 @@ import PropertyString from './PropertyString.vue';
 
 export default {
     name: 'AddProperty',
+    setup() {
+        return { store };
+    },
     props: {
         profile: Object,
         expandedThing: Object,

@@ -279,6 +279,9 @@ import competencyEdits from '@/mixins/competencyEdits.js';
 var hierarchyTimeout;
 export default {
     name: 'ProgressionHierarchy',
+    setup() {
+        return { store };
+    },
     props: {
         container: Object,
         containerType: String,

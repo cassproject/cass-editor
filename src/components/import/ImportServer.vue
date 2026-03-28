@@ -354,6 +354,9 @@ import SearchBar from '../framework/SearchBar.vue';
 import debounce from 'lodash/debounce';
 export default {
     name: 'ImportServer',
+    setup() {
+        return { store };
+    },
     components: {
         ImportTabs,
         SearchBar

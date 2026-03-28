@@ -4,7 +4,7 @@
         size="small"
         content="deleteConfiguration"
         type="primary"
-        @close="store.app().setCloseModal()">
+        @close="store.app().closeModal()">
         <template #modal-header>
             Framework Configuration
         </template>
@@ -17,7 +17,7 @@
             <div class="buttons is-spaced">
                 <button
                     class="button is-primary"
-                    @click="store.app().setCloseModal()"
+                    @click="store.app().closeModal()"
                     id="manage-framework-configuration-modal-done-button">
                     Done
                 </button>
@@ -37,6 +37,9 @@ import common from '@/mixins/common.js';
 export default {
     mixins: [cassUtil, common],
     name: 'FrameworkConfiguration',
+    setup() {
+        return { store };
+    },
     components: {
         ModalTemplate,
         ConfigurationList

@@ -34,7 +34,7 @@ export default {
                 return store.app().showImportInfoModal;
             },
             set(val) {
-                store.app().setShowImportInfoModal(val);
+                store.app().showImportInfoModal = val;
             }
         },
         importModalParams: {
@@ -49,7 +49,7 @@ export default {
     methods: {
         closeModal: function() {
             this.importModalParams = null;
-            store.app().setCloseModal();
+            store.app().closeModal();
         }
     }
 };

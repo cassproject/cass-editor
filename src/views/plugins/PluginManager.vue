@@ -203,7 +203,7 @@ export default {
             this.currentPlugin = {};
             this.buildManagerPluginList();
             this.showListView();
-            store.app().setPluginLastUpdate(Date.now());
+            store.app().pluginLastUpdate(Date.now());
         },
         deletePlugin() {
             this.pluginManagerBusy = true;
@@ -212,7 +212,7 @@ export default {
             this.pluginToDelete = {};
             this.showConfirmDeletePluginModal = false;
             this.buildManagerPluginList();
-            store.app().setPluginLastUpdate(Date.now());
+            store.app().pluginLastUpdate(Date.now());
         },
         cancelPluginDelete() {
             this.pluginToDelete = {};
@@ -227,16 +227,16 @@ export default {
         },
         enablePlugin(pluginId) {
             this.setPluginAsEnabled(pluginId);
-            store.app().setPluginLastUpdate(Date.now());
+            store.app().pluginLastUpdate(Date.now());
         },
         disablePlugin(pluginId) {
             this.setPluginAsDisabled(pluginId);
-            store.app().setPluginLastUpdate(Date.now());
+            store.app().pluginLastUpdate(Date.now());
         },
         disableAllPlugins() {
             this.setAllPluginsAsDisabled();
             this.buildManagerPluginList();
-            store.app().setPluginLastUpdate(Date.now());
+            store.app().pluginLastUpdate(Date.now());
         },
         getPluginById(pluginId) {
             for (let p of this.pluginList) {

@@ -739,7 +739,7 @@ export default {
             this.hierarchyIsdoneLoading = true;
         }
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.queryParams && this.queryParams.private !== 'true') {
             store.editor().setPrivate(false);
         }
@@ -867,7 +867,7 @@ export default {
             this.selectButton(ids);
         },
         onOpenExportModal() {
-            store.editor().setSetItemToExport(this.framework);
+            store.editor().setItemToExport(this.framework);
             store.app().setShowModal({title: 'Export Framework', component: 'ExportOptionsModal'});
         },
         // Speed up load of secondary properties
@@ -900,7 +900,7 @@ export default {
                 }
                 this.repo.saveTo(c, function() {
                     let edits = [{operation: "addNew", id: c.shortId()}];
-                    store.editor().setAddEditsToUndo(edits);
+                    store.editor().addEditsToUndo(edits);
                     store.editor().setRefreshAlignments(true);
                 }, console.error);
             }
@@ -915,7 +915,7 @@ export default {
                 c.url = value["@value"];
                 this.repo.saveTo(c, function() {
                     let edits = [{operation: "update", id: c.shortId(), fieldChanged: ["name", "url"], initialValue: [initialName, initialUrl], changedValue: [c.name, c.url]}];
-                    store.editor().setAddEditsToUndo(edits);
+                    store.editor().addEditsToUndo(edits);
                     store.editor().setRefreshAlignments(true);
                 }, console.error);
             }
@@ -924,7 +924,7 @@ export default {
             let c = await EcRepository.get(resourceId);
             let me = this;
             this.repo.deleteRegistered(c, function() {
-                store.editor().setAddEditsToUndo([{operation: "delete", obj: c}]);
+                store.editor().addEditsToUndo([{operation: "delete", obj: c}]);
                 store.editor().setRefreshAlignments(true);
             }, console.error);
         },

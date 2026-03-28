@@ -108,7 +108,7 @@ export default {
                             store.app().setRightAsideObject(null);
                             store.app().setCloseRightAside();
                             store.app().setRefreshSearch(true);
-                            store.app().setCloseModal();
+                            store.app().closeModal();
                         }
                     }, function(error) {
                         console.error(error);
@@ -120,7 +120,7 @@ export default {
                             store.app().setRightAsideObject(null);
                             store.app().setCloseRightAside();
                             store.app().setRefreshSearch(true);
-                            store.app().setCloseModal();
+                            store.app().closeModal();
                         }
                     });
                 });
@@ -150,7 +150,7 @@ export default {
             }, console.log);
         },
         closeModal: function() {
-            store.app().setCloseModal();
+            store.app().closeModal();
         }
     },
     computed: {

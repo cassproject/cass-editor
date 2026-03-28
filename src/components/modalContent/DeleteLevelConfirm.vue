@@ -69,7 +69,7 @@ export default {
             store.editor().setItemToDelete({});
         },
         closeModal() {
-            store.app().setCloseModal();
+            store.app().closeModal();
             store.editor().setItemToDelete({});
         }
     }

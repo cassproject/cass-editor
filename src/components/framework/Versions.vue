@@ -27,6 +27,9 @@
 import store from '@/stores/index.js';
 export default {
     name: 'Versions',
+    setup() {
+        return { store };
+    },
     data() {
         return {
             isCommenter: true,

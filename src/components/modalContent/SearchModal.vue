@@ -145,7 +145,7 @@ export default {
     },
     methods: {
         closeModal: function() {
-            store.app().setCloseModal();
+            store.app().closeModal();
         },
         clickClearFramework: function() {
             this.selectedIds.splice(0, this.selectedIds.length);

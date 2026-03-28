@@ -26,7 +26,7 @@
                 <div class="buttons">
                     <div
                         class="button is-dark is-outlined"
-                        @click="store.app().setCloseModal()"
+                        @click="store.app().closeModal()"
                         id="add-directory-cancel-button">
                         Cancel
                     </div>
@@ -57,6 +57,9 @@ import store from '@/stores/index.js';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 export default {
     name: 'AddDirectoryModal',
+    setup() {
+        return { store };
+    },
     data() {
         return {
             subdirectoryName: '',

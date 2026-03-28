@@ -341,6 +341,9 @@ import common from '@/mixins/common.js';
 export default {
     // Thing represents a JSON-LD object. Does not have to be based on http://schema.org/Thing.
     name: 'ThingEditing',
+    setup() {
+        return { store };
+    },
     props: {
         // (Optional) Object that will be turned into the Thing during initialization.
         obj: Object,
@@ -414,11 +417,12 @@ export default {
             addAnother: false,
             disableDoneEditingButton: false,
             errorValidating: null,
-            loading: false
+            loading: false,
+            localClickToLoad: this.clickToLoad
         };
     },
     created: function() {
-        if (this.clickToLoad === false) { this.load(); }
+        if (this.localClickToLoad === false) { this.load(); }
     },
     mounted: function() {
         if (this.uri && store.editor()) {
@@ -1043,7 +1047,7 @@ export default {
         },
         load: async function() {
             var me = this;
-            me.clickToLoad = false;
+            me.localClickToLoad = false;
             if (this.uri != null) {
                 // If we have a uri, go get the data from the uri and continue loading.
                 await EcRepository.get(
@@ -1761,7 +1765,7 @@ export default {
                 if (type) {
                     var thing = await window[type].get(this.changedObject);
                     this.obj = thing;
-                    if (this.clickToLoad === false) { await this.load(); }
+                    if (this.localClickToLoad === false) { await this.load(); }
                 }
                 store.editor().setChangedObject(null);
             }

@@ -472,7 +472,7 @@
         </template>
         <template #modal-foot>
             <div
-                @click="store.app().setCloseModal()"
+                @click="store.app().closeModal()"
                 id="supported-import-details-back-button"
                 class="buttons is-right">
                 <button class="button is-primary is-large is-outlined">
@@ -504,6 +504,9 @@ import medbiquitous from '@/assets/files/educational_achievement_sample_1June201
 
 export default {
     name: 'SupportedImportDetails',
+    setup() {
+        return { store };
+    },
     props: {
         initialTab: {
             type: String

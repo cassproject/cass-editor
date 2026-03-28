@@ -43,7 +43,7 @@ export default {
     },
     methods: {
         closeModal() {
-            store.app().setCloseModal();
+            store.app().closeModal();
         }
     }
 };

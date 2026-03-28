@@ -4,7 +4,7 @@ search, edit multiple competencies, view single competency, export,
 share framework settings, and more.
 
 To add content to this modal, imort the relevant component and trigger it
-by store.app().setShowmodal(payload); Where payload at minimum
+by store.app().setShowModal(payload); Where payload at minimum
 returns an object with component: 'View' so the dynamic :is=dynamicModal
 returns content.
 

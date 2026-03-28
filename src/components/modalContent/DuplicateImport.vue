@@ -137,7 +137,7 @@ export default {
         },
         resetImportModal: function() {
             this.importModalParams = null;
-            store.app().setCloseModal();
+            store.app().closeModal();
         },
         closeImportModal: function() {
             if (!this.importModalParams.onConfirm) {
@@ -145,7 +145,7 @@ export default {
             }
             this.importModalParams.onCancel();
             this.importModalParams = null;
-            store.app().setCloseModal();
+            store.app().closeModal();
         }
     }
 };

@@ -85,7 +85,7 @@ export default {
     },
     methods: {
         closeModal: function() {
-            store.app().setCloseModal();
+            store.app().closeModal();
         },
         buildNewCommentObject: function() {
             let commentObj = new EcComment();

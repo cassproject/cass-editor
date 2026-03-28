@@ -36,7 +36,7 @@
                         <router-link
                             id="import-concept-scheme-button"
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                            @click="store.editor().setConceptMode(true); store.editor().setProgressionMode(false); store.app().clearImport();"
                             class="button is-hidden-touch is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -45,7 +45,7 @@
                         <router-link
                             id="import-concept-scheme-mobile-button"
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                            @click="store.editor().setConceptMode(true); store.editor().setProgressionMode(false); store.app().clearImport();"
                             class="button is-hidden-desktop is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -88,7 +88,7 @@
                         <router-link
                             id="import-progression-model-button"
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', true); $store.dispatch('app/clearImport');"
+                            @click="store.editor().setConceptMode(false); store.editor().setProgressionMode(true); store.app().clearImport();"
                             class="button is-hidden-touch is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -97,7 +97,7 @@
                         <router-link
                             id="import-progression-model-mobile-button"
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', true); $store.dispatch('app/clearImport');"
+                            @click="store.editor().setConceptMode(false); store.editor().setProgressionMode(true); store.app().clearImport();"
                             class="button is-hidden-desktop is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -136,7 +136,7 @@
                             :directoryEnabled="true"
                             @framework="$emit('create-new-framework')"
                             @collection="$emit('create-new-collection')"
-                            @directory="$store.commit('app/showModal', {component: 'AddDirectory'});"
+                            @directory="store.app().setShowModal({component: 'AddDirectory'});"
                             @close="createDropDownActive = false"
                             @toggle="createDropDownActive = !createDropDownActive"
                             :active="createDropDownActive" />
@@ -144,7 +144,7 @@
                         <router-link
                             id="import-framework-button"
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                            @click="store.editor().setConceptMode(false); store.editor().setProgressionMode(false); store.app().clearImport();"
                             class="button is-outlined is-hidden-desktop is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -153,7 +153,7 @@
                         <router-link
                             id="import-framework-button-mobile"
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                            @click="store.editor().setConceptMode(false); store.editor().setProgressionMode(false); store.app().clearImport();"
                             class="button is-outlined is-hidden-touch is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -363,6 +363,9 @@ import { mapState } from 'pinia';
 
 export default {
     name: "Frameworks",
+    setup() {
+        return { store };
+    },
     mixins: [common, editDirectory],
     data: function() {
         return {

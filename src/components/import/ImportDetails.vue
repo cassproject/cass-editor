@@ -81,6 +81,9 @@
 import store from '@/stores/index.js';
 export default {
     name: 'ImportDetails',
+    setup() {
+        return { store };
+    },
     props: {
         detailsDetected: Object
     },

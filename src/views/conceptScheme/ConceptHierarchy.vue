@@ -270,6 +270,9 @@ import competencyEdits from '@/mixins/competencyEdits.js';
 var hierarchyTimeout;
 export default {
     name: 'ConceptHierarchy',
+    setup() {
+        return { store };
+    },
     props: {
         container: Object,
         containerType: String,

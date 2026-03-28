@@ -83,6 +83,9 @@ import {mapState} from 'pinia';
 import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: 'CompetencySearch',
+    setup() {
+        return { store };
+    },
     props: {
         parent: {
             type: String,
@@ -280,7 +283,7 @@ export default {
     },
     methods: {
         resetModal: function() {
-            store.app().setCloseModal();
+            store.app().closeModal();
             this.selectedIds = [];
         },
         selectedArrayEvent: async function(ary) {

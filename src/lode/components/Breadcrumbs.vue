@@ -53,7 +53,7 @@ export default {
     },
     computed: {
         parentBreadCrumbInfo: function() {
-            if (this.parentCompetencies === {}) {
+            if (Object.keys(this.parentCompetencies).length === 0) {
                 return;
             }
             let info = this.parentCompetencies;
@@ -96,7 +96,7 @@ export default {
             return newInfo;
         },
         directoryBreadCrumbInfo: function() {
-            if (this.directoryTrail === {}) {
+            if (Object.keys(this.directoryTrail).length === 0) {
                 return;
             }
             let info = this.directoryTrail;
@@ -187,7 +187,7 @@ export default {
             var me = this;
             for (let i = 0; i < this.frameworks.length; i++) {
                 let frameworkId = this.frameworks[i].id;
-                this.$set(this.parentCompetencies, frameworkId, []);
+                this.parentCompetencies[frameworkId] = [];
                 if (this.frameworks[i].competency && this.frameworks[i].competency.length > 500) {
                     me.parentCompetencies[frameworkId].push("...");
                 } else {

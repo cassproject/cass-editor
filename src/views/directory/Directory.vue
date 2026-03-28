@@ -285,6 +285,9 @@ import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import AddNewDropdown from '@/components/AddNewDropdown.vue';
 export default {
     name: "Directory",
+    setup() {
+        return { store };
+    },
     mixins: [common, editDirectory],
     components: {
         MainLayout,

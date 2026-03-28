@@ -225,6 +225,9 @@ import imports from '@/mixins/import.js';
 
 export default {
     name: 'ImportTabs',
+    setup() {
+        return { store };
+    },
     mixins: [ imports ],
     methods: {
         // delete these?

@@ -413,7 +413,7 @@ export default {
             },
             set: function(value) {
                 if (EcObject.isObject(this.text)) {
-                    this.$set(this.text, "@value", value.trim());
+                    this.text["@value"] = value.trim();
                 } else {
                     this.text = value.trim();
                 }
@@ -431,7 +431,7 @@ export default {
             },
             set: function(value) {
                 if (EcObject.isObject(this.text)) {
-                    this.$set(this.text, "@language", value);
+                    this.text["@language"] = value;
                 }
             }
         },
@@ -447,7 +447,7 @@ export default {
             },
             set: function(value) {
                 if (EcObject.isObject(this.text)) {
-                    this.$set(this.text, "name", value);
+                    this.text["name"] = value;
                 }
             }
         },

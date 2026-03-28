@@ -378,6 +378,9 @@ import common from '@/mixins/common.js';
 
 export default {
     name: "HierarchyNode",
+    setup() {
+        return { store };
+    },
     mixins: [ common ],
     props: {
         depth: Number,
@@ -678,8 +681,8 @@ export default {
         },
         handleClickAddComment: function() {
             console.log("object is: ", this.obj.shortId());
-            store.editor().setSetAddCommentAboutId(this.obj.shortId());
-            store.editor().setSetAddCommentType('new');
+            store.editor().setAddCommentAboutId(this.obj.shortId());
+            store.editor().setAddCommentType('new');
             store.app().setShowModal({component: 'AddComment'});
         },
         calculateSourceAlignmentCountByType: function() {

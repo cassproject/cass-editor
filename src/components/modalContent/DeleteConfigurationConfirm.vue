@@ -4,7 +4,7 @@
         size="small"
         content="delete-configuration"
         type="danger"
-        @close="store.app().setCloseModal()">
+        @close="store.app().closeModal()">
         <template #modal-header>
             Delete Configuration
         </template>
@@ -46,6 +46,9 @@ import common from '@/mixins/common.js';
 export default {
     mixins: [cassUtil, common],
     name: 'DeleteConfigurationConfirm',
+    setup() {
+        return { store };
+    },
     components: {
         ModalTemplate
     },

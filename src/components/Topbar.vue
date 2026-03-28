@@ -40,6 +40,9 @@
 import store from '@/stores/index.js';
 export default {
     name: 'Topbar',
+    setup() {
+        return { store };
+    },
     props: {
         showSideNav: {
             default: false,

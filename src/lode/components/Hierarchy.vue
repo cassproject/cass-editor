@@ -272,7 +272,7 @@
                             <div
                                 id="import-again-button"
                                 v-if="view === 'importLight' && (importType !== 'text' || (importType === 'text' && importStatus === 'Competency detected'))"
-                                @click="$store.dispatch('app/clearImport')"
+                                @click="store.app().clearImport()"
                                 class="button is-small is-dark is-outlined is-pulled-right">
                                 <span>
                                     import again
@@ -295,7 +295,7 @@
                             <!--  accept preview -->
                             <div
                                 id="done-editing-import-button"
-                                @click="$store.commit('app/importTransition', 'light')"
+                                @click="store.app().setImportTransition('light')"
                                 v-if="view === 'importPreview'"
                                 class="button  is-small is-primary is-outlined is-pulled-right">
                                 <span>
@@ -474,6 +474,9 @@ import competencyEdits from '@/mixins/competencyEdits.js';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 export default {
     name: 'Hierarchy',
+    setup() {
+        return { store };
+    },
     mixins: [ common, competencyEdits ],
     props: {
         scrolled: Boolean,
@@ -715,7 +718,7 @@ export default {
             this.getSubjectInfo();
         }
     },
-    beforeDestroy: function() {
+    beforeUnmount: function() {
         window.removeEventListener('keyup', this.keyup);
         window.removeEventListener('keydown', this.keydown);
     },
@@ -788,7 +791,7 @@ export default {
         },
         showModal(val, data) {
             if (val === 'export') {
-                store.editor().setSetItemToExport(this.container);
+                store.editor().setItemToExport(this.container);
                 store.app().setShowModal({title: 'Export Framework', component: 'ExportOptionsModal'});
             } else if (val === 'subject') {
                 store.app().setShowModal('Subject');
@@ -1042,7 +1045,7 @@ export default {
             edits.push(
                 {operation: "update", id: me.container.shortId(), fieldChanged: ["competency", "relation"], initialValue: [initialCompetencies, initialRelations], changedValue: [this.container.competency, this.container.relation]}
             );
-            store.editor().setAddEditsToUndo(edits);
+            store.editor().addEditsToUndo(edits);
             stripped["schema:dateModified"] = new Date().toISOString();
             if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[stripped.id] !== true) {
                 stripped = await EcEncryptedValue.toEncryptedValue(stripped);
@@ -1083,8 +1086,8 @@ export default {
             if (this.nodeType.indexOf("Ec") === 0) {
                 nodeType = this.nodeType.substring(2);
             }
-            if (this.$store.state.editor && this.$store.state.editor.defaultLanguage) {
-                c.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New " + nodeType};
+            if (store.editor() && store.editor().defaultLanguage) {
+                c.name = {"@language": store.editor().defaultLanguage, "@value": "New " + nodeType};
             } else {
                 c.name = "New " + nodeType;
             }
@@ -1092,10 +1095,10 @@ export default {
             c["schema:dateModified"] = new Date().toISOString();
             this.container["schema:dateModified"] = new Date().toISOString();
             console.log("Added node: ", JSON.parse(c.toJson()));
-            if (this.$store.state.editor) {
-                this.$store.commit("editor/newCompetency", c.shortId());
+            if (store.editor()) {
+                store.editor().setNewCompetency(c.shortId());
             }
-            if (this.$store.state.editor && this.$store.state.editor.private === true) {
+            if (store.editor() && store.editor().private === true) {
                 c = await EcEncryptedValue.toEncryptedValue(c);
             }
             try {
@@ -1110,14 +1113,14 @@ export default {
                     var index = me.container[me.containerNodeProperty].indexOf(previousSibling);
                     me.container[me.containerNodeProperty].splice(index + 1, 0, c.shortId());
                 }
-                store.editor().setAddEditsToUndo([
+                store.editor().addEditsToUndo([
                     {operation: "addNew", id: c.shortId()},
                     {operation: "update", id: me.container.shortId(), fieldChanged: ["competency"], initialValue: [initialCompetencies], changedValue: [me.container.competency]}
                 ]);
                 if (containerId === me.container.shortId()) {
                     var toSave = me.container;
                     toSave["schema:dateModified"] = new Date().toISOString();
-                    if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
+                    if (store.editor() && store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
                         toSave = await EcEncryptedValue.toEncryptedValue(me.container);
                     }
                     await me.repo.saveTo(me.stripEmptyArrays(toSave));
@@ -1153,7 +1156,7 @@ export default {
                         }
                         me.container[me.containerEdgeProperty].push(a.shortId());
                         console.log("Added edge: ", JSON.parse(a.toJson()));
-                        store.editor().setAddEditsToUndo([
+                        store.editor().addEditsToUndo([
                             {operation: "addNew", id: c.shortId()},
                             {operation: "update", id: me.container.shortId(), fieldChanged: ["competency", "relation"], initialValue: [initialCompetencies, initialRelations], changedValue: [me.container.competency, me.container.relation]}
                         ]);
@@ -1229,7 +1232,7 @@ export default {
         },
         cancelImport: function() {
             this.deleteObject(this.container);
-            this.$store.dispatch('app/clearImport');
+            store.app().clearImport();
         },
         onClickCreateNew: async function() {
             let parent = this.container.shortId();
@@ -1253,7 +1256,7 @@ export default {
             this.selectedArray.splice(0, this.selectedArray.length);
         },
         setSubject: function(subject) {
-            store.editor().setSetSubject(subject);
+            store.editor().setSubject(subject);
             this.closeSelectSubjectModal();
         },
         openSelectSubjectModal: async function() {
@@ -1262,7 +1265,7 @@ export default {
             this.showModal('subject');
         },
         closeSelectSubjectModal: function() {
-            store.app().setCloseModal();
+            store.app().closeModal();
         },
         getSubjectInfo: function() {
             EcPerson.getByPk(window.repo, EcPk.fromPem(store.editor().getSubject)).then((person) => {

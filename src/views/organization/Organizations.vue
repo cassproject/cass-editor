@@ -59,6 +59,9 @@ import List from '@/lode/components/List.vue';
 import common from '@/mixins/common.js';
 export default {
     name: "Organizations",
+    setup() {
+        return { store };
+    },
     mixins: [common],
     data: function() {
         return {
