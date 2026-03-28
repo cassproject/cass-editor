@@ -6,7 +6,7 @@
         <template #top>
             <thing-editing
                 v-if="editDirectory && canEditDirectory"
-                :obj="$store.getters['app/rightAsideObject']"
+                :obj="store.app().rightAsideObject"
                 :repo="repo"
                 :parentNotEditable="queryParams.view==='true'"
                 :profile="directoryProfile"
@@ -509,12 +509,13 @@ export default {
         },
         openItem: function(object) {
             var me = this;
+            console.log('[openItem] received:', object, 'id:', object?.id, 'type:', object?.type);
             if (object.type === "Directory") {
-                this.$store.commit('app/selectDirectory', object);
+                store.app().setSelectDirectory(object);
                 if (this.$route.name !== "directory") {
                     this.$router.push({name: "directory"});
                 }
-                this.$store.commit('app/closeRightAside');
+                store.app().setCloseRightAside();
             } else if (object.type === "Competency") {
                 EcFramework.search(this.repo, "competency:\"" + object.shortId() + "\"", function(success) {
                     if (success && success[0]) {
@@ -525,26 +526,28 @@ export default {
                 this.findConceptTrail(object);
             } else if (this.conceptMode) {
                 EcConceptScheme.get(object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    store.editor().setFramework(success);
+                    store.editor().clearFrameworkCommentData();
+                    store.app().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    store.app().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: object.id}});
                 }, console.error);
             } else if (this.progressionMode) {
                 EcConceptScheme.get(object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    store.editor().setFramework(success);
+                    store.editor().clearFrameworkCommentData();
+                    store.app().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    store.app().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "progressionModel", params: {frameworkId: object.id}});
                 }, console.error);
             } else {
                 EcFramework.get(object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    console.log('[openItem] EcFramework.get success:', success?.id, success?.shortId?.());
+                    store.editor().setFramework(success);
+                    console.log('[openItem] store.editor().framework after set:', store.editor().framework?.id);
+                    store.editor().clearFrameworkCommentData();
+                    store.app().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    store.app().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: object.id}});
                 }, console.error);
             }
@@ -565,8 +568,8 @@ export default {
             }
         },
         frameworkClick: function(framework) {
-            this.$store.commit('app/rightAsideObject', framework);
-            this.$store.commit('app/showRightAside', 'ListItemInfo');
+            store.app().setRightAsideObject(framework);
+            store.app().openRightAside('ListItemInfo');
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];

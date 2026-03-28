@@ -15,7 +15,8 @@
                     id="framework_drag"
                     :disabled="canEdit !== true"
                     :group="{ name: 'test' }"
-                    handle=".handle">
+                    handle=".handle"
+                :item-key="(item) => item.obj ? item.obj.id : (item.id || Math.random())">
                     <Component
                         :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
                         :is="dynamicThingComponent"
@@ -80,6 +81,9 @@
     </div>
 </template>
 <script>
+import VueDraggable from 'vuedraggable';
+import { defineAsyncComponent } from 'vue';
+import store from '@/stores/index.js';
 import debounce from 'lodash/debounce';
 import common from '@/mixins/common.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
@@ -127,23 +131,23 @@ export default {
             }
         },
         newFramework: function() {
-            return this.$store.getters['editor/newFramework'] === this.framework.shortId();
+            return store.editor().newFramework === this.framework.shortId();
         },
         showRightAside: function() {
-            return this.$store.getters['app/showRightAside'];
+            return store.app().showRightAside;
         },
         dynamicThingComponent: function() {
-            if (this.editingFramework || (this.$store.getters['editor/newFramework'] === this.framework.shortId())) {
+            if (this.editingFramework || (store.editor().newFramework === this.framework.shortId())) {
                 return 'ThingEditing';
             } else {
                 return 'Thing';
             }
         },
         framework: function() {
-            return this.$store.getters['editor/framework'];
+            return store.editor().framework;
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         },
         timestamp: function() {
             if (this.framework.getTimestamp()) {
@@ -189,12 +193,12 @@ export default {
         }
     },
     components: {
-        Thing: () => import('@/lode/components/Thing.vue'),
-        ThingEditing: () => import('@/lode/components/ThingEditing.vue'),
-        FrameworkEditorToolbar: () => import('@/components/framework/EditorToolbar.vue'),
-        RightAside: () => import('@/components/framework/RightAside.vue'),
-        ProgressionHierarchy: () => import('./ProgressionHierarchy.vue'),
-        draggable: () => import('vuedraggable')
+        Thing: defineAsyncComponent(() => import('@/lode/components/Thing.vue')),
+        ThingEditing: defineAsyncComponent(() => import('@/lode/components/ThingEditing.vue')),
+        FrameworkEditorToolbar: defineAsyncComponent(() => import('@/components/framework/EditorToolbar.vue')),
+        RightAside: defineAsyncComponent(() => import('@/components/framework/RightAside.vue')),
+        ProgressionHierarchy: defineAsyncComponent(() => import('./ProgressionHierarchy.vue')),
+        draggable: VueDraggable
     },
     created: function() {
         if (this.framework !== null) {
@@ -213,7 +217,7 @@ export default {
             this.getConceptRegistryUrls();
         }
     },
-    beforeDestroy() {
+    beforeUnmount() {
     },
     watch: {
         shortId: function() {
@@ -241,7 +245,7 @@ export default {
             }
         },
         handleSearch: function(e) {
-            this.$store.commit('app/showModal', e);
+            store.app().setShowModal(e);
         },
         onCancelEditMultiple: function() {
             this.showEditMultiple = false;
@@ -253,14 +257,14 @@ export default {
                 selectedCompetencies: this.selectedArray,
                 component: 'MultiEdit'
             };
-            this.$store.commit('app/showModal', payload);
+            store.app().setShowModal(payload);
         },
         onEditNode: function() {
             this.editingFramework = true;
         },
         onDoneEditingNode: async function() {
-            this.$store.commit('editor/framework', await EcRepository.get(this.framework.shortId()));
-            this.$store.commit('editor/newFramework', null);
+            store.editor().setFramework(await EcRepository.get(this.framework.shortId()));
+            store.editor().setNewFramework(null);
             this.editingFramework = false;
         },
         selectedArrayEvent: function(ary) {
@@ -293,8 +297,8 @@ export default {
             return n;
         },
         onOpenExportModal() {
-            this.$store.commit('editor/setItemToExport', this.framework);
-            this.$store.commit('app/showModal', {component: 'ExportOptionsModal', title: 'Export Concept Scheme'});
+            store.editor().setItemToExport(this.framework);
+            store.app().setShowModal({component: 'ExportOptionsModal', title: 'Export Concept Scheme'});
         },
         changeProperties: function(type) {
             this.properties = type;

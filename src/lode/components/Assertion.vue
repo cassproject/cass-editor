@@ -28,7 +28,7 @@
     </span>
 </template>
 <script>
-
+import store from '@/stores/index.js';
 export default {
     name: 'Assertion',
     props: {
@@ -125,11 +125,11 @@ export default {
             if (this.assertion == null) {
                 return false;
             }
-            return this.assertion.hasReader(this.$store.getters['editor/badgePk']);
+            return this.assertion.hasReader(store.editor().badgePk);
         },
         badgeUrl: function() {
             if (this.assertion != null) {
-                if (this.assertion.hasReader(this.$store.getters['editor/badgePk'])) {
+                if (this.assertion.hasReader(store.editor().badgePk)) {
                     return EcRemote.urlAppend(window.repo.selectedServer, "badge/assertion/") + this.assertion.getGuid();
                 }
             }
@@ -141,7 +141,7 @@ export default {
             this.evidenceExplanation = null;
             if (this.evidence != null) {
                 if (this.evidence.length > 0) {
-                    this.$store.dispatch('editor/computeBecause', this.evidence).then((because) => {
+                    store.editor().computeBecause(this.evidence).then((because) => {
                         this.$nextTick(() => {
                             this.evidenceExplanation = because;
                         });

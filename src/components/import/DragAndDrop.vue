@@ -76,6 +76,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 export default {
     name: 'DragAndDrop',
     data() {
@@ -98,7 +99,7 @@ export default {
         }
     },
     mounted: function() {
-        this.$store.commit('app/clearImportFiles');
+        store.app().clearImportFiles();
     },
     methods: {
         handleDragEnter(e) {
@@ -151,8 +152,8 @@ export default {
             this.$emit('clear-files');
         },
         process() {
-            this.$store.commit('app/importFiles', this.files);
-            this.$store.commit('app/importTransition', 'processFiles');
+            store.app().setImportFiles(this.files);
+            store.app().setImportTransition('processFiles');
         }
     }
 };

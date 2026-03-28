@@ -62,7 +62,7 @@ export default {
             this.navBarActive = false;
         }
     },
-    beforeDestroy: function() {
+    beforeUnmount: function() {
         window.removeEventListener('message', this.cappend);
         window.removeEventListener("message", this.messageListener);
     },
@@ -76,8 +76,8 @@ export default {
                 server = "https://dev.cassproject.org/api/";
             } else if (window.location.origin === "http://localhost:8082") {
                 server = "http://localhost/api/";
-            } else if (process.env.VUE_APP_SELECTEDSERVER) {
-                server = process.env.VUE_APP_SELECTEDSERVER;
+            } else if (import.meta.env.VITE_SELECTEDSERVER) {
+                server = import.meta.env.VITE_SELECTEDSERVER;
             }
             var cassApiLocation = server;
             store.environment().setCassApiLocation(cassApiLocation);
@@ -359,7 +359,7 @@ export default {
                 }
                 if (this.$route.name === 'frameworks' || this.$route.name === 'concepts' || this.$route.name === 'progressionLevels') {
                     store.app().refreshDirectories();
-                    store.app().refreshSearch(true);
+                    store.app().setRefreshSearch(true);
                 }
             }
         },
@@ -423,7 +423,7 @@ export default {
         selectDirectory: function(directory) {
             store.app().selectDirectory(directory);
             store.app().rightAsideObject(directory);
-            if (this.$router.currentRoute.name !== "directory") {
+            if (this.$route.name !== "directory") {
                 this.$router.push({name: "directory"});
             }
         },
@@ -442,7 +442,7 @@ export default {
                 console.log("I got " + event.data.selected.length + " selected items from the iframe");
                 console.log(event.data.selected);
             } else if (event.data.message === "back") {
-                this.$router.push({name: "framework", params: {frameworkId: this.$store.state.editor.framework.id}});
+                this.$router.push({name: "framework", params: {frameworkId: store.editor().framework.id}});
             } else if (event.data.message === "highlightedCompetencies") {
                 if (!event.data.competencies) {
                     return;
@@ -475,14 +475,14 @@ export default {
             // Re-establish connection on close.
             connection.onclose = function(evt) {
                 console.log(evt);
-                me.$store.commit('editor/webSocketBackoffIncrease');
+                store.editor().setWebSocketBackoffIncrease();
                 setTimeout(function() {
                     me.openWebSocket(r);
-                }, me.$store.state.editor.webSocketBackoff);
+                }, store.editor().webSocketBackoff);
             };
 
             connection.changedObject = async function(wut) {
-                store.editor().changedObject(wut.shortId());
+                store.editor().setChangedObject(wut.shortId());
                 // Add new assertions as they come in
                 if (wut.type === 'Assertion') {
                     let a = await EcAssertion.get(wut.shortId());
@@ -493,7 +493,7 @@ export default {
                     return;
                 }
 
-                var framework = me.$store.state.editor.framework;
+                var framework = store.editor().framework;
 
                 if (new ConceptScheme().isA(wut.getFullType()) || wut["encryptedType"] === "ConceptScheme") {
                     if (framework != null) {
@@ -504,7 +504,7 @@ export default {
                             } else {
                                 f.copyFrom(wut);
                             }
-                            me.$store.commit('editor/framework', f);
+                            store.editor().setFramework(f);
                             me.setDefaultLanguage();
                             me.spitEvent("frameworkChanged", f.shortId());
                         }
@@ -520,7 +520,7 @@ export default {
                             } else {
                                 f.copyFrom(wut);
                             }
-                            me.$store.commit('editor/framework', f);
+                            store.editor().setFramework(f);
                             me.setDefaultLanguage();
                             me.spitEvent("frameworkChanged", f.shortId());
                         }
@@ -529,50 +529,50 @@ export default {
 
                 if (new Concept().isA(wut.getFullType()) || wut["encryptedType"] === "Concept") {
                     if (framework != null) {
-                        if (me.$store.state.editor.selectedCompetency != null) {
-                            if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
+                        if (store.editor().selectedCompetency != null) {
+                            if (store.editor().selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcConcept();
                                 if (wut["encryptedType"] === "Concept") {
                                     com.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                                 } else {
                                     com.copyFrom(wut);
                                 }
-                                me.$store.commit('editor/selectedCompetency', com);
+                                store.editor().setSelectedCompetency(com);
                             }
-                            me.spitEvent("competencyChanged", me.$store.state.editor.selectedCompetency.shortId());
+                            me.spitEvent("competencyChanged", store.editor().selectedCompetency.shortId());
                         }
                     }
                 }
                 if (new EcCompetency().isA(wut.getFullType()) || wut["encryptedType"] === "Competency") {
                     if (framework != null) {
-                        if (me.$store.state.editor.selectedCompetency != null) {
-                            if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
+                        if (store.editor().selectedCompetency != null) {
+                            if (store.editor().selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcCompetency();
                                 if (wut["encryptedType"] === "Competency") {
                                     com.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                                 } else {
                                     com.copyFrom(wut);
                                 }
-                                me.$store.commit('editor/selectedCompetency', com);
+                                store.editor().setSelectedCompetency(com);
                             }
-                            me.spitEvent("competencyChanged", me.$store.state.editor.selectedCompetency.shortId());
+                            me.spitEvent("competencyChanged", store.editor().selectedCompetency.shortId());
                         }
                     }
                 }
 
                 if (new EcLevel().isA(wut.getFullType()) || wut["encryptedType"] === "Level") {
                     if (framework != null) {
-                        if (me.$store.state.editor.selectedCompetency != null) {
-                            if (me.$store.state.editor.selectedCompetency.shortId() === wut.shortId()) {
+                        if (store.editor().selectedCompetency != null) {
+                            if (store.editor().selectedCompetency.shortId() === wut.shortId()) {
                                 var com = new EcLevel();
                                 if (wut["encryptedType"] === "Level") {
                                     com.copyFrom(await EcEncryptedValue.fromEncryptedValue(wut));
                                 } else {
                                     com.copyFrom(wut);
                                 }
-                                me.$store.commit('editor/selectedCompetency', com);
+                                store.editor().setSelectedCompetency(com);
                             }
-                            me.spitEvent("competencyChanged", me.$store.state.editor.selectedCompetency.shortId());
+                            me.spitEvent("competencyChanged", store.editor().selectedCompetency.shortId());
                         }
                     }
                 }
@@ -590,7 +590,7 @@ export default {
                         delete EcRepository.cache[EcRemoteLinkedData.trimVersionFromUrl(resp[i])];
                         delete EcRepository.cache[EcRemoteLinkedData.veryShortId(repo.selectedServer, EcCrypto.md5(resp[i]))];
                     }
-                    if (me.$store.state.editor.framework == null) return;
+                    if (store.editor().framework == null) return;
                     me.repo.precache(resp, function() {
                         for (var i = 0; i < resp.length; i++) {
                             EcRepository.get(resp[i], connection.changedObject, console.error);
@@ -606,7 +606,7 @@ export default {
         },
         createNewFramework: async function(optionalDirectory) {
             let me = this;
-            this.$store.commit('editor/t3Profile', false);
+            store.editor().setT3Profile(false);
             this.setDefaultLanguage();
             var framework = new EcFramework();
             if (this.queryParams.newObjectEndpoint != null) {
@@ -628,17 +628,17 @@ export default {
             if (EcIdentityManager.default.ids.length > 0) {
                 framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
-            framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Framework"};
-            this.$store.commit('editor/newFramework', framework.shortId());
+            framework.name = {"@language": store.editor().defaultLanguage, "@value": "New Framework"};
+            store.editor().setNewFramework(framework.shortId());
             if (this.queryParams.ceasnDataFields === "true") {
-                framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
+                framework["schema:inLanguage"] = [store.editor().defaultLanguage];
             }
             var saveFramework = framework;
             if (this.queryParams.private === "true") {
                 saveFramework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(saveFramework, function() {
-                me.$store.commit('editor/framework', framework);
+                store.editor().setFramework(framework);
                 if (me.$route.name !== 'framework') {
                     me.$router.push({name: "framework"});
                 }
@@ -646,7 +646,7 @@ export default {
         },
         createNewCollection: async function() {
             let me = this;
-            this.$store.commit('editor/t3Profile', false);
+            store.editor().setT3Profile(false);
             this.setDefaultLanguage();
             var framework = new EcFramework();
             if (this.queryParams.newObjectEndpoint != null) {
@@ -659,10 +659,10 @@ export default {
             if (EcIdentityManager.default.ids.length > 0) {
                 framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
-            framework.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Collection"};
-            this.$store.commit('editor/newFramework', framework.shortId());
+            framework.name = {"@language": store.editor().defaultLanguage, "@value": "New Collection"};
+            store.editor().setNewFramework(framework.shortId());
             if (this.queryParams.ceasnDataFields === "true") {
-                framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
+                framework["schema:inLanguage"] = [store.editor().defaultLanguage];
             }
             framework.subType = "Collection";
             var saveFramework = framework;
@@ -670,7 +670,7 @@ export default {
                 saveFramework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(saveFramework, function() {
-                me.$store.commit('editor/framework', framework);
+                store.editor().setFramework(framework);
                 if (me.$route.name !== 'framework') {
                     me.$router.push({name: "framework"});
                 }
@@ -692,19 +692,19 @@ export default {
             if (this.queryParams.ceasnDataFields === 'true') {
                 name = "New Concept Scheme";
             }
-            framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": name};
+            framework["dcterms:title"] = {"@language": store.editor().defaultLanguage, "@value": name};
             if (this.queryParams.ceasnDataFields === "true") {
-                framework["dcterms:language"] = [this.$store.state.editor.defaultLanguage];
+                framework["dcterms:language"] = [store.editor().defaultLanguage];
             }
             framework["schema:dateCreated"] = new Date().toISOString();
             framework["schema:dateModified"] = new Date().toISOString();
-            this.$store.commit('editor/newFramework', framework.shortId());
+            store.editor().setNewFramework(framework.shortId());
             var saveFramework = framework;
             if (this.queryParams.private === "true") {
                 saveFramework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(saveFramework, function() {
-                me.$store.commit('editor/framework', framework);
+                store.editor().setFramework(framework);
                 if (me.$route.name !== 'conceptScheme') {
                     me.$router.push({name: "conceptScheme"});
                 }
@@ -723,20 +723,20 @@ export default {
                 framework.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
             let name = "New Progression Model";
-            framework["dcterms:title"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": name};
+            framework["dcterms:title"] = {"@language": store.editor().defaultLanguage, "@value": name};
             if (this.queryParams.ceasnDataFields === "true") {
-                framework["schema:inLanguage"] = [this.$store.state.editor.defaultLanguage];
+                framework["schema:inLanguage"] = [store.editor().defaultLanguage];
             }
             framework["schema:dateCreated"] = new Date().toISOString();
             framework["schema:dateModified"] = new Date().toISOString();
-            this.$store.commit('editor/newFramework', framework.shortId());
+            store.editor().setNewFramework(framework.shortId());
             var saveFramework = framework;
             if (this.queryParams.private === "true") {
                 saveFramework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             framework.subType = "Progression";
             this.repo.saveTo(saveFramework, function() {
-                me.$store.commit('editor/framework', framework);
+                store.editor().setFramework(framework);
                 if (me.$route.name !== 'progressionModel') {
                     me.$router.push({name: "progressionModel"});
                 }
@@ -745,9 +745,9 @@ export default {
         createNew: function() {
             this.setDefaultLanguage();
             var me = this;
-            if (me.$store.getters['editor/conceptMode'] === true) {
+            if (store.editor().conceptMode === true) {
                 this.createNewConceptScheme();
-            } else if (me.$store.getters['editor/progressionMode'] === true) {
+            } else if (store.editor().progressionMode === true) {
                 this.createNewProgressionModel();
             } else {
                 this.createNewFramework();
@@ -849,7 +849,7 @@ export default {
                         d[key] = data[key];
                     }
                     d["schema:dateModified"] = new Date().toISOString();
-                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[d.id] !== true) {
+                    if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[d.id] !== true) {
                         d = await EcEncryptedValue.toEncryptedValue(d);
                     }
                     repo.saveTo(d, function(success) {
@@ -872,9 +872,9 @@ export default {
                     var link;
                     var fid;
                     var guid;
-                    var framework = this.$store.state.editor.framework;
-                    if (this.$store.state.editor.selectedCompetency != null) {
-                        var selectedCompetency = this.$store.state.editor.selectedCompetency;
+                    var framework = store.editor().framework;
+                    if (store.editor().selectedCompetency != null) {
+                        var selectedCompetency = store.editor().selectedCompetency;
                         if (EcRepository.shouldTryUrl(selectedCompetency.id) === false && selectedCompetency.id.indexOf(this.repo.selectedServer) === -1) {
                             link = this.repo.selectedServer + "data/" + EcCrypto.md5(selectedCompetency.shortId());
                             fid = this.repo.selectedServer + "data/" + EcCrypto.md5(framework.shortId());
@@ -1028,21 +1028,21 @@ export default {
             return entity;
         },
         attachUrlProperties: async function(results) {
-            var resource = this.$store.state.editor.framework;
-            if (this.$store.state.editor.selectedCompetency != null) {
-                resource = this.$store.state.editor.selectedCompetency;
+            var resource = store.editor().framework;
+            if (store.editor().selectedCompetency != null) {
+                resource = store.editor().selectedCompetency;
             }
             for (var i = 0; i < results.length; i++) {
                 var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcConcept().getTypes())) {
-                    if (!EcArray.isArray(resource[this.$store.state.editor.selectCompetencyRelation])) {
-                        resource[this.$store.state.editor.selectCompetencyRelation] = [];
+                    if (!EcArray.isArray(resource[store.editor().selectCompetencyRelation])) {
+                        resource[store.editor().selectCompetencyRelation] = [];
                     }
-                    EcArray.setAdd(resource[this.$store.state.editor.selectCompetencyRelation], thing.shortId());
+                    EcArray.setAdd(resource[store.editor().selectCompetencyRelation], thing.shortId());
                 }
             }
             resource["schema:dateModified"] = new Date().toISOString();
-            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
+            if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
                 resource = await EcEncryptedValue.toEncryptedValue(resource);
             }
             this.repo.saveTo(resource, function() {}, console.error);
@@ -1056,7 +1056,7 @@ export default {
         },
         copyCompetencies: async function(results) {
             var copyDict = {};
-            var framework = this.$store.state.editor.framework;
+            var framework = store.editor().framework;
             var me = this;
             for (var i = 0; i < results.length; i++) {
                 var thing = await EcRepository.get(results[i]);
@@ -1088,7 +1088,7 @@ export default {
                     }
                     c['ceasn:derivedFrom'] = thing.id;
                     copyDict[c['ceasn:derivedFrom']] = c;
-                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
+                    if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
                         c = await EcEncryptedValue.toEncryptedValue(c);
                     }
                     this.itemsSaving++;
@@ -1096,7 +1096,7 @@ export default {
                         Task.asyncImmediate(function(callback) {
                             me.repo.saveTo(c, function() {
                                 framework.addCompetency(c.id);
-                                me.$store.commit('editor/framework', framework);
+                                store.editor().setFramework(framework);
                                 me.afterCopy();
                                 callback();
                             }, function(error) {
@@ -1115,11 +1115,11 @@ export default {
                         level.generateId(this.repo.selectedServer);
                     }
                     level["schema:dateCreated"] = new Date().toISOString();
-                    level.competency = this.$store.state.editor.selectedCompetency.shortId();
+                    level.competency = store.editor().selectedCompetency.shortId();
                     delete level.owner;
                     level['ceasn:derivedFrom'] = thing.id;
                     copyDict[level['ceasn:derivedFrom']] = level;
-                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
+                    if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
                         level = await EcEncryptedValue.toEncryptedValue(level);
                     }
                     this.itemsSaving++;
@@ -1127,7 +1127,7 @@ export default {
                         Task.asyncImmediate(function(callback) {
                             me.repo.saveTo(level, function() {
                                 framework.addLevel(level.id);
-                                me.$store.commit('editor/framework', framework);
+                                store.editor().setFramework(framework);
                                 me.afterCopy();
                                 callback();
                             }, function(error) {
@@ -1176,7 +1176,7 @@ export default {
                         if (r.source !== r.target) {
                             framework["schema:dateModified"] = new Date().toISOString();
                             EcArray.setRemove(results, thing.source);
-                            if (this.$store.state.editor.private === true) {
+                            if (store.editor().private === true) {
                                 r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.itemsSaving++;
@@ -1184,7 +1184,7 @@ export default {
                                 Task.asyncImmediate(function(callback) {
                                     me.repo.saveTo(r, function() {
                                         framework.addRelation(r.id);
-                                        me.$store.commit('editor/framework', framework);
+                                        store.editor().setFramework(framework);
                                         me.afterCopy();
                                         callback();
                                     },
@@ -1199,7 +1199,7 @@ export default {
                     }
                 }
             }
-            var selectedCompetency = this.$store.state.editor.selectedCompetency;
+            var selectedCompetency = store.editor().selectedCompetency;
             for (var i = 0; i < results.length; i++) {
                 var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
@@ -1236,7 +1236,7 @@ export default {
                             this.itemsSaving++;
                             framework.addRelation(r.id);
                             framework["schema:dateModified"] = new Date().toISOString();
-                            if (this.$store.state.editor.private === true) {
+                            if (store.editor().private === true) {
                                 r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             (function(r) {
@@ -1261,16 +1261,16 @@ export default {
             this.itemsSaving--;
             // loading(this.itemsSaving + " objects left to copy.");
             if (this.itemsSaving === 0) {
-                var framework = this.$store.state.editor.framework;
-                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                var framework = store.editor().framework;
+                if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
                 this.repo.saveTo(framework, function() {}, console.error);
             }
         },
         appendCompetencies: async function(results, newLink) {
-            var selectedCompetency = this.$store.state.editor.selectedCompetency;
-            var framework = this.$store.state.editor.framework;
+            var selectedCompetency = store.editor().selectedCompetency;
+            var framework = store.editor().framework;
             var me = this;
             for (var i = 0; i < results.length; i++) {
                 var thing = await EcRepository.get(results[i]);
@@ -1330,7 +1330,7 @@ export default {
 
                         if (r.source !== r.target) {
                             framework.addRelation(r.id);
-                            if (this.$store.state.editor.private === true) {
+                            if (store.editor().private === true) {
                                 r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.repo.saveTo(r, function() {}, console.error);
@@ -1338,11 +1338,11 @@ export default {
                     }
                 }
             }
-            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+            if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, async function() {
-                me.$store.commit('editor/framework', await EcFramework.get(framework.id));
+                store.editor().setFramework(await EcFramework.get(framework.id));
             }, console.error);
         },
         importParentStyles: function() {

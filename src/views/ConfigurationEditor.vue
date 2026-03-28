@@ -82,8 +82,9 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 // @ is an alias to /src
-import ConfigurationDetails from "@/components/configuration/ConfigurationDetails";
+import ConfigurationDetails from "@/components/configuration/ConfigurationDetails.vue";
 import {cassUtil} from '@/mixins/cassUtil';
 import {configuration} from '@/mixins/configuration';
 import DeleteConfigurationConfirm from '@/components/modalContent/DeleteConfigurationConfirm.vue';
@@ -96,50 +97,50 @@ export default {
     mixins: [cassUtil, configuration],
     computed: {
         configViewMode() {
-            return this.$store.getters['configuration/configView'];
+            return store.configuration().configView;
         },
         defaultBrowserConfigName: {
             get() {
-                return this.$store.getters['configuration/defaultBrowserConfigName'];
+                return store.configuration().defaultBrowserConfigName;
             },
             set(val) {
-                this.$store.commit('configuration/setDefaultBrowserConfigName', val);
+                store.configuration().setDefaultBrowserConfigName(val);
             }
         },
         showConfirmDeleteConfigModal: {
             get() {
-                return this.$store.getters['configuration/showConfirmDeleteConfigModal'];
+                return store.configuration().showConfirmDeleteConfigModal;
             },
             set(val) {
-                this.$store.commit('configuration/setShowConfirmDeleteConfigModal', val);
+                store.configuration().setShowConfirmDeleteConfigModal(val);
             }
         },
         showBrowserConfigSetModal: {
             get() {
-                return this.$store.getters['configuration/showBrowserConfigSetModal'];
+                return store.configuration().showBrowserConfigSetModal;
             },
             set(val) {
-                this.$store.commit('configuration/setShowBrowserConfigSetModal', val);
+                store.configuration().setShowBrowserConfigSetModal(val);
             }
         },
         showMustBeLoggedInModal: {
             get() {
-                return this.$store.getters['configuration/showMustBeLoggedInModal'];
+                return store.configuration().showMustBeLoggedInModal;
             },
             set(val) {
-                this.$store.commit('configuration/setShowMustBeLoggedInModal', val);
+                store.configuration().setShowMustBeLoggedInModal(val);
             }
         },
         configToDelete: {
             get() {
-                return this.$store.getters['configuration/configToDelete'];
+                return store.configuration().configToDelete;
             },
             set(val) {
-                this.$store.commit('configuration/setConfigToDelete', val);
+                store.configuration().setConfigToDelete(val);
             }
         },
         localDefaultBrowserConfigId() {
-            return this.$store.getters['configuration/localDefaultBrowserConfig'];
+            return store.configuration().localDefaultBrowserConfig;
         },
         currentConfigIsReadOnly: function() {
             if (!this.currentConfig || !this.currentConfig.isOwned) return true;
@@ -190,7 +191,7 @@ export default {
         },
         backFromEditCurrentConfig() {
             this.showListView();
-            this.$store.commit('configuration/setCurrentConfig', {});
+            store.configuration().setCurrentConfig({});
         },
         generateCustomPropertyNameId(customProp) {
             return customProp.context + customProp.propertyName;
@@ -286,7 +287,7 @@ export default {
             this.showDetailView();
         },
         closeBrowserConfigSetModal() {
-            this.$store.commit('configuration/setShowConfirmDeleteConfigModal', false);
+            store.configuration().setShowConfirmDeleteConfigModal(false);
         }
     }
 };

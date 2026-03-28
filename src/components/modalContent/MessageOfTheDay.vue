@@ -3,18 +3,17 @@
         @close="$emit('close')"
         :active="true"
         type="primary">
-        <template slot="modal-header">
-            <span class="title has-text-white">{{$store.getters['app/motdTitle'] || "Message of the Day"}}</span>
+        <template #modal-header>
+            <span class="title has-text-white">{{store.app().motdTitle || "Message of the Day"}}</span>
         </template>
-        <template
-            slot="modal-body">
+        <template #modal-body>
             <div class="section has-background-white has-text-centered">
                 <p>
-                    {{$store.getters['app/motdMessage']}}
+                    {{store.app().motdMessage}}
                 </p>
             </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div
                 class="buttons is-spaced">
                 <button
@@ -29,6 +28,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'MessageOfTheDay',
@@ -40,7 +40,7 @@ export default {
     },
     methods: {
         close: function() {
-            this.$store.commit('app/closeModal');
+            store.app().setCloseModal();
         }
     }
 };

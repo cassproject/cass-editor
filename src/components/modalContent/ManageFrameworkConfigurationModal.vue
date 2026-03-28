@@ -3,10 +3,10 @@
         :active="true"
         type="success"
         @close="$emit('close')">
-        <template slot="modal-header">
+        <template #modal-header>
             Manage configuration
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <p>
                 Choose a configuration to apply to this framework below.  You can view and manage details about
                 your available configurations in <router-link :to="{path: '/config', query: queryParams}">
@@ -15,7 +15,7 @@
             </p>
             <p />
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
@@ -29,6 +29,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 
 import {cassUtil} from '../../mixins/cassUtil';
@@ -48,7 +49,7 @@ export default {
     },
     computed: {
         queryParams() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         }
     }
 };

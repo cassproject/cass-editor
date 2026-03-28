@@ -13,7 +13,7 @@
                         id="selectAllCheckbox"
                         type="checkbox"
                         name="selectAllCheckbox"
-                        v-model="selectAll">
+                        v-model="localSelectAll">
                     <label for="selectAllCheckbox" />
                 </div>
             </div>
@@ -205,7 +205,7 @@
                     <!--  start over -->
                     <div
                         v-if="view === 'importLight' && (importType !== 'text' || (importType === 'text' && importStatus === 'Competency detected'))"
-                        @click="$store.dispatch('app/clearImport')"
+                        @click="store.app().clearImport()"
                         id="framework-buttons-import-again"
                         class="button is-small is-dark is-outlined is-pulled-right">
                         <span>
@@ -228,7 +228,7 @@
                     </div>
                     <!--  accept preview -->
                     <div
-                        @click="$store.commit('app/importTransition', 'light')"
+                        @click="store.app().setImportTransition('light')"
                         id="framework-buttons-done-editing"
                         v-if="view === 'importPreview'"
                         class="button  is-small is-primary is-outlined is-pulled-right">
@@ -259,11 +259,12 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 export default {
     name: 'FrameworkButtons',
     computed: {
         queryParams() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         }
     }
 };

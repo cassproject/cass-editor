@@ -4,10 +4,10 @@
         @close="closeModal"
         size="small"
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             Required Property
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <section>
                 <b>This action cannot be completed</b>
                 This property is required.  Please modify your configuration or
@@ -15,7 +15,7 @@
                 not require this property.
             </section>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <button
                 @click="closeModal()"
                 id="required-property-modal-ok-button"
@@ -26,6 +26,7 @@
     </modal-template>
 </template>
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'RequiredPropertyModal',
@@ -42,7 +43,7 @@ export default {
     },
     methods: {
         closeModal() {
-            this.$store.commit('app/closeModal');
+            store.app().setCloseModal();
         }
     }
 };

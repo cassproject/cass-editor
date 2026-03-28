@@ -4,10 +4,10 @@
         <modal-template
             :active="createSubdirectory"
             @close="createSubdirectory = false">
-            <template slot="modal-header">
+            <template #modal-header>
                 Create directory
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div
                     class="field">
                     <div class="label">
@@ -24,7 +24,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     class="field">
                     <div class="buttons">
@@ -56,10 +56,10 @@
         </modal-template>
         <!-- name directory modal -->
         <modal-template :active="createResource || editResource">
-            <template slot="modal-header">
+            <template #modal-header>
                 {{ createResource ? "Create resource" : "Edit resource" }}
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div class="field">
                     <div class="label">
                         <label>Name of resource</label>
@@ -95,7 +95,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     class="field"
                     v-if="createResource">
@@ -136,13 +136,13 @@
         </modal-template>
         <thing-editing
             v-if="editDirectory && canEditDirectory"
-            :obj="$store.getters['app/rightAsideObject']"
+            :obj="store.app().rightAsideObject"
             :repo="repo"
             :parentNotEditable="queryParams.view==='true'"
             :profile="directoryProfile"
             @done-editing-node-event="onDoneEditingNode()" />
         <main-layout :rightActive="showRightAside">
-            <template slot="top">
+            <template #top>
                 <div
                     style="width: 100%;"
                     class="columns is-mobile is-spaced mt-0">
@@ -192,7 +192,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="secondary-top">
+            <template #secondary-top>
                 <nav
                     class="breadcrumb is-medium"
                     aria-label="breadcrumbs has-text-dark">
@@ -200,7 +200,7 @@
                         <li>
                             <a
                                 href="#"
-                                @click="$router.push({name: 'frameworks', query: queryParams}); $store.commit('app/selectDirectory', null)">
+                                @click="$router.push({name: 'frameworks', query: queryParams}); store.app().setSelectDirectory(null)">
                                 CaSS
                             </a>
                         </li>
@@ -209,7 +209,7 @@
                             :key="each.id">
                             <a
                                 href="#"
-                                @click="$store.commit('app/selectDirectory', each); $store.commit('app/rightAsideObject', each);">{{ each.name }}</a>
+                                @click="store.app().setSelectDirectory(each); store.app().setRightAsideObject(each);">{{ each.name }}</a>
                         </li>
                         <li>
                             <a
@@ -222,7 +222,7 @@
                     </ul>
                 </nav>
             </template>
-            <template slot="body">
+            <template #body>
                 <DirectoryList
                     type="Framework"
                     :repo="repo"
@@ -235,7 +235,7 @@
                     :disallowEdits="true"
                     @dblclick="openObject" />
             </template>
-            <template slot="right">
+            <template #right>
                 <RightAside
                     @editResource="editResource = true; resource = $event"
                     v-if="showRightAside" />
@@ -273,6 +273,8 @@
     </div>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
+import store from '@/stores/index.js';
 import debounce from 'lodash/debounce';
 import DirectoryList from './DirectoryList.vue';
 import common from '@/mixins/common.js';
@@ -290,8 +292,8 @@ export default {
         AddNewDropdown,
         ModalTemplate,
         SearchBar,
-        RightAside: () => import('@/components/framework/RightAside.vue'),
-        ThingEditing: () => import('@/lode/components/ThingEditing.vue')
+        RightAside: defineAsyncComponent(() => import('@/components/framework/RightAside.vue')),
+        ThingEditing: defineAsyncComponent(() => import('@/lode/components/ThingEditing.vue'))
     },
     data: function() {
         return {
@@ -316,17 +318,17 @@ export default {
     },
     created: function() {
         this.sortBy = "name.keyword";
-        this.$store.commit("editor/t3Profile", false);
-        this.$store.commit('editor/framework', null);
+        store.editor().setT3Profile(false);
+        store.editor().setFramework(null);
         this.spitEvent('viewChanged');
         this.setDefaultConfig();
     },
     computed: {
         showRightAside: function() {
-            return this.$store.getters['app/showRightAside'];
+            return store.app().showRightAside;
         },
         directory: function() {
-            return this.$store.getters['app/selectedDirectory'];
+            return store.app().selectedDirectory;
         },
         loggedIn: function() {
             if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
@@ -336,14 +338,14 @@ export default {
         },
         searchingInDirectory: {
             get() {
-                return this.$store.getters['app/searchingInDirectory'];
+                return store.app().searchingInDirectory;
             },
             set(val) {
-                this.$store.commit('app/searchingInDirectory', val);
+                store.app().setSearchingInDirectory(val);
             }
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         },
         currentUser: function() {
             if (EcIdentityManager.default.ids.length > 0) {
@@ -353,13 +355,13 @@ export default {
             }
         },
         filterByOwnedByMe: function() {
-            return this.$store.getters['app/filterByOwnedByMe'];
+            return store.app().filterByOwnedByMe;
         },
         filterByNotOwnedByMe: function() {
-            return this.$store.getters['app/filterByNotOwnedByMe'];
+            return store.app().filterByNotOwnedByMe;
         },
         filterByConfigMatchDefault: function() {
-            return this.$store.getters['app/filterByConfigMatchDefault'];
+            return store.app().filterByConfigMatchDefault;
         },
         searchOptions: function() {
             let search = "";
@@ -399,7 +401,7 @@ export default {
             return search;
         },
         initialOwnedByMe: function() {
-            return this.$store.getters["featuresEnabled/ownedByMe"];
+            return store.featuresEnabled().ownedByMe;
         },
         paramObj: function() {
             let obj = {};
@@ -413,13 +415,13 @@ export default {
             return obj;
         },
         sortResults: function() {
-            return this.$store.getters['app/sortResults'];
+            return store.app().sortResults;
         },
         searchTerm: function() {
-            return this.$store.getters['app/searchTerm'];
+            return store.app().searchTerm;
         },
         quickFilters: function() {
-            return this.$store.getters['app/quickFilters'];
+            return store.app().quickFilters;
         },
         filteredQuickFilters: function() {
             let filterValues = this.quickFilters.filter(item => item.checked === true);
@@ -430,10 +432,10 @@ export default {
             return window.location.href.replace('/directory', "?directoryId=" + this.directory.shortId());
         },
         shareEnabled: function() {
-            return this.$store.state.featuresEnabled.shareEnabled;
+            return store.featuresEnabled().shareEnabled;
         },
         userManagementEnabled: function() {
-            return this.$store.state.featuresEnabled.userManagementEnabled;
+            return store.featuresEnabled().userManagementEnabled;
         },
         showUserManagementIcon: function() {
             if (!this.shareEnabled && !this.canEditDirectory) {
@@ -459,7 +461,7 @@ export default {
                 id: 'ownedByMe',
                 checked: val
             };
-            this.$store.commit("app/singleQuickFilter", filter);
+            store.app().setSingleQuickFilter(filter);
         },
         closeCreateDropDown: function() {
             if (this.createDropDownActive) {
@@ -470,44 +472,44 @@ export default {
             return this.canEditAny(item);
         },
         frameworkClick: function(framework) {
-            this.$store.commit('app/rightAsideObject', framework);
-            this.$store.commit('app/showRightAside', 'ListItemInfo');
+            store.app().setRightAsideObject(framework);
+            store.app().openRightAside('ListItemInfo');
         },
         openObject: function(object) {
             let me = this;
             if (object.type === "Directory") {
-                this.$store.commit('app/selectDirectory', object);
+                store.app().setSelectDirectory(object);
                 if (this.$route.name !== "directory") {
                     this.$router.push({name: "directory"});
                 }
-                this.$store.commit('app/closeRightAside');
+                store.app().setCloseRightAside();
             } else if (object.type === "CreativeWork") {
                 window.open(object.url, '_blank');
-            } else if (this.$store.getters['editor/conceptMode']) {
-                this.$store.commit('app/selectDirectory', null);
+            } else if (store.editor().conceptMode) {
+                store.app().setSelectDirectory(null);
                 EcConceptScheme.get(object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    store.editor().setFramework(success);
+                    store.editor().clearFrameworkCommentData();
+                    store.app().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    store.app().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: object.id}});
                 }, console.error);
-            } else if (this.$store.getters['editor/progressionMode']) {
-                this.$store.commit('app/selectDirectory', null);
+            } else if (store.editor().progressionMode) {
+                store.app().setSelectDirectory(null);
                 EcConceptScheme.get(object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    store.editor().setFramework(success);
+                    store.editor().clearFrameworkCommentData();
+                    store.app().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    store.app().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "progressionModel", params: {frameworkId: object.id}});
                 }, console.error);
             } else {
-                this.$store.commit('app/selectDirectory', null);
+                store.app().setSelectDirectory(null);
                 EcFramework.get(object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    store.editor().setFramework(success);
+                    store.editor().clearFrameworkCommentData();
+                    store.app().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    store.app().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: object.id}});
                 }, console.error);
             }
@@ -581,11 +583,11 @@ export default {
                 me.subdirectoryName = '';
                 if (me.addAnother) {
                     me.addAnother = false;
-                    me.$store.commit('app/refreshSearch', true);
+                    store.app().setRefreshSearch(true);
                 } else {
                     me.createSubdirectory = false;
-                    me.$store.commit('app/selectDirectory', dir);
-                    me.$store.commit('app/rightAsideObject', dir);
+                    store.app().setSelectDirectory(dir);
+                    store.app().setRightAsideObject(dir);
                 }
             }, console.error, this.repo);
         },
@@ -610,7 +612,7 @@ export default {
         goToParentDirectory: function() {
             let me = this;
             EcDirectory.get(this.directory.parentDirectory, function(success) {
-                me.$store.commit('app/selectDirectory', success);
+                store.app().setSelectDirectory(success);
             }, console.error);
         },
         saveNewResource: function() {
@@ -634,8 +636,8 @@ export default {
                 me.resourceName = '';
                 me.resourceUrl = '';
                 me.createResource = false;
-                me.$store.commit('app/refreshSearch', true);
-                me.$store.commit('app/rightAsideObject', c);
+                store.app().setRefreshSearch(true);
+                store.app().setRightAsideObject(c);
             }, console.error);
         },
         saveEditedResource: function() {
@@ -644,17 +646,17 @@ export default {
             resource.name = this.resourceName;
             resource.url = this.resourceUrl;
             repo.saveTo(resource, function() {
-                me.$store.commit('app/rightAsideObject', resource);
+                store.app().setRightAsideObject(resource);
                 me.editResource = false;
                 me.resource = null;
             }, console.error);
         },
         showManageUsersModal() {
-            this.$store.commit('app/showModal', {component: 'Share'});
+            store.app().setShowModal({component: 'Share'});
         },
         showDirectoryInRightAside() {
-            this.$store.commit('app/rightAsideObject', this.directory);
-            this.$store.commit('app/showRightAside', 'ListItemInfo');
+            store.app().setRightAsideObject(this.directory);
+            store.app().openRightAside('ListItemInfo');
         },
         findDirectoryTrail: function(directory) {
             let me = this;
@@ -670,20 +672,20 @@ export default {
             }
         }
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.queryParams && this.queryParams.private !== 'true') {
-            this.$store.commit('editor/private', false);
+            store.editor().setPrivate(false);
         }
-        this.$store.commit('app/selectDirectory', null);
+        store.app().setSelectDirectory(null);
     },
     mounted: function() {
         this.showMine = this.filterByOwnedByMe;
         if (!this.directory || this.directory === '') {
             this.$router.push({name: "frameworks"});
         }
-        this.$store.commit('app/objForShareModal', null);
+        store.app().setObjForShareModal(null);
         this.showDirectoryInRightAside();
-        this.$store.commit('app/searchTerm', '');
+        store.app().setSearchTerm('');
         // Keep sorting/filtering in sync with the store on back button
         if (this.sortResults.id === "lastEdited") {
             this.sortBy = "schema:dateModified";
@@ -729,6 +731,7 @@ export default {
 </script>
 
 <style lang="scss">
+    @import './../../scss/variables.scss';
     @import './../../scss/frameworks.scss';
 .frameworks-sticky {
     position: sticky;

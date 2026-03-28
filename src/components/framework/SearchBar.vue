@@ -17,18 +17,18 @@
             class="field is-grouped">
             <p
                 class="control is-expanded"
-                :class="{'has-icons-right': searchTerm === ''}">
+                :class="{'has-icons-right': localSearchTerm === ''}">
                 <input
                     class="input"
                     ref="text"
                     type="search"
-                    v-model="searchTerm"
+                    v-model="localSearchTerm"
                     :disabled="isFirstSearchProcessing"
                     :placeholder="'Search for ' + (searchType === 'Competency' ? 'competencie' : searchType)+ 's...'"
-                    @input="updateSearchTerm(searchTerm)"
+                    @input="updateSearchTerm(localSearchTerm)"
                     id="search-bar-input" />
                 <span
-                    v-if="searchTerm === ''"
+                    v-if="localSearchTerm === ''"
                     class="icon is-small is-right">
                     <i class="fas fa-search" />
                 </span>
@@ -54,7 +54,6 @@
                 <div
                     class="button is-outlined is-dark"
                     title="Filters"
-                    @click="$store.commit('app/showRightAside', 'FilterAndSort')"
                     id="open-filters-side-bar-button"
                     @click="store.app().showRightAside('FilterAndSort')"
                 >
@@ -161,7 +160,7 @@ export default {
     },
     data() {
         return {
-            searchTerm: '',
+            localSearchTerm: '',
             basicSort: '',
             basicFilter: this.ownedByMe
         };
@@ -170,8 +169,8 @@ export default {
         setFocus: function() {
             this.$nextTick(() => this.$refs['text'].focus());
         },
-        storeSearchTerm: function() {
-            this.searchTerm = this.storeSearchTerm;
+        storeSearchTerm: function(val) {
+            this.localSearchTerm = val;
         },
         basicSort: function(val) {
             console.log(val);
@@ -183,9 +182,9 @@ export default {
     },
     mounted: function() {
         this.setOwnedByMe(this.ownedByMe);
-        let searchTerm = this.searchTerm;
+        let searchTerm = this.storeSearchTerm;
         if (searchTerm && searchTerm.length > 0) {
-            this.searchTerm = searchTerm;
+            this.localSearchTerm = searchTerm;
         }
     },
     methods: {
@@ -242,7 +241,7 @@ export default {
             return EcIdentityManager.default.ids?.length > 0;
         },
         storeSearchTerm: function() {
-            return this.searchTerm;
+            return store.app().searchTerm;
         },
         searchFrameworks: {
             get() {

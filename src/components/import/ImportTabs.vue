@@ -23,7 +23,7 @@
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'file'}">
                                 <button
-                                    @click="$store.commit('app/importType', 'file')"
+                                    @click="store.app().setImportType('file')"
                                     id="import-file-tab-button">
                                     <i
                                         class="fa fa-2x fa-file has-text-centered is-block"
@@ -42,7 +42,7 @@
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'server'}">
                                 <button
-                                    @click="$store.commit('app/importType', 'server')"
+                                    @click="store.app().setImportType('server')"
                                     id="import-server-tab-button">
                                     <i
                                         class="fa fa-2x fa-server is-block has-text-centered"
@@ -61,7 +61,7 @@
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'text'}">
                                 <button
-                                    @click="$store.commit('app/importType', 'text')"
+                                    @click="store.app().setImportType('text')"
                                     id="import-text-tab-button">
                                     <i
                                         class="fa fa-2x fa-paste has-text-centered is-block"
@@ -80,7 +80,7 @@
                                 class="import-tab"
                                 :class="{ 'is-active-tab': importType === 'url'}">
                                 <button
-                                    @click="$store.commit('app/importType', 'url')"
+                                    @click="store.app().setImportType('url')"
                                     id="import-url-tab-button">
                                     <i
                                         class="fa fa-link has-text-centered is-block fa-2x"
@@ -220,6 +220,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import imports from '@/mixins/import.js';
 
 export default {
@@ -229,46 +230,46 @@ export default {
         // delete these?
         importCaseDocs: function() {
             this.$emit('import-case', this.caseDocs);
-            this.$store.commit('app/importTransition', 'importingCaseFrameworks');
+            store.app().setImportTransition('importingCaseFrameworks');
         },
         importFromUrl: function() {
-            this.$store.commit('app/importStatus', 'importFromUrl');
-            this.$store.commit('app/importTransition', 'importingFromUrl');
+            store.app().setImportStatus('importFromUrl');
+            store.app().setImportTransition('importingFromUrl');
         },
         importFromFile: function() {
             // import.vue watches for framework and file to be defined
-            this.$store.commit('app/importType', 'file');
-            this.$store.commit('app/importFramework', null);
-            this.$store.commit('app/importTransition', 'upload');
+            store.app().setImportType('file');
+            store.app().setImportFramework(null);
+            store.app().setImportTransition('upload');
         }
     },
     computed: {
         conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
+            return store.editor().conceptMode;
         },
         progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
+            return store.editor().progressionMode;
         },
         importErrors: function() {
-            return this.$store.getters['app/importErrors'];
+            return store.app().importErrors;
         },
         importFile: function() {
-            return this.$store.getters['app/importFiles'];
+            return store.app().importFiles;
         },
         importTransition: function() {
-            return this.$store.getters['app/importTransition'];
+            return store.app().importTransition;
         },
         importType: function() {
-            return this.$store.getters['app/importType'];
+            return store.app().importType;
         },
         importFileType: function() {
-            return this.$store.getters['app/importFileType'];
+            return store.app().importFileType;
         },
         importFramework: function() {
-            return this.$store.getters['app/importFramework'];
+            return store.app().importFramework;
         },
         importStatus: function() {
-            return this.$store.getters['app/importStatus'];
+            return store.app().importStatus;
         },
         frameworkSize: function() {
             if (this.conceptMode || this.progressionMode) {
@@ -281,7 +282,7 @@ export default {
             }
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         }
     }
 };

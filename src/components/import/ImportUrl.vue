@@ -163,7 +163,8 @@
     </div>
 </template>
 <script>
-import ImportTabs from '@/components/import/ImportTabs';
+import store from '@/stores/index.js';
+import ImportTabs from '@/components/import/ImportTabs.vue';
 import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
 
@@ -183,10 +184,10 @@ export default {
     },
     computed: {
         importInfoVisible: function() {
-            return this.$store.getters['app/showRightAside'];
+            return store.app().showRightAside;
         },
         importErrors: function() {
-            return this.$store.getters['app/importErrors'];
+            return store.app().importErrors;
         }
     },
     props: {

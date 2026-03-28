@@ -4,10 +4,10 @@
         @close="closeModal"
         size="small"
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             {{ title || 'Export' }}
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <section>
                 <div
                     class="field">
@@ -32,7 +32,7 @@
                 </div>
             </section>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <button
                 class="button is-outlined is-dark"
                 @click="closeModal">
@@ -58,6 +58,7 @@
     </modal-template>
 </template>
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 import saveAs from 'file-saver';
 export default {
@@ -80,7 +81,7 @@ export default {
     },
     computed: {
         obj() {
-            return this.$store.getters['editor/itemToExport'];
+            return store.editor().itemToExport;
         },
         exportOptions() {
             if (this.objType.indexOf("conceptscheme") !== -1) {
@@ -138,7 +139,7 @@ export default {
             this.working = false;
         },
         closeModal() {
-            this.$store.commit('app/closeModal');
+            store.app().setCloseModal();
         },
         exportObject: async function() {
             if (this.objType.indexOf("conceptscheme") !== -1) {
@@ -332,7 +333,7 @@ export default {
             saveAs(blob, fileName);
         },
         get: async function(server, service, headers, success, failure) {
-            return this.$store.dispatch('editor/getThing', {
+            return store.editor().getThing( {
                 server: server,
                 service: service,
                 headers: headers,

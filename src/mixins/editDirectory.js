@@ -126,17 +126,17 @@ export default {
             if (this.changedObject && this.directory && this.changedObject === this.directory.shortId()) {
                 let me = this;
                 EcRepository.get(this.directory.shortId(), function (dir) {
-                    if (me.$store.getters['app/selectedDirectory'] && me.$store.getters['app/selectedDirectory'].shortId() === dir.shortId()) {
-                        me.$store.commit('app/selectDirectory', dir);
+                    if (store.app().selectedDirectory && store.app().selectedDirectory.shortId() === dir.shortId()) {
+                        store.app().setSelectDirectory(dir);
                     } else {
-                        me.$store.commit('app/refreshSearch', true);
+                        store.app().setRefreshSearch(true);
                     }
-                    if (me.showRightAside && dir.shortId() === me.$store.getters['app/rightAsideObject'].shortId()) {
-                        me.$store.commit('app/rightAsideObject', dir);
+                    if (me.showRightAside && dir.shortId() === store.app().rightAsideObject.shortId()) {
+                        store.app().setRightAsideObject(dir);
                     }
-                    me.$store.dispatch('app/refreshDirectories');
+                    store.app().refreshDirectories();
                 }, console.error);
-                this.$store.commit('editor/changedObject', null);
+                store.editor().setChangedObject(null);
             }
         }
     }

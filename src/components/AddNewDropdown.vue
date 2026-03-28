@@ -108,6 +108,7 @@
 
 <script>
 import {mapState} from 'pinia';
+import store from '@/stores/index.js';
 export default {
     name: 'AddNewDropdown',
     props: {
@@ -157,7 +158,7 @@ export default {
         };
     },
     computed: {
-        ...mapState("editor",{
+        ...mapState(store.editor, {
             queryParams: state => state.queryParams
         })
     },

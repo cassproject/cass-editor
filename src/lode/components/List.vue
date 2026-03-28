@@ -9,8 +9,7 @@
                 <i class="fa fa-spinner fa-2x fa-pulse" />
             </span>
         </div>
-        <template>
-            <div class="container is-desktop">
+        <div class="container is-desktop">
                 <ul class="cass--list">
                     <li
                         v-if="!firstSearchProcessing && (!results || results.length === 0)"
@@ -55,7 +54,7 @@
                                 :parent="parent"
                                 :obj="item"
                                 :id="'list-click-'+item.id"
-                                @dblclick.native="$emit('dblclick', item)"
+                                @dblclick="$emit('dblclick', item)"
                                 :view="view"
                                 :profile="profile"
                                 class="cass--list--thing"
@@ -131,7 +130,7 @@
                             <Thing
                                 :obj="item"
                                 :id="'breadcrumb-click-'+item.id"
-                                @dblclick.native="$emit('dblclick', item)"
+                                @dblclick="$emit('dblclick', item)"
                                 :view="view"
                                 :profile="profile"
                                 class="list-thing"
@@ -151,15 +150,14 @@
                     spinner="circles"
                     v-if="results.length > 0"
                     :distance="10">
-                    <div slot="no-more">
-                        All results loaded
-                    </div>
-                    <div slot="no-results">
-                        All results loaded
-                    </div>
+                    <template #no-more>
+                        <div>All results loaded</div>
+                    </template>
+                    <template #no-results>
+                        <div>All results loaded</div>
+                    </template>
                 </infinite-loading>
-            </div>
-        </template>
+        </div>
     </div>
 </template>
 
@@ -202,6 +200,7 @@ export default {
         }
     },
     components: {Thing, Breadcrumbs},
+    emits: ['dblclick'],
     mixins: [ common, cassUtil ],
     created: function() {
         this.$nextTick(() => this.searchRepo());

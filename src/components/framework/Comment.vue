@@ -94,13 +94,15 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue';
+import store from '@/stores/index.js';
 import common from '@/mixins/common.js';
 
 export default {
     name: 'Comment',
     mixins: [common],
     components: {
-        comment: () => import('./Comment.vue')
+        comment: defineAsyncComponent(() => import('./Comment.vue'))
     },
     props: {
         comment: {
@@ -122,23 +124,23 @@ export default {
             this.commentListDropDownActive = false;
         },
         handleClickReply: function() {
-            this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
-            this.$store.commit('editor/setAddCommentType', 'reply');
-            this.$store.commit('editor/setCommentToReply', this.comment.comment);
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            store.editor().setAddCommentAboutId(this.comment.aboutId);
+            store.editor().setAddCommentType('reply');
+            store.editor().setCommentToReply(this.comment.comment);
+            store.app().setShowModal({component: 'AddComment'});
         },
         handleClickEdit: function() {
             this.commentListDropDownActive = false;
-            this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
-            this.$store.commit('editor/setAddCommentType', 'edit');
-            this.$store.commit('editor/setCommentToEdit', this.comment.comment);
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            store.editor().setAddCommentAboutId(this.comment.aboutId);
+            store.editor().setAddCommentType('edit');
+            store.editor().setCommentToEdit(this.comment.comment);
+            store.app().setShowModal({component: 'AddComment'});
         },
         handleClickEditReply: function(replyIdx) {
-            this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
-            this.$store.commit('editor/setAddCommentType', 'edit');
-            this.$store.commit('editor/setCommentToEdit', this.comment.replies[replyIdx].comment);
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            store.editor().setAddCommentAboutId(this.comment.aboutId);
+            store.editor().setAddCommentType('edit');
+            store.editor().setCommentToEdit(this.comment.replies[replyIdx].comment);
+            store.app().setShowModal({component: 'AddComment'});
         },
         handleClickDelete: function() {
             let ctd = [];
@@ -148,14 +150,14 @@ export default {
                     ctd.push(r.comment);
                 }
             }
-            this.$store.commit('editor/setCommentsToDelete', ctd);
-            this.$store.commit('app/showModal', {component: 'DeleteCommentConfirm'});
+            store.editor().setCommentsToDelete(ctd);
+            store.app().setShowModal({component: 'DeleteCommentConfirm'});
         },
         handleClickDeleteReply: function(replyIdx) {
             let ctd = [];
             ctd.push(this.comment.replies[replyIdx].comment);
-            this.$store.commit('editor/setCommentsToDelete', ctd);
-            this.$store.commit('app/showModal', {component: 'DeleteCommentConfirm'});
+            store.editor().setCommentsToDelete(ctd);
+            store.app().setShowModal({component: 'DeleteCommentConfirm'});
         }
     },
     computed: {

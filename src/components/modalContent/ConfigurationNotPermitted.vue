@@ -4,10 +4,10 @@
         size="small"
         type="danger"
         @close="$emit('close')">
-        <template slot="modal-header">
+        <template #modal-header>
             Not permitted
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <h3 class="title is-size-4 has-text-weight-bold">
                 Log in to access
             </h3>
@@ -15,7 +15,7 @@
                 This configuration has default owners and readers defined. You must be logged in to apply this configuration.
             </p>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
@@ -35,6 +35,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 
 import {cassUtil} from '../../mixins/cassUtil';
@@ -60,7 +61,7 @@ export default {
     },
     computed: {
         queryParams() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         }
     }
 };

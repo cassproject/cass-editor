@@ -16,7 +16,7 @@
                             <span
                                 class="button is-pulled-right is-large is-primary is-outlined mr-4"
                                 :disabled="!importFrameworkName || !importText || importFrameworkName.trim().length === 0"
-                                @click="$store.commit('app/importStatus', 'parseText')"
+                                @click="store.app().setImportStatus('parseText')"
                                 id="import-text-import-button">
                                 Import
                             </span>
@@ -68,7 +68,8 @@
 </template>
 
 <script>
-import ImportTabs from '@/components/import/ImportTabs';
+import store from '@/stores/index.js';
+import ImportTabs from '@/components/import/ImportTabs.vue';
 import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
 
@@ -91,49 +92,49 @@ export default {
     },
     computed: {
         importInfoVisible: function() {
-            return this.$store.getters['app/showRightAside'];
+            return store.app().showRightAside;
         },
         importText() {
             // remove characters first
             return this.rawImportText;
         },
         text: function() {
-            return this.$store.getters['app/importText'];
+            return store.app().importText;
         },
         importStatus: function() {
-            return this.$store.getters['app/importStatus'];
+            return store.app().importStatus;
         },
         importFrameworkName: {
             get: function() {
-                return this.$store.getters['app/importFrameworkName'];
+                return store.app().importFrameworkName;
             },
             set: function(val) {
-                return this.$store.commit('app/importFrameworkName', val);
+                return store.app().setImportFrameworkName(val);
             }
         },
         importFrameworkDescription: function() {
-            return this.$store.getters['app/importFrameworkDescription'];
+            return store.app().importFrameworkDescription;
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         },
         conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
+            return store.editor().conceptMode;
         },
         progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
+            return store.editor().progressionMode;
         },
         importErrors: function() {
-            return this.$store.getters['app/importErrors'];
+            return store.app().importErrors;
         },
         importFramework: function() {
-            return this.$store.getters['app/importFramework'];
+            return store.app().importFramework;
         },
         importType: function() {
-            return this.$store.getters['app/importType'];
+            return store.app().importType;
         },
         importTransition: function() {
-            return this.$store.getters['app/importTransition'];
+            return store.app().importTransition;
         }
     }
 };

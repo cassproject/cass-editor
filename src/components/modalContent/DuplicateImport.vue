@@ -2,10 +2,10 @@
     <modal-template
         :active="true"
         @close="closeImportModal">
-        <template slot="modal-header">
+        <template #modal-header>
             {{ importModalParams.title }}
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <section>
                 {{ importModalParams.text }}
                 <section
@@ -45,7 +45,7 @@
                 </section>
             </section>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <button
                 @click="clickConfirmFromImportModal"
                 id="duplicate-import-confirm-button"
@@ -63,6 +63,7 @@
     </modal-template>
 </template>
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'DuplicateImport',
@@ -93,10 +94,10 @@ export default {
         },
         importModalParams: {
             get() {
-                return this.$store.getters['app/importModalParams'];
+                return store.app().importModalParams;
             },
             set(val) {
-                this.$store.commit('app/importModalParams', val);
+                store.app().setImportModalParams(val);
             }
         }
     },
@@ -136,7 +137,7 @@ export default {
         },
         resetImportModal: function() {
             this.importModalParams = null;
-            this.$store.commit('app/closeModal');
+            store.app().setCloseModal();
         },
         closeImportModal: function() {
             if (!this.importModalParams.onConfirm) {
@@ -144,7 +145,7 @@ export default {
             }
             this.importModalParams.onCancel();
             this.importModalParams = null;
-            this.$store.commit('app/closeModal');
+            store.app().setCloseModal();
         }
     }
 };

@@ -45,10 +45,11 @@
     </div>
 </template>
 <script>
-import ConfigurationListItem from '@/components/configuration/ConfigurationListItem';
+import store from '@/stores/index.js';
+import ConfigurationListItem from '@/components/configuration/ConfigurationListItem.vue';
 import {cassUtil} from '@/mixins/cassUtil';
 import {configuration} from '@/mixins/configuration';
-import {mapGetters} from 'pinia';
+import {mapState} from 'pinia';
 
 export default {
     name: 'ConfigurationList',
@@ -62,58 +63,58 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            CONFIG_SEARCH_SIZE: 'configuration/CONFIG_SEARCH_SIZE',
-            DEFAULT_CONFIGURATION_TYPE: 'configuration/DEFAULT_CONFIGURATION_TYPE',
-            DEFAULT_CONFIGURATION_CONTEXT: 'configuration/DEFAULT_CONFIGURATION_CONTEXT',
-            LANG_STRING_TYPE: 'configuration/LANG_STRING_TYPE',
-            DEFAULT_HEADING: 'configuration/DEFAULT_HEADING'
+        ...mapState(store.configuration, {
+            CONFIG_SEARCH_SIZE: 'CONFIG_SEARCH_SIZE',
+            DEFAULT_CONFIGURATION_TYPE: 'DEFAULT_CONFIGURATION_TYPE',
+            DEFAULT_CONFIGURATION_CONTEXT: 'DEFAULT_CONFIGURATION_CONTEXT',
+            LANG_STRING_TYPE: 'LANG_STRING_RANGE',
+            DEFAULT_HEADING: 'DEFAULT_HEADING'
         }),
         defaultBrowserConfigName: {
             get() {
-                return this.$store.getters['configuration/defaultBrowserConfigName'];
+                return store.configuration().defaultBrowserConfigName;
             },
             set(val) {
-                this.$store.commit('configuration/setDefaultBrowserConfigName', val);
+                store.configuration().setDefaultBrowserConfigName(val);
             }
         },
         showConfirmDeleteConfigModal: {
             get() {
-                return this.$store.getters['configuration/showConfirmDeleteConfigModal'];
+                return store.configuration().showConfirmDeleteConfigModal;
             },
             set(val) {
-                this.$store.commit('configuration/setShowConfirmDeleteConfigModal', val);
+                store.configuration().setShowConfirmDeleteConfigModal(val);
             }
         },
         showBrowserConfigSetModal: {
             get() {
-                return this.$store.getters['configuration/showBrowserConfigSetModal'];
+                return store.configuration().showBrowserConfigSetModal;
             },
             set(val) {
-                this.$store.commit('configuration/setShowBrowserConfigSetModal', val);
+                store.configuration().setShowBrowserConfigSetModal(val);
             }
         },
         showMustBeLoggedInModal: {
             get() {
-                return this.$store.getters['configuration/showMustBeLoggedInModal'];
+                return store.configuration().showMustBeLoggedInModal;
             },
             set(val) {
-                this.$store.commit('configuration/setShowMustBeLoggedInModal', val);
+                store.configuration().setShowMustBeLoggedInModal(val);
             }
         },
         configToDelete: {
             get() {
-                return this.$store.getters['configuration/configToDelete'];
+                return store.configuration().configToDelete;
             },
             set(val) {
-                this.$store.commit('configuration/setConfigToDelete', val);
+                store.configuration().setConfigToDelete(val);
             }
         },
         configViewMode() {
-            return this.$store.getters['configuration/configView'];
+            return store.configuration().configView;
         },
         localDefaultBrowserConfigId() {
-            return this.$store.getters['configuration/localDefaultBrowserConfig'];
+            return store.configuration().localDefaultBrowserConfig;
         }
     },
     data: () => ({
@@ -131,11 +132,11 @@ export default {
             this.showConfirmDeleteConfigModal = true;
         },
         setConfigToDelete(configId) {
-            this.$store.commit('configuration/setConfigToDelete', this.getConfigById(configId));
+            store.configuration().setConfigToDelete(this.getConfigById(configId));
         },
         async setConfigAsFrameworkDefault(configId) {
             let me = this;
-            let f = this.$store.getters['editor/framework'];
+            let f = store.editor().framework;
             let previousConfig = f.configuration;
             f.configuration = configId;
             if (!previousConfig) {
@@ -144,7 +145,7 @@ export default {
             if (f) {
                 this.frameworkConfigId = configId;
                 window.repo.saveTo(f, async function() {
-                    me.$store.commit('editor/framework', await EcRepository.get(f.shortId()));
+                    store.editor().setFramework(await EcRepository.get(f.shortId()));
                 }, function() {});
             }
         },
@@ -160,7 +161,7 @@ export default {
                 if (userIdentity) {
                     framework.addOwner(userIdentity);
                 } else {
-                    this.$store.commit('configuration/setShowMustBeLoggedInModal', true);
+                    store.configuration().setShowMustBeLoggedInModal(true);
                     return false;
                 }
             }

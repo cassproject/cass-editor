@@ -1,9 +1,9 @@
 <template>
     <modal-template :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             Create directory
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <div
                 class="field">
                 <div class="label">
@@ -20,13 +20,13 @@
                 </div>
             </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div
                 class="field">
                 <div class="buttons">
                     <div
                         class="button is-dark is-outlined"
-                        @click="$store.commit('app/closeModal')"
+                        @click="store.app().setCloseModal()"
                         id="add-directory-cancel-button">
                         Cancel
                     </div>
@@ -53,6 +53,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 export default {
     name: 'AddDirectoryModal',

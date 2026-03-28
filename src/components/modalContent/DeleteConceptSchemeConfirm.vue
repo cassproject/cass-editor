@@ -4,17 +4,17 @@
         @close="closeModal"
         size="small"
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             Confirm Delete {{ type }}
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <section>
                 <b>
                     Warning! This action is permanent.
                 </b>
             </section>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <button
                 @click="deleteItem()"
                 id="delete-concept-scheme-confirm-delete-button"
@@ -31,6 +31,7 @@
     </modal-template>
 </template>
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 import common from '@/mixins/common.js';
 export default {
@@ -46,10 +47,10 @@ export default {
     },
     computed: {
         obj() {
-            return this.$store.getters['editor/itemToDelete'];
+            return store.editor().itemToDelete;
         },
         type() {
-            if (this.$store.getters['queryParams/ceasnDataFields'] === 'true') {
+            if (store.queryParams().ceasnDataFields === 'true') {
                 return "Concept Scheme";
             }
             return 'Taxonomy';
@@ -59,11 +60,11 @@ export default {
         deleteItem() {
             this.deleteObject(this.obj);
             this.closeModal();
-            this.$store.commit('editor/setItemToDelete', {});
+            store.editor().setItemToDelete({});
         },
         closeModal() {
-            this.$store.commit('app/closeModal');
-            this.$store.commit('editor/setItemToDelete', {});
+            store.app().setCloseModal();
+            store.editor().setItemToDelete({});
         },
         deleteObject: function(thing) {
             console.log("deleting " + thing.id);
@@ -78,7 +79,7 @@ export default {
                         me.repo.deleteRegistered(concepts[i], console.log, console.error);
                     }
                 }, console.error);
-                me.$store.commit('editor/framework', null);
+                store.editor().setFramework(null);
                 me.$router.push({name: "concepts"});
             }, console.log);
         }

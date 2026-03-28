@@ -59,6 +59,7 @@
     </div>
 </template>
 <script>
+import store from '@/stores/index.js';
 import Comment from './Comment.vue';
 import common from '@/mixins/common.js';
 
@@ -82,13 +83,13 @@ export default {
     methods: {
         setUpScroll: function(comment) {
             let scrollObj = {ts: Date.now(), scrollId: '#scroll-' + comment.aboutId.split('/').pop()};
-            this.$store.commit('editor/setCommentScrollTo', scrollObj);
+            store.editor().setCommentScrollTo(scrollObj);
         },
         handleClickReply: function(comment) {
-            this.$store.commit('editor/setAddCommentAboutId', comment.aboutId);
-            this.$store.commit('editor/setAddCommentType', 'reply');
-            this.$store.commit('editor/setCommentToReply', comment.comment);
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            store.editor().setAddCommentAboutId(comment.aboutId);
+            store.editor().setAddCommentType('reply');
+            store.editor().setCommentToReply(comment.comment);
+            store.app().setShowModal({component: 'AddComment'});
         },
         determineCanModifyComment: function(comment) {
             if (this.loggedOnPerson.shortId().equals(comment.creator)) return true;
@@ -194,9 +195,9 @@ export default {
             for (let p of ecPersonList) {
                 commentPersonMap[p.shortId()] = p;
             }
-            this.$store.commit('editor/setFrameworkCommentDataLoaded', true);
-            this.$store.commit('editor/setFrameworkCommentPersonMap', commentPersonMap);
-            this.$store.commit('editor/setFrameworkCommentList', this.localFrameworkCommentList); // this SHOULD trigger parseComments
+            store.editor().setFrameworkCommentDataLoaded(true);
+            store.editor().setFrameworkCommentPersonMap(commentPersonMap);
+            store.editor().setFrameworkCommentList(this.localFrameworkCommentList); // this SHOULD trigger parseComments
         },
         buildFrameworkCommentPersonMapFailure: function(msg) {
             console.log('buildFrameworkCommentPersonMapFailure: ' + msg);
@@ -260,19 +261,19 @@ export default {
     },
     computed: {
         loggedOnPerson: function() {
-            return this.$store.getters['user/loggedOnPerson'];
+            return store.user().loggedOnPerson;
         },
         currentFramework: function() {
-            return this.$store.getters['editor/framework'];
+            return store.editor().framework;
         },
         currentFrameworkCompetencies: function() {
-            return this.$store.getters['editor/framework'].competency;
+            return store.editor().framework.competency;
         },
         frameworkCommentList: function() {
-            return this.$store.getters['editor/frameworkCommentList'];
+            return store.editor().frameworkCommentList;
         },
         frameworkCommentPersonMap: function() {
-            return this.$store.getters['editor/frameworkCommentPersonMap'];
+            return store.editor().frameworkCommentPersonMap;
         }
     },
     watch: {

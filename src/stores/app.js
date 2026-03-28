@@ -100,7 +100,7 @@ const actions = {
     closeSideNav: function () {
         this.showSideNav = false;
     },
-    showRightAside: function (payload) {
+    openRightAside: function (payload) {
         this.showRightAside = true;
         this.rightAsideContent = payload;
         // this.showSideNav = false;
@@ -109,6 +109,9 @@ const actions = {
         this.showRightAside = false;
         this.rightAsideContent = '';
         this.rightAsideObject = null;
+    },
+    setCloseRightAside: function () {
+        this.closeRightAside();
     },
     setRightAsideObject: async function (payload) {
         if (payload.encryptedType) {
@@ -331,6 +334,9 @@ const actions = {
     selectDirectory: function (value) {
         this.directories.selectedDirectory = value;
     },
+    setSelectDirectory: function (value) {
+        this.selectDirectory(value);
+    },
     setDirectoryList: function (list) {
         this.directories.directoryList = list;
     },
@@ -366,7 +372,7 @@ const actions = {
         this.curatedPlugins = payload;
     },
     clearImport: function () {
-        this.importFramework(null);
+        this.setImportFramework(null);
         this.clearImportFiles();
         this.clearImportErrors();
         this.setImportTransition('upload');

@@ -4,12 +4,12 @@
         :active="true"
         type="success"
         @close="$emit('close')">
-        <template slot="modal-header">
+        <template #modal-header>
             <span class="title has-text-white">
                 Configuration set as browser default
             </span>
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <h3 class="title is-size-4">
                 <span class="">Success</span>
             </h3>
@@ -17,7 +17,7 @@
                 {{ name }} has been set as your browser's default CaSS Authoring Tool configuration.
             </p>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"

@@ -62,7 +62,7 @@
                             :progressionMode="progressionMode"
                             :importTransition="importTransition"
                             v-if="importType === 'file'">
-                            <template slot="import-file-title">
+                            <template #import-file-title>
                                 <h1
                                     class="title is-size-1 has-text-black">
                                     <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
@@ -88,7 +88,7 @@
                                 </h1>
                             </template>
                             <!-- import from file gets three parts, details, preview, and light view -->
-                            <template slot="import-framework">
+                            <template #import-framework>
                                 <!-- import details -->
                                 <ImportDetails
                                     :detailsDetected="detailsDetected"
@@ -252,7 +252,7 @@
                             :importTransition="importTransition"
                             @import-case="handleImportFromTabs($event)"
                             v-if="importType === 'server'">
-                            <template slot="import-server-title">
+                            <template #import-server-title>
                                 <h1
                                     class="title is-size-1 has-text-black">
                                     <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
@@ -280,7 +280,7 @@
                                     </span>
                                 </h1>
                             </template>
-                            <template slot="import-framework">
+                            <template #import-framework>
                                 <!-- import preview -->
                                 <div
                                     v-if="importFramework && importTransition === 'preview'"
@@ -437,7 +437,7 @@
                             :progressionMode="progressionMode"
                             :importTransition="importTransition"
                             v-if="importType === 'url'">
-                            <template slot="import-url-title">
+                            <template #import-url-title>
                                 <h1
                                     class="title is-size-1 has-text-black">
                                     <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
@@ -463,7 +463,7 @@
                                     </span>
                                 </h1>
                             </template>
-                            <template slot="import-framework">
+                            <template #import-framework>
                                 <!-- import preview -->
                                 <div
                                     v-if="importFramework && importTransition === 'preview'"
@@ -620,7 +620,7 @@
                             :progressionMode="progressionMode"
                             :importTransition="importTransition"
                             v-if="importType === 'text'">
-                            <template slot="import-text-title">
+                            <template #import-text-title>
                                 <h1
                                     class="title is-size-1 has-text-black">
                                     <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
@@ -648,7 +648,7 @@
                                     </span>
                                 </h1>
                             </template>
-                            <template slot="import-framework">
+                            <template #import-framework>
                                 <!-- import light view -->
                                 <div
                                     v-if="importFramework && importTransition === 'light'"
@@ -714,9 +714,9 @@
                 </div>
             </div>
         </template>
-        <template slot="right">
+        <template #right>
             <RightAside v-if="showRightAside && importType === 'file'">
-                <template slot="right-aside-content">
+                <template #right-aside-content>
                     <div class="cass--right-aside--content">
                         <div class="section">
                             <h2 class="title is-size-4">
@@ -865,7 +865,7 @@
             </RightAside>
             <!-- list description for right panel -->
             <RightAside v-if="showRightAside && importType === 'server'">
-                <template slot="right-aside-content">
+                <template #right-aside-content>
                     <div class="cass--right-aside--content">
                         <div class="section">
                             <h2 class="title is-size-4">
@@ -915,7 +915,7 @@
                 </template>
             </RightAside>
             <RightAside v-if="showRightAside && importType === 'text'">
-                <template slot="right-aside-content">
+                <template #right-aside-content>
                     <div class="cass--right-aside--content">
                         <div class="section">
                             <h2 class="title is-size-4">
@@ -961,7 +961,7 @@
                 </template>
             </RightAside>
             <RightAside v-if="showRightAside && importType === 'url'">
-                <template slot="right-aside-content">
+                <template #right-aside-content>
                     <div class="cass--right-aside--content">
                         <div class="section">
                             <h2 class="title is-size-4">
@@ -994,6 +994,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import RightAside from '@/components/framework/RightAside.vue';
 import MainLayout from './../../layouts/MainLayout.vue';
 import ImportFile from '@/components/import/ImportFile.vue';
@@ -1063,16 +1064,16 @@ export default {
     },
     computed: {
         importInfoVisible: function() {
-            return this.$store.getters['app/showRightAside'];
+            return store.app().showRightAside;
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         },
         conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
+            return store.editor().conceptMode;
         },
         progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
+            return store.editor().progressionMode;
         },
         showImportActions: function() {
             if (this.importTransition === 'detail' ||
@@ -1084,39 +1085,39 @@ export default {
             }
         },
         importServerUrl: function() {
-            return this.$store.getters['app/importServerUrl'];
+            return store.app().importServerUrl;
         },
         importUrl: function() {
-            return this.$store.getters['app/importUrl'];
+            return store.app().importUrl;
         },
         importErrors: function() {
-            return this.$store.getters['app/importErrors'];
+            return store.app().importErrors;
         },
         importFile: function() {
-            return this.$store.getters['app/importFiles'];
+            return store.app().importFiles;
         },
         importTransition: function() {
-            return this.$store.getters['app/importTransition'];
+            return store.app().importTransition;
         },
         importType: function() {
-            return this.$store.getters['app/importType'];
+            return store.app().importType;
         },
         importFileType: function() {
-            return this.$store.getters['app/importFileType'];
+            return store.app().importFileType;
         },
         importFramework: function() {
-            return this.$store.getters['app/importFramework'];
+            return store.app().importFramework;
         },
         importFrameworkName: {
             get: function() {
-                return this.$store.getters['app/importFrameworkName'];
+                return store.app().importFrameworkName;
             },
             set: function(val) {
-                return this.$store.commit('app/importFrameworkName', val);
+                return store.app().setImportFrameworkName(val);
             }
         },
         importFrameworkDescription: function() {
-            return this.$store.getters['app/importFrameworkDescription'];
+            return store.app().importFrameworkDescription;
         },
         dynamicThing: function() {
             if (this.editingNode) {
@@ -1132,93 +1133,93 @@ export default {
             return false;
         },
         importStatus: function() {
-            return this.$store.getters['app/importStatus'];
+            return store.app().importStatus;
         },
         csvColumns: {
             get() {
-                return this.$store.getters['app/csvColumns'];
+                return store.app().csvColumns;
             },
             set(val) {
-                this.$store.commit('app/csvColumns', val);
+                store.app().setCsvColumns(val);
             }
         },
         csvRelationColumns: {
             get() {
-                return this.$store.getters['app/csvRelationColumns'];
+                return store.app().csvRelationColumns;
             },
             set(val) {
-                this.$store.commit('app/csvRelationColumns', val);
+                store.app().setCsvRelationColumns(val);
             }
         },
         csvRelationFile: function() {
-            return this.$store.getters['app/csvRelationFile'];
+            return store.app().csvRelationFile;
         },
         importCsvColumnName: {
             get() {
-                return this.$store.getters['app/importNameColumn'];
+                return store.app().importNameColumn;
             },
             set(val) {
-                this.$store.commit('app/importNameColumn', val);
+                store.app().setImportNameColumn(val);
             }
         },
         importCsvColumnDescription: {
             get() {
-                return this.$store.getters['app/importDescriptionColumn'];
+                return store.app().importDescriptionColumn;
             },
             set(val) {
-                this.$store.commit('app/importDescriptionColumn', val);
+                store.app().setImportDescriptionColumn(val);
             }
         },
         importCsvColumnScope: {
             get() {
-                return this.$store.getters['app/importScopeColumn'];
+                return store.app().importScopeColumn;
             },
             set(val) {
-                this.$store.commit('app/importScopeColumn', val);
+                store.app().setImportScopeColumn(val);
             }
         },
         importCsvColumnId: {
             get() {
-                return this.$store.getters['app/importIdColumn'];
+                return store.app().importIdColumn;
             },
             set(val) {
-                this.$store.commit('app/importIdColumn', val);
+                store.app().setImportIdColumn(val);
             }
         },
         importCsvColumnSource: {
             get() {
-                return this.$store.getters['app/importSourceColumn'];
+                return store.app().importSourceColumn;
             },
             set(val) {
-                this.$store.commit('app/importSourceColumn', val);
+                store.app().setImportSourceColumn(val);
             }
         },
         importCsvColumnRelationType: {
             get() {
-                return this.$store.getters['app/importRelationColumn'];
+                return store.app().importRelationColumn;
             },
             set(val) {
-                this.$store.commit('app/importRelationColumn', val);
+                store.app().setImportRelationColumn(val);
             }
         },
         importCsvColumnTarget: {
             get() {
-                return this.$store.getters['app/importTargetColumn'];
+                return store.app().importTargetColumn;
             },
             set(val) {
-                this.$store.commit('app/importTargetColumn', val);
+                store.app().setImportTargetColumn(val);
             }
         },
         firstImport: {
             get() {
-                return this.$store.getters['app/firstImport'];
+                return store.app().firstImport;
             },
             set(val) {
-                this.$store.commit('app/firstImport', val);
+                store.app().setFirstImport(val);
             }
         },
         text: function() {
-            return this.$store.getters['app/importText'];
+            return store.app().importText;
         },
         containerProfile: function() {
             if (this.conceptMode) {
@@ -1249,7 +1250,7 @@ export default {
             return this.t3CompetencyProfile;
         },
         taxonomyTerminology: function() {
-            if (this.$store.getters['editor/queryParams'].ceasnDataFields === 'true') {
+            if (store.editor().queryParams.ceasnDataFields === 'true') {
                 return 'concept scheme';
             } else {
                 return 'taxonomy';
@@ -1257,15 +1258,15 @@ export default {
         }
     },
     created: function() {
-        this.$store.commit('editor/framework', null);
+        store.editor().setFramework(null);
         this.spitEvent('viewChanged');
     },
-    beforeDestroy: function() {
+    beforeUnmount: function() {
         this.clearImport();
     },
     mounted: function() {
         this.clearImport();
-        this.$store.commit('app/showRightAside');
+        store.app().openRightAside();
         let documentBody = document.getElementById('import');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
     },

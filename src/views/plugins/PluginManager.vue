@@ -145,10 +145,10 @@
 </template>
 
 <script>
-
+import store from '@/stores/index.js';
 // @ is an alias to /src
-import PluginListItem from '../../components/plugins/PluginListItem';
-import PluginDetails from '../../components/plugins/PluginDetails';
+import PluginListItem from '../../components/plugins/PluginListItem.vue';
+import PluginDetails from '../../components/plugins/PluginDetails.vue';
 import {cassUtil} from '../../mixins/cassUtil';
 import {pluginUtil} from '../../mixins/pluginUtil';
 
@@ -179,7 +179,7 @@ export default {
             else return true;
         },
         curatedPlugins: function() {
-            return this.$store.getters['app/curatedPlugins'];
+            return store.app().curatedPlugins;
         }
     },
     methods: {
@@ -203,7 +203,7 @@ export default {
             this.currentPlugin = {};
             this.buildManagerPluginList();
             this.showListView();
-            this.$store.commit('app/pluginLastUpdate', Date.now());
+            store.app().setPluginLastUpdate(Date.now());
         },
         deletePlugin() {
             this.pluginManagerBusy = true;
@@ -212,7 +212,7 @@ export default {
             this.pluginToDelete = {};
             this.showConfirmDeletePluginModal = false;
             this.buildManagerPluginList();
-            this.$store.commit('app/pluginLastUpdate', Date.now());
+            store.app().setPluginLastUpdate(Date.now());
         },
         cancelPluginDelete() {
             this.pluginToDelete = {};
@@ -227,16 +227,16 @@ export default {
         },
         enablePlugin(pluginId) {
             this.setPluginAsEnabled(pluginId);
-            this.$store.commit('app/pluginLastUpdate', Date.now());
+            store.app().setPluginLastUpdate(Date.now());
         },
         disablePlugin(pluginId) {
             this.setPluginAsDisabled(pluginId);
-            this.$store.commit('app/pluginLastUpdate', Date.now());
+            store.app().setPluginLastUpdate(Date.now());
         },
         disableAllPlugins() {
             this.setAllPluginsAsDisabled();
             this.buildManagerPluginList();
-            this.$store.commit('app/pluginLastUpdate', Date.now());
+            store.app().setPluginLastUpdate(Date.now());
         },
         getPluginById(pluginId) {
             for (let p of this.pluginList) {

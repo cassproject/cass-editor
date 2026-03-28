@@ -6,6 +6,7 @@ const state = ()=>({
     DEFAULT_HEADING: "General",
     LEVEL_SEARCH_SIZE: 10000,
     PERSON_SEARCH_SIZE: 10000,
+    GROUP_SEARCH_SIZE: 10000,
     DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'https://schema.cassproject.org/0.4/',
     DEFAULT_CUSTOM_PROPERTY_RANGE: 'http://schema.org/Text',
     defaultBrowserConfig: '',
@@ -22,126 +23,49 @@ const state = ()=>({
     availableConcepts: []
 });
 
-const mutations = {
-    setConfigToDelete(state, val) {
-        state.configToDelete = val;
-    },
-    setShowMustBeLoggedInModal(state, val) {
-        state.showMustBeLoggedInModal = val;
-    },
-    setShowBrowserConfigSetModal(state, val) {
-        state.showBrowserConfigSetModal = val;
-    },
-    setShowConfirmDeleteConfigModal(state, val) {
-        state.showConfirmDeleteConfigModal = val;
-    },
-    setCurrentConfig(state, val) {
-        state.currentConfig = val;
-    },
-    setConfigView(state, val) {
-        state.configView = val;
-    },
-    setConfigList(state, val) {
-        state.setConfigList = val;
-    },
-    setConfigBusy(state, val) {
-        state.configBusy = val;
-    },
-    setDefaultBrowserConfig(state, val) {
-        state.defaultBrowserConfig = val;
-    },
-    setDefaultBrowserConfigName(state, val) {
-        state.defaultBrowserConfigName = val;
-    },
-    setLocalDefaultBrowserConfig(state, val) {
-        state.localDefaultBrowserConfig = val;
-    },
-    setAvailableConcepts(state, val) {
-        state.availableConcepts = val;
-    },
-    setAvailableTypes(state, val) {
-        state.availableTypes = val;
-    }
-};
 const actions = {
-
-};
-const getters = {
-    configToDelete: function(state) {
-        return state.configToDelete;
+setConfigToDelete(val) {
+        this.configToDelete = val;
     },
-    showConfirmDeleteConfigModal: function(state) {
-        return state.showConfirmDeleteConfigModal;
+    setShowMustBeLoggedInModal(val) {
+        this.showMustBeLoggedInModal = val;
     },
-    showMustBeLoggedInModal: function(state) {
-        return state.showMustBeLoggedInModal;
+    setShowBrowserConfigSetModal(val) {
+        this.showBrowserConfigSetModal = val;
     },
-    showBrowserConfigSetModal: function(state) {
-        return state.showBrowserConfigSetModal;
+    setShowConfirmDeleteConfigModal(val) {
+        this.showConfirmDeleteConfigModal = val;
     },
-    LEVEL_SEARCH_SIZE: function(state) {
-        return state.LEVEL_SEARCH_SIZE;
+    setCurrentConfig(val) {
+        this.currentConfig = val;
     },
-    GROUP_SEARCH_SIZE: function(state) {
-        return state.GROUP_SEARCH_SIZE;
+    setConfigView(val) {
+        this.configView = val;
     },
-    PERSON_SEARCH_SIZE: function(state) {
-        return state.PERSON_SEARCH_SIZE;
+    setConfigList(val) {
+        this.setConfigList = val;
     },
-    DEFAULT_CUSTOM_PROPERTY_CONTEXT: function(state) {
-        return state.DEFAULT_CUSTOM_PROPERTY_CONTEXT;
+    setConfigBusy(val) {
+        this.configBusy = val;
     },
-    DEFAULT_CUSTOM_PROPERTY_RANGE: function(state) {
-        return state.DEFAULT_CUSTOM_PROPERTY_RANGE;
+    setDefaultBrowserConfig(val) {
+        this.defaultBrowserConfig = val;
     },
-    DEFAULT_CONFIGURATION_TYPE: function(state) {
-        return state.DEFAULT_CONFIGURATION_TYPE;
+    setDefaultBrowserConfigName(val) {
+        this.defaultBrowserConfigName = val;
     },
-    DEFAULT_CONFIGURATION_CONTEXT: function(state) {
-        return state.DEFAULT_CONFIGURATION_CONTEXT;
+    setLocalDefaultBrowserConfig(val) {
+        this.localDefaultBrowserConfig = val;
     },
-    LANG_STRING_RANGE: function(state) {
-        return state.LANG_STRING_RANGE;
+    setAvailableConcepts(val) {
+        this.availableConcepts = val;
     },
-    DEFAULT_HEADING: function(state) {
-        return state.DEFAULT_HEADING;
-    },
-    CONFIG_SEARCH_SIZE(state) {
-        return state.CONFIG_SEARCH_SIZE;
-    },
-    currentConfig(state) {
-        return state.currentConfig;
-    },
-    configView(state) {
-        return state.configView;
-    },
-    configList(state) {
-        return state.configList;
-    },
-    defaultBrowserConfig(state) {
-        return state.defaultBrowserConfig;
-    },
-    defaultBrowserConfigName(state) {
-        return state.defaultBrowserConfigName;
-    },
-    localDefaultBrowserConfig(state) {
-        return state.localDefaultBrowserConfig;
-    },
-    configBusy(state) {
-        return state.configBusy;
-    },
-    availableConcepts(state) {
-        return state.availableConcepts;
-    },
-    availableTypes(state) {
-        return state.availableTypes;
+    setAvailableTypes(val) {
+        this.availableTypes = val;
     }
 };
-
 import { defineStore } from 'pinia';
 export default defineStore('configuration',{ 
     state,
-    mutations,
-    actions,
-    getters
+    actions
 });

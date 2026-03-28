@@ -3,12 +3,12 @@
         :active="true"
         type="danger"
         @close="closeModal">
-        <template slot="modal-header">
+        <template #modal-header>
             <span class="title has-text-white">
                 Are you sure?
             </span>
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <h3 class="title is-size-4">
                 <span class="">Delete the following directory</span>
             </h3>
@@ -35,7 +35,7 @@
                 </div>
             </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
@@ -56,6 +56,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 
 import {cassUtil} from '../../mixins/cassUtil';
@@ -81,7 +82,7 @@ export default {
         deleteDirectory: async function(obj) {
             console.log("deleting " + obj.id);
             var me = this;
-            let children = await this.$store.dispatch('editor/getDirectoryChildren', obj);
+            let children = await store.editor().getDirectoryChildren(obj);
             window.repo.multiget(children, function(success) {
                 new EcAsyncHelper().each(success, async function(obj, done) {
                     if (obj.type === 'Framework') {
@@ -99,15 +100,15 @@ export default {
                         console.log(success);
                         me.numDirectories--;
                         if (me.numDirectories === 0) {
-                            me.$store.dispatch('app/refreshDirectories');
-                            me.$store.commit('app/refreshSearch', true);
+                            store.app().refreshDirectories();
+                            store.app().setRefreshSearch(true);
                             if (me.$route.name !== "frameworks") {
                                 me.$router.push({name: "frameworks"});
                             }
-                            me.$store.commit('app/rightAsideObject', null);
-                            me.$store.commit('app/closeRightAside');
-                            me.$store.commit('app/refreshSearch', true);
-                            me.$store.commit('app/closeModal');
+                            store.app().setRightAsideObject(null);
+                            store.app().setCloseRightAside();
+                            store.app().setRefreshSearch(true);
+                            store.app().setCloseModal();
                         }
                     }, function(error) {
                         console.error(error);
@@ -116,10 +117,10 @@ export default {
                             if (me.$route.name !== "frameworks") {
                                 me.$router.push({name: "frameworks"});
                             }
-                            me.$store.commit('app/rightAsideObject', null);
-                            me.$store.commit('app/closeRightAside');
-                            me.$store.commit('app/refreshSearch', true);
-                            me.$store.commit('app/closeModal');
+                            store.app().setRightAsideObject(null);
+                            store.app().setCloseRightAside();
+                            store.app().setRefreshSearch(true);
+                            store.app().setCloseModal();
                         }
                     });
                 });
@@ -149,15 +150,15 @@ export default {
             }, console.log);
         },
         closeModal: function() {
-            this.$store.commit('app/closeModal');
+            store.app().setCloseModal();
         }
     },
     computed: {
         loggedInPerson: function() {
-            return this.$store.state.user.loggedOnPerson;
+            return store.user().loggedOnPerson;
         },
         directory: function() {
-            return this.$store.getters['app/rightAsideObject'];
+            return store.app().rightAsideObject;
         },
         deleteDirectoryDisabled() {
             return (this.typedInName.trim() !== this.directory.name.trim());

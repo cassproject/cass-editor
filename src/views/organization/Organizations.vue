@@ -1,7 +1,7 @@
 <template>
     <div class="organizations">
         <div>
-            <span v-if="$store.getters['editor/conceptMode'] || $store.getters['editor/progressionMode']">
+            <span v-if="store.editor().conceptMode || store.editor().progressionMode">
                 <input
                     type="radio"
                     value="dcterms:title.keyword"
@@ -54,6 +54,7 @@
     </div>
 </template>
 <script>
+import store from '@/stores/index.js';
 import List from '@/lode/components/List.vue';
 import common from '@/mixins/common.js';
 export default {
@@ -67,7 +68,7 @@ export default {
     },
     computed: {
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         },
         searchOptions: function() {
             let search = "";
@@ -100,7 +101,7 @@ export default {
             return obj;
         },
         filterByOwnedByMe: function() {
-            return this.$store.getters['app/filterByOwnedByMe'];
+            return store.app().filterByOwnedByMe;
         }
     },
     components: {List},
@@ -108,7 +109,7 @@ export default {
         organizationClick: function(organization) {
             var me = this;
             EcOrganization.get(organization.id, function(success) {
-                me.$store.commit('editor/organization', success);
+                store.editor().setOrganization(success);
                 me.$router.push({name: "organization", params: {organizationId: organization.id}});
             }, console.error);
         },

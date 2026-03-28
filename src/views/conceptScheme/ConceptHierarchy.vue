@@ -16,7 +16,7 @@
                         id="selectAllCheckbox"
                         type="checkbox"
                         name="selectAllCheckbox"
-                        v-model="selectAll">
+                        v-model="localSelectAll">
                     <label for="selectAllCheckbox" />
                 </div>
             </div>
@@ -175,7 +175,7 @@
                         <!--  start over -->
                         <div
                             id="import-again-button"
-                            @click="$store.dispatch('app/clearImport')"
+                            @click="store.app().clearImport()"
                             class="button is-dark is-outlined is-pulled-right">
                             <span>
                                 import again
@@ -221,7 +221,8 @@
                 :group="{ name: 'test' }"
                 @start="beginDrag"
                 handle=".handle"
-                @end="endDrag">
+                @end="endDrag"
+                :item-key="(item) => item.obj ? item.obj.id : (item.id || Math.random())">
                 <HierarchyNode
                     :depth="1"
                     :view="view"
@@ -260,7 +261,9 @@
     </div>
 </template>
 <script>
-
+import VueDraggable from 'vuedraggable';
+import { defineAsyncComponent } from 'vue';
+import store from '@/stores/index.js';
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 var hierarchyTimeout;
@@ -293,6 +296,7 @@ export default {
     },
     data: function() {
         return {
+            localSelectAll: false,
             structure: [],
             once: true,
             dragging: false,
@@ -322,8 +326,8 @@ export default {
         };
     },
     components: {
-        HierarchyNode: () => import('@/lode/components/HierarchyNode.vue'),
-        draggable: () => import('vuedraggable')
+        HierarchyNode: defineAsyncComponent(() => import('@/lode/components/HierarchyNode.vue')),
+        draggable: VueDraggable
     },
     mixins: [common, competencyEdits],
     computed: {
@@ -345,17 +349,17 @@ export default {
             }
         },
         canPaste: function() {
-            if ((this.$store.getters['editor/copyId'] !== null || this.$store.getters['editor/cutId'] !== null) && this.$store.getters['editor/nodeInFocus'] !== null) {
+            if ((store.editor().copyId !== null || store.editor().cutId !== null) && store.editor().nodeInFocus !== null) {
                 return true;
             } else {
                 return false;
             }
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         },
         addAnother: function() {
-            return this.$store.getters['editor/addAnother'];
+            return store.editor().addAnother;
         },
         hierarchy: function() {
             var me = this;
@@ -398,13 +402,16 @@ export default {
             return this.canEditAny(this.processedContainer);
         },
         recomputeHierarchy: function() {
-            return this.$store.getters['editor/recomputeHierarchy'];
+            return store.editor().recomputeHierarchy;
         },
         framework() {
-            return this.$store.getters['editor/framework'];
+            return store.editor().framework;
         }
     },
     watch: {
+        selectAll: function(val) {
+            this.localSelectAll = val;
+        },
         container: {
             handler() {
                 this.once = true;
@@ -428,7 +435,7 @@ export default {
         recomputeHierarchy: function() {
             if (this.recomputeHierarchy) {
                 this.once = true;
-                this.$store.commit('editor/recomputeHierarchy', false);
+                store.editor().setRecomputeHierarchy(false);
             }
         },
         doneDragging: function() {
@@ -439,7 +446,7 @@ export default {
         addAnother: function(val) {
             if (val) {
                 this.onClickCreateNew();
-                this.$store.commit('editor/addAnother', false);
+                store.editor().addAnother(false);
             }
         }
     },
@@ -457,27 +464,27 @@ export default {
         window.addEventListener("keydown", this.keydown);
         window.addEventListener("keyup", this.keyup);
     },
-    beforeDestroy: function() {
+    beforeUnmount: function() {
         window.removeEventListener('keyup', this.keyup);
         window.removeEventListener('keydown', this.keydown);
     },
     methods: {
         cutClick: function() {
             if (this.selectedArray && this.selectedArray.length === 1) {
-                this.$store.commit('editor/cutId', this.selectedArray[0]);
+                store.editor().setCutId(this.selectedArray[0]);
             }
-            this.$store.commit('editor/copyId', null);
-            this.$store.commit('editor/paste', false);
+            store.editor().setCopyId(null);
+            store.editor().setPaste(false);
         },
         copyClick: function() {
             if (this.selectedArray && this.selectedArray.length === 1) {
-                this.$store.commit('editor/copyId', this.selectedArray[0]);
+                store.editor().setCopyId(this.selectedArray[0]);
             }
-            this.$store.commit('editor/cutId', null);
-            this.$store.commit('editor/paste', false);
+            store.editor().setCutId(null);
+            store.editor().setPaste(false);
         },
         pasteClick: function() {
-            this.$store.commit('editor/paste', true);
+            store.editor().setPaste(true);
         },
         keydown(e) {
             if (this.canEdit) {
@@ -489,20 +496,20 @@ export default {
                 }
                 if (e.key === "x" && e.ctrlKey) {
                     if (this.selectedArray && this.selectedArray.length === 1) {
-                        this.$store.commit('editor/cutId', this.selectedArray[0]);
+                        store.editor().setCutId(this.selectedArray[0]);
                     }
-                    this.$store.commit('editor/copyId', null);
-                    this.$store.commit('editor/paste', false);
+                    store.editor().setCopyId(null);
+                    store.editor().setPaste(false);
                 }
                 if (e.key === "c" && e.ctrlKey) {
                     if (this.selectedArray && this.selectedArray.length === 1) {
-                        this.$store.commit('editor/copyId', this.selectedArray[0]);
+                        store.editor().setCopyId(this.selectedArray[0]);
                     }
-                    this.$store.commit('editor/cutId', null);
-                    this.$store.commit('editor/paste', false);
+                    store.editor().setCutId(null);
+                    store.editor().setPaste(false);
                 }
                 if (e.key === "v" && e.ctrlKey) {
-                    this.$store.commit('editor/paste', true);
+                    store.editor().setPaste(true);
                 }
             }
         },
@@ -838,14 +845,14 @@ export default {
                 objectsToSave[i]["schema:dateModified"] = new Date().toISOString();
                 
                 // Handle encryption if needed
-                if (me.$store.state.editor.private === true && 
+                if (store.editor().private === true && 
                     EcEncryptedValue.encryptOnSaveMap[objectsToSave[i].id] !== true) {
                     objectsToSave[i] = await EcEncryptedValue.toEncryptedValue(objectsToSave[i]);
                 }
             }
             
             // Track changes for undo
-            me.$store.commit('editor/addEditsToUndo', [
+            store.editor().addEditsToUndo( [
                 {operation: "update", id: fromContainer.shortId(), fieldChanged: [fromProperty], initialValue: [fromPropInitialValue]},
                 {operation: "update", id: toContainer.shortId(), fieldChanged: [toProperty], initialValue: [toPropInitialValue]},
                 {
@@ -897,7 +904,7 @@ export default {
                 }
             }
             this.setDefaultLanguage();
-            c["skos:prefLabel"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Concept"};
+            c["skos:prefLabel"] = {"@language": store.editor().defaultLanguage, "@value": "New Concept"};
             c["skos:inScheme"] = this.processedContainer.shortId();
             if (containerId === this.processedContainer.shortId()) {
                 var initialValue = this.processedContainer["skos:hasTopConcept"] ? this.processedContainer["skos:hasTopConcept"].slice() : null;
@@ -912,13 +919,13 @@ export default {
                     this.processedContainer["skos:hasTopConcept"].splice(index + 1, 0, c.shortId());
                 }
                 c["skos:topConceptOf"] = this.processedContainer.shortId();
-                me.$store.commit('editor/addEditsToUndo', [
+                store.editor().addEditsToUndo( [
                     {operation: "addNew", id: c.shortId()},
                     {operation: "update", id: this.processedContainer.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]}
                 ]);
                 this.processedContainer["schema:dateModified"] = new Date().toISOString();
                 c["schema:dateModified"] = new Date().toISOString();
-                if (this.$store.state.editor.private === true) {
+                if (store.editor().private === true) {
                     c = await EcEncryptedValue.toEncryptedValue(c);
                     if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
                         me.container = await EcEncryptedValue.toEncryptedValue(me.container);
@@ -944,14 +951,14 @@ export default {
                     var index = parent["skos:narrower"].indexOf(previousSibling);
                     parent["skos:narrower"].splice(index + 1, 0, c.shortId());
                 }
-                me.$store.commit('editor/addEditsToUndo', [
+                store.editor().addEditsToUndo( [
                     {operation: "addNew", id: c.shortId()},
                     {operation: "update", id: parent.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]}
                 ]);
                 this.processedContainer["schema:dateModified"] = new Date().toISOString();
                 c["schema:dateModified"] = new Date().toISOString();
                 parent["schema:dateModified"] = new Date().toISOString();
-                if (this.$store.state.editor.private === true) {
+                if (store.editor().private === true) {
                     c = await EcEncryptedValue.toEncryptedValue(c);
                     if (EcEncryptedValue.encryptOnSaveMap[parent.id] !== true) {
                         parent = await EcEncryptedValue.toEncryptedValue(parent);
@@ -967,7 +974,7 @@ export default {
                     console.error(e);
                 }
             }
-            this.$store.commit("editor/newCompetency", c.shortId());
+            store.editor().setNewCompetency(c.shortId());
             console.log("Added node: ", JSON.parse(c.toJson()));
         },
         select: function(objId, checked) {
@@ -982,11 +989,11 @@ export default {
         },
         cancelImport: function() {
             this.deleteObject(this.processedContainer);
-            this.$store.dispatch('app/clearImport');
+            store.app().clearImport();
         },
         openFramework: async function() {
             var f = await EcConceptScheme.get(this.processedContainer.shortId());
-            this.$store.commit('editor/framework', f);
+            store.editor().setFramework(f);
             this.$router.push({name: "conceptScheme", params: {frameworkId: this.processedContainer.id}});
         },
         onClickCreateNew: async function() {
@@ -1014,7 +1021,7 @@ export default {
             this.deleteConceptInner(thing);
 
             this.framework["schema:dateModified"] = new Date().toISOString();
-            this.$store.commit('editor/selectedCompetency', null);
+            store.editor().setSelectedCompetency(null);
         },
         deleteConceptInner: async function(c) {
             var me = this;
@@ -1027,11 +1034,11 @@ export default {
                         EcArray.setRemove(concept["skos:narrower"], c.shortId());
                         concept["schema:dateModified"] = new Date().toISOString();
                         editsToUndo.push({operation: "update", id: concept.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]});
-                        if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
+                        if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
                             concept = await EcEncryptedValue.toEncryptedValue(concept);
                         }
                         await repo.saveTo(concept);
-                        me.$store.commit('editor/framework', me.framework);
+                        store.editor().setFramework(me.framework);
                     } catch (e) {
                         console.error(e);
                     }
@@ -1054,11 +1061,11 @@ export default {
                     editsToUndo.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]});
                     var framework = this.framework;
                     framework["schema:dateModified"] = new Date().toISOString();
-                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                         framework = await EcEncryptedValue.toEncryptedValue(framework);
                     }
                     await repo.saveTo(framework);
-                    me.$store.commit('editor/framework', me.framework);
+                    store.editor().setFramework(me.framework);
                 } catch (e) {
                     console.error(e);
                 }
@@ -1066,8 +1073,8 @@ export default {
             this.spitEvent("conceptDeleted", c.shortId(), "editFrameworkPage");
             editsToUndo.push({operation: "delete", obj: c});
             repo.deleteRegistered(c, function() {
-                me.$store.commit('editor/framework', me.framework);
-                me.$store.commit('editor/addEditsToUndo', JSON.parse(JSON.stringify(editsToUndo)));
+                store.editor().setFramework(me.framework);
+                store.editor().addEditsToUndo(JSON.parse(JSON.stringify(editsToUndo)));
                 editsToUndo.splice(0, editsToUndo.length);
             }, console.error);
         }

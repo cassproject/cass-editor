@@ -6,13 +6,13 @@
             :rightActive="showRightAside"
             :simple="true">
             <!-- begin framework -->
-            <template slot="top">
+            <template #top>
                 <FrameworkEditorToolbar
                     :properties="properties"
                     @show-export-modal="onOpenExportModal"
                     @change-properties="changeProperties" />
             </template>
-            <template slot="body">
+            <template #body>
                 <div
                     class="framework-content"
                     id="framework-content">
@@ -21,14 +21,9 @@
                             <!-- loading section -- dummy content to show while loading dome elemnts -->
                             <div
                                 class="container is-paddingless">
-                                <draggable
-                                    v-bind="dragOptions"
-                                    v-model="frameworkDrag"
-                                    tag="div"
-                                    id="framework_drag"
-                                    :disabled="canEdit !== true"
-                                    :group="{ name: 'test' }"
-                                    handle=".handle">
+                                <div
+                                    v-if="framework"
+                                    id="framework_drag">
                                     <Component
                                         :class="[dynamicThingComponent === 'Thing' ? parentObjectClass: '']"
                                         :is="dynamicThingComponent"
@@ -81,7 +76,7 @@
                                             </div>
                                         </template>
                                     </Component>
-                                </draggable>
+                                </div>
                                 <div
                                     class="section"
                                     v-if="!hierarchyIsdoneLoading">
@@ -142,7 +137,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="right">
+            <template #right>
                 <RightAside v-if="showRightAside" />
             </template>
             <div
@@ -152,6 +147,7 @@
     </div>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
 import MainLayout from '@/layouts/MainLayout.vue';
 import common from '@/mixins/common.js';
 import getLevelsAndRelations from '@/mixins/getLevelsAndRelations.js';
@@ -160,6 +156,8 @@ import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
 import debounce from 'lodash/debounce';
+import store from '@/stores/index.js';
+import VueDraggable from 'vuedraggable';
 
 export default {
     name: "Framework",
@@ -168,13 +166,13 @@ export default {
     },
     components: {
         MainLayout,
-        FrameworkButtons: () => import('@/components/FrameworkButtons.vue'),
-        Hierarchy: () => import('@/lode/components/Hierarchy.vue'),
-        Thing: () => import('@/lode/components/Thing.vue'),
-        ThingEditing: () => import('@/lode/components/ThingEditing.vue'),
-        FrameworkEditorToolbar: () => import('@/components/framework/EditorToolbar.vue'),
-        RightAside: () => import('@/components/framework/RightAside.vue'),
-        draggable: () => import('vuedraggable')
+        FrameworkButtons: defineAsyncComponent(() => import('@/components/FrameworkButtons.vue')),
+        Hierarchy: defineAsyncComponent(() => import('@/lode/components/Hierarchy.vue')),
+        Thing: defineAsyncComponent(() => import('@/lode/components/Thing.vue')),
+        ThingEditing: defineAsyncComponent(() => import('@/lode/components/ThingEditing.vue')),
+        FrameworkEditorToolbar: defineAsyncComponent(() => import('@/components/framework/EditorToolbar.vue')),
+        RightAside: defineAsyncComponent(() => import('@/components/framework/RightAside.vue')),
+        draggable: VueDraggable
     },
     mixins: [common, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {
@@ -218,10 +216,11 @@ export default {
     },
     computed: {
         newFramework: function() {
-            return this.$store.getters['editor/newFramework'] === this.framework.shortId();
+            if (!this.framework) return false;
+            return store.editor().newFramework === this.framework.shortId();
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         },
         isCeasn: function() {
             if (this.queryParams["ceasnDataFields"] && this.queryParams["ceasnDataFields"] === 'true') {
@@ -231,19 +230,22 @@ export default {
             }
         },
         showRightAside: function() {
-            return this.$store.getters['app/showRightAside'];
+            return store.app().showRightAside;
         },
         dynamicThingComponent: function() {
-            if (this.editingFramework || (this.framework && this.$store.getters['editor/newFramework'] === this.framework.shortId())) {
+            if (this.editingFramework || (this.framework && store.editor().newFramework === this.framework.shortId())) {
                 return 'ThingEditing';
             } else {
                 return 'Thing';
             }
         },
         framework: function() {
-            return this.$store.getters['editor/framework'];
+            const f = store.editor().framework;
+            console.log('[Framework.vue] computed framework:', f?.id);
+            return f;
         },
         timestamp: function() {
+            if (!this.framework) return null;
             if (this.framework.getTimestamp()) {
                 return this.framework.getTimestamp();
             } else if (this.framework["schema:dateModified"]) {
@@ -274,12 +276,13 @@ export default {
             return false;
         },
         commentScrollTo: function() {
-            return this.$store.getters['editor/commentScrollTo'];
+            return store.editor().commentScrollTo;
         },
         frameworkProfile: function() {
-            if (this.$store.state.editor.t3Profile === true) {
+            if (store.editor().t3Profile === true) {
                 return this.t3FrameworkProfile;
             }
+            if (!this.framework) return null;
             if (this.isCeasn && this.framework.subType === 'Collection') {
                 return this.ctdlAsnCollectionProfile;
             }
@@ -365,7 +368,7 @@ export default {
             };
         },
         competencyProfile: function() {
-            if (this.$store.state.editor.t3Profile === true) {
+            if (store.editor().t3Profile === true) {
                 return this.t3CompetencyProfile;
             }
             if (this.isCeasn && ((this.config && !this.configSetOnFramework) || !this.config)) {
@@ -704,7 +707,7 @@ export default {
             }
         },
         defaultFrameworkConfiguration: function() {
-            return this.$store.getters['editor/framework'] ? this.$store.getters['editor/framework'].configuration : null;
+            return store.editor().framework ? store.editor().framework.configuration : null;
         },
         canEdit: function() {
             if (this.queryParams.view === 'true') {
@@ -729,7 +732,7 @@ export default {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
         }
-        this.$store.commit('app/objForShareModal', this.object);
+        store.app().setObjForShareModal(this.object);
         let documentBody = document.getElementsByClassName('cass--main-layout--body')[0];
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
         if (!this.framework.competency || this.framework.competency.length === 0) {
@@ -738,7 +741,7 @@ export default {
     },
     beforeDestroy() {
         if (this.queryParams && this.queryParams.private !== 'true') {
-            this.$store.commit('editor/private', false);
+            store.editor().setPrivate(false);
         }
     },
     watch: {
@@ -746,7 +749,7 @@ export default {
             this.refreshPage();
         },
         config: function() {
-            this.$store.commit('editor/configuration', this.config);
+            store.editor().setConfiguration(this.config);
         },
         commentScrollTo: function() {
             this.$scrollTo(this.commentScrollTo.scrollId);
@@ -785,7 +788,7 @@ export default {
             }
         },
         handleSearch: function(e) {
-            this.$store.commit('app/showModal', e);
+            store.app().setShowModal(e);
         },
         getConfiguration: async function() {
             var me = this;
@@ -824,13 +827,13 @@ export default {
                 selectedCompetencies: this.selectedArray,
                 component: 'MultiEdit'
             };
-            this.$store.commit('app/showModal', payload);
+            store.app().setShowModal(payload);
         },
         onEditNode: function() {
             this.editingFramework = true;
         },
         onDoneEditingNode: function() {
-            this.$store.commit('editor/newFramework', null);
+            store.editor().setNewFramework(null);
             this.editingFramework = false;
         },
         onOpenComments: function() {
@@ -864,8 +867,8 @@ export default {
             this.selectButton(ids);
         },
         onOpenExportModal() {
-            this.$store.commit('editor/setItemToExport', this.framework);
-            this.$store.commit('app/showModal', {title: 'Export Framework', component: 'ExportOptionsModal'});
+            store.editor().setSetItemToExport(this.framework);
+            store.app().setShowModal({title: 'Export Framework', component: 'ExportOptionsModal'});
         },
         // Speed up load of secondary properties
         preloadRelations: function() {
@@ -897,8 +900,8 @@ export default {
                 }
                 this.repo.saveTo(c, function() {
                     let edits = [{operation: "addNew", id: c.shortId()}];
-                    me.$store.commit('editor/addEditsToUndo', edits);
-                    me.$store.commit('editor/refreshAlignments', true);
+                    store.editor().setAddEditsToUndo(edits);
+                    store.editor().setRefreshAlignments(true);
                 }, console.error);
             }
         },
@@ -912,8 +915,8 @@ export default {
                 c.url = value["@value"];
                 this.repo.saveTo(c, function() {
                     let edits = [{operation: "update", id: c.shortId(), fieldChanged: ["name", "url"], initialValue: [initialName, initialUrl], changedValue: [c.name, c.url]}];
-                    me.$store.commit('editor/addEditsToUndo', edits);
-                    me.$store.commit('editor/refreshAlignments', true);
+                    store.editor().setAddEditsToUndo(edits);
+                    store.editor().setRefreshAlignments(true);
                 }, console.error);
             }
         },
@@ -921,8 +924,8 @@ export default {
             let c = await EcRepository.get(resourceId);
             let me = this;
             this.repo.deleteRegistered(c, function() {
-                me.$store.commit('editor/addEditsToUndo', [{operation: "delete", obj: c}]);
-                me.$store.commit('editor/refreshAlignments', true);
+                store.editor().setAddEditsToUndo([{operation: "delete", obj: c}]);
+                store.editor().setRefreshAlignments(true);
             }, console.error);
         },
         moveToTopLevel: async function(id) {

@@ -8,8 +8,7 @@
                 <i class="fa fa-spinner fa-2x fa-pulse" />
             </span>
         </div>
-        <template>
-            <div class="container is-fluid">
+        <div class="container is-fluid">
                 <div class="cass--list--container">
                     <ul class="cass--list">
                         <!-- directories -->
@@ -39,7 +38,7 @@
                                     :ref="item.id" />
                                 <Thing
                                     :obj="item"
-                                    @dblclick.native="$emit('dblclick', item)"
+                                    @dblclick="$emit('dblclick', item)"
                                     :view="view"
                                     class="list-thing list-ul__item--directory"
                                     :parentNotEditable="true" />
@@ -77,7 +76,7 @@
                                     :ref="item.id" />
                                 <Thing
                                     :obj="item"
-                                    @dblclick.native="$emit('dblclick', item)"
+                                    @dblclick="$emit('dblclick', item)"
                                     :view="view"
                                     class="list-thing list-ul__item--framework"
                                     :parentNotEditable="true" />
@@ -114,7 +113,7 @@
                                     :ref="item.id" />
                                 <Thing
                                     :obj="item"
-                                    @dblclick.native="$emit('dblclick', item)"
+                                    @dblclick="$emit('dblclick', item)"
                                     :view="view"
                                     class="list-thing list-ul__item--framework"
                                     :parentNotEditable="true" />
@@ -151,7 +150,7 @@
                                     :ref="item.id" />
                                 <Thing
                                     :obj="item"
-                                    @dblclick.native="$emit('dblclick', item)"
+                                    @dblclick="$emit('dblclick', item)"
                                     :view="view"
                                     class="list-thing list-ul__item--object"
                                     :parentNotEditable="true" />
@@ -199,20 +198,20 @@
                         spinner="circles"
                         v-if="(directory.length + framework.length + competency.length + creativework.length + conceptscheme.length + concept.length > 10)"
                         :distance="10">
-                        <div slot="no-more">
-                            All results loaded
-                        </div>
-                        <div slot="no-results">
-                            All results loaded
-                        </div>
+                        <template #no-more>
+                            <div>All results loaded</div>
+                        </template>
+                        <template #no-results>
+                            <div>All results loaded</div>
+                        </template>
                     </infinite-loading>
                 </div>
-            </div>
-        </template>
+        </div>
     </div>
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import Thing from '@/lode/components/Thing.vue';
 import Breadcrumbs from '@/lode/components/Breadcrumbs.vue';
 import {cassUtil} from '@/mixins/cassUtil.js';
@@ -308,7 +307,7 @@ export default {
         refreshSearch: function() {
             if (this.refreshSearch) {
                 this.searchRepo();
-                this.$store.commit('app/refreshSearch', false);
+                store.app().setRefreshSearch(false);
             }
         },
         directoryId: function() {
@@ -320,24 +319,24 @@ export default {
     },
     computed: {
         searchTerm: function(val) {
-            return this.$store.getters['app/searchTerm'];
+            return store.app().searchTerm;
         },
         refreshSearch: function(val) {
-            return this.$store.getters['app/refreshSearch'];
+            return store.app().refreshSearch;
         },
         applySearchTo: function() {
-            let options = this.$store.getters['app/applySearchTo'];
+            let options = store.app().applySearchTo;
             if (!options) return null;
             let filterValues = options.filter(item => item.checked === true);
             if (filterValues.length <= 0) return null;
             return filterValues;
         },
         searchingInDirectory: function() {
-            return this.$store.getters['app/searchingInDirectory'];
+            return store.app().searchingInDirectory;
         },
         rightAsideObjectId: function() {
-            if (this.$store.getters['app/rightAsideObject']) {
-                return this.$store.getters['app/rightAsideObject'].shortId();
+            if (store.app().rightAsideObject) {
+                return store.app().rightAsideObject.shortId();
             }
             return null;
         }
@@ -357,7 +356,7 @@ export default {
                     parentName: null,
                     canEdit: false
                 };
-                this.$store.commit('app/showModal', modalObject);
+                store.app().setShowModal(modalObject);
             }
         },
         buildIdList: function(success) {
@@ -454,7 +453,7 @@ export default {
             });
         },
         buildEncryptedSearch: async function(type, callback) {
-            let children = await this.$store.dispatch('editor/getDirectoryChildren', this.directoryObj);
+            let children = await store.editor().getDirectoryChildren(this.directoryObj);
             if (children.length === 0) {
                 callback(null);
             } else {

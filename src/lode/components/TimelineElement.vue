@@ -110,6 +110,7 @@
     </div>
 </template>
 <script>
+import store from '@/stores/index.js';
 import common from '@/mixins/common.js';
 export default {
     name: 'TimelineElement',
@@ -142,7 +143,7 @@ export default {
             return moment(this.timestamp).fromNow();
         },
         assertions: function() {
-            return this.$store.getters['editor/assertions'];
+            return store.editor().assertions;
         },
         ok: function() {
             if (this.subject == null) {
@@ -233,11 +234,11 @@ export default {
             if (this.assertion == null) {
                 return false;
             }
-            return this.assertion.hasReader(this.$store.getters['editor/badgePk']);
+            return this.assertion.hasReader(store.editor().badgePk);
         },
         badgeUrl: function() {
             if (this.assertion != null) {
-                if (this.assertion.hasReader(this.$store.getters['editor/badgePk'])) {
+                if (this.assertion.hasReader(store.editor().badgePk)) {
                     return EcRemote.urlAppend(repo.selectedServer, "badge/assertion/") + this.assertion.getGuid();
                 }
             }
@@ -255,7 +256,7 @@ export default {
             }
         }
     },
-    destroyed: function() {
+    unmounted: function() {
         clearInterval(this.invl);
     },
     watch: {
@@ -264,7 +265,7 @@ export default {
             if (this.evidence != null) {
                 if (this.evidence.length > 0) {
                     var count = this.evidence.length;
-                    this.$store.dispatch('editor/computeBecause', this.evidence).then((because) => {
+                    store.editor().computeBecause(this.evidence).then((because) => {
                         this.$nextTick(() => {
                             if (count === this.evidence.length) {
                                 this.evidenceExplanation = because;
@@ -352,7 +353,7 @@ export default {
                 }, () => {
                     for (var i = 0; i < this.assertions.length; i++) {
                         while (this.assertions[i].id === assertion.id) {
-                            this.$store.commit('editor/removeAssertionAtIndex', i);
+                            store.editor().removeAssertionAtIndex(i);
                         }
                     }
                 });
@@ -361,10 +362,10 @@ export default {
         gotoCompetency: function() {
             EcFramework.search(window.repo, "competency:\"" + this.assertion.competency + "\"").then((success) => {
                 if (success.length > 0) {
-                    this.$store.commit('editor/framework', success[0]);
-                    this.$store.commit('editor/clearFrameworkCommentData');
-                    this.$store.commit('app/setCanViewComments', this.canViewCommentsCurrentFramework());
-                    this.$store.commit('app/setCanAddComments', this.canAddCommentsCurrentFramework());
+                    store.editor().setFramework(success[0]);
+                    store.editor().clearFrameworkCommentData();
+                    store.app().setCanViewComments(this.canViewCommentsCurrentFramework());
+                    store.app().setCanAddComments(this.canAddCommentsCurrentFramework());
                     this.$router.push({name: "framework", params: {frameworkId: success[0].id}});
                 }
             }).catch(console.error);
@@ -435,7 +436,7 @@ export default {
             if (window.confirm('Are you sure you want to delete this assertion?')) {
                 EcRepository.get(this.uri, (resource) => {
                     EcRepository._delete(resource, () => {
-                        this.$store.commit('editor/removeAssertion', resource);
+                        store.editor().removeAssertion(resource);
                     }, console.error);
                 });
             }

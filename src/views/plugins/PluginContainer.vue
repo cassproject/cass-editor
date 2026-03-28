@@ -2,11 +2,9 @@
     <div :class="[{'modal-card': view === 'dynamic-modal'}, {'section': view !== 'dynamic-modal'}]">
         <section :class="[{ 'container': view !== 'dynamic-modal'}, { 'modal-card-body': view === 'dynamic-modal'}]">
             <div class="section">
-                <template>
-                    <h3 class="title">
-                        <i class="fa fa-plug" /> {{ pluginName }}
-                    </h3>
-                </template>
+                <h3 class="title">
+                    <i class="fa fa-plug" /> {{ pluginName }}
+                </h3>
             </div>
             <div
                 class="modal"
@@ -29,7 +27,7 @@
 </template>
 
 <script>
-
+import store from '@/stores/index.js';
 export default {
     props: {
         view: {
@@ -107,10 +105,10 @@ export default {
     },
     computed: {
         pluginToLaunch: function() {
-            return this.$store.getters['app/pluginToLaunch'];
+            return store.app().pluginToLaunch;
         },
         pluginToLaunchLastUpdate: function() {
-            return this.$store.getters['app/pluginToLaunchLastUpdate'];
+            return store.app().pluginToLaunchLastUpdate;
         }
     },
     watch: {
@@ -122,7 +120,7 @@ export default {
     mounted() {
         this.setIFrameSource();
     },
-    beforeDestroy() {
+    beforeUnmount() {
         window.removeEventListener('message', this.handlePluginFrameMessage);
     }
 };

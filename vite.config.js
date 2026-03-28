@@ -29,6 +29,10 @@ export default defineConfig(({command, mode}) => {
                 {
                     find: '@',
                     replacement: fileURLToPath(new URL('./src', import.meta.url))
+                },
+                {
+                    find: 'vuedraggable',
+                    replacement: fileURLToPath(new URL('./node_modules/vuedraggable/src/vuedraggable.js', import.meta.url))
                 }
             ]
         }

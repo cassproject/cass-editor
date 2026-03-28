@@ -26,7 +26,7 @@ should be componentized and imported into the screen that needs it.
                 <button
                     v-if="canClose"
                     class="delete"
-                    @click="$store.commit('app/closeModal'); $emit('close')"
+                    @click="store.app().setCloseModal(); $emit('close')"
                     id="modal-template-close-button"
                     aria-label="close" />
             </header>
@@ -41,6 +41,7 @@ should be componentized and imported into the screen that needs it.
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import '@/scss/modal-template.scss';
 export default {
     name: 'ModalTemplate',

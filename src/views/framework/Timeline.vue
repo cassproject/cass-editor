@@ -2,7 +2,7 @@
     <div>
         <main-layout
             :simple="true">
-            <template slot="top">
+            <template #top>
                 <div class="assertion-timeline-topbar">
                     <div
                         style="width: 100%;"
@@ -15,7 +15,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="body">
+            <template #body>
                 <AssertionTimeline />
             </template>
         </main-layout>
@@ -23,6 +23,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import MainLayout from '@/layouts/MainLayout.vue';
 import AssertionTimeline from '@/lode/components/AssertionTimeline.vue';
 
@@ -42,22 +43,22 @@ export default {
     },
     computed: {
         me: function() {
-            return this.$store.getters['editor/getMe'];
+            return store.editor().getMe;
         }
     },
     watch: {
         me: function() {
-            this.$store.dispatch('editor/searchForAssertions');
+            store.editor().searchForAssertions();
         }
     },
     created() {
-        this.$store.commit('editor/setSearchingAssertions', true);
-        this.$store.commit('app/searchTerm', "");
-        this.$store.dispatch('editor/searchForAssertions');
+        store.editor().setSearchingAssertions(true);
+        store.app().setSearchTerm("");
+        store.editor().searchForAssertions();
     },
-    beforeDestroy: function() {
-        this.$store.commit('app/clearSearchFilters');
-        this.$store.commit('app/searchTerm', "");
+    beforeUnmount: function() {
+        store.app().clearSearchFilters();
+        store.app().setSearchTerm("");
     },
     methods: {}
 };

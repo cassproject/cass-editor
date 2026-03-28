@@ -8,8 +8,7 @@ import App from './App.vue';
 import './scss/theme.scss';
 import './scss/styles.scss';
 import router from './router';
-import VueObserveVisibility from 'vue-observe-visibility';
-import AsyncComputed from 'vue-async-computed'; 
+
 import InfiniteLoading from "v3-infinite-loading";
 import {createPinia} from 'pinia';
 
@@ -89,12 +88,23 @@ window.queryParams = queryParams();
 const pinia = createPinia();
 const app = global.app = createApp(App)
 app.use(pinia);
+app.config.globalProperties.moment = moment;
 
 // app.use(VueProgressBar, options);
 // app.use(require('vue-moment'));
 // app.use(Vuex);
 // app.use(Clipboard);
 //Vue3 fix me;
+
+// Vue 2→3 compatibility: $scopedSlots was merged into $slots in Vue 3
+// Some libraries (vuedraggable, etc.) may still reference $scopedSlots
+app.mixin({
+    computed: {
+        $scopedSlots() {
+            return this.$slots;
+        }
+    }
+});
 // app.use(VueScrollTo, {
 //     container: "#framework",
 //     duration: 500,
@@ -109,27 +119,99 @@ app.use(pinia);
 //     y: true
 // });
 // app.use(VueResource);
-app.use(VueObserveVisibility);
-app.use(AsyncComputed);
+
 app.component("infinite-loading", InfiniteLoading);
 
 // directive for clicking outside elements and performing an action
 // add v-click-outside="method" to parent element to do something
 app.directive('click-outside', {
-    bind: function(element, binding, vnode) {
+    mounted: function(element, binding) {
         element.clickOutsideEvent = function(event) {
             if (!(element === event.target || element.contains(event.target))) {
-                vnode.context[binding.expression](event);
+                binding.value(event);
             }
         };
         document.body.addEventListener('click', element.clickOutsideEvent);
     },
-    unbind: function(element) {
+    unmounted: function(element) {
         document.body.removeEventListener('click', element.clickOutsideEvent);
     }
 });
 
-app.config.productionTip = false;
+// v-clipboard directive (replaces vue-clipboard2 Vue 2 plugin)
+app.directive('clipboard', {
+    mounted(el, binding) {
+        if (binding.arg === 'success') {
+            el._clipboardSuccess = binding.value;
+        } else if (binding.arg === 'error') {
+            el._clipboardError = binding.value;
+        } else {
+            el._clipboardValue = binding.value;
+            el._clipboardHandler = async () => {
+                try {
+                    const text = typeof el._clipboardValue === 'function' ? el._clipboardValue() : el._clipboardValue;
+                    await navigator.clipboard.writeText(text);
+                    if (el._clipboardSuccess) {
+                        el._clipboardSuccess({ text });
+                    }
+                } catch (err) {
+                    if (el._clipboardError) {
+                        el._clipboardError(err);
+                    }
+                }
+            };
+            el.addEventListener('click', el._clipboardHandler);
+        }
+    },
+    updated(el, binding) {
+        if (binding.arg === 'success') {
+            el._clipboardSuccess = binding.value;
+        } else if (binding.arg === 'error') {
+            el._clipboardError = binding.value;
+        } else {
+            el._clipboardValue = binding.value;
+        }
+    },
+    unmounted(el, binding) {
+        if (!binding.arg && el._clipboardHandler) {
+            el.removeEventListener('click', el._clipboardHandler);
+        }
+    }
+});
+
+// v-observe-visibility directive using IntersectionObserver (replaces vue-observe-visibility)
+app.directive('observe-visibility', {
+    mounted(el, binding) {
+        const options = typeof binding.value === 'object' && binding.value.callback
+            ? binding.value
+            : { callback: binding.value, once: false };
+        const callback = options.callback;
+        const once = options.once || false;
+        const threshold = options.threshold || 0;
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                const isVisible = entry.isIntersecting;
+                if (typeof callback === 'function') {
+                    callback(isVisible, entry);
+                }
+                if (isVisible && once) {
+                    observer.unobserve(el);
+                }
+            });
+        }, { threshold });
+        observer.observe(el);
+        el._visibilityObserver = observer;
+    },
+    unmounted(el) {
+        if (el._visibilityObserver) {
+            el._visibilityObserver.disconnect();
+            delete el._visibilityObserver;
+        }
+    }
+});
+
+
 
 app.use(router);
 

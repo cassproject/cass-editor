@@ -321,7 +321,7 @@ export default {
             var identity = EcIdentityManager.default.ids[0];
             if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
             let me = this;
-            me.$store.commit('app/importFramework', null);
+            store.app().setImportFramework(null);
             EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
                 if (data.indexOf("ctdlasn") !== -1) {
                     var data1 = data.substring(0, data.indexOf("ctdlasn"));
@@ -329,8 +329,8 @@ export default {
                     data = data1 + "data" + data2;
                 }
                 var framework = await EcFramework.get(data);
-                me.$store.commit('app/importFramework', framework);
-                me.$store.commit('editor/framework', framework);
+                store.app().setImportFramework(framework);
+                store.editor().setFramework(framework);
                 me.spitEvent("importFinished", framework.shortId(), "importPage");
                 me.importSuccess(framework);
             }, function(failure) {
@@ -357,8 +357,8 @@ export default {
                     var all = frameworks.concat(competencies).concat(relations);
                     me.repo.multiput(all, function() {
                         for (var i = 0; i < frameworks.length; i++) {
-                            me.$store.commit('app/importFramework', frameworks[i]);
-                            me.$store.commit('editor/framework', frameworks[i]);
+                            store.app().setImportFramework(frameworks[i]);
+                            store.editor().setFramework(frameworks[i]);
                             me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                         }
                         me.importSuccess(frameworks[0]);
@@ -384,9 +384,9 @@ export default {
             if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
             EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + serverUrl + "&dId=" + uuid, formData, null, function(success) {
                 EcFramework.get(id, function(f) {
-                    me.$store.commit('editor/framework', f);
+                    store.editor().setFramework(f);
                     me.spitEvent("importFinished", f.shortId(), "importPage");
-                    me.$store.commit('app/importFramework', f);
+                    store.app().setImportFramework(f);
                     me.importSuccess(f);
                 }, function() {
                     me.error = "Import Error";

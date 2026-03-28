@@ -4,10 +4,10 @@
         @close="closeModal"
         size="small"
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             Confirm Remove Competency
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <section>
                 <b>
                     Removing a competency safely removes the item from this framework.
@@ -16,7 +16,7 @@
                 it may be a part of.
             </section>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <button
                 @click="removeItem()"
                 id="remove-competency-confirm-remove-button"
@@ -33,6 +33,7 @@
     </modal-template>
 </template>
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 import competencyEdits from '@/mixins/competencyEdits.js';
 export default {
@@ -47,10 +48,10 @@ export default {
     },
     computed: {
         obj() {
-            return this.$store.getters['editor/itemToRemove'];
+            return store.editor().itemToRemove;
         },
         framework() {
-            return this.$store.getters['editor/framework'];
+            return store.editor().framework;
         }
     },
     mounted() {
@@ -59,11 +60,11 @@ export default {
         removeItem() {
             this.removeObject(this.obj);
             this.closeModal();
-            this.$store.commit('editor/setItemToRemove', {});
+            store.editor().setItemToRemove({});
         },
         closeModal() {
-            this.$store.commit('app/closeModal');
-            this.$store.commit('editor/setItemToRemove', {});
+            store.app().setCloseModal();
+            store.editor().setItemToRemove({});
         }
     }
 };

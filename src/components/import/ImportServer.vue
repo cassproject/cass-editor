@@ -41,7 +41,7 @@
                                             <div
                                                 class="button is-large is-outlined is-primary"
                                                 :disabled="importServerUrl === ''"
-                                                @click="$store.commit('app/importTransition', 'connectToServer'); serverType='case';"
+                                                @click="store.app().setImportTransition('connectToServer'); serverType='case';"
                                                 id="import-server-connect-case-button">
                                                 <span class="icon">
                                                     <i class="fas fa-network-wired" />
@@ -57,7 +57,7 @@
                                             <div
                                                 class="button is-large is-outlined is-primary"
                                                 :disabled="importServerUrl === ''"
-                                                @click="$store.commit('app/importTransition', 'connectToServer'); serverType='cass';"
+                                                @click="store.app().setImportTransition('connectToServer'); serverType='cass';"
                                                 id="import-server-connect-cass-button">
                                                 <span class="icon">
                                                     <i class="fas fa-network-wired" />
@@ -346,6 +346,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import ImportTabs from '@/components/import/ImportTabs.vue';
 import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
@@ -386,33 +387,33 @@ export default {
     },
     computed: {
         importInfoVisible: function() {
-            return this.$store.getters['app/showRightAside'];
+            return store.app().showRightAside;
         },
         importErrors: function() {
-            return this.$store.getters['app/importErrors'];
+            return store.app().importErrors;
         },
         importServerUrl: {
             get() {
-                return this.$store.getters['app/importServerUrl'];
+                return store.app().importServerUrl;
             },
             set(url) {
-                this.$store.commit('app/importServerUrl', url);
+                store.app().setImportServerUrl(url);
             }
         },
         searchTerm: function() {
-            return this.$store.getters['app/searchTerm'];
+            return store.app().searchTerm;
         },
         conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
+            return store.editor().conceptMode;
         }
     },
     mounted: function() {
-        this.$store.commit('app/searchTerm', '');
+        store.app().setSearchTerm('');
     },
     methods: {
         importCaseDocs: function() {
             this.handleImportFromTabs(this.caseDocs);
-            this.$store.commit('app/importTransition', 'importingCaseFrameworks');
+            store.app().setImportTransition('importingCaseFrameworks');
         },
         handleImportFromTabs: function(e) {
             this.caseDocs = e;
@@ -428,15 +429,15 @@ export default {
         },
         connectToServer: function() {
             console.log("connecting to server 1");
-            this.$store.commit('app/clearImportErrors');
+            store.app().clearImportErrors();
             let error = {
                 message: "Unable to import from the URL Endpoint provided.",
                 details: ""
             };
             if (!this.isValidUrl(this.importServerUrl)) {
                 error.details = "The endpoint provided is not a valid URL.";
-                this.$store.commit('app/addImportError', error.details);
-                this.$store.commit('app/importTransition', 'upload');
+                store.app().addImportError(error.details);
+                store.app().setImportTransition('upload');
                 this.showModal('error', error);
                 return;
             }
@@ -467,7 +468,7 @@ export default {
         },
         cassSearchEndpoint: debounce(function() {
             this.searchingTopLevel = true;
-            this.$store.commit('editor/setFirstSearchProcessing', true);
+            store.editor().setFirstSearchProcessing(true);
             let me = this;
             let paramObj = {};
             paramObj.size = 10000;
@@ -504,25 +505,25 @@ export default {
             }
         }, 1000),
         cassSearchError: function() {
-            this.$store.commit('editor/setFirstSearchProcessing', false);
+            store.editor().setFirstSearchProcessing(false);
             let error = {
                 message: "Unable to search the URL Endpoint provided.",
                 details: "Make sure you entered the URL of a CaSS Repository."
             };
-            this.$store.commit('app/addImportError', error.details);
-            this.$store.commit('app/importTransition', 'upload');
+            store.app().addImportError(error.details);
+            store.app().setImportTransition('upload');
             this.showModal('error', error);
         },
         cassSearchSuccess: function(success, objectType) {
-            this.$store.commit('editor/setFirstSearchProcessing', false);
+            store.editor().setFirstSearchProcessing(false);
             if (objectType === "framework") {
                 let message = success.length + " frameworks detected.";
-                this.$store.commit('app/importStatus', message);
-                this.$store.commit('app/importTransition', 'serverFrameworksDetected');
+                store.app().setImportStatus(message);
+                store.app().setImportTransition('serverFrameworksDetected');
             } else if (objectType === 'taxonomy') {
                 let message = success.length + " taxonomies detected.";
-                this.$store.commit('app/importStatus', message);
-                this.$store.commit('app/importTransition', 'serverFrameworksDetected');
+                store.app().setImportStatus(message);
+                store.app().setImportTransition('serverFrameworksDetected');
             }
             for (let each in success) {
                 success[each].loading = false;
@@ -539,7 +540,7 @@ export default {
             }
         },
         importCassTaxonomies: function(dataArray) {
-            this.$store.commit('app/importTransition', 'importingCassFrameworks');
+            store.app().setImportTransition('importingCassFrameworks');
             if (dataArray) {
                 // User has clicked cancel on this import item
                 var localFirstIndex = dataArray[1];
@@ -564,31 +565,31 @@ export default {
                 }
             }
             if (lis === 0) {
-                this.$store.commit('app/importFramework', this.$store.getters['editor/framework']);
+                store.app().setImportFramework(store.editor().framework);
                 if (this.cassTaxonomies.length === 1) {
                     this.importSuccess();
                 } else {
-                    this.$store.commit('app/sortResults', {
+                    store.app().setSortResults( {
                         id: 'lastEdited',
                         label: 'last modified'
                     });
                     this.$router.push({name: "concepts"});
                 }
-                this.$store.commit('app/importStatus', "Import finished.");
+                store.app().setImportStatus("Import finished.");
             } else {
                 var me = this;
                 EcRepository.cache = {};
                 EcConceptScheme.get(this.cassTaxonomies[firstIndex].shortId(), function(found) {
-                    me.$store.commit('app/importStatus', 'taxonomy found...');
+                    store.app().setImportStatus('taxonomy found...');
                     me.showModal('duplicateOverwriteOnly', [[me.cassTaxonomies[firstIndex], firstIndex], found]);
                 }, function(notFound) {
-                    me.$store.commit('app/importStatus', 'no match, saving new taxonomy...');
+                    store.app().setImportStatus('no match, saving new taxonomy...');
                     me.continueCassTaxonomyImport([me.cassTaxonomies[firstIndex], firstIndex]);
                 });
             }
         },
         importCassFrameworks: function(dataArray) {
-            this.$store.commit('app/importTransition', 'importingCassFrameworks');
+            store.app().setImportTransition('importingCassFrameworks');
             if (dataArray) {
                 // User has clicked cancel on this import item
                 var localFirstIndex = dataArray[1];
@@ -613,25 +614,25 @@ export default {
                 }
             }
             if (lis === 0) {
-                this.$store.commit('app/importFramework', this.$store.getters['editor/framework']);
+                store.app().setImportFramework(store.editor().framework);
                 if (this.cassFrameworks.length === 1) {
                     this.importSuccess();
                 } else {
-                    this.$store.commit('app/sortResults', {
+                    store.app().setSortResults( {
                         id: 'lastEdited',
                         label: 'last modified'
                     });
                     this.$router.push({name: "frameworks"});
                 }
-                this.$store.commit('app/importStatus', "Import finished.");
+                store.app().setImportStatus("Import finished.");
             } else {
                 var me = this;
                 EcRepository.cache = {};
                 EcFramework.get(this.cassFrameworks[firstIndex].shortId(), function(found) {
-                    me.$store.commit('app/importStatus', 'framework found...');
+                    store.app().setImportStatus('framework found...');
                     me.showModal('duplicateOverwriteOnly', [[me.cassFrameworks[firstIndex], firstIndex], found]);
                 }, function(notFound) {
-                    me.$store.commit('app/importStatus', 'no match, saving new framework...');
+                    store.app().setImportStatus('no match, saving new framework...');
                     me.continueCassFrameworkImport([me.cassFrameworks[firstIndex], firstIndex]);
                 });
             }
@@ -738,7 +739,7 @@ export default {
                 me.repo.multiput(toSave, function() {
                     me.cassTaxonomies[firstIndex].loading = false;
                     me.cassTaxonomies[firstIndex].success = true;
-                    me.$store.commit('editor/framework', taxonomy);
+                    store.editor().setFramework(taxonomy);
                     me.spitEvent("importFinished", taxonomy.shortId(), "importPage");
                     me.importCassTaxonomies();
                 }, function() {
@@ -774,7 +775,7 @@ export default {
                 me.repo.multiput(toSave, function() {
                     me.cassFrameworks[firstIndex].loading = false;
                     me.cassFrameworks[firstIndex].success = true;
-                    me.$store.commit('editor/framework', framework);
+                    store.editor().setFramework(framework);
                     me.spitEvent("importFinished", framework.shortId(), "importPage");
                     me.importCassFrameworks();
                 }, function() {
@@ -843,8 +844,8 @@ export default {
             if (failure === 401) {
                 error.details += " A CASE framework cannot be imported if it uses API Key authentication.";
             }
-            this.$store.commit('app/importTransition', 'upload');
-            this.$store.commit('app/addImportError', error.details);
+            store.app().setImportTransition('upload');
+            store.app().addImportError(error.details);
             this.showModal('error', error);
         },
         caseGetDocsBatch: function(serverUrl, limit, offset) {
@@ -883,8 +884,8 @@ export default {
                     let error;
                     if (result.CFDocuments == null) {
                         error = "No frameworks found. Please check the URL and try again.";
-                        this.$store.commit('app/addImportError', error);
-                        this.$store.commit('app/importTransition', 'process');
+                        store.app().addImportError(error);
+                        store.app().setImportTransition('process');
                         resolve(false);
                     } else {
                         if (result.CFDocuments.length === 0 || done) {
@@ -892,8 +893,8 @@ export default {
                                 this.parseCaseDocs(result);
                             }
                             let message = this.caseDocs.length + " frameworks detected.";
-                            this.$store.commit('app/importStatus', message);
-                            this.$store.commit('app/importTransition', 'serverFrameworksDetected');
+                            store.app().setImportStatus(message);
+                            store.app().setImportTransition('serverFrameworksDetected');
                             this.caseCancel = false;
                             resolve(false);
                         } else {
@@ -960,25 +961,25 @@ export default {
                     }
                 }
                 if (lis === 0) {
-                    this.$store.commit('app/importFramework', this.$store.getters['editor/framework']);
+                    store.app().setImportFramework(store.editor().framework);
                     this.importSuccess();
-                    this.$store.commit('app/importStatus', "Import finished.");
+                    store.app().setImportStatus("Import finished.");
                 } else {
                     var me = this;
                     var id = this.caseDocs[firstIndex].id;
                     me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
                         console.log(frameworks);
                         if (frameworks.length > 0) {
-                            me.$store.commit('app/importStatus', 'framework found...');
+                            store.app().setImportStatus('framework found...');
                             me.showModal('duplicateOverwriteOnly', [[me.caseDocs[firstIndex], firstIndex], frameworks[0]]);
                         } else {
-                            me.$store.commit('app/importStatus', 'no match, saving new framework...');
+                            store.app().setImportStatus('no match, saving new framework...');
                             me.continueCaseImport([me.caseDocs[firstIndex], firstIndex]);
                         } /* TO DO - ERROR HANDLING HERE */
                     }, function(error) {
-                        me.$store.commit('app/importStatus', error);
-                        me.$store.commit('app/importTransition', 'process');
-                        me.$store.commit('app/addImportError', error);
+                        store.app().setImportStatus(error);
+                        store.app().setImportTransition('process');
+                        store.app().addImportError(error);
                     });
                 }
             }// if not canceled
@@ -997,9 +998,9 @@ export default {
                 me.caseDocs[firstIndex].success = true;
                 console.log(id);
                 EcFramework.get(id, function(f) {
-                    // me.$store.commit('app/importFramework', f);
+                    // store.app().setImportFramework(f);
                     // Preserve the framework so we can set it as importFramework when they're all done
-                    me.$store.commit('editor/framework', f);
+                    store.editor().setFramework(f);
                     me.spitEvent("importFinished", f.shortId(), "importPage");
                     me.importCase();
                 }, function(error) {
@@ -1026,7 +1027,7 @@ export default {
                 }
             }
             this.clearImport();
-            this.$store.commit('app/importTransition', 'upload');
+            store.app().setImportTransition('upload');
         },
         goBack: function() {
             let me = this;

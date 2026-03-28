@@ -4,10 +4,10 @@
         @close="closeModal"
         size="small"
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             Confirm Delete Competency
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <section>
                 <b>
                     Warning! This action deletes all instances of this competency.
@@ -22,7 +22,7 @@
                 </p>
             </section>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <button
                 @click="deleteItem()"
                 id="delete-competency-confirm-delete-button"
@@ -39,6 +39,7 @@
     </modal-template>
 </template>
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 import competencyEdits from '@/mixins/competencyEdits.js';
 export default {
@@ -55,7 +56,7 @@ export default {
     },
     computed: {
         obj() {
-            return this.$store.getters['editor/itemToDelete'];
+            return store.editor().itemToDelete;
         }
     },
     mounted() {
@@ -74,11 +75,11 @@ export default {
         deleteItem() {
             this.deleteObject(this.obj);
             this.closeModal();
-            this.$store.commit('editor/setItemToDelete', {});
+            store.editor().setItemToDelete({});
         },
         closeModal() {
-            this.$store.commit('app/closeModal');
-            this.$store.commit('editor/setItemToDelete', {});
+            store.app().setCloseModal();
+            store.editor().setItemToDelete({});
         }
     }
 };

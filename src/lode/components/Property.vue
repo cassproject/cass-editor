@@ -16,15 +16,15 @@ TO DO MAYBE: Separate out property by editing or not.
         <modal-template
             :active="removePropertyConfirmModal"
             @close="closeModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 Confirm Remove Property
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <section>
                     Are you sure you'd like to remove this property?
                 </section>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <button
                     id="confirm-remove-property"
                     @click="clickConfirmRemove"
@@ -500,6 +500,8 @@ TO DO MAYBE: Separate out property by editing or not.
     </div>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
+import store from '@/stores/index.js';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 
 export default {
@@ -551,10 +553,10 @@ export default {
     },
     components: {
         // Circular references require this trick.
-        Thing: () => import('./Thing.vue'),
-        ThingEditing: () => import('./ThingEditing.vue'),
+        Thing: defineAsyncComponent(() => import('./Thing.vue')),
+        ThingEditing: defineAsyncComponent(() => import('./ThingEditing.vue')),
         // Property editing box for String type things. Should be one of these for each value type.
-        PropertyString: () => import('./PropertyString.vue'),
+        PropertyString: defineAsyncComponent(() => import('./PropertyString.vue')),
         ModalTemplate
     },
     created: function() {
@@ -565,13 +567,13 @@ export default {
                 this.langString = true;
                 for (var i = 0; i < this.expandedValue.length; i++) {
                     if (!this.expandedValue[i]["@language"]) {
-                        this.$parent.update(this.expandedProperty, i, {"@language": this.$store.state.editor.defaultLanguage, "@value": this.expandedValue[i]["@value"]}, function() {
+                        this.$parent.update(this.expandedProperty, i, {"@language": store.editor().defaultLanguage, "@value": this.expandedValue[i]["@value"]}, function() {
                             me.stopEditing();
                         });
                     }
                 }
             }
-            this.$store.commit('lode/incrementNumPropertyComponents', EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
+            store.lode().setIncrementNumPropertyComponents(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
         }
     },
     mounted: async function() {
@@ -625,14 +627,14 @@ export default {
             }
         }
     },
-    destroyed: function() {
+    unmounted: function() {
         if (this.editingThing) {
-            this.$store.commit('lode/decrementNumPropertyComponents', EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
+            store.lode().setDecrementNumPropertyComponents(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
         }
     },
     computed: {
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         },
         customTitle: function() {
             if (this.profile && this.isCompetency && this.queryParams.ceasnDataFields === 'true') {
@@ -907,7 +909,7 @@ export default {
             });
         },
         get: function(server, service, headers, success, failure) {
-            this.$store.dispatch('editor/getThing', {
+            store.editor().getThing( {
                 server: server,
                 service: service,
                 headers: headers,
@@ -986,7 +988,7 @@ export default {
                 this.langString = true;
                 for (var i = 0; i < this.expandedValue.length; i++) {
                     if (!this.expandedValue[i]["@language"]) {
-                        this.update({"@language": this.$store.state.editor.defaultLanguage, "@value": this.expandedValue[i]["@value"]}, i);
+                        this.update({"@language": store.editor().defaultLanguage, "@value": this.expandedValue[i]["@value"]}, i);
                     }
                 }
             }
@@ -1003,7 +1005,7 @@ export default {
                 if (this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
                     if (this.expandedValue.length === 1 || (this.expandedValue["@value"] && this.expandedValue["@value"].trim().length === 1)) {
                         this.showModal("required");
-                        this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
+                        store.app().setShowModal({component: 'RequiredPropertyModal'});
                         return;
                     }
                 }
@@ -1073,8 +1075,8 @@ export default {
             } else if (type.toLowerCase().indexOf("langstring") !== -1) {
                 this.addOrSearch = "add";
                 var lang = "";
-                if (this.$store.state.editor) {
-                    lang = this.$store.state.editor.defaultLanguage;
+                if (store.editor()) {
+                    lang = store.editor().defaultLanguage;
                 }
                 this.$parent.add(this.expandedProperty, {"@language": lang, "@value": ""});
                 this.langString = true;
@@ -1194,8 +1196,7 @@ export default {
                         }
                     }
                     if (changed) {
-                        this.$store.commit('editor/addEditsToUndo',
-                            {operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), fieldChanged: [this.expandedProperty], initialValue: this.initialValue, changedValue: this.expandedValue, expandedProperty: true}
+                        store.editor().addEditsToUndo({operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), fieldChanged: [this.expandedProperty], initialValue: this.initialValue, changedValue: this.expandedValue, expandedProperty: true}
                         );
                         this.$parent.saveThing();
                     }

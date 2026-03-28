@@ -2,49 +2,43 @@
     <modal-template
         :active="true"
         type="info"
-        @close="$store.commit('app/closeModal')">
-        <template slot="modal-header">
+        @close="store.app().closeModal()">
+        <template #modal-header>
             Edit Multiple Competencies
         </template>
-        <template
-            v-if="isProcessing"
-            slot="modal-body">
-            <div class="section has-text-centered">
+        <template #modal-body>
+            <div v-if="isProcessing" class="section has-text-centered">
                 <span class="icon is-large">
                     <i class="fa fa-spinner fa-2x fa-pulse" />
                 </span>
             </div>
-        </template>
-        <template
-            slot="modal-body"
-            v-else-if="!isSearching">
-            <div
-                v-for="(item,idx) in addedPropertiesAndValues"
-                :id="'multi-edit-property-' + idx"
-                :key="item">
-                <AddProperty
-                    :profile="profile"
-                    :editingMultipleCompetencies="true"
-                    @property-string-updated="propertyStringUpdated"
-                    :idx="idx"
-                    @is-searching="isSearching=true"
-                    :addedPropertiesAndValuesFromSearching="item" />
-                <span v-if="item['error']">
-                    {{ item['error'] }}
-                </span>
+            <div v-else-if="isSearching">
+                <Search view="multi-edit" />
             </div>
-            <p
-                class="help is-danger"
-                v-if="errorMessage !== []">
-                {{ this.errorMessage[0] }}
-            </p>
+            <div v-else>
+                <div
+                    v-for="(item,idx) in addedPropertiesAndValues"
+                    :id="'multi-edit-property-' + idx"
+                    :key="item">
+                    <AddProperty
+                        :profile="profile"
+                        :editingMultipleCompetencies="true"
+                        @property-string-updated="propertyStringUpdated"
+                        :idx="idx"
+                        @is-searching="isSearching=true"
+                        :addedPropertiesAndValuesFromSearching="item" />
+                    <span v-if="item['error']">
+                        {{ item['error'] }}
+                    </span>
+                </div>
+                <p
+                    class="help is-danger"
+                    v-if="errorMessage !== []">
+                    {{ this.errorMessage[0] }}
+                </p>
+            </div>
         </template>
-        <template
-            slot="modal-body"
-            v-if="isSearching">
-            <Search view="multi-edit" />
-        </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-spaced">
                 <button
                     @click="onCancel"
@@ -83,6 +77,7 @@
     </modal-template>
 </template>
 <script>
+import store from '@/stores/index.js';
 import AddProperty from '@/lode/components/AddProperty.vue';
 import Search from '../framework/Search.vue';
 import ModalTemplate from './ModalTemplate.vue';

@@ -165,8 +165,7 @@
                                 </div>
                             </template>
                             <!-- share link -->
-                            <template>
-                                <div class="cass__right-aside--half-item">
+                            <div class="cass__right-aside--half-item">
                                     <span>
                                         <b>Share:</b>
                                     </span>
@@ -193,8 +192,7 @@
                                                 name="copyURL" />
                                         </span>
                                     </span>
-                                </div>
-                            </template>
+                            </div>
                         </div>
                     </template>
                     <!-- properties -->
@@ -292,7 +290,7 @@
                         </div>
                     </template>
                     <!-- users -->
-                    <template v-if="loggedInPerson && loggedInPerson.name && canEditObject && !(objectType === 'CreativeWork' && !$store.state.featuresEnabled.userManagementEnabled)">
+                    <template v-if="loggedInPerson && loggedInPerson.name && canEditObject && !(objectType === 'CreativeWork' && !store.featuresEnabled().userManagementEnabled)">
                         <button
                             :class="accordion === 'users' ? 'active' : ''"
                             @click="clickAccordion('users')"
@@ -361,8 +359,7 @@
                         </div>
                     </template>
                     <!-- copy to directory -->
-                    <template>
-                        <button
+                    <button
                             :class=" accordion === 'copy' ? 'active' : ''"
                             @click="clickAccordion('copy');"
                             id="list-item-info-copy-accordion-button"
@@ -399,8 +396,7 @@
                                     copy here
                                 </span>
                             </li>
-                        </div>
-                    </template>
+                    </div>
                     <!-- move to directory -->
                     <template v-if="canEditObject">
                         <button
@@ -473,6 +469,7 @@
     </div>
 </template>
 <script>
+import store from '@/stores/index.js';
 import common from '@/mixins/common.js';
 export default {
     name: 'ListItemInfo',
@@ -497,7 +494,7 @@ export default {
     },
     methods: {
         deleteDirectory() {
-            this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});
+            store.app().setShowModal({component: 'DeleteDirectoryConfirm'});
         },
         clickAccordion(item) {
             if (this.accordion === item) {
@@ -540,48 +537,48 @@ export default {
         openObject: function() {
             let me = this;
             if (this.objectType === "Directory") {
-                this.$store.commit('app/selectDirectory', this.object);
+                store.app().setSelectDirectory(this.object);
                 if (this.$route.name !== "directory") {
                     this.$router.push({name: "directory"});
                 }
-                this.$store.commit('app/closeRightAside');
+                store.app().setCloseRightAside();
             } else if (this.object.type === "CreativeWork") {
                 window.open(this.object.url, '_blank');
-            } else if (this.$store.getters['editor/conceptMode']) {
-                this.$store.commit('app/selectDirectory', null);
+            } else if (store.editor().conceptMode) {
+                store.app().setSelectDirectory(null);
                 EcConceptScheme.get(this.object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    store.editor().setFramework(success);
+                    store.editor().clearFrameworkCommentData();
+                    store.app().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    store.app().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: me.object.id}});
                 }, console.error);
-            } else if (this.$store.getters['editor/progressionMode']) {
-                this.$store.commit('app/selectDirectory', null);
+            } else if (store.editor().progressionMode) {
+                store.app().setSelectDirectory(null);
                 EcConceptScheme.get(this.object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    store.editor().setFramework(success);
+                    store.editor().clearFrameworkCommentData();
+                    store.app().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    store.app().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "progressionModel", params: {frameworkId: me.object.id}});
                 }, console.error);
             } else if (this.objectType === "ConceptScheme") {
-                this.$store.commit('app/selectDirectory', null);
-                this.$store.commit('editor/conceptMode', true);
+                store.app().setSelectDirectory(null);
+                store.editor().setConceptMode(true);
                 EcConceptScheme.get(this.object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    store.editor().setFramework(success);
+                    store.editor().clearFrameworkCommentData();
+                    store.app().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    store.app().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: me.object.id}});
                 }, console.error);
             } else {
-                this.$store.commit('app/selectDirectory', null);
+                store.app().setSelectDirectory(null);
                 EcFramework.get(this.object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    store.editor().setFramework(success);
+                    store.editor().clearFrameworkCommentData();
+                    store.app().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    store.app().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: me.object.id}});
                 }, console.error);
             }
@@ -598,11 +595,11 @@ export default {
             let me = this;
             let directoryId = this.object.directory ? this.object.directory : this.object.parentDirectory;
             EcDirectory.get(directoryId, function(result) {
-                me.$store.commit('app/selectDirectory', result);
+                store.app().setSelectDirectory(result);
                 if (me.$route.name !== "directory") {
                     me.$router.push({name: "directory"});
                 }
-                me.$store.commit('app/closeRightAside');
+                store.app().setCloseRightAside();
             }, console.error);
         },
         copyOrMove: async function(directory, copyOrMove) {
@@ -613,7 +610,7 @@ export default {
             }
             this.frameworksToProcess = 0;
             this.processingCopyOrMove = true;
-            this.$Progress.start();
+            /* progress start */;
             if (this.copyingToDirectory) {
                 this.$emit('beginCopy');
             } else if (this.movingToDirectory) {
@@ -639,7 +636,7 @@ export default {
             }
         },
         removeFromDirectory: async function() {
-            this.$Progress.start();
+            /* progress start */;
             if (this.objectType === 'Framework') {
                 await this.removeFrameworkFromDirectory(this.object);
             } else if (this.objectType === 'CreativeWork') {
@@ -658,16 +655,16 @@ export default {
                     await this.repo.multiput(toSave);
                     if (this.movingToDirectory) {
                         // Remove the moved item from the right panel
-                        this.$store.commit('app/rightAsideObject', null);
-                        this.$store.commit('app/closeRightAside');
+                        store.app().setRightAsideObject(null);
+                        store.app().setCloseRightAside();
                     }
                     if (shouldRefresh) {
                         // If removing or moving, need to refresh search results
-                        this.$store.commit('app/refreshSearch', true);
+                        store.app().setRefreshSearch(true);
                     }
                 } finally {
                     this.processingCopyOrMove = false;
-                    this.$Progress.finish();
+                    /* progress finish */;
                     this.copyingToDirectory = false;
                     this.movingToDirectory = false;
                 }
@@ -1084,7 +1081,7 @@ export default {
             }
             EcArray.setAdd(directory.directories, subdirectory.shortId());
 
-            let children = await this.$store.dispatch('editor/getDirectoryChildren', oldSubdirectory);
+            let children = await store.editor().getDirectoryChildren(oldSubdirectory);
             // Remove children that do not resolve from the copy
             let validChildren = [];
             for (let child of children) {
@@ -1289,7 +1286,7 @@ export default {
             EcArray.setAdd(directory.directories, subdirectory.shortId());
             toSave.push(...[subdirectory, directory]);
 
-            let children = await this.$store.dispatch('editor/getDirectoryChildren', subdirectory);
+            let children = await store.editor().getDirectoryChildren(subdirectory);
             let success = await window.repo.multiget(children);
             this.frameworksToProcess += success.length;
             return new Promise((resolve, reject) => {
@@ -1322,7 +1319,7 @@ export default {
             try {
                 let me = this;
                 let toSave = [];
-                this.$Progress.start();
+                /* progress start */;
                 let directory = await EcDirectory.get(taxonomy.directory);
                 if (directory.owner) {
                     for (let each of directory.owner) {
@@ -1352,7 +1349,7 @@ export default {
             try {
                 let me = this;
                 let toSave = [];
-                this.$Progress.start();
+                /* progress start */;
                 let directory = await EcDirectory.get(framework.directory);
                 if (directory.owner) {
                     for (let each of directory.owner) {
@@ -1461,7 +1458,7 @@ export default {
             }
             toSave.push(...[subdirectory, directory]);
 
-            let children = await me.$store.dispatch('editor/getDirectoryChildren', subdirectory);
+            let children = await store.editor().getDirectoryChildren(subdirectory);
             let success = await window.repo.multiget(children);
             this.frameworksToProcess = success.length;
 
@@ -1502,11 +1499,11 @@ export default {
             }
         },
         manageUsers: function() {
-            this.$store.commit('app/objForShareModal', this.object);
-            this.$store.commit('app/showModal', {component: 'Share'});
+            store.app().setObjForShareModal(this.object);
+            store.app().setShowModal({component: 'Share'});
         },
         editDirectory: function() {
-            this.$store.commit('app/editDirectory', true);
+            store.app().setEditDirectory(true);
         }
     },
     mounted: async function() {
@@ -1515,7 +1512,7 @@ export default {
             let type = "Ec" + this.object.encryptedType;
             let obj = new window[type]();
             obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(this.object));
-            this.$store.commit('app/rightAsideObject', obj);
+            store.app().setRightAsideObject(obj);
         }
         if (this.object.type === "Directory") {
             this.setIneligibleDirectoriesForMove(this.object);
@@ -1551,7 +1548,7 @@ export default {
             return this.object.shortId();
         },
         object: function() {
-            return this.$store.getters['app/rightAsideObject'];
+            return store.app().rightAsideObject;
         },
         objectType: function() {
             return this.object.type;
@@ -1620,7 +1617,7 @@ export default {
                 } else {
                     return (link + "?directoryId=" + this.objectShortId);
                 }
-            } else if ((this.$store.getters['editor/conceptMode'] === true) || (this.$store.getters['editor/progressionMode'] === true)) {
+            } else if ((store.editor().conceptMode === true) || (store.editor().progressionMode === true)) {
                 if (link.contains('?')) {
                     return (link + "&concepts=true&frameworkId=" + this.objectShortId);
                 } else {
@@ -1635,7 +1632,7 @@ export default {
         },
         copyDirectoryOptions: function() {
             let me = this;
-            return this.$store.getters['app/directoryList'].filter(directory => {
+            return store.app().directoryList.filter(directory => {
                 return (directory.shortId() !== me.object.shortId() &&
                     (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
                     (me.object.directory ? (directory.shortId() !== me.object.directory) : true));
@@ -1644,14 +1641,14 @@ export default {
         moveDirectoryOptions: function() {
             let me = this;
             if (this.objectType === "Directory") {
-                return this.$store.getters['app/directoryList'].filter(directory => {
+                return store.app().directoryList.filter(directory => {
                     return (directory.shortId() !== me.object.shortId() &&
                         (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
                         (me.object.directory ? (directory.shortId() !== me.object.directory) : true) &&
                         !EcArray.has(me.ineligibleDirectoriesForMove, directory.shortId()));
                 });
             } else {
-                return this.$store.getters['app/directoryList'].filter(directory => {
+                return store.app().directoryList.filter(directory => {
                     return (directory.shortId() !== me.object.shortId() &&
                         (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
                         (me.object.directory ? (directory.shortId() !== me.object.directory) : true));
@@ -1662,14 +1659,14 @@ export default {
             return this.canEditAny(this.object);
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         },
         loggedInPerson: function() {
-            return this.$store.getters['user/loggedOnPerson'];
+            return store.user().loggedOnPerson;
         },
         selectedDirectoryId: function() {
-            if (this.$store.getters['app/selectedDirectory']) {
-                return this.$store.getters['app/selectedDirectory'].shortId();
+            if (store.app().selectedDirectory) {
+                return store.app().selectedDirectory.shortId();
             }
             return null;
         }

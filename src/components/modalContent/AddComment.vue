@@ -3,11 +3,11 @@
         type="info"
         @close="closeModal"
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             <span v-if="isCommentNew || isCommentReply">New Comment</span>
             <span v-if="isCommentEdit">Edit Comment</span>
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <span
                 v-if="isCommentNew"
                 class="comment-modal__details__header">Commenting on</span>
@@ -42,7 +42,7 @@
                 </span>
             </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-
+import store from '@/stores/index.js';
 import {cassUtil} from '../../mixins/cassUtil';
 import ModalTemplate from './ModalTemplate.vue';
 
@@ -85,7 +85,7 @@ export default {
     },
     methods: {
         closeModal: function() {
-            this.$store.commit('app/closeModal');
+            store.app().setCloseModal();
         },
         buildNewCommentObject: function() {
             let commentObj = new EcComment();
@@ -112,26 +112,26 @@ export default {
             else return this.buildNewCommentObject();
         },
         updateStoredFrameworkCommentPersonMap() {
-            let cpm = this.$store.getters['editor/frameworkCommentPersonMap'];
+            let cpm = store.editor().frameworkCommentPersonMap;
             cpm[this.loggedInPerson.shortId()] = this.loggedInPerson;
-            this.$store.commit('editor/setFrameworkCommentPersonMap', cpm);
+            store.editor().setFrameworkCommentPersonMap(cpm);
         },
         insertEditedCommentObjectIntoStoreFrameworkCommentList() {
             let newFcl = [];
-            let fcl = this.$store.getters['editor/frameworkCommentList'];
+            let fcl = store.editor().frameworkCommentList;
             for (let c of fcl) {
                 if (c.shortId().equals(this.commentToSave.shortId())) newFcl.push(this.commentToSave);
                 else newFcl.push(c);
             }
-            this.$store.commit('editor/setFrameworkCommentList', newFcl);
+            store.editor().setFrameworkCommentList(newFcl);
         },
         updateStoreFrameworkCommentList() {
             if (this.isCommentEdit) {
                 this.insertEditedCommentObjectIntoStoreFrameworkCommentList();
             } else {
-                let fcl = this.$store.getters['editor/frameworkCommentList'];
+                let fcl = store.editor().frameworkCommentList;
                 fcl.push(this.commentToSave);
-                this.$store.commit('editor/setFrameworkCommentList', fcl);
+                store.editor().setFrameworkCommentList(fcl);
             }
         },
         updateStoredFrameworkCommentData() {
@@ -145,7 +145,7 @@ export default {
             this.updateStoredFrameworkCommentData();
             this.commentIsBusy = false;
             this.closeModal();
-            this.$store.commit('app/showRightAside', 'Comments');
+            store.app().openRightAside('Comments');
         },
         saveCommentFailed: function(msg) {
             this.commentIsBusy = false;
@@ -170,32 +170,32 @@ export default {
     },
     computed: {
         commentFramework: function() {
-            return this.$store.getters['editor/framework'];
+            return store.editor().framework;
         },
         commentFrameworkName: function() {
-            let fw = this.$store.getters['editor/framework'];
+            let fw = store.editor().framework;
             if (fw) return fw.getName();
             else return 'Unknown';
         },
         commentFrameworkId: function() {
-            let fw = this.$store.getters['editor/framework'];
+            let fw = store.editor().framework;
             if (fw) return fw.shortId();
             else return 'Unknown';
         },
         commentAboutId: function() {
-            return this.$store.getters['editor/addCommentAboutId'];
+            return store.editor().addCommentAboutId;
         },
         commentType: function() {
-            return this.$store.getters['editor/addCommentType'];
+            return store.editor().addCommentType;
         },
         commentToEdit: function() {
-            return this.$store.getters['editor/commentToEdit'];
+            return store.editor().commentToEdit;
         },
         commentToReply: function() {
-            return this.$store.getters['editor/commentToReply'];
+            return store.editor().commentToReply;
         },
         frameworkCommentDataAlreadyLoaded: function() {
-            return this.$store.getters['editor/frameworkCommentDataLoaded'];
+            return store.editor().frameworkCommentDataLoaded;
         },
         isCommentReply: function() {
             return this.commentType.equalsIgnoreCase('reply');
@@ -213,7 +213,7 @@ export default {
             return this.commentSubjectType.equalsIgnoreCase('competency');
         },
         loggedInPerson: function() {
-            return this.$store.state.user.loggedOnPerson;
+            return store.user().loggedOnPerson;
         }
     },
     mounted: async function() {

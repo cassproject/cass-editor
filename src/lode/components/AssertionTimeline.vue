@@ -24,11 +24,12 @@
     </div>
 </template>
 <script>
-
+import { defineAsyncComponent } from 'vue';
+import store from '@/stores/index.js';
 export default {
     name: 'AssertionTimeline',
     components: {
-        TimelineElement: () => import('./TimelineElement.vue')
+        TimelineElement: defineAsyncComponent(() => import('./TimelineElement.vue'))
     },
     props: {
 
@@ -40,10 +41,10 @@ export default {
     },
     computed: {
         assertions: function() {
-            return this.$store.getters['editor/assertions'];
+            return store.editor().assertions;
         },
         loading: function() {
-            return this.$store.getters['editor/searchingAssertions'];
+            return store.editor().searchingAssertions;
         }
     },
     watch: {},

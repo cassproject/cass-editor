@@ -552,13 +552,13 @@
             size="small"
             @close="cancelLoseChanges"
             :active="showConfirmLoseChangesModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 Discard Unsaved Changes?
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 You have unsaved changes.  Cancel to return to group and save changes, or confirm to discard changes.
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <button
                     id="confirm-lose-changes-and-nav-button"
                     class="button is-primary is-outlined"
@@ -585,10 +585,10 @@
         <modal-template id="user-group-busy-modal"
             :header="false"
             :active="userGroupBusy">
-            <template slot="modal-header">
+            <template #modal-header>
                 Processing Request
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div class="modal-content has-text-centered">
                     <span class="icon is-large has-text-center has-text-link">
                         <i class="fas fa-2x fa-spinner is-info fa-pulse" />
@@ -600,12 +600,12 @@
         <modal-template
             @close="closeAddGroupMemberModal"
             :active="showAddMemberModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 <p class="is-size-3 modal-card-title has-text-white">
                     Add members to '{{ currentUserGroupName }}'
                 </p>
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div
                     v-if="!(filteredAvailablePersonsForMembership.length === 0 && addMemberPersonFilter === '')"
                     class="field">
@@ -673,7 +673,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     id="apply-selected-new-members-to-current-user-group-button"
                     v-if="selectedNewMembers.length > 0 || selectedNewManagers.length > 0"
@@ -705,10 +705,10 @@
         <modal-template
             :active="showConfirmDeleteUserGroupModal"
             @close="closeDeleteGroupConfirmModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 Delete User Group?
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 Are you sure you wish to delete the user group <b>'{{ currentUserGroupName }}'</b>?
                 <div
                     class="field has-text-danger pt-4"
@@ -719,7 +719,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     id="cancel-user-group-delete-button"
                     class="button is-outlined"
@@ -749,10 +749,11 @@
     </div>
 </template>
 <script>
-import CassPanel from '@/components/Panel';
-import CassPanelItem from '@/components/PanelItem';
-import CassDropdown from '@/components/Dropdown';
-import CassDropdownItem from '@/components/DropdownItem';
+import store from '@/stores/index.js';
+import CassPanel from '@/components/Panel.vue';
+import CassPanelItem from '@/components/PanelItem.vue';
+import CassDropdown from '@/components/Dropdown.vue';
+import CassDropdownItem from '@/components/DropdownItem.vue';
 import {cassUtil} from '@/mixins/cassUtil';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 
@@ -1125,7 +1126,7 @@ export default {
             newUserGroup.setName('New User Group');
             newUserGroup.setDescription('New group of users');
             newUserGroup.employee = [];
-            newUserGroup.addEmployee(this.$store.state.user.loggedOnPerson);
+            newUserGroup.addEmployee(store.user().loggedOnPerson);
             newUserGroup.addOwner(this.getPersonalIdentityPk());
             let parentGroupLineage = null;
             if (parentGroupId) {

@@ -75,7 +75,7 @@
                             title="View all comments"
                             v-if="showViewComments"
                             id="view-comments-button"
-                            @click="$store.commit('app/showRightAside', 'Comments')"
+                            @click="store.app().openRightAside('Comments')"
                             class="button is-text  has-text-dark">
                             <span class="icon">
                                 <i class="fas fa-comments" />
@@ -103,7 +103,7 @@
                         </div>
                     <!-- <div
                             title="View history"
-                            @click="$store.commit('app/showRightAside', 'Versions')"
+                            @click="store.app().openRightAside('Versions')"
                             class="button is-text  has-text-dark">
                             <span class="icon">
                                 <i class="fas fa-history" />
@@ -235,7 +235,7 @@
                     class="column is-narrow"
                     @click="manageAssertions">
                     <div
-                        :class="{'is-loading': $store.getters['editor/searchingAssertions']}"
+                        :class="{'is-loading': store.editor().searchingAssertions}"
                         class="button is-text has-text-dark">
                         <template v-if="managingAssertions">
                             Stop Managing Assertions
@@ -276,7 +276,7 @@
     </div>
 </template>
 <script>
-
+import store from '@/stores/index.js';
 import common from '@/mixins/common.js';
 import {cassUtil} from '../../mixins/cassUtil';
 export default {
@@ -296,10 +296,34 @@ export default {
             repo: window.repo,
             editsFinishedCounter: 0,
             totalEditsCounter: 0,
-            privateFramework: false
+            privateFramework: false,
+            configurationNameResolved: null
         };
     },
     methods: {
+        async resolveConfigurationName() {
+            try {
+                let fw = store.editor().framework;
+                if (fw && fw.configuration) {
+                    let config = await EcRepository.get(fw.configuration);
+                    this.configurationNameResolved = config ? config.name : "No configuration";
+                } else if (localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
+                    let config = await EcRepository.get(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
+                    this.configurationNameResolved = config ? config.name : "No configuration";
+                } else {
+                    let ca = await window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null);
+                    for (let c of ca) {
+                        if (c.isDefault === true || c.isDefault === "true") {
+                            this.configurationNameResolved = c.name;
+                            return;
+                        }
+                    }
+                    this.configurationNameResolved = "No Configuration";
+                }
+            } catch (e) {
+                this.configurationNameResolved = "No Configuration";
+            }
+        },
         closeViewDropDown: function() {
             if (this.showPropertyViewDropDown) {
                 this.showPropertyViewDropDown = false;
@@ -317,18 +341,18 @@ export default {
             }
         },
         handleClickAddComment: function() {
-            this.$store.commit('editor/setAddCommentAboutId', this.$store.getters['editor/framework'].shortId());
-            this.$store.commit('editor/setAddCommentType', 'new');
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            store.editor().setAddCommentAboutId(store.editor().framework.shortId());
+            store.editor().setAddCommentType('new');
+            store.app().setShowModal({component: 'AddComment'});
         },
         showExportModal() {
-            this.$store.commit('app/showModal', 'Export');
+            store.app().setShowModal('Export');
         },
         showManageUsersModal() {
-            this.$store.commit('app/showModal', {component: 'Share'});
+            store.app().setShowModal({component: 'Share'});
         },
         showManageConfigurationModal() {
-            this.$store.commit('app/showModal', {component: 'FrameworkConfiguration'});
+            store.app().setShowModal({component: 'FrameworkConfiguration'});
         },
         changeProperties(type) {
             let properties = this.properties;
@@ -345,26 +369,25 @@ export default {
             this.activeView = newType;
         },
         onClickUndo: function() {
-            this.$Progress.start();
-            this.$store.dispatch('editor/lastEditToUndo').then(editToUndo => {
-                if (editToUndo) {
-                    if (!EcArray.isArray(editToUndo)) {
-                        editToUndo = [editToUndo];
-                    }
-                    this.totalEditsCounter += editToUndo.length;
-                    for (let i = 0; i < editToUndo.length; i++) {
-                        let editType = editToUndo[i].operation;
-                        if (editType === "addNew") {
-                            this.undoAdd(editToUndo[i].id);
-                        } else if (editType === "delete") {
-                            this.undoDelete(editToUndo[i].obj);
-                        } else if (editType === "update") {
-                            this.undoUpdate(editToUndo[i]);
-                        }
+            let editToUndo = store.editor().editsToUndo.pop();
+            store.editor().setLastEditToUndo(editToUndo);
+            if (editToUndo) {
+                if (!EcArray.isArray(editToUndo)) {
+                    editToUndo = [editToUndo];
+                }
+                this.totalEditsCounter += editToUndo.length;
+                for (let i = 0; i < editToUndo.length; i++) {
+                    let editType = editToUndo[i].operation;
+                    if (editType === "addNew") {
+                        this.undoAdd(editToUndo[i].id);
+                    } else if (editType === "delete") {
+                        this.undoDelete(editToUndo[i].obj);
+                    } else if (editType === "update") {
+                        this.undoUpdate(editToUndo[i]);
                     }
                 }
-                this.$store.commit('editor/setLastEditToUndo', null);
-            });
+            }
+            store.editor().setLastEditToUndo(null);
         },
         async undoAdd(id) {
             // Delete
@@ -375,7 +398,7 @@ export default {
             }, function(failure) {
                 console.log(failure);
                 me.editsFinishedCounter++;
-                me.$Progress.fail();
+                /* progress fail */;
             });
         },
         undoDelete(obj) {
@@ -388,11 +411,11 @@ export default {
             }
             this.repo.saveTo(toSave, function() {
                 me.editsFinishedCounter++;
-                me.$Progress.finish();
+                /* progress finish */;
             }, function(failure) {
                 console.log(failure);
                 me.editsFinishedCounter++;
-                me.$Progress.fail();
+                /* progress fail */;
             });
         },
         undoUpdate(update) {
@@ -407,16 +430,16 @@ export default {
                 }
                 me.repo.saveTo(success, function() {
                     me.editsFinishedCounter++;
-                    me.$Progress.finish();
+                    /* progress finish */;
                 }, function() {
                     me.editsFinishedCounter++;
-                    me.$Progress.fail();
+                    /* progress fail */;
                 });
-                me.$store.commit('editor/changedObject', success.shortId());
+                store.editor().setChangedObject(success.shortId());
             }, function(error) {
                 console.error(error);
                 me.editsFinishedCounter++;
-                me.$Progress.fail();
+                /* progress fail */;
             });
         },
         undoUpdateWithExpandedProperty(update, updatedObject) {
@@ -453,7 +476,7 @@ export default {
                 context = "https://schema.cassproject.org/0.4/skos";
             }
             try {
-                let compacted = await jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context]);
+                let compacted = await jsonld.compact(expandedCompetency, store.lode().rawSchemata[context]);
                 if (compacted) {
                     var rld = new EcRemoteLinkedData();
                     rld.copyFrom(compacted);
@@ -461,7 +484,7 @@ export default {
                     delete rld["@context"];
                     rld = me.turnFieldsBackIntoArrays(rld);
                     rld["schema:dateModified"] = new Date().toISOString();
-                    if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
+                    if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                         rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     me.repo.saveTo(rld, function() {
@@ -492,7 +515,7 @@ export default {
         goToDirectory: function() {
             let me = this;
             EcDirectory.get(this.directoryId, function(success) {
-                me.$store.commit('app/selectDirectory', success);
+                store.app().selectDirectory(success);
                 me.$router.push({name: "directory"});
             }, console.error);
         },
@@ -512,74 +535,46 @@ export default {
         },
         manageAssertions: async function() {
             if (this.managingAssertions) {
-                this.$store.commit('editor/setManageAssertions', false);
+                store.editor().setManageAssertions(false);
             } else {
                 EcPerson.search(window.repo, '*').then((people) => {
-                    this.$store.commit('editor/setPeople', people.map((x) => {
+                    store.editor().setPeople(people.map((x) => {
                         return {name: x.name, key: x.owner[0]};
                     }));
                 });
-                this.$store.dispatch('editor/searchForAssertions').then(() => {
-                    this.$store.commit('editor/setManageAssertions', true);
+                store.editor().searchForAssertions().then(() => {
+                    store.editor().setManageAssertions(true);
                 }).catch(() => {
                     // TODO: Handle assertion search error
                 });
             }
         }
     },
-    asyncComputed: {
-        getConfigurationName: async function() {
-            if (this.$store.getters['editor/framework'].configuration) {
-                let config = await EcRepository.get(this.$store.getters['editor/framework'].configuration);
-                if (config) {
-                    return config.name;
-                } else {
-                    return "No configuration";
-                }
-            } else {
-                if (localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
-                    let config = await EcRepository.get(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
-                    if (config) {
-                        return config.name;
-                    } else {
-                        return "No configuration";
-                    }
-                } else {
-                    let ca = await window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null);
-                    for (let c of ca) {
-                        if (c.isDefault === true || c.isDefault === "true") {
-                            return c.name;
-                        }
-                    }
-                    return "No Configuration";
-                }
-            }
-        }
-    },
+
     computed: {
         showAddComments() {
-            if (this.$store.getters['editor/conceptMode'] === true) {
+            if (store.editor().conceptMode === true) {
                 return false;
             }
-            if (this.$store.getters['editor/progressionMode'] === true) {
+            if (store.editor().progressionMode === true) {
                 return false;
             }
-            return this.$store.state.app.canAddComments;
+            return store.app().canAddComments;
         },
         showViewComments() {
-            if (this.$store.getters['editor/conceptMode'] === true) {
+            if (store.editor().conceptMode === true) {
                 return false;
             }
-            if (this.$store.getters['editor/progressionMode'] === true) {
+            if (store.editor().progressionMode === true) {
                 return false;
             }
-            return this.$store.state.app.canViewComments;
+            return store.app().canViewComments;
         },
         framework: function() {
-            return this.$store.state.editor.framework;
+            return store.editor().framework;
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         },
         ceasnDataFields: function() {
             return this.queryParams.ceasnDataFields === 'true';
@@ -599,19 +594,19 @@ export default {
             return false;
         },
         loggedInPerson: function() {
-            return this.$store.getters['user/loggedOnPerson'];
+            return store.user().loggedOnPerson;
         },
         configuration: function() {
-            return this.$store.getters['editor/framework'].configuration;
+            return store.editor().framework ? store.editor().framework.configuration : null;
         },
         conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
+            return store.editor().conceptMode;
         },
         progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
+            return store.editor().progressionMode;
         },
         canExport: function() {
-            if (this.$store.state.editor.private) {
+            if (store.editor().private) {
                 return false;
             } else if (this.framework.reader && this.framework.reader.length > 0) {
                 return false;
@@ -622,16 +617,16 @@ export default {
             }
         },
         configurationsEnabled: function() {
-            return this.$store.state.featuresEnabled.configurationsEnabled;
+            return store.featuresEnabled().configurationsEnabled;
         },
         shareEnabled: function() {
-            return this.$store.state.featuresEnabled.shareEnabled;
+            return store.featuresEnabled().shareEnabled;
         },
         shareLink: function() {
-            return this.$store.state.featuresEnabled.shareLink;
+            return store.featuresEnabled().shareLink;
         },
         userManagementEnabled: function() {
-            return this.$store.state.featuresEnabled.userManagementEnabled;
+            return store.featuresEnabled().userManagementEnabled;
         },
         showUserManagementIcon: function() {
             if (!this.shareEnabled && !this.canEditFramework) {
@@ -652,7 +647,10 @@ export default {
             return false;
         },
         managingAssertions: function() {
-            return this.$store.getters['editor/manageAssertions'];
+            return store.editor().manageAssertions;
+        },
+        getConfigurationName: function() {
+            return this.configurationNameResolved;
         }
     },
     watch: {
@@ -660,19 +658,24 @@ export default {
             if (this.editsFinishedCounter && this.editsFinishedCounter === this.totalEditsCounter) {
                 this.editsFinishedCounter = 0;
                 this.totalEditsCounter = 0;
-                // If changes were made to the framework, make sure they get into the store.
-                var framework = this.$store.getters['editor/framework'];
+                var framework = store.editor().framework;
                 let obj = await EcRepository.get(framework.shortId());
-                this.$store.commit('editor/framework', obj);
-                this.$store.commit('editor/recomputeHierarchy', true);
-                this.$store.commit('editor/refreshAlignments', true);
+                store.editor().setFramework(obj);
+                store.editor().setRecomputeHierarchy(true);
+                store.editor().setRefreshAlignments(true);
+            }
+        },
+        configuration: {
+            immediate: true,
+            async handler() {
+                await this.resolveConfigurationName();
             }
         }
     },
     mounted: function() {
-        if (this.$store.getters['editor/setPropertyLevel']) {
-            this.changeProperties(this.$store.getters['editor/setPropertyLevel']);
-            this.$store.commit('editor/setPropertyLevel', null);
+        if (store.editor().setPropertyLevel) {
+            this.changeProperties(store.editor().setPropertyLevel);
+            store.editor().setSetPropertyLevel(null);
         }
         this.checkIsPrivate();
     }

@@ -4,17 +4,17 @@
         @close="closeModal"
         size="small"
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             Confirm Delete Concept
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <section>
                 <b>
                     Warning! This action is permanent.
                 </b>
             </section>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <button
                 @click="deleteItem()"
                 id="delete-concept-confirm-delete-button"
@@ -31,6 +31,7 @@
     </modal-template>
 </template>
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 import common from '@/mixins/common.js';
 export default {
@@ -41,10 +42,10 @@ export default {
     mixins: [common],
     computed: {
         obj() {
-            return this.$store.getters['editor/itemToDelete'];
+            return store.editor().itemToDelete;
         },
         framework() {
-            return this.$store.getters['editor/framework'];
+            return store.editor().framework;
         }
     },
     data() {
@@ -58,15 +59,15 @@ export default {
             this.closeModal();
         },
         closeModal() {
-            this.$store.commit('app/closeModal');
-            this.$store.commit('editor/setItemToDelete', {});
+            store.app().setCloseModal();
+            store.editor().setItemToDelete({});
         },
         deleteObject: function(thing) {
             console.log("deleting " + thing.id);
             this.deleteConceptInner(thing);
 
             this.framework["schema:dateModified"] = new Date().toISOString();
-            this.$store.commit('editor/selectedCompetency', null);
+            store.editor().setSelectedCompetency(null);
         },
         deleteConceptInner: async function(c) {
             var me = this;
@@ -78,11 +79,11 @@ export default {
                         EcArray.setRemove(concept["skos:narrower"], c.shortId());
                         concept["schema:dateModified"] = new Date().toISOString();
                         me.editsToUndo.push({operation: "update", id: concept.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]});
-                        if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
+                        if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[concept.id] !== true) {
                             concept = await EcEncryptedValue.toEncryptedValue(concept);
                         }
                         await repo.saveTo(concept);
-                        me.$store.commit('editor/framework', me.framework);
+                        store.editor().setFramework(me.framework);
                     } catch (e) {
                         console.error(e);
                     }
@@ -105,11 +106,11 @@ export default {
                     me.editsToUndo.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]});
                     var framework = this.framework;
                     framework["schema:dateModified"] = new Date().toISOString();
-                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    if (store.editor().private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                         framework = await EcEncryptedValue.toEncryptedValue(framework);
                     }
                     await repo.saveTo(framework);
-                    me.$store.commit('editor/framework', me.framework);
+                    store.editor().setFramework(me.framework);
                 } catch (e) {
                     console.error(e);
                 }
@@ -117,8 +118,8 @@ export default {
             this.spitEvent("conceptDeleted", c.shortId(), "editFrameworkPage");
             me.editsToUndo.push({operation: "delete", obj: c});
             repo.deleteRegistered(c, function() {
-                me.$store.commit('editor/framework', me.framework);
-                me.$store.commit('editor/addEditsToUndo', JSON.parse(JSON.stringify(me.editsToUndo)));
+                store.editor().setFramework(me.framework);
+                store.editor().addEditsToUndo(JSON.parse(JSON.stringify(me.editsToUndo)));
                 me.editsToUndo.splice(0, me.editsToUndo.length);
             }, console.error);
         }

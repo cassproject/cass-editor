@@ -3,12 +3,12 @@
         type="danger"
         @close="closeModal"
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             <span class="title has-text-white">
                 {{ commentDeleteConfirmTitle }}
             </span>
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <p v-if="commentsToDelete.length <= 1">
                 Are you sure you wish to delete this comment?
             </p>
@@ -16,7 +16,7 @@
                 Are you sure you wish to delete this entire thread?
             </p>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
@@ -35,6 +35,7 @@
     </modal-template>
 </template>
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 
 export default {
@@ -54,8 +55,8 @@ export default {
     },
     methods: {
         closeModal: function() {
-            this.$store.commit('editor/setCommentsToDelete', []);
-            this.$store.commit('app/closeModal');
+            store.editor().setCommentsToDelete([]);
+            store.app().setCloseModal();
         },
         generateCommentsToDeleteIds() {
             let ctdIds = [];
@@ -66,12 +67,12 @@ export default {
         },
         removeCommentsFromStoreFrameworkCommentList: function() {
             let ctdIds = this.generateCommentsToDeleteIds();
-            let fcl = this.$store.getters['editor/frameworkCommentList'];
+            let fcl = store.editor().frameworkCommentList;
             let nfcl = [];
             for (let fc of fcl) {
                 if (!ctdIds.includes(fc.shortId())) nfcl.push(fc);
             }
-            this.$store.commit('editor/setFrameworkCommentList', nfcl);
+            store.editor().setFrameworkCommentList(nfcl);
         },
         deleteCommentSuccess() {
             console.log('Comment delete succeeded');
@@ -94,7 +95,7 @@ export default {
             else return 'Delete comment?';
         },
         commentsToDelete: function() {
-            return this.$store.getters['editor/commentsToDelete'];
+            return store.editor().commentsToDelete;
         }
     },
     mounted: function() {

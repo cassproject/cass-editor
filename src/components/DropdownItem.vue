@@ -18,7 +18,7 @@
 </template>
 
 <script>
-import CassDropdownItem from './DropdownItem';
+import CassDropdownItem from './DropdownItem.vue';
 
 export default {
     name: 'CassDropdownItem',

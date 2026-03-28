@@ -21,7 +21,7 @@ const state = ()=>(stateActual = {
     includeRelations: true
 });
 const actions = {
-    setIsSavingProperty(value) {
+setIsSavingProperty(value) {
         this.isSavingProperty = value;
     },
     setIsSavingThing(value) {
@@ -130,23 +130,22 @@ const actions = {
             }
         }
     },
-    schemaFallback({state}, schema) {
+    schemaFallback(schema) {
         for (var i = 0; i < schema.length; i++) {
             let scheme = schema[i];
-            state.schemaFallback[scheme["@id"]] = schema[i];
+            this.schemaFallback[scheme["@id"]] = schema[i];
             if (scheme["http://schema.org/domainIncludes"] != null) {
                 for (var domainType of scheme["http://schema.org/domainIncludes"]) {
-                    if (state.objectModel[domainType["@id"]] == null) {
-                        state.objectModel[domainType["@id"]] = {};
+                    if (this.objectModel[domainType["@id"]] == null) {
+                        this.objectModel[domainType["@id"]] = {};
                     }
-                    let om = state.objectModel[domainType["@id"]];
+                    let om = this.objectModel[domainType["@id"]];
                     om[scheme["@id"]] = scheme;
                 }
             }
         }
-    }
-};
-const mutations = {
+    },
+
 };
 const getters = {
 };
@@ -210,7 +209,6 @@ jsonld.documentLoader = async function(url) {
 import { defineStore } from 'pinia';
 export default defineStore('lode', { 
     state,
-    mutations,
     actions,
     getters
 });

@@ -2,15 +2,15 @@
     <modal-template
         :active="true"
         @close="closeImportModal">
-        <template slot="modal-header">
+        <template #modal-header>
             {{ importModalParams.title }}
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <section>
                 {{ importModalParams.text }}
             </section>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <button
                 @click="closeModal"
                 id="import-error-cancel-button"
@@ -21,6 +21,7 @@
     </modal-template>
 </template>
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'ImportError',
@@ -30,25 +31,25 @@ export default {
     computed: {
         showImportInfoModal: {
             get() {
-                return this.$store.getters['app/showImportInfoModal'];
+                return store.app().showImportInfoModal;
             },
             set(val) {
-                this.$store.commit('app/showImportInfoModal', val);
+                store.app().setShowImportInfoModal(val);
             }
         },
         importModalParams: {
             get() {
-                return this.$store.getters['app/importModalParams'];
+                return store.app().importModalParams;
             },
             set(val) {
-                this.$store.commit('app/importModalParams', val);
+                store.app().setImportModalParams(val);
             }
         }
     },
     methods: {
         closeModal: function() {
             this.importModalParams = null;
-            this.$store.commit('app/closeModal');
+            store.app().setCloseModal();
         }
     }
 };

@@ -11,7 +11,7 @@
         class="menu has-background-light">
         <p class="subtitle is-size-4">
             <span
-                @click="$store.commit('app/closeRightAside')"
+                @click="store.app().setCloseRightAside()"
                 id="versions-close-button"
                 class="icon">
                 <i class="fa fa-caret-right" />
@@ -24,7 +24,7 @@
     </aside>
 </template>
 <script>
-
+import store from '@/stores/index.js';
 export default {
     name: 'Versions',
     data() {

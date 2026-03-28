@@ -8,10 +8,10 @@
             :header="false"
             @close="configDetailsBusy = false"
             :active="configDetailsBusy">
-            <template slot="modal-header">
+            <template #modal-header>
                 Processing
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div class="has-text-centered has-text-link">
                     <div class="icon is-large has-text-centered has-text-link">
                         <i class="fas fa-2x fa-spinner is-info fa-pulse" />
@@ -25,10 +25,10 @@
         <modal-template
             @close="showManageRelationshipsModal = false"
             :active="showManageRelationshipsModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 Manage relationship types
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div class="section">
                     <div class="columns is-multiline">
                         <div class="column is-12">
@@ -183,7 +183,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     class="button is-primary is-outlined"
                     @click="hideManageRelations">
@@ -195,10 +195,10 @@
         <modal-template
             @close="showSelectPermissionEntitiesModal = false"
             :active="showSelectPermissionEntitiesModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 {{ permissionEntitySelectionTitle }}
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div class="field">
                     <input
                         type="text"
@@ -247,7 +247,7 @@
                     </table>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     class="buttons is-spaced"
                     v-if="!readOnly">
@@ -280,10 +280,10 @@
         <modal-template
             @close="showSelectLevelModal = false"
             :active="showSelectLevelModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 {{ levelSelectionModalTitle }}
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div
                     ref="levelsModal">
                     <div class="field">
@@ -378,12 +378,11 @@
                         </div>
                     </div>
                 </div>
-                <template
-                    v-if="!showAddNewLevelSection"
-                    slot="modal-foot">
+                <template #modal-foot>
                     <div
-                        class="buttons is-spaced"
-                        v-if="!readOnly">
+                        v-if="!showAddNewLevelSection"
+                        class="buttons is-spaced">
+                        <template v-if="!readOnly">
                         <button
                             class="button is-outlined is-dark"
                             @click="closeSelectLevelModal"
@@ -410,14 +409,12 @@
                                 apply selected
                             </span>
                         </button>
+                        </template>
                     </div>
-                </template>
-                <template
-                    slot="modal-foot"
-                    v-if="showAddNewLevelSection">
                     <div
-                        class="buttons is-spaced"
-                        v-if="!readOnly && !savingLevelBusy">
+                        v-else
+                        class="buttons is-spaced">
+                        <template v-if="!readOnly && !savingLevelBusy">
                         <button
                             class="button is-outlined"
                             @click="cancelAddNewLevel"
@@ -440,6 +437,7 @@
                                 save new level
                             </span>
                         </button>
+                        </template>
                     </div>
                 </template>
             </template>
@@ -448,10 +446,10 @@
         <modal-template
             @close="showCustomPropertyDetailsModal = false"
             :active="showCustomPropertyDetailsModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 {{ customPropertyModalTitle }}
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div class="title">
                     {{ customPropertyPropertyName }}
                 </div>
@@ -1035,7 +1033,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     class="buttons is-spaced"
                     v-if="!readOnly">
@@ -3115,11 +3113,12 @@
 </template>
 
 <script>
-import FrameworkCompetencyPropertyListItem from "./FrameworkCompetencyPropertyListItem";
-import RelationshipListItem from "./RelationshipListItem";
+import store from '@/stores/index.js';
+import FrameworkCompetencyPropertyListItem from './FrameworkCompetencyPropertyListItem.vue';
+import RelationshipListItem from './RelationshipListItem.vue';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import {cassUtil} from '../../mixins/cassUtil';
-import {mapGetters} from 'pinia';
+import {mapState} from 'pinia';
 
 export default {
     mixins: [cassUtil],
@@ -4393,45 +4392,45 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            LANG_STRING_RANGE: 'configuration/LANG_STRING_RANGE',
-            CONFIG_SEARCH_SIZE: 'configuration/CONFIG_SEARCH_SIZE',
-            DEFAULT_CONFIGURATION_TYPE: 'configuration/DEFAULT_CONFIGURATION_TYPE',
-            DEFAULT_CONFIGURATION_CONTEXT: 'configuration/DEFAULT_CONFIGURATION_CONTEXT',
-            LANG_STRING_TYPE: 'configuration/LANG_STRING_TYPE',
-            DEFAULT_HEADING: 'configuration/DEFAULT_HEADING',
-            LEVEL_SEARCH_SIZE: 'configuration/LEVEL_SEARCH_SIZE',
-            GROUP_SEARCH_SIZE: 'configuration/GROUP_SEARCH_SIZE',
-            PERSON_SEARCH_SIZE: 'configuration/PERSON_SEARCH_SIZE',
-            DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'configuration/DEFAULT_CUSTOM_PROPERTY_CONTEXT',
-            DEFAULT_CUSTOM_PROPERTY_RANGE: 'configuration/DEFAULT_CUSTOM_PROPERTY_RANGE'
+        ...mapState(store.configuration, {
+            LANG_STRING_RANGE: 'LANG_STRING_RANGE',
+            CONFIG_SEARCH_SIZE: 'CONFIG_SEARCH_SIZE',
+            DEFAULT_CONFIGURATION_TYPE: 'DEFAULT_CONFIGURATION_TYPE',
+            DEFAULT_CONFIGURATION_CONTEXT: 'DEFAULT_CONFIGURATION_CONTEXT',
+            LANG_STRING_TYPE: 'LANG_STRING_RANGE',
+            DEFAULT_HEADING: 'DEFAULT_HEADING',
+            LEVEL_SEARCH_SIZE: 'LEVEL_SEARCH_SIZE',
+            GROUP_SEARCH_SIZE: 'GROUP_SEARCH_SIZE',
+            PERSON_SEARCH_SIZE: 'PERSON_SEARCH_SIZE',
+            DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'DEFAULT_CUSTOM_PROPERTY_CONTEXT',
+            DEFAULT_CUSTOM_PROPERTY_RANGE: 'DEFAULT_CUSTOM_PROPERTY_RANGE'
         }),
         currentConfig: {
             get() {
-                return this.$store.getters['configuration/currentConfig'];
+                return store.configuration().currentConfig;
             },
             set(val) {
-                this.$store.commit('configuration/setCurrentConfig', val);
+                store.configuration().setCurrentConfig(val);
             }
         },
         customPropertyAvailableConcepts: {
             get() {
-                return this.$store.getters['configuration/availableConcepts'];
+                return store.configuration().availableConcepts;
             },
             set(val) {
-                this.$store.commit('configuration/availableConcepts', val);
+                store.configuration().setAvailableConcepts(val);
             }
         },
         customPropertyAvailableTypes: {
             get() {
-                let types = this.$store.getters['configuration/availableTypes'];
+                let types = store.configuration().availableTypes;
                 this.currentConfig.compEnforcedTypes.forEach((type) => {
                     types.push(type);
                 });
                 return types;
             },
             set(val) {
-                this.$store.commit('configuration/availableTypes', val);
+                store.configuration().setAvailableTypes(val);
             }
         },
         isSetInstanceDisabled() {

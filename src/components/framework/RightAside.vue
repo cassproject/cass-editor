@@ -12,7 +12,7 @@
         <div class="cass--right-aside--top-bar">
             <button
                 class="delete has-text-white"
-                @click="$store.commit('app/closeRightAside')"
+                @click="store.app().setCloseRightAside()"
                 id="close-right-aside-button"
                 aria-label="close">
                 <span class="icon">
@@ -39,6 +39,7 @@
     </aside>
 </template>
 <script>
+import store from '@/stores/index.js';
 import Comments from './Comments.vue';
 import Versions from './Versions.vue';
 import ListItemInfo from './ListItemInfo.vue';
@@ -63,10 +64,10 @@ export default {
     },
     computed: {
         showRightAside: function() {
-            return this.$store.getters['app/showRightAside'];
+            return store.app().showRightAside;
         },
         rightAsideContent: function() {
-            return this.$store.getters['app/rightAsideContent'];
+            return store.app().rightAsideContent;
         }
     }
 };

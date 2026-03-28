@@ -76,7 +76,7 @@
                 <router-link
                     id="narrow-side-nav-import-link"
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false)">
+                    @click="store.editor().setConceptMode(false); store.editor().setProgressionMode(false)">
                     Import
                 </router-link>
             </li>
@@ -105,7 +105,7 @@
                 <router-link
                     id="narrow-side-nav-import-concepts-link"
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false)">
+                    @click="store.editor().setConceptMode(true); store.editor().setProgressionMode(false)">
                     Import
                 </router-link>
             </li>
@@ -134,7 +134,7 @@
                 <router-link
                     id="narrow-side-nav-import-progression-models-link"
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/progressionMode', true); $store.commit('editor/conceptMode', false)">
+                    @click="store.editor().setProgressionMode(true); store.editor().setConceptMode(false)">
                     Import
                 </router-link>
             </li>
@@ -172,6 +172,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import {mapState} from 'pinia';
 import {cassUtil} from './../mixins/cassUtil';
 export default {
@@ -192,7 +193,7 @@ export default {
 
     computed: {
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         },
         isLoggedOn: function() {
             if (this.loggedOnPerson && this.loggedOnPerson.name) {
@@ -212,10 +213,10 @@ export default {
             return this.$route.path;
         },
         supportedFiles: function() {
-            return (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) ? this.supportedConceptFileTypes : this.supportedFileTypes;
+            return (store.editor().conceptMode === true || store.editor().progressionMode === true) ? this.supportedConceptFileTypes : this.supportedFileTypes;
         },
         loggedOnPerson: function() {
-            return this.$store.getters['user/loggedOnPerson'];
+            return store.user().loggedOnPerson;
         }
     }
 };

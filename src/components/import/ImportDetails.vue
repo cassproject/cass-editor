@@ -61,7 +61,7 @@
                     </span>
                 </div>
                 <div
-                    @click="$store.commit('app/importTransition', 'preview')"
+                    @click="store.app().setImportTransition('preview')"
                     id="import-details-accept-details-button"
                     v-if="importTransition === 'detail'"
                     class="button is-small is-primary is-outlined">
@@ -78,6 +78,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 export default {
     name: 'ImportDetails',
     props: {
@@ -88,31 +89,31 @@ export default {
     },
     computed: {
         importErrors: function() {
-            return this.$store.getters['app/importErrors'];
+            return store.app().importErrors;
         },
         importFile: function() {
-            return this.$store.getters['app/importFiles'];
+            return store.app().importFiles;
         },
         importTransition: function() {
-            return this.$store.getters['app/importTransition'];
+            return store.app().importTransition;
         },
         importType: function() {
-            return this.$store.getters['app/importType'];
+            return store.app().importType;
         },
         importFileType: function() {
-            return this.$store.getters['app/importFileType'];
+            return store.app().importFileType;
         },
         importFramework: function() {
-            return this.$store.getters['app/importFramework'];
+            return store.app().importFramework;
         },
         importStatus: function() {
-            return this.$store.getters['app/importStatus'];
+            return store.app().importStatus;
         }
     },
     methods: {
         cancelImport: function() {
             this.$emit("delete-object", this.importFramework);
-            this.$store.dispatch('app/clearImport');
+            store.app().clearImport();
         }
     }
 };

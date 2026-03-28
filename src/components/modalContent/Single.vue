@@ -1,10 +1,10 @@
 <template>
     <modal-template
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             {{ dynamicModalContent.objectType }}
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <div class="container">
                 <h3
                     v-if="numberOfParentFrameworks === 0 && inCassInstance"
@@ -113,7 +113,7 @@
                 </ul>
             </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-right is-fullwidth">
                 <!--to do, make sure level is updated in framework after
                     edit is made -->
@@ -126,14 +126,14 @@
                 </button>
                 <button
                     v-if="numberOfParentFrameworks !== 0"
-                    @click="$store.commit('app/closeModal')"
+                    @click="store.app().setCloseModal()"
                     id="single-return-to-framework-button"
                     class="button is-outlined is-primary">
                     return to framework editor
                 </button>
                 <button
                     v-else
-                    @click="$store.commit('app/closeModal')"
+                    @click="store.app().setCloseModal()"
                     id="single-done-button"
                     class="button is-outlined is-primary">
                     done
@@ -154,6 +154,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import {mapState} from 'pinia';
 import ModalTemplate from './ModalTemplate.vue';
 import common from '@/mixins/common.js';
@@ -182,10 +183,12 @@ export default {
         }
     },
     computed: {
-        ...mapState({
-            framework: state => state.editor.framework,
-            dynamicModalContent: state => state.app.modal.dynamicModalContent,
-            queryParams: state => state.editor.queryParams
+                ...mapState(store.editor, {
+            framework: state => state.framework,
+            queryParams: state => state.queryParams
+        }),
+        ...mapState(store.app, {
+            dynamicModalContent: state => state.modal
         }),
         dynamicThing: function() {
             if (this.edit) {
@@ -224,18 +227,18 @@ export default {
             if (this.framework.shortId() === framework.url && this.dynamicModalContent.objectType !== "Level") {
                 return this.goToCompetencyWithinThisFramework();
             }
-            this.$store.commit('editor/framework', await EcRepository.get(framework.url));
+            store.editor().setFramework(await EcRepository.get(framework.url));
             if (this.dynamicModalContent.objectType === "Concept") {
                 // TODO: check for subType=Progression and route to progressionModel
-                this.$store.commit('editor/conceptMode', true);
+                store.editor().setConceptMode(true);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: framework.url}});
             }
-            this.$store.commit('app/closeModal');
+            store.app().setCloseModal();
         },
         goToCompetencyWithinThisFramework: function() {
             // Scroll to competency
             this.$scrollTo("#scroll-" + this.dynamicModalContent.uri.split('/').pop());
-            this.$store.commit('app/closeModal');
+            store.app().setCloseModal();
         },
         findConceptTrail: async function(conceptId) {
             var concept = await EcRepository.get(conceptId);
@@ -268,8 +271,8 @@ export default {
             let me = this;
             if (this.obj) {
                 this.repo.deleteRegistered(this.obj, function() {
-                    me.$store.commit('app/refreshSearch', true);
-                    me.$store.commit('app/closeModal');
+                    store.app().setRefreshSearch(true);
+                    store.app().setCloseModal();
                 }, function(err) {
                     console.error(err);
                     me.error = "Error deleting";

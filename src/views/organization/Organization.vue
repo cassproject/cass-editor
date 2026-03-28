@@ -25,6 +25,7 @@
     </div>
 </template>
 <script>
+import store from '@/stores/index.js';
 import Thing from '@/lode/components/Thing.vue';
 import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
@@ -63,7 +64,7 @@ export default {
 
             return {
                 "http://schema.org/name": {
-                    ...this.$store.state.lode.schemataLookup["http://schema.org/Organization"]["http://schema.org/name"],
+                    ...store.lode().schemataLookup["http://schema.org/Organization"]["http://schema.org/name"],
                     "http://www.w3.org/2000/01/rdf-schema#comment": [{"@language": "en", "@value": "Name of the organization."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Organization Name"}]
                 },
@@ -78,12 +79,12 @@ export default {
                             "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Person Name"}]
                         }
                     },
-                    ...this.$store.state.lode.schemataLookup["http://schema.org/Organization"]["http://schema.org/employee"],
+                    ...store.lode().schemataLookup["http://schema.org/Organization"]["http://schema.org/employee"],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Employees"}]
                 },
                 "http://schema.org/subOrganization": {
                     profile: function() { return me.profile; },
-                    ...this.$store.state.lode.schemataLookup["http://schema.org/Organization"]["http://schema.org/subOrganization"],
+                    ...store.lode().schemataLookup["http://schema.org/Organization"]["http://schema.org/subOrganization"],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Department"}]
                 }
             };
@@ -91,7 +92,7 @@ export default {
     },
     components: {Thing},
     created: function() {
-        this.organization = this.$store.state.editor.organization;
+        this.organization = store.editor().organization;
         if (EcRepository.shouldTryUrl(this.organization.id) === false && this.organization.id.indexOf(this.repo.selectedServer) === -1) {
             this.exportGuid = EcCrypto.md5(this.organization.id);
         } else {

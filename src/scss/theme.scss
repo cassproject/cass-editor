@@ -111,8 +111,9 @@ $divider-background-color: variables.$dark;
 @use "../../node_modules/bulma/sass/form";
 @use "../../node_modules/bulma/sass/grid";
 @use "../../node_modules/bulma/sass/layout";
+@use "../../node_modules/bulma/sass/utilities/mixins" as mixins;
 
-@mixin desktop {
+@include mixins.desktop {
     .pagesRight {
         padding-left: calc(360px + 1.75rem) !important;
         padding-right: 1.75rem !important;
@@ -132,7 +133,7 @@ $divider-background-color: variables.$dark;
     }
 }
 
-@mixin touch {
+@include mixins.touch {
     .pagesRight {
         padding-left: 1.75rem !important;
         padding-right: 1.75rem !important;
@@ -148,7 +149,7 @@ $divider-background-color: variables.$dark;
     }
 }
 
-@mixin mobile {
+@include mixins.mobile {
     .clear-side-bar #framework-editor-toolbar {
         width: 100%;
     }
@@ -169,6 +170,23 @@ $divider-background-color: variables.$dark;
     padding: 0;
 }
 
+/* Override Bulma v1 menu item backgrounds for primary sidebar */
+.has-background-primary .menu-list a,
+.has-background-primary .menu-list a:hover,
+#app-side-nav-bar .menu-list a {
+    background-color: transparent !important;
+    color: white;
+    border-radius: 0;
+}
+#app-side-nav-bar .menu-list a:hover {
+    background-color: rgba(255, 255, 255, 0.15) !important;
+}
+#app-side-nav-bar .menu-list a.router-link-active,
+#app-side-nav-bar .menu-list a.router-link-exact-active {
+    background-color: rgba(255, 255, 255, 0.25) !important;
+    color: white;
+}
+
 .menu .menu-label {
     font-family: utilities.$family-secondary;
     text-transform: none !important;
@@ -176,6 +194,14 @@ $divider-background-color: variables.$dark;
     opacity: 0.5;
     // padding: 0;
     margin: 0.75em 0;
+}
+/* Ensure menu-label section headers are visible on the primary-colored sidebar */
+#app-side-nav-bar .menu-label {
+    color: white !important;
+    opacity: 0.6;
+    font-size: 0.85em;
+    text-transform: capitalize !important;
+    letter-spacing: 0.05em;
 }
 
 .has-text-secondary {
@@ -226,4 +252,32 @@ $divider-background-color: variables.$dark;
 
 .tag.is-medium-grey {
     background-color: variables.tint(utilities.$dark, 80%);
+}
+
+/* Override Bulma v1 CSS custom properties with project colors */
+:root {
+    --bulma-primary-h: 220;
+    --bulma-primary-s: 46%;
+    --bulma-primary-l: 50%;
+    --bulma-primary: hsla(var(--bulma-primary-h), var(--bulma-primary-s), var(--bulma-primary-l), 1);
+    --bulma-link-h: 213;
+    --bulma-link-s: 97%;
+    --bulma-link-l: 57%;
+    --bulma-link: hsla(var(--bulma-link-h), var(--bulma-link-s), var(--bulma-link-l), 1);
+    --bulma-success-h: 145;
+    --bulma-success-s: 31%;
+    --bulma-success-l: 50%;
+    --bulma-danger-h: 342;
+    --bulma-danger-s: 72%;
+    --bulma-danger-l: 46%;
+    --bulma-warning-h: 51;
+    --bulma-warning-s: 94%;
+    --bulma-warning-l: 67%;
+    --bulma-info-h: 0;
+    --bulma-info-s: 0%;
+    --bulma-info-l: 33%;
+    --bulma-text: #222222;
+    --bulma-body-family: 'Assistant', 'sans-serif';
+    --bulma-family-primary: 'Assistant', 'sans-serif';
+    --bulma-family-secondary: 'Roboto Condensed', 'sans-serif';
 }

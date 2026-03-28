@@ -268,8 +268,9 @@
 </template>
 
 <script>
-import ImportTabs from '@/components/import/ImportTabs';
-import DragAndDrop from '@/components/import/DragAndDrop';
+import store from '@/stores/index.js';
+import ImportTabs from '@/components/import/ImportTabs.vue';
+import DragAndDrop from '@/components/import/DragAndDrop.vue';
 import imports from '@/mixins/import';
 
 export default {
@@ -299,12 +300,12 @@ export default {
     },
     data() {
         return {
-            optionImportFrameworkName: this.$store.getters['app/importFrameworkName'],
-            optionImportFrameworkDescription: this.$store.getters['app/importFrameworkDescription'],
-            optionImportNameColumn: this.$store.getters['app/importNameColumn'],
-            optionImportDescriptionColumn: this.$store.getters['app/importDescriptionColumn'],
-            optionImportScopeColumn: this.$store.getters['app/importScopeColumn'],
-            optionImportIdColumn: this.$store.getters['app/importIdColumn'],
+            optionImportFrameworkName: store.app().importFrameworkName,
+            optionImportFrameworkDescription: store.app().importFrameworkDescription,
+            optionImportNameColumn: store.app().importNameColumn,
+            optionImportDescriptionColumn: store.app().importDescriptionColumn,
+            optionImportScopeColumn: store.app().importScopeColumn,
+            optionImportIdColumn: store.app().importIdColumn,
             selectedDuplicateOption: [],
             duplicateSets: []
         };
@@ -394,84 +395,84 @@ export default {
             };
         },
         importAllowCancel: function() {
-            return this.$store.getters['app/importAllowCancel'];
+            return store.app().importAllowCancel;
         },
         importInfoVisible: function() {
-            return this.$store.getters['app/showRightAside'];
+            return store.app().showRightAside;
         },
         importErrors: function() {
-            return this.$store.getters['app/importErrors'];
+            return store.app().importErrors;
         },
         importStatus: function() {
-            return this.$store.getters['app/importStatus'];
+            return store.app().importStatus;
         },
         importFileType: function() {
-            return this.$store.getters['app/importFileType'];
+            return store.app().importFileType;
         },
         importType: function() {
-            return this.$store.getters['app/importType'];
+            return store.app().importType;
         },
         importFrameworkName: function() {
-            return this.$store.getters['app/importFrameworkName'];
+            return store.app().importFrameworkName;
         },
         importFrameworkDescription: function() {
-            return this.$store.getters['app/importFrameworkDescription'];
+            return store.app().importFrameworkDescription;
         },
         importNameColumn: function() {
-            return this.$store.getters['app/importNameColumn'];
+            return store.app().importNameColumn;
         },
         importDescriptionColumn: function() {
-            return this.$store.getters['app/importDescriptionColumn'];
+            return store.app().importDescriptionColumn;
         },
         importScopeColumn: function() {
-            return this.$store.getters['app/importScopeColumn'];
+            return store.app().importScopeColumn;
         },
         importIdColumn: function() {
-            return this.$store.getters['app/importIdColumn'];
+            return store.app().importIdColumn;
         },
         importDuplicates: function() {
-            return this.$store.getters['app/importDuplicates'];
+            return store.app().importDuplicates;
         },
         importSourceColumn: {
             get() {
-                return this.$store.getters['app/importSourceColumn'];
+                return store.app().importSourceColumn;
             },
             set(val) {
-                this.$store.commit('app/importSourceColumn', val);
+                store.app().setImportSourceColumn(val);
             }
         },
         importRelationColumn: {
             get() {
-                return this.$store.getters['app/importRelationColumn'];
+                return store.app().importRelationColumn;
             },
             set(val) {
-                this.$store.commit('app/importRelationColumn', val);
+                store.app().setImportRelationColumn(val);
             }
         },
         importTargetColumn: {
             get() {
-                return this.$store.getters['app/importTargetColumn'];
+                return store.app().importTargetColumn;
             },
             set(val) {
-                this.$store.commit('app/importTargetColumn', val);
+                store.app().setImportTargetColumn(val);
             }
         },
         csvColumns: function() {
-            return this.$store.getters['app/csvColumns'];
+            return store.app().csvColumns;
         },
         csvRelationColumns: function() {
-            return this.$store.getters['app/csvRelationColumns'];
+            return store.app().csvRelationColumns;
         },
         csvRelationFile: function() {
-            return this.$store.getters['app/csvRelationFile'];
+            return store.app().csvRelationFile;
         }
     },
     methods: {
         cancelImport: function() {
-            this.$store.dispatch('app/clearImport');
+            store.app().clearImport();
         },
         clearFiles: function() {
-            this.$store.commit('app/clearImportFiles');
+            store.app().clearImportFiles();
         },
         prepareToImportNonPdf: function() {
             let scrollOptions = {
@@ -489,24 +490,24 @@ export default {
             this.updateDuplicateSkips();
             if (this.importFileType === 'csv') {
                 // prepare csv
-                this.$store.commit('app/importFrameworkName', this.optionImportFrameworkName);
-                this.$store.commit('app/importFrameworkDescription', this.optionImportFrameworkDescription);
-                this.$store.commit('app/importNameColumn', this.optionImportNameColumn);
-                this.$store.commit('app/importDescriptionColumn', this.optionImportDescriptionColumn);
-                this.$store.commit('app/importScopeColumn', this.optionImportScopeColumn);
-                this.$store.commit('app/importIdColumn', this.optionImportIdColumn);
-                this.$store.commit('app/importSourceColumn', this.csvRelationDetails.sourceColumn.value);
-                this.$store.commit('app/importTargetColumn', this.csvRelationDetails.targetColumn.value);
-                this.$store.commit('app/importRelationColumn', this.csvRelationDetails.relationColumn.value);
-                this.$store.commit('app/importTransition', 'uploadCsv');
+                store.app().setImportFrameworkName(this.optionImportFrameworkName);
+                store.app().setImportFrameworkDescription(this.optionImportFrameworkDescription);
+                store.app().setImportNameColumn(this.optionImportNameColumn);
+                store.app().setImportDescriptionColumn(this.optionImportDescriptionColumn);
+                store.app().setImportScopeColumn(this.optionImportScopeColumn);
+                store.app().setImportIdColumn(this.optionImportIdColumn);
+                store.app().setImportSourceColumn(this.csvRelationDetails.sourceColumn.value);
+                store.app().setImportTargetColumn(this.csvRelationDetails.targetColumn.value);
+                store.app().setImportRelationColumn(this.csvRelationDetails.relationColumn.value);
+                store.app().setImportTransition('uploadCsv');
                 this.$scrollTo('#import-status', 500, scrollOptions);
             } else if (this.importFileType === 'medbiq') {
-                this.$store.commit('app/importFrameworkName', this.optionImportFrameworkName);
-                this.$store.commit('app/importFrameworkDescription', this.optionImportFrameworkDescription);
-                this.$store.commit('app/importTransition', 'uploadMedbiq');
+                store.app().setImportFrameworkName(this.optionImportFrameworkName);
+                store.app().setImportFrameworkDescription(this.optionImportFrameworkDescription);
+                store.app().setImportTransition('uploadMedbiq');
                 this.$scrollTo('#import-status', 500, scrollOptions);
             } else if (this.importFileType !== 'pdf') {
-                this.$store.commit('app/importTransition', 'uploadOtherNonPdf');
+                store.app().setImportTransition('uploadOtherNonPdf');
                 this.$scrollTo('#import-status', 500, scrollOptions);
             }
         },
@@ -530,7 +531,7 @@ export default {
         findDuplicateSets: function() {
             // Separate duplicates by competencyText and codedNotation
             this.duplicateSets = [];
-            const duplicates = this.$store.getters['app/importDuplicates'];
+            const duplicates = store.app().importDuplicates;
             duplicates.forEach((duplicate) => {
                 const foundIndex = this.duplicateSets.findIndex((set) => (set.competencyText === duplicate.competencyText) && (set.codedNotation === duplicate.codedNotation));
                 if (foundIndex >= 0) {
@@ -574,7 +575,7 @@ export default {
                 }
             });
             this.duplicateSets = [];
-            this.$store.commit('app/importSkip', skip);
+            store.app().setImportSkip(skip);
         }
     },
     watch: {

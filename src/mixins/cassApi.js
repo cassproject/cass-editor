@@ -1,3 +1,4 @@
+import store from '@/stores/index.js';
 export const cassApi = {
     name: 'cassApi',
     data: () => ({
@@ -85,20 +86,20 @@ export const cassApi = {
             EcIdentityManager.default.clearContacts();
             EcIdentityManager.default.clearIdentities();
             let clearPerson = {};
-            this.$store.commit('user/loggedOnPerson', clearPerson);
-            this.$store.commit('app/showModal', { component: 'LogoutSuccess' });
+            store.user().setLoggedOnPerson(clearPerson);
+            store.app().setShowModal({ component: 'LogoutSuccess' });
         },
         performApplicationLogin: function () {
             console.log("Performing application login...");
             EcIdentityManager.default.clearContacts();
             EcIdentityManager.default.clearIdentities();
             let clearPerson = {};
-            this.$store.commit('user/loggedOnPerson', clearPerson);
+            store.user().setLoggedOnPerson(clearPerson);
             if (this.apiLoginEnabled) this.redirectToExternalLogin();
             else this.goToLogin();
         },
         addQueryParams: function () {
-            let paramObj = this.$store.getters['editor/queryParams'];
+            let paramObj = store.editor().queryParams;
             let keys = EcObject.keys(paramObj);
             if (paramObj && keys.length) {
                 let toAdd = '?';
@@ -127,13 +128,13 @@ export const cassApi = {
     },
     computed: {
         cassApiLocation: function () {
-            return this.$store.getters['environment/cassApiLocation'];
+            return store.environment().cassApiLocation;
         },
         repositorySsoOptions: function () {
-            return this.$store.getters['user/repositorySsoOptions'];
+            return store.user().repositorySsoOptions;
         },
         apiLoginEnabled: function () {
-            return this.$store.getters['featuresEnabled/apiLoginEnabled'];
+            return store.featuresEnabled().apiLoginEnabled;
         }
     }
 };

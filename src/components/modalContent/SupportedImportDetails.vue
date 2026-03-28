@@ -1,10 +1,10 @@
 <template>
     <modal-template
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             Supported Import Files & Formats
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <div class="tabs">
                 <ul>
                     <li
@@ -470,9 +470,9 @@
                 </div>
             </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div
-                @click="$store.commit('app/closeModal')"
+                @click="store.app().setCloseModal()"
                 id="supported-import-details-back-button"
                 class="buttons is-right">
                 <button class="button is-primary is-large is-outlined">
@@ -484,22 +484,23 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 
-import ctdlAsnCsvExample from '../../../files/Example of a Mininum Data Competency Framework Upload - HIST 101, SURVEY OF AMERICAN HISTORY I.csv';
-import ctdlAsnCsvTemplate from '../../../files/Template of a Mininum Data Competency Framework.csv';
-import ctdlAsnCsvBenchmarkExample from '../../../files/Example of a Benchmark Competency Framework - DOLWorkCharacteristicsDownloadfromCaSSAug25_2021.csv';
-import ctdlAsnCsvBenchmarkTemplate from '../../../files/Template of a Benchmark Competency Framework.csv';
-import csvExampleCompetencies from '../../../files/CAP Software Engineering - Competencies.csv';
-import csvExampleRelations from '../../../files/CAP Software Engineering - Relations.csv';
-import csvTemplateCompetencies from '../../../files/Template - Competencies.csv';
-import csvTemplateRelations from '../../../files/Template - Relations.csv';
-import csvConceptExample from '../../../files/Concept Scheme Example.csv';
-import csvConceptTemplate from '../../../files/Concept Scheme Template.csv';
-import ctdlAsnJsonldConcepts from '../../../files/ConnectingCredentialsLevels.jsonld';
-import ctdlAsnJsonld from '../../../files/DQP.jsonld';
-import asnRdfJson from '../../../files/D2695955';
-import medbiquitous from '../../../files/educational_achievement_sample_1June2012.xml';
+import ctdlAsnCsvExample from '@/assets/files/Example of a Mininum Data Competency Framework Upload - HIST 101, SURVEY OF AMERICAN HISTORY I.csv?url';
+import ctdlAsnCsvTemplate from '@/assets/files/Template of a Mininum Data Competency Framework.csv?url';
+import ctdlAsnCsvBenchmarkExample from '@/assets/files/Example of a Benchmark Competency Framework - DOLWorkCharacteristicsDownloadfromCaSSAug25_2021.csv?url';
+import ctdlAsnCsvBenchmarkTemplate from '@/assets/files/Template of a Benchmark Competency Framework.csv?url';
+import csvExampleCompetencies from '@/assets/files/CAP Software Engineering - Competencies.csv?url';
+import csvExampleRelations from '@/assets/files/CAP Software Engineering - Relations.csv?url';
+import csvTemplateCompetencies from '@/assets/files/Template - Competencies.csv?url';
+import csvTemplateRelations from '@/assets/files/Template - Relations.csv?url';
+import csvConceptExample from '@/assets/files/Concept Scheme Example.csv?url';
+import csvConceptTemplate from '@/assets/files/Concept Scheme Template.csv?url';
+import ctdlAsnJsonldConcepts from '@/assets/files/ConnectingCredentialsLevels.jsonld?url';
+import ctdlAsnJsonld from '@/assets/files/DQP.jsonld?url';
+import asnRdfJson from '@/assets/files/D2695955?url';
+import medbiquitous from '@/assets/files/educational_achievement_sample_1June2012.xml?url';
 
 export default {
     name: 'SupportedImportDetails',
@@ -533,7 +534,7 @@ export default {
     },
     computed: {
         modal: function() {
-            return this.$store.getters['app/dynamicModalContent'];
+            return store.app().dynamicModalContent;
         },
         content: function() {
             return this.modal.documentContent;
@@ -546,13 +547,13 @@ export default {
             }
         },
         conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
+            return store.editor().conceptMode;
         },
         progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
+            return store.editor().progressionMode;
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         }
     }
 };

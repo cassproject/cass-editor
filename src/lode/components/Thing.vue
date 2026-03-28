@@ -167,6 +167,7 @@
     </div>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
 
 import common from '@/mixins/common.js';
 import store from '@/stores/index.js';
@@ -231,8 +232,8 @@ export default {
         canEditAssertions: Boolean
     },
     components: {
-        Property: () => import('./Property.vue'),
-        AssertionEditor: () => import('./AssertionEditor.vue')
+        Property: defineAsyncComponent(() => import('./Property.vue')),
+        AssertionEditor: defineAsyncComponent(() => import('./AssertionEditor.vue'))
     },
     data: function() {
         return {
@@ -1158,7 +1159,7 @@ export default {
         changedObject: async function() {
             if (this.changedObject && this.view === "importLight") {
                 this.load();
-                store.editor().changedObject(null);
+                store.editor().setChangedObject(null);
             } else if (this.changedObject && (this.changedObject === this.uri || (this.originalThing && this.changedObject === this.originalThing.shortId()))) {
                 if (this.uri) {
                     this.resolveNameFromUrl(this.uri);
@@ -1178,7 +1179,7 @@ export default {
                 } else if (type && window[type]) {
                     console.log("Can't get type: " + type);
                 }
-                store.editor().changedObject(null);
+                store.editor().setChangedObject(null);
             }
         },
         properties: function() {

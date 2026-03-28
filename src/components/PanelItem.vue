@@ -31,7 +31,7 @@
     </div>
 </template>
 <script>
-import CassPanelItem from './PanelItem';
+import CassPanelItem from './PanelItem.vue';
 
 export default {
     name: 'CassPanelItem',

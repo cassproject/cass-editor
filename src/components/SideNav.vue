@@ -138,7 +138,7 @@
                 @toggle="addFrameworkOrDirectory = !addFrameworkOrDirectory"
                 align="left"
                 color="light"
-                @directory="$store.commit('app/showModal', {component: 'AddDirectory'});"
+                @directory="store.app().setShowModal({component: 'AddDirectory'});"
                 @concept="$emit('create-new-concept-scheme')"
                 @framework="$emit('create-new-framework')"
                 @collection="$emit('create-new-collection')"
@@ -160,7 +160,7 @@
                     <router-link
                         :to="{path: '/frameworks', query: queryParams}"
                         id="side-nav-frameworks-link"
-                        @click.native="store.editor().setCollectionMode(false)"
+                        @click="store.editor().setCollectionMode(false)"
                         :title="showSideNav ? '' : 'Frameworks'">
                         <span class="icon">
                             <i class="fa fa-th-list" />
@@ -174,7 +174,7 @@
                     <router-link
                         :to="{path: '/collections', query: queryParams}"
                         id="side-nav-collections-link"
-                        @click.native="store.editor().setCollectionMode(true)"
+                        @click="store.editor().setCollectionMode(true)"
                         :title="showSideNav ? '' : 'Collections'">
                         <span class="icon">
                             <i class="fa fa-th-list" />
@@ -186,7 +186,7 @@
                     <router-link
                         :to="{path: '/import', query: queryParams}"
                         id="side-nav-import-link"
-                        @click.native="store.editor().setConceptMode(false); store.editor().setProgressionMode(false); store.app().clearImport();"
+                        @click="store.editor().setConceptMode(false); store.editor().setProgressionMode(false); store.app().clearImport();"
                         :title="showSideNav ? '' : 'Import Framework'">
                         <span class="icon">
                             <i class="fa fa-upload" />
@@ -275,7 +275,7 @@
                     <router-link :to="{path: '/directory', query: queryParams}">
                         <span
                             class="icon"
-                            v-if="$store.getters['app/selectedDirectory'] && $store.getters['app/selectedDirectory'].id === directory.id">
+                            v-if="store.app().selectedDirectory && store.app().selectedDirectory.id === directory.id">
                             <i class="fa fa-folder-open" />
                         </span>
                         <span
@@ -318,7 +318,7 @@
                     <router-link
                         :to="{path: '/import', query: queryParams}"
                         id="side-nav-import-link"
-                        @click.native="store.editor().setConceptMode(true); store.editor().setProgressionMode(false); store.app().clearImport();"
+                        @click="store.editor().setConceptMode(true); store.editor().setProgressionMode(false); store.app().clearImport();"
                         :title="showSideNav ? '' : queryParams.ceasnDataFields === 'true' ? 'Import Concept Schemes' : 'Import Taxonomies'">
                         <span class="icon">
                             <i class="fa fa-upload" />
@@ -369,7 +369,7 @@
                     <router-link
                         :to="{path: '/import', query: queryParams}"
                         id="side-nav-import-link-2"
-                        @click.native="store.editor().setProgressionMode(true); store.editor().setConceptMode(false); store.app().clearImport();"
+                        @click="store.editor().setProgressionMode(true); store.editor().setConceptMode(false); store.app().clearImport();"
                         :title="showSideNav ? '' : 'Import'">
                         <span class="icon">
                             <i class="fa fa-upload" />
@@ -567,7 +567,7 @@ export default {
         setLaunchPluginValues(pluginShortcut) {
             store.app().setPluginToLaunch(pluginShortcut);
             store.app().setPluginToLaunchLastUpdate(Date.now());
-            if (!this.$router.currentRoute.name.equals(this.PLUGIN_CONTAINER_ROUTE)) this.$router.push({path: '/pluginContainer'});
+            if (this.$route.name !== this.PLUGIN_CONTAINER_ROUTE) this.$router.push({path: '/pluginContainer'});
         },
         buildPluginLinkMap() {
             // TODO handle screen type plugins at some point...this would be the place to do it...stash them on the VUEX store
@@ -608,7 +608,7 @@ export default {
         selectDirectory: function(directory) {
             store.app().selectDirectory(directory);
             store.app().rightAsideObject(directory);
-            if (this.$router.currentRoute.name !== "directory") {
+            if (this.$route.name !== "directory") {
                 this.$router.push({name: "directory"});
             }
         },

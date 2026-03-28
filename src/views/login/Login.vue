@@ -95,7 +95,7 @@
 </template>
 
 <script>
-
+import store from '@/stores/index.js';
 import {cassApi} from '../../mixins/cassApi';
 
 export default {
@@ -191,7 +191,7 @@ export default {
             p.addOwner(this.identityToLinkToPerson.ppk.toPk());
             p.name = this.loginCredentials.name;
             p.email = this.loginCredentials.email;
-            this.$store.commit('user/loggedOnPerson', p);
+            store.user().setLoggedOnPerson(p);
             this.linkedPerson = p;
             EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
         },
@@ -208,7 +208,7 @@ export default {
                 ep.copyFrom(ecrld);
                 if (ep.getGuid().equals(this.identityToLinkToPerson.ppk.toPk().fingerprint())) {
                     matchingPersonRecordFound = true;
-                    this.$store.commit('user/loggedOnPerson', ep);
+                    store.user().setLoggedOnPerson(ep);
                     this.linkedPerson = ep;
                     console.log('Matching person record found: ');
                     console.log(ep);
@@ -329,10 +329,10 @@ export default {
     },
     computed: {
         legacyLoginEnabled: function() {
-            return this.$store.getters['featuresEnabled/legacyLoginEnabled'];
+            return store.featuresEnabled().legacyLoginEnabled;
         },
         apiLoginEnabled: function() {
-            return this.$store.getters['featuresEnabled/apiLoginEnabled'];
+            return store.featuresEnabled().apiLoginEnabled;
         }
     },
     mounted() {

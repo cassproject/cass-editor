@@ -24,11 +24,12 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 export default {
     name: 'NotFound',
     computed: {
         queryParams() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         }
     }
 };

@@ -4,15 +4,15 @@
         <modal-template
             :active="removePropertyConfirmModal"
             @close="closeModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 Confirm Remove Property
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <section>
                     Are you sure you'd like to remove this property?
                 </section>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <button
                     id="confirm-remove-property-button"
                     @click="clickConfirmRemove"
@@ -243,8 +243,9 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
-const languagesFile = require('../ietf-language-tags_json.json');
+import languagesFile from '../ietf-language-tags_json.json';
 export default {
     name: 'PropertyString',
     props: {
@@ -322,13 +323,13 @@ export default {
             }
             if (this.newProperty === true || (this.inLanguageField && this.computedText != null && this.computedText.length === 0)) {
                 this.text = {};
-                if (this.$store.state.editor) {
+                if (store.editor()) {
                     if (this.inLanguageField) {
-                        this.computedText = this.$store.state.editor.defaultLanguage;
+                        this.computedText = store.editor().defaultLanguage;
                         this.search = this.computedText;
                         this.blur();
                     } else {
-                        this.computedLanguage = this.$store.state.editor.defaultLanguage;
+                        this.computedLanguage = store.editor().defaultLanguage;
                         this.search = this.computedLanguage;
                     }
                 }
@@ -353,7 +354,7 @@ export default {
     },
     computed: {
         ceasnUser: function() {
-            const queryParams = this.$store.getters['editor/queryParams'];
+            const queryParams = store.editor().queryParams;
             if (queryParams.ceasnDataFields === 'true') {
                 return true;
             } else {
@@ -506,7 +507,7 @@ export default {
             if (val === 'remove') {
                 if (expandedValue && this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
                     if (expandedValue.length === 1 || (expandedValue["@value"] && expandedValue["@value"].trim().length === 1)) {
-                        this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
+                        store.app().setShowModal({component: 'RequiredPropertyModal'});
                         return;
                     }
                 }
@@ -517,7 +518,7 @@ export default {
                 }
             }
             if (val === 'required') {
-                this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
+                store.app().setShowModal({component: 'RequiredPropertyModal'});
             }
         },
         clickConfirmRemove: function() {

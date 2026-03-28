@@ -1,4 +1,5 @@
 import pLimit from 'p-limit';
+import store from '@/stores/index.js';
 
 const limit = pLimit(50);
 
@@ -27,7 +28,7 @@ export default {
     },
     computed: {
         refreshLevels: function() {
-            return this.$store.getters['editor/refreshLevels'];
+            return store.editor().refreshLevels;
         },
         relationArray: function() {
             if (this.framework) {
@@ -37,15 +38,15 @@ export default {
             }
         },
         refreshAlignments: function() {
-            return this.$store.getters['editor/refreshAlignments'];
+            return store.editor().refreshAlignments;
         }
     },
     methods: {
         updateLevels: function() {
             var me = this;
             // Make reactive when the same level is applied to multiple competencies in the same framework
-            if (this.$store.getters['editor/refreshLevels'] === true) {
-                this.$store.commit('editor/refreshLevels', false);
+            if (store.editor().refreshLevels === true) {
+                store.editor().refreshLevels = false;
             }
             var levels = {};
             if (!this.framework) {
@@ -76,7 +77,7 @@ export default {
         updateRelations: function() {
             if (!this.framework?.relation && !this.importFramework?.relation) {
                 this.relations = {};
-                this.$store.commit('editor/relations', {});
+                store.editor().setRelations({});
                 return;
             }
             var me = this;
@@ -92,7 +93,7 @@ export default {
                             if (!framework) {
                                 framework = me.importFramework;
                             }
-                            if (framework.competency.indexOf(a.target) !== -1 && framework.competency.indexOf(a.source) !== -1) {
+                            if (framework.competency && framework.competency.indexOf(a.target) !== -1 && framework.competency.indexOf(a.source) !== -1) {
                                 relationType = "isChildOf";
                                 reciprocalRelation = "hasChild";
                             }
@@ -139,13 +140,13 @@ export default {
                     relationObject[each.type][each.source].push(each.target);
                 }
                 me.relations = relationObject;
-                me.$store.commit('editor/relations', me.relations);
+                store.editor().setRelations(me.relations);
             });
         },
         updateAlignments: async function() {
             var me = this;
-            if (this.$store.getters['editor/refreshAlignments'] === true) {
-                this.$store.commit('editor/refreshAlignments', false);
+            if (store.editor().refreshAlignments === true) {
+                store.editor().refreshAlignments = false;
             }
             if (!this.framework) {
                 return;
