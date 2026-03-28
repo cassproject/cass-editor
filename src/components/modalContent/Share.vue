@@ -1,54 +1,47 @@
-<template>
+﻿<template>
     <modal-template
         @close="closeModal; $emit('close')"
         :active="true"
         type="primary">
-        <template slot="modal-header">
+        <template #modal-header>
             <span class="title has-text-white">Share {{ objectType }}</span>
             <br><span class="subtitle has-text-white has-text-weight-medium">
                 Sharing settings for {{ frameworkName }} {{ objectType }}
             </span>
         </template>
-        <!-- processing -->
-        <template
-            v-if="isProcessing"
-            slot="modal-body">
-            <h2 class="header has-text-centered">
-                Processing request...
-            </h2>
-            <div class="section has-background-white has-text-centered">
-                <span class="icon is-large">
-                    <i class="fa fa-spinner fa-2x fa-pulse" />
-                </span>
+        <template #modal-body>
+            <!-- processing -->
+            <div v-if="isProcessing">
+                <h2 class="header has-text-centered">
+                    Processing request...
+                </h2>
+                <div class="section has-background-white has-text-centered">
+                    <span class="icon is-large">
+                        <i class="fa fa-spinner fa-2x fa-pulse" />
+                    </span>
+                </div>
             </div>
-        </template>
-        <!-- confirm make private -->
-        <template
-            slot="modal-body"
-            v-else-if="confirmMakePrivate">
-            <h2 class="header is-size-3">
-                Confirm make private
-            </h2>
-            <p>
-                Making this {{ objectType }} private means only those users/groups in
-                your access list will have the ability to read, write, or edit this {{ objectType }}.
-            </p>
-        </template>
-        <!-- confirm make public -->
-        <template
-            slot="modal-body"
-            v-else-if="confirmMakePublic">
-            <h2 class="header is-size-3">
-                Confirm make public
-            </h2>
-            <p>
-                Making this {{ objectType }} public means anyone with a link can access and read this {{ objectType }}.
-                Only those with admin access will be able to edit or delete the {{ objectType }}.
-            </p>
-        </template>
-        <template
-            slot="modal-body"
-            v-else-if="!confirmMakePublic && !confirmMakePrivate">
+            <!-- confirm make private -->
+            <div v-else-if="confirmMakePrivate">
+                <h2 class="header is-size-3">
+                    Confirm make private
+                </h2>
+                <p>
+                    Making this {{ objectType }} private means only those users/groups in
+                    your access list will have the ability to read, write, or edit this {{ objectType }}.
+                </p>
+            </div>
+            <!-- confirm make public -->
+            <div v-else-if="confirmMakePublic">
+                <h2 class="header is-size-3">
+                    Confirm make public
+                </h2>
+                <p>
+                    Making this {{ objectType }} public means anyone with a link can access and read this {{ objectType }}.
+                    Only those with admin access will be able to edit or delete the {{ objectType }}.
+                </p>
+            </div>
+            <div v-else>
             <div
                 class="columns box is-mobile is-multiline"
                 v-if="shareEnabled || shareLink">
@@ -284,8 +277,9 @@
                     </div>
                 </div>
             </div>
+            </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div
                 v-if="!confirmMakePrivate && !confirmMakePublic"
                 class="buttons is-spaced">
@@ -293,7 +287,7 @@
                     :disabled="isProcessing"
                     class="button is-primary is-outlined"
                     id="share-done-button"
-                    @click="$store.commit('app/closeModal')">
+                    @click="store.app().closeModal()">
                     Done
                 </button>
             </div>
@@ -346,6 +340,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import {cassUtil} from '@/mixins/cassUtil.js';
 import ModalTemplate from './ModalTemplate.vue';
 export default {
@@ -374,7 +369,7 @@ export default {
                     label: 'View',
                     value: 'view',
                     disabled: true,
-                    title: 'Make the ' + (this.$store.getters['editor/conceptMode'] ? 'concept scheme' : (this.$store.getters['editor/progressionMode'] ? 'progression model' : 'framework')) + ' private to add users/groups with view access'
+                    title: 'Make the ' + (store.editor().conceptMode ? 'concept scheme' : (store.editor().progressionMode ? 'progression model' : 'framework')) + ' private to add users/groups with view access'
                 }
             ],
             groups: [],
@@ -414,7 +409,7 @@ export default {
             link = link.replace('/frameworks', '').replace('/directory', '');
             if (this.directory) {
                 return (link + "?directoryId=" + this.directory.shortId());
-            } else if (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
+            } else if (store.editor().conceptMode === true || store.editor().progressionMode === true) {
                 return (link + "?concepts=true&frameworkId=" + this.frameworkId);
             }
             return (link + "?frameworkId=" + this.frameworkId);
@@ -423,7 +418,7 @@ export default {
             if (this.objFromListItemInfo && (this.objFromListItemInfo.type === "Framework" || this.objFromListItemInfo.type === "ConceptScheme")) {
                 return this.objFromListItemInfo;
             }
-            return this.$store.state.editor.framework;
+            return store.editor().framework;
         },
         frameworkId: function() {
             if (this.framework) {
@@ -437,7 +432,7 @@ export default {
             } else if (this.objFromListItemInfo || this.$route.name === "framework" || this.$route.name === "conceptScheme") {
                 return null;
             }
-            return this.$store.getters['app/selectedDirectory'];
+            return store.app().selectedDirectory;
         },
         resource: function() {
             if (this.objFromListItemInfo && this.objFromListItemInfo.type === "CreativeWork") {
@@ -459,7 +454,7 @@ export default {
             }
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return store.editor().queryParams;
         },
         canEditFramework: function() {
             if (!this.loggedIn) {
@@ -477,7 +472,7 @@ export default {
             return true;
         },
         loggedOnPerson: function() {
-            return this.$store.getters['user/loggedOnPerson'];
+            return store.user().loggedOnPerson;
         },
         objectType: function() {
             if (this.resource) {
@@ -486,25 +481,25 @@ export default {
             if (this.directory) {
                 return 'directory';
             }
-            return this.$store.getters['editor/conceptMode'] ? 'concept scheme' : (this.$store.getters['editor/progressionMode'] ? 'progression model' : 'framework');
+            return store.editor().conceptMode ? 'concept scheme' : (store.editor().progressionMode ? 'progression model' : 'framework');
         },
         shareEnabled: function() {
             if (this.resource) {
                 return false;
             }
-            return this.$store.state.featuresEnabled.shareEnabled;
+            return store.featuresEnabled().shareEnabled;
         },
         shareLink: function() {
             if (this.resource) {
                 return false;
             }
-            return this.$store.state.featuresEnabled.shareLink;
+            return store.featuresEnabled().shareLink;
         },
         userManagementEnabled: function() {
-            return this.$store.state.featuresEnabled.userManagementEnabled;
+            return store.featuresEnabled().userManagementEnabled;
         },
         objFromListItemInfo: function() {
-            return this.$store.getters['app/objForShareModal'];
+            return store.app().objForShareModal;
         }
     },
     mounted: async function() {
@@ -512,7 +507,7 @@ export default {
             let type = "Ec" + this.object.encryptedType;
             let obj = new window[type]();
             obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(this.object));
-            this.$store.commit('app/objForShareModal', obj);
+            store.app().setObjForShareModal(obj);
         }
         this.getCurrentOwnersAndReaders(true);
         this.checkIsPrivate();
@@ -759,7 +754,7 @@ export default {
             if (this.directory) {
                 return this.addAndRemoveFromAllDirectoryObjects(this.directory);
             }
-            if (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
+            if (store.editor().conceptMode === true || store.editor().progressionMode === true) {
                 return this.addAndRemoveFromAllConceptObjects();
             }
             return this.addAndRemoveFromAllFrameworkObjects(this.framework);
@@ -779,7 +774,7 @@ export default {
                 directory.addOwner(me.addOwner[i]);
             }
             me.toSave.push(directory);
-            let children = await this.$store.dispatch('editor/getDirectoryChildren', directory);
+            let children = await store.editor().getDirectoryChildren(directory);
             window.repo.multiget(children, function(success) {
                 me.frameworksToProcess += success.length;
                 new EcAsyncHelper().each(success, async function(obj, done) {
@@ -882,7 +877,7 @@ export default {
             me.toSave.push(f);
             me.multiput(me.toSave, function() {
                 if (me.framework) {
-                    me.$store.commit('editor/framework', f);
+                    store.editor().setFramework(f);
                 }
             }, function() {});
         },
@@ -958,14 +953,14 @@ export default {
         makePrivate: function() {
             this.isProcessing = true;
             var framework = this.framework;
-            this.$store.commit('editor/private', true);
+            store.editor().setPrivate(true);
             if (this.resource) {
                 return this.handleMakePrivateResource(this.resource);
             }
             if (this.directory) {
                 return this.handleMakePrivateDirectory(this.directory);
             }
-            if (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
+            if (store.editor().conceptMode === true || store.editor().progressionMode === true) {
                 this.handleMakePrivateConceptScheme();
             } else {
                 this.handleMakePrivateFramework(framework);
@@ -979,12 +974,12 @@ export default {
                 }
                 if (this.directory.shortId() === directory.shortId()) {
                     // Make sure new owner gets into store
-                    this.$store.commit('app/selectDirectory', directory);
+                    store.app().selectDirectory(directory);
                 }
                 directory["schema:dateModified"] = new Date().toISOString();
                 EcEncryptedValue.toEncryptedValue(directory, false, async function(edirectory) {
                     me.toSave.push(edirectory);
-                    let children = await me.$store.dispatch('editor/getDirectoryChildren', edirectory);
+                    let children = await store.editor().getDirectoryChildren(edirectory);
                     window.repo.multiget(children, function(success) {
                         me.frameworksToProcess += success.length;
                         new EcAsyncHelper().each(success, function(obj, done) {
@@ -1015,7 +1010,7 @@ export default {
                     resource.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
                 }
                 if (this.resource) {
-                    this.$store.commit('app/objForShareModal', resource);
+                    store.app().setObjForShareModal(resource);
                 }
                 resource["schema:dateModified"] = new Date().toISOString();
                 EcEncryptedValue.toEncryptedValue(resource, false, function(eresource) {
@@ -1068,14 +1063,14 @@ export default {
         makePublic: function() {
             this.isProcessing = true;
             var framework = this.framework;
-            this.$store.commit('editor/private', false);
+            store.editor().setPrivate(false);
             if (this.resource) {
                 return this.handleMakePublicResource(this.resource);
             }
             if (this.directory) {
                 return this.handleMakePublicDirectory(this.directory);
             }
-            if (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
+            if (store.editor().conceptMode === true || store.editor().progressionMode === true) {
                 this.handleMakePublicConceptScheme();
             } else {
                 this.handleMakePublicFramework(framework);
@@ -1090,9 +1085,9 @@ export default {
             EcEncryptedValue.encryptOnSave(d.id, false);
             me.toSave.push(d);
             if (this.directory.shortId() === d.shortId()) {
-                this.$store.commit('app/selectDirectory', d);
+                store.app().selectDirectory(d);
             }
-            let children = await this.$store.dispatch('editor/getDirectoryChildren', directory);
+            let children = await store.editor().getDirectoryChildren(directory);
 
             window.repo.multiget(children, function(success) {
                 me.frameworksToProcess += success.length;
@@ -1121,7 +1116,7 @@ export default {
             EcEncryptedValue.encryptOnSave(cw.id, false);
             this.toSave.push(cw);
             if (this.resource) {
-                this.$store.commit('app/objForShareModal', cw);
+                store.app().setObjForShareModal(cw);
             }
             this.multiput(this.toSave);
         },
@@ -1134,7 +1129,7 @@ export default {
             EcEncryptedValue.encryptOnSave(f.id, false);
             me.toSave.push(f);
             if (this.framework) {
-                me.$store.commit('editor/framework', f);
+                store.editor().setFramework(f);
             }
             framework = f;
             if (framework.competency && framework.competency.length > 0) {
@@ -1194,7 +1189,7 @@ export default {
             }
             if (this.framework) {
                 // Make sure new owner gets into store
-                this.$store.commit('editor/framework', f);
+                store.editor().setFramework(f);
             }
             f["schema:dateModified"] = new Date().toISOString();
             EcEncryptedValue.toEncryptedValue(f, false, function(ef) {
@@ -1217,7 +1212,7 @@ export default {
             if (!cs.owner) {
                 cs.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             }
-            this.$store.commit('editor/framework', cs);
+            store.editor().setFramework(cs);
             var name = cs["dcterms:title"];
             cs["schema:dateModified"] = new Date().toISOString();
             cs = await EcEncryptedValue.toEncryptedValue(cs);
@@ -1243,7 +1238,7 @@ export default {
             cs["schema:dateModified"] = new Date().toISOString();
             me.decryptingConcepts = true;
             me.toSave.push(cs);
-            me.$store.commit('editor/framework', cs);
+            store.editor().setFramework(cs);
             if (cs["skos:hasTopConcept"]) {
                 me.decryptConcepts(cs);
             } else {
@@ -1305,7 +1300,7 @@ export default {
             if (this.directory) {
                 return this.makeCurrentUserDirectoryOwner(this.directory);
             }
-            if (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
+            if (store.editor().conceptMode === true || store.editor().progressionMode === true) {
                 return this.makeCurrentUserAnOwnerForConceptObjects();
             }
             this.makeCurrentUserFrameworkAndSubObjectOwner(this.framework);
@@ -1315,9 +1310,9 @@ export default {
             directory.addOwner(EcIdentityManager.default.ids[0].ppk.toPk());
             me.toSave.push(directory);
             if (this.directory.shortId() === directory.shortId()) {
-                this.$store.commit('app/selectDirectory', directory);
+                store.app().selectDirectory(directory);
             }
-            let children = await this.$store.dispatch('editor/getDirectoryChildren', directory);
+            let children = await store.editor().getDirectoryChildren(directory);
             window.repo.multiget(children, function(success) {
                 me.frameworksToProcess += success.length;
                 new EcAsyncHelper().each(success, function(obj, done) {
@@ -1377,7 +1372,7 @@ export default {
             me.toSave.push(f);
             me.multiput(me.toSave, function() {
                 if (me.framework) {
-                    me.$store.commit('editor/framework', f);
+                    store.editor().setFramework(f);
                 }
             }, function() {});
         },

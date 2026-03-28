@@ -232,20 +232,20 @@
                 handle=".handle"
                 @end="endDrag"
                 :item-key="(item) => item.obj ? item.obj.id : (item.id || Math.random())">
+                <template #item="{element, index}">
                 <HierarchyNode
-                    :id="item.obj.id"
+                    :id="element.obj.id"
                     :depth="1"
                     :view="view"
                     @create-new-node-event="onCreateNewNode"
                     :subview="subview"
                     @mounting-node="handleMountingNode"
-                    v-for="(item, index) in hierarchy"
-                    :key="item.obj.id"
-                    :obj="item.obj"
+                    :key="element.obj.id"
+                    :obj="element.obj"
                     class="lode__hierarchy-li"
                     :dragging="dragging"
                     :canEdit="canEdit"
-                    :hasChild="item.children"
+                    :hasChild="element.children"
                     :profile="profile"
                     :highlightList="highlightList"
                     :selectAll="selectAll"
@@ -265,6 +265,7 @@
                     propagateParentChecked="false"
                     :shiftKey="shiftKey"
                     :arrowKey="arrowKey" />
+                </template>
             </draggable>
         </template>
     </div>

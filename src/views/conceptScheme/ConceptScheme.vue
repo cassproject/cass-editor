@@ -17,6 +17,7 @@
                     :group="{ name: 'test' }"
                     handle=".handle"
                 :item-key="(item) => item.obj ? item.obj.id : (item.id || Math.random())">
+                    <template #item="{element}">
                     <Component
                         :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
                         :is="dynamicThingComponent"
@@ -57,6 +58,7 @@
                             </span>
                         </div>
                     </Component>
+                    </template>
                 </draggable>
                 <ConceptHierarchy
                     :container="framework"

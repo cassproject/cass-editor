@@ -3,34 +3,27 @@
         @close="closeModal; $emit('close')"
         :active="true"
         type="primary">
-        <template slot="modal-header">
+        <template #modal-header>
             <span class="title has-text-white">Share Assertions</span>
         </template>
-        <!-- processing -->
-        <template
-            v-if="isProcessing"
-            slot="modal-body">
-            <h2 class="header has-text-centered">
-                Processing request...
-            </h2>
-            <div class="section has-background-white has-text-centered">
-                <span class="icon is-large">
-                    <i class="fa fa-spinner fa-2x fa-pulse" />
-                </span>
+        <template #modal-body>
+            <!-- processing -->
+            <div v-if="isProcessing">
+                <h2 class="header has-text-centered">
+                    Processing request...
+                </h2>
+                <div class="section has-background-white has-text-centered">
+                    <span class="icon is-large">
+                        <i class="fa fa-spinner fa-2x fa-pulse" />
+                    </span>
+                </div>
             </div>
-        </template>
-        <template
-            v-else-if="isDone"
-            slot="modal-body">
-            <div class="section has-background-white has-text-centered">
+            <div v-else-if="isDone" class="section has-background-white has-text-centered">
                 <p>
                     <strong>Success!</strong>
                 </p>
             </div>
-        </template>
-        <template
-            v-else
-            slot="modal-body">
+            <div v-else>
             <div class="assertion-share-container">
                 <div class="assertion-share-block">
                     <h4 class="header is-size-3">
@@ -162,14 +155,15 @@
                     <strong>{{ Object.keys(shareTargets).length }} selected</strong>
                 </div>
             </div>
+            </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div
                 class="buttons is-spaced">
                 <button
                     :disabled="isProcessing"
                     class="button is-secondary is-outlined"
-                    @click="$store.commit('app/closeModal')"
+                    @click="store.app().closeModal()"
                     id="share-assertions-cancel-button">
                     <span>Cancel</span>
                     <span class="icon">
@@ -202,6 +196,7 @@
 </template>
 
 <script>
+import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'ShareAssertionsModal',
@@ -255,7 +250,7 @@ export default {
             let checked = evt.target.checked;
             if (checked) {
                 for (let prs of this.filteredAvailableSubjects) {
-                    this.$set(this.shareSubjects, prs.owner[0], 1);
+                    this.shareSubjects[prs.owner[0]] = 1;
                 }
             } else {
                 this.shareSubjects = {};
@@ -265,7 +260,7 @@ export default {
             let checked = evt.target.checked;
             if (checked) {
                 for (let prs of this.filteredAvailableTargets) {
-                    this.$set(this.shareTargets, prs.owner[0], 1);
+                    this.shareTargets[prs.owner[0]] = 1;
                 }
             } else {
                 this.shareTargets = {};
@@ -273,16 +268,16 @@ export default {
         },
         setSubject: function(subject) {
             if (this.shareSubjects[subject]) {
-                this.$delete(this.shareSubjects, subject);
+                delete this.shareSubjects[subject];
             } else {
-                this.$set(this.shareSubjects, subject, 1);
+                this.shareSubjects[subject] = 1;
             }
         },
         setTarget: function(target) {
             if (this.shareTargets[target]) {
-                this.$delete(this.shareTargets, target);
+                delete this.shareTargets[target];
             } else {
-                this.$set(this.shareTargets, target, 1);
+                this.shareTargets[target] = 1;
             }
         },
         shareAssertions: function() {
@@ -297,7 +292,7 @@ export default {
             }
             let doSearch = async function(start, count) {
                 return new Promise((resolve, reject) => {
-                    EcAssertion.search(window.repo, `\\*owner:"${this.$store.getters['editor/getMe']}" AND (${searchQuery})`, async(results) => {
+                    EcAssertion.search(window.repo, `\\*owner:"${store.editor().getMe}" AND (${searchQuery})`, async(results) => {
                         assertions.push(...results);
                         start += count;
                         if (results.length > 0) {
@@ -326,7 +321,7 @@ export default {
                         assertion.getSubjectAsync((subject) => {
                             if (subjects.includes(subject.toPem())) {
                                 assertion.getAgentAsync(async(agent) => {
-                                    if (this.$store.getters['editor/getMe'] === agent.toPem()) {
+                                    if (store.editor().getMe === agent.toPem()) {
                                         for (let target of Object.keys(this.shareTargets)) {
                                             await assertion.addReader(EcPk.fromPem(target));
                                         }

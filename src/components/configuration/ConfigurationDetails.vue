@@ -378,6 +378,7 @@
                         </div>
                     </div>
                 </div>
+            </template>
                 <template #modal-foot>
                     <div
                         v-if="!showAddNewLevelSection"
@@ -440,7 +441,6 @@
                         </template>
                     </div>
                 </template>
-            </template>
         </modal-template>
         <!-- custom property details modal -->
         <modal-template
