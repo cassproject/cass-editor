@@ -200,7 +200,7 @@ export default {
         }
     },
     components: {Thing, Breadcrumbs},
-    emits: ['dblclick'],
+    emits: ['dblclick', 'search-updated'],
     mixins: [ common, cassUtil ],
     created: function() {
         this.$nextTick(() => this.searchRepo());

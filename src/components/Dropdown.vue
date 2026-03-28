@@ -36,6 +36,7 @@
 <script>
 export default {
     name: 'CassDropdown',
+    emits: ["showDropdown","closeDropdown"],
     props: ['active', 'label'],
     methods: {
         closeDropdown() {

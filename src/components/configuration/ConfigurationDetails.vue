@@ -3123,6 +3123,7 @@ import {mapState} from 'pinia';
 export default {
     mixins: [cassUtil],
     name: 'ConfigurationDetails',
+    emits: ["back","cancel","setBrowserDefault","save","set-browser-default","remove-browser-default-config"],
     props: {
         config: {
             type: Object

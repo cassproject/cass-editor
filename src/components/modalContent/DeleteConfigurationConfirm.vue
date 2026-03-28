@@ -46,6 +46,7 @@ import common from '@/mixins/common.js';
 export default {
     mixins: [cassUtil, common],
     name: 'DeleteConfigurationConfirm',
+    emits: ["confirm","cancel"],
     setup() {
         return { store };
     },

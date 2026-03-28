@@ -32,6 +32,7 @@ import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'MessageOfTheDay',
+    emits: ["close"],
     setup() {
         return { store };
     },

@@ -47,6 +47,7 @@ import FilterAndSort from './../frameworks/FilterAndSort.vue';
 
 export default {
     name: 'RightAside',
+    emits: ["editResource"],
     setup() {
         return { store };
     },

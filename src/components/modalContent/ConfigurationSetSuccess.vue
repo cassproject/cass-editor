@@ -39,6 +39,7 @@ import common from '@/mixins/common.js';
 export default {
     mixins: [cassUtil, common],
     name: 'ConfigurationSetSuccess',
+    emits: ["close","ok"],
     components: {
         ModalTemplate
     },

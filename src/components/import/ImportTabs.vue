@@ -225,6 +225,7 @@ import imports from '@/mixins/import.js';
 
 export default {
     name: 'ImportTabs',
+    emits: ["import-case"],
     setup() {
         return { store };
     },

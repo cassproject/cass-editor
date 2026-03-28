@@ -378,6 +378,7 @@ import common from '@/mixins/common.js';
 
 export default {
     name: "HierarchyNode",
+    emits: ["create-new-node-event","mounting-node","begin-drag","move","add","select","remove-object"],
     setup() {
         return { store };
     },

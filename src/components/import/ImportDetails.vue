@@ -81,6 +81,7 @@
 import store from '@/stores/index.js';
 export default {
     name: 'ImportDetails',
+    emits: ["delete-object"],
     setup() {
         return { store };
     },

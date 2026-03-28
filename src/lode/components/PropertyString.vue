@@ -248,6 +248,7 @@ import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import languagesFile from '../ietf-language-tags_json.json';
 export default {
     name: 'PropertyString',
+    emits: ["updatePropertyString","remove","removeByValue"],
     props: {
         expandedThing: Object,
         expandedProperty: String,

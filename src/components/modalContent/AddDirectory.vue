@@ -57,6 +57,7 @@ import store from '@/stores/index.js';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 export default {
     name: 'AddDirectoryModal',
+    emits: ["create-directory","create-another-directory"],
     setup() {
         return { store };
     },

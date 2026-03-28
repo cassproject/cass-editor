@@ -262,6 +262,7 @@
 import store from '@/stores/index.js';
 export default {
     name: 'FrameworkButtons',
+    emits: ["select-button-click","edit-multiple-event"],
     setup() {
         return { store };
     },

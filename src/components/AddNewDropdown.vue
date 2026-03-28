@@ -111,6 +111,7 @@ import {mapState} from 'pinia';
 import store from '@/stores/index.js';
 export default {
     name: 'AddNewDropdown',
+    emits: ["toggle","framework","collection","subdirectory","directory","concept","progression","resource","close"],
     props: {
         color: {
             type: String,

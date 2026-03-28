@@ -345,6 +345,7 @@ import {cassUtil} from '@/mixins/cassUtil.js';
 import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'ShareModal',
+    emits: ["close"],
     setup() {
         return { store };
     },

@@ -38,6 +38,7 @@ import common from '@/mixins/common.js';
 export default {
     mixins: [cassUtil, common],
     name: 'ManageFrameworkConfigurationModal',
+    emits: ["close"],
     components: {
         ModalTemplate
     },

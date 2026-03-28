@@ -200,6 +200,7 @@ import store from '@/stores/index.js';
 import ModalTemplate from './ModalTemplate.vue';
 export default {
     name: 'ShareAssertionsModal',
+    emits: ["close"],
     setup() {
         return { store };
     },

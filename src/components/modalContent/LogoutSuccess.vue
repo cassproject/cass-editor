@@ -45,6 +45,7 @@ import ModalTemplate from './ModalTemplate.vue';
 import {cassApi} from '../../mixins/cassApi';
 export default {
     name: 'LogoutSuccessModal',
+    emits: ["close"],
     setup() {
         return { store };
     },

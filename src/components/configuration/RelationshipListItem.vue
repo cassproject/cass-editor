@@ -42,6 +42,7 @@
 <script>
 export default {
     name: 'RelationshipListItem',
+    emits: ["change"],
     props: {
         relationship: {
             type: String,

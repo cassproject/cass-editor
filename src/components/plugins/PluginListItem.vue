@@ -62,6 +62,7 @@
 import {pluginUtil} from '../../mixins/pluginUtil';
 export default {
     name: 'PluginListItem',
+    emits: ["show-details","show-delete","enable-plugin","disable-plugin"],
     mixins: [pluginUtil],
     props: {
         id: {

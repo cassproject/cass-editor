@@ -341,6 +341,7 @@ import common from '@/mixins/common.js';
 export default {
     // Thing represents a JSON-LD object. Does not have to be based on http://schema.org/Thing.
     name: 'ThingEditing',
+    emits: ["expand-event","done-editing-node-event","delete-object","remove-object","move-up","move-down","move-right","move-left","select"],
     setup() {
         return { store };
     },

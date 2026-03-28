@@ -35,6 +35,7 @@ import CassPanelItem from './PanelItem.vue';
 
 export default {
     name: 'CassPanelItem',
+    emits: ["showDetails"],
     props: [ 'nodes', 'label', 'depth', 'id' ],
     components: {
         CassPanelItem

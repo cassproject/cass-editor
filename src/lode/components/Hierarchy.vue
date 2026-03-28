@@ -474,6 +474,7 @@ import competencyEdits from '@/mixins/competencyEdits.js';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 export default {
     name: 'Hierarchy',
+    emits: ["select-button-click","edit-multiple-event","selected-array","done-loading-nodes","remove-object","search-things"],
     setup() {
         return { store };
     },

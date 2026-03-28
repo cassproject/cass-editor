@@ -281,6 +281,7 @@ import common from '@/mixins/common.js';
 import {cassUtil} from '../../mixins/cassUtil';
 export default {
     name: 'EditorToolbar',
+    emits: ["show-export-modal","change-properties"],
     setup() {
         return { store };
     },

@@ -216,6 +216,7 @@ import {pluginUtil} from '../../mixins/pluginUtil';
 export default {
     mixins: [pluginUtil],
     name: 'PluginDetails',
+    emits: ["back","cancel","save"],
     props: {
         plugin: {
             type: Object

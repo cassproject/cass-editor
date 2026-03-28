@@ -217,6 +217,7 @@ import Breadcrumbs from '@/lode/components/Breadcrumbs.vue';
 import {cassUtil} from '@/mixins/cassUtil.js';
 export default {
     name: 'DirectoryList',
+    emits: ["dblclick"],
     props: {
         type: String,
         repo: Object,

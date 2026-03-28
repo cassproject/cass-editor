@@ -44,6 +44,7 @@ import common from '@/mixins/common.js';
 export default {
     mixins: [cassUtil, common],
     name: 'ConfigurationNotPermitted',
+    emits: ["close","cancel"],
     components: {
         ModalTemplate
     },

@@ -132,6 +132,7 @@
 <script>
 export default {
     name: 'FrameworkCompetencyPropertyListItem',
+    emits: ["manage","delete","change"],
     props: {
         propertyParent: {
             type: String,

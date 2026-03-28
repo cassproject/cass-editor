@@ -73,6 +73,7 @@
 <script>
 export default {
     name: 'ConfigurationListItem',
+    emits: ["set-framework-default","show-details","show-delete","set-browser-default","remove-browser-default-config"],
     props: {
         id: {
             type: String,

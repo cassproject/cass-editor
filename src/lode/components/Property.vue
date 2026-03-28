@@ -507,6 +507,7 @@ import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 export default {
     // Property represents one property of a Thing.
     name: 'Property',
+    emits: ["set-checkbox","clipboard-error-event","validated","editing-property-event","invalid"],
     props: {
         // The expandedThing that we're a property of.
         expandedThing: Object,

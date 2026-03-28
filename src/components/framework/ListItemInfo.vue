@@ -473,6 +473,7 @@ import store from '@/stores/index.js';
 import common from '@/mixins/common.js';
 export default {
     name: 'ListItemInfo',
+    emits: ["editResourceDetails","beginCopy","beginMove"],
     setup() {
         return { store };
     },

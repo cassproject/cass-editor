@@ -270,6 +270,7 @@ import competencyEdits from '@/mixins/competencyEdits.js';
 var hierarchyTimeout;
 export default {
     name: 'ConceptHierarchy',
+    emits: ["select-button-click","edit-multiple-event","selected-array","done-loading-nodes"],
     setup() {
         return { store };
     },

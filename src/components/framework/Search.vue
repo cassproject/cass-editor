@@ -83,6 +83,7 @@ import {mapState} from 'pinia';
 import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: 'CompetencySearch',
+    emits: ["selectFramework","setSelectedIds"],
     setup() {
         return { store };
     },

@@ -45,6 +45,7 @@ import store from '@/stores/index.js';
 import '@/scss/modal-template.scss';
 export default {
     name: 'ModalTemplate',
+    emits: ["close"],
     setup() {
         return { store };
     },

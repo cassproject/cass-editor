@@ -175,6 +175,7 @@ import {mapState} from 'pinia';
 export default {
     // Thing represents a JSON-LD object. Does not have to be based on http://schema.org/Thing.
     name: 'Thing',
+    emits: ["set-checkbox","edit-node-event","editing-thing","expand-event","remove-object","move-up","move-down","move-right","move-left","select"],
     mixins: [common],
     props: {
         expandInModal: {

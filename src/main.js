@@ -96,15 +96,7 @@ app.config.globalProperties.moment = moment;
 // app.use(Clipboard);
 //Vue3 fix me;
 
-// Vue 2→3 compatibility: $scopedSlots was merged into $slots in Vue 3
-// Some libraries (vuedraggable, etc.) may still reference $scopedSlots
-app.mixin({
-    computed: {
-        $scopedSlots() {
-            return this.$slots;
-        }
-    }
-});
+
 // app.use(VueScrollTo, {
 //     container: "#framework",
 //     duration: 500,

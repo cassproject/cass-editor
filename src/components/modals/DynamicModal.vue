@@ -30,6 +30,7 @@ import { mapState } from 'pinia';
 import store from '@/stores/index.js';
 export default {
     name: 'DynamicModal',
+    emits: ["create-directory","create-another-directory","app/closeModal"],
     props: {
         type: {
             default: 'info',

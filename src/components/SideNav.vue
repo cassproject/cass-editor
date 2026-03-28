@@ -521,6 +521,7 @@ import { last } from 'lodash';
 export default {
     mixins: [cassUtil, cassApi, pluginUtil],
     name: 'SideNav',
+    emits: ["create-new-concept-scheme","create-new-framework","create-new-collection","create-new-progression-model"],
     setup() {
         return { store };
     },

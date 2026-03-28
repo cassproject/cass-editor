@@ -43,7 +43,7 @@
                             :key="file"
                             style="display: inline; vertical-align: middle;">
                             <span class="has-text-weight-medium">
-                                {{ file.name }} ({{ file.size | kb }} kb)
+                                {{ file.name }} ({{ kb(file.size) }} kb)
                                 <button
                                     title="Remove"
                                     @click="removeFile(file)"
@@ -79,6 +79,7 @@
 import store from '@/stores/index.js';
 export default {
     name: 'DragAndDrop',
+    emits: ["clear-files"],
     data() {
         return {
             files: [],
@@ -93,15 +94,13 @@ export default {
     },
     watch: {
     },
-    filters: {
-        kb: function(val) {
-            return Math.floor(val / 1024);
-        }
-    },
     mounted: function() {
         store.app().clearImportFiles();
     },
     methods: {
+        kb(val) {
+            return Math.floor(val / 1024);
+        },
         handleDragEnter(e) {
             this.counter++;
             if (e.target.id) {

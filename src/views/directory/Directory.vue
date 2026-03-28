@@ -285,6 +285,7 @@ import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import AddNewDropdown from '@/components/AddNewDropdown.vue';
 export default {
     name: "Directory",
+    emits: ["create-new-framework"],
     setup() {
         return { store };
     },

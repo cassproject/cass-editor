@@ -363,6 +363,7 @@ import { mapState } from 'pinia';
 
 export default {
     name: "Frameworks",
+    emits: ["create-new-concept-scheme","create-new-progression-model","create-new-framework","create-new-collection"],
     setup() {
         return { store };
     },
