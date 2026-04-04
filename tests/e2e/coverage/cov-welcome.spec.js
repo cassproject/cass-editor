@@ -106,12 +106,14 @@ test('Welcome: store state accessible', async ({
 }) => {
   await page.goto('/#/?server=http://localhost/api/');
   await page.waitForLoadState('domcontentloaded');
-  await page.waitForFunction(() => window.app && window.app.$store);
+  await page.waitForFunction(() => window.__pinia);
   const result = await page.evaluate(() => {
-    const store = window.app.$store;
+    const pinia = window.__pinia;
+    const userStore = pinia.state.value.user;
+    const editorStore = pinia.state.value.editor;
     return {
-      hasLoggedOnPerson: store.state.user?.loggedOnPerson != null,
-      hasQueryParams: store.state.editor?.queryParams != null
+      hasLoggedOnPerson: userStore?.loggedOnPerson != null,
+      hasQueryParams: editorStore?.queryParams != null
     };
   });
   expect(result.hasLoggedOnPerson).toBe(true);

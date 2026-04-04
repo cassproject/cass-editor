@@ -369,6 +369,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         :addSingle="isNotDeletable()"
                         :options="(profile && profile[expandedProperty] && profile[expandedProperty]['options']) ? profile[expandedProperty]['options'] : null"
                         :profile="profile"
+                        @updatePropertyString="updatePropertyString"
                         @removeByValue="removeByValue($event)"
                         @remove="remove(item)" />
                 </div>

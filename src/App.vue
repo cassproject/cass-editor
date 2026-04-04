@@ -99,20 +99,20 @@ export default {
                     store.editor().progressionMode = false;
                 }
                 if (this.queryParams.ceasnDataFields === 'true') {
-                    store.featuresEnabled().configurationsEnabled(false);
-                    store.featuresEnabled().userManagementEnabled(false);
-                    store.featuresEnabled().searchByOwnerNameEnabled(false);
-                    store.featuresEnabled().loginEnabled(false);
-                    store.featuresEnabled().pluginsEnabled(false);
+                    store.featuresEnabled().configurationsEnabled = false;
+                    store.featuresEnabled().userManagementEnabled = false;
+                    store.featuresEnabled().searchByOwnerNameEnabled = false;
+                    store.featuresEnabled().loginEnabled = false;
+                    store.featuresEnabled().pluginsEnabled = false;
                 }
                 if (this.queryParams.user === "wait") {
-                    store.featuresEnabled().shareEnabled(false);
-                    store.featuresEnabled().shareLink(true);
+                    store.featuresEnabled().shareEnabled = false;
+                    store.featuresEnabled().shareLink = true;
                 }
                 // Add support for show=mine. This param was already being used by CE, but was no longer functioning as expected.
                 //  OwnedByMe offers the expected functionality. Including show=mine for compatibility with existing clients.
                 if (this.queryParams.ownedByMe === "true" || this.queryParams.show === "mine") {
-                    store.featuresEnabled().ownedByMe(true);
+                    store.featuresEnabled().ownedByMe = true;
                 }
             }
             var r = new EcRepository();
@@ -141,11 +141,11 @@ export default {
                 r.fetchServerAdminKeys(() => {}, console.error);
                 store.user().setRepositorySsoOptions(loginInfo);
                 if (loginInfo.ssoPublicKey != null && loginInfo.ssoLogin == null && loginInfo.ssoViaP1 == null) {
-                    store.featuresEnabled().loginEnabled(false);
-                    store.featuresEnabled().userManagementEnabled(false);
+                    store.featuresEnabled().loginEnabled = false;
+                    store.featuresEnabled().userManagementEnabled = false;
                 }
                 if (loginInfo.ssoLogin != null) {
-                    store.featuresEnabled().apiLoginEnabled(true);
+                    store.featuresEnabled().apiLoginEnabled = true;
                 }
                 if (loginInfo.banner) {
                     store.app().setBanner(loginInfo.banner);

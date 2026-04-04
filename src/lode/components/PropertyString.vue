@@ -471,11 +471,7 @@ export default {
     },
     methods: {
         blur: function() {
-            if (this.overrideUpdate) {
-                this.$emit('updatePropertyString', this.text, this.indexInternal);
-            } else {
-                this.$parent.updatePropertyString(this.text, this.indexInternal);
-            }
+            this.$emit('updatePropertyString', this.text, this.indexInternal);
             this.isOpen = false;
         },
         onSearchChange: function() {

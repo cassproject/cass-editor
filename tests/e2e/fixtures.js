@@ -13,11 +13,16 @@ let lnuid = null;
 async function loginAndNavigate(page) {
     await page.goto('/#/legacyLogin?server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
+    // Wait for Pinia store to be available, then disable apiLogin so the
+    // "create account" button shows on the legacy login form.
+    await page.waitForFunction(() => window.__pinia);
     await page.evaluate(() => {
-        if (window.app && window.app.$store) {
-            window.app.$store.commit('featuresEnabled/apiLoginEnabled', false);
+        if (window.__pinia && window.__pinia.state.value.featuresEnabled) {
+            window.__pinia.state.value.featuresEnabled.apiLoginEnabled = false;
         }
     });
+    // Wait for the login form to render
+    await page.waitForSelector('#legacy-login-username, #legacy-login-create-account-button');
 
     if (lnuid) {
         // Log in with existing account

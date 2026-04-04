@@ -66,10 +66,12 @@ test.describe('Welcome page deep coverage', () => {
     await expect(page.locator('#welcome')).toBeVisible();
     const vueData = await page.evaluate(() => {
       const el = document.querySelector('#welcome');
-      if (el && el.__vue__) {
-        const vm = el.__vue__;
+      // Vue 3: component instance is at __vueParentComponent
+      const vnode = el && el.__vueParentComponent;
+      if (vnode && vnode.ctx) {
+        const vm = vnode.ctx;
         return {
-          name: vm.$options.name,
+          name: vnode.type?.name || vnode.type?.__name,
           importing: vm.importing,
           error: vm.error,
           casslogo: typeof vm.casslogo,
@@ -123,8 +125,9 @@ test.describe('Welcome page deep coverage', () => {
     await expect(page.locator('#welcome')).toBeVisible();
     const postLoginData = await page.evaluate(() => {
       const el = document.querySelector('#welcome');
-      if (el && el.__vue__) {
-        const vm = el.__vue__;
+      const vnode = el && el.__vueParentComponent;
+      if (vnode && vnode.ctx) {
+        const vm = vnode.ctx;
         return {
           loggedInPerson: vm.loggedInPerson,
           linkToLegacyDemos: vm.linkToLegacyDemos,

@@ -1,27 +1,23 @@
-global.__dirname = '/';
-process.cwd = () => '/';
-crypto.getFips = () => false;
-import "cassproject"; 
+import "cassproject";
 import { createApp } from 'vue';
-// import VueProgressBar from 'vue-progressbar';
 import App from './App.vue';
 import './scss/theme.scss';
 import './scss/styles.scss';
 import router from './router';
 
 import InfiniteLoading from "v3-infinite-loading";
-import {createPinia} from 'pinia';
+import { createPinia } from 'pinia';
 
 import moment from 'moment';
 global.moment = moment;
 
-const {fetch: originalFetch} = global;
+const { fetch: originalFetch } = global;
 
 let PENDING_REQUESTS = 0;
 const MAX_REQUESTS_COUNT = 10;
 const INTERVAL_MS = 10;
 
-global.fetch = async(...args) => {
+global.fetch = async (...args) => {
     let [resource, config] = args;
     // request interceptor here
     if (PENDING_REQUESTS >= MAX_REQUESTS_COUNT) {
@@ -48,7 +44,7 @@ global.fetch = async(...args) => {
 EcRepository.caching = true;
 EcRepository.cachingL2 = true;
 
-var queryParams = function() {
+var queryParams = function () {
     if (window.document.location.search == null) { return {}; }
     var hashSplit = (window.document.location.search.split("?"));
     if (hashSplit.length > 1) {
@@ -71,61 +67,27 @@ var queryParams = function() {
 
 window.queryParams = queryParams();
 
-// const options = {
-//     color: '#68C8DB',
-//     failedColor: '#D74C44',
-//     thickness: '5px',
-//     transition: {
-//         speed: '0.2s',
-//         opacity: '0.6s',
-//         termination: 300
-//     },
-//     autoRevert: true,
-//     location: 'top',
-//     inverse: false
-// };
 
 const pinia = createPinia();
+window.__pinia = pinia;
 const app = global.app = createApp(App)
 app.use(pinia);
 app.config.globalProperties.moment = moment;
-
-// app.use(VueProgressBar, options);
-// app.use(require('vue-moment'));
-// app.use(Vuex);
-// app.use(Clipboard);
-//Vue3 fix me;
-
-
-// app.use(VueScrollTo, {
-//     container: "#framework",
-//     duration: 500,
-//     easing: "ease",
-//     offset: -150,
-//     force: true,
-//     cancelable: true,
-//     onStart: false,
-//     onDone: false,
-//     onCancel: false,
-//     x: false,
-//     y: true
-// });
-// app.use(VueResource);
 
 app.component("infinite-loading", InfiniteLoading);
 
 // directive for clicking outside elements and performing an action
 // add v-click-outside="method" to parent element to do something
 app.directive('click-outside', {
-    mounted: function(element, binding) {
-        element.clickOutsideEvent = function(event) {
+    mounted: function (element, binding) {
+        element.clickOutsideEvent = function (event) {
             if (!(element === event.target || element.contains(event.target))) {
                 binding.value(event);
             }
         };
         document.body.addEventListener('click', element.clickOutsideEvent);
     },
-    unmounted: function(element) {
+    unmounted: function (element) {
         document.body.removeEventListener('click', element.clickOutsideEvent);
     }
 });
