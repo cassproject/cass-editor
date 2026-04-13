@@ -56,7 +56,8 @@
                             <div
                                 v-else
                                 class="icon is-vcentered is-transparent">
-                                <i class="fa fa-circle has-text-white is-size-7" />
+                                <i class="fa fa-circle has-text-white is-size-2"
+                                    :class="{'is-size-4': view === 'crosswalk'}" />
                             </div>
                         </div>
                         <!-- CONTROLS FOR SELECT -->

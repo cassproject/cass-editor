@@ -1299,6 +1299,9 @@ export default {
         },
         // Saves this thing to the location specified by its @id.
         saveThing: async function() {
+            if (this.errorValidating) {
+                return;
+            }
             this.saving = true;
             this.doneSaving = false;
             this.saved = false;

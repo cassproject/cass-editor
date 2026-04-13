@@ -36,7 +36,7 @@
                 class="control is-expanded">
                 <!-- to do match to property name -->
                 <textarea
-                    id="property-string-computed-text"
+                    :id="`property-string-textarea-${expandedProperty.split('/').pop()}`"
                     ref="textarea"
                     class="textarea is-expanded "
                     rows="1"

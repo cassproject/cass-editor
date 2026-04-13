@@ -356,13 +356,12 @@
                             :class="{ 'collapsed': !showGeneral}">
                             <div class="columns is-mobile is-multiline">
                                 <div
-                                    :id="option.label"
                                     v-for="option in showProperties"
                                     :key="option"
                                     class="column property"
                                     :class="propertyView === 'grid' ? 'is-3' : 'is-12'">
                                     <div
-                                        id="property-option"
+                                        :id="option.value.split('/').pop()"
                                         @click="selectedPropertyToAdd = option"
                                         class="property-button"
                                         :title="option.description"

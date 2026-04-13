@@ -64,7 +64,7 @@ async function navigateToFramework(page) {
     // Search for the known test framework using the search bar
     const searchInput = page.locator('#search-bar-input');
     if (await searchInput.isVisible().catch(() => false)) {
-        await searchInput.fill(TEST_FRAMEWORK_NAME);
+        await searchInput.fill('"' + TEST_FRAMEWORK_NAME + '"');
         // Wait for a matching framework to appear in the filtered list
         const matchingItem = page.locator(`.cass--list--item .cass--list--thing:has-text("${TEST_FRAMEWORK_NAME}")`);
         try {
@@ -125,8 +125,21 @@ async function tryOpenFramework(page, locator) {
 }
 
 const test = baseTest.extend({
-    page: async ({ page }, use) => {
+    page: async ({ page }, use, testInfo) => {
+        // Collect browser logs during the test
+        const logs = [];
+        page.on('console', msg => logs.push(`[${msg.type()}] ${msg.text()}`));
+        page.on('pageerror', error => logs.push(`[error] ${error.message}`));
+
         await use(page);
+
+        // Attach logs if the test failed
+        if (testInfo.status !== testInfo.expectedStatus) {
+            await testInfo.attach('browser-console-logs.txt', {
+                body: logs.join('\n'),
+                contentType: 'text/plain',
+            });
+        }
 
         // Collect coverage after each test
         const coverage = await page.evaluate(() => window.__coverage__);

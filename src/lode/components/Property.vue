@@ -248,7 +248,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     <div
                         v-if="editingProperty && limitedConcepts.length > 0">
                         <PropertyString
-                            :id="expandedProperty + '-' + index"
+                            :id="expandedProperty.split('/').pop() + '-' + index"
                             :index="index"
                             :propertyValue="expandedThing[expandedProperty][index]"
                             :expandedProperty="expandedProperty"
@@ -357,7 +357,7 @@ TO DO MAYBE: Separate out property by editing or not.
                     class="property"
                     v-else-if="editingProperty && !checkedOptions && !(limitedConcepts.length > 0) && !(limitedTypes.length > 0)">
                     <PropertyString
-                        :id="expandedProperty + '-' + index"
+                        :id="expandedProperty.split('/').pop() + '-' + index"
                         :index="index"
                         :propertyValue="expandedThing[expandedProperty][index]"
                         :expandedProperty="expandedProperty"

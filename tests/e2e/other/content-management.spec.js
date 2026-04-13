@@ -52,6 +52,13 @@ test.describe('Content Management', () => {
       return document.querySelector('.dropdown').classList.contains('is-active');
     });
     console.log(`Dropdown active status: ${isDropdownActive}`);
+        // Verify we are in edit mode or can see inputs
+        // Scoping the name selector to the framework container to avoid ambiguity with competencies
+        // We escape the special characters in the ID for the selector
+        // CSS selector for ID requires escaping special chars like : / . 
+        // Playwright handles [id="..."] attribute selector correctly without escaping content.
+        const frameworkNameSelector = '.lode__thing-editing [id="name-0"] textarea';
+        const frameworkDescriptionSelector = '.lode__thing-editing [id="description-0"] textarea';
 
     // Select Framework
     console.log('Clicking add new framework option...');
@@ -103,6 +110,8 @@ test.describe('Content Management', () => {
       state: 'visible'
     });
     console.log('Competency editor found.');
+        // Define selector for name field within the editor
+        const competencyNameSelector = `${editorSelector} [id="name-0"] textarea`;
 
     // Define selector for name field within the editor
     const competencyNameSelector = `${editorSelector} [id="http://schema.org/name-0"] textarea`;
