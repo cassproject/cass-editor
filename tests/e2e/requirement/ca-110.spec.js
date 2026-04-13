@@ -9,8 +9,7 @@ test('CA-110: Owner access via KBAC @owner field', async ({ page }) => {
 
     // Set up listener to capture the framework save API response
     const frameworkResponsePromise = page.waitForResponse(
-        resp => resp.url().includes('/api/') && resp.request().method() === 'POST' && resp.status() === 200,
-        { timeout: 30000 }
+        resp => resp.url().includes('/api/') && resp.request().method() === 'POST' && resp.status() === 200
     );
 
     // Create a new framework — the logged-in user should automatically become the owner

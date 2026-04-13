@@ -4,57 +4,63 @@
  * Exercises common.js mixin methods: multiSelect, clipboard, indent/outdent, undo.
  */
 
-const { test, expect, loginAndNavigate, navigateToFramework } = require('../fixtures');
+const {
+  test,
+  expect,
+  loginAndNavigate,
+  navigateToFramework
+} = require('../fixtures');
+test('Common editing: keyboard shortcuts for cut, copy, paste, indent, delete, undo', async ({
+  page
+}) => {
+  let uid;
+  uid = await loginAndNavigate(page, uid);
+  await page.goto('/#/frameworks?server=http://localhost/api/');
+  await page.waitForLoadState('domcontentloaded');
+  const items = page.locator('.cass--list--item .cass--list--thing');
+  const count = await items.count();
+  if (count === 0) {
+    // No frameworks — still pass
+    expect(true).toBe(true);
+    return;
+  }
+  if (!(await navigateToFramework(page))) return;
 
-test('Common editing: keyboard shortcuts for cut, copy, paste, indent, delete, undo', async ({ page }) => {
-    await loginAndNavigate(page);
+  // Find hierarchy items
+  const things = page.locator('.cass--list--thing');
+  await things.first().waitFor({
+    state: 'visible'
+  });
+  const thingCount = await things.count();
+  if (thingCount > 1) {
+    // Click first item
+    await things.first().click();
 
-    await page.goto('/#/frameworks?server=http://localhost/api/');
-    await page.waitForLoadState('domcontentloaded');
+    // Multi-select with Shift+click
+    await things.nth(Math.min(2, thingCount - 1)).click({
+      modifiers: ['Shift']
+    });
 
-    const items = page.locator('.cass--list--item .cass--list--thing');
-    const count = await items.count();
-    if (count === 0) {
-        // No frameworks — still pass
-        expect(true).toBe(true);
-        return;
-    }
+    // Cut
+    await page.keyboard.press('Control+x');
 
-    if (!await navigateToFramework(page)) return;
+    // Paste
+    await page.keyboard.press('Control+v');
 
-    // Find hierarchy items
-    const things = page.locator('.cass--list--thing');
-    await things.first().waitFor({ state: 'visible' });
-    const thingCount = await things.count();
+    // Copy
+    await page.keyboard.press('Control+c');
 
-    if (thingCount > 1) {
-        // Click first item
-        await things.first().click();
+    // Indent (Tab)
+    await page.keyboard.press('Tab');
 
-        // Multi-select with Shift+click
-        await things.nth(Math.min(2, thingCount - 1)).click({ modifiers: ['Shift'] });
+    // Outdent (Shift+Tab)
+    await page.keyboard.press('Shift+Tab');
 
-        // Cut
-        await page.keyboard.press('Control+x');
+    // Delete
+    await page.keyboard.press('Delete');
 
-        // Paste
-        await page.keyboard.press('Control+v');
-
-        // Copy
-        await page.keyboard.press('Control+c');
-
-        // Indent (Tab)
-        await page.keyboard.press('Tab');
-
-        // Outdent (Shift+Tab)
-        await page.keyboard.press('Shift+Tab');
-
-        // Delete
-        await page.keyboard.press('Delete');
-
-        // Undo
-        await page.keyboard.press('Control+z');
-    }
-
-    await expect(page.locator('#framework')).toBeVisible();
+    // Undo
+    await page.keyboard.press('Control+z');
+  }
+  await expect(page.locator('#framework')).toBeVisible();
 });

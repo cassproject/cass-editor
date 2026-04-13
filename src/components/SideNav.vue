@@ -317,7 +317,7 @@
                 <li class="has-text-white">
                     <router-link
                         :to="{path: '/import', query: queryParams}"
-                        id="side-nav-import-link"
+                        id="side-nav-import-schemes-link"
                         @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
                         :title="showSideNav ? '' : queryParams.ceasnDataFields === 'true' ? 'Import Concept Schemes' : 'Import Taxonomies'">
                         <span class="icon">

@@ -10,6 +10,7 @@ module.exports = defineConfig({
     //maxFailures: 1,
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!process.env.CI,
+    maxFailures: 0,
     /* Retry on CI only */
     retries: process.env.CI ? 2 : 1,
     /* Opt out of parallel tests on CI. */
@@ -26,9 +27,9 @@ module.exports = defineConfig({
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
     },
-    timeout: 120000,
+    timeout: 40000,
     expect: {
-        timeout: 60000,
+        timeout: 20000,
     },
     /* Configure projects for major browsers */
     projects: [

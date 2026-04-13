@@ -1,46 +1,98 @@
-/**
- * Coverage: ProgressionHierarchy.vue — navigate to progressions, browse/interact.
- * Targets the 0% covered ProgressionHierarchy component (706 uncovered lines).
- */
-
 const { test, expect, loginAndNavigate } = require('../fixtures');
 
-test('Progression hierarchy: browse, expand/collapse, and interact with toolbar buttons', async ({ page }) => {
-    await loginAndNavigate(page);
+test.describe.serial('Coverage: ProgressionHierarchy component', () => {
 
-    // Navigate to progressions page
-    await page.goto('/#/progressionLevels?server=http://localhost/api/');
-    await expect(page.locator('#app')).toBeVisible();
+  test('Creates a Progression Model and exercises hierarchy tools', async ({ page }) => {
+    // Log in and go to Progression Levels (Progression Models) route
 
-    // Check if there are any progressions in the list
-    const listItems = page.locator('.cass--list--item .cass--list--thing');
-    const hasItems = await listItems.first().isVisible().catch(() => false);
+    await page.goto('/#/progressionLevels?ceasnDataFields=true&server=http://localhost/api/');
+    await page.waitForLoadState('domcontentloaded');
+    // Set progression mode
+    await page.evaluate(() => {
+      window.app.$store.commit('editor/progressionMode', true);
+      window.app.$store.commit('editor/conceptMode', false);
+    });
 
-    if (hasItems) {
-        // Open a progression
-        await listItems.first().dblclick();
-        await expect(page.locator('.lode__hierarchy')).toBeVisible();
+    // Wait for list to load, then click the create button
+    await page.click('#add-new-dropdown-toggle-button');
+    await expect(page.locator('#add-new-dropdown-progression-model')).toBeVisible();
+    await page.click('#add-new-dropdown-progression-model');
 
-        // Try expand/collapse buttons
-        const expandBtn = page.locator('#expand-buttons');
-        if (await expandBtn.isVisible().catch(() => false)) {
-            await expandBtn.click();
-        }
+    // It should route to the progression model view which contains the hierarchy
+    await expect(page.locator('.framework-content')).toBeVisible();
+    //Set description field
 
-        // Try clicking a hierarchy item
-        const hierarchyItems = page.locator('.lode__hierarchy-item');
-        if (await hierarchyItems.first().isVisible().catch(() => false)) {
-            await hierarchyItems.first().click();
-        }
+    await page.fill('[id$="description-0"] textarea', 'Test Progression Model');
 
-        // Try the select button to enter select mode
-        const selectBtn = page.locator('div:has-text("select")').filter({ hasText: /^select$/ });
-        if (await selectBtn.first().isVisible().catch(() => false)) {
-            await selectBtn.first().click();
-        }
+    // Add a new progression level (node)
+    await page.click('#adding-node-button');
+    // Click the create new option that appears
+    await expect(page.locator('#create-new-button')).toBeVisible();
+    await page.click('#create-new-button');
+
+    // Give it a moment to save and render the new node
+    await expect(page.locator('.lode__hierarchy-li').first()).toBeVisible();
+
+    // Add a second node
+    await page.click('#adding-node-button');
+    await page.click('#create-new-button');
+    await expect(page.locator('.lode__hierarchy-li').nth(1)).toBeVisible();
+
+    // Test the "Reorder by Precedence" and "Set Precedence by Order" buttons
+    await expect(page.locator('#set-precedence-button')).toBeVisible();
+    // Wait for save overlay to disappear before clicking
+    await page.waitForResponse(response => response.url().includes('data/'));
+    await page.click('#set-precedence-button');
+
+    await expect(page.locator('#reorder-button')).toBeVisible();
+    await page.waitForResponse(response => response.url().includes('data/'));
+    await page.click('#reorder-button');
+
+    // Select the first node using the checkbox in the hierarchy node (we might need to select all)
+    // Let's use the select all checkbox in the hierarchy toolbar
+    const selectAllCheckboxLabel = page.locator('label[for="selectAllCheckbox"]');
+    if (await selectAllCheckboxLabel.isVisible()) {
+      await selectAllCheckboxLabel.click();
     }
 
-    // Also visit the progressions list without auth for additional coverage
-    await page.goto('/#/progressionLevels?server=http://localhost/api/');
-    await expect(page.locator('#app')).toBeVisible();
+    // Wait for selection to process (button should change from "delete item" to "edit multiple" when multiple selected)
+    await expect(page.locator('#edit-multiple-button')).toBeVisible();
+
+    // Try Edit Multiple functionality (opens modal)
+    await page.click('#edit-multiple-button');
+    await expect(page.locator('#modal-component-MultiEdit')).toBeVisible();
+
+    // Cancel the modal
+    await page.locator('#modal-component-MultiEdit').locator('#close-modal-button').click();
+
+    // Now deselect all, and select just one item to test cut/paste
+    if (await selectAllCheckboxLabel.isVisible()) {
+      await selectAllCheckboxLabel.click();
+    }
+
+    // Wait for deselection
+    await expect(page.locator('#adding-node-button')).toBeVisible();
+
+    // Select just the first item
+    await page.locator('.lode__hierarchy-li').first().locator('label[for^="selectAllCheckbox"]').first().click();
+
+    // Wait for single selection tool bar
+    await expect(page.locator('#cut-button')).toBeVisible();
+    await page.click('#cut-button');
+
+    // Click Paste
+    await expect(page.locator('#paste-button')).toBeVisible();
+    await page.click('#paste-button');
+
+    // Test delete item
+    await expect(page.locator('#delete-item-button')).toBeVisible();
+
+    // Set up dialog handler for the delete confirmation
+    page.once('dialog', dialog => dialog.accept());
+    await page.click('#delete-item-button');
+
+    // Wait to make sure deletion completes
+    await expect(page.locator('.lode__hierarchy-li').nth(1)).not.toBeVisible();
+  });
+
 });
