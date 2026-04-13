@@ -83,7 +83,7 @@ To test the effects of encryption, we need to save the object and temporarily re
 await repo.save(e);
 var myIds = EcIdentityManager.default.ids; //Saving our identities elsewhere.
 EcIdentityManager.default.ids = []; //Removing them from the expected location.
-EcRepository.cache = {}; //Clearing the cache.
+EcRepository.cacheBacking = {}; //Clearing the cache.
 await EcRepository.get(e.id); //Not found
 EcIdentityManager.default.ids = myIds;
 await EcRepository.get(e.id); //Found!
