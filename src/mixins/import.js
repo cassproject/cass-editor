@@ -179,8 +179,30 @@ async function checkDuplicateCtidsInConceptSchemes(repo, competencyIds, framewor
 }
 
 /**
+ * Extracts creator/publisher identifiers from a framework or concept scheme object.
+ * Handles string, object (with @id), and array forms. Returns a Set of identifier strings.
+ * Checks ceasn:publisher, schema:creator, and dcterms:creator fields.
+ */
+function getCreatorIdentifiers(obj) {
+    const ids = new Set();
+    const fields = ["ceasn:publisher", "schema:creator", "dcterms:creator"];
+    for (const field of fields) {
+        const value = obj[field];
+        if (!value) continue;
+        const values = Array.isArray(value) ? value : [value];
+        for (const v of values) {
+            if (typeof v === "string") ids.add(v);
+            else if (v && typeof v === "object" && v["@id"]) ids.add(v["@id"]);
+        }
+    }
+    return ids;
+}
+
+/**
  * Checks if any framework/scheme being imported has a CTID that already belongs to
- * an existing framework or concept scheme of a different type on the server.
+ * an existing framework or concept scheme on the server with a *different* creator.
+ * If the existing object shares a creator (ceasn:publisher / schema:creator / dcterms:creator)
+ * with the one being imported, it is treated as an update and allowed.
  * Extracts CTIDs directly from the frameworkArray objects via ceterms:ctid.
  *
  * @param {EcRepository} repo - Repository to search against
@@ -191,12 +213,14 @@ async function checkDuplicateCtidsInConceptSchemes(repo, competencyIds, framewor
  */
 async function checkFrameworkCtidCollisions(repo, competencyIds, frameworkArray, competencyCtids) {
     const errors = [];
-    // Collect CTIDs from the frameworks/schemes being imported
+    // Collect CTIDs and owning framework refs from the frameworks/schemes being imported
     const ctidsToCheck = [];
+    const ctidToImportedFw = {};
     for (const fw of frameworkArray) {
         const ctid = fw["ceterms:ctid"];
         if (ctid) {
             ctidsToCheck.push({ctid, fw});
+            ctidToImportedFw[ctid] = fw;
         }
     }
     if (ctidsToCheck.length === 0) return errors;
@@ -206,6 +230,25 @@ async function checkFrameworkCtidCollisions(repo, competencyIds, frameworkArray,
         const chunkCtids = new Set(chunk.map(c => c.ctid));
         const queryParts = chunk.map(c => 'ceterms\\:ctid:"' + c.ctid + '"');
         const query = '(' + queryParts.join(' OR ') + ')';
+        // Compares creators between the imported framework and an existing object.
+        // If creators overlap, the import is treated as an update (allowed).
+        // If creators differ (or are missing on either side), it's flagged as a collision.
+        const reportCollisionIfDifferentCreator = (existing, kind) => {
+            const existingCtid = existing["ceterms:ctid"];
+            if (!existingCtid || !chunkCtids.has(existingCtid)) return;
+            const importedFw = ctidToImportedFw[existingCtid];
+            if (!importedFw) return;
+            // Same object being re-imported (matching shortId) — always an update
+            if (importedFw.shortId() === existing.shortId()) return;
+            const importedCreators = getCreatorIdentifiers(importedFw);
+            const existingCreators = getCreatorIdentifiers(existing);
+            const sharesCreator = importedCreators.size > 0 && existingCreators.size > 0 &&
+                [...importedCreators].some(c => existingCreators.has(c));
+            if (sharesCreator) return;
+            errors.push(
+                `Framework/scheme with CTID ${existingCtid} has the same CTID as existing ${kind} "${existing.name || existing.shortId()}" with a different creator`
+            );
+        };
         // Search for existing frameworks with matching CTIDs
         try {
             const existingFrameworks = await new Promise((resolve, reject) => {
@@ -213,18 +256,7 @@ async function checkFrameworkCtidCollisions(repo, competencyIds, frameworkArray,
             });
             if (existingFrameworks) {
                 for (const existingFw of existingFrameworks) {
-                    // Skip if this is the same object being re-imported
-                    const isBeingImported = frameworkArray.some(
-                        fw => fw.shortId() === existingFw.shortId()
-                    );
-                    if (!isBeingImported) {
-                        const fwCtid = existingFw["ceterms:ctid"];
-                        if (fwCtid && chunkCtids.has(fwCtid)) {
-                            errors.push(
-                                `Framework/scheme with CTID ${fwCtid} has the same CTID as existing framework "${existingFw.name || existingFw.shortId()}"`
-                            );
-                        }
-                    }
+                    reportCollisionIfDifferentCreator(existingFw, "framework");
                 }
             }
         } catch (e) {
@@ -237,17 +269,7 @@ async function checkFrameworkCtidCollisions(repo, competencyIds, frameworkArray,
             });
             if (existingSchemes) {
                 for (const existingCs of existingSchemes) {
-                    const isBeingImported = frameworkArray.some(
-                        fw => fw.shortId() === existingCs.shortId()
-                    );
-                    if (!isBeingImported) {
-                        const csCtid = existingCs["ceterms:ctid"];
-                        if (csCtid && chunkCtids.has(csCtid)) {
-                            errors.push(
-                                `Framework/scheme with CTID ${csCtid} has the same CTID as existing concept scheme "${existingCs.name || existingCs.shortId()}"`
-                            );
-                        }
-                    }
+                    reportCollisionIfDifferentCreator(existingCs, "concept scheme");
                 }
             }
         } catch (e) {
