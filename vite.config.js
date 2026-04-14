@@ -35,6 +35,15 @@ export default defineConfig(({command, mode}) => {
                     replacement: fileURLToPath(new URL('./node_modules/vuedraggable/src/vuedraggable.js', import.meta.url))
                 }
             ]
+        },
+        css: {
+            preprocessorOptions: {
+                scss: {
+                    quietDeps: true,
+                    api: 'modern-compiler',
+                    silenceDeprecations: ['if-function', 'import', 'legacy-js-api']
+                }
+            }
         }
     };
 });

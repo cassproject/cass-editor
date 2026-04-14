@@ -38,8 +38,8 @@ test.describe.serial('Concept Scheme Coverage', () => {
 
     // Set concept mode
     await page.evaluate(() => {
-      window.__stores.editor.conceptMode( true);
-      window.__stores.editor.progressionMode( false);
+      window.__stores.editor.setConceptMode( true);
+      window.__stores.editor.setProgressionMode( false);
     });
 
     // Navigate to concepts list
@@ -68,20 +68,18 @@ test.describe.serial('Concept Scheme Coverage', () => {
               };
             }
           }
-          // Try finding via app tree
-          if (window.app) {
-            const found = [];
-            function findCS(vm) {
-              if ((vm.$options?.name || vm.__name) === 'ConceptScheme') {
-                found.push({
-                  name: (vm.$options?.name || vm.__name),
+          // Try finding via DOM tree fallback
+          const allEls = document.querySelectorAll('*');
+          for (const currentEl of allEls) {
+            if (currentEl.__vueParentComponent) {
+              const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+              if ((vm.$options?.name || vm.type?.name || vm.__name) === 'ConceptScheme') {
+                return {
+                  name: 'ConceptScheme',
                   hasFramework: !!vm.framework
-                });
+                };
               }
-              vm.$children.forEach(child => findCS(child));
             }
-            findCS(window.app);
-            return found.length > 0 ? found[0] : null;
           }
           return null;
         });
@@ -103,15 +101,15 @@ test.describe.serial('Concept Scheme Coverage', () => {
       if (!store) return null;
 
       // Set concept mode
-      store.editor.conceptMode( true);
+      store.editor.setConceptMode( true);
       const cm1 = store.editor.conceptMode;
-      store.editor.conceptMode( false);
+      store.editor.setConceptMode( false);
       const cm2 = store.editor.conceptMode;
 
       // Collection mode
-      store.editor.collectionMode( true);
+      store.editor.setCollectionMode( true);
       const col1 = store.editor.collectionMode;
-      store.editor.collectionMode( false);
+      store.editor.setCollectionMode( false);
       const col2 = store.editor.collectionMode;
       return {
         cm1,
@@ -135,20 +133,18 @@ test.describe.serial('Concept Scheme Coverage', () => {
     await page.waitForLoadState('domcontentloaded');
     // Exercise Frameworks.vue computed properties in concept mode
     const frameworksData = await page.evaluate(() => {
-      if (window.app) {
-        const found = [];
-        function findFW(vm) {
-          if ((vm.$options?.name || vm.__name) === 'Frameworks') {
-            found.push({
-              name: (vm.$options?.name || vm.__name),
-              conceptMode: vm.$store.editor.conceptMode,
+      const allEls = document.querySelectorAll('*');
+      for (const currentEl of allEls) {
+        if (currentEl.__vueParentComponent) {
+          const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+          if ((vm.$options?.name || vm.type?.name || vm.__name) === 'Frameworks') {
+            return {
+              name: 'Frameworks',
+              conceptMode: window.__stores.editor.conceptMode,
               type: vm.type
-            });
+            };
           }
-          vm.$children.forEach(child => findFW(child));
         }
-        findFW(window.app);
-        return found.length > 0 ? found[0] : null;
       }
       return null;
     });

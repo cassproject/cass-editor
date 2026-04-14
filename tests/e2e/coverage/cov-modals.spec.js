@@ -27,26 +27,22 @@ test.describe('Modal Components Coverage', () => {
     // Exercise DynamicModal computed properties
     const dynamicModalData = await page.evaluate(() => {
       const modals = document.querySelectorAll('.dynamic-modal, [class*="modal"]');
-      // Look for DynamicModal component in the app tree
-      if (window.__stores) {
-        // The DynamicModal may be a child of App.vue
-        const appVm = window.app;
-        const allChildren = [];
-        function findComponents(vm) {
-          if (vm.$options.name === 'DynamicModal') {
+      const allEls = document.querySelectorAll('*');
+      const allChildren = [];
+      for (const currentEl of allEls) {
+        if (currentEl.__vueParentComponent) {
+          const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+          if (vm.$options?.name === 'DynamicModal') {
             allChildren.push({
-              name: vm.$options.name,
+              name: 'DynamicModal',
               showModal: vm.showModal,
               dynamicComponent: vm.dynamicComponent,
               dynamicSize: vm.dynamicSize
             });
           }
-          vm.$children.forEach(child => findComponents(child));
         }
-        findComponents(appVm);
-        return allChildren;
       }
-      return null;
+      return allChildren;
     });
     if (dynamicModalData && dynamicModalData.length > 0) {
       expect(dynamicModalData[0].name).toBe('DynamicModal');
@@ -65,22 +61,21 @@ test.describe('Modal Components Coverage', () => {
 
       // Exercise ExportOptionsModal computed properties through the Vue tree
       const exportModalData = await page.evaluate(() => {
-        if (window.app) {
-          const allChildren = [];
-          function findComponents(vm) {
-            if (vm.$options.name === 'ExportOptionsModal') {
+        const allEls = document.querySelectorAll('*');
+        const allChildren = [];
+        for (const currentEl of allEls) {
+          if (currentEl.__vueParentComponent) {
+            const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+            if (vm.$options?.name === 'ExportOptionsModal') {
               allChildren.push({
-                name: vm.$options.name,
+                name: 'ExportOptionsModal',
                 exportOptions: typeof vm.exportOptions,
                 exportType: vm.exportType
               });
             }
-            vm.$children.forEach(child => findComponents(child));
           }
-          findComponents(window.app);
-          return allChildren;
         }
-        return [];
+        return allChildren;
       });
       // Even if modal is not visible, the component should exist in the tree
     }
@@ -156,21 +151,18 @@ test.describe('Modal Components Coverage', () => {
     // Exercise ConfigurationNotPermitted and DeleteConfigurationConfirm
     // by looking for their presence in the Vue component tree
     const configModalData = await page.evaluate(() => {
-      if (window.app) {
-        const found = [];
-        function findComponents(vm) {
-          const name = vm.$options.name;
+      const allEls = document.querySelectorAll('*');
+      const found = [];
+      for (const currentEl of allEls) {
+        if (currentEl.__vueParentComponent) {
+          const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+          const name = vm.$options?.name || vm.type?.name || vm.__name;
           if (['ConfigurationNotPermitted', 'ConfigurationSetSuccess', 'DeleteConfigurationConfirm'].includes(name)) {
-            found.push({
-              name
-            });
+            found.push({ name });
           }
-          vm.$children.forEach(child => findComponents(child));
         }
-        findComponents(window.app);
-        return found;
       }
-      return [];
+      return found;
     });
     // These components may be conditionally rendered, so just verify the search ran
   });

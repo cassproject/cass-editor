@@ -253,7 +253,7 @@ const actions = {
     setSearchingAssertions(val) {
         this.searchingAssertions = val;
     },
-    getDirectoryChildren: function (instance, directory) {
+    getDirectoryChildren: function (directory) {
         let children = [];
         if (directory.frameworks) {
             children.push(...directory.frameworks);
@@ -266,11 +266,11 @@ const actions = {
         }
         return children;
     },
-    lastEditToUndo: function (context) {
-        context.commit('setLastEditToUndo', context.state.editsToUndo.pop());
-        return context.state.lastEditToUndo;
+    lastEditToUndo: function () {
+        this.setLastEditToUndo(this.editsToUndo.pop());
+        return this.lastEditToUndo;
     },
-    getThing: (instance, payload) => {
+    getThing: (payload) => {
         return new Promise((resolve, reject) => {
             var url = EcRemote.urlAppend(payload.server, payload.service);
             url = EcRemote.upgradeHttpToHttps(url);
@@ -289,13 +289,13 @@ const actions = {
             });
         });
     },
-    searchForAssertions: (instance) => {
+    searchForAssertions: () => {
         return new Promise((resolve, reject) => {
-            instance.state.searchingAssertions = true;
+            this.searchingAssertions = true;
             var assertions = [];
             let doSearch = async function (start, count) {
                 return new Promise((resolve, reject) => {
-                    EcAssertion.search(window.repo, "\"" + instance.state.me + "\"", async (results) => {
+                    EcAssertion.search(window.repo, "\"" + this.me + "\"", async (results) => {
                         assertions.push(...results);
                         start += count;
                         if (results.length > 0) {
@@ -319,14 +319,14 @@ const actions = {
                     }
                 },
                     (assertions) => {
-                        instance.state.assertions = assertions;
-                        instance.state.searchingAssertions = false;
+                        this.assertions = assertions;
+                        this.searchingAssertions = false;
                         resolve();
                     });
             }).catch(console.error);
         });
     },
-    computeBecause: (instance, evidences) => {
+    computeBecause: (evidences) => {
         return new Promise((resolve, reject) => {
             var explanations = [];
             new EcAsyncHelper().each(evidences, (e, callback) => {

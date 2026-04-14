@@ -107,56 +107,56 @@ test.describe('App Store Coverage', () => {
             const r = {};
 
             // Import mutations
-            store.app.importTransition( 'process');
+            store.app.setImportTransition( 'process');
             r.transition = store.app.importTransition;
 
-            store.app.importType( 'server');
+            store.app.setImportType( 'server');
             r.type = store.app.importType;
 
-            store.app.importFileType( 'csv');
+            store.app.setImportFileType( 'csv');
             r.fileType = store.app.importFileType;
 
-            store.app.importStatus( 'processing');
+            store.app.setImportStatus( 'processing');
             r.status = store.app.importStatus;
 
-            store.app.importAllowCancel( true);
+            store.app.setImportAllowCancel( true);
             r.allowCancel = store.app.importAllowCancel;
 
-            store.app.importFeedback( 'test feedback');
+            store.app.setImportFeedback( 'test feedback');
             r.feedback = store.app.importFeedback;
 
-            store.app.importDuplicates( ['dup1', 'dup2']);
+            store.app.setImportDuplicates( ['dup1', 'dup2']);
             r.duplicates = store.app.importDuplicates;
 
-            store.app.importSkip( ['skip1']);
+            store.app.setImportSkip( ['skip1']);
             r.skip = store.app.importSkip;
 
             store.app.setFirstImport( true);
             r.firstImport = store.app.firstImport;
 
-            store.app.importFramework( { name: 'Test FW' });
+            store.app.setImportFramework( { name: 'Test FW' });
             r.framework = store.app.importFramework;
 
-            store.app.importFrameworkName( 'My Framework');
+            store.app.setImportFrameworkName( 'My Framework');
             r.fwName = store.app.importFrameworkName;
 
-            store.app.importFrameworkDescription( 'A description');
+            store.app.setImportFrameworkDescription( 'A description');
             r.fwDesc = store.app.importFrameworkDescription;
 
-            store.app.importText( 'some text to import');
+            store.app.setImportText( 'some text to import');
             r.importText = store.app.importText;
 
-            store.app.importServerUrl( 'http://example.com');
+            store.app.setImportServerUrl( 'http://example.com');
             r.serverUrl = store.app.importServerUrl;
 
-            store.app.importUrl( 'http://example.com/fw');
+            store.app.setImportUrl( 'http://example.com/fw');
             r.url = store.app.importUrl;
 
-            store.app.importModalParams( { type: 'test' });
+            store.app.setImportModalParams( { type: 'test' });
             r.modalParams = store.app.importModalParams;
 
             // Import files
-            store.app.importFiles( ['file1.csv']);
+            store.app.setImportFiles( ['file1.csv']);
             r.filesSet = store.app.importFiles;
             store.app.clearImportFiles();
             r.filesCleared = store.app.importFiles;
@@ -213,31 +213,31 @@ test.describe('App Store Coverage', () => {
             const r = {};
 
             // CSV columns
-            store.app.importNameColumn( { label: 'Name', index: 0 });
+            store.app.setImportNameColumn( { label: 'Name', index: 0 });
             r.nameCol = store.app.importNameColumn;
-            store.app.importDescriptionColumn( { label: 'Desc', index: 1 });
+            store.app.setImportDescriptionColumn( { label: 'Desc', index: 1 });
             r.descCol = store.app.importDescriptionColumn;
-            store.app.importScopeColumn( { label: 'Scope', index: 2 });
+            store.app.setImportScopeColumn( { label: 'Scope', index: 2 });
             r.scopeCol = store.app.importScopeColumn;
-            store.app.importIdColumn( { label: 'ID', index: 3 });
+            store.app.setImportIdColumn( { label: 'ID', index: 3 });
             r.idCol = store.app.importIdColumn;
-            store.app.importSourceColumn( { label: 'Source', index: 4 });
+            store.app.setImportSourceColumn( { label: 'Source', index: 4 });
             r.sourceCol = store.app.importSourceColumn;
-            store.app.importRelationColumn( { label: 'Relation', index: 5 });
+            store.app.setImportRelationColumn( { label: 'Relation', index: 5 });
             r.relCol = store.app.importRelationColumn;
-            store.app.importTargetColumn( { label: 'Target', index: 6 });
+            store.app.setImportTargetColumn( { label: 'Target', index: 6 });
             r.targetCol = store.app.importTargetColumn;
-            store.app.importFrameworkNameColumn( { label: 'FW Name', index: 0 });
+            store.app.setImportFrameworkNameColumn( { label: 'FW Name', index: 0 });
             r.fwNameCol = store.app.importFrameworkNameColumn;
-            store.app.importFrameworkScopeColumn( { label: 'FW Scope', index: 1 });
+            store.app.setImportFrameworkScopeColumn( { label: 'FW Scope', index: 1 });
             r.fwScopeCol = store.app.importFrameworkScopeColumn;
-            store.app.importFrameworkIdColumn( { label: 'FW ID', index: 2 });
+            store.app.setImportFrameworkIdColumn( { label: 'FW ID', index: 2 });
             r.fwIdCol = store.app.importFrameworkIdColumn;
-            store.app.csvColumns( ['col1', 'col2', 'col3']);
+            store.app.setCsvColumns( ['col1', 'col2', 'col3']);
             r.csvCols = store.app.csvColumns;
-            store.app.csvRelationColumns( ['rel1', 'rel2']);
+            store.app.setCsvRelationColumns( ['rel1', 'rel2']);
             r.csvRelCols = store.app.csvRelationColumns;
-            store.app.csvRelationFile( 'relations.csv');
+            store.app.setCsvRelationFile( 'relations.csv');
             r.csvRelFile = store.app.csvRelationFile;
 
             // Framework search

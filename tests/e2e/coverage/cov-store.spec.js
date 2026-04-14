@@ -18,11 +18,11 @@ test('Store: app module state', async ({
       error: 'no store'
     };
     return {
-      hasAppState: store.state.app != null,
-      canViewComments: store.state.app?.canViewComments,
-      canAddComments: store.state.app?.canAddComments,
-      showRightAside: store.state.app?.showRightAside,
-      frameworks: store.state.app?.frameworks != null
+      hasAppState: store.app != null,
+      canViewComments: store.app?.canViewComments,
+      canAddComments: store.app?.canAddComments,
+      showRightAside: store.app?.showRightAside,
+      frameworks: store.app?.frameworks != null
     };
   });
   expect(result.hasAppState).toBe(true);
@@ -60,9 +60,9 @@ test('Store: app module mutations', async ({
     store.app.setSearchTerm( '');
 
     // Exercise import mutations
-    store.app.importTransition( 'process');
-    const transition = store.app.import.transition;
-    store.app.importTransition( 'upload');
+    store.app.setImportTransition( 'process');
+    const transition = store.app.import?.transition;
+    store.app.setImportTransition( 'upload');
 
     // Exercise banner/motd mutations
     store.app.setBanner( {
@@ -102,13 +102,13 @@ test('Store: editor module state', async ({
       error: 'no store'
     };
     return {
-      hasEditorState: store.state.editor != null,
-      framework: store.state.editor?.framework != null,
-      selectedCompetency: store.state.editor?.selectedCompetency,
-      queryParams: store.state.editor?.queryParams,
-      private: store.state.editor?.private,
-      newFramework: store.state.editor?.newFramework,
-      t3Profile: store.state.editor?.t3Profile
+      hasEditorState: store.editor != null,
+      framework: store.editor?.framework != null,
+      selectedCompetency: store.editor?.selectedCompetency,
+      queryParams: store.editor?.queryParams,
+      private: store.editor?.private,
+      newFramework: store.editor?.newFramework,
+      t3Profile: store.editor?.t3Profile
     };
   });
   expect(result.hasEditorState).toBe(true);
@@ -128,12 +128,12 @@ test('Store: editor module mutations', async ({
     };
 
     // Exercise cutId/copyId
-    store.editor.cutId( 'test-cut-id');
-    const cutId = store.state.editor?.cutId;
-    store.editor.cutId( null);
-    store.editor.copyId( 'test-copy-id');
-    const copyId = store.state.editor?.copyId;
-    store.editor.copyId( null);
+    store.editor.setCutId( 'test-cut-id');
+    const cutId = store.editor?.cutId;
+    store.editor.setCutId( null);
+    store.editor.setCopyId( 'test-copy-id');
+    const copyId = store.editor?.copyId;
+    store.editor.setCopyId( null);
     return {
       cutId,
       copyId
@@ -150,7 +150,7 @@ test('Store: lode module state and mutations', async ({
   await page.waitForFunction(() => window.__stores);
   const result = await page.evaluate(() => {
     const store = window.__stores;
-    const hasLodeState = store.state.lode != null;
+    const hasLodeState = store.lode != null;
 
     // Exercise lode mutations without strict type checks
     try {
@@ -182,17 +182,17 @@ test('Store: featuresEnabled state and reading', async ({
       error: 'no store'
     };
     return {
-      hasFeatures: store.state.featuresEnabled != null,
-      directoryEnabled: store.state.featuresEnabled?.directoryEnabled,
-      progressionModelEnabled: store.state.featuresEnabled?.progressionModelEnabled,
-      conceptsEnabled: store.state.featuresEnabled?.conceptsEnabled,
-      apiLoginEnabled: store.state.featuresEnabled?.apiLoginEnabled,
-      collectionsEnabled: store.state.featuresEnabled?.collectionsEnabled,
-      pluginManagerEnabled: store.state.featuresEnabled?.pluginManagerEnabled,
-      configurationsEnabled: store.state.featuresEnabled?.configurationsEnabled,
-      crosswalkEnabled: store.state.featuresEnabled?.crosswalkEnabled,
-      shareEnabled: store.state.featuresEnabled?.shareEnabled,
-      loginEnabled: store.state.featuresEnabled?.loginEnabled
+      hasFeatures: store.featuresEnabled != null,
+      directoryEnabled: store.featuresEnabled?.directoryEnabled,
+      progressionModelEnabled: store.featuresEnabled?.progressionModelEnabled,
+      conceptsEnabled: store.featuresEnabled?.conceptsEnabled,
+      apiLoginEnabled: store.featuresEnabled?.apiLoginEnabled,
+      collectionsEnabled: store.featuresEnabled?.collectionsEnabled,
+      pluginManagerEnabled: store.featuresEnabled?.pluginManagerEnabled,
+      configurationsEnabled: store.featuresEnabled?.configurationsEnabled,
+      crosswalkEnabled: store.featuresEnabled?.crosswalkEnabled,
+      shareEnabled: store.featuresEnabled?.shareEnabled,
+      loginEnabled: store.featuresEnabled?.loginEnabled
     };
   });
   expect(result.hasFeatures).toBe(true);

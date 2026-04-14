@@ -8,16 +8,9 @@
                 @change-properties="changeProperties"
                 @show-export-modal="onOpenExportModal" />
             <div class="framework-wrapper">
-                <draggable
-                    v-bind="dragOptions"
-                    v-model="frameworkDrag"
-                    tag="ul"
-                    id="framework_drag"
-                    :disabled="canEdit !== true"
-                    :group="{ name: 'test' }"
-                    handle=".handle"
-                :item-key="(item) => item.obj ? item.obj.id : (item.id || Math.random())">
-                    <template #item="{element}">
+                <div
+                    v-if="framework"
+                    id="framework_drag">
                     <Component
                         :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
                         :is="dynamicThingComponent"
@@ -58,8 +51,7 @@
                             </span>
                         </div>
                     </Component>
-                    </template>
-                </draggable>
+                </div>
                 <ProgressionHierarchy
                     :container="framework"
                     containerType="ConceptScheme"

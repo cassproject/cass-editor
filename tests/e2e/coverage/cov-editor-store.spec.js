@@ -90,22 +90,22 @@ test.describe('Editor Store Coverage', () => {
             const r = {};
 
             // conceptMode sets progressionMode to false
-            store.editor.conceptMode( true);
+            store.editor.setConceptMode( true);
             r.conceptOn = store.editor.conceptMode;
             r.progOffWhenConcept = store.editor.progressionMode;
-            store.editor.conceptMode( false);
+            store.editor.setConceptMode( false);
             r.conceptOff = store.editor.conceptMode;
 
             // progressionMode sets conceptMode to false
-            store.editor.progressionMode( true);
+            store.editor.setProgressionMode( true);
             r.progOn = store.editor.progressionMode;
             r.conceptOffWhenProg = store.editor.conceptMode;
-            store.editor.progressionMode( false);
+            store.editor.setProgressionMode( false);
             r.progOff = store.editor.progressionMode;
 
-            store.editor.collectionMode( true);
+            store.editor.setCollectionMode( true);
             r.collection = store.editor.collectionMode;
-            store.editor.collectionMode( false);
+            store.editor.setCollectionMode( false);
 
             store.editor.setRecomputeHierarchy( true);
             r.hierarchy = store.editor.recomputeHierarchy;
@@ -160,33 +160,33 @@ test.describe('Editor Store Coverage', () => {
             const r = {};
 
             // Clipboard mutations
-            store.editor.cutId( 'cut-123');
+            store.editor.setCutId( 'cut-123');
             r.cutId = store.editor.cutId;
-            store.editor.copyId( 'copy-456');
+            store.editor.setCopyId( 'copy-456');
             r.copyId = store.editor.copyId;
-            store.editor.paste( true);
+            store.editor.setPaste( true);
             r.paste = store.editor.paste;
             store.editor.setCutOrCopyContainerId( 'container-789');
             r.containerId = store.editor.cutOrCopyContainerId;
-            store.editor.cutId( null);
-            store.editor.copyId( null);
-            store.editor.paste( false);
+            store.editor.setCutId( null);
+            store.editor.setCopyId( null);
+            store.editor.setPaste( false);
 
             // Node and relate mutations
-            store.editor.nodeInFocus( 'node-1');
+            store.editor.setNodeInFocus( 'node-1');
             r.nodeInFocus = store.editor.nodeInFocus;
-            store.editor.nodeInFocus( null);
+            store.editor.setNodeInFocus( null);
 
             store.editor.setRelations( { 'a': ['b'] });
             r.relations = store.editor.relations;
 
-            store.editor.setPropertyLevel( 'Level2');
+            store.editor.setSetPropertyLevel( 'Level2');
             r.propLevel = store.editor.setPropertyLevel;
-            store.editor.setPropertyLevel( null);
+            store.editor.setSetPropertyLevel( null);
 
-            store.editor.addAnother( true);
+            store.editor.setAddAnother( true);
             r.addAnother = store.editor.addAnother;
-            store.editor.addAnother( false);
+            store.editor.setAddAnother( false);
 
             // Item mutations
             store.editor.setItemToDelete( { id: 'del-1' });
@@ -344,7 +344,7 @@ test.describe('Editor Store Coverage', () => {
 
             // lastEditToUndo action
             store.editor.addEditsToUndo( { id: 'undo-1' });
-            const lastEdit = await store.editor.setLastEditToUndo();
+            const lastEdit = await store.editor.lastEditToUndo();
             r.lastUndoEdit = lastEdit;
 
             return r;

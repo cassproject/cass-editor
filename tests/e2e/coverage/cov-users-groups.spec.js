@@ -197,14 +197,16 @@ test.describe.serial('Users/Groups Coverage', () => {
         dropdowns: 0,
         panelItems: 0
       };
-      function findComponents(component) {
-        const name = component.$options.name;
-        if (name === 'CassPanel') found.panels++;
-        if (name === 'CassDropdown') found.dropdowns++;
-        if (name === 'CassPanelItem') found.panelItems++;
-        component.$children.forEach(child => findComponents(child));
+      const allEls = document.querySelectorAll('*');
+      for (const currentEl of allEls) {
+        if (currentEl.__vueParentComponent) {
+          const component = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+          const name = component.$options?.name || component.type?.name || component.__name;
+          if (name === 'CassPanel') found.panels++;
+          if (name === 'CassDropdown') found.dropdowns++;
+          if (name === 'CassPanelItem') found.panelItems++;
+        }
       }
-      findComponents(vm);
       return found;
     });
     expect(componentData).toBeTruthy();

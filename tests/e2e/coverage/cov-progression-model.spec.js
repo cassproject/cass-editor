@@ -39,9 +39,9 @@ test.describe.serial('Progression Model Coverage', () => {
       if (!store) return null;
 
       // Set progression mode
-      store.editor.progressionMode( true);
+      store.editor.setProgressionMode( true);
       const pm1 = store.editor.progressionMode;
-      store.editor.progressionMode( false);
+      store.editor.setProgressionMode( false);
       const pm2 = store.editor.progressionMode;
       return {
         pm1,
@@ -60,26 +60,24 @@ test.describe.serial('Progression Model Coverage', () => {
 
     // Set progression mode
     await page.evaluate(() => {
-      window.__stores.editor.progressionMode( true);
-      window.__stores.editor.conceptMode( false);
+      window.__stores.editor.setProgressionMode( true);
+      window.__stores.editor.setConceptMode( false);
     });
     await page.goto('/#/progressionLevels?ceasnDataFields=true&server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     // Exercise Frameworks.vue computed properties in progression mode
     const frameworksData = await page.evaluate(() => {
-      if (window.app) {
-        const found = [];
-        function findFW(vm) {
-          if (vm.$options.name === 'Frameworks') {
-            found.push({
-              name: vm.$options.name,
-              progressionMode: vm.$store.editor.progressionMode
-            });
+      const allEls = document.querySelectorAll('*');
+      for (const currentEl of allEls) {
+        if (currentEl.__vueParentComponent) {
+          const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+          if ((vm.$options?.name || vm.type?.name || vm.__name) === 'Frameworks') {
+            return {
+              name: 'Frameworks',
+              progressionMode: window.__stores.editor.progressionMode
+            };
           }
-          vm.$children.forEach(child => findFW(child));
         }
-        findFW(window.app);
-        return found.length > 0 ? found[0] : null;
       }
       return null;
     });
@@ -94,8 +92,8 @@ test.describe.serial('Progression Model Coverage', () => {
 
     // Set progression mode
     await page.evaluate(() => {
-      window.__stores.editor.progressionMode( true);
-      window.__stores.editor.conceptMode( false);
+      window.__stores.editor.setProgressionMode( true);
+      window.__stores.editor.setConceptMode( false);
     });
 
     // Navigate to progression levels
@@ -112,19 +110,17 @@ test.describe.serial('Progression Model Coverage', () => {
       if (currentUrl.includes('progressionModel')) {
         // Exercise ProgressionModel component via Vue tree
         const pmData = await page.evaluate(() => {
-          if (window.app) {
-            const found = [];
-            function findPM(vm) {
-              if (vm.$options.name === 'ProgressionModel') {
-                found.push({
-                  name: vm.$options.name,
+          const allEls = document.querySelectorAll('*');
+          for (const currentEl of allEls) {
+            if (currentEl.__vueParentComponent) {
+              const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+              if ((vm.$options?.name || vm.type?.name || vm.__name) === 'ProgressionModel') {
+                return {
+                  name: 'ProgressionModel',
                   hasFramework: !!vm.framework
-                });
+                };
               }
-              vm.$children.forEach(child => findPM(child));
             }
-            findPM(window.app);
-            return found.length > 0 ? found[0] : null;
           }
           return null;
         });

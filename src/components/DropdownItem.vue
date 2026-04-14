@@ -18,14 +18,9 @@
 </template>
 
 <script>
-import CassDropdownItem from './DropdownItem.vue';
-
 export default {
     name: 'CassDropdownItem',
     emits: ["showDetails"],
-    components: {
-        CassDropdownItem
-    },
     props: [ 'nodes', 'label', 'depth', 'id' ],
     methods: {
         showDetailsChild(id) {

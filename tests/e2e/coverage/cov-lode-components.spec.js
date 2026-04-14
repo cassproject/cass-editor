@@ -27,23 +27,21 @@ test.describe('LODE Components Coverage', () => {
     await page.waitForLoadState('domcontentloaded');
     // Find List component in the Vue tree
     const listData = await page.evaluate(() => {
-      if (window.app) {
-        const found = [];
-        function findList(vm) {
-          if (vm.$options.name === 'List') {
-            found.push({
-              name: vm.$options.name,
+      const allEls = document.querySelectorAll('*');
+      for (const currentEl of allEls) {
+        if (currentEl.__vueParentComponent) {
+          const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+          if (vm.$options?.name === 'List') {
+            return {
+              name: 'List',
               type: vm.type,
               hasRepo: !!vm.repo,
               hasClick: typeof vm.click === 'function',
               searchOptions: typeof vm.searchOptions,
               paramObj: typeof vm.paramObj
-            });
+            };
           }
-          vm.$children.forEach(child => findList(child));
         }
-        findList(window.app);
-        return found.length > 0 ? found[0] : null;
       }
       return null;
     });
@@ -61,22 +59,20 @@ test.describe('LODE Components Coverage', () => {
     if (count > 0) {
       // Find Thing components in the tree
       const thingData = await page.evaluate(() => {
-        if (window.app) {
-          const found = [];
-          function findThing(vm) {
-            if (vm.$options.name === 'Thing') {
-              found.push({
-                name: vm.$options.name,
+        const allEls = document.querySelectorAll('*');
+        for (const currentEl of allEls) {
+          if (currentEl.__vueParentComponent) {
+            const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+            if (vm.$options?.name === 'Thing') {
+              return {
+                name: 'Thing',
                 hasObj: !!vm.obj,
                 canEdit: vm.canEdit,
                 expanded: vm.expanded,
                 hasProfile: typeof vm.profile
-              });
+              };
             }
-            vm.$children.forEach(child => findThing(child));
           }
-          findThing(window.app);
-          return found.length > 0 ? found[0] : null;
         }
         return null;
       });
@@ -92,20 +88,18 @@ test.describe('LODE Components Coverage', () => {
     await page.waitForLoadState('domcontentloaded');
     // Find Breadcrumbs component
     const breadcrumbsData = await page.evaluate(() => {
-      if (window.app) {
-        const found = [];
-        function findBC(vm) {
-          if (vm.$options.name === 'Breadcrumbs') {
-            found.push({
-              name: vm.$options.name,
+      const allEls = document.querySelectorAll('*');
+      for (const currentEl of allEls) {
+        if (currentEl.__vueParentComponent) {
+          const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+          if (vm.$options?.name === 'Breadcrumbs') {
+            return {
+              name: 'Breadcrumbs',
               hasObj: !!vm.obj,
               breadcrumbs: typeof vm.breadcrumbs
-            });
+            };
           }
-          vm.$children.forEach(child => findBC(child));
         }
-        findBC(window.app);
-        return found.length > 0 ? found[0] : null;
       }
       return null;
     });
@@ -120,29 +114,28 @@ test.describe('LODE Components Coverage', () => {
       if (!(await navigateToFramework(page))) return;
       // Find Hierarchy component
       const hierarchyData = await page.evaluate(() => {
-        if (window.app) {
-          const found = [];
-          function findH(vm) {
-            if (vm.$options.name === 'Hierarchy') {
+        const allEls = document.querySelectorAll('*');
+        const found = [];
+        for (const currentEl of allEls) {
+          if (currentEl.__vueParentComponent) {
+            const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+            if (vm.$options?.name === 'Hierarchy') {
               found.push({
-                name: vm.$options.name,
+                name: 'Hierarchy',
                 hasFramework: !!vm.framework,
                 containerType: vm.containerType
               });
             }
-            if (vm.$options.name === 'HierarchyNode') {
+            if (vm.$options?.name === 'HierarchyNode') {
               found.push({
-                name: vm.$options.name,
+                name: 'HierarchyNode',
                 hasObj: !!vm.obj,
                 depth: vm.depth
               });
             }
-            vm.$children.forEach(child => findH(child));
           }
-          findH(window.app);
-          return found;
         }
-        return null;
+        return found;
       });
       if (hierarchyData && hierarchyData.length > 0) {
         const hierarchy = hierarchyData.find(h => h.name === 'Hierarchy');
@@ -162,20 +155,16 @@ test.describe('LODE Components Coverage', () => {
       if (!(await navigateToFramework(page))) return;
       // Find Property and PropertyString components
       const propData = await page.evaluate(() => {
-        if (window.app) {
-          const found = {
-            properties: 0,
-            propertyStrings: 0
-          };
-          function findP(vm) {
-            if (vm.$options.name === 'Property') found.properties++;
-            if (vm.$options.name === 'PropertyString') found.propertyStrings++;
-            vm.$children.forEach(child => findP(child));
+        const allEls = document.querySelectorAll('*');
+        const found = { properties: 0, propertyStrings: 0 };
+        for (const currentEl of allEls) {
+          if (currentEl.__vueParentComponent) {
+            const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+            if (vm.$options?.name === 'Property') found.properties++;
+            if (vm.$options?.name === 'PropertyString') found.propertyStrings++;
           }
-          findP(window.app);
-          return found;
         }
-        return null;
+        return found;
       });
       if (propData) {
         // These should be present when viewing a framework
@@ -190,22 +179,20 @@ test.describe('LODE Components Coverage', () => {
     await page.waitForLoadState('domcontentloaded');
     // The organizations page also uses the List component
     const listData = await page.evaluate(() => {
-      if (window.app) {
-        const found = [];
-        function findList(vm) {
-          if (vm.$options.name === 'List') {
-            found.push({
-              name: vm.$options.name,
+      const allEls = document.querySelectorAll('*');
+      for (const currentEl of allEls) {
+        if (currentEl.__vueParentComponent) {
+          const vm = currentEl.__vueParentComponent.ctx || currentEl.__vueParentComponent;
+          if (vm.$options?.name === 'List') {
+            return {
+              name: 'List',
               type: vm.type,
               hasSearchResults: !!vm.searchResults,
               searchResultsLength: vm.searchResults ? vm.searchResults.length : 0,
               loading: vm.loading
-            });
+            };
           }
-          vm.$children.forEach(child => findList(child));
         }
-        findList(window.app);
-        return found.length > 0 ? found[0] : null;
       }
       return null;
     });

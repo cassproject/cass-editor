@@ -4,17 +4,20 @@ test.describe.serial('Coverage: ProgressionHierarchy component', () => {
 
   test('Creates a Progression Model and exercises hierarchy tools', async ({ page }) => {
     // Log in and go to Progression Levels (Progression Models) route
-
+    await loginAndNavigate(page);
+    // Set progression mode before navigation to ensure correct rendering immediately
+    await page.evaluate(() => {
+      window.__stores.editor.setProgressionMode( true);
+      window.__stores.editor.setConceptMode( false);
+      window.__stores.editor.setQueryParams({ ceasnDataFields: 'true', server: 'http://localhost/api/' });
+    });
+    
     await page.goto('/#/progressionLevels?ceasnDataFields=true&server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
-    // Set progression mode
-    await page.evaluate(() => {
-      window.__stores.editor.progressionMode( true);
-      window.__stores.editor.conceptMode( false);
-    });
 
-    // Wait for list to load, then click the create button
-    await page.click('#add-new-dropdown-toggle-button');
+    // Ensure we are interacting with the dropdown in the progression mode container
+    await page.waitForSelector('.concept-buttons #add-new-dropdown-toggle-button');
+    await page.click('.concept-buttons #add-new-dropdown-toggle-button');
     await expect(page.locator('#add-new-dropdown-progression-model')).toBeVisible();
     await page.click('#add-new-dropdown-progression-model');
 
@@ -23,6 +26,12 @@ test.describe.serial('Coverage: ProgressionHierarchy component', () => {
     //Set description field
 
     await page.fill('[id$="description-0"] textarea', 'Test Progression Model');
+    await page.press('[id$="description-0"] textarea', 'Tab');
+
+    // Finish creating the model via the modal
+    await page.click('#thing-editing-done-editing-button');
+    // Wait for modal to disappear
+    await page.waitForSelector('.lode__thing-editing', { state: 'hidden' });
 
     // Add a new progression level (node)
     await page.click('#adding-node-button');
