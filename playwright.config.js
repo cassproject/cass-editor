@@ -9,7 +9,7 @@ module.exports = defineConfig({
     fullyParallel: true,
     /* Fail the build on CI if you accidentally left test.only in the source code. */
     forbidOnly: !!process.env.CI,
-    maxFailures: 0,
+    maxFailures: 1,
     /* Retry on CI only */
     retries: process.env.CI ? 2 : 1,
     /* Opt out of parallel tests on CI. */
@@ -47,9 +47,9 @@ module.exports = defineConfig({
     ],
 
     /* Run your local dev server before starting the tests */
-    // webServer: {
-    //   command: 'npm run start',
-    //   url: 'http://127.0.0.1:3000',
-    //   reuseExistingServer: !process.env.CI,
-    // },
+    webServer: {
+      command: 'npm run dev',
+      url: 'http://localhost:8082',
+      reuseExistingServer: !process.env.CI,
+    },
 });

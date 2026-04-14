@@ -1,6 +1,5 @@
 <template>
     <div
-        id="app"
         :class="editorClass">
         <div
             v-if="bannerMessage"

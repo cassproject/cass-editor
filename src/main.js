@@ -74,6 +74,13 @@ const app = global.app = createApp(App)
 app.use(pinia);
 app.config.globalProperties.moment = moment;
 
+// Expose store instances for E2E tests
+import storeDefs from '@/stores/index.js';
+window.__stores = {};
+for (const key in storeDefs) {
+    window.__stores[key] = storeDefs[key](pinia);
+}
+
 app.component("infinite-loading", InfiniteLoading);
 
 // directive for clicking outside elements and performing an action
