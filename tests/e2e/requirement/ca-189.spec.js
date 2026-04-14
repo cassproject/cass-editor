@@ -12,8 +12,8 @@ test('CA-189: Branch nodes are collapsible', async ({ page }) => {
     // Verify the Hierarchy component has the expanded data prop (collapsibility mechanism)
     const result = await page.evaluate(() => {
         const hierarchyEl = document.querySelector('.lode__hierarchy');
-        if (!hierarchyEl || !hierarchyEl.__vue__) return { error: 'no hierarchy' };
-        const vm = hierarchyEl.__vue__;
+        if (!hierarchyEl || !hierarchyEl.__vueParentComponent) return { error: 'no hierarchy' };
+        const vm = hierarchyEl.__vueParentComponent.ctx;
         return {
             hasExpanded: 'expanded' in vm.$data,
             expandedValue: vm.$data.expanded,

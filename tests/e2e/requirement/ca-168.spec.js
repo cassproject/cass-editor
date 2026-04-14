@@ -27,10 +27,10 @@ test('CA-168: Bulk removal of objects from framework', async ({
   // Verify the removal infrastructure exists via Vue component
   const result = await page.evaluate(() => {
     const hierarchyEl = document.querySelector('.lode__hierarchy');
-    if (!hierarchyEl || !hierarchyEl.__vue__) return {
+    if (!hierarchyEl || !hierarchyEl.__vueParentComponent) return {
       error: 'no hierarchy'
     };
-    const vm = hierarchyEl.__vue__;
+    const vm = hierarchyEl.__vueParentComponent.ctx;
     return {
       hasDeleteSelected: typeof vm.deleteSelected === 'function',
       hasRemoveObject: vm.$listeners && 'remove-object' in vm.$listeners || vm._events && 'remove-object' in vm._events,

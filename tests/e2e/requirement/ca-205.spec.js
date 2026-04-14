@@ -13,10 +13,10 @@ test('CA-205: Comments displayable alongside object', async ({ page }) => {
 
     // Verify framework has the structure to support comments alongside properties
     const result = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
         return {
-            hasFramework: store.state.editor && store.state.editor.framework != null,
+            hasFramework: store.state.editor && store.editor.framework != null,
             hasEditorState: store.state.editor != null
         };
     });

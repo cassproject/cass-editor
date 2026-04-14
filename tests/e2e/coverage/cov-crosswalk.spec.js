@@ -26,7 +26,7 @@ test('Crosswalk: store state initialized', async ({
   });
   await expect(page.locator('#crosswalk')).toBeVisible();
   const result = await page.evaluate(() => {
-    const store = window.app && window.app.$store;
+    const store = window.__stores;
     if (!store) return {
       error: 'no store'
     };
@@ -56,10 +56,10 @@ test('Crosswalk: interact with step navigation', async ({
   // Exercise the crosswalk view component
   const result = await page.evaluate(() => {
     const el = document.querySelector('#crosswalk');
-    if (!el || !el.__vue__) return {
+    if (!el || !el.__vueParentComponent) return {
       noVue: true
     };
-    const vm = el.__vue__;
+    const vm = el.__vueParentComponent.ctx;
     // Try to access crosswalk-related data
     return {
       hasStep: vm.$data.step !== undefined || vm.step !== undefined,

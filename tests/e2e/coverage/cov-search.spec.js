@@ -43,7 +43,7 @@ test.describe('Coverage: Search.vue', () => {
 
             const VueCtor = window.app.$options._base || window.app.constructor;
             const Ctor = VueCtor.extend(SearchOptions);
-            const vm = new Ctor({ store: window.app.$store }).$mount();
+            const vm = new Ctor({ store: window.__stores }).$mount();
 
             let initialParent = vm.parent;
             let initialSearchOptionsLength = vm.searchOptions ? vm.searchOptions.length : 0;
@@ -105,11 +105,11 @@ test.describe('Coverage: Search.vue', () => {
             const VueCtor = window.app.$options._base || window.app.constructor;
             const Ctor = VueCtor.extend(SearchOptions);
             // mock store states
-            window.app.$store.commit('editor/framework', { getName: () => "Test Framework" });
-            window.app.$store.commit('editor/selectedCompetency', { getName: () => "Test Competency" });
+            window.__stores.editor.setFramework( { getName: () => "Test Framework" });
+            window.__stores.editor.setSelectedCompetency( { getName: () => "Test Competency" });
 
             const vm = new Ctor({
-                store: window.app.$store,
+                store: window.__stores,
                 propsData: {
                     parent: { id: "parent1" }
                 }

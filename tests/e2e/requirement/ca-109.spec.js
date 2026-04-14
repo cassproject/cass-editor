@@ -19,8 +19,8 @@ test('CA-109: Comment access identities are manageable', async ({ page }) => {
         // Walk up from the users tab to find the ConfigurationDetails Vue instance
         const allVms = [];
         document.querySelectorAll('*').forEach(el => {
-            if (el.__vue__ && el.__vue__.$options && el.__vue__.$options.name === 'ConfigurationDetails') {
-                allVms.push(el.__vue__);
+            if (el.__vueParentComponent && el.__vueParentComponent.$options && el.__vueParentComponent.$options.name === 'ConfigurationDetails') {
+                allVms.push(el.__vueParentComponent);
             }
         });
         if (allVms.length === 0) return { found: false };

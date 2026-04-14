@@ -25,7 +25,7 @@ test('CA-100: RDF properties specify a name via rdfs:label', async ({
     const propertyEls = document.querySelectorAll('.lode__Property');
     const properties = [];
     for (const el of propertyEls) {
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       if (vm && vm.schema) {
         const rdfsLabel = vm.schema['http://www.w3.org/2000/01/rdf-schema#label'];
         properties.push({

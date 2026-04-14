@@ -24,7 +24,7 @@ test('CA-101: RDF properties specify a domain type', async ({
     const propertyEls = document.querySelectorAll('.lode__Property');
     const properties = [];
     for (const el of propertyEls) {
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       if (vm && vm.schema) {
         const domain = vm.schema['http://schema.org/domainIncludes'];
         properties.push({

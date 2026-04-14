@@ -21,10 +21,10 @@ test.describe.serial('Concept Scheme Coverage', () => {
 
     // The concepts route uses Frameworks.vue but in concept mode
     const conceptModeData = await page.evaluate(() => {
-      if (window.app && window.app.$store) {
+      if (window.__stores) {
         return {
-          conceptMode: window.app.$store.getters['editor/conceptMode'],
-          progressionMode: window.app.$store.getters['editor/progressionMode']
+          conceptMode: window.__stores.editor.conceptMode,
+          progressionMode: window.__stores.editor.progressionMode
         };
       }
       return null;
@@ -38,8 +38,8 @@ test.describe.serial('Concept Scheme Coverage', () => {
 
     // Set concept mode
     await page.evaluate(() => {
-      window.app.$store.commit('editor/conceptMode', true);
-      window.app.$store.commit('editor/progressionMode', false);
+      window.__stores.editor.conceptMode( true);
+      window.__stores.editor.progressionMode( false);
     });
 
     // Navigate to concepts list
@@ -58,10 +58,10 @@ test.describe.serial('Concept Scheme Coverage', () => {
         const csData = await page.evaluate(() => {
           const els = document.querySelectorAll('[id]');
           for (const el of els) {
-            if (el.__vue__ && el.__vue__.$options.name === 'ConceptScheme') {
-              const vm = el.__vue__;
+            if (el.__vueParentComponent && el.__vueParentComponent.$options.name === 'ConceptScheme') {
+              const vm = el.__vueParentComponent.ctx;
               return {
-                name: vm.$options.name,
+                name: (vm.$options?.name || vm.__name),
                 hasFramework: !!vm.framework,
                 canEdit: vm.canEdit,
                 queryParams: vm.queryParams
@@ -72,9 +72,9 @@ test.describe.serial('Concept Scheme Coverage', () => {
           if (window.app) {
             const found = [];
             function findCS(vm) {
-              if (vm.$options.name === 'ConceptScheme') {
+              if ((vm.$options?.name || vm.__name) === 'ConceptScheme') {
                 found.push({
-                  name: vm.$options.name,
+                  name: (vm.$options?.name || vm.__name),
                   hasFramework: !!vm.framework
                 });
               }
@@ -99,20 +99,20 @@ test.describe.serial('Concept Scheme Coverage', () => {
 
     // Exercise concept mode related store mutations
     const storeData = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
 
       // Set concept mode
-      store.commit('editor/conceptMode', true);
-      const cm1 = store.getters['editor/conceptMode'];
-      store.commit('editor/conceptMode', false);
-      const cm2 = store.getters['editor/conceptMode'];
+      store.editor.conceptMode( true);
+      const cm1 = store.editor.conceptMode;
+      store.editor.conceptMode( false);
+      const cm2 = store.editor.conceptMode;
 
       // Collection mode
-      store.commit('editor/collectionMode', true);
-      const col1 = store.getters['editor/collectionMode'];
-      store.commit('editor/collectionMode', false);
-      const col2 = store.getters['editor/collectionMode'];
+      store.editor.collectionMode( true);
+      const col1 = store.editor.collectionMode;
+      store.editor.collectionMode( false);
+      const col2 = store.editor.collectionMode;
       return {
         cm1,
         cm2,
@@ -138,10 +138,10 @@ test.describe.serial('Concept Scheme Coverage', () => {
       if (window.app) {
         const found = [];
         function findFW(vm) {
-          if (vm.$options.name === 'Frameworks') {
+          if ((vm.$options?.name || vm.__name) === 'Frameworks') {
             found.push({
-              name: vm.$options.name,
-              conceptMode: vm.$store.getters['editor/conceptMode'],
+              name: (vm.$options?.name || vm.__name),
+              conceptMode: vm.$store.editor.conceptMode,
               type: vm.type
             });
           }

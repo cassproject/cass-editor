@@ -25,9 +25,9 @@ test('CA-110: Owner access via KBAC @owner field', async ({ page }) => {
 
     // 2. Verify the @owner field is set on the framework data via the app's store
     const ownerInfo = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
-        const framework = store.state.editor && store.state.editor.framework;
+        const framework = store.state.editor && store.editor.framework;
         if (!framework) return { error: 'no framework in store' };
         return {
             hasOwner: Array.isArray(framework.owner) && framework.owner.length > 0,

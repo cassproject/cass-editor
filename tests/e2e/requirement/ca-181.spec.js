@@ -13,8 +13,8 @@ test('CA-181: Objects movable indent and outdent', async ({ page }) => {
     // Verify the Hierarchy component has arrow key handling for indent/outdent
     const result = await page.evaluate(() => {
         const hierarchyEl = document.querySelector('.lode__hierarchy');
-        if (!hierarchyEl || !hierarchyEl.__vue__) return { error: 'no hierarchy' };
-        const vm = hierarchyEl.__vue__;
+        if (!hierarchyEl || !hierarchyEl.__vueParentComponent) return { error: 'no hierarchy' };
+        const vm = hierarchyEl.__vueParentComponent.ctx;
         return {
             hasArrowKey: 'arrowKey' in vm.$data,
             hasShiftKey: 'shiftKey' in vm.$data,

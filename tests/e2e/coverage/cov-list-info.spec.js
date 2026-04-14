@@ -20,8 +20,8 @@ test('Thing: framework Thing rendering', async ({
     if (thingEls.length === 0) {
       // Try finding Thing inside framework
       const frameworkThingEl = document.querySelector('.lode__thing') || document.querySelector('[class*="thing"]');
-      if (frameworkThingEl && frameworkThingEl.__vue__) {
-        const vm = frameworkThingEl.__vue__;
+      if (frameworkThingEl && frameworkThingEl.__vueParentComponent) {
+        const vm = frameworkThingEl.__vueParentComponent.ctx;
         return {
           name: vm.name || vm.getName,
           shortId: vm.shortId,
@@ -32,8 +32,8 @@ test('Thing: framework Thing rendering', async ({
     }
     // From initial framework list
     for (const el of thingEls) {
-      if (el.__vue__) {
-        const vm = el.__vue__;
+      if (el.__vueParentComponent) {
+        const vm = el.__vueParentComponent.ctx;
         return {
           name: vm.name,
           shortId: vm.shortId,
@@ -69,8 +69,8 @@ test('Breadcrumbs: navigate framework and check breadcrumbs', async ({
     if (!breadcrumbEl) return {
       noBreadcrumbs: true
     };
-    if (breadcrumbEl.__vue__) {
-      const vm = breadcrumbEl.__vue__;
+    if (breadcrumbEl.__vueParentComponent) {
+      const vm = breadcrumbEl.__vueParentComponent.ctx;
       return {
         items: vm.breadcrumbs ? vm.breadcrumbs.length : 0,
         hasSelectedCompetency: vm.selectedCompetency != null,
@@ -106,8 +106,8 @@ test('ListItemInfo: hover or click to show info', async ({
       // Try finding it in the component tree
       const allEls = document.querySelectorAll('*');
       for (const el of allEls) {
-        const vm = el.__vue__;
-        if (vm && vm.$options && vm.$options.name === 'ListItemInfo') {
+        const vm = el.__vueParentComponent.ctx;
+        if (vm && vm.$options && (vm.$options?.name || vm.__name) === 'ListItemInfo') {
           return {
             found: true,
             hasObj: vm.obj != null,
@@ -143,7 +143,7 @@ test('Thing: double-click navigates into framework from list', async ({
   await thingItems.first().click();
   // Verify framework info shows
   const viewResult = await page.evaluate(() => {
-    const store = window.app && window.app.$store;
+    const store = window.__stores;
     if (!store) return {
       error: 'no store'
     };

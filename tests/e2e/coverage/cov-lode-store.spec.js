@@ -12,51 +12,51 @@ test.describe('Lode Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // isSavingProperty
-            r.savePropDefault = store.getters['lode/isSavingProperty'];
-            store.commit('lode/setIsSavingProperty', true);
-            r.savePropTrue = store.getters['lode/isSavingProperty'];
-            store.commit('lode/setIsSavingProperty', false);
+            r.savePropDefault = store.lode.isSavingProperty;
+            store.lode.setIsSavingProperty( true);
+            r.savePropTrue = store.lode.isSavingProperty;
+            store.lode.setIsSavingProperty( false);
 
             // isSavingThing
-            r.saveThingDefault = store.getters['lode/isSavingThing'];
-            store.commit('lode/setIsSavingThing', true);
-            r.saveThingTrue = store.getters['lode/isSavingThing'];
-            store.commit('lode/setIsSavingThing', false);
+            r.saveThingDefault = store.lode.isSavingThing;
+            store.lode.setIsSavingThing( true);
+            r.saveThingTrue = store.lode.isSavingThing;
+            store.lode.setIsSavingThing( false);
 
             // isAddingProperty
-            r.addPropDefault = store.getters['lode/isAddingProperty'];
-            store.commit('lode/setIsAddingProperty', true);
-            r.addPropTrue = store.getters['lode/isAddingProperty'];
-            store.commit('lode/setIsAddingProperty', false);
+            r.addPropDefault = store.lode.isAddingProperty;
+            store.lode.setIsAddingProperty( true);
+            r.addPropTrue = store.lode.isAddingProperty;
+            store.lode.setIsAddingProperty( false);
 
             // addingProperty
-            r.addingPropDefault = store.getters['lode/addingProperty'];
-            store.commit('lode/setAddingProperty', 'http://schema.org/name');
-            r.addingPropSet = store.getters['lode/addingProperty'];
-            store.commit('lode/setAddingProperty', '');
+            r.addingPropDefault = store.lode.addingProperty;
+            store.lode.setAddingProperty( 'http://schema.org/name');
+            r.addingPropSet = store.lode.addingProperty;
+            store.lode.setAddingProperty( '');
 
             // addingRange
-            r.addingRangeDefault = store.getters['lode/addingRange'];
-            store.commit('lode/setAddingRange', ['http://schema.org/Text']);
-            r.addingRangeSet = store.getters['lode/addingRange'];
-            store.commit('lode/setAddingRange', []);
+            r.addingRangeDefault = store.lode.addingRange;
+            store.lode.setAddingRange( ['http://schema.org/Text']);
+            r.addingRangeSet = store.lode.addingRange;
+            store.lode.setAddingRange( []);
 
             // addingChecked
-            r.addingCheckedDefault = store.getters['lode/addingChecked'];
-            store.commit('lode/setAddingChecked', ['opt1', 'opt2']);
-            r.addingCheckedSet = store.getters['lode/addingChecked'];
-            store.commit('lode/setAddingChecked', []);
+            r.addingCheckedDefault = store.lode.addingChecked;
+            store.lode.setAddingChecked( ['opt1', 'opt2']);
+            r.addingCheckedSet = store.lode.addingChecked;
+            store.lode.setAddingChecked( []);
 
             // includeRelations
-            r.includeRelDefault = store.getters['lode/includeRelations'];
-            store.commit('lode/includeRelations', false);
-            r.includeRelFalse = store.getters['lode/includeRelations'];
-            store.commit('lode/includeRelations', true);
+            r.includeRelDefault = store.lode.includeRelations;
+            store.lode.setIncludeRelations( false);
+            r.includeRelFalse = store.lode.includeRelations;
+            store.lode.setIncludeRelations( true);
 
             return r;
         });
@@ -83,79 +83,79 @@ test.describe('Lode Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // setAddingValues with array of objects
-            store.commit('lode/setAddingValues', [
+            store.lode.setAddingValues( [
                 { '@value': 'val1', '@language': 'en' },
                 { '@value': 'val2', '@language': 'es' }
             ]);
-            r.addingValues = store.getters['lode/addingValues'];
+            r.addingValues = store.lode.addingValues;
             r.addingValuesLen = r.addingValues.length;
 
             // addToAddingValues
-            store.commit('lode/addToAddingValues', { '@value': 'val3', '@language': 'fr' });
-            r.addedValues = store.getters['lode/addingValues'];
+            store.lode.addToAddingValues( { '@value': 'val3', '@language': 'fr' });
+            r.addedValues = store.lode.addingValues;
             r.addedValuesLen = r.addedValues.length;
 
             // removeAddingValueAtIndex - sets state marker, does NOT splice
-            store.commit('lode/removeAddingValueAtIndex', 0);
-            r.removeIdx = store.getters['lode/removeAddingValueAtIndex'];
-            r.afterRemoveLen = store.getters['lode/addingValues'].length; // still 3
+            store.lode.removeAddingValueAtIndex( 0);
+            r.removeIdx = store.lode.removeAddingValueAtIndex;
+            r.afterRemoveLen = store.lode.addingValues.length; // still 3
 
             // Clean up
-            store.commit('lode/setAddingValues', []);
+            store.lode.setAddingValues( []);
 
             // competencySearchModalOpen
-            store.commit('lode/competencySearchModalOpen', true);
-            r.searchModalOpen = store.state.lode.competencySearchModalOpen;
-            store.commit('lode/competencySearchModalOpen', false);
+            store.lode.setCompetencySearchModalOpen( true);
+            r.searchModalOpen = store.lode.competencySearchModalOpen;
+            store.lode.setCompetencySearchModalOpen( false);
 
             // copyOrLink
-            store.commit('lode/copyOrLink', true);
-            r.copyOrLink = store.state.lode.copyOrLink;
-            store.commit('lode/copyOrLink', false);
+            store.lode.setCopyOrLink( true);
+            r.copyOrLink = store.lode.copyOrLink;
+            store.lode.setCopyOrLink( false);
 
             // searchType
-            store.commit('lode/searchType', 'Competency');
-            r.searchType = store.state.lode.searchType;
-            store.commit('lode/searchType', null);
+            store.lode.setSearchType( 'Competency');
+            r.searchType = store.lode.searchType;
+            store.lode.setSearchType( null);
 
             // incrementNumPropertyComponents / decrementNumPropertyComponents
-            store.commit('lode/incrementNumPropertyComponents', 'thing-1');
-            r.numIncrement1 = store.state.lode.numPropertyComponentsVisible['thing-1'];
-            store.commit('lode/incrementNumPropertyComponents', 'thing-1');
-            r.numIncrement2 = store.state.lode.numPropertyComponentsVisible['thing-1'];
-            store.commit('lode/decrementNumPropertyComponents', 'thing-1');
-            r.numDecrement = store.state.lode.numPropertyComponentsVisible['thing-1'];
-            store.commit('lode/decrementNumPropertyComponents', 'thing-1');
+            store.lode.incrementNumPropertyComponents( 'thing-1');
+            r.numIncrement1 = store.lode.numPropertyComponentsVisible['thing-1'];
+            store.lode.incrementNumPropertyComponents( 'thing-1');
+            r.numIncrement2 = store.lode.numPropertyComponentsVisible['thing-1'];
+            store.lode.decrementNumPropertyComponents( 'thing-1');
+            r.numDecrement = store.lode.numPropertyComponentsVisible['thing-1'];
+            store.lode.decrementNumPropertyComponents( 'thing-1');
 
             // setSchemata expects { id: string, obj: array }
             const schemaPayload = {
                 id: 'schema:Thing',
                 obj: [{ '@id': 'http://schema.org/name', 'http://schema.org/domainIncludes': [{ '@id': 'schema:Thing' }] }]
             };
-            store.commit('lode/setSchemata', schemaPayload);
-            r.schemata = store.state.lode.schemata['schema:Thing'];
+            store.lode.setSchemata( schemaPayload);
+            r.schemata = store.lode.schemata['schema:Thing'];
 
             // setEmptySchemataLookup — test with separate key
-            store.commit('lode/setEmptySchemataLookup', { id: 'schema:Empty' });
-            r.emptySchemata = store.state.lode.schemataLookup['schema:Empty'];
+            store.lode.setEmptySchemataLookup( { id: 'schema:Empty' });
+            r.emptySchemata = store.lode.schemataLookup['schema:Empty'];
 
             // setSchemataLookup requires schemataLookup[id] to exist first
-            store.commit('lode/setEmptySchemataLookup', { id: 'schema:Thing' });
-            store.commit('lode/setSchemataLookup', { index: 0, schema: schemaPayload });
-            r.schemataLookup = store.state.lode.schemataLookup['schema:Thing']['http://schema.org/name'];
+            store.lode.setEmptySchemataLookup( { id: 'schema:Thing' });
+            store.lode.setSchemataLookup( { index: 0, schema: schemaPayload });
+            r.schemataLookup = store.lode.schemataLookup['schema:Thing']['http://schema.org/name'];
 
             // setObjectModel expects { type: { '@id': string }, val: object }
-            store.commit('lode/setObjectModel', { type: { '@id': 'http://schema.org/Person' }, val: { label: 'Person' } });
-            r.objectModel = store.state.lode.objectModel['http://schema.org/Person'];
+            store.lode.setObjectModel( { type: { '@id': 'http://schema.org/Person' }, val: { label: 'Person' } });
+            r.objectModel = store.lode.objectModel['http://schema.org/Person'];
 
             // rawSchemata expects { id: string, obj: object }
-            store.commit('lode/rawSchemata', { id: 'testCtx', obj: { '@context': {} } });
-            r.rawSchemata = store.state.lode.rawSchemata['testCtx'];
+            store.lode.setRawSchemata( { id: 'testCtx', obj: { '@context': {} } });
+            r.rawSchemata = store.lode.rawSchemata['testCtx'];
 
             return r;
         });

@@ -31,13 +31,13 @@ test('CA-135: Competency search alongside framework search', async ({
 
   // Verify the search term propagated to the Vuex store (app module)
   const searchState = await page.evaluate(() => {
-    const store = window.app && window.app.$store;
+    const store = window.__stores;
     if (!store) return {
       error: 'no store'
     };
     return {
-      hasSearchTerm: store.state.app && store.state.app.frameworks && store.state.app.frameworks.searchTerm !== undefined,
-      searchTerm: store.state.app && store.state.app.frameworks ? store.state.app.frameworks.searchTerm : null
+      hasSearchTerm: store.state.app && store.app.frameworks && store.app.frameworks.searchTerm !== undefined,
+      searchTerm: store.state.app && store.app.frameworks ? store.app.frameworks.searchTerm : null
     };
   });
 

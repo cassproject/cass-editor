@@ -9,9 +9,9 @@ test('CA-212: Owner can accept suggestion', async ({ page }) => {
 
     // Verify the owner can edit (canEdit=true means they can accept suggestions)
     const result = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
-        const framework = store.state.editor && store.state.editor.framework;
+        const framework = store.state.editor && store.editor.framework;
         if (!framework) return { error: 'no framework' };
         return {
             hasOwner: framework['@owner'] !== undefined,

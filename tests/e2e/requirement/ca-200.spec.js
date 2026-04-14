@@ -9,9 +9,9 @@ test('CA-200: Resource competency targetUrl field', async ({ page }) => {
 
     // Verify framework has competency references (targetUrl -> competency ID)
     const result = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
-        const framework = store.state.editor && store.state.editor.framework;
+        const framework = store.state.editor && store.editor.framework;
         if (!framework) return { error: 'no framework' };
         return {
             hasCompetency: framework.competency !== undefined

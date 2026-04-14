@@ -27,10 +27,10 @@ test.describe('Error Pages Coverage', () => {
         // Exercise the Forbidden Vue component computed properties
         const computedProps = await page.evaluate(() => {
             const el = document.querySelector('#internal-error');
-            if (el && el.__vue__) {
+            if (el && el.__vueParentComponent) {
                 return {
-                    name: el.__vue__.$options.name,
-                    queryParams: el.__vue__.queryParams
+                    name: el.__vueParentComponent.$options.name,
+                    queryParams: el.__vueParentComponent.ctx.queryParams
                 };
             }
             return null;
@@ -55,10 +55,10 @@ test.describe('Error Pages Coverage', () => {
         // Exercise the InternalError Vue component computed properties
         const computedProps = await page.evaluate(() => {
             const el = document.querySelector('#internal-error');
-            if (el && el.__vue__) {
+            if (el && el.__vueParentComponent) {
                 return {
-                    name: el.__vue__.$options.name,
-                    queryParams: el.__vue__.queryParams
+                    name: el.__vueParentComponent.$options.name,
+                    queryParams: el.__vueParentComponent.ctx.queryParams
                 };
             }
             return null;

@@ -32,10 +32,10 @@ test.describe.skip('Coverage: Comment.vue', () => {
             // Since Comment is just a component, we can import it if it's anywhere, or we can mock it
             // if we trigger Comments.
             if (!commentOptions) {
-                window.app.$store.commit('editor/framework', { shortId: () => "fw1" });
+                window.__stores.editor.setFramework( { shortId: () => "fw1" });
                 // We could navigate and open Comments
-                window.app.$store.commit('app/showRightAside');
-                window.app.$store.commit('app/rightAsideObject', { type: 'Comments' });
+                window.__stores.app.openRightAside();
+                window.__stores.app.setRightAsideObject( { type: 'Comments' });
                 await new Promise(resolve => setTimeout(resolve, 500));
                 commentOptions = findComponent(window.app, 'Comment');
             }
@@ -46,7 +46,7 @@ test.describe.skip('Coverage: Comment.vue', () => {
             const VueCtor = window.app.$options._base || window.app.constructor;
             const Ctor = VueCtor.extend(commentOptions);
             const vm = new Ctor({
-                store: window.app.$store,
+                store: window.__stores,
                 propsData: {
                     comment: {
                         creatorName: "Test User",
@@ -70,16 +70,16 @@ test.describe.skip('Coverage: Comment.vue', () => {
             let ddActive = vm.commentListDropDownActive;
 
             vm.handleClickReply();
-            let addedType = window.app.$store.state.editor.addCommentType;
-            let showModalType = window.app.$store.getters['app/showModal'];
+            let addedType = window.__stores.editor.addCommentType;
+            let showModalType = window.__stores.app.showModal;
 
             vm.handleClickEdit();
-            let addedTypeEdit = window.app.$store.state.editor.addCommentType;
+            let addedTypeEdit = window.__stores.editor.addCommentType;
 
             vm.handleClickEditReply(0);
 
             vm.handleClickDelete();
-            let ctd = window.app.$store.state.editor.commentsToDelete;
+            let ctd = window.__stores.editor.commentsToDelete;
 
             vm.handleClickDeleteReply(0);
 

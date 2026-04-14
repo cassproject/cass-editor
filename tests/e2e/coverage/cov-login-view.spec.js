@@ -36,8 +36,8 @@ test.describe('Login View Coverage', () => {
         r.loginFound = false;
         // Still exercise store getters used by Login
         const store = app.$store;
-        r.legacyEnabled = store.getters['featuresEnabled/legacyLoginEnabled'];
-        r.apiEnabled = store.getters['featuresEnabled/apiLoginEnabled'];
+        r.legacyEnabled = store.featuresEnabled.legacyLoginEnabled;
+        r.apiEnabled = store.featuresEnabled.apiLoginEnabled;
         return r;
       }
       r.loginFound = true;
@@ -108,7 +108,7 @@ test.describe('Login View Coverage', () => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     await page.evaluate(() => {
-      window.app.$store.commit('featuresEnabled/apiLoginEnabled', true);
+      window.__stores.featuresEnabled.setApiLoginEnabled( true);
     });
     await page.goto('/#/login?server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
@@ -122,7 +122,7 @@ test.describe('Login View Coverage', () => {
 
     // Restore
     await page.evaluate(() => {
-      window.app.$store.commit('featuresEnabled/apiLoginEnabled', false);
+      window.__stores.featuresEnabled.setApiLoginEnabled( false);
     });
   });
 });

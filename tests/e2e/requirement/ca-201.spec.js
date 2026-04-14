@@ -9,9 +9,9 @@ test('CA-201: Resource framework targetFramework field', async ({ page }) => {
 
     // Verify framework has an ID (the targetFramework reference)
     const result = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
-        const framework = store.state.editor && store.state.editor.framework;
+        const framework = store.state.editor && store.editor.framework;
         if (!framework) return { error: 'no framework' };
         return {
             hasId: framework.id != null,

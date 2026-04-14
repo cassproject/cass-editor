@@ -15,8 +15,8 @@ test('CA-186: Cut via keyboard shortcut', async ({ page }) => {
     // Verify Hierarchy component has cut handling via keydown listener
     const result = await page.evaluate(() => {
         const hierarchyEl = document.querySelector('.lode__hierarchy');
-        if (!hierarchyEl || !hierarchyEl.__vue__) return { error: 'no hierarchy' };
-        const vm = hierarchyEl.__vue__;
+        if (!hierarchyEl || !hierarchyEl.__vueParentComponent) return { error: 'no hierarchy' };
+        const vm = hierarchyEl.__vueParentComponent.ctx;
         return {
             hasCutClick: typeof vm.cutClick === 'function'
         };

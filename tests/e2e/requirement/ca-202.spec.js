@@ -10,11 +10,11 @@ test('CA-202: CRUD comment on an object', async ({ page }) => {
 
     // Verify the framework store has comment infrastructure
     const result = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
         return {
             hasCommentsState: store.state.editor != null,
-            canAddComments: store.state.app && store.state.app.canAddComments !== undefined
+            canAddComments: store.state.app && store.app.canAddComments !== undefined
         };
     });
 

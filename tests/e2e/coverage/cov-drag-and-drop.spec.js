@@ -32,7 +32,7 @@ test.describe('Coverage: DragAndDrop.vue', () => {
 
             const VueCtor = window.app.$options._base || window.app.constructor;
             const Ctor = VueCtor.extend(dndOptions);
-            const vm = new Ctor({ store: window.app.$store }).$mount();
+            const vm = new Ctor({ store: window.__stores }).$mount();
 
             let initialUploadDisabled = vm.uploadDisabled;
 
@@ -64,7 +64,7 @@ test.describe('Coverage: DragAndDrop.vue', () => {
 
             // process
             vm.process();
-            let importedFiles = window.app.$store.getters['app/importFiles'];
+            let importedFiles = window.__stores.app.importFiles;
 
             return {
                 initialUploadDisabled,

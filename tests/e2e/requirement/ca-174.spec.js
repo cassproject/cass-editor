@@ -9,9 +9,9 @@ test('CA-174: Relationships have source and target', async ({ page }) => {
 
     // Verify the framework has the relation infrastructure
     const result = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
-        const framework = store.state.editor && store.state.editor.framework;
+        const framework = store.state.editor && store.editor.framework;
         if (!framework) return { error: 'no framework' };
         return {
             hasRelation: framework.relation !== undefined,

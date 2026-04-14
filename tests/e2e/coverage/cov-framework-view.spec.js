@@ -12,18 +12,18 @@ test.describe('Framework View Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Exercise getters used by Framework.vue computed properties
-            r.newFramework = store.getters['editor/newFramework'];
-            r.queryParams = store.getters['editor/queryParams'];
-            r.showRightAside = store.getters['app/showRightAside'];
-            r.framework = store.getters['editor/framework'];
+            r.newFramework = store.editor.newFramework;
+            r.queryParams = store.editor.queryParams;
+            r.showRightAside = store.app.showRightAside;
+            r.framework = store.editor.framework;
 
             // isCeasn logic
-            const qp = store.getters['editor/queryParams'];
+            const qp = store.editor.queryParams;
             r.isCeasn = qp && qp.ceasnDataFields === 'true';
 
             // loggedIn logic
@@ -37,16 +37,16 @@ test.describe('Framework View Coverage', () => {
             r.thingComponent = 'Thing'; // not editing, and no newFramework
 
             // Test setting a mock framework and checking getters
-            store.commit('editor/framework', { shortId: () => 'fw-1', name: 'Test FW', competency: ['c1'], getTimestamp: () => null });
-            r.frameworkSet = store.getters['editor/framework'];
+            store.editor.setFramework( { shortId: () => 'fw-1', name: 'Test FW', competency: ['c1'], getTimestamp: () => null });
+            r.frameworkSet = store.editor.framework;
             r.hasName = r.frameworkSet && r.frameworkSet.name === 'Test FW';
 
             // configuration getter
-            r.configuration = store.getters['editor/configuration'];
+            r.configuration = store.editor.configuration;
 
             // Clean up
-            store.commit('editor/framework', null);
-            store.commit('editor/configuration', null);
+            store.editor.setFramework( null);
+            store.editor.setConfiguration( null);
 
             return r;
         });
@@ -159,7 +159,7 @@ test.describe('Framework View Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
@@ -190,20 +190,20 @@ test.describe('Framework View Coverage', () => {
             r.ts3 = mockFw3.getTimestamp() || mockFw3['schema:dateModified'] || null;
 
             // Exercise editor store mutations used by Framework methods
-            store.commit('editor/configuration', { frameworkConfig: {}, competencyConfig: {} });
-            r.configSet = store.getters['editor/configuration'] !== null;
-            store.commit('editor/configuration', null);
+            store.editor.setConfiguration( { frameworkConfig: {}, competencyConfig: {} });
+            r.configSet = store.editor.configuration !== null;
+            store.editor.setConfiguration( null);
 
             // Exercise setItemToExport
-            store.commit('editor/setItemToExport', { id: 'fw-export' });
-            r.itemToExport = store.state.editor.itemToExport;
-            store.commit('editor/setItemToExport', {});
+            store.editor.setItemToExport( { id: 'fw-export' });
+            r.itemToExport = store.editor.itemToExport;
+            store.editor.setItemToExport( {});
 
             // Exercise t3Profile
-            store.commit('editor/t3Profile', true);
-            r.t3On = store.state.editor.t3Profile;
-            store.commit('editor/t3Profile', false);
-            r.t3Off = store.state.editor.t3Profile;
+            store.editor.setT3Profile( true);
+            r.t3On = store.editor.t3Profile;
+            store.editor.setT3Profile( false);
+            r.t3Off = store.editor.t3Profile;
 
             return r;
         });

@@ -39,7 +39,7 @@ test('Search: search bar filter exercises store commit', async ({
 
   // Exercise the search via store
   const result = await page.evaluate(() => {
-    const store = window.app && window.app.$store;
+    const store = window.__stores;
     if (!store) return {
       error: 'no store'
     };
@@ -48,11 +48,11 @@ test('Search: search bar filter exercises store commit', async ({
     const searchTerm = store.state.app?.frameworks?.searchTerm || '';
 
     // Commit a search term
-    store.commit('app/setFrameworksSearchTerm', 'coverage-test-search');
+    store.app.setFrameworksSearchTerm( 'coverage-test-search');
     const afterTerm = store.state.app?.frameworks?.searchTerm;
 
     // Reset
-    store.commit('app/setFrameworksSearchTerm', '');
+    store.app.setFrameworksSearchTerm( '');
     return {
       originalTerm: searchTerm,
       afterTerm
@@ -96,8 +96,8 @@ test('FilterAndSort: exercise sort options', async ({
     // Find FilterAndSort Vue instance
     const allEls = filterEl.querySelectorAll('*');
     for (const el of allEls) {
-      const vm = el.__vue__;
-      if (vm && vm.$options && vm.$options.name === 'FilterAndSort') {
+      const vm = el.__vueParentComponent.ctx;
+      if (vm && vm.$options && (vm.$options?.name || vm.__name) === 'FilterAndSort') {
         return {
           sortOptions: vm.sortOptions,
           currentSort: vm.sortBy || vm.currentSort,
@@ -126,10 +126,10 @@ test('List: framework list exercises List.vue', async ({
   // Exercise List.vue computed props
   const result = await page.evaluate(() => {
     const listEl = document.querySelector('.cass--list');
-    if (!listEl || !listEl.__vue__) return {
+    if (!listEl || !listEl.__vueParentComponent) return {
       error: 'no list'
     };
-    const vm = listEl.__vue__;
+    const vm = listEl.__vueParentComponent.ctx;
     return {
       hasItems: vm.items !== undefined || vm.results !== undefined,
       type: vm.type,

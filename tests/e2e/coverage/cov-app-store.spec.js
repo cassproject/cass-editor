@@ -13,65 +13,65 @@ test.describe('App Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Side nav
-            r.showSideNavDefault = store.getters['app/showSideNav'];
-            store.commit('app/closeSideNav');
-            r.sideNavClosed = store.getters['app/showSideNav'];
-            store.commit('app/showSideNav');
-            r.sideNavShown = store.getters['app/showSideNav'];
-            r.sideNavEnabled = store.getters['app/sideNavEnabled'];
+            r.showSideNavDefault = store.app.showSideNav;
+            store.app.closeSideNav();
+            r.sideNavClosed = store.app.showSideNav;
+            store.app.openSideNav();
+            r.sideNavShown = store.app.showSideNav;
+            r.sideNavEnabled = store.app.sideNavEnabled;
 
             // Right aside
-            r.rightAsideDefault = store.getters['app/showRightAside'];
-            store.commit('app/showRightAside', 'TestContent');
-            r.rightAsideShown = store.getters['app/showRightAside'];
-            r.rightAsideContent = store.getters['app/rightAsideContent'];
-            store.commit('app/closeRightAside');
-            r.rightAsideClosed = store.getters['app/showRightAside'];
-            r.rightAsideContentCleared = store.getters['app/rightAsideContent'];
-            r.rightAsideObjectCleared = store.getters['app/rightAsideObject'];
+            r.rightAsideDefault = store.app.showRightAside;
+            store.app.openRightAside( 'TestContent');
+            r.rightAsideShown = store.app.showRightAside;
+            r.rightAsideContent = store.app.rightAsideContent;
+            store.app.setCloseRightAside();
+            r.rightAsideClosed = store.app.showRightAside;
+            r.rightAsideContentCleared = store.app.rightAsideContent;
+            r.rightAsideObjectCleared = store.app.rightAsideObject;
 
             // Modal
-            r.showModalDefault = store.getters['app/showModal'];
-            store.commit('app/showModal', { component: 'TestComponent', title: 'Test' });
-            r.showModalTrue = store.getters['app/showModal'];
-            r.dynamicContent = store.getters['app/dynamicModalContent'];
-            store.commit('app/closeModal');
-            r.showModalClosed = store.getters['app/showModal'];
+            r.showModalDefault = store.app.showModal;
+            store.app.setShowModal( { component: 'TestComponent', title: 'Test' });
+            r.showModalTrue = store.app.showModal;
+            r.dynamicContent = store.app.dynamicModalContent;
+            store.app.closeModal();
+            r.showModalClosed = store.app.showModal;
 
             // objForShareModal
-            store.commit('app/objForShareModal', { id: 'test-obj' });
-            r.shareObj = store.getters['app/objForShareModal'];
-            store.commit('app/objForShareModal', null);
+            store.app.setObjForShareModal( { id: 'test-obj' });
+            r.shareObj = store.app.objForShareModal;
+            store.app.setObjForShareModal( null);
 
             // dragging
-            store.commit('app/draggingEnabled', true);
-            store.commit('app/isDragging', true);
-            store.commit('app/draggable', true);
-            r.draggable = store.getters['app/draggable'];
-            store.commit('app/draggingEnabled', false);
-            store.commit('app/isDragging', false);
-            store.commit('app/draggable', false);
+            store.app.setDraggingEnabled( true);
+            store.app.setIsDragging( true);
+            store.app.setDraggable( true);
+            r.draggable = store.app.draggable;
+            store.app.setDraggingEnabled( false);
+            store.app.setIsDragging( false);
+            store.app.setDraggable( false);
 
             // comments
-            store.commit('app/setCanViewComments', true);
-            r.canView = store.getters['app/canViewComments'];
-            store.commit('app/setCanAddComments', true);
-            r.canAdd = store.getters['app/canAddComments'];
-            store.commit('app/setCanViewComments', false);
-            store.commit('app/setCanAddComments', false);
+            store.app.setCanViewComments( true);
+            r.canView = store.app.canViewComments;
+            store.app.setCanAddComments( true);
+            r.canAdd = store.app.canAddComments;
+            store.app.setCanViewComments( false);
+            store.app.setCanAddComments( false);
 
             // plugins
-            store.commit('app/pluginLastUpdate', '2024-01-01');
-            r.pluginUpdate = store.getters['app/pluginLastUpdate'];
-            store.commit('app/pluginToLaunch', 'testPlugin');
-            r.pluginLaunch = store.getters['app/pluginToLaunch'];
-            store.commit('app/pluginToLaunchLastUpdate', '2024-01-02');
-            r.pluginLaunchUpdate = store.getters['app/pluginToLaunchLastUpdate'];
+            store.app.pluginLastUpdate( '2024-01-01');
+            r.pluginUpdate = store.app.pluginLastUpdate;
+            store.app.pluginToLaunch( 'testPlugin');
+            r.pluginLaunch = store.app.pluginToLaunch;
+            store.app.pluginToLaunchLastUpdate( '2024-01-02');
+            r.pluginLaunchUpdate = store.app.pluginToLaunchLastUpdate;
 
             return r;
         });
@@ -102,77 +102,77 @@ test.describe('App Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Import mutations
-            store.commit('app/importTransition', 'process');
-            r.transition = store.getters['app/importTransition'];
+            store.app.importTransition( 'process');
+            r.transition = store.app.importTransition;
 
-            store.commit('app/importType', 'server');
-            r.type = store.getters['app/importType'];
+            store.app.importType( 'server');
+            r.type = store.app.importType;
 
-            store.commit('app/importFileType', 'csv');
-            r.fileType = store.getters['app/importFileType'];
+            store.app.importFileType( 'csv');
+            r.fileType = store.app.importFileType;
 
-            store.commit('app/importStatus', 'processing');
-            r.status = store.getters['app/importStatus'];
+            store.app.importStatus( 'processing');
+            r.status = store.app.importStatus;
 
-            store.commit('app/importAllowCancel', true);
-            r.allowCancel = store.getters['app/importAllowCancel'];
+            store.app.importAllowCancel( true);
+            r.allowCancel = store.app.importAllowCancel;
 
-            store.commit('app/importFeedback', 'test feedback');
-            r.feedback = store.getters['app/importFeedback'];
+            store.app.importFeedback( 'test feedback');
+            r.feedback = store.app.importFeedback;
 
-            store.commit('app/importDuplicates', ['dup1', 'dup2']);
-            r.duplicates = store.getters['app/importDuplicates'];
+            store.app.importDuplicates( ['dup1', 'dup2']);
+            r.duplicates = store.app.importDuplicates;
 
-            store.commit('app/importSkip', ['skip1']);
-            r.skip = store.getters['app/importSkip'];
+            store.app.importSkip( ['skip1']);
+            r.skip = store.app.importSkip;
 
-            store.commit('app/firstImport', true);
-            r.firstImport = store.getters['app/firstImport'];
+            store.app.setFirstImport( true);
+            r.firstImport = store.app.firstImport;
 
-            store.commit('app/importFramework', { name: 'Test FW' });
-            r.framework = store.getters['app/importFramework'];
+            store.app.importFramework( { name: 'Test FW' });
+            r.framework = store.app.importFramework;
 
-            store.commit('app/importFrameworkName', 'My Framework');
-            r.fwName = store.getters['app/importFrameworkName'];
+            store.app.importFrameworkName( 'My Framework');
+            r.fwName = store.app.importFrameworkName;
 
-            store.commit('app/importFrameworkDescription', 'A description');
-            r.fwDesc = store.getters['app/importFrameworkDescription'];
+            store.app.importFrameworkDescription( 'A description');
+            r.fwDesc = store.app.importFrameworkDescription;
 
-            store.commit('app/importText', 'some text to import');
-            r.importText = store.getters['app/importText'];
+            store.app.importText( 'some text to import');
+            r.importText = store.app.importText;
 
-            store.commit('app/importServerUrl', 'http://example.com');
-            r.serverUrl = store.getters['app/importServerUrl'];
+            store.app.importServerUrl( 'http://example.com');
+            r.serverUrl = store.app.importServerUrl;
 
-            store.commit('app/importUrl', 'http://example.com/fw');
-            r.url = store.getters['app/importUrl'];
+            store.app.importUrl( 'http://example.com/fw');
+            r.url = store.app.importUrl;
 
-            store.commit('app/importModalParams', { type: 'test' });
-            r.modalParams = store.getters['app/importModalParams'];
+            store.app.importModalParams( { type: 'test' });
+            r.modalParams = store.app.importModalParams;
 
             // Import files
-            store.commit('app/importFiles', ['file1.csv']);
-            r.filesSet = store.getters['app/importFiles'];
-            store.commit('app/clearImportFiles');
-            r.filesCleared = store.getters['app/importFiles'];
+            store.app.importFiles( ['file1.csv']);
+            r.filesSet = store.app.importFiles;
+            store.app.clearImportFiles();
+            r.filesCleared = store.app.importFiles;
 
             // Import errors
-            store.commit('app/addImportError', 'error1');
-            store.commit('app/addImportError', 'error2');
-            r.errors = store.getters['app/importErrors'];
-            store.commit('app/clearImportErrors');
-            r.errorsCleared = store.getters['app/importErrors'];
+            store.app.addImportError( 'error1');
+            store.app.addImportError( 'error2');
+            r.errors = store.app.importErrors;
+            store.app.clearImportErrors();
+            r.errorsCleared = store.app.importErrors;
 
             // resetImport action
-            store.commit('app/resetImport');
-            r.resetTransition = store.getters['app/importTransition'];
-            r.resetType = store.getters['app/importType'];
-            r.resetStatus = store.getters['app/importStatus'];
+            store.app.resetImport();
+            r.resetTransition = store.app.importTransition;
+            r.resetType = store.app.importType;
+            r.resetStatus = store.app.importStatus;
 
             return r;
         });
@@ -208,85 +208,85 @@ test.describe('App Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // CSV columns
-            store.commit('app/importNameColumn', { label: 'Name', index: 0 });
-            r.nameCol = store.getters['app/importNameColumn'];
-            store.commit('app/importDescriptionColumn', { label: 'Desc', index: 1 });
-            r.descCol = store.getters['app/importDescriptionColumn'];
-            store.commit('app/importScopeColumn', { label: 'Scope', index: 2 });
-            r.scopeCol = store.getters['app/importScopeColumn'];
-            store.commit('app/importIdColumn', { label: 'ID', index: 3 });
-            r.idCol = store.getters['app/importIdColumn'];
-            store.commit('app/importSourceColumn', { label: 'Source', index: 4 });
-            r.sourceCol = store.getters['app/importSourceColumn'];
-            store.commit('app/importRelationColumn', { label: 'Relation', index: 5 });
-            r.relCol = store.getters['app/importRelationColumn'];
-            store.commit('app/importTargetColumn', { label: 'Target', index: 6 });
-            r.targetCol = store.getters['app/importTargetColumn'];
-            store.commit('app/importFrameworkNameColumn', { label: 'FW Name', index: 0 });
-            r.fwNameCol = store.getters['app/importFrameworkNameColumn'];
-            store.commit('app/importFrameworkScopeColumn', { label: 'FW Scope', index: 1 });
-            r.fwScopeCol = store.getters['app/importFrameworkScopeColumn'];
-            store.commit('app/importFrameworkIdColumn', { label: 'FW ID', index: 2 });
-            r.fwIdCol = store.getters['app/importFrameworkIdColumn'];
-            store.commit('app/csvColumns', ['col1', 'col2', 'col3']);
-            r.csvCols = store.getters['app/csvColumns'];
-            store.commit('app/csvRelationColumns', ['rel1', 'rel2']);
-            r.csvRelCols = store.getters['app/csvRelationColumns'];
-            store.commit('app/csvRelationFile', 'relations.csv');
-            r.csvRelFile = store.getters['app/csvRelationFile'];
+            store.app.importNameColumn( { label: 'Name', index: 0 });
+            r.nameCol = store.app.importNameColumn;
+            store.app.importDescriptionColumn( { label: 'Desc', index: 1 });
+            r.descCol = store.app.importDescriptionColumn;
+            store.app.importScopeColumn( { label: 'Scope', index: 2 });
+            r.scopeCol = store.app.importScopeColumn;
+            store.app.importIdColumn( { label: 'ID', index: 3 });
+            r.idCol = store.app.importIdColumn;
+            store.app.importSourceColumn( { label: 'Source', index: 4 });
+            r.sourceCol = store.app.importSourceColumn;
+            store.app.importRelationColumn( { label: 'Relation', index: 5 });
+            r.relCol = store.app.importRelationColumn;
+            store.app.importTargetColumn( { label: 'Target', index: 6 });
+            r.targetCol = store.app.importTargetColumn;
+            store.app.importFrameworkNameColumn( { label: 'FW Name', index: 0 });
+            r.fwNameCol = store.app.importFrameworkNameColumn;
+            store.app.importFrameworkScopeColumn( { label: 'FW Scope', index: 1 });
+            r.fwScopeCol = store.app.importFrameworkScopeColumn;
+            store.app.importFrameworkIdColumn( { label: 'FW ID', index: 2 });
+            r.fwIdCol = store.app.importFrameworkIdColumn;
+            store.app.csvColumns( ['col1', 'col2', 'col3']);
+            r.csvCols = store.app.csvColumns;
+            store.app.csvRelationColumns( ['rel1', 'rel2']);
+            r.csvRelCols = store.app.csvRelationColumns;
+            store.app.csvRelationFile( 'relations.csv');
+            r.csvRelFile = store.app.csvRelationFile;
 
             // Framework search
-            store.commit('app/searchTerm', 'test search');
-            r.searchTerm = store.getters['app/searchTerm'];
-            store.commit('app/refreshSearch', true);
-            r.refreshSearch = store.getters['app/refreshSearch'];
-            store.commit('app/refreshSearch', false);
+            store.app.setSearchTerm( 'test search');
+            r.searchTerm = store.app.searchTerm;
+            store.app.setRefreshSearch( true);
+            r.refreshSearch = store.app.refreshSearch;
+            store.app.setRefreshSearch( false);
 
             // Quick filters
-            r.quickFilters = store.getters['app/quickFilters'];
-            store.commit('app/singleQuickFilter', { id: 'ownedByMe', checked: true });
-            r.filterOwned = store.getters['app/filterByOwnedByMe'];
-            store.commit('app/singleQuickFilter', { id: 'notOwnedByMe', checked: true });
-            r.filterNotOwned = store.getters['app/filterByNotOwnedByMe'];
-            store.commit('app/singleQuickFilter', { id: 'configMatchDefault', checked: true });
-            r.filterConfig = store.getters['app/filterByConfigMatchDefault'];
+            r.quickFilters = store.app.quickFilters;
+            store.app.setSingleQuickFilter( { id: 'ownedByMe', checked: true });
+            r.filterOwned = store.app.filterByOwnedByMe;
+            store.app.setSingleQuickFilter( { id: 'notOwnedByMe', checked: true });
+            r.filterNotOwned = store.app.filterByNotOwnedByMe;
+            store.app.setSingleQuickFilter( { id: 'configMatchDefault', checked: true });
+            r.filterConfig = store.app.filterByConfigMatchDefault;
             // Push a new filter
-            store.commit('app/singleQuickFilter', { id: 'customFilter', checked: true });
+            store.app.setSingleQuickFilter( { id: 'customFilter', checked: true });
             // Clear all
-            store.commit('app/clearSearchFilters');
-            r.filterOwnedAfterClear = store.getters['app/filterByOwnedByMe'];
+            store.app.clearSearchFilters();
+            r.filterOwnedAfterClear = store.app.filterByOwnedByMe;
 
-            store.commit('app/searchFrameworksInCompetencySearch', true);
-            r.searchFwInComp = store.getters['app/searchFrameworksInCompetencySearch'];
-            store.commit('app/searchFrameworksInCompetencySearch', false);
+            store.app.setSearchFrameworksInCompetencySearch( true);
+            r.searchFwInComp = store.app.searchFrameworksInCompetencySearch;
+            store.app.setSearchFrameworksInCompetencySearch( false);
 
             // Sort results
-            store.commit('app/sortResults', { id: 'lastEdited', label: 'Last Edited' });
-            r.sortResults = store.getters['app/sortResults'];
+            store.app.setSortResults( { id: 'lastEdited', label: 'Last Edited' });
+            r.sortResults = store.app.sortResults;
 
             // Apply search to
-            r.applySearchTo = store.getters['app/applySearchTo'];
+            r.applySearchTo = store.app.applySearchTo;
 
             // Directories
-            store.commit('app/selectDirectory', { id: 'dir-1', name: 'Test Dir' });
-            r.selectedDir = store.getters['app/selectedDirectory'];
-            store.commit('app/directoryList', [{ id: 'dir-1' }, { id: 'dir-2' }]);
-            r.dirList = store.getters['app/directoryList'];
-            store.commit('app/searchingInDirectory', false);
-            r.searchInDir = store.getters['app/searchingInDirectory'];
-            store.commit('app/editDirectory', true);
-            r.editDir = store.getters['app/editDirectory'];
+            store.app.setSelectDirectory( { id: 'dir-1', name: 'Test Dir' });
+            r.selectedDir = store.app.selectedDirectory;
+            store.app.setDirectoryList( [{ id: 'dir-1' }, { id: 'dir-2' }]);
+            r.dirList = store.app.directoryList;
+            store.app.setSearchingInDirectory( false);
+            r.searchInDir = store.app.searchingInDirectory;
+            store.app.setEditDirectory( true);
+            r.editDir = store.app.editDirectory;
 
             // Clean up
-            store.commit('app/selectDirectory', null);
-            store.commit('app/searchingInDirectory', true);
-            store.commit('app/editDirectory', false);
-            store.commit('app/searchTerm', '');
+            store.app.setSelectDirectory( null);
+            store.app.setSearchingInDirectory( true);
+            store.app.setEditDirectory( false);
+            store.app.setSearchTerm( '');
 
             return r;
         });
@@ -323,32 +323,32 @@ test.describe('App Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Banner
-            store.commit('app/setBanner', { message: 'Test banner', color: 'red', background: 'yellow' });
-            r.bannerMsg = store.getters['app/bannerMessage'];
-            r.bannerColor = store.getters['app/bannerColor'];
-            r.bannerBg = store.getters['app/bannerBackground'];
+            store.app.setBanner( { message: 'Test banner', color: 'red', background: 'yellow' });
+            r.bannerMsg = store.app.bannerMessage;
+            r.bannerColor = store.app.bannerColor;
+            r.bannerBg = store.app.bannerBackground;
 
             // MOTD
-            store.commit('app/setMotd', { message: 'Hello World', title: 'Welcome' });
-            r.motdMsg = store.getters['app/motdMessage'];
-            r.motdTitle = store.getters['app/motdTitle'];
+            store.app.setMotd( { message: 'Hello World', title: 'Welcome' });
+            r.motdMsg = store.app.motdMessage;
+            r.motdTitle = store.app.motdTitle;
 
             // Curated plugins
-            store.commit('app/setCuratedPlugins', [{ id: 'p1', url: 'http://p1' }]);
-            r.plugins = store.getters['app/curatedPlugins'];
+            store.app.setCuratedPlugins( [{ id: 'p1', url: 'http://p1' }]);
+            r.plugins = store.app.curatedPlugins;
 
             // clearImport action
-            store.dispatch('app/clearImport');
-            r.afterClearFw = store.getters['app/importFramework'];
-            r.afterClearFiles = store.getters['app/importFiles'];
-            r.afterClearErrors = store.getters['app/importErrors'];
-            r.afterClearTransition = store.getters['app/importTransition'];
-            r.afterClearStatus = store.getters['app/importStatus'];
+            store.app.clearImport();
+            r.afterClearFw = store.app.importFramework;
+            r.afterClearFiles = store.app.importFiles;
+            r.afterClearErrors = store.app.importErrors;
+            r.afterClearTransition = store.app.importTransition;
+            r.afterClearStatus = store.app.importStatus;
 
             return r;
         });

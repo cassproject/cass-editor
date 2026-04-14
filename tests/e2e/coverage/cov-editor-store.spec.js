@@ -12,55 +12,55 @@ test.describe('Editor Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
-            store.commit('editor/selectedCompetency', 'comp-1');
-            r.selectedCompetency = store.getters['editor/selectedCompetency'];
-            store.commit('editor/selectedCompetency', null);
+            store.editor.setSelectedCompetency( 'comp-1');
+            r.selectedCompetency = store.editor.selectedCompetency;
+            store.editor.setSelectedCompetency( null);
 
-            store.commit('editor/queryParams', { server: 'http://test' });
-            r.queryParams = store.getters['editor/queryParams'];
+            store.editor.setQueryParams( { server: 'http://test' });
+            r.queryParams = store.editor.queryParams;
 
-            store.commit('editor/defaultLanguage', 'en');
-            r.defaultLanguage = store.getters['editor/defaultLanguage'];
+            store.editor.setDefaultLanguage( 'en');
+            r.defaultLanguage = store.editor.defaultLanguage;
 
-            const oldBackoff = store.getters['editor/webSocketBackoff'];
-            store.commit('editor/webSocketBackoffIncrease');
-            r.backoffIncreased = store.getters['editor/webSocketBackoff'] === oldBackoff * 2;
+            const oldBackoff = store.editor.webSocketBackoff;
+            store.editor.webSocketBackoffIncrease();
+            r.backoffIncreased = store.editor.webSocketBackoff === oldBackoff * 2;
 
-            store.commit('editor/private', true);
-            r.private = store.getters['editor/private'];
-            store.commit('editor/private', false);
+            store.editor.setPrivate( true);
+            r.private = store.editor.private;
+            store.editor.setPrivate( false);
 
-            store.commit('editor/selectCompetencyRelation', 'narrows');
-            r.relation = store.getters['editor/selectCompetencyRelation'];
-            store.commit('editor/selectCompetencyRelation', null);
+            store.editor.setSelectCompetencyRelation( 'narrows');
+            r.relation = store.editor.selectCompetencyRelation;
+            store.editor.setSelectCompetencyRelation( null);
 
-            store.commit('editor/selectingCompetencies', true);
-            r.selecting = store.getters['editor/selectingCompetencies'];
-            store.commit('editor/selectingCompetencies', false);
+            store.editor.setSelectingCompetencies( true);
+            r.selecting = store.editor.selectingCompetencies;
+            store.editor.setSelectingCompetencies( false);
 
-            store.commit('editor/newCompetency', 'new-comp-id');
-            r.newComp = store.getters['editor/newCompetency'];
-            store.commit('editor/newCompetency', null);
+            store.editor.setNewCompetency( 'new-comp-id');
+            r.newComp = store.editor.newCompetency;
+            store.editor.setNewCompetency( null);
 
-            store.commit('editor/newFramework', 'new-fw-id');
-            r.newFw = store.getters['editor/newFramework'];
-            store.commit('editor/newFramework', null);
+            store.editor.setNewFramework( 'new-fw-id');
+            r.newFw = store.editor.newFramework;
+            store.editor.setNewFramework( null);
 
-            store.commit('editor/t3Profile', true);
-            r.t3 = store.getters['editor/t3Profile'];
-            store.commit('editor/t3Profile', false);
+            store.editor.setT3Profile( true);
+            r.t3 = store.editor.t3Profile;
+            store.editor.setT3Profile( false);
 
-            store.commit('editor/changedObject', 'changed-id');
-            r.changed = store.getters['editor/changedObject'];
-            store.commit('editor/changedObject', null);
+            store.editor.setChangedObject( 'changed-id');
+            r.changed = store.editor.changedObject;
+            store.editor.setChangedObject( null);
 
-            store.commit('editor/configuration', { name: 'test-config' });
-            r.config = store.getters['editor/configuration'];
-            store.commit('editor/configuration', null);
+            store.editor.setConfiguration( { name: 'test-config' });
+            r.config = store.editor.configuration;
+            store.editor.setConfiguration( null);
 
             return r;
         });
@@ -85,51 +85,51 @@ test.describe('Editor Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // conceptMode sets progressionMode to false
-            store.commit('editor/conceptMode', true);
-            r.conceptOn = store.getters['editor/conceptMode'];
-            r.progOffWhenConcept = store.getters['editor/progressionMode'];
-            store.commit('editor/conceptMode', false);
-            r.conceptOff = store.getters['editor/conceptMode'];
+            store.editor.conceptMode( true);
+            r.conceptOn = store.editor.conceptMode;
+            r.progOffWhenConcept = store.editor.progressionMode;
+            store.editor.conceptMode( false);
+            r.conceptOff = store.editor.conceptMode;
 
             // progressionMode sets conceptMode to false
-            store.commit('editor/progressionMode', true);
-            r.progOn = store.getters['editor/progressionMode'];
-            r.conceptOffWhenProg = store.getters['editor/conceptMode'];
-            store.commit('editor/progressionMode', false);
-            r.progOff = store.getters['editor/progressionMode'];
+            store.editor.progressionMode( true);
+            r.progOn = store.editor.progressionMode;
+            r.conceptOffWhenProg = store.editor.conceptMode;
+            store.editor.progressionMode( false);
+            r.progOff = store.editor.progressionMode;
 
-            store.commit('editor/collectionMode', true);
-            r.collection = store.getters['editor/collectionMode'];
-            store.commit('editor/collectionMode', false);
+            store.editor.collectionMode( true);
+            r.collection = store.editor.collectionMode;
+            store.editor.collectionMode( false);
 
-            store.commit('editor/recomputeHierarchy', true);
-            r.hierarchy = store.getters['editor/recomputeHierarchy'];
-            store.commit('editor/recomputeHierarchy', false);
+            store.editor.setRecomputeHierarchy( true);
+            r.hierarchy = store.editor.recomputeHierarchy;
+            store.editor.setRecomputeHierarchy( false);
 
-            store.commit('editor/recomputePrecedence', true);
-            r.precedence = store.getters['editor/recomputePrecedence'];
-            store.commit('editor/recomputePrecedence', false);
+            store.editor.setRecomputePrecedence( true);
+            r.precedence = store.editor.recomputePrecedence;
+            store.editor.setRecomputePrecedence( false);
 
-            store.commit('editor/recomputePrecedenceAfterReorder', true);
-            r.reorder = store.getters['editor/recomputePrecedenceAfterReorder'];
-            store.commit('editor/recomputePrecedenceAfterReorder', false);
+            store.editor.setRecomputePrecedenceAfterReorder( true);
+            r.reorder = store.editor.recomputePrecedenceAfterReorder;
+            store.editor.setRecomputePrecedenceAfterReorder( false);
 
-            store.commit('editor/refreshLevels', true);
-            r.levels = store.getters['editor/refreshLevels'];
-            store.commit('editor/refreshLevels', false);
+            store.editor.setRefreshLevels( true);
+            r.levels = store.editor.refreshLevels;
+            store.editor.setRefreshLevels( false);
 
-            store.commit('editor/refreshAlignments', true);
-            r.alignments = store.getters['editor/refreshAlignments'];
-            store.commit('editor/refreshAlignments', false);
+            store.editor.setRefreshAlignments( true);
+            r.alignments = store.editor.refreshAlignments;
+            store.editor.setRefreshAlignments( false);
 
-            store.commit('editor/refreshProperties', true);
-            r.properties = store.getters['editor/refreshProperties'];
-            store.commit('editor/refreshProperties', false);
+            store.editor.setRefreshProperties( true);
+            r.properties = store.editor.refreshProperties;
+            store.editor.setRefreshProperties( false);
 
             return r;
         });
@@ -155,72 +155,72 @@ test.describe('Editor Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Clipboard mutations
-            store.commit('editor/cutId', 'cut-123');
-            r.cutId = store.getters['editor/cutId'];
-            store.commit('editor/copyId', 'copy-456');
-            r.copyId = store.getters['editor/copyId'];
-            store.commit('editor/paste', true);
-            r.paste = store.getters['editor/paste'];
-            store.commit('editor/cutOrCopyContainerId', 'container-789');
-            r.containerId = store.getters['editor/cutOrCopyContainerId'];
-            store.commit('editor/cutId', null);
-            store.commit('editor/copyId', null);
-            store.commit('editor/paste', false);
+            store.editor.cutId( 'cut-123');
+            r.cutId = store.editor.cutId;
+            store.editor.copyId( 'copy-456');
+            r.copyId = store.editor.copyId;
+            store.editor.paste( true);
+            r.paste = store.editor.paste;
+            store.editor.setCutOrCopyContainerId( 'container-789');
+            r.containerId = store.editor.cutOrCopyContainerId;
+            store.editor.cutId( null);
+            store.editor.copyId( null);
+            store.editor.paste( false);
 
             // Node and relate mutations
-            store.commit('editor/nodeInFocus', 'node-1');
-            r.nodeInFocus = store.getters['editor/nodeInFocus'];
-            store.commit('editor/nodeInFocus', null);
+            store.editor.nodeInFocus( 'node-1');
+            r.nodeInFocus = store.editor.nodeInFocus;
+            store.editor.nodeInFocus( null);
 
-            store.commit('editor/relations', { 'a': ['b'] });
-            r.relations = store.getters['editor/relations'];
+            store.editor.setRelations( { 'a': ['b'] });
+            r.relations = store.editor.relations;
 
-            store.commit('editor/setPropertyLevel', 'Level2');
-            r.propLevel = store.getters['editor/setPropertyLevel'];
-            store.commit('editor/setPropertyLevel', null);
+            store.editor.setPropertyLevel( 'Level2');
+            r.propLevel = store.editor.setPropertyLevel;
+            store.editor.setPropertyLevel( null);
 
-            store.commit('editor/addAnother', true);
-            r.addAnother = store.getters['editor/addAnother'];
-            store.commit('editor/addAnother', false);
+            store.editor.addAnother( true);
+            r.addAnother = store.editor.addAnother;
+            store.editor.addAnother( false);
 
             // Item mutations
-            store.commit('editor/setItemToDelete', { id: 'del-1' });
-            r.itemToDelete = store.getters['editor/itemToDelete'];
-            store.commit('editor/setItemToRemove', { id: 'rem-1' });
-            r.itemToRemove = store.getters['editor/itemToRemove'];
-            store.commit('editor/setItemToExport', { id: 'exp-1' });
-            r.itemToExport = store.getters['editor/itemToExport'];
+            store.editor.setItemToDelete( { id: 'del-1' });
+            r.itemToDelete = store.editor.itemToDelete;
+            store.editor.setItemToRemove( { id: 'rem-1' });
+            r.itemToRemove = store.editor.itemToRemove;
+            store.editor.setItemToExport( { id: 'exp-1' });
+            r.itemToExport = store.editor.itemToExport;
 
             // Comment mutations
-            store.commit('editor/setAddCommentAboutId', 'about-1');
-            r.commentAbout = store.getters['editor/addCommentAboutId'];
-            store.commit('editor/setAddCommentType', 'review');
-            r.commentType = store.getters['editor/addCommentType'];
-            store.commit('editor/setCommentToEdit', { text: 'edit me' });
-            r.commentEdit = store.getters['editor/commentToEdit'];
-            store.commit('editor/setCommentToReply', { text: 'reply' });
-            r.commentReply = store.getters['editor/commentToReply'];
-            store.commit('editor/setCommentsToDelete', ['c1', 'c2']);
-            r.commentsDelete = store.getters['editor/commentsToDelete'];
-            store.commit('editor/setCommentScrollTo', { id: 'scroll-1' });
-            r.commentScroll = store.getters['editor/commentScrollTo'];
+            store.editor.setAddCommentAboutId( 'about-1');
+            r.commentAbout = store.editor.addCommentAboutId;
+            store.editor.setAddCommentType( 'review');
+            r.commentType = store.editor.addCommentType;
+            store.editor.setCommentToEdit( { text: 'edit me' });
+            r.commentEdit = store.editor.commentToEdit;
+            store.editor.setCommentToReply( { text: 'reply' });
+            r.commentReply = store.editor.commentToReply;
+            store.editor.setCommentsToDelete( ['c1', 'c2']);
+            r.commentsDelete = store.editor.commentsToDelete;
+            store.editor.setCommentScrollTo( { id: 'scroll-1' });
+            r.commentScroll = store.editor.commentScrollTo;
 
             // Framework comment data
-            store.commit('editor/setFrameworkCommentDataLoaded', true);
-            r.commentDataLoaded = store.getters['editor/frameworkCommentDataLoaded'];
-            store.commit('editor/setFrameworkCommentList', [{ id: 'c1' }]);
-            r.commentList = store.getters['editor/frameworkCommentList'];
-            store.commit('editor/setFrameworkCommentPersonMap', { p1: 'Person A' });
-            r.commentPersonMap = store.getters['editor/frameworkCommentPersonMap'];
+            store.editor.setFrameworkCommentDataLoaded( true);
+            r.commentDataLoaded = store.editor.frameworkCommentDataLoaded;
+            store.editor.setFrameworkCommentList( [{ id: 'c1' }]);
+            r.commentList = store.editor.frameworkCommentList;
+            store.editor.setFrameworkCommentPersonMap( { p1: 'Person A' });
+            r.commentPersonMap = store.editor.frameworkCommentPersonMap;
 
-            store.commit('editor/clearFrameworkCommentData');
-            r.clearedLoaded = store.getters['editor/frameworkCommentDataLoaded'];
-            r.clearedList = store.getters['editor/frameworkCommentList'];
+            store.editor.clearFrameworkCommentData();
+            r.clearedLoaded = store.editor.frameworkCommentDataLoaded;
+            r.clearedList = store.editor.frameworkCommentList;
 
             return r;
         });
@@ -254,51 +254,51 @@ test.describe('Editor Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
-            store.commit('editor/setManageAssertions', true);
-            r.manageAssertions = store.getters['editor/manageAssertions'];
-            store.commit('editor/setManageAssertions', false);
+            store.editor.setManageAssertions( true);
+            r.manageAssertions = store.editor.manageAssertions;
+            store.editor.setManageAssertions( false);
 
-            store.commit('editor/setBadgePk', 'pk-123');
-            r.badgePk = store.getters['editor/badgePk'];
-            store.commit('editor/setBadgePk', null);
+            store.editor.setBadgePk( 'pk-123');
+            r.badgePk = store.editor.badgePk;
+            store.editor.setBadgePk( null);
 
-            store.commit('editor/setMe', 'user-me');
-            r.me = store.getters['editor/getMe'];
-            store.commit('editor/setSubject', 'user-sub');
-            r.subject = store.getters['editor/getSubject'];
-            store.commit('editor/setPeople', [{ name: 'A' }]);
-            r.people = store.getters['editor/people'];
+            store.editor.setMe( 'user-me');
+            r.me = store.editor.getMe;
+            store.editor.setSubject( 'user-sub');
+            r.subject = store.editor.getSubject;
+            store.editor.setPeople( [{ name: 'A' }]);
+            r.people = store.editor.people;
 
-            store.commit('editor/setFirstSearchProcessing', false);
-            r.firstSearch = store.getters['editor/firstSearchProcessing'];
-            store.commit('editor/setSearchingAssertions', true);
-            r.searching = store.getters['editor/searchingAssertions'];
-            store.commit('editor/setSearchingAssertions', false);
+            store.editor.setFirstSearchProcessing( false);
+            r.firstSearch = store.editor.firstSearchProcessing;
+            store.editor.setSearchingAssertions( true);
+            r.searching = store.editor.searchingAssertions;
+            store.editor.setSearchingAssertions( false);
 
             // Undo mutations
-            store.commit('editor/addEditsToUndo', { type: 'add', id: 'e1' });
-            store.commit('editor/addEditsToUndo', { type: 'remove', id: 'e2' });
-            r.editsCount = store.state.editor.editsToUndo.length;
+            store.editor.addEditsToUndo( { type: 'add', id: 'e1' });
+            store.editor.addEditsToUndo( { type: 'remove', id: 'e2' });
+            r.editsCount = store.editor.editsToUndo.length;
 
-            store.commit('editor/setLastEditToUndo', { type: 'add', id: 'e3' });
-            r.lastEdit = store.state.editor.lastEditToUndo;
+            store.editor.setLastEditToUndo( { type: 'add', id: 'e3' });
+            r.lastEdit = store.editor.lastEditToUndo;
 
             // Selected competencies as properties
-            store.commit('editor/selectedCompetenciesAsProperties', ['c1', 'c2']);
-            r.selectedComps = store.getters['editor/selectedCompetenciesAsProperties'];
-            store.commit('editor/selectedCompetenciesAsProperties', null);
+            store.editor.setSelectedCompetenciesAsProperties( ['c1', 'c2']);
+            r.selectedComps = store.editor.selectedCompetenciesAsProperties;
+            store.editor.setSelectedCompetenciesAsProperties( null);
 
             // Iframe paths
-            store.commit('editor/commonPathIframe', '/path/common');
-            r.commonPath = store.state.editor.commonPathIframe;
-            store.commit('editor/iframeCompetencyPathInterframework', '/path/inter');
-            r.interPath = store.state.editor.iframeCompetencyPathInterframework;
-            store.commit('editor/iframeConceptPath', '/path/concept');
-            r.conceptPath = store.state.editor.iframeConceptPath;
+            store.editor.setCommonPathIframe( '/path/common');
+            r.commonPath = store.editor.commonPathIframe;
+            store.editor.setIframeCompetencyPathInterframework( '/path/inter');
+            r.interPath = store.editor.iframeCompetencyPathInterframework;
+            store.editor.setIframeConceptPath( '/path/concept');
+            r.conceptPath = store.editor.iframeConceptPath;
 
             return r;
         });
@@ -324,12 +324,12 @@ test.describe('Editor Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(async () => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // getDirectoryChildren action
-            const children = await store.dispatch('editor/getDirectoryChildren', {
+            const children = await store.editor.getDirectoryChildren( {
                 frameworks: ['fw1', 'fw2'],
                 resources: ['res1'],
                 directories: ['dir1']
@@ -337,14 +337,14 @@ test.describe('Editor Store Coverage', () => {
             r.childrenCount = children.length;
 
             // getDirectoryChildren with some missing arrays
-            const children2 = await store.dispatch('editor/getDirectoryChildren', {
+            const children2 = await store.editor.getDirectoryChildren( {
                 frameworks: ['fw1']
             });
             r.childrenCount2 = children2.length;
 
             // lastEditToUndo action
-            store.commit('editor/addEditsToUndo', { id: 'undo-1' });
-            const lastEdit = await store.dispatch('editor/lastEditToUndo');
+            store.editor.addEditsToUndo( { id: 'undo-1' });
+            const lastEdit = await store.editor.setLastEditToUndo();
             r.lastUndoEdit = lastEdit;
 
             return r;

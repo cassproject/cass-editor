@@ -12,10 +12,10 @@ test('CA-196: Resource alignment as CreativeWork with AlignmentObject', async ({
 
     // Verify the Vuex store has framework data
     const result = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
         return {
-            hasFrameworksModule: store.state.app && store.state.app.frameworks != null
+            hasFrameworksModule: store.state.app && store.app.frameworks != null
         };
     });
 

@@ -91,10 +91,10 @@ test.describe.serial('Framework editing deep dive', () => {
     // Exercise EditorToolbar computed properties by reading Vue data
     const toolbarData = await page.evaluate(() => {
       const el = document.querySelector('#framework-editor-toolbar');
-      if (!el || !el.__vue__) return {
+      if (!el || !el.__vueParentComponent) return {
         error: 'no toolbar vue'
       };
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       return {
         activeView: vm.activeView,
         canEditFramework: vm.canEditFramework,
@@ -177,10 +177,10 @@ test.describe.serial('Framework editing deep dive', () => {
     // Exercise ThingEditing computed properties via Vue data
     const thingData = await page.evaluate(() => {
       const el = document.querySelector('.lode__thing-editing');
-      if (!el || !el.__vue__) return {
+      if (!el || !el.__vueParentComponent) return {
         error: 'no thing-editing vue'
       };
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       return {
         shortType: vm.shortType,
         canEdit: vm.canEdit,
@@ -233,12 +233,12 @@ test.describe.serial('Framework editing deep dive', () => {
     // Exercise ThingEditing save state
     const saveState = await page.evaluate(() => {
       const el = document.querySelector('.lode__thing-editing');
-      if (!el || !el.__vue__) return {};
+      if (!el || !el.__vueParentComponent) return {};
       return {
-        saving: el.__vue__.saving,
-        saved: el.__vue__.saved,
-        errorSaving: el.__vue__.errorSaving,
-        editingThing: el.__vue__.editingThing
+        saving: el.__vueParentComponent.ctx.saving,
+        saved: el.__vueParentComponent.ctx.saved,
+        errorSaving: el.__vueParentComponent.ctx.errorSaving,
+        editingThing: el.__vueParentComponent.ctx.editingThing
       };
     });
     expect(saveState.editingThing).toBe(true);
@@ -258,9 +258,9 @@ test.describe.serial('Framework editing deep dive', () => {
     await secondaryBtn.click();
     let toolbarState = await page.evaluate(() => {
       const el = document.querySelector('#framework-editor-toolbar');
-      if (!el || !el.__vue__) return {};
+      if (!el || !el.__vueParentComponent) return {};
       return {
-        activeView: el.__vue__.activeView
+        activeView: el.__vueParentComponent.ctx.activeView
       };
     });
     expect(toolbarState.activeView).toBe('secondary');
@@ -270,9 +270,9 @@ test.describe.serial('Framework editing deep dive', () => {
     await tertiaryBtn.click();
     toolbarState = await page.evaluate(() => {
       const el = document.querySelector('#framework-editor-toolbar');
-      if (!el || !el.__vue__) return {};
+      if (!el || !el.__vueParentComponent) return {};
       return {
-        activeView: el.__vue__.activeView
+        activeView: el.__vueParentComponent.ctx.activeView
       };
     });
     expect(toolbarState.activeView).toBe('tertiary');
@@ -281,9 +281,9 @@ test.describe.serial('Framework editing deep dive', () => {
     await tertiaryBtn.click();
     toolbarState = await page.evaluate(() => {
       const el = document.querySelector('#framework-editor-toolbar');
-      if (!el || !el.__vue__) return {};
+      if (!el || !el.__vueParentComponent) return {};
       return {
-        activeView: el.__vue__.activeView
+        activeView: el.__vueParentComponent.ctx.activeView
       };
     });
     expect(toolbarState.activeView).toBe('secondary');
@@ -293,9 +293,9 @@ test.describe.serial('Framework editing deep dive', () => {
     await primaryBtn.click();
     toolbarState = await page.evaluate(() => {
       const el = document.querySelector('#framework-editor-toolbar');
-      if (!el || !el.__vue__) return {};
+      if (!el || !el.__vueParentComponent) return {};
       return {
-        activeView: el.__vue__.activeView
+        activeView: el.__vueParentComponent.ctx.activeView
       };
     });
     expect(toolbarState.activeView).toBe('primary');
@@ -310,11 +310,11 @@ test.describe.serial('Framework editing deep dive', () => {
     const nodeData = await page.evaluate(() => {
       const candidates = document.querySelectorAll('[class*="hierarchy"]');
       for (const el of candidates) {
-        if (el.__vue__ && (el.__vue__.obj || el.__vue__.$options.name === 'HierarchyNode')) {
-          const vm = el.__vue__;
+        if (el.__vueParentComponent && (el.__vueParentComponent.ctx.obj || el.__vueParentComponent.$options.name === 'HierarchyNode')) {
+          const vm = el.__vueParentComponent.ctx;
           return {
             found: true,
-            name: vm.$options.name,
+            name: (vm.$options?.name || vm.__name),
             hasObj: vm.obj != null,
             isVisible: vm.isVisible,
             hasChild: vm.hasChild,
@@ -332,10 +332,10 @@ test.describe.serial('Framework editing deep dive', () => {
     // Exercise Hierarchy.vue computed properties
     const hierarchyData = await page.evaluate(() => {
       const el = document.querySelector('.lode__hierarchy');
-      if (!el || !el.__vue__) return {
+      if (!el || !el.__vueParentComponent) return {
         error: 'no hierarchy vue'
       };
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       return {
         expanded: vm.expanded,
         hierarchyEnabled: vm.hierarchyEnabled,
@@ -352,10 +352,10 @@ test.describe.serial('Framework editing deep dive', () => {
   test('8: Exercise Framework.vue computed properties', async () => {
     const frameworkData = await page.evaluate(() => {
       const el = document.querySelector('#framework');
-      if (!el || !el.__vue__) return {
+      if (!el || !el.__vueParentComponent) return {
         error: 'no framework vue'
       };
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       return {
         canEdit: vm.canEdit,
         newFramework: vm.newFramework,

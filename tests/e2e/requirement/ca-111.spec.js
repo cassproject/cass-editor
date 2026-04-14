@@ -15,9 +15,9 @@ test('CA-111: Reader access via KBAC @reader field', async ({ page }) => {
     // Check the framework data in the Vuex store
     // When a framework is created, it has an owner but reader may be empty (public by default)
     const readerInfo = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
-        const framework = store.state.editor && store.state.editor.framework;
+        const framework = store.state.editor && store.editor.framework;
         if (!framework) return { error: 'no framework in store' };
         return {
             // @reader field exists on the framework object (may be empty array for public)

@@ -13,7 +13,7 @@ test('Store: app module state', async ({
   await page.goto('/#/frameworks?server=http://localhost/api/');
   await expect(page.locator('#frameworks')).toBeVisible();
   const result = await page.evaluate(() => {
-    const store = window.app && window.app.$store;
+    const store = window.__stores;
     if (!store) return {
       error: 'no store'
     };
@@ -33,44 +33,44 @@ test('Store: app module mutations', async ({
   await page.goto('/#/frameworks?server=http://localhost/api/');
   await expect(page.locator('#frameworks')).toBeVisible();
   const result = await page.evaluate(() => {
-    const store = window.app && window.app.$store;
+    const store = window.__stores;
     if (!store) return {
       error: 'no store'
     };
 
     // Exercise showRightAside / closeRightAside
-    store.commit('app/showRightAside', 'test-content');
-    const afterShow = store.state.app.showRightAside;
-    store.commit('app/closeRightAside');
-    const afterClose = store.state.app.showRightAside;
+    store.app.openRightAside( 'test-content');
+    const afterShow = store.app.showRightAside;
+    store.app.setCloseRightAside();
+    const afterClose = store.app.showRightAside;
 
     // Exercise setCanViewComments / setCanAddComments
-    store.commit('app/setCanViewComments', true);
-    const canView = store.state.app.canViewComments;
-    store.commit('app/setCanAddComments', true);
-    const canAdd = store.state.app.canAddComments;
+    store.app.setCanViewComments( true);
+    const canView = store.app.canViewComments;
+    store.app.setCanAddComments( true);
+    const canAdd = store.app.canAddComments;
 
     // Reset
-    store.commit('app/setCanViewComments', false);
-    store.commit('app/setCanAddComments', false);
+    store.app.setCanViewComments( false);
+    store.app.setCanAddComments( false);
 
     // Exercise searchTerm mutation
-    store.commit('app/searchTerm', 'test-search');
-    const searchTerm = store.state.app.frameworks.searchTerm;
-    store.commit('app/searchTerm', '');
+    store.app.setSearchTerm( 'test-search');
+    const searchTerm = store.app.frameworks.searchTerm;
+    store.app.setSearchTerm( '');
 
     // Exercise import mutations
-    store.commit('app/importTransition', 'process');
-    const transition = store.state.app.import.transition;
-    store.commit('app/importTransition', 'upload');
+    store.app.importTransition( 'process');
+    const transition = store.app.import.transition;
+    store.app.importTransition( 'upload');
 
     // Exercise banner/motd mutations
-    store.commit('app/setBanner', {
+    store.app.setBanner( {
       message: 'test',
       color: 'red',
       background: 'white'
     });
-    store.commit('app/setMotd', {
+    store.app.setMotd( {
       message: 'hello',
       title: 'Test'
     });
@@ -97,7 +97,7 @@ test('Store: editor module state', async ({
   if (!(await navigateToFramework(page))) return;
   await expect(page.locator('#framework')).toBeVisible();
   const result = await page.evaluate(() => {
-    const store = window.app && window.app.$store;
+    const store = window.__stores;
     if (!store) return {
       error: 'no store'
     };
@@ -122,18 +122,18 @@ test('Store: editor module mutations', async ({
   if (!(await navigateToFramework(page))) return;
   await expect(page.locator('#framework')).toBeVisible();
   const result = await page.evaluate(() => {
-    const store = window.app && window.app.$store;
+    const store = window.__stores;
     if (!store) return {
       error: 'no store'
     };
 
     // Exercise cutId/copyId
-    store.commit('editor/cutId', 'test-cut-id');
+    store.editor.cutId( 'test-cut-id');
     const cutId = store.state.editor?.cutId;
-    store.commit('editor/cutId', null);
-    store.commit('editor/copyId', 'test-copy-id');
+    store.editor.cutId( null);
+    store.editor.copyId( 'test-copy-id');
     const copyId = store.state.editor?.copyId;
-    store.commit('editor/copyId', null);
+    store.editor.copyId( null);
     return {
       cutId,
       copyId
@@ -147,17 +147,17 @@ test('Store: lode module state and mutations', async ({
 }) => {
   await page.goto('/#/frameworks?server=http://localhost/api/');
   await expect(page.locator('#frameworks')).toBeVisible();
-  await page.waitForFunction(() => window.app && window.app.$store);
+  await page.waitForFunction(() => window.__stores);
   const result = await page.evaluate(() => {
-    const store = window.app.$store;
+    const store = window.__stores;
     const hasLodeState = store.state.lode != null;
 
     // Exercise lode mutations without strict type checks
     try {
-      store.commit('lode/addingProperty', 'testProp');
-      store.commit('lode/addingProperty', '');
-      store.commit('lode/addingRange', ['testRange']);
-      store.commit('lode/addingRange', []);
+      store.lode.setAddingProperty( 'testProp');
+      store.lode.setAddingProperty( '');
+      store.lode.setAddingRange( ['testRange']);
+      store.lode.setAddingRange( []);
     } catch (e) {
       return {
         error: e.message
@@ -177,7 +177,7 @@ test('Store: featuresEnabled state and reading', async ({
   await page.goto('/#/frameworks?server=http://localhost/api/');
   await expect(page.locator('#frameworks')).toBeVisible();
   const result = await page.evaluate(() => {
-    const store = window.app && window.app.$store;
+    const store = window.__stores;
     if (!store) return {
       error: 'no store'
     };
@@ -203,22 +203,22 @@ test('Store: app getters coverage', async ({
   await page.goto('/#/frameworks?server=http://localhost/api/');
   await expect(page.locator('#frameworks')).toBeVisible();
   const result = await page.evaluate(() => {
-    const store = window.app && window.app.$store;
+    const store = window.__stores;
     if (!store) return {
       error: 'no store'
     };
     return {
-      canViewComments: store.getters['app/canViewComments'],
-      canAddComments: store.getters['app/canAddComments'],
-      sideNavEnabled: store.getters['app/sideNavEnabled'],
-      showSideNav: store.getters['app/showSideNav'],
-      showRightAside: store.getters['app/showRightAside'],
-      searchTerm: store.getters['app/searchTerm'],
-      sortResults: store.getters['app/sortResults'],
-      quickFilters: store.getters['app/quickFilters'],
-      importTransition: store.getters['app/importTransition'],
-      filterByOwnedByMe: store.getters['app/filterByOwnedByMe'],
-      filterByNotOwnedByMe: store.getters['app/filterByNotOwnedByMe']
+      canViewComments: store.app.canViewComments,
+      canAddComments: store.app.canAddComments,
+      sideNavEnabled: store.app.sideNavEnabled,
+      showSideNav: store.app.showSideNav,
+      showRightAside: store.app.showRightAside,
+      searchTerm: store.app.searchTerm,
+      sortResults: store.app.sortResults,
+      quickFilters: store.app.quickFilters,
+      importTransition: store.app.importTransition,
+      filterByOwnedByMe: store.app.filterByOwnedByMe,
+      filterByNotOwnedByMe: store.app.filterByNotOwnedByMe
     };
   });
   expect(result.canViewComments).toBeDefined();

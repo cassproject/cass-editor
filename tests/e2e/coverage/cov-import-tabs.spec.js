@@ -12,21 +12,21 @@ test.describe('ImportTabs Component Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Exercise store getters used by ImportTabs computed props
-            r.conceptMode = store.getters['editor/conceptMode'];
-            r.progressionMode = store.getters['editor/progressionMode'];
-            r.importErrors = store.getters['app/importErrors'];
-            r.importFiles = store.getters['app/importFiles'];
-            r.importTransition = store.getters['app/importTransition'];
-            r.importType = store.getters['app/importType'];
-            r.importFileType = store.getters['app/importFileType'];
-            r.importFramework = store.getters['app/importFramework'];
-            r.importStatus = store.getters['app/importStatus'];
-            r.queryParams = store.getters['editor/queryParams'];
+            r.conceptMode = store.editor.conceptMode;
+            r.progressionMode = store.editor.progressionMode;
+            r.importErrors = store.app.importErrors;
+            r.importFiles = store.app.importFiles;
+            r.importTransition = store.app.importTransition;
+            r.importType = store.app.importType;
+            r.importFileType = store.app.importFileType;
+            r.importFramework = store.app.importFramework;
+            r.importStatus = store.app.importStatus;
+            r.queryParams = store.editor.queryParams;
 
             // frameworkSize logic
             function frameworkSize(conceptMode, progressionMode, importFramework) {
@@ -41,28 +41,28 @@ test.describe('ImportTabs Component Coverage', () => {
             r.fwSizeEmptyFw = frameworkSize(false, false, {});
 
             // Exercise import type switching
-            store.commit('app/importType', 'server');
-            r.typeServer = store.getters['app/importType'];
-            store.commit('app/importType', 'text');
-            r.typeText = store.getters['app/importType'];
-            store.commit('app/importType', 'url');
-            r.typeUrl = store.getters['app/importType'];
+            store.app.importType( 'server');
+            r.typeServer = store.app.importType;
+            store.app.importType( 'text');
+            r.typeText = store.app.importType;
+            store.app.importType( 'url');
+            r.typeUrl = store.app.importType;
 
             // Exercise import transition switching
-            store.commit('app/importTransition', 'process');
-            r.transProcess = store.getters['app/importTransition'];
-            store.commit('app/importTransition', 'detail');
-            r.transDetail = store.getters['app/importTransition'];
-            store.commit('app/importTransition', 'preview');
-            r.transPreview = store.getters['app/importTransition'];
-            store.commit('app/importTransition', 'light');
-            r.transLight = store.getters['app/importTransition'];
-            store.commit('app/importTransition', 'importingCaseFrameworks');
-            r.transImporting = store.getters['app/importTransition'];
+            store.app.importTransition( 'process');
+            r.transProcess = store.app.importTransition;
+            store.app.importTransition( 'detail');
+            r.transDetail = store.app.importTransition;
+            store.app.importTransition( 'preview');
+            r.transPreview = store.app.importTransition;
+            store.app.importTransition( 'light');
+            r.transLight = store.app.importTransition;
+            store.app.importTransition( 'importingCaseFrameworks');
+            r.transImporting = store.app.importTransition;
 
             // Reset
-            store.commit('app/importType', 'file');
-            store.commit('app/importTransition', 'upload');
+            store.app.importType( 'file');
+            store.app.importTransition( 'upload');
 
             return r;
         });
@@ -91,32 +91,32 @@ test.describe('ImportTabs Component Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // importFromFile method logic
-            store.commit('app/importType', 'file');
-            store.commit('app/importFramework', null);
-            store.commit('app/importTransition', 'upload');
+            store.app.importType( 'file');
+            store.app.importFramework( null);
+            store.app.importTransition( 'upload');
             r.afterImportFromFile = {
-                type: store.getters['app/importType'],
-                framework: store.getters['app/importFramework'],
-                transition: store.getters['app/importTransition']
+                type: store.app.importType,
+                framework: store.app.importFramework,
+                transition: store.app.importTransition
             };
 
             // importFromUrl method logic
-            store.commit('app/importStatus', 'importFromUrl');
-            store.commit('app/importTransition', 'importingFromUrl');
+            store.app.importStatus( 'importFromUrl');
+            store.app.importTransition( 'importingFromUrl');
             r.afterImportFromUrl = {
-                status: store.getters['app/importStatus'],
-                transition: store.getters['app/importTransition']
+                status: store.app.importStatus,
+                transition: store.app.importTransition
             };
 
             // Reset
-            store.commit('app/importType', 'file');
-            store.commit('app/importTransition', 'upload');
-            store.commit('app/importStatus', '');
+            store.app.importType( 'file');
+            store.app.importTransition( 'upload');
+            store.app.importStatus( '');
 
             return r;
         });

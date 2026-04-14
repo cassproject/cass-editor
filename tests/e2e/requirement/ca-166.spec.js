@@ -15,8 +15,8 @@ test('CA-166: Bulk update of selected objects properties', async ({ page }) => {
     // Verify bulk edit infrastructure exists via Vue component inspection
     const result = await page.evaluate(() => {
         const hierarchyEl = document.querySelector('.lode__hierarchy');
-        if (!hierarchyEl || !hierarchyEl.__vue__) return { error: 'no hierarchy' };
-        const vm = hierarchyEl.__vue__;
+        if (!hierarchyEl || !hierarchyEl.__vueParentComponent) return { error: 'no hierarchy' };
+        const vm = hierarchyEl.__vueParentComponent.ctx;
         return {
             hasSelectAll: 'selectAll' in vm.$data,
             hasMultipleSelected: 'multipleSelected' in vm.$data,

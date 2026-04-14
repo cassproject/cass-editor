@@ -31,10 +31,10 @@ test.describe('Organization Views Coverage', () => {
     await expect(page.locator('.organizations')).toBeVisible();
     const vueData = await page.evaluate(() => {
       const el = document.querySelector('.organizations');
-      if (el && el.__vue__) {
-        const vm = el.__vue__;
+      if (el && el.__vueParentComponent) {
+        const vm = el.__vueParentComponent.ctx;
         return {
-          name: vm.$options.name,
+          name: (vm.$options?.name || vm.__name),
           sortBy: vm.sortBy,
           // computed
           queryParams: vm.queryParams,
@@ -63,10 +63,10 @@ test.describe('Organization Views Coverage', () => {
     await page.locator('#schema\\:dateModified').click();
     const sortAfter = await page.evaluate(() => {
       const el = document.querySelector('.organizations');
-      if (el && el.__vue__) {
+      if (el && el.__vueParentComponent) {
         return {
-          sortBy: el.__vue__.sortBy,
-          paramObj: el.__vue__.paramObj
+          sortBy: el.__vueParentComponent.ctx.sortBy,
+          paramObj: el.__vueParentComponent.ctx.paramObj
         };
       }
       return null;
@@ -78,7 +78,7 @@ test.describe('Organization Views Coverage', () => {
     await page.locator('#name\\.keyword').click();
     const sortBack = await page.evaluate(() => {
       const el = document.querySelector('.organizations');
-      return el && el.__vue__ ? el.__vue__.sortBy : null;
+      return el && el.__vueParentComponent ? el.__vueParentComponent.ctx.sortBy : null;
     });
     expect(sortBack).toBe('name.keyword');
   });
@@ -92,8 +92,8 @@ test.describe('Organization Views Coverage', () => {
     // Exercise common mixin methods that Organizations uses
     const mixinData = await page.evaluate(() => {
       const el = document.querySelector('.organizations');
-      if (el && el.__vue__) {
-        const vm = el.__vue__;
+      if (el && el.__vueParentComponent) {
+        const vm = el.__vueParentComponent.ctx;
         return {
           hasGetName: typeof vm.getName === 'function',
           hasOrganizationClick: typeof vm.organizationClick === 'function',

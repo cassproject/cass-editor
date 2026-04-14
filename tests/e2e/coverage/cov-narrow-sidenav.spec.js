@@ -29,10 +29,10 @@ test.describe('NarrowSideNav Coverage', () => {
       // Exercise computed props via __vue__
       const navData = await page.evaluate(() => {
         const el = document.querySelector('#app-narrow-side-nav-bar');
-        if (el && el.__vue__) {
-          const vm = el.__vue__;
+        if (el && el.__vueParentComponent) {
+          const vm = el.__vueParentComponent.ctx;
           return {
-            name: vm.$options.name,
+            name: (vm.$options?.name || vm.__name),
             displayName: vm.displayName,
             isLoggedOn: vm.isLoggedOn,
             currentRoute: vm.currentRoute,
@@ -92,8 +92,8 @@ test.describe('NarrowSideNav Coverage', () => {
       // After login, isLoggedOn should be true and Users/Groups link should appear
       const navData = await page.evaluate(() => {
         const el = document.querySelector('#app-narrow-side-nav-bar');
-        if (el && el.__vue__) {
-          const vm = el.__vue__;
+        if (el && el.__vueParentComponent) {
+          const vm = el.__vueParentComponent.ctx;
           return {
             displayName: vm.displayName,
             isLoggedOn: vm.isLoggedOn,

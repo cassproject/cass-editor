@@ -27,10 +27,10 @@ test('CA-167: Bulk deletion of objects from hierarchy or list', async ({
   // Verify the bulk/selection infrastructure for deletion exists
   const result = await page.evaluate(() => {
     const hierarchyEl = document.querySelector('.lode__hierarchy');
-    if (!hierarchyEl || !hierarchyEl.__vue__) return {
+    if (!hierarchyEl || !hierarchyEl.__vueParentComponent) return {
       error: 'no hierarchy'
     };
-    const vm = hierarchyEl.__vue__;
+    const vm = hierarchyEl.__vueParentComponent.ctx;
     return {
       hasDeleteSelected: typeof vm.deleteSelected === 'function',
       canEdit: vm.canEdit,

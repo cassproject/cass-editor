@@ -12,48 +12,48 @@ test.describe('Directory View Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Exercise store getters/mutations used by Directory.vue computed props
             // showRightAside
-            r.rightAside = store.getters['app/showRightAside'];
+            r.rightAside = store.app.showRightAside;
 
             // selectedDirectory
-            store.commit('app/selectDirectory', { shortId: () => 'dir-123', name: 'Test Dir', type: 'Directory' });
-            r.selectedDir = store.getters['app/selectedDirectory'];
+            store.app.setSelectDirectory( { shortId: () => 'dir-123', name: 'Test Dir', type: 'Directory' });
+            r.selectedDir = store.app.selectedDirectory;
             r.hasDirName = r.selectedDir && r.selectedDir.name === 'Test Dir';
 
             // searchingInDirectory
-            r.searchInDir = store.getters['app/searchingInDirectory'];
-            store.commit('app/searchingInDirectory', false);
-            r.searchInDirFalse = store.getters['app/searchingInDirectory'];
-            store.commit('app/searchingInDirectory', true);
+            r.searchInDir = store.app.searchingInDirectory;
+            store.app.setSearchingInDirectory( false);
+            r.searchInDirFalse = store.app.searchingInDirectory;
+            store.app.setSearchingInDirectory( true);
 
             // filterByOwnedByMe / filterByNotOwnedByMe / filterByConfigMatchDefault
-            r.filterOwned = store.getters['app/filterByOwnedByMe'];
-            r.filterNotOwned = store.getters['app/filterByNotOwnedByMe'];
-            r.filterConfig = store.getters['app/filterByConfigMatchDefault'];
+            r.filterOwned = store.app.filterByOwnedByMe;
+            r.filterNotOwned = store.app.filterByNotOwnedByMe;
+            r.filterConfig = store.app.filterByConfigMatchDefault;
 
             // sortResults
-            r.sortResults = store.getters['app/sortResults'];
+            r.sortResults = store.app.sortResults;
 
             // searchTerm
-            store.commit('app/searchTerm', 'directory test');
-            r.searchTerm = store.getters['app/searchTerm'];
-            store.commit('app/searchTerm', '');
+            store.app.setSearchTerm( 'directory test');
+            r.searchTerm = store.app.searchTerm;
+            store.app.setSearchTerm( '');
 
             // quickFilters
-            r.quickFilters = store.getters['app/quickFilters'];
+            r.quickFilters = store.app.quickFilters;
 
             // featuresEnabled
-            r.ownedByMe = store.getters['featuresEnabled/ownedByMe'];
-            r.shareEnabled = store.state.featuresEnabled.shareEnabled;
-            r.userMgmtEnabled = store.state.featuresEnabled.userManagementEnabled;
+            r.ownedByMe = store.featuresEnabled.ownedByMe;
+            r.shareEnabled = store.featuresEnabled.shareEnabled;
+            r.userMgmtEnabled = store.featuresEnabled.userManagementEnabled;
 
             // Clean up
-            store.commit('app/selectDirectory', null);
+            store.app.setSelectDirectory( null);
 
             return r;
         });

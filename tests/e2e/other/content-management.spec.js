@@ -14,8 +14,8 @@ test.describe('Content Management', () => {
 
     // Force apiLoginEnabled to false to show the Create Account button
     await page.evaluate(() => {
-      if (window.app && window.app.$store) {
-        window.app.$store.commit('featuresEnabled/apiLoginEnabled', false);
+      if (window.__stores) {
+        window.__stores.featuresEnabled.setApiLoginEnabled( false);
       }
     });
 

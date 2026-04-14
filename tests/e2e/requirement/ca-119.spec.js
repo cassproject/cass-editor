@@ -30,7 +30,7 @@ test('CA-119: Property editing adheres to cardinality rules', async ({
     const propertyEls = document.querySelectorAll('.lode__Property');
     const properties = [];
     for (const el of propertyEls) {
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       if (vm && vm.schema) {
         const maxCardinality = vm.schema['http://www.w3.org/2002/07/owl#maxCardinality'] || vm.schema['maxCardinality'];
         properties.push({

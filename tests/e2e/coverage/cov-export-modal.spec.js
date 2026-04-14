@@ -14,13 +14,13 @@ test.describe('Export Options Modal Coverage', () => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     const result = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
       const r = {};
 
       // Set up the store state needed for ExportOptionsModal
       // It reads from editor/itemToExport
-      store.commit('editor/setItemToExport', {
+      store.editor.setItemToExport( {
         id: 'http://test/framework/1',
         type: 'Framework',
         shortId: () => 'http://test/framework/1',
@@ -50,8 +50,8 @@ test.describe('Export Options Modal Coverage', () => {
         r.noComponent = true;
 
         // Even without the component mounted, exercise store state
-        r.itemToExport = store.getters['editor/itemToExport'];
-        store.commit('editor/setItemToExport');
+        r.itemToExport = store.editor.itemToExport;
+        store.editor.setItemToExport();
         return r;
       }
 
@@ -76,42 +76,42 @@ test.describe('Export Options Modal Coverage', () => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     const result = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
       const r = {};
 
       // Exercise the export-related store mutations
-      store.commit('editor/setItemToExport', {
+      store.editor.setItemToExport( {
         id: 'http://test/competency/1',
         type: 'Competency',
         shortId: () => 'http://test/competency/1',
         getName: () => 'Test Competency'
       });
-      r.exported = store.getters['editor/itemToExport'];
+      r.exported = store.editor.itemToExport;
       r.exportedType = r.exported.type;
 
       // Exercise framework export item
-      store.commit('editor/setItemToExport', {
+      store.editor.setItemToExport( {
         id: 'http://test/framework/1',
         type: 'Framework',
         shortId: () => 'http://test/framework/1',
         getName: () => 'Test Framework'
       });
-      r.frameworkExported = store.getters['editor/itemToExport'];
+      r.frameworkExported = store.editor.itemToExport;
       r.frameworkType = r.frameworkExported.type;
 
       // Exercise ConceptScheme export item
-      store.commit('editor/setItemToExport', {
+      store.editor.setItemToExport( {
         id: 'http://test/scheme/1',
         type: 'ConceptScheme',
         shortId: () => 'http://test/scheme/1',
         getName: () => 'Test Scheme'
       });
-      r.schemeExported = store.getters['editor/itemToExport'];
+      r.schemeExported = store.editor.itemToExport;
       r.schemeType = r.schemeExported.type;
 
       // Clear
-      store.commit('editor/setItemToExport');
+      store.editor.setItemToExport();
       return r;
     });
     expect(result).toBeTruthy();

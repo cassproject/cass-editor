@@ -11,8 +11,8 @@ test('CA-193: Add resource to framework', async ({ page }) => {
     // Verify the add-competency button exists (mechanism for adding objects/resources)
     const result = await page.evaluate(() => {
         const hierarchyEl = document.querySelector('.lode__hierarchy');
-        if (!hierarchyEl || !hierarchyEl.__vue__) return { error: 'no hierarchy' };
-        const vm = hierarchyEl.__vue__;
+        if (!hierarchyEl || !hierarchyEl.__vueParentComponent) return { error: 'no hierarchy' };
+        const vm = hierarchyEl.__vueParentComponent.ctx;
         return {
             hasAddingNode: 'addingNode' in vm.$data,
             canEdit: vm.canEdit

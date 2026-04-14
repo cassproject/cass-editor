@@ -35,7 +35,7 @@ test('CA-124: Search for valid object values from system', async ({
     const propertyEls = document.querySelectorAll('.lode__Property');
     const props = [];
     for (const el of propertyEls) {
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       if (vm) {
         props.push({
           label: vm.displayLabel,

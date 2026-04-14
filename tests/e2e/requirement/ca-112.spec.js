@@ -32,9 +32,9 @@ test('CA-112: Comment visibility is restricted by access', async ({ page }) => {
 
     // Check that the framework's comment access identity list exists in the data model
     const accessInfo = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
-        const framework = store.state.editor && store.state.editor.framework;
+        const framework = store.state.editor && store.editor.framework;
         if (!framework) return { error: 'no framework in store' };
         return {
             hasOwner: Array.isArray(framework.owner) && framework.owner.length > 0,

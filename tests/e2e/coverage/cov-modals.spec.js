@@ -28,7 +28,7 @@ test.describe('Modal Components Coverage', () => {
     const dynamicModalData = await page.evaluate(() => {
       const modals = document.querySelectorAll('.dynamic-modal, [class*="modal"]');
       // Look for DynamicModal component in the app tree
-      if (window.app && window.app.$store) {
+      if (window.__stores) {
         // The DynamicModal may be a child of App.vue
         const appVm = window.app;
         const allChildren = [];
@@ -95,38 +95,38 @@ test.describe('Modal Components Coverage', () => {
     // showModal(state, payload) sets state.modal.showModal = true and state.modal.dynamicModalContent = payload
     // closeModal(state) sets state.modal.showModal = false and state.modal.dynamicModalContent = {}
     const storeValues = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
 
       // Exercise showModal mutation (sets showModal=true and dynamicModalContent=payload)
-      store.commit('app/showModal', 'ExportOptionsModal');
-      const show1 = store.getters['app/showModal'];
-      const content1 = store.getters['app/dynamicModalContent'];
+      store.app.setShowModal( 'ExportOptionsModal');
+      const show1 = store.app.showModal;
+      const content1 = store.app.dynamicModalContent;
 
       // Exercise closeModal mutation (resets both)
-      store.commit('app/closeModal');
-      const show2 = store.getters['app/showModal'];
-      const content2 = store.getters['app/dynamicModalContent'];
+      store.app.closeModal();
+      const show2 = store.app.showModal;
+      const content2 = store.app.dynamicModalContent;
 
       // Exercise objForShareModal mutation
-      store.commit('app/objForShareModal', {
+      store.app.setObjForShareModal( {
         id: 'test-obj'
       });
-      const shareObj = store.getters['app/objForShareModal'];
-      store.commit('app/objForShareModal', null);
+      const shareObj = store.app.objForShareModal;
+      store.app.setObjForShareModal( null);
 
       // Exercise other app store mutations
-      store.commit('app/searchTerm', 'test search');
-      const searchTerm = store.getters['app/searchTerm'];
-      store.commit('app/searchTerm', '');
+      store.app.setSearchTerm( 'test search');
+      const searchTerm = store.app.searchTerm;
+      store.app.setSearchTerm( '');
 
       // Exercise banner mutation
-      store.commit('app/setBanner', {
+      store.app.setBanner( {
         message: 'test',
         color: 'red',
         background: 'blue'
       });
-      const bannerMsg = store.getters['app/bannerMessage'];
+      const bannerMsg = store.app.bannerMessage;
       return {
         show1,
         show2,

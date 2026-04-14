@@ -12,69 +12,69 @@ test.describe('Features Enabled Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Read defaults
-            r.defaultCrosswalk = store.state.featuresEnabled.crosswalkEnabled;
-            r.defaultUserMgmt = store.state.featuresEnabled.userManagementEnabled;
-            r.defaultConfigs = store.state.featuresEnabled.configurationsEnabled;
-            r.defaultSearchOwner = store.state.featuresEnabled.searchByOwnerNameEnabled;
-            r.defaultPlugins = store.state.featuresEnabled.pluginsEnabled;
-            r.defaultLogin = store.state.featuresEnabled.loginEnabled;
-            r.defaultLegacy = store.getters['featuresEnabled/legacyLoginEnabled'];
-            r.defaultApi = store.getters['featuresEnabled/apiLoginEnabled'];
-            r.defaultShare = store.state.featuresEnabled.shareEnabled;
-            r.defaultShareLink = store.state.featuresEnabled.shareLink;
-            r.defaultOwned = store.getters['featuresEnabled/ownedByMe'];
+            r.defaultCrosswalk = store.featuresEnabled.crosswalkEnabled;
+            r.defaultUserMgmt = store.featuresEnabled.userManagementEnabled;
+            r.defaultConfigs = store.featuresEnabled.configurationsEnabled;
+            r.defaultSearchOwner = store.featuresEnabled.searchByOwnerNameEnabled;
+            r.defaultPlugins = store.featuresEnabled.pluginsEnabled;
+            r.defaultLogin = store.featuresEnabled.loginEnabled;
+            r.defaultLegacy = store.featuresEnabled.legacyLoginEnabled;
+            r.defaultApi = store.featuresEnabled.apiLoginEnabled;
+            r.defaultShare = store.featuresEnabled.shareEnabled;
+            r.defaultShareLink = store.featuresEnabled.shareLink;
+            r.defaultOwned = store.featuresEnabled.ownedByMe;
 
             // Toggle all off
-            store.commit('featuresEnabled/crosswalkEnabled', false);
-            r.crosswalkOff = store.state.featuresEnabled.crosswalkEnabled;
+            store.featuresEnabled.setCrosswalkEnabled( false);
+            r.crosswalkOff = store.featuresEnabled.crosswalkEnabled;
 
-            store.commit('featuresEnabled/userManagementEnabled', false);
-            r.userMgmtOff = store.state.featuresEnabled.userManagementEnabled;
+            store.featuresEnabled.setUserManagementEnabled( false);
+            r.userMgmtOff = store.featuresEnabled.userManagementEnabled;
 
-            store.commit('featuresEnabled/configurationsEnabled', false);
-            r.configsOff = store.state.featuresEnabled.configurationsEnabled;
+            store.featuresEnabled.setConfigurationsEnabled( false);
+            r.configsOff = store.featuresEnabled.configurationsEnabled;
 
-            store.commit('featuresEnabled/searchByOwnerNameEnabled', false);
-            r.searchOwnerOff = store.state.featuresEnabled.searchByOwnerNameEnabled;
+            store.featuresEnabled.setSearchByOwnerNameEnabled( false);
+            r.searchOwnerOff = store.featuresEnabled.searchByOwnerNameEnabled;
 
-            store.commit('featuresEnabled/pluginsEnabled', false);
-            r.pluginsOff = store.state.featuresEnabled.pluginsEnabled;
+            store.featuresEnabled.setPluginsEnabled( false);
+            r.pluginsOff = store.featuresEnabled.pluginsEnabled;
 
-            store.commit('featuresEnabled/loginEnabled', false);
-            r.loginOff = store.state.featuresEnabled.loginEnabled;
+            store.featuresEnabled.setLoginEnabled( false);
+            r.loginOff = store.featuresEnabled.loginEnabled;
 
-            store.commit('featuresEnabled/legacyLoginEnabled', false);
-            r.legacyOff = store.getters['featuresEnabled/legacyLoginEnabled'];
+            store.featuresEnabled.setLegacyLoginEnabled( false);
+            r.legacyOff = store.featuresEnabled.legacyLoginEnabled;
 
-            store.commit('featuresEnabled/apiLoginEnabled', true);
-            r.apiOn = store.getters['featuresEnabled/apiLoginEnabled'];
+            store.featuresEnabled.setApiLoginEnabled( true);
+            r.apiOn = store.featuresEnabled.apiLoginEnabled;
 
-            store.commit('featuresEnabled/shareEnabled', false);
-            r.shareOff = store.state.featuresEnabled.shareEnabled;
+            store.featuresEnabled.setShareEnabled( false);
+            r.shareOff = store.featuresEnabled.shareEnabled;
 
-            store.commit('featuresEnabled/shareLink', true);
-            r.shareLinkOn = store.state.featuresEnabled.shareLink;
+            store.featuresEnabled.setShareLink( true);
+            r.shareLinkOn = store.featuresEnabled.shareLink;
 
-            store.commit('featuresEnabled/ownedByMe', true);
-            r.ownedOn = store.getters['featuresEnabled/ownedByMe'];
+            store.featuresEnabled.setOwnedByMe( true);
+            r.ownedOn = store.featuresEnabled.ownedByMe;
 
             // Restore defaults
-            store.commit('featuresEnabled/crosswalkEnabled', true);
-            store.commit('featuresEnabled/userManagementEnabled', true);
-            store.commit('featuresEnabled/configurationsEnabled', true);
-            store.commit('featuresEnabled/searchByOwnerNameEnabled', true);
-            store.commit('featuresEnabled/pluginsEnabled', true);
-            store.commit('featuresEnabled/loginEnabled', true);
-            store.commit('featuresEnabled/legacyLoginEnabled', true);
-            store.commit('featuresEnabled/apiLoginEnabled', false);
-            store.commit('featuresEnabled/shareEnabled', true);
-            store.commit('featuresEnabled/shareLink', false);
-            store.commit('featuresEnabled/ownedByMe', false);
+            store.featuresEnabled.setCrosswalkEnabled( true);
+            store.featuresEnabled.setUserManagementEnabled( true);
+            store.featuresEnabled.setConfigurationsEnabled( true);
+            store.featuresEnabled.setSearchByOwnerNameEnabled( true);
+            store.featuresEnabled.setPluginsEnabled( true);
+            store.featuresEnabled.setLoginEnabled( true);
+            store.featuresEnabled.setLegacyLoginEnabled( true);
+            store.featuresEnabled.setApiLoginEnabled( false);
+            store.featuresEnabled.setShareEnabled( true);
+            store.featuresEnabled.setShareLink( false);
+            store.featuresEnabled.setOwnedByMe( false);
 
             return r;
         });

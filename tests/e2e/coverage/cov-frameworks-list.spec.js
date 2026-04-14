@@ -43,7 +43,7 @@ test.describe.serial('Frameworks list deep coverage', () => {
     const count = await listItems.count();
     expect(count).toBeGreaterThan(0);
 
-    // Exercise Frameworks.vue computed properties via window.app.$store
+    // Exercise Frameworks.vue computed properties via window.__stores
     const fwData = await page.evaluate(() => {
       const app = window.app;
       if (!app || !app.$store) return {
@@ -51,13 +51,13 @@ test.describe.serial('Frameworks list deep coverage', () => {
       };
       const store = app.$store;
       return {
-        conceptMode: store.getters['editor/conceptMode'],
-        progressionMode: store.getters['editor/progressionMode'],
-        queryParams: store.getters['editor/queryParams'],
-        showRightAside: store.getters['app/showRightAside'],
-        searchTerm: store.getters['app/searchTerm'],
-        sortResults: store.getters['app/sortResults'],
-        filterByOwnedByMe: store.getters['app/filterByOwnedByMe']
+        conceptMode: store.editor.conceptMode,
+        progressionMode: store.editor.progressionMode,
+        queryParams: store.editor.queryParams,
+        showRightAside: store.app.showRightAside,
+        searchTerm: store.app.searchTerm,
+        sortResults: store.app.sortResults,
+        filterByOwnedByMe: store.app.filterByOwnedByMe
       };
     });
     expect(fwData.error).toBeUndefined();
@@ -83,8 +83,8 @@ test.describe.serial('Frameworks list deep coverage', () => {
     const filterData = await page.evaluate(() => {
       const allEls = document.querySelectorAll('*');
       for (const el of allEls) {
-        const vm = el.__vue__;
-        if (vm && vm.$options && vm.$options.name === 'FilterAndSort') {
+        const vm = el.__vueParentComponent.ctx;
+        if (vm && vm.$options && (vm.$options?.name || vm.__name) === 'FilterAndSort') {
           return {
             found: true,
             loggedIn: vm.loggedIn,
@@ -161,8 +161,8 @@ test.describe.serial('Frameworks list deep coverage', () => {
     const infoData = await page.evaluate(() => {
       const allEls = document.querySelectorAll('*');
       for (const el of allEls) {
-        const vm = el.__vue__;
-        if (vm && vm.$options && vm.$options.name === 'ListItemInfo') {
+        const vm = el.__vueParentComponent.ctx;
+        if (vm && vm.$options && (vm.$options?.name || vm.__name) === 'ListItemInfo') {
           return {
             found: true,
             objectType: vm.objectType,
@@ -228,8 +228,8 @@ test.describe.serial('Frameworks list deep coverage', () => {
     const searchData = await page.evaluate(() => {
       const allEls = document.querySelectorAll('*');
       for (const el of allEls) {
-        const vm = el.__vue__;
-        if (vm && vm.$options && vm.$options.name === 'SearchBar') {
+        const vm = el.__vueParentComponent.ctx;
+        if (vm && vm.$options && (vm.$options?.name || vm.__name) === 'SearchBar') {
           return {
             found: true,
             type: vm.type,
@@ -260,7 +260,7 @@ test.describe.serial('Frameworks list deep coverage', () => {
     await page.evaluate(() => {
       const app = window.app;
       if (app && app.$store) {
-        app.$store.commit('app/sortResults', {
+        app.$store.app.setSortResults( {
           id: 'lastEdited'
         });
       }
@@ -269,7 +269,7 @@ test.describe.serial('Frameworks list deep coverage', () => {
     await page.evaluate(() => {
       const app = window.app;
       if (app && app.$store) {
-        app.$store.commit('app/sortResults', {
+        app.$store.app.setSortResults( {
           id: 'alphabetical'
         });
       }

@@ -40,7 +40,7 @@ test.describe.skip('Coverage: PluginDetails.vue', () => {
             const VueCtor = window.app.$options._base || window.app.constructor;
             const Ctor = VueCtor.extend(pluginDetailsOptions);
             const vm = new Ctor({
-                store: window.app.$store,
+                store: window.__stores,
                 propsData: {
                     plugin: { url: "http://example.com/plugin" },
                     readOnly: false

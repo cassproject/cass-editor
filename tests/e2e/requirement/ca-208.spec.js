@@ -12,8 +12,8 @@ test.skip('CA-208: Suggestion mode for unauthorized edits', async ({ page }) => 
     // Verify the hierarchy is in view-only mode (canEdit false for non-owner)
     const result = await page.evaluate(() => {
         const hierarchyEl = document.querySelector('.lode__hierarchy');
-        if (!hierarchyEl || !hierarchyEl.__vue__) return { error: 'no hierarchy' };
-        const vm = hierarchyEl.__vue__;
+        if (!hierarchyEl || !hierarchyEl.__vueParentComponent) return { error: 'no hierarchy' };
+        const vm = hierarchyEl.__vueParentComponent.ctx;
         return {
             canEdit: vm.canEdit
         };

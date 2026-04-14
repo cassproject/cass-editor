@@ -105,25 +105,25 @@ test('Import: store importType mutations', async ({
   uid = await loginAndNavigate(page, uid);
   await page.goto('/#/import?server=http://localhost/api/');
   await page.waitForLoadState('domcontentloaded');
-  await page.waitForFunction(() => window.app && window.app.$store);
+  await page.waitForFunction(() => window.__stores);
   const result = await page.evaluate(() => {
-    const store = window.app.$store;
-    store.commit('app/importType', 'file');
-    const fileType = store.state.app.import.type;
-    store.commit('app/importType', 'server');
-    const serverType = store.state.app.import.type;
-    store.commit('app/importType', 'text');
-    const textType = store.state.app.import.type;
-    store.commit('app/importType', 'url');
-    const urlType = store.state.app.import.type;
-    store.commit('app/importTransition', 'upload');
-    const transition = store.state.app.import.transition;
-    store.commit('app/importStatus', 'test-status');
-    const status = store.state.app.import.status;
+    const store = window.__stores;
+    store.app.importType( 'file');
+    const fileType = store.app.import.type;
+    store.app.importType( 'server');
+    const serverType = store.app.import.type;
+    store.app.importType( 'text');
+    const textType = store.app.import.type;
+    store.app.importType( 'url');
+    const urlType = store.app.import.type;
+    store.app.importTransition( 'upload');
+    const transition = store.app.import.transition;
+    store.app.importStatus( 'test-status');
+    const status = store.app.import.status;
 
     // Restore
-    store.commit('app/importType', 'file');
-    store.commit('app/importTransition', 'upload');
+    store.app.importType( 'file');
+    store.app.importTransition( 'upload');
     return {
       file: fileType === 'file',
       server: serverType === 'server',

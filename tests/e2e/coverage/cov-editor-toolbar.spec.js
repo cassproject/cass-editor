@@ -12,15 +12,15 @@ test.describe('EditorToolbar Component Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Exercise store getters used by EditorToolbar computed props
-            r.conceptMode = store.getters['editor/conceptMode'];
-            r.progressionMode = store.getters['editor/progressionMode'];
-            r.canViewComments = store.state.app.canViewComments;
-            r.canAddComments = store.state.app.canAddComments;
+            r.conceptMode = store.editor.conceptMode;
+            r.progressionMode = store.editor.progressionMode;
+            r.canViewComments = store.app.canViewComments;
+            r.canAddComments = store.app.canAddComments;
 
             // computed showAddComments logic
             function showAddComments(conceptMode, progressionMode, canAdd) {
@@ -77,13 +77,13 @@ test.describe('EditorToolbar Component Coverage', () => {
             r.changeTertiaryToggle = changeProperties('tertiary', 'tertiary');
 
             // Feature flags
-            r.configsEnabled = store.state.featuresEnabled.configurationsEnabled;
-            r.shareEnabled = store.state.featuresEnabled.shareEnabled;
-            r.shareLink = store.state.featuresEnabled.shareLink;
-            r.userMgmtEnabled = store.state.featuresEnabled.userManagementEnabled;
+            r.configsEnabled = store.featuresEnabled.configurationsEnabled;
+            r.shareEnabled = store.featuresEnabled.shareEnabled;
+            r.shareLink = store.featuresEnabled.shareLink;
+            r.userMgmtEnabled = store.featuresEnabled.userManagementEnabled;
             r.loggedIn = !!(EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0);
-            r.ceasnFields = store.getters['editor/queryParams'] && store.getters['editor/queryParams'].ceasnDataFields === 'true';
-            r.managingAssertions = store.getters['editor/manageAssertions'];
+            r.ceasnFields = store.editor.queryParams && store.editor.queryParams.ceasnDataFields === 'true';
+            r.managingAssertions = store.editor.manageAssertions;
 
             // Data defaults
             r.defaults = {

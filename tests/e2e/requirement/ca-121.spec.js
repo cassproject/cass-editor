@@ -28,7 +28,7 @@ test('CA-121: Property editing adheres to allowed range', async ({
     const propertyEls = document.querySelectorAll('.lode__Property');
     const properties = [];
     for (const el of propertyEls) {
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       if (vm && vm.schema) {
         const range = vm.schema['http://schema.org/rangeIncludes'];
         properties.push({

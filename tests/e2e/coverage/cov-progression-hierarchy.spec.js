@@ -9,8 +9,8 @@ test.describe.serial('Coverage: ProgressionHierarchy component', () => {
     await page.waitForLoadState('domcontentloaded');
     // Set progression mode
     await page.evaluate(() => {
-      window.app.$store.commit('editor/progressionMode', true);
-      window.app.$store.commit('editor/conceptMode', false);
+      window.__stores.editor.progressionMode( true);
+      window.__stores.editor.conceptMode( false);
     });
 
     // Wait for list to load, then click the create button

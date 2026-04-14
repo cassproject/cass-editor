@@ -25,7 +25,7 @@ test('CA-152: Property editing adheres to allowed type', async ({
     const propertyEls = document.querySelectorAll('.lode__Property');
     const props = [];
     for (const el of propertyEls) {
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       if (vm && vm.schema) {
         const range = vm.schema['http://schema.org/rangeIncludes'];
         const rangeStr = range ? JSON.stringify(range) : '';

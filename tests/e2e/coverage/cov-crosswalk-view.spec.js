@@ -14,17 +14,17 @@ test.describe('Crosswalk View Coverage', () => {
     await page.goto('/#/crosswalk?server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     const result = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
       const r = {};
 
       // Exercise crosswalk store getters
-      r.step = store.state.crosswalk.step;
-      r.sourceState = store.state.crosswalk.sourceState;
-      r.targetState = store.state.crosswalk.targetState;
-      r.enabledTypes = store.getters['crosswalk/enabledRelationshipTypes'];
-      r.source = store.getters['crosswalk/frameworkSource'];
-      r.target = store.getters['crosswalk/frameworkTarget'];
+      r.step = store.crosswalk.step;
+      r.sourceState = store.crosswalk.sourceState;
+      r.targetState = store.crosswalk.targetState;
+      r.enabledTypes = store.crosswalk.enabledRelationshipTypes;
+      r.source = store.crosswalk.frameworkSource;
+      r.target = store.crosswalk.frameworkTarget;
 
       // Find the crosswalk component
       const findComponent = vnode => {
@@ -43,9 +43,9 @@ test.describe('Crosswalk View Coverage', () => {
       if (!comp) {
         r.noComponent = true;
         // Even without the component, exercise the store heavily
-        store.commit('crosswalk/step', 0);
-        store.commit('crosswalk/sourceState', 'ready');
-        store.commit('crosswalk/targetState', 'ready');
+        store.crosswalk.setStep( 0);
+        store.crosswalk.setSourceState( 'ready');
+        store.crosswalk.setTargetState( 'ready');
         return r;
       }
 
@@ -76,82 +76,82 @@ test.describe('Crosswalk View Coverage', () => {
     await page.goto('/#/crosswalk?server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     const result = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
       const r = {};
 
       // Simulate crosswalk workflow through store
-      store.commit('crosswalk/step', 0);
+      store.crosswalk.setStep( 0);
 
       // Step 0: Select source framework
-      store.commit('crosswalk/frameworkSource', {
+      store.crosswalk.setFrameworkSource( {
         id: 'http://test/framework/1',
         shortId: () => 'http://test/framework/1',
         getName: () => 'Test Source Framework'
       });
-      r.afterSelectSource = store.state.crosswalk.step;
+      r.afterSelectSource = store.crosswalk.step;
 
       // Step 1: Select target framework
-      store.commit('crosswalk/frameworkTarget', {
+      store.crosswalk.setFrameworkTarget( {
         id: 'http://test/framework/2',
         shortId: () => 'http://test/framework/2',
         getName: () => 'Test Target Framework'
       });
 
       // Configure relationship types
-      store.commit('crosswalk/enabledRelationshipTypes', ['narrows', 'broadens', 'isEquivalentTo']);
-      store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
-      r.enabledTypes = store.getters['crosswalk/enabledRelationshipTypes'];
+      store.crosswalk.setEnabledRelationshipTypes( ['narrows', 'broadens', 'isEquivalentTo']);
+      store.crosswalk.setEnabledRelationshipTypesLastUpdate( Date.now());
+      r.enabledTypes = store.crosswalk.enabledRelationshipTypes;
 
       // Set up working alignment
-      store.commit('crosswalk/workingAlignmentsSource', 'http://test/competency/1');
-      store.commit('crosswalk/workingAlignmentsType', 'narrows');
-      store.commit('crosswalk/addWorkingAlignmentsTarget', 'http://test/competency/2');
-      store.commit('crosswalk/addWorkingAlignmentsTarget', 'http://test/competency/3');
-      r.workingSource = store.getters['crosswalk/workingAlignmentsSource'];
-      r.workingTargets = store.getters['crosswalk/workingAlignmentsTargets'];
+      store.crosswalk.setWorkingAlignmentsSource( 'http://test/competency/1');
+      store.crosswalk.setWorkingAlignmentsType( 'narrows');
+      store.crosswalk.addWorkingAlignmentsTarget( 'http://test/competency/2');
+      store.crosswalk.addWorkingAlignmentsTarget( 'http://test/competency/3');
+      r.workingSource = store.crosswalk.workingAlignmentsSource;
+      r.workingTargets = store.crosswalk.workingAlignmentsTargets;
 
       // Prepopulate relevant alignments map
-      store.commit('crosswalk/relevantExistingAlignmentsMap', {
+      store.crosswalk.setRelevantExistingAlignmentsMap( {
         'http://test/competency/1': [{
           source: 'http://test/competency/1',
           target: 'http://test/competency/5',
           relationType: 'isEquivalentTo'
         }]
       });
-      store.commit('crosswalk/relevantExistingAlignmentsMapLastUpdate', Date.now());
+      store.crosswalk.setRelevantExistingAlignmentsMapLastUpdate( Date.now());
 
       // Add new alignment
-      store.commit('crosswalk/addAlignmentToRelevantAlignmentsMap', {
+      store.crosswalk.addAlignmentToRelevantAlignmentsMap( {
         source: 'http://test/competency/1',
         target: 'http://test/competency/6',
         relationType: 'narrows'
       });
-      r.mapSize = Object.keys(store.state.crosswalk.relevantExistingAlignmentsMap).length;
+      r.mapSize = Object.keys(store.crosswalk.relevantExistingAlignmentsMap).length;
       // Nested map: map[source][relationType][target] — count relation types
-      const sourceEntry = store.state.crosswalk.relevantExistingAlignmentsMap['http://test/competency/1'];
+      const sourceEntry = store.crosswalk.relevantExistingAlignmentsMap['http://test/competency/1'];
       r.mapEntries = sourceEntry ? Object.keys(sourceEntry).length : 0;
 
       // Prepare alignments to save
-      store.commit('crosswalk/appendAlignmentsToSave', {
+      store.crosswalk.setAppendAlignmentsToSave( {
         source: 'http://test/competency/1',
         target: 'http://test/competency/2',
         relationType: 'narrows'
       });
-      store.commit('crosswalk/appendAlignmentsToSave', {
+      store.crosswalk.setAppendAlignmentsToSave( {
         source: 'http://test/competency/1',
         target: 'http://test/competency/3',
         relationType: 'narrows'
       });
-      r.toSave = store.state.crosswalk.alignmentsToSave.length;
+      r.toSave = store.crosswalk.alignmentsToSave.length;
 
       // Move to review step
-      store.commit('crosswalk/step', 2);
-      r.reviewStep = store.state.crosswalk.step;
+      store.crosswalk.setStep( 2);
+      r.reviewStep = store.crosswalk.step;
 
       // Reset everything
-      store.commit('crosswalk/resetCrosswalk');
-      r.afterReset = store.state.crosswalk.step;
+      store.crosswalk.resetCrosswalk();
+      r.afterReset = store.crosswalk.step;
       return r;
     });
     expect(result).toBeTruthy();

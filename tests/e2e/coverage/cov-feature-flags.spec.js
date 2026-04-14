@@ -31,7 +31,7 @@ test('Feature flags: exercise various URL parameter combinations', async ({ page
 
     // Verify the store captured at least some of these flags
     const result = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return null;
         return {
             hasEditorState: !!store.state.editor,

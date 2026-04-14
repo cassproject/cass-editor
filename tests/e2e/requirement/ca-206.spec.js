@@ -10,9 +10,9 @@ test('CA-206: Comment visibility by role', async ({ page }) => {
 
     // Verify owner identity is available (drives comment visibility rules)
     const result = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
-        const framework = store.state.editor && store.state.editor.framework;
+        const framework = store.state.editor && store.editor.framework;
         if (!framework) return { error: 'no framework' };
         return {
             hasOwner: framework['@owner'] !== undefined,

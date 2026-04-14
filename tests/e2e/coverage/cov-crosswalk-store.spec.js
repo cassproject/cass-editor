@@ -12,48 +12,48 @@ test.describe('Crosswalk Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
-            store.commit('crosswalk/step', 1);
-            r.step = store.state.crosswalk.step;
+            store.crosswalk.setStep( 1);
+            r.step = store.crosswalk.step;
 
-            store.commit('crosswalk/frameworkSource', { id: 'fw-source' });
-            r.source = store.getters['crosswalk/frameworkSource'];
+            store.crosswalk.setFrameworkSource( { id: 'fw-source' });
+            r.source = store.crosswalk.frameworkSource;
 
-            store.commit('crosswalk/frameworkTarget', { id: 'fw-target' });
-            r.target = store.getters['crosswalk/frameworkTarget'];
+            store.crosswalk.setFrameworkTarget( { id: 'fw-target' });
+            r.target = store.crosswalk.frameworkTarget;
 
-            store.commit('crosswalk/frameworkSourceRelationships', [{ id: 'r1' }]);
-            r.sourceRels = store.getters['crosswalk/frameworkSourceRelationships'];
+            store.crosswalk.setFrameworkSourceRelationships( [{ id: 'r1' }]);
+            r.sourceRels = store.crosswalk.frameworkSourceRelationships;
 
-            store.commit('crosswalk/frameworkTargetRelationships', [{ id: 'r2' }]);
-            r.targetRels = store.getters['crosswalk/frameworkTargetRelationships'];
+            store.crosswalk.setFrameworkTargetRelationships( [{ id: 'r2' }]);
+            r.targetRels = store.crosswalk.frameworkTargetRelationships;
 
-            store.commit('crosswalk/sourceState', 'loading');
-            r.sourceState = store.getters['crosswalk/sourceState'];
+            store.crosswalk.setSourceState( 'loading');
+            r.sourceState = store.crosswalk.sourceState;
 
-            store.commit('crosswalk/targetState', 'loading');
-            r.targetState = store.getters['crosswalk/targetState'];
+            store.crosswalk.setTargetState( 'loading');
+            r.targetState = store.crosswalk.targetState;
 
-            store.commit('crosswalk/workingAlignmentsSource', 'comp-source');
-            r.workSource = store.getters['crosswalk/workingAlignmentsSource'];
+            store.crosswalk.setWorkingAlignmentsSource( 'comp-source');
+            r.workSource = store.crosswalk.workingAlignmentsSource;
 
-            store.commit('crosswalk/workingAlignmentsType', 'narrows');
-            r.workType = store.getters['crosswalk/workingAlignmentsType'];
+            store.crosswalk.setWorkingAlignmentsType( 'narrows');
+            r.workType = store.crosswalk.workingAlignmentsType;
 
-            store.commit('crosswalk/workingAlignmentsTargets', ['t1', 't2']);
-            r.workTargets = store.getters['crosswalk/workingAlignmentsTargets'];
+            store.crosswalk.setWorkingAlignmentsTargets( ['t1', 't2']);
+            r.workTargets = store.crosswalk.workingAlignmentsTargets;
 
-            store.commit('crosswalk/enabledRelationshipTypes', ['narrows', 'broadens']);
-            r.enabledTypes = store.getters['crosswalk/enabledRelationshipTypes'];
+            store.crosswalk.setEnabledRelationshipTypes( ['narrows', 'broadens']);
+            r.enabledTypes = store.crosswalk.enabledRelationshipTypes;
 
-            store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
-            r.enabledUpdate = store.getters['crosswalk/enabledRelationshipTypesLastUpdate'];
+            store.crosswalk.setEnabledRelationshipTypesLastUpdate( Date.now());
+            r.enabledUpdate = store.crosswalk.enabledRelationshipTypesLastUpdate;
 
-            store.commit('crosswalk/targetNodesToHighlight', ['n1', 'n2']);
-            r.highlight = store.state.crosswalk.targetNodesToHighlight;
+            store.crosswalk.setTargetNodesToHighlight( ['n1', 'n2']);
+            r.highlight = store.crosswalk.targetNodesToHighlight;
 
             return r;
         });
@@ -79,32 +79,32 @@ test.describe('Crosswalk Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Set up alignment map (nested object: map[source][relationType][target])
-            store.commit('crosswalk/relevantExistingAlignmentsMap', {
+            store.crosswalk.setRelevantExistingAlignmentsMap( {
                 'source1': { 'narrows': { 'target1': { source: 'source1', target: 'target1', relationType: 'narrows' } } }
             });
-            r.alignMap = store.getters['crosswalk/relevantExistingAlignmentsMap'];
+            r.alignMap = store.crosswalk.relevantExistingAlignmentsMap;
             r.hasSource1 = r.alignMap['source1'] !== undefined;
 
-            store.commit('crosswalk/relevantExistingAlignmentsMapLastUpdate', 12345);
-            r.alignMapUpdate = store.getters['crosswalk/relevantExistingAlignmentsMapLastUpdate'];
+            store.crosswalk.setRelevantExistingAlignmentsMapLastUpdate( 12345);
+            r.alignMapUpdate = store.crosswalk.relevantExistingAlignmentsMapLastUpdate;
 
-            store.commit('crosswalk/alignedCompetenciesList', ['c1', 'c2', 'c3']);
-            r.alignedList = store.getters['crosswalk/alignedCompetenciesList'];
+            store.crosswalk.setAlignedCompetenciesList( ['c1', 'c2', 'c3']);
+            r.alignedList = store.crosswalk.alignedCompetenciesList;
 
             // Alignments to save/delete
-            store.commit('crosswalk/alignmentsToSave', [{ source: 's1', target: 't1' }]);
-            r.toSave = store.getters['crosswalk/alignmentsToSave'];
+            store.crosswalk.setAlignmentsToSave( [{ source: 's1', target: 't1' }]);
+            r.toSave = store.crosswalk.alignmentsToSave;
 
-            store.commit('crosswalk/appendAlignmentsToSave', { source: 's2', target: 't2' });
-            r.toSaveAfterAppend = store.getters['crosswalk/alignmentsToSave'].length;
+            store.crosswalk.setAppendAlignmentsToSave( { source: 's2', target: 't2' });
+            r.toSaveAfterAppend = store.crosswalk.alignmentsToSave.length;
 
-            store.commit('crosswalk/appendAlignmentsToDelete', { source: 's3', target: 't3', relationType: 'narrows' });
-            r.toDeleteCount = store.getters['crosswalk/alignmentsToDelete'].length;
+            store.crosswalk.setAppendAlignmentsToDelete( { source: 's3', target: 't3', relationType: 'narrows' });
+            r.toDeleteCount = store.crosswalk.alignmentsToDelete.length;
 
             return r;
         });
@@ -123,41 +123,41 @@ test.describe('Crosswalk Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Set up state then reset
-            store.commit('crosswalk/frameworkSource', { id: 'fw-src' });
-            store.commit('crosswalk/frameworkTarget', { id: 'fw-tgt' });
-            store.commit('crosswalk/step', 2);
+            store.crosswalk.setFrameworkSource( { id: 'fw-src' });
+            store.crosswalk.setFrameworkTarget( { id: 'fw-tgt' });
+            store.crosswalk.setStep( 2);
 
-            store.commit('crosswalk/resetFrameworkSourceRelationships');
-            r.srcRelsReset = store.state.crosswalk.frameworkSourceRelationships;
+            store.crosswalk.resetFrameworkSourceRelationships();
+            r.srcRelsReset = store.crosswalk.frameworkSourceRelationships;
 
-            store.commit('crosswalk/resetFrameworkTargetRelationships');
-            r.tgtRelsReset = store.state.crosswalk.frameworkTargetRelationships;
+            store.crosswalk.resetFrameworkTargetRelationships();
+            r.tgtRelsReset = store.crosswalk.frameworkTargetRelationships;
 
-            store.commit('crosswalk/resetCrosswalkAlignmentsAndState');
-            r.sourceStateAfterReset = store.state.crosswalk.sourceState;
-            r.targetStateAfterReset = store.state.crosswalk.targetState;
+            store.crosswalk.resetCrosswalkAlignmentsAndState();
+            r.sourceStateAfterReset = store.crosswalk.sourceState;
+            r.targetStateAfterReset = store.crosswalk.targetState;
 
-            store.commit('crosswalk/resetCrosswalkFrameworks');
-            r.sourceAfterResetFw = store.state.crosswalk.frameworkSource;
-            r.targetAfterResetFw = store.state.crosswalk.frameworkTarget;
+            store.crosswalk.resetCrosswalkFrameworks();
+            r.sourceAfterResetFw = store.crosswalk.frameworkSource;
+            r.targetAfterResetFw = store.crosswalk.frameworkTarget;
 
             // Full reset
-            store.commit('crosswalk/frameworkSource', { id: 'temp' });
-            store.commit('crosswalk/step', 1);
-            store.commit('crosswalk/resetCrosswalk');
-            r.stepAfterFullReset = store.state.crosswalk.step;
-            r.sourceAfterFullReset = store.state.crosswalk.frameworkSource;
+            store.crosswalk.setFrameworkSource( { id: 'temp' });
+            store.crosswalk.setStep( 1);
+            store.crosswalk.resetCrosswalk();
+            r.stepAfterFullReset = store.crosswalk.step;
+            r.sourceAfterFullReset = store.crosswalk.frameworkSource;
 
             // Reset working alignments map
-            store.commit('crosswalk/workingAlignmentsSource', 'src-1');
-            store.commit('crosswalk/workingAlignmentsType', 'narrows');
-            store.commit('crosswalk/resetWorkingAlignmentsMap');
-            r.workSourceAfterReset = store.state.crosswalk.workingAlignmentsMap.source;
+            store.crosswalk.setWorkingAlignmentsSource( 'src-1');
+            store.crosswalk.setWorkingAlignmentsType( 'narrows');
+            store.crosswalk.resetWorkingAlignmentsMap();
+            r.workSourceAfterReset = store.crosswalk.workingAlignmentsMap.source;
 
             return r;
         });
@@ -179,34 +179,34 @@ test.describe('Crosswalk Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Reset first
-            store.commit('crosswalk/resetWorkingAlignmentsMap');
+            store.crosswalk.resetWorkingAlignmentsMap();
 
             // Add targets
-            store.commit('crosswalk/addWorkingAlignmentsTarget', 'target-a');
-            r.afterAddFirst = store.state.crosswalk.workingAlignmentsMap.targets.length;
+            store.crosswalk.addWorkingAlignmentsTarget( 'target-a');
+            r.afterAddFirst = store.crosswalk.workingAlignmentsMap.targets.length;
 
-            store.commit('crosswalk/addWorkingAlignmentsTarget', 'target-b');
-            r.afterAddSecond = store.state.crosswalk.workingAlignmentsMap.targets.length;
+            store.crosswalk.addWorkingAlignmentsTarget( 'target-b');
+            r.afterAddSecond = store.crosswalk.workingAlignmentsMap.targets.length;
 
             // Add another
-            store.commit('crosswalk/addWorkingAlignmentsTarget', 'target-c');
-            r.afterAddThird = store.state.crosswalk.workingAlignmentsMap.targets.length;
+            store.crosswalk.addWorkingAlignmentsTarget( 'target-c');
+            r.afterAddThird = store.crosswalk.workingAlignmentsMap.targets.length;
 
             // Remove target
-            store.commit('crosswalk/removeWorkingAlignmentsTarget', 'target-a');
-            r.afterRemove = store.state.crosswalk.workingAlignmentsMap.targets.length;
+            store.crosswalk.removeWorkingAlignmentsTarget( 'target-a');
+            r.afterRemove = store.crosswalk.workingAlignmentsMap.targets.length;
 
             // Remove non-existent — no-op
-            store.commit('crosswalk/removeWorkingAlignmentsTarget', 'non-existent');
-            r.afterRemoveNonExistent = store.state.crosswalk.workingAlignmentsMap.targets.length;
+            store.crosswalk.removeWorkingAlignmentsTarget( 'non-existent');
+            r.afterRemoveNonExistent = store.crosswalk.workingAlignmentsMap.targets.length;
 
             // Check changed state
-            r.changed = store.state.crosswalk.workingAlignmentsMap.changed;
+            r.changed = store.crosswalk.workingAlignmentsMap.changed;
 
             return r;
         });
@@ -224,66 +224,66 @@ test.describe('Crosswalk Store Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Setup alignments to save
-            store.commit('crosswalk/alignmentsToSave', [
+            store.crosswalk.setAlignmentsToSave( [
                 { source: 's1', target: 't1', relationType: 'narrows' },
                 { source: 's2', target: 't2', relationType: 'broadens' }
             ]);
-            r.initialSave = store.state.crosswalk.alignmentsToSave.length;
+            r.initialSave = store.crosswalk.alignmentsToSave.length;
 
             // Remove one from save (note: removeAlignmentFromAlignmentsToSave uses 'type' not 'relationType')
-            store.commit('crosswalk/removeAlignmentFromAlignmentsToSave', {
+            store.crosswalk.removeAlignmentFromAlignmentsToSave( {
                 source: 's1', target: 't1', type: 'narrows'
             });
-            r.afterRemoveSave = store.state.crosswalk.alignmentsToSave.length;
+            r.afterRemoveSave = store.crosswalk.alignmentsToSave.length;
 
             // Setup alignments to delete
-            store.commit('crosswalk/resetCrosswalkAlignmentsAndState');
-            store.commit('crosswalk/appendAlignmentsToDelete', { source: 'd1', target: 'dt1', relationType: 'narrows' });
-            store.commit('crosswalk/appendAlignmentsToDelete', { source: 'd2', target: 'dt2', relationType: 'broadens' });
-            r.initialDelete = store.state.crosswalk.alignmentsToDelete.length;
+            store.crosswalk.resetCrosswalkAlignmentsAndState();
+            store.crosswalk.setAppendAlignmentsToDelete( { source: 'd1', target: 'dt1', relationType: 'narrows' });
+            store.crosswalk.setAppendAlignmentsToDelete( { source: 'd2', target: 'dt2', relationType: 'broadens' });
+            r.initialDelete = store.crosswalk.alignmentsToDelete.length;
 
             // Remove one from delete (uses 'type' not 'relationType')
-            store.commit('crosswalk/removeAlignmentFromAlignmentsToDelete', {
+            store.crosswalk.removeAlignmentFromAlignmentsToDelete( {
                 source: 'd1', target: 'dt1', type: 'narrows'
             });
-            r.afterRemoveDelete = store.state.crosswalk.alignmentsToDelete.length;
+            r.afterRemoveDelete = store.crosswalk.alignmentsToDelete.length;
 
             // addAlignmentToRelevantAlignmentsMap — nested structure
-            store.commit('crosswalk/relevantExistingAlignmentsMap', {});
-            store.commit('crosswalk/addAlignmentToRelevantAlignmentsMap', {
+            store.crosswalk.setRelevantExistingAlignmentsMap( {});
+            store.crosswalk.addAlignmentToRelevantAlignmentsMap( {
                 source: 'src-new',
                 relationType: 'narrows',
                 target: 'tgt-new'
             });
-            const map = store.state.crosswalk.relevantExistingAlignmentsMap;
+            const map = store.crosswalk.relevantExistingAlignmentsMap;
             r.hasNewSource = map['src-new'] !== undefined;
             r.hasNarrows = map['src-new'] && map['src-new']['narrows'] !== undefined;
             r.hasTarget = map['src-new'] && map['src-new']['narrows'] && map['src-new']['narrows']['tgt-new'] !== undefined;
 
             // removeAlignmentFromRelevantAlignmentsMap
-            store.commit('crosswalk/removeAlignmentFromRelevantAlignmentsMap', {
+            store.crosswalk.removeAlignmentFromRelevantAlignmentsMap( {
                 source: 'src-new', target: 'tgt-new', type: 'narrows'
             });
             r.afterRemoveFromMap = map['src-new'] && map['src-new']['narrows'] && map['src-new']['narrows']['tgt-new'] === undefined;
 
             // populateAlignedCompetenciesList
-            store.commit('crosswalk/relevantExistingAlignmentsMap', {
+            store.crosswalk.setRelevantExistingAlignmentsMap( {
                 'compA': { 'narrows': { 'compB': { source: 'compA', target: 'compB' } } }
             });
-            store.commit('crosswalk/populateAlignedCompetenciesList');
-            r.populatedList = store.state.crosswalk.alignedCompetenciesList;
+            store.crosswalk.populateAlignedCompetenciesList();
+            r.populatedList = store.crosswalk.alignedCompetenciesList;
 
             // populateWorkingAlignmentMap
-            store.commit('crosswalk/workingAlignmentsSource', 'compA');
-            store.commit('crosswalk/workingAlignmentsType', 'narrows');
-            store.commit('crosswalk/workingAlignmentsTargets', []);
-            store.commit('crosswalk/populateWorkingAlignmentMap');
-            r.populatedTargets = store.state.crosswalk.workingAlignmentsMap.targets;
+            store.crosswalk.setWorkingAlignmentsSource( 'compA');
+            store.crosswalk.setWorkingAlignmentsType( 'narrows');
+            store.crosswalk.setWorkingAlignmentsTargets( []);
+            store.crosswalk.populateWorkingAlignmentMap();
+            r.populatedTargets = store.crosswalk.workingAlignmentsMap.targets;
 
             return r;
         });

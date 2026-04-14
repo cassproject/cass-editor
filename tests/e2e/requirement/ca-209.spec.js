@@ -9,11 +9,11 @@ test('CA-209: Suggestion stored as comment', async ({ page }) => {
 
     // Verify framework and editor state loaded (comment/suggestion infrastructure)
     const result = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
         return {
             hasEditorState: store.state.editor != null,
-            hasFramework: store.state.editor && store.state.editor.framework != null
+            hasFramework: store.state.editor && store.editor.framework != null
         };
     });
 

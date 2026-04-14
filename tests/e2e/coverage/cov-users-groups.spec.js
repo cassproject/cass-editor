@@ -34,10 +34,10 @@ test.describe.serial('Users/Groups Coverage', () => {
     await expect(page.locator('#user-groups')).toBeVisible();
     const vueData = await page.evaluate(() => {
       const el = document.querySelector('#user-groups');
-      if (el && el.__vue__) {
-        const vm = el.__vue__;
+      if (el && el.__vueParentComponent) {
+        const vm = el.__vueParentComponent.ctx;
         return {
-          name: vm.$options.name,
+          name: (vm.$options?.name || vm.__name),
           viewMode: vm.viewMode,
           showConfirmLoseChangesModal: vm.showConfirmLoseChangesModal,
           showMore: vm.showMore,
@@ -82,8 +82,8 @@ test.describe.serial('Users/Groups Coverage', () => {
     // Should switch to group detail view
     const vueData = await page.evaluate(() => {
       const el = document.querySelector('#user-groups');
-      if (el && el.__vue__) {
-        const vm = el.__vue__;
+      if (el && el.__vueParentComponent) {
+        const vm = el.__vueParentComponent.ctx;
         return {
           viewMode: vm.viewMode,
           currentUserGroupIsNewGroup: vm.currentUserGroupIsNewGroup,
@@ -138,7 +138,7 @@ test.describe.serial('Users/Groups Coverage', () => {
     // Verify the changed flag
     const isChanged = await page.evaluate(() => {
       const el = document.querySelector('#user-groups');
-      return el && el.__vue__ ? el.__vue__.currentUserGroupChanged : false;
+      return el && el.__vueParentComponent ? el.__vueParentComponent.ctx.currentUserGroupChanged : false;
     });
     // Changed should be true after edits
   });
@@ -153,20 +153,20 @@ test.describe.serial('Users/Groups Coverage', () => {
     // Exercise showMemberListView directly
     await page.evaluate(() => {
       const el = document.querySelector('#user-groups');
-      if (el && el.__vue__) {
-        el.__vue__.showMemberListView();
+      if (el && el.__vueParentComponent) {
+        el.__vueParentComponent.ctx.showMemberListView();
       }
     });
     const afterMethod = await page.evaluate(() => {
       const el = document.querySelector('#user-groups');
-      if (el && el.__vue__) {
+      if (el && el.__vueParentComponent) {
         return {
-          viewMode: el.__vue__.viewMode,
-          currentUserGroupName: el.__vue__.currentUserGroupName,
-          currentUserGroupChanged: el.__vue__.currentUserGroupChanged,
-          currentUserGroupIsNewGroup: el.__vue__.currentUserGroupIsNewGroup,
-          isEditingCurrentGroupName: el.__vue__.isEditingCurrentGroupName,
-          isEditingCurrentGroupDescription: el.__vue__.isEditingCurrentGroupDescription
+          viewMode: el.__vueParentComponent.ctx.viewMode,
+          currentUserGroupName: el.__vueParentComponent.ctx.currentUserGroupName,
+          currentUserGroupChanged: el.__vueParentComponent.ctx.currentUserGroupChanged,
+          currentUserGroupIsNewGroup: el.__vueParentComponent.ctx.currentUserGroupIsNewGroup,
+          isEditingCurrentGroupName: el.__vueParentComponent.ctx.isEditingCurrentGroupName,
+          isEditingCurrentGroupDescription: el.__vueParentComponent.ctx.isEditingCurrentGroupDescription
         };
       }
       return null;
@@ -190,8 +190,8 @@ test.describe.serial('Users/Groups Coverage', () => {
     // Exercise CassPanel and CassDropdown components via Vue tree
     const componentData = await page.evaluate(() => {
       const el = document.querySelector('#user-groups');
-      if (!el || !el.__vue__) return null;
-      const vm = el.__vue__;
+      if (!el || !el.__vueParentComponent) return null;
+      const vm = el.__vueParentComponent.ctx;
       const found = {
         panels: 0,
         dropdowns: 0,

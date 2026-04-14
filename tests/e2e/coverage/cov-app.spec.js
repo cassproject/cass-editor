@@ -19,7 +19,7 @@ test('App: computed properties accessible', async ({
 }) => {
   await page.goto('/#/frameworks?server=http://localhost/api/');
   await page.waitForLoadState('domcontentloaded');
-  await page.waitForFunction(() => window.app && window.app.$store);
+  await page.waitForFunction(() => window.__stores);
   const result = await page.evaluate(() => {
     const app = window.app;
     const results = {};
@@ -46,7 +46,7 @@ test('App: editorClass and showSideNav values', async ({
 }) => {
   await page.goto('/#/frameworks?server=http://localhost/api/');
   await page.waitForLoadState('domcontentloaded');
-  await page.waitForFunction(() => window.app && window.app.$store);
+  await page.waitForFunction(() => window.__stores);
   // Wait for app to fully initialize
 
   const result = await page.evaluate(() => {
@@ -69,7 +69,7 @@ test('App: inIframe detection via store', async ({
 }) => {
   await page.goto('/#/?server=http://localhost/api/');
   await page.waitForLoadState('domcontentloaded');
-  await page.waitForFunction(() => window.app && window.app.$store);
+  await page.waitForFunction(() => window.__stores);
   const result = await page.evaluate(() => {
     const app = window.app;
     // inIframe is a method on the root Vue instance
@@ -79,7 +79,7 @@ test('App: inIframe detection via store', async ({
       inIframeResult = app.inIframe();
     }
     // Also exercise sideNavEnabled getter since it's in app store
-    const sideNavEnabled = app.$store.getters['app/sideNavEnabled'];
+    const sideNavEnabled = app.$store.app.sideNavEnabled;
     return {
       methodExists,
       inIframeResult,
@@ -98,17 +98,17 @@ test('App: route changes update currentRoute', async ({
 }) => {
   await page.goto('/#/frameworks?server=http://localhost/api/');
   await page.waitForLoadState('domcontentloaded');
-  await page.waitForFunction(() => window.app && window.app.$store && window.app.$route);
+  await page.waitForFunction(() => window.__stores && window.app.$route);
   const route1 = await page.evaluate(() => ({
     path: window.app.$route.path,
-    storeRoute: window.app.$store.getters['app/currentRoute']
+    storeRoute: window.__stores.app.currentRoute
   }));
   await page.goto('/#/crosswalk?server=http://localhost/api/');
   await page.waitForLoadState('domcontentloaded');
   await page.waitForFunction(() => window.app && window.app.$route);
   const route2 = await page.evaluate(() => ({
     path: window.app.$route.path,
-    storeRoute: window.app.$store.getters['app/currentRoute']
+    storeRoute: window.__stores.app.currentRoute
   }));
   expect(route1.path).toBeDefined();
   expect(route2.path).toBeDefined();
@@ -120,27 +120,27 @@ test('App: banner and motd store mutations', async ({
 }) => {
   await page.goto('/#/frameworks?server=http://localhost/api/');
   await page.waitForLoadState('domcontentloaded');
-  await page.waitForFunction(() => window.app && window.app.$store);
+  await page.waitForFunction(() => window.__stores);
   const result = await page.evaluate(() => {
-    const store = window.app.$store;
+    const store = window.__stores;
 
     // Exercise setBanner mutation
-    store.commit('app/setBanner', {
+    store.app.setBanner( {
       message: 'Test Banner',
       color: '#ff0000',
       background: '#00ff00'
     });
-    const msg = store.state.app.banner.message;
-    const color = store.state.app.banner.color;
-    const bg = store.state.app.banner.background;
+    const msg = store.app.banner.message;
+    const color = store.app.banner.color;
+    const bg = store.app.banner.background;
 
     // Exercise setMotd mutation
-    store.commit('app/setMotd', {
+    store.app.setMotd( {
       message: 'MOTD Message',
       title: 'MOTD Title'
     });
-    const motdMsg = store.state.app.motd.message;
-    const motdTitle = store.state.app.motd.title;
+    const motdMsg = store.app.motd.message;
+    const motdTitle = store.app.motd.title;
     return {
       msgSet: msg === 'Test Banner',
       colorSet: color === '#ff0000',

@@ -91,14 +91,14 @@ test('Configuration: config list items render', async ({
 
   // Exercise store getters
   const result = await page.evaluate(() => {
-    const store = window.app && window.app.$store;
+    const store = window.__stores;
     if (!store) return {
       error: 'no store'
     };
     return {
-      hasConfigList: store.getters['configuration/CONFIG_LIST'] !== undefined,
-      hasLangStringType: store.getters['configuration/LANG_STRING_TYPE'] !== undefined,
-      hasDefaultHeading: store.getters['configuration/DEFAULT_HEADING'] !== undefined
+      hasConfigList: store.configuration.CONFIG_LIST !== undefined,
+      hasLangStringType: store.configuration.LANG_STRING_TYPE !== undefined,
+      hasDefaultHeading: store.configuration.DEFAULT_HEADING !== undefined
     };
   });
   expect(result.hasConfigList).toBeDefined();

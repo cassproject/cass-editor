@@ -221,39 +221,39 @@ test.describe('LODE Components Coverage', () => {
 
     // Exercise the lode.js store module mutations and getters
     const lodeData = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
       const results = {};
 
       // setIsSavingProperty
-      store.commit('lode/setIsSavingProperty', true);
-      results.isSavingProperty = store.getters['lode/isSavingProperty'];
-      store.commit('lode/setIsSavingProperty', false);
+      store.lode.setIsSavingProperty( true);
+      results.isSavingProperty = store.lode.isSavingProperty;
+      store.lode.setIsSavingProperty( false);
 
       // setIsSavingThing
-      store.commit('lode/setIsSavingThing', true);
-      results.isSavingThing = store.getters['lode/isSavingThing'];
-      store.commit('lode/setIsSavingThing', false);
+      store.lode.setIsSavingThing( true);
+      results.isSavingThing = store.lode.isSavingThing;
+      store.lode.setIsSavingThing( false);
 
       // setIsAddingProperty
-      store.commit('lode/setIsAddingProperty', true);
-      results.isAddingProperty = store.getters['lode/isAddingProperty'];
-      store.commit('lode/setIsAddingProperty', false);
+      store.lode.setIsAddingProperty( true);
+      results.isAddingProperty = store.lode.isAddingProperty;
+      store.lode.setIsAddingProperty( false);
 
       // competencySearchModalOpen
-      store.commit('lode/competencySearchModalOpen', true);
-      results.competencySearchModalOpen = store.state.lode.competencySearchModalOpen;
-      store.commit('lode/competencySearchModalOpen', false);
+      store.lode.setCompetencySearchModalOpen( true);
+      results.competencySearchModalOpen = store.lode.competencySearchModalOpen;
+      store.lode.setCompetencySearchModalOpen( false);
 
       // searchType
-      store.commit('lode/searchType', 'Competency');
-      results.searchType = store.state.lode.searchType;
-      store.commit('lode/searchType', null);
+      store.lode.setSearchType( 'Competency');
+      results.searchType = store.lode.searchType;
+      store.lode.setSearchType( null);
 
       // includeRelations
-      store.commit('lode/includeRelations', false);
-      results.includeRelations = store.getters['lode/includeRelations'];
-      store.commit('lode/includeRelations', true);
+      store.lode.setIncludeRelations( false);
+      results.includeRelations = store.lode.includeRelations;
+      store.lode.setIncludeRelations( true);
       return results;
     });
     if (lodeData) {

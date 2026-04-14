@@ -32,10 +32,10 @@ test.describe('Plugins Coverage', () => {
 
     const vueData = await page.evaluate(() => {
       const el = document.querySelector('#plugin-manager');
-      if (el && el.__vue__) {
-        const vm = el.__vue__;
+      if (el && el.__vueParentComponent) {
+        const vm = el.__vueParentComponent.ctx;
         return {
-          name: vm.$options.name,
+          name: (vm.$options?.name || vm.__name),
           pluginManagerBusy: vm.pluginManagerBusy,
           pluginManagerViewMode: vm.pluginManagerViewMode,
           showConfirmDeletePluginModal: vm.showConfirmDeletePluginModal,
@@ -67,7 +67,7 @@ test.describe('Plugins Coverage', () => {
       // Should be in detail view now
       const viewMode = await page.evaluate(() => {
         const el = document.querySelector('#plugin-manager');
-        return el && el.__vue__ ? el.__vue__.pluginManagerViewMode : null;
+        return el && el.__vueParentComponent ? el.__vueParentComponent.ctx.pluginManagerViewMode : null;
       });
       expect(viewMode).toBe('detail');
     }
@@ -81,8 +81,8 @@ test.describe('Plugins Coverage', () => {
     // Exercise various pluginUtil methods through the Vue component
     const methodResults = await page.evaluate(() => {
       const el = document.querySelector('#plugin-manager');
-      if (!el || !el.__vue__) return null;
-      const vm = el.__vue__;
+      if (!el || !el.__vueParentComponent) return null;
+      const vm = el.__vueParentComponent.ctx;
       const results = {};
 
       // Exercise generateNewPluginObject

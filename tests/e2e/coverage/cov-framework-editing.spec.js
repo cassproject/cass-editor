@@ -132,10 +132,10 @@ test('Framework: exercise hierarchy node computed props', async ({
   });
   const result = await page.evaluate(() => {
     const nodeEl = document.querySelector('.lode__hierarchy-node');
-    if (!nodeEl || !nodeEl.__vue__) return {
+    if (!nodeEl || !nodeEl.__vueParentComponent) return {
       error: 'no hierarchy node'
     };
-    const vm = nodeEl.__vue__;
+    const vm = nodeEl.__vueParentComponent.ctx;
     return {
       hasObj: vm.obj != null,
       hasNodeId: vm.nodeId != null || vm.id != null,

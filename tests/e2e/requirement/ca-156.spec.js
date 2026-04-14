@@ -18,8 +18,8 @@ test('CA-156: Branch node select/deselect recurses to children', async ({ page }
     // that propagates selection to all child HierarchyNode components
     const result = await page.evaluate(() => {
         const hierarchyEl = document.querySelector('.lode__hierarchy');
-        if (!hierarchyEl || !hierarchyEl.__vue__) return { error: 'no hierarchy' };
-        const vm = hierarchyEl.__vue__;
+        if (!hierarchyEl || !hierarchyEl.__vueParentComponent) return { error: 'no hierarchy' };
+        const vm = hierarchyEl.__vueParentComponent.ctx;
         return {
             hasSelectAll: 'selectAll' in vm.$data,
             selectAllValue: vm.$data.selectAll,

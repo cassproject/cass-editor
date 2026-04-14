@@ -22,7 +22,7 @@ test('CA-176: Relationships may carry additional configuration data', async ({
     const propertyEls = document.querySelectorAll('.lode__Property');
     const props = [];
     for (const el of propertyEls) {
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       if (vm && vm.schema) {
         props.push({
           displayLabel: vm.displayLabel,

@@ -36,8 +36,8 @@ test('Login deep: SSO form, create account validation, and password mismatch', a
 
     // Disable API login to show legacy form
     await page.evaluate(() => {
-        if (window.app && window.app.$store) {
-            window.app.$store.commit('featuresEnabled/apiLoginEnabled', false);
+        if (window.__stores) {
+            window.__stores.featuresEnabled.setApiLoginEnabled( false);
         }
     });
 

@@ -50,7 +50,7 @@ test('Property: inspect all property computed values', async ({
     const propertyEls = document.querySelectorAll('.lode__Property');
     const allProps = [];
     for (const el of propertyEls) {
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       if (!vm) continue;
       allProps.push({
         displayLabel: vm.displayLabel,
@@ -123,7 +123,7 @@ test('Property: PropertyString rendering', async ({
     const stringEls = document.querySelectorAll('.property-string');
     const props = [];
     for (const el of stringEls) {
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       if (!vm) continue;
       props.push({
         hasValue: vm.value !== undefined,

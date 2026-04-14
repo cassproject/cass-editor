@@ -12,7 +12,7 @@ test('PostMessage: send various postMessage actions to exercise message handler'
     await expect(page.locator('#app')).toBeVisible();
 
     // Wait for the app to initialize its message listener
-    await page.waitForFunction(() => window.app && window.app.$store);
+    await page.waitForFunction(() => window.__stores);
 
     const messages = [
         {

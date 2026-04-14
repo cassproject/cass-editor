@@ -29,7 +29,7 @@ test('CA-120: Property editing adheres to criticality rules', async ({
     const propertyEls = document.querySelectorAll('.lode__Property');
     const properties = [];
     for (const el of propertyEls) {
-      const vm = el.__vue__;
+      const vm = el.__vueParentComponent.ctx;
       if (vm && vm.schema) {
         properties.push({
           displayLabel: vm.displayLabel,

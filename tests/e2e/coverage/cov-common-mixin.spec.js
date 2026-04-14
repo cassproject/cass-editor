@@ -14,7 +14,7 @@ test.describe('Common Mixin Coverage', () => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     const result = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
       const r = {};
 
@@ -57,7 +57,7 @@ test.describe('Common Mixin Coverage', () => {
       // Exercise setDefaultLanguage
       try {
         comp.setDefaultLanguage();
-        r.defaultLang = store.getters['editor/defaultLanguage'];
+        r.defaultLang = store.editor.defaultLanguage;
       } catch (e) {
         r.setLangError = e.message;
       }
@@ -98,7 +98,7 @@ test.describe('Common Mixin Coverage', () => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     const result = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
       const r = {};
       const findComponent = vnode => {
@@ -146,7 +146,7 @@ test.describe('Common Mixin Coverage', () => {
     await page.goto('/#/frameworks?server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     const result = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
       const r = {};
       const findComponent = vnode => {
@@ -190,7 +190,7 @@ test.describe('Common Mixin Coverage', () => {
 
       // Exercise ceasnRegistryUriTransform with no endpoint
       try {
-        store.commit('editor/queryParams');
+        store.editor.setQueryParams();
         r.transform1 = comp.ceasnRegistryUriTransform('http://example.com/data/test');
       } catch (e) {
         r.transform1Error = e.message;
@@ -198,7 +198,7 @@ test.describe('Common Mixin Coverage', () => {
 
       // Exercise ceasnRegistryUriTransform with endpoint
       try {
-        store.commit('editor/queryParams', {
+        store.editor.setQueryParams( {
           newObjectEndpoint: 'http://registry.example.com/ce-'
         });
         r.transform2 = comp.ceasnRegistryUriTransform('http://localhost/api/data/test-id');
@@ -207,7 +207,7 @@ test.describe('Common Mixin Coverage', () => {
       }
 
       // Reset query params
-      store.commit('editor/queryParams');
+      store.editor.setQueryParams();
       return r;
     });
     expect(result).toBeTruthy();

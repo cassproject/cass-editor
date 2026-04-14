@@ -14,7 +14,7 @@ test.describe('Import View Coverage', () => {
     await page.goto('/#/import?server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     const result = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
       const r = {};
 
@@ -64,7 +64,7 @@ test.describe('Import View Coverage', () => {
     await page.goto('/#/import?server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     const result = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
       const r = {};
       const findComponent = vnode => {

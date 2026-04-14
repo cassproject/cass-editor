@@ -12,55 +12,55 @@ test.describe('ConfigurationList Component Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // Exercise configuration store getters used by ConfigurationList
-            r.CONFIG_SEARCH_SIZE = store.getters['configuration/CONFIG_SEARCH_SIZE'];
-            r.DEFAULT_CONFIGURATION_TYPE = store.getters['configuration/DEFAULT_CONFIGURATION_TYPE'];
-            r.DEFAULT_CONFIGURATION_CONTEXT = store.getters['configuration/DEFAULT_CONFIGURATION_CONTEXT'];
-            r.LANG_STRING_RANGE = store.getters['configuration/LANG_STRING_RANGE'];
-            r.DEFAULT_HEADING = store.getters['configuration/DEFAULT_HEADING'];
+            r.CONFIG_SEARCH_SIZE = store.configuration.CONFIG_SEARCH_SIZE;
+            r.DEFAULT_CONFIGURATION_TYPE = store.configuration.DEFAULT_CONFIGURATION_TYPE;
+            r.DEFAULT_CONFIGURATION_CONTEXT = store.configuration.DEFAULT_CONFIGURATION_CONTEXT;
+            r.LANG_STRING_RANGE = store.configuration.LANG_STRING_RANGE;
+            r.DEFAULT_HEADING = store.configuration.DEFAULT_HEADING;
 
             // defaultBrowserConfigName
-            r.defaultBrowserConfigName = store.getters['configuration/defaultBrowserConfigName'];
-            store.commit('configuration/setDefaultBrowserConfigName', 'Test Config');
-            r.browserConfigNameSet = store.getters['configuration/defaultBrowserConfigName'];
-            store.commit('configuration/setDefaultBrowserConfigName', '');
+            r.defaultBrowserConfigName = store.configuration.defaultBrowserConfigName;
+            store.configuration.setDefaultBrowserConfigName( 'Test Config');
+            r.browserConfigNameSet = store.configuration.defaultBrowserConfigName;
+            store.configuration.setDefaultBrowserConfigName( '');
 
             // showConfirmDeleteConfigModal
-            r.deleteModalDefault = store.getters['configuration/showConfirmDeleteConfigModal'];
-            store.commit('configuration/setShowConfirmDeleteConfigModal', true);
-            r.deleteModalTrue = store.getters['configuration/showConfirmDeleteConfigModal'];
-            store.commit('configuration/setShowConfirmDeleteConfigModal', false);
+            r.deleteModalDefault = store.configuration.showConfirmDeleteConfigModal;
+            store.configuration.setShowConfirmDeleteConfigModal( true);
+            r.deleteModalTrue = store.configuration.showConfirmDeleteConfigModal;
+            store.configuration.setShowConfirmDeleteConfigModal( false);
 
             // showBrowserConfigSetModal
-            r.browserConfigModalDefault = store.getters['configuration/showBrowserConfigSetModal'];
-            store.commit('configuration/setShowBrowserConfigSetModal', true);
-            r.browserConfigModalTrue = store.getters['configuration/showBrowserConfigSetModal'];
-            store.commit('configuration/setShowBrowserConfigSetModal', false);
+            r.browserConfigModalDefault = store.configuration.showBrowserConfigSetModal;
+            store.configuration.setShowBrowserConfigSetModal( true);
+            r.browserConfigModalTrue = store.configuration.showBrowserConfigSetModal;
+            store.configuration.setShowBrowserConfigSetModal( false);
 
             // showMustBeLoggedInModal
-            r.loggedInModalDefault = store.getters['configuration/showMustBeLoggedInModal'];
-            store.commit('configuration/setShowMustBeLoggedInModal', true);
-            r.loggedInModalTrue = store.getters['configuration/showMustBeLoggedInModal'];
-            store.commit('configuration/setShowMustBeLoggedInModal', false);
+            r.loggedInModalDefault = store.configuration.showMustBeLoggedInModal;
+            store.configuration.setShowMustBeLoggedInModal( true);
+            r.loggedInModalTrue = store.configuration.showMustBeLoggedInModal;
+            store.configuration.setShowMustBeLoggedInModal( false);
 
             // configToDelete
-            r.configToDeleteDefault = store.getters['configuration/configToDelete'];
-            store.commit('configuration/setConfigToDelete', { id: 'cfg-delete-1', name: 'Delete Me' });
-            r.configToDeleteSet = store.getters['configuration/configToDelete'];
-            store.commit('configuration/setConfigToDelete', null);
+            r.configToDeleteDefault = store.configuration.configToDelete;
+            store.configuration.setConfigToDelete( { id: 'cfg-delete-1', name: 'Delete Me' });
+            r.configToDeleteSet = store.configuration.configToDelete;
+            store.configuration.setConfigToDelete( null);
 
             // configView
-            r.configView = store.getters['configuration/configView'];
-            store.commit('configuration/setConfigView', 'details');
-            r.configViewDetails = store.getters['configuration/configView'];
-            store.commit('configuration/setConfigView', 'list');
+            r.configView = store.configuration.configView;
+            store.configuration.setConfigView( 'details');
+            r.configViewDetails = store.configuration.configView;
+            store.configuration.setConfigView( 'list');
 
             // localDefaultBrowserConfig
-            r.localBrowserConfig = store.getters['configuration/localDefaultBrowserConfig'];
+            r.localBrowserConfig = store.configuration.localDefaultBrowserConfig;
 
             return r;
         });

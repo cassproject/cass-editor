@@ -19,10 +19,10 @@ test.describe.serial('Progression Model Coverage', () => {
     await page.waitForLoadState('domcontentloaded');
     // The progressionLevels route uses Frameworks.vue in progression mode
     const modeData = await page.evaluate(() => {
-      if (window.app && window.app.$store) {
+      if (window.__stores) {
         return {
-          progressionMode: window.app.$store.getters['editor/progressionMode'],
-          conceptMode: window.app.$store.getters['editor/conceptMode']
+          progressionMode: window.__stores.editor.progressionMode,
+          conceptMode: window.__stores.editor.conceptMode
         };
       }
       return null;
@@ -35,14 +35,14 @@ test.describe.serial('Progression Model Coverage', () => {
     await page.goto('/#/frameworks?ceasnDataFields=true&server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
     const storeData = await page.evaluate(() => {
-      const store = window.app && window.app.$store;
+      const store = window.__stores;
       if (!store) return null;
 
       // Set progression mode
-      store.commit('editor/progressionMode', true);
-      const pm1 = store.getters['editor/progressionMode'];
-      store.commit('editor/progressionMode', false);
-      const pm2 = store.getters['editor/progressionMode'];
+      store.editor.progressionMode( true);
+      const pm1 = store.editor.progressionMode;
+      store.editor.progressionMode( false);
+      const pm2 = store.editor.progressionMode;
       return {
         pm1,
         pm2
@@ -60,8 +60,8 @@ test.describe.serial('Progression Model Coverage', () => {
 
     // Set progression mode
     await page.evaluate(() => {
-      window.app.$store.commit('editor/progressionMode', true);
-      window.app.$store.commit('editor/conceptMode', false);
+      window.__stores.editor.progressionMode( true);
+      window.__stores.editor.conceptMode( false);
     });
     await page.goto('/#/progressionLevels?ceasnDataFields=true&server=http://localhost/api/');
     await page.waitForLoadState('domcontentloaded');
@@ -73,7 +73,7 @@ test.describe.serial('Progression Model Coverage', () => {
           if (vm.$options.name === 'Frameworks') {
             found.push({
               name: vm.$options.name,
-              progressionMode: vm.$store.getters['editor/progressionMode']
+              progressionMode: vm.$store.editor.progressionMode
             });
           }
           vm.$children.forEach(child => findFW(child));
@@ -94,8 +94,8 @@ test.describe.serial('Progression Model Coverage', () => {
 
     // Set progression mode
     await page.evaluate(() => {
-      window.app.$store.commit('editor/progressionMode', true);
-      window.app.$store.commit('editor/conceptMode', false);
+      window.__stores.editor.progressionMode( true);
+      window.__stores.editor.conceptMode( false);
     });
 
     // Navigate to progression levels

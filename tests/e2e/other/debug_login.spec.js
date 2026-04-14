@@ -13,9 +13,9 @@ test('Debug Login Page', async ({
   // Force apiLoginEnabled to false to show the Create Account button
   try {
     await page.evaluate(() => {
-      if (window.app && window.app.$store) {
+      if (window.__stores) {
         console.log('Forcing apiLoginEnabled to false');
-        window.app.$store.commit('featuresEnabled/apiLoginEnabled', false);
+        window.__stores.featuresEnabled.setApiLoginEnabled( false);
       } else {
         console.log('window.app or store not found');
       }

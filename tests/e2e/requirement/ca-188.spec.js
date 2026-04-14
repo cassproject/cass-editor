@@ -15,8 +15,8 @@ test('CA-188: Paste via keyboard shortcut', async ({ page }) => {
     // Verify Hierarchy component has paste handling
     const result = await page.evaluate(() => {
         const hierarchyEl = document.querySelector('.lode__hierarchy');
-        if (!hierarchyEl || !hierarchyEl.__vue__) return { error: 'no hierarchy' };
-        const vm = hierarchyEl.__vue__;
+        if (!hierarchyEl || !hierarchyEl.__vueParentComponent) return { error: 'no hierarchy' };
+        const vm = hierarchyEl.__vueParentComponent.ctx;
         return {
             hasPasteClick: typeof vm.pasteClick === 'function'
         };

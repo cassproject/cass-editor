@@ -16,8 +16,8 @@ test('CA-180: Objects movable up and down', async ({ page }) => {
     // Verify the Hierarchy component has keyboard handling for arrow keys
     const result = await page.evaluate(() => {
         const hierarchyEl = document.querySelector('.lode__hierarchy');
-        if (!hierarchyEl || !hierarchyEl.__vue__) return { error: 'no hierarchy' };
-        const vm = hierarchyEl.__vue__;
+        if (!hierarchyEl || !hierarchyEl.__vueParentComponent) return { error: 'no hierarchy' };
+        const vm = hierarchyEl.__vueParentComponent.ctx;
         return {
             hasArrowKey: 'arrowKey' in vm.$data,
             hasShiftKey: 'shiftKey' in vm.$data,

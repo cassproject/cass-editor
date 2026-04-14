@@ -10,9 +10,9 @@ test('CA-203: Comment ownership by creator and object owner', async ({ page }) =
 
     // Verify the editor framework is loaded with ownership data
     const result = await page.evaluate(() => {
-        const store = window.app && window.app.$store;
+        const store = window.__stores;
         if (!store) return { error: 'no store' };
-        const framework = store.state.editor && store.state.editor.framework;
+        const framework = store.state.editor && store.editor.framework;
         if (!framework) return { error: 'no framework' };
         return {
             hasOwner: framework['@owner'] !== undefined,

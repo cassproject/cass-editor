@@ -21,10 +21,10 @@ test.describe('App.vue Coverage', () => {
             r.loggedIn = !!(EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0);
 
             // Banner logic
-            store.commit('app/setBanner', { message: 'App test banner', color: '#fff', background: '#333' });
-            r.bannerMsg = store.getters['app/bannerMessage'];
-            r.bannerColor = store.getters['app/bannerColor'];
-            r.bannerBg = store.getters['app/bannerBackground'];
+            store.app.setBanner( { message: 'App test banner', color: '#fff', background: '#333' });
+            r.bannerMsg = store.app.bannerMessage;
+            r.bannerColor = store.app.bannerColor;
+            r.bannerBg = store.app.bannerBackground;
 
             // showBanner logic
             function showBanner(message) {
@@ -35,37 +35,37 @@ test.describe('App.vue Coverage', () => {
             r.showBannerNull = showBanner(null);
 
             // MOTD
-            store.commit('app/setMotd', { message: 'Welcome!', title: 'MOTD Title' });
-            r.motdMsg = store.getters['app/motdMessage'];
-            r.motdTitle = store.getters['app/motdTitle'];
+            store.app.setMotd( { message: 'Welcome!', title: 'MOTD Title' });
+            r.motdMsg = store.app.motdMessage;
+            r.motdTitle = store.app.motdTitle;
 
             // showModal
-            r.showModal = store.getters['app/showModal'];
+            r.showModal = store.app.showModal;
 
             // dynamicModalContent
-            store.commit('app/showModal', { component: 'TestModal' });
-            r.modalContent = store.getters['app/dynamicModalContent'];
-            store.commit('app/closeModal');
-            r.modalClosed = store.getters['app/showModal'];
+            store.app.setShowModal( { component: 'TestModal' });
+            r.modalContent = store.app.dynamicModalContent;
+            store.app.closeModal();
+            r.modalClosed = store.app.showModal;
 
             // showSideNav
-            r.showSideNav = store.getters['app/showSideNav'];
+            r.showSideNav = store.app.showSideNav;
 
             // showRightAside
-            r.showRightAside = store.getters['app/showRightAside'];
+            r.showRightAside = store.app.showRightAside;
 
             // framework
-            r.framework = store.getters['editor/framework'];
+            r.framework = store.editor.framework;
 
             // importTransition
-            r.importTrans = store.getters['app/importTransition'];
+            r.importTrans = store.app.importTransition;
 
             // Features flags used by App.vue
-            r.loginEnabled = store.state.featuresEnabled.loginEnabled;
-            r.crosswalkEnabled = store.state.featuresEnabled.crosswalkEnabled;
+            r.loginEnabled = store.featuresEnabled.loginEnabled;
+            r.crosswalkEnabled = store.featuresEnabled.crosswalkEnabled;
 
             // queryParams
-            r.queryParams = store.getters['editor/queryParams'];
+            r.queryParams = store.editor.queryParams;
 
             return r;
         });
@@ -108,25 +108,25 @@ test.describe('App.vue Coverage', () => {
             const store = app.$store;
 
             // dynamic modal component exercise
-            store.commit('app/showModal', { component: 'AddComment' });
-            r.addCommentModal = store.getters['app/dynamicModalContent'];
-            store.commit('app/closeModal');
+            store.app.setShowModal( { component: 'AddComment' });
+            r.addCommentModal = store.app.dynamicModalContent;
+            store.app.closeModal();
 
-            store.commit('app/showModal', { component: 'FrameworkConfiguration' });
-            r.configModal = store.getters['app/dynamicModalContent'];
-            store.commit('app/closeModal');
+            store.app.setShowModal( { component: 'FrameworkConfiguration' });
+            r.configModal = store.app.dynamicModalContent;
+            store.app.closeModal();
 
-            store.commit('app/showModal', { component: 'Share' });
-            r.shareModal = store.getters['app/dynamicModalContent'];
-            store.commit('app/closeModal');
+            store.app.setShowModal( { component: 'Share' });
+            r.shareModal = store.app.dynamicModalContent;
+            store.app.closeModal();
 
-            store.commit('app/showModal', { component: 'Export' });
-            r.exportModal = store.getters['app/dynamicModalContent'];
-            store.commit('app/closeModal');
+            store.app.setShowModal( { component: 'Export' });
+            r.exportModal = store.app.dynamicModalContent;
+            store.app.closeModal();
 
-            store.commit('app/showModal', { component: 'CsvColumnMapping' });
-            r.csvModal = store.getters['app/dynamicModalContent'];
-            store.commit('app/closeModal');
+            store.app.setShowModal( { component: 'CsvColumnMapping' });
+            r.csvModal = store.app.dynamicModalContent;
+            store.app.closeModal();
 
             return r;
         });
@@ -146,40 +146,40 @@ test.describe('App.vue Coverage', () => {
         await page.waitForLoadState('domcontentloaded');
 
         const result = await page.evaluate(() => {
-            const store = window.app && window.app.$store;
+            const store = window.__stores;
             if (!store) return null;
             const r = {};
 
             // WebSocket backoff
-            r.backoff1 = store.getters['editor/webSocketBackoff'];
-            store.commit('editor/webSocketBackoffIncrease');
-            r.backoff2 = store.getters['editor/webSocketBackoff'];
-            store.commit('editor/webSocketBackoffIncrease');
-            r.backoff3 = store.getters['editor/webSocketBackoff'];
+            r.backoff1 = store.editor.webSocketBackoff;
+            store.editor.webSocketBackoffIncrease();
+            r.backoff2 = store.editor.webSocketBackoff;
+            store.editor.webSocketBackoffIncrease();
+            r.backoff3 = store.editor.webSocketBackoff;
 
             // Comment mutations used by App.vue
-            store.commit('editor/setAddCommentAboutId', 'fw-123');
-            r.commentAboutId = store.state.editor.addCommentAboutId;
-            store.commit('editor/setAddCommentType', 'new');
-            r.commentType = store.state.editor.addCommentType;
-            store.commit('editor/setCommentToEdit', { id: 'c1', text: 'edit me' });
-            r.commentToEdit = store.state.editor.commentToEdit;
-            store.commit('editor/setCommentToReply', { id: 'c1', text: 'reply' });
-            r.commentToReply = store.state.editor.commentToReply;
-            store.commit('editor/setCommentsToDelete', ['c1', 'c2']);
-            r.commentsToDelete = store.state.editor.commentsToDelete;
+            store.editor.setAddCommentAboutId( 'fw-123');
+            r.commentAboutId = store.editor.addCommentAboutId;
+            store.editor.setAddCommentType( 'new');
+            r.commentType = store.editor.addCommentType;
+            store.editor.setCommentToEdit( { id: 'c1', text: 'edit me' });
+            r.commentToEdit = store.editor.commentToEdit;
+            store.editor.setCommentToReply( { id: 'c1', text: 'reply' });
+            r.commentToReply = store.editor.commentToReply;
+            store.editor.setCommentsToDelete( ['c1', 'c2']);
+            r.commentsToDelete = store.editor.commentsToDelete;
 
             // Clear
-            store.commit('editor/clearFrameworkCommentData');
-            r.commentDataCleared = store.state.editor.frameworkCommentDataLoaded;
-            r.commentListCleared = store.state.editor.frameworkCommentList;
+            store.editor.clearFrameworkCommentData();
+            r.commentDataCleared = store.editor.frameworkCommentDataLoaded;
+            r.commentListCleared = store.editor.frameworkCommentList;
 
             // Reset
-            store.commit('editor/setAddCommentAboutId', '');
-            store.commit('editor/setAddCommentType', '');
-            store.commit('editor/setCommentToEdit', {});
-            store.commit('editor/setCommentToReply', {});
-            store.commit('editor/setCommentsToDelete', []);
+            store.editor.setAddCommentAboutId( '');
+            store.editor.setAddCommentType( '');
+            store.editor.setCommentToEdit( {});
+            store.editor.setCommentToReply( {});
+            store.editor.setCommentsToDelete( []);
 
             return r;
         });

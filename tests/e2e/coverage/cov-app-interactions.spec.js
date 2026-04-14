@@ -38,10 +38,10 @@ test.describe.serial('App interactions and crosswalk coverage', () => {
     const appData = await page.evaluate(() => {
       // Find App component on the #app element
       const appEl = document.getElementById('app');
-      if (!appEl || !appEl.__vue__) return {
+      if (!appEl || !appEl.__vueParentComponent) return {
         error: 'no app element'
       };
-      const vm = appEl.__vue__;
+      const vm = appEl.__vueParentComponent.ctx;
       // Walk up the $root if needed
       const root = vm.$root || vm;
 
@@ -54,8 +54,8 @@ test.describe.serial('App interactions and crosswalk coverage', () => {
       if (!appVm) appVm = root;
       return {
         hasStore: root.$store != null,
-        showSideNav: root.$store ? root.$store.getters['app/showSideNav'] : null,
-        showRightAside: root.$store ? root.$store.getters['app/showRightAside'] : null,
+        showSideNav: root.$store ? root.$store.app.showSideNav : null,
+        showRightAside: root.$store ? root.$store.app.showRightAside : null,
         // Access App.vue computed props if they exist
         isIframe: appVm.isIframe,
         showLogin: appVm.showLogin,
@@ -72,16 +72,16 @@ test.describe.serial('App interactions and crosswalk coverage', () => {
     // Exercise sidebar via store commits
     await page.evaluate(() => {
       const appEl = document.getElementById('app');
-      const vm = appEl.__vue__.$root || appEl.__vue__;
+      const vm = appEl.__vueParentComponent.$root || appEl.__vueParentComponent;
       if (vm.$store) {
-        vm.$store.commit('app/showSideNav', false);
+        vm.$store.app.openSideNav( false);
       }
     });
     await page.evaluate(() => {
       const appEl = document.getElementById('app');
-      const vm = appEl.__vue__.$root || appEl.__vue__;
+      const vm = appEl.__vueParentComponent.$root || appEl.__vueParentComponent;
       if (vm.$store) {
-        vm.$store.commit('app/showSideNav', true);
+        vm.$store.app.openSideNav( true);
       }
     });
     // Verify sidebar is visible — look for side nav element
@@ -95,8 +95,8 @@ test.describe.serial('App interactions and crosswalk coverage', () => {
     const sideNavData = await page.evaluate(() => {
       const allEls = document.querySelectorAll('*');
       for (const el of allEls) {
-        const vm = el.__vue__;
-        if (vm && vm.$options && vm.$options.name === 'SideNav') {
+        const vm = el.__vueParentComponent.ctx;
+        if (vm && vm.$options && (vm.$options?.name || vm.__name) === 'SideNav') {
           return {
             found: true,
             loggedIn: vm.loggedIn,
@@ -127,8 +127,8 @@ test.describe.serial('App interactions and crosswalk coverage', () => {
     const crosswalkData = await page.evaluate(() => {
       const allEls = document.querySelectorAll('*');
       for (const el of allEls) {
-        const vm = el.__vue__;
-        if (vm && vm.$options && (vm.$options.name === 'Crosswalk' || vm.$options.name === 'crosswalk')) {
+        const vm = el.__vueParentComponent.ctx;
+        if (vm && vm.$options && ((vm.$options?.name || vm.__name) === 'Crosswalk' || (vm.$options?.name || vm.__name) === 'crosswalk')) {
           return {
             found: true,
             queryParams: typeof vm.queryParams,
@@ -148,40 +148,40 @@ test.describe.serial('App interactions and crosswalk coverage', () => {
   test('5: Exercise store module edge cases', async () => {
     const storeData = await page.evaluate(() => {
       const appEl = document.getElementById('app');
-      if (!appEl || !appEl.__vue__) return {
+      if (!appEl || !appEl.__vueParentComponent) return {
         error: 'no app'
       };
-      const store = (appEl.__vue__.$root || appEl.__vue__).$store;
+      const store = (appEl.__vueParentComponent.$root || appEl.__vueParentComponent).$store;
       if (!store) return {
         error: 'no store'
       };
 
       // Exercise app module mutations
-      store.commit('app/showModal', {
+      store.app.setShowModal( {
         component: 'TestModal'
       });
-      store.commit('app/showModal', null);
+      store.app.setShowModal( null);
 
       // Exercise app module getters
       const getters = {
-        showRightAside: store.getters['app/showRightAside'],
-        rightAsideContent: store.getters['app/rightAsideContent'],
-        rightAsideObject: store.getters['app/rightAsideObject'],
-        searchTerm: store.getters['app/searchTerm'],
-        sortResults: store.getters['app/sortResults'],
-        quickFilters: store.getters['app/quickFilters'],
-        filterByOwnedByMe: store.getters['app/filterByOwnedByMe'],
-        filterByNotOwnedByMe: store.getters['app/filterByNotOwnedByMe'],
-        filterByConfigMatchDefault: store.getters['app/filterByConfigMatchDefault']
+        showRightAside: store.app.showRightAside,
+        rightAsideContent: store.app.rightAsideContent,
+        rightAsideObject: store.app.rightAsideObject,
+        searchTerm: store.app.searchTerm,
+        sortResults: store.app.sortResults,
+        quickFilters: store.app.quickFilters,
+        filterByOwnedByMe: store.app.filterByOwnedByMe,
+        filterByNotOwnedByMe: store.app.filterByNotOwnedByMe,
+        filterByConfigMatchDefault: store.app.filterByConfigMatchDefault
       };
 
       // Exercise editor module getters
       const editorGetters = {
-        framework: store.getters['editor/framework'],
-        conceptMode: store.getters['editor/conceptMode'],
-        progressionMode: store.getters['editor/progressionMode'],
-        queryParams: store.getters['editor/queryParams'],
-        firstSearchProcessing: store.getters['editor/firstSearchProcessing']
+        framework: store.editor.framework,
+        conceptMode: store.editor.conceptMode,
+        progressionMode: store.editor.progressionMode,
+        queryParams: store.editor.queryParams,
+        firstSearchProcessing: store.editor.firstSearchProcessing
       };
       return {
         getters,
@@ -206,9 +206,9 @@ test.describe.serial('App interactions and crosswalk coverage', () => {
       const results = {};
       const allEls = document.querySelectorAll('*');
       for (const el of allEls) {
-        const vm = el.__vue__;
-        if (!vm || !vm.$options || !vm.$options.name) continue;
-        const name = vm.$options.name;
+        const vm = el.__vueParentComponent.ctx;
+        if (!vm || !vm.$options || !(vm.$options?.name || vm.__name)) continue;
+        const name = (vm.$options?.name || vm.__name);
         if (!results[name]) {
           results[name] = true;
         }
@@ -224,11 +224,11 @@ test.describe.serial('App interactions and crosswalk coverage', () => {
     const configData = await page.evaluate(() => {
       const allEls = document.querySelectorAll('*');
       for (const el of allEls) {
-        const vm = el.__vue__;
-        if (vm && vm.$options && (vm.$options.name === 'ConfigurationEditor' || vm.$options.name === 'Configuration')) {
+        const vm = el.__vueParentComponent.ctx;
+        if (vm && vm.$options && ((vm.$options?.name || vm.__name) === 'ConfigurationEditor' || (vm.$options?.name || vm.__name) === 'Configuration')) {
           return {
             found: true,
-            name: vm.$options.name
+            name: (vm.$options?.name || vm.__name)
           };
         }
       }

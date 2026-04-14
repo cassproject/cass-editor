@@ -12,9 +12,9 @@ test('Login: user store initial state', async ({
 }) => {
   await page.goto('/#/legacyLogin?server=http://localhost/api/');
   await page.waitForLoadState('domcontentloaded');
-  await page.waitForFunction(() => window.app && window.app.$store);
+  await page.waitForFunction(() => window.__stores);
   const result = await page.evaluate(() => {
-    const store = window.app.$store;
+    const store = window.__stores;
     return {
       hasUserState: store.state.user != null,
       loggedOnPerson: store.state.user?.loggedOnPerson,
@@ -42,21 +42,21 @@ test('Login: exercise featuresEnabled login settings', async ({
 }) => {
   await page.goto('/#/?server=http://localhost/api/');
   await page.waitForLoadState('domcontentloaded');
-  await page.waitForFunction(() => window.app && window.app.$store);
+  await page.waitForFunction(() => window.__stores);
   const result = await page.evaluate(() => {
-    const store = window.app.$store;
+    const store = window.__stores;
 
     // Exercise featuresEnabled login-related mutations
-    const origLogin = store.state.featuresEnabled.loginEnabled;
-    const origApiLogin = store.state.featuresEnabled.apiLoginEnabled;
-    store.commit('featuresEnabled/loginEnabled', !origLogin);
-    const toggledLogin = store.state.featuresEnabled.loginEnabled;
-    store.commit('featuresEnabled/apiLoginEnabled', !origApiLogin);
-    const toggledApiLogin = store.state.featuresEnabled.apiLoginEnabled;
+    const origLogin = store.featuresEnabled.loginEnabled;
+    const origApiLogin = store.featuresEnabled.apiLoginEnabled;
+    store.featuresEnabled.setLoginEnabled( !origLogin);
+    const toggledLogin = store.featuresEnabled.loginEnabled;
+    store.featuresEnabled.setApiLoginEnabled( !origApiLogin);
+    const toggledApiLogin = store.featuresEnabled.apiLoginEnabled;
 
     // Restore
-    store.commit('featuresEnabled/loginEnabled', origLogin);
-    store.commit('featuresEnabled/apiLoginEnabled', origApiLogin);
+    store.featuresEnabled.setLoginEnabled( origLogin);
+    store.featuresEnabled.setApiLoginEnabled( origApiLogin);
     return {
       toggledLogin: toggledLogin !== origLogin,
       toggledApiLogin: toggledApiLogin !== origApiLogin
@@ -71,7 +71,7 @@ test('Login: logged in state after loginAndNavigate', async ({
   let uid;
   uid = await loginAndNavigate(page, uid);
   const result = await page.evaluate(() => {
-    const store = window.app.$store;
+    const store = window.__stores;
     return {
       loggedOnPerson: store.state.user?.loggedOnPerson,
       hasName: Object.keys(store.state.user?.loggedOnPerson || {}).length > 0,
