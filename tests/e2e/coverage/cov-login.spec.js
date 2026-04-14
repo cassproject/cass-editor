@@ -16,10 +16,10 @@ test('Login: user store initial state', async ({
   const result = await page.evaluate(() => {
     const store = window.__stores;
     return {
-      hasUserState: store.state.user != null,
-      loggedOnPerson: store.state.user?.loggedOnPerson,
-      lastLogin: store.state.user?.lastLogin,
-      repoInit: store.state.user?.repoInit
+      hasUserState: store.user != null,
+      loggedOnPerson: store.user?.loggedOnPerson,
+      lastLogin: store.user?.lastLogin,
+      repoInit: store.user?.repoInit
     };
   });
   expect(result.hasUserState).toBe(true);
@@ -73,9 +73,9 @@ test('Login: logged in state after loginAndNavigate', async ({
   const result = await page.evaluate(() => {
     const store = window.__stores;
     return {
-      loggedOnPerson: store.state.user?.loggedOnPerson,
-      hasName: Object.keys(store.state.user?.loggedOnPerson || {}).length > 0,
-      lastLogin: store.state.user?.lastLogin
+      loggedOnPerson: store.user?.loggedOnPerson,
+      hasName: Object.keys(store.user?.loggedOnPerson || {}).length > 0,
+      lastLogin: store.user?.lastLogin
     };
   });
   expect(result.hasName).toBe(true);
