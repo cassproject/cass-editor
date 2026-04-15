@@ -257,9 +257,13 @@ export default {
             this.editingFramework = true;
         },
         onDoneEditingNode: async function() {
-            store.editor().setFramework(await EcRepository.get(this.framework.shortId()));
-            store.editor().setNewFramework(null);
             this.editingFramework = false;
+            store.editor().setNewFramework(null);
+            try {
+                store.editor().setFramework(await EcRepository.get(this.framework.shortId()));
+            } catch (e) {
+                console.error('Failed to get framework after editing', e);
+            }
         },
         selectedArrayEvent: function(ary) {
             this.selectedArray = ary;

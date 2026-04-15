@@ -1343,7 +1343,7 @@ export default {
                         store.editor().setChangedObject(rld.shortId());
                         if (me.doneValidating) {
                             if (me.addAnother) {
-                                store.editor().addAnother(true);
+                                store.editor().setAddAnother(true);
                                 me.addAnother = false;
                             }
                             me.$emit('done-editing-node-event');
@@ -1597,7 +1597,7 @@ export default {
             this.$emit('done-editing-node-event');
         },
         saveOnce: function() {
-            store.editor().addAnother(false);
+            store.editor().setAddAnother(false);
             this.addAnother = false;
             this.doneEditing();
         },
@@ -1613,7 +1613,7 @@ export default {
             // If object needs to be saved, this will be set to false in saveThing
             // this.doneSaving = true;
             if (this.addAnother && this.doneValidating) {
-                store.editor().addAnother(true);
+                store.editor().setAddAnother(true);
                 this.addAnother = false;
             }
         },
@@ -1629,7 +1629,7 @@ export default {
                 this.validateCount = 0;
                 if (this.doneSaving) {
                     if (this.addAnother) {
-                        store.editor().addAnother(true);
+                        store.editor().setAddAnother(true);
                         this.addAnother = false;
                     }
                     setTimeout(function() {

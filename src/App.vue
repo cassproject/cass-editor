@@ -421,7 +421,7 @@ export default {
         },
         selectDirectory: function(directory) {
             store.app().selectDirectory(directory);
-            store.app().rightAsideObject(directory);
+            store.app().setRightAsideObject(directory);
             if (this.$route.name !== "directory") {
                 this.$router.push({name: "directory"});
             }

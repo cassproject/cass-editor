@@ -34,8 +34,8 @@ test('Feature flags: exercise various URL parameter combinations', async ({ page
         const store = window.__stores;
         if (!store) return null;
         return {
-            hasEditorState: !!store.state.editor,
-            hasFeaturesState: !!store.state.featuresEnabled
+            hasEditorState: !!store.editor,
+            hasFeaturesState: !!store.featuresEnabled
         };
     });
 

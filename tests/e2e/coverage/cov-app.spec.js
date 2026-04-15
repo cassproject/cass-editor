@@ -79,7 +79,7 @@ test('App: inIframe detection via store', async ({
       inIframeResult = app.inIframe();
     }
     // Also exercise sideNavEnabled getter since it's in app store
-    const sideNavEnabled = app.$store.app.sideNavEnabled;
+    const sideNavEnabled = window.__stores.app.sideNavEnabled;
     return {
       methodExists,
       inIframeResult,

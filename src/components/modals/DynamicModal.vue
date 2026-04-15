@@ -26,6 +26,7 @@ it should always be produced in its own modal as to not replace the existing mod
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue';
 import { mapState } from 'pinia';
 import store from '@/stores/index.js';
 export default {
@@ -42,30 +43,30 @@ export default {
         }
     },
     components: {
-        'Share': () => import('@/components/modalContent/Share.vue'),
-        'MultiEdit': () => import('@/components/modalContent/MultiEdit.vue'),
-        'SearchModal': () => import('@/components/modalContent/SearchModal.vue'),
-        'AddComment': () => import('@/components/modalContent/AddComment.vue'),
-        'DeleteCommentConfirm': () => import('@/components/modalContent/DeleteCommentConfirm.vue'),
-        'DeleteDirectoryConfirm': () => import('@/components/modalContent/DeleteDirectoryConfirm.vue'),
-        'SupportedImportDetails': () => import('@/components/modalContent/SupportedImportDetails.vue'),
-        'Single': () => import('@/components/modalContent/Single.vue'),
-        'AddDirectory': () => import('@/components/modalContent/AddDirectory.vue'),
-        'DeleteConfigurationConfirm': () => import('@/components/modalContent/DeleteConfigurationConfirm.vue'),
-        'FrameworkConfiguration': () => import('@/components/modalContent/FrameworkConfiguration.vue'),
-        'DeleteCompetencyConfirm': () => import('@/components/modalContent/DeleteCompetencyConfirm.vue'),
-        'DeleteFrameworkConfirm': () => import('@/components/modalContent/DeleteFrameworkConfirm.vue'),
-        'DeleteLevelConfirm': () => import('@/components/modalContent/DeleteLevelConfirm.vue'),
-        'DeleteConceptConfirm': () => import('@/components/modalContent/DeleteConceptConfirm.vue'),
-        'DeleteConceptSchemeConfirm': () => import('@/components/modalContent/DeleteConceptSchemeConfirm.vue'),
-        'RemoveCompetencyConfirm': () => import('@/components/modalContent/RemoveCompetencyConfirm.vue'),
-        'ExportOptionsModal': () => import('@/components/modalContent/ExportOptionsModal.vue'),
-        'RequiredPropertyModal': () => import('@/components/modalContent/RequiredPropertyModal.vue'),
-        'DuplicateImport': () => import('@/components/modalContent/DuplicateImport.vue'),
-        'ImportError': () => import('@/components/modalContent/ImportError.vue'),
-        'ShareAssertions': () => import('@/components/modalContent/ShareAssertions.vue'),
-        'LogoutSuccess': () => import('@/components/modalContent/LogoutSuccess.vue'),
-        'MessageOfTheDay': () => import('@/components/modalContent/MessageOfTheDay.vue')
+        'Share': defineAsyncComponent(() => import('@/components/modalContent/Share.vue')),
+        'MultiEdit': defineAsyncComponent(() => import('@/components/modalContent/MultiEdit.vue')),
+        'SearchModal': defineAsyncComponent(() => import('@/components/modalContent/SearchModal.vue')),
+        'AddComment': defineAsyncComponent(() => import('@/components/modalContent/AddComment.vue')),
+        'DeleteCommentConfirm': defineAsyncComponent(() => import('@/components/modalContent/DeleteCommentConfirm.vue')),
+        'DeleteDirectoryConfirm': defineAsyncComponent(() => import('@/components/modalContent/DeleteDirectoryConfirm.vue')),
+        'SupportedImportDetails': defineAsyncComponent(() => import('@/components/modalContent/SupportedImportDetails.vue')),
+        'Single': defineAsyncComponent(() => import('@/components/modalContent/Single.vue')),
+        'AddDirectory': defineAsyncComponent(() => import('@/components/modalContent/AddDirectory.vue')),
+        'DeleteConfigurationConfirm': defineAsyncComponent(() => import('@/components/modalContent/DeleteConfigurationConfirm.vue')),
+        'FrameworkConfiguration': defineAsyncComponent(() => import('@/components/modalContent/FrameworkConfiguration.vue')),
+        'DeleteCompetencyConfirm': defineAsyncComponent(() => import('@/components/modalContent/DeleteCompetencyConfirm.vue')),
+        'DeleteFrameworkConfirm': defineAsyncComponent(() => import('@/components/modalContent/DeleteFrameworkConfirm.vue')),
+        'DeleteLevelConfirm': defineAsyncComponent(() => import('@/components/modalContent/DeleteLevelConfirm.vue')),
+        'DeleteConceptConfirm': defineAsyncComponent(() => import('@/components/modalContent/DeleteConceptConfirm.vue')),
+        'DeleteConceptSchemeConfirm': defineAsyncComponent(() => import('@/components/modalContent/DeleteConceptSchemeConfirm.vue')),
+        'RemoveCompetencyConfirm': defineAsyncComponent(() => import('@/components/modalContent/RemoveCompetencyConfirm.vue')),
+        'ExportOptionsModal': defineAsyncComponent(() => import('@/components/modalContent/ExportOptionsModal.vue')),
+        'RequiredPropertyModal': defineAsyncComponent(() => import('@/components/modalContent/RequiredPropertyModal.vue')),
+        'DuplicateImport': defineAsyncComponent(() => import('@/components/modalContent/DuplicateImport.vue')),
+        'ImportError': defineAsyncComponent(() => import('@/components/modalContent/ImportError.vue')),
+        'ShareAssertions': defineAsyncComponent(() => import('@/components/modalContent/ShareAssertions.vue')),
+        'LogoutSuccess': defineAsyncComponent(() => import('@/components/modalContent/LogoutSuccess.vue')),
+        'MessageOfTheDay': defineAsyncComponent(() => import('@/components/modalContent/MessageOfTheDay.vue'))
     },
     data() {
         return {

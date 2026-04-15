@@ -451,7 +451,7 @@ export default {
         addAnother: function(val) {
             if (val) {
                 this.onClickCreateNew();
-                store.editor().addAnother(false);
+                store.editor().setAddAnother(false);
             }
         }
     },

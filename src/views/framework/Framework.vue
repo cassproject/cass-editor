@@ -832,9 +832,18 @@ export default {
         onEditNode: function() {
             this.editingFramework = true;
         },
-        onDoneEditingNode: function() {
-            store.editor().setNewFramework(null);
+        onDoneEditingNode: async function() {
+            var me = this;
             this.editingFramework = false;
+            store.editor().setNewFramework(null);
+            try {
+                store.editor().setFramework(await EcRepository.get(this.framework.shortId()));
+            } catch (e) {
+                console.error('Failed to get framework after editing', e);
+            }
+            if (this.queryParams && this.queryParams.scratch) {
+                this.returnScratch();
+            }
         },
         onOpenComments: function() {
             this.showComments = true;

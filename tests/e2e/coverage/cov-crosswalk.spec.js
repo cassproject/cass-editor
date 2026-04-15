@@ -31,11 +31,11 @@ test('Crosswalk: store state initialized', async ({
       error: 'no store'
     };
     return {
-      hasState: store.state.crosswalk !== undefined,
-      step: store.state.crosswalk?.step,
-      sourceFramework: store.state.crosswalk?.sourceFramework,
-      targetFramework: store.state.crosswalk?.targetFramework,
-      alignments: store.state.crosswalk?.alignments
+      hasState: store.crosswalk !== undefined,
+      step: store.crosswalk?.step,
+      sourceFramework: store.crosswalk?.sourceFramework,
+      targetFramework: store.crosswalk?.targetFramework,
+      alignments: store.crosswalk?.alignments
     };
   });
   expect(result.hasState).toBe(true);
@@ -55,14 +55,10 @@ test('Crosswalk: interact with step navigation', async ({
 
   // Exercise the crosswalk view component
   const result = await page.evaluate(() => {
-    const el = document.querySelector('#crosswalk');
-    if (!el || !el.__vueParentComponent) return {
-      noVue: true
-    };
-    const vm = el.__vueParentComponent.ctx;
-    // Try to access crosswalk-related data
+    const store = window.__stores;
+    if (!store) return { noVue: true };
     return {
-      hasStep: vm.$data.step !== undefined || vm.step !== undefined,
+      hasStep: store.crosswalk?.step !== undefined,
       hasComponent: true
     };
   });

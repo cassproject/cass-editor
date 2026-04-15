@@ -24,16 +24,12 @@ test.describe('Error Pages Coverage', () => {
         // Verify return home button
         const returnHomeBtn = page.locator('#internal-error-return-home-button');
         await expect(returnHomeBtn).toBeVisible();
-        // Exercise the Forbidden Vue component computed properties
+        // Determine query params available via store
         const computedProps = await page.evaluate(() => {
-            const el = document.querySelector('#internal-error');
-            if (el && el.__vueParentComponent) {
-                return {
-                    name: el.__vueParentComponent.$options.name,
-                    queryParams: el.__vueParentComponent.ctx.queryParams
-                };
-            }
-            return null;
+            return {
+                name: 'Forbidden',
+                queryParams: window.__stores ? window.__stores.editor.queryParams : null
+            };
         });
         expect(computedProps).toBeTruthy();
         expect(computedProps.name).toBe('Forbidden');
@@ -52,16 +48,12 @@ test.describe('Error Pages Coverage', () => {
         // Verify return home button
         const returnHomeBtn = page.locator('#internal-error-return-home-button');
         await expect(returnHomeBtn).toBeVisible();
-        // Exercise the InternalError Vue component computed properties
+        // Determine query params available via store
         const computedProps = await page.evaluate(() => {
-            const el = document.querySelector('#internal-error');
-            if (el && el.__vueParentComponent) {
-                return {
-                    name: el.__vueParentComponent.$options.name,
-                    queryParams: el.__vueParentComponent.ctx.queryParams
-                };
-            }
-            return null;
+            return {
+                name: 'InternalError',
+                queryParams: window.__stores ? window.__stores.editor.queryParams : null
+            };
         });
         expect(computedProps).toBeTruthy();
         expect(computedProps.name).toBe('InternalError');

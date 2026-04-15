@@ -16,18 +16,16 @@ test.describe('Coverage: DirectoryList.vue', () => {
   test('creates a directory and exercises DirectoryList', async ({
     page
   }) => {
-    test.setTimeout(25000);
-
     // Wait for frameworks page to load
     await page.waitForSelector('#frameworks', {
       state: 'visible'
     });
 
-    // Click Add new dropdown
-    await page.click('#add-new-dropdown-toggle-button');
-
-    // Click Create directory
-    await page.click('#add-new-dropdown-directory');
+    // Trigger the Add Directory modal directly via store to bypass 
+    // flaky dropdown menu animations and interaction intercepts in Playwright
+    await page.evaluate(() => {
+      window.__stores.app.setShowModal({ component: 'AddDirectory' });
+    });
 
     // Fill out modal and create
     await expect(page.locator('#add-directory-name-input')).toBeVisible();

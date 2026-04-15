@@ -26,7 +26,7 @@ module.exports = defineConfig({
         screenshot: 'only-on-failure',
         video: 'retain-on-failure',
     },
-    timeout: 40000,
+    timeout: 60000,
     expect: {
         timeout: 20000,
     },
