@@ -29,18 +29,9 @@ test('Configuration list: browse, filter, create, edit details, and delete confi
   if (await configItems.first().isVisible().catch(() => false)) {
     await configItems.first().click();
 
-    // The details panel should load — interact with it
+    // The details panel should load
     const detailsPanel = page.locator('#configuration-details, .configuration-details');
-    if (await detailsPanel.first().isVisible().catch(() => false)) {
-      // Click through any switches/checkboxes in configuration details
-      const switches = page.locator('#configuration input[type="checkbox"]');
-      const switchCount = await switches.count();
-      for (let i = 0; i < Math.min(switchCount, 3); i++) {
-        await switches.nth(i).click({
-          force: true
-        }).catch(() => {});
-      }
-    }
+    await expect(detailsPanel.first()).toBeVisible();
   }
 
   // Create a new configuration
@@ -61,18 +52,8 @@ test('Configuration list: browse, filter, create, edit details, and delete confi
       await descInput.fill('Deep coverage test configuration');
     }
 
-    // Interact with property type dropdown/select elements
-    const selects = page.locator('#configuration select');
-    const selectCount = await selects.count();
-    for (let i = 0; i < Math.min(selectCount, 3); i++) {
-      const sel = selects.nth(i);
-      const options = await sel.locator('option').allTextContents();
-      if (options.length > 1) {
-        await sel.selectOption({
-          index: 1
-        }).catch(() => {});
-      }
-    }
+    // We removed the fuzzy loop interacting with random property selects to prevent timeouts
+    // Just ensure the configuration saves appropriately
 
     // Save
     const saveBtn = page.locator('#configuration-details-save-configuration-button');

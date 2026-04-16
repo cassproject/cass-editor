@@ -108,22 +108,22 @@ test('Import: store importType mutations', async ({
   await page.waitForFunction(() => window.__stores);
   const result = await page.evaluate(() => {
     const store = window.__stores;
-    store.app.importType( 'file');
+    store.app.setImportType( 'file');
     const fileType = store.app.import.type;
-    store.app.importType( 'server');
+    store.app.setImportType( 'server');
     const serverType = store.app.import.type;
-    store.app.importType( 'text');
+    store.app.setImportType( 'text');
     const textType = store.app.import.type;
-    store.app.importType( 'url');
+    store.app.setImportType( 'url');
     const urlType = store.app.import.type;
-    store.app.importTransition( 'upload');
+    store.app.setImportTransition( 'upload');
     const transition = store.app.import.transition;
-    store.app.importStatus( 'test-status');
+    store.app.setImportStatus( 'test-status');
     const status = store.app.import.status;
 
     // Restore
-    store.app.importType( 'file');
-    store.app.importTransition( 'upload');
+    store.app.setImportType( 'file');
+    store.app.setImportTransition( 'upload');
     return {
       file: fileType === 'file',
       server: serverType === 'server',

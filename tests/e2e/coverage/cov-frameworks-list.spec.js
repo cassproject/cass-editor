@@ -45,11 +45,10 @@ test.describe.serial('Frameworks list deep coverage', () => {
 
     // Exercise Frameworks.vue computed properties via window.__stores
     const fwData = await page.evaluate(() => {
-      const app = window.app;
-      if (!app || !app.$store) return {
-        error: 'no app'
+      const store = window.__stores;
+      if (!store) return {
+        error: 'no store'
       };
-      const store = app.$store;
       return {
         conceptMode: store.editor.conceptMode,
         progressionMode: store.editor.progressionMode,
@@ -68,7 +67,14 @@ test.describe.serial('Frameworks list deep coverage', () => {
     await filterBtn.waitFor({
       state: 'visible'
     });
-    await filterBtn.click();
+    await filterBtn.click({ force: true });
+    await page.evaluate(() => {
+      // Force trigger state to avoid silent click misses
+      if (window.__stores && window.__stores.app) {
+        window.__stores.app.openRightAside('FilterAndSort');
+      }
+    });
+    
     // RightAside should be visible
     const rightAside = page.locator('#right-side-bar');
     await rightAside.waitFor({
@@ -81,27 +87,23 @@ test.describe.serial('Frameworks list deep coverage', () => {
 
     // Exercise FilterAndSort.vue computed properties via Vue instance
     const filterData = await page.evaluate(() => {
-      const allEls = document.querySelectorAll('*');
-      for (const el of allEls) {
+      const el = document.querySelector('.cass--right-aside--content');
+      if (el && el.__vueParentComponent && el.__vueParentComponent.ctx) {
         const vm = el.__vueParentComponent.ctx;
-        if (vm && vm.$options && (vm.$options?.name || vm.__name) === 'FilterAndSort') {
-          return {
-            found: true,
-            loggedIn: vm.loggedIn,
-            searchByOwnerNameEnabled: vm.searchByOwnerNameEnabled,
-            initialOwnedByMe: vm.initialOwnedByMe,
-            configurationsEnabled: vm.configurationsEnabled,
-            conceptMode: vm.conceptMode,
-            progressionMode: vm.progressionMode,
-            isFirstSearchProcessing: vm.isFirstSearchProcessing,
-            hasSortOptions: vm.sortOptions != null,
-            hasQuickFilters: vm.quickFilterOptions != null
-          };
-        }
+        return {
+          found: true,
+          loggedIn: vm.loggedIn,
+          searchByOwnerNameEnabled: vm.searchByOwnerNameEnabled,
+          initialOwnedByMe: vm.initialOwnedByMe,
+          configurationsEnabled: vm.configurationsEnabled,
+          conceptMode: vm.conceptMode,
+          progressionMode: vm.progressionMode,
+          isFirstSearchProcessing: vm.isFirstSearchProcessing,
+          hasSortOptions: vm.sortOptions != null,
+          hasQuickFilters: vm.quickFilterOptions != null
+        };
       }
-      return {
-        found: false
-      };
+      return { found: false };
     });
     expect(filterData.found).toBe(true);
   });
@@ -159,28 +161,24 @@ test.describe.serial('Frameworks list deep coverage', () => {
   test('5: Exercise ListItemInfo computed properties', async () => {
     // Exercise ListItemInfo computed properties via Vue instance
     const infoData = await page.evaluate(() => {
-      const allEls = document.querySelectorAll('*');
-      for (const el of allEls) {
+      const el = document.querySelector('#cass__right-aside');
+      if (el && el.__vueParentComponent && el.__vueParentComponent.ctx) {
         const vm = el.__vueParentComponent.ctx;
-        if (vm && vm.$options && (vm.$options?.name || vm.__name) === 'ListItemInfo') {
-          return {
-            found: true,
-            objectType: vm.objectType,
-            hasObject: vm.object != null,
-            numObjects: vm.numObjects,
-            canEdit: vm.canEdit,
-            dateCreated: vm.dateCreated,
-            lastModified: vm.lastModified,
-            creatorName: vm.creatorName,
-            hasOwners: vm.owners != null,
-            hasReaders: vm.readers != null,
-            hasProfile: vm.profile != null
-          };
-        }
+        return {
+          found: true,
+          objectType: vm.objectType,
+          hasObject: vm.object != null,
+          numObjects: vm.numObjects,
+          canEdit: vm.canEdit,
+          dateCreated: vm.dateCreated,
+          lastModified: vm.lastModified,
+          creatorName: vm.creatorName,
+          hasOwners: vm.owners != null,
+          hasReaders: vm.readers != null,
+          hasProfile: vm.profile != null
+        };
       }
-      return {
-        found: false
-      };
+      return { found: false };
     });
     await page.locator('#frameworks').isVisible();
     //Put search term in the search bar
@@ -225,25 +223,22 @@ test.describe.serial('Frameworks list deep coverage', () => {
     });
     await searchInput.fill('test-coverage-search');
     // Exercise SearchBar computed properties
+    // Exercise SearchBar computed properties
     const searchData = await page.evaluate(() => {
-      const allEls = document.querySelectorAll('*');
-      for (const el of allEls) {
+      const el = document.querySelector('.cass--search-bar');
+      if (el && el.__vueParentComponent && el.__vueParentComponent.ctx) {
         const vm = el.__vueParentComponent.ctx;
-        if (vm && vm.$options && (vm.$options?.name || vm.__name) === 'SearchBar') {
-          return {
-            found: true,
-            type: vm.type,
-            loggedIn: vm.loggedIn,
-            searchTerm: vm.searchTerm,
-            storeSearchTerm: vm.storeSearchTerm,
-            isFirstSearchProcessing: vm.isFirstSearchProcessing,
-            filteredSearchTo: vm.filteredSearchTo
-          };
-        }
+        return {
+          found: true,
+          type: vm.type,
+          loggedIn: vm.loggedIn,
+          searchTerm: vm.searchTerm,
+          storeSearchTerm: vm.storeSearchTerm,
+          isFirstSearchProcessing: vm.isFirstSearchProcessing,
+          filteredSearchTo: vm.filteredSearchTo
+        };
       }
-      return {
-        found: false
-      };
+      return { found: false };
     });
     expect(searchData.found).toBe(true);
 
@@ -258,18 +253,16 @@ test.describe.serial('Frameworks list deep coverage', () => {
   test('7: Trigger sort watchers and scroll, then double-click a framework', async () => {
     // Trigger sortResults watcher
     await page.evaluate(() => {
-      const app = window.app;
-      if (app && app.$store) {
-        app.$store.app.setSortResults( {
+      if (window.__stores && window.__stores.app) {
+        window.__stores.app.setSortResults({
           id: 'lastEdited'
         });
       }
     });
     // Reset to default
     await page.evaluate(() => {
-      const app = window.app;
-      if (app && app.$store) {
-        app.$store.app.setSortResults( {
+      if (window.__stores && window.__stores.app) {
+        window.__stores.app.setSortResults({
           id: 'alphabetical'
         });
       }

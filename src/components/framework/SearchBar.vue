@@ -55,7 +55,7 @@
                     class="button is-outlined is-dark"
                     title="Filters"
                     id="open-filters-side-bar-button"
-                    @click="store.app().showRightAside('FilterAndSort')"
+                    @click="store.app().openRightAside('FilterAndSort')"
                 >
                     <span class="icon">
                         <i class="fa fa-filter" />

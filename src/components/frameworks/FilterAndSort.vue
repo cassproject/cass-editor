@@ -296,7 +296,10 @@ export default {
         },
         setSearchTermsFromRawSchemata: function() {
             // Used to figure out prefixes to use when searching from the full property URL in the configuration
-            let context = store.lode().rawSchemata["https://schema.cassproject.org/0.4"]["@context"];
+            const cassSchema = store.lode().rawSchemata["https://schema.cassproject.org/0.4"];
+            if (!cassSchema || !cassSchema["@context"]) return;
+            
+            let context = cassSchema["@context"];
             let keys = EcObject.keys(context);
             for (let key of keys) {
                 if (EcObject.isObject(context[key])) {

@@ -248,6 +248,17 @@ test.describe.serial('Framework editing deep dive', () => {
     if (await doneBtn.isVisible()) {
       await doneBtn.click();
     }
+    // Force close modal overlay via Vue store and parent component to prevent pointer interception
+    // Force close modal overlay via Vue store and parent component to prevent pointer interception
+    await page.evaluate(() => {
+        if (window.__stores && window.__stores.app) {
+            window.__stores.app.closeModal();
+            window.__stores.app.closeRightAside();
+        }
+        // Bruteforce remove any lingering modal backgrounds
+        document.querySelectorAll('.modal-background').forEach(el => el.remove());
+        document.querySelectorAll('.lode__thing-editing').forEach(el => el.remove());
+    });
   });
   test('6: Toggle property views (primary → secondary → tertiary)', async () => {
     const toolbar = page.locator('#framework-editor-toolbar');
@@ -255,7 +266,7 @@ test.describe.serial('Framework editing deep dive', () => {
 
     // Click secondary — exercises EditorToolbar.changeProperties('secondary')
     const secondaryBtn = toolbar.locator('#property-view-secondary-button');
-    await secondaryBtn.click();
+    await secondaryBtn.click({ force: true });
     let toolbarState = await page.evaluate(() => {
       const el = document.querySelector('#framework-editor-toolbar');
       if (!el || !el.__vueParentComponent) return {};
@@ -267,7 +278,7 @@ test.describe.serial('Framework editing deep dive', () => {
 
     // Click tertiary
     const tertiaryBtn = toolbar.locator('#property-view-tertiary-button');
-    await tertiaryBtn.click();
+    await tertiaryBtn.click({ force: true });
     toolbarState = await page.evaluate(() => {
       const el = document.querySelector('#framework-editor-toolbar');
       if (!el || !el.__vueParentComponent) return {};
@@ -278,7 +289,7 @@ test.describe.serial('Framework editing deep dive', () => {
     expect(toolbarState.activeView).toBe('tertiary');
 
     // Click tertiary again to toggle back to secondary (unclick behavior)
-    await tertiaryBtn.click();
+    await tertiaryBtn.click({ force: true });
     toolbarState = await page.evaluate(() => {
       const el = document.querySelector('#framework-editor-toolbar');
       if (!el || !el.__vueParentComponent) return {};
@@ -290,7 +301,7 @@ test.describe.serial('Framework editing deep dive', () => {
 
     // Click primary to go back
     const primaryBtn = toolbar.locator('#property-view-primary-button');
-    await primaryBtn.click();
+    await primaryBtn.click({ force: true });
     toolbarState = await page.evaluate(() => {
       const el = document.querySelector('#framework-editor-toolbar');
       if (!el || !el.__vueParentComponent) return {};

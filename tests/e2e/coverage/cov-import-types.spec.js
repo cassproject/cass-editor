@@ -6,9 +6,10 @@ test.describe.serial('Coverage: Import Types from Files', () => {
     test('Loads the Import Page', async ({ page }) => {
         await loginAndNavigate(page);
 
-        // nav link was updated to side-nav-import-schemes-link
-        await expect(page.locator('#side-nav-import-schemes-link')).toBeVisible();
-        await page.click('#side-nav-import-schemes-link');
+        // nav link was updated to side-nav-import-link
+        const sideNavLink = page.locator('#side-nav-import-link').first();
+        await expect(sideNavLink).toBeVisible();
+        await sideNavLink.click();
 
         // Verify Import Options (Tabs) are present
         await expect(page.locator('.import-tab').first()).toBeVisible();
@@ -22,7 +23,7 @@ test.describe.serial('Coverage: Import Types from Files', () => {
         await expect(page.locator('.import-tab.is-active-tab #import-file-tab-button')).toBeVisible();
 
         // Upload CSV via the hidden input used by DragAndDrop
-        const filePath = path.join(__dirname, '../../../files/CAP Software Engineering - Competencies.csv');
+        const filePath = path.join(__dirname, '../../../src/assets/files/CAP Software Engineering - Competencies.csv');
         await page.locator('#drag-and-drop-file-input').setInputFiles(filePath);
 
         // Click Process
@@ -53,7 +54,7 @@ test.describe.serial('Coverage: Import Types from Files', () => {
         await expect(page.locator('.import-tab.is-active-tab #import-file-tab-button')).toBeVisible();
 
         // Connect Credentials uses CTDL-ASN, while DQP uses native JSON-LD
-        const filePath = path.join(__dirname, '../../../files/DQP.jsonld');
+        const filePath = path.join(__dirname, '../../../src/assets/files/DQP.jsonld');
         await page.locator('#drag-and-drop-file-input').setInputFiles(filePath);
 
         // Click Process

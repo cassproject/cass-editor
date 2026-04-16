@@ -41,28 +41,28 @@ test.describe('ImportTabs Component Coverage', () => {
             r.fwSizeEmptyFw = frameworkSize(false, false, {});
 
             // Exercise import type switching
-            store.app.importType( 'server');
+            store.app.setImportType('server');
             r.typeServer = store.app.importType;
-            store.app.importType( 'text');
+            store.app.setImportType('text');
             r.typeText = store.app.importType;
-            store.app.importType( 'url');
+            store.app.setImportType('url');
             r.typeUrl = store.app.importType;
 
             // Exercise import transition switching
-            store.app.importTransition( 'process');
+            store.app.setImportTransition('process');
             r.transProcess = store.app.importTransition;
-            store.app.importTransition( 'detail');
+            store.app.setImportTransition('detail');
             r.transDetail = store.app.importTransition;
-            store.app.importTransition( 'preview');
+            store.app.setImportTransition('preview');
             r.transPreview = store.app.importTransition;
-            store.app.importTransition( 'light');
+            store.app.setImportTransition('light');
             r.transLight = store.app.importTransition;
-            store.app.importTransition( 'importingCaseFrameworks');
+            store.app.setImportTransition('importingCaseFrameworks');
             r.transImporting = store.app.importTransition;
 
             // Reset
-            store.app.importType( 'file');
-            store.app.importTransition( 'upload');
+            store.app.setImportType('file');
+            store.app.setImportTransition('upload');
 
             return r;
         });
@@ -96,9 +96,9 @@ test.describe('ImportTabs Component Coverage', () => {
             const r = {};
 
             // importFromFile method logic
-            store.app.importType( 'file');
-            store.app.importFramework( null);
-            store.app.importTransition( 'upload');
+            store.app.setImportType('file');
+            store.app.setImportFramework(null);
+            store.app.setImportTransition('upload');
             r.afterImportFromFile = {
                 type: store.app.importType,
                 framework: store.app.importFramework,
@@ -106,17 +106,17 @@ test.describe('ImportTabs Component Coverage', () => {
             };
 
             // importFromUrl method logic
-            store.app.importStatus( 'importFromUrl');
-            store.app.importTransition( 'importingFromUrl');
+            store.app.setImportStatus('importFromUrl');
+            store.app.setImportTransition('importingFromUrl');
             r.afterImportFromUrl = {
                 status: store.app.importStatus,
                 transition: store.app.importTransition
             };
 
             // Reset
-            store.app.importType( 'file');
-            store.app.importTransition( 'upload');
-            store.app.importStatus( '');
+            store.app.setImportType('file');
+            store.app.setImportTransition('upload');
+            store.app.setImportStatus('');
 
             return r;
         });

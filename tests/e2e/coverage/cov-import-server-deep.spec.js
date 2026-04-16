@@ -16,7 +16,7 @@ test('Import server deep: connect to local CaSS endpoint and exercise search flo
   uid = await loginAndNavigate(page, uid);
 
   // Navigate to import page
-  await page.goto('/#/import?server=http://localhost/api/');
+  await page.goto('/#/import?server=http://localhost/api/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#app')).toBeVisible();
 
   // Click server tab
@@ -75,7 +75,7 @@ test('Import server deep: connect to local CaSS endpoint and exercise search flo
 
   // Now try CASE endpoint connect with an invalid URL to exercise error path
   // Navigate back to import and server tab
-  await page.goto('/#/import?server=http://localhost/api/');
+  await page.goto('/#/import?server=http://localhost/api/', { waitUntil: 'domcontentloaded' });
   await expect(page.locator('#app')).toBeVisible();
   await page.locator('#import-server-tab-button').click();
   await expect(page.locator('#import-from-server')).toBeVisible();
