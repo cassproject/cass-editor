@@ -731,6 +731,7 @@ export default {
     mounted: function() {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
+            return;
         }
         store.app().setObjForShareModal(this.object);
         let documentBody = document.getElementsByClassName('cass--main-layout--body')[0];

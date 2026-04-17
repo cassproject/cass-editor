@@ -254,8 +254,13 @@ $divider-background-color: variables.$dark;
     background-color: variables.tint(utilities.$dark, 80%);
 }
 
-/* Override Bulma v1 CSS custom properties with project colors */
+/* Enforce light mode only — prevent Bulma 1.0 and browser from applying dark mode */
 :root {
+    color-scheme: light only;
+}
+
+/* Override Bulma v1 CSS custom properties with project colors */
+:root, html[data-theme="light"], html[data-theme="dark"] {
     --bulma-primary-h: 220;
     --bulma-primary-s: 46%;
     --bulma-primary-l: 50%;
@@ -277,7 +282,111 @@ $divider-background-color: variables.$dark;
     --bulma-info-s: 0%;
     --bulma-info-l: 33%;
     --bulma-text: #222222;
+    --bulma-body-background-color: #faf7fa;
+    --bulma-scheme-main: #faf7fa;
+    --bulma-scheme-main-bis: #ffffff;
+    --bulma-scheme-main-ter: #ffffff;
+    --bulma-light: #faf7fa;
     --bulma-body-family: 'Assistant', 'sans-serif';
     --bulma-family-primary: 'Assistant', 'sans-serif';
     --bulma-family-secondary: 'Roboto Condensed', 'sans-serif';
+    --bulma-title-family: var(--bulma-family-secondary);
+    --bulma-title-weight: 500;
+    --bulma-title-size: 2.2rem;
+    --bulma-subtitle-family: var(--bulma-family-primary);
+    --bulma-subtitle-weight: 400;
+    --bulma-size-1: 2.2rem;
+    --bulma-size-2: 1.75rem;
+    --bulma-size-3: 1.5rem;
+    --bulma-size-4: 1.25rem;
+    --bulma-size-5: 1rem;
+    --bulma-size-6: 0.85rem;
+    --bulma-size-7: 0.70rem;
+    --bulma-radius: 4px;
+    --bulma-control-radius: 4px;
+    --bulma-control-radius-small: 2px;
+    --bulma-button-family: var(--bulma-family-secondary);
+    --bulma-button-weight: 400;
+}
+
+/*
+ * Bulma 1.0 compatibility: Legacy spacing helper classes.
+ * Bulma 0.x used `is-paddingless`, `is-marginless`, `is-gapless` with the `is-` prefix.
+ * Bulma 1.0 dropped the prefix ($class-prefix defaults to ""), generating `paddingless`, etc.
+ * Many templates still use the old names. These aliases restore compatibility.
+ */
+.is-paddingless {
+    padding: 0 !important;
+}
+.is-marginless {
+    margin: 0 !important;
+}
+
+/* Hard CSS overrides for Bulma 1.0 specificity drops vs dev.cassproject.org */
+body, .cass--main-layout--body, .has-background-lightest {
+    background-color: var(--bulma-scheme-main) !important;
+}
+body {
+    font-family: 'Assistant', sans-serif !important;
+}
+/* The app uses its own custom top bars, not Bulma's navbar.
+   Bulma 1.0 adds padding-top via .has-navbar-fixed-top, creating a gap. */
+body.has-navbar-fixed-top {
+    padding-top: 0 !important;
+}
+.title.has-text-primary {
+    color: var(--bulma-primary) !important;
+}
+/*
+ * Bulma 1.0 `.button[disabled]` grays out any element with a `disabled` attr.
+ * The app uses `<div class="button" :disabled="expr">` extensively. Vue 3 renders
+ * `:disabled="false"` as the literal attr `disabled="false"` on non-form elements
+ * (divs). Bulma's `[disabled]` CSS selector matches it regardless of value.
+ * Fix: restore normal appearance for div.button[disabled="false"].
+ */
+div.button[disabled="false"] {
+    opacity: 1 !important;
+    cursor: pointer !important;
+    pointer-events: auto !important;
+}
+.tag.is-medium-grey {
+    background-color: #eeeef1 !important;
+    border-color: #eeeef1 !important;
+    color: #2D3047 !important;
+}
+.cass--list--thing .title {
+    font-size: 2.2rem !important;
+}
+/* .title in Bulma 1.0 only gets font-family if $title-family SCSS var is truthy.
+   Since we don't forward it via @use ... with(), we must override directly. */
+.title {
+    font-family: 'Roboto Condensed', sans-serif !important;
+    font-weight: 500;
+}
+.subtitle {
+    font-family: 'Assistant', sans-serif !important;
+    font-weight: 400;
+}
+/*
+ * Bulma 1.0 helper classes (.is-family-secondary, .is-family-primary, .is-size-*)
+ * use SCSS-compiled values from derived-variables.scss, NOT CSS custom properties.
+ * Since we import Bulma without `with ()` overrides, these helpers output Bulma's
+ * default Inter/SF Pro fonts. We override them here to match dev.cassproject.org.
+ */
+.is-family-secondary {
+    font-family: 'Roboto Condensed', sans-serif !important;
+}
+.is-family-primary {
+    font-family: 'Assistant', sans-serif !important;
+}
+/* Right aside panel title: dev uses ~22.5px (is-size-4 = 1.25rem at 18px base) */
+.right-aside-bar--title-text {
+    font-family: 'Roboto Condensed', sans-serif !important;
+    font-weight: 500 !important;
+}
+/* Framework list item titles should match dev sizing */
+.cass--list--item .lode__thing .title,
+.cass--list--item .list-thing .title {
+    font-family: 'Roboto Condensed', sans-serif !important;
+    font-weight: 600 !important;
 }
