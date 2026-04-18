@@ -749,36 +749,40 @@ export default {
         onDoneEditingNode: async function() {
             this.editingNode = false;
             if (this.obj.shortId() === this.newCompetency) {
-                if (this.view.indexOf('import') !== -1) {
-                    let options = {
-                        container: "#import",
-                        easing: "ease",
-                        offset: -150,
-                        force: true,
-                        cancelable: true,
-                        onStart: false,
-                        onDone: false,
-                        onCancel: false,
-                        x: false,
-                        y: true
-                    };
-                    this.$scrollTo("#scroll-newCompetency", 500, options);
-                } else if (this.conceptMode || this.progressionMode) {
-                    let options = {
-                        container: "#concept",
-                        easing: "ease",
-                        offset: -150,
-                        force: true,
-                        cancelable: true,
-                        onStart: false,
-                        onDone: false,
-                        onCancel: false,
-                        x: false,
-                        y: true
-                    };
-                    this.$scrollTo("#scroll-newCompetency", 500, options);
-                } else {
-                    this.$scrollTo("#scroll-newCompetency");
+                try {
+                    if (this.view.indexOf('import') !== -1) {
+                        let options = {
+                            container: "#import",
+                            easing: "ease",
+                            offset: -150,
+                            force: true,
+                            cancelable: true,
+                            onStart: false,
+                            onDone: false,
+                            onCancel: false,
+                            x: false,
+                            y: true
+                        };
+                        this.$scrollTo("#scroll-newCompetency", 500, options);
+                    } else if (this.conceptMode || this.progressionMode) {
+                        let options = {
+                            container: "#concept",
+                            easing: "ease",
+                            offset: -150,
+                            force: true,
+                            cancelable: true,
+                            onStart: false,
+                            onDone: false,
+                            onCancel: false,
+                            x: false,
+                            y: true
+                        };
+                        this.$scrollTo("#scroll-newCompetency", 500, options);
+                    } else {
+                        this.$scrollTo("#scroll-newCompetency");
+                    }
+                } catch (e) {
+                    console.warn("Failed to scroll to new competency:", e);
                 }
             }
             if (store.editor()) {

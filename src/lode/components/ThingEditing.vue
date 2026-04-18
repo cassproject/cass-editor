@@ -1616,6 +1616,42 @@ export default {
                 store.editor().setAddAnother(true);
                 this.addAnother = false;
             }
+            // Safety: if no visible property components to validate, or if
+            // numPropertyComponentsVisible is out of sync, re-enable after timeout.
+            var me = this;
+            try {
+                var thingId = this.expandedThing && this.expandedThing["@id"] ? EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]) : null;
+                var expectedCount = thingId ? store.lode().numPropertyComponentsVisible[thingId] : 0;
+                if (!expectedCount || expectedCount <= 0) {
+                    // No property components to validate — treat as validated
+                    this.doneValidating = true;
+                    this.disableDoneEditingButton = false;
+                    this.validate = false;
+                    if (this.doneSaving) {
+                        if (this.addAnother) {
+                            store.editor().setAddAnother(true);
+                            this.addAnother = false;
+                        }
+                        this.$emit('done-editing-node-event');
+                    }
+                }
+            } catch (e) {
+                console.warn("doneEditing safety check error:", e);
+            }
+            setTimeout(function() {
+                if (me.disableDoneEditingButton) {
+                    me.doneValidating = true;
+                    me.disableDoneEditingButton = false;
+                    me.validate = false;
+                    if (me.doneSaving) {
+                        if (me.addAnother) {
+                            store.editor().setAddAnother(true);
+                            me.addAnother = false;
+                        }
+                        me.$emit('done-editing-node-event');
+                    }
+                }
+            }, 3000);
         },
         saveAndAddAnother: function() {
             this.addAnother = true;
