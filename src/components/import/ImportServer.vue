@@ -978,15 +978,35 @@ export default {
                 me.caseDocs[firstIndex].loading = false;
                 me.caseDocs[firstIndex].success = true;
                 appLog(id);
-                EcFramework.get(id, function(f) {
+                var onFrameworkLoaded = function(f) {
                     // me.$store.commit('app/importFramework', f);
                     // Preserve the framework so we can set it as importFramework when they're all done
                     me.$store.commit('editor/framework', f);
                     me.spitEvent("importFinished", f.shortId(), "importPage");
                     me.importCase();
-                }, function(error) {
-                    appError(error);
-                    me.importCase();
+                };
+                EcFramework.get(id, onFrameworkLoaded, function(error) {
+                    // The harvest adapter may save the framework under a CASS-local
+                    // id rather than the upstream CASE document URI (e.g. for the
+                    // IMS validator endpoint). When the upstream-id lookup fails,
+                    // fall back to the frameworkId reported by the server.
+                    var fallbackId = null;
+                    var report = success;
+                    if (typeof report === 'string') {
+                        try { report = JSON.parse(report); } catch (e) { report = null; }
+                    }
+                    if (report && report.results && report.results[0] && report.results[0].frameworkId) {
+                        fallbackId = report.results[0].frameworkId;
+                    }
+                    if (fallbackId && fallbackId !== id) {
+                        EcFramework.get(fallbackId, onFrameworkLoaded, function(fallbackError) {
+                            appError(fallbackError);
+                            me.importCase();
+                        });
+                    } else {
+                        appError(error);
+                        me.importCase();
+                    }
                 });
             }, function(failure) {
                 me.caseDocs[firstIndex].loading = false;
