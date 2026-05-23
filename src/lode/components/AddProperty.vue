@@ -4,10 +4,10 @@
         <modal-template
             :active="createNewLevelNameModal"
             @close="closeNewLevelNameModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 Create New Level
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div
                     class="field">
                     <div class="label">
@@ -23,7 +23,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <button
                     @click="addNewLevel"
                     class="is-outlined button">
@@ -365,7 +365,7 @@
             </div>
             <div
                 class="px-1"
-                v-if="$store.state.featuresEnabled.configurationsEnabled">
+                v-if="configurationsEnabled">
                 <p class="subtitle">
                     Note: Property options are determined by your <router-link
                         target="_blank"
@@ -381,6 +381,9 @@
 <script>
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import PropertyString from './PropertyString.vue';
+import { useLodeStore } from '@/stores/lode';
+import { useEditorStore } from '@/stores/editor';
+import { useFeaturesEnabledStore } from '@/stores/featuresEnabled';
 
 
 export default {
@@ -443,7 +446,10 @@ export default {
                 this.versionIdentifierData.identifierName && this.versionIdentifierData.identifierName['@value'];
         },
         queryParams() {
-            return this.$store.getters['editor/queryParams'];
+            return useEditorStore().queryParams;
+        },
+        configurationsEnabled() {
+            return useFeaturesEnabledStore().configurationsEnabled;
         },
         showProperties() {
             let properties = this.allProperties;
@@ -590,33 +596,35 @@ export default {
             f(shortId, this.newLevelName);
         },
         removeValueAtIndex: function() {
-            this.$store.commit('lode/removeAddingValueAtIndex', this.idx);
+            useLodeStore().setRemoveAddingValueAtIndex(this.idx);
         },
         search: async function() {
             this.addRelationBy = 'search';
             this.$emit('is-searching', true);
+            const lodeStore = useLodeStore();
             if (this.selectedPropertyRange[0].toLowerCase().indexOf("conceptscheme") !== -1) {
-                this.$store.commit('lode/searchType', "ConceptScheme");
-                this.$store.commit('lode/copyOrLink', false);
+                lodeStore.setSearchType("ConceptScheme");
+                lodeStore.setCopyOrLink(false);
             } else if (this.selectedPropertyRange[0].toLowerCase().indexOf("concept") !== -1) {
-                this.$store.commit('lode/searchType', "Concept");
-                this.$store.commit('lode/copyOrLink', false);
+                lodeStore.setSearchType("Concept");
+                lodeStore.setCopyOrLink(false);
             } else if (this.selectedPropertyRange[0].toLowerCase().indexOf("level") !== -1) {
-                this.$store.commit('lode/searchType', "Level");
-                this.$store.commit('lode/copyOrLink', true);
+                lodeStore.setSearchType("Level");
+                lodeStore.setCopyOrLink(true);
             } else if (this.profile[this.selectedPropertyToAdd.value]["isDirectLink"] && (this.profile[this.selectedPropertyToAdd.value]["isDirectLink"] === 'true' || this.profile[this.selectedPropertyToAdd.value]["isDirectLink"] === true)) {
-                this.$store.commit('lode/searchType', "DirectLink");
-                this.$store.commit('lode/copyOrLink', true);
+                lodeStore.setSearchType("DirectLink");
+                lodeStore.setCopyOrLink(true);
             } else {
-                this.$store.commit('lode/searchType', "Competency");
-                this.$store.commit('lode/copyOrLink', false);
+                lodeStore.setSearchType("Competency");
+                lodeStore.setCopyOrLink(false);
             }
-            if (this.$store.state.editor) {
+            const editorStore = useEditorStore();
+            if (editorStore) {
                 var selected = this.expandedThing ? await EcRepository.get(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"])) : null;
-                this.$store.commit('editor/selectedCompetency', selected);
-                this.$store.commit('editor/selectCompetencyRelation', this.selectedPropertyToAdd.value);
+                editorStore.setSelectedCompetency(selected);
+                editorStore.setSelectCompetencyRelation(this.selectedPropertyToAdd.value);
             }
-            this.$store.commit('lode/competencySearchModalOpen', true);
+            lodeStore.setCompetencySearchModalOpen(true);
         },
         async addConceptInner(conceptUri) {
             EcConcept.get(conceptUri).then((concept) => {
@@ -704,7 +712,7 @@ export default {
             this.selectedPropertyToAddIsLangString = false;
             this.limitedTypes = [];
             this.limitedConcepts = [];
-            this.$store.commit('lode/setAddingValues', []);
+            useLodeStore().setAddingValues([]);
             if (this.profile && this.profile[this.selectedPropertyToAdd.value]) {
                 var range = [];
                 var ary = this.profile[this.selectedPropertyToAdd.value]["http://schema.org/rangeIncludes"];
@@ -717,7 +725,7 @@ export default {
                     }
                 }
                 this.selectedPropertyRange = range;
-                this.$store.commit('lode/setAddingProperty', this.selectedPropertyToAdd.value);
+                useLodeStore().setAddingProperty(this.selectedPropertyToAdd.value);
             }
             if (this.selectedPropertyToAdd.value && this.selectedPropertyToAdd.value.toLowerCase().indexOf('level') !== -1 && this.profile && this.profile[this.selectedPropertyToAdd.value] && this.profile[this.selectedPropertyToAdd.value]['options']) {
                 this.checkedOptions = [];
@@ -750,15 +758,15 @@ export default {
             }
         },
         checkedOptions: function() {
-            this.$store.commit('lode/setAddingChecked', this.checkedOptions);
+            useLodeStore().setAddingChecked(this.checkedOptions);
             this.updatePropertyString(this.checkedOptions);
             // this.$emit('checkedOptions', this.checkedOptions);
         },
         selectedPropertyToAddValue: function() {
-            this.$store.commit('lode/addToAddingValues', this.selectedPropertyToAddValue);
+            useLodeStore().addToAddingValues(this.selectedPropertyToAddValue);
         },
         selectedPropertyRange: function() {
-            this.$store.commit('lode/setAddingRange', this.selectedPropertyRange);
+            useLodeStore().setAddingRange(this.selectedPropertyRange);
         },
         addedPropertiesAndValuesFromSearching: function() {
             if (this.editingMultipleCompetencies && this.addedPropertiesAndValuesFromSearching.value.length) {

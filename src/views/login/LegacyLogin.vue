@@ -242,6 +242,8 @@
 </template>
 
 <script>
+import {useUserStore} from '@/stores/user';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
 export default {
     name: 'LegacyLogin',
     data: () => ({
@@ -415,7 +417,8 @@ export default {
             p.name = this.createLinkPersonName;
             p.email = this.createLinkPersonEmail;
             appLog(p);
-            this.$store.commit('user/loggedOnPerson', p);
+            const userStore = useUserStore();
+            userStore.loggedOnPerson(p);
             this.linkedPerson = p;
             EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailure);
         },
@@ -577,7 +580,8 @@ export default {
                 ep.copyFrom(ecrld);
                 if (ep.getGuid().equals(this.identityToLinkToPerson.ppk.toPk().fingerprint())) {
                     matchingPersonRecordFound = true;
-                    this.$store.commit('user/loggedOnPerson', ep);
+                    const userStore = useUserStore();
+                    userStore.loggedOnPerson(ep);
                     this.linkedPerson = ep;
                     appLog('Matching person record found: ');
                     appLog(ep);
@@ -646,10 +650,12 @@ export default {
     },
     computed: {
         legacyLoginEnabled: function() {
-            return this.$store.getters['featuresEnabled/legacyLoginEnabled'];
+            const featuresStore = useFeaturesEnabledStore();
+            return featuresStore.legacyLoginEnabled;
         },
         apiLoginEnabled: function() {
-            return this.$store.getters['featuresEnabled/apiLoginEnabled'];
+            const featuresStore = useFeaturesEnabledStore();
+            return featuresStore.apiLoginEnabled;
         }
     },
     mounted() {

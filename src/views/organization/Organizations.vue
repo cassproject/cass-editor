@@ -1,7 +1,7 @@
 <template>
     <div class="organizations">
         <div>
-            <span v-if="$store.getters['editor/conceptMode'] || $store.getters['editor/progressionMode']">
+            <span v-if="conceptMode || progressionMode">
                 <input
                     type="radio"
                     value="dcterms:title.keyword"
@@ -56,6 +56,9 @@
 <script>
 import List from '@/lode/components/List.vue';
 import common from '@/mixins/common.js';
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
 export default {
     name: "Organizations",
     mixins: [common],
@@ -66,9 +69,8 @@ export default {
         };
     },
     computed: {
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
-        },
+        ...mapState(useEditorStore, ['conceptMode', 'progressionMode', 'queryParams']),
+        ...mapState(useAppStore, ['filterByOwnedByMe']),
         searchOptions: function() {
             let search = "";
             if (this.queryParams && this.queryParams.filter != null) {
@@ -98,9 +100,6 @@ export default {
                 obj.ownership = 'me';
             }
             return obj;
-        },
-        filterByOwnedByMe: function() {
-            return this.$store.getters['app/filterByOwnedByMe'];
         }
     },
     components: {List},
@@ -108,7 +107,8 @@ export default {
         organizationClick: function(organization) {
             var me = this;
             EcOrganization.get(organization.id, function(success) {
-                me.$store.commit('editor/organization', success);
+                const editorStore = useEditorStore();
+                editorStore.organization(success);
                 me.$router.push({name: "organization", params: {organizationId: organization.id}});
             }, appError);
         },

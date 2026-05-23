@@ -39,7 +39,7 @@
                                             <div
                                                 class="button is-large is-outlined is-primary"
                                                 :disabled="importServerUrl === ''"
-                                                @click="$store.commit('app/importTransition', 'connectToServer'); serverType='case';">
+                                                @click="connectCaseEndpoint">
                                                 <span class="icon">
                                                     <i class="fas fa-network-wired" />
                                                 </span>
@@ -54,7 +54,7 @@
                                             <div
                                                 class="button is-large is-outlined is-primary"
                                                 :disabled="importServerUrl === ''"
-                                                @click="$store.commit('app/importTransition', 'connectToServer'); serverType='cass';">
+                                                @click="connectCassEndpoint">
                                                 <span class="icon">
                                                     <i class="fas fa-network-wired" />
                                                 </span>
@@ -333,6 +333,9 @@ import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
 import SearchBar from '../framework/SearchBar.vue';
 import debounce from 'lodash/debounce';
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
 export default {
     name: 'ImportServer',
     components: {
@@ -367,34 +370,35 @@ export default {
         };
     },
     computed: {
+        ...mapState(useAppStore, ['importErrors', 'importStatus', 'searchTerm']),
+        ...mapState(useEditorStore, ['conceptMode']),
         importInfoVisible: function() {
-            return this.$store.getters['app/showRightAside'];
-        },
-        importErrors: function() {
-            return this.$store.getters['app/importErrors'];
+            return useAppStore().showRightAsideGetter;
         },
         importServerUrl: {
             get() {
-                return this.$store.getters['app/importServerUrl'];
+                return useAppStore().importServerUrl;
             },
             set(url) {
-                this.$store.commit('app/importServerUrl', url);
+                useAppStore().setImportServerUrl(url);
             }
-        },
-        searchTerm: function() {
-            return this.$store.getters['app/searchTerm'];
-        },
-        conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
         }
     },
     mounted: function() {
-        this.$store.commit('app/searchTerm', '');
+        useAppStore().setSearchTerm('');
     },
     methods: {
+        connectCaseEndpoint() {
+            useAppStore().setImportTransition('connectToServer');
+            this.serverType = 'case';
+        },
+        connectCassEndpoint() {
+            useAppStore().setImportTransition('connectToServer');
+            this.serverType = 'cass';
+        },
         importCaseDocs: function() {
             this.handleImportFromTabs(this.caseDocs);
-            this.$store.commit('app/importTransition', 'importingCaseFrameworks');
+            useAppStore().setImportTransition('importingCaseFrameworks');
         },
         handleImportFromTabs: function(e) {
             this.caseDocs = e;
@@ -410,15 +414,16 @@ export default {
         },
         connectToServer: function() {
             appLog("connecting to server 1");
-            this.$store.commit('app/clearImportErrors');
+            const appStore = useAppStore();
+            appStore.clearImportErrors();
             let error = {
                 message: "Unable to import from the URL Endpoint provided.",
                 details: ""
             };
             if (!this.isValidUrl(this.importServerUrl)) {
                 error.details = "The endpoint provided is not a valid URL.";
-                this.$store.commit('app/addImportError', error.details);
-                this.$store.commit('app/importTransition', 'upload');
+                appStore.addImportError(error.details);
+                appStore.setImportTransition('upload');
                 this.showModal('error', error);
                 return;
             }
@@ -449,7 +454,7 @@ export default {
         },
         cassSearchEndpoint: debounce(function() {
             this.searchingTopLevel = true;
-            this.$store.commit('editor/setFirstSearchProcessing', true);
+            useEditorStore().setFirstSearchProcessing(true);
             let me = this;
             let paramObj = {};
             paramObj.size = 10000;
@@ -486,25 +491,27 @@ export default {
             }
         }, 1000),
         cassSearchError: function() {
-            this.$store.commit('editor/setFirstSearchProcessing', false);
+            const appStore = useAppStore();
+            useEditorStore().setFirstSearchProcessing(false);
             let error = {
                 message: "Unable to search the URL Endpoint provided.",
                 details: "Make sure you entered the URL of a CaSS Repository."
             };
-            this.$store.commit('app/addImportError', error.details);
-            this.$store.commit('app/importTransition', 'upload');
+            appStore.addImportError(error.details);
+            appStore.setImportTransition('upload');
             this.showModal('error', error);
         },
         cassSearchSuccess: function(success, objectType) {
-            this.$store.commit('editor/setFirstSearchProcessing', false);
+            const appStore = useAppStore();
+            useEditorStore().setFirstSearchProcessing(false);
             if (objectType === "framework") {
                 let message = success.length + " frameworks detected.";
-                this.$store.commit('app/importStatus', message);
-                this.$store.commit('app/importTransition', 'serverFrameworksDetected');
+                appStore.setImportStatus(message);
+                appStore.setImportTransition('serverFrameworksDetected');
             } else if (objectType === 'taxonomy') {
                 let message = success.length + " taxonomies detected.";
-                this.$store.commit('app/importStatus', message);
-                this.$store.commit('app/importTransition', 'serverFrameworksDetected');
+                appStore.setImportStatus(message);
+                appStore.setImportTransition('serverFrameworksDetected');
             }
             for (let each in success) {
                 success[each].loading = false;
@@ -521,7 +528,7 @@ export default {
             }
         },
         importCassTaxonomies: function(dataArray) {
-            this.$store.commit('app/importTransition', 'importingCassFrameworks');
+            useAppStore().setImportTransition('importingCassFrameworks');
             if (dataArray) {
                 // User has clicked cancel on this import item
                 var localFirstIndex = dataArray[1];
@@ -546,31 +553,32 @@ export default {
                 }
             }
             if (lis === 0) {
-                this.$store.commit('app/importFramework', this.$store.getters['editor/framework']);
+                const appStore = useAppStore();
+                appStore.setImportFramework(useEditorStore().framework);
                 if (this.cassTaxonomies.length === 1) {
                     this.importSuccess();
                 } else {
-                    this.$store.commit('app/sortResults', {
+                    appStore.setSortResults({
                         id: 'lastEdited',
                         label: 'last modified'
                     });
                     this.$router.push({name: "concepts"});
                 }
-                this.$store.commit('app/importStatus', "Import finished.");
+                appStore.setImportStatus("Import finished.");
             } else {
                 var me = this;
                 EcRepository.cacheBacking = {};
                 EcConceptScheme.get(this.cassTaxonomies[firstIndex].shortId(), function(found) {
-                    me.$store.commit('app/importStatus', 'taxonomy found...');
+                    useAppStore().setImportStatus('taxonomy found...');
                     me.showModal('duplicateOverwriteOnly', [[me.cassTaxonomies[firstIndex], firstIndex], found]);
                 }, function(notFound) {
-                    me.$store.commit('app/importStatus', 'no match, saving new taxonomy...');
+                    useAppStore().setImportStatus('no match, saving new taxonomy...');
                     me.continueCassTaxonomyImport([me.cassTaxonomies[firstIndex], firstIndex]);
                 });
             }
         },
         importCassFrameworks: function(dataArray) {
-            this.$store.commit('app/importTransition', 'importingCassFrameworks');
+            useAppStore().setImportTransition('importingCassFrameworks');
             if (dataArray) {
                 // User has clicked cancel on this import item
                 var localFirstIndex = dataArray[1];
@@ -595,25 +603,26 @@ export default {
                 }
             }
             if (lis === 0) {
-                this.$store.commit('app/importFramework', this.$store.getters['editor/framework']);
+                const appStore = useAppStore();
+                appStore.setImportFramework(useEditorStore().framework);
                 if (this.cassFrameworks.length === 1) {
                     this.importSuccess();
                 } else {
-                    this.$store.commit('app/sortResults', {
+                    appStore.setSortResults({
                         id: 'lastEdited',
                         label: 'last modified'
                     });
                     this.$router.push({name: "frameworks"});
                 }
-                this.$store.commit('app/importStatus', "Import finished.");
+                appStore.setImportStatus("Import finished.");
             } else {
                 var me = this;
                 EcRepository.cacheBacking = {};
                 EcFramework.get(this.cassFrameworks[firstIndex].shortId(), function(found) {
-                    me.$store.commit('app/importStatus', 'framework found...');
+                    useAppStore().setImportStatus('framework found...');
                     me.showModal('duplicateOverwriteOnly', [[me.cassFrameworks[firstIndex], firstIndex], found]);
                 }, function(notFound) {
-                    me.$store.commit('app/importStatus', 'no match, saving new framework...');
+                    useAppStore().setImportStatus('no match, saving new framework...');
                     me.continueCassFrameworkImport([me.cassFrameworks[firstIndex], firstIndex]);
                 });
             }
@@ -720,7 +729,7 @@ export default {
                 me.repo.multiput(toSave, function() {
                     me.cassTaxonomies[firstIndex].loading = false;
                     me.cassTaxonomies[firstIndex].success = true;
-                    me.$store.commit('editor/framework', taxonomy);
+                    useEditorStore().setFramework(taxonomy);
                     me.spitEvent("importFinished", taxonomy.shortId(), "importPage");
                     me.importCassTaxonomies();
                 }, function() {
@@ -756,7 +765,7 @@ export default {
                 me.repo.multiput(toSave, function() {
                     me.cassFrameworks[firstIndex].loading = false;
                     me.cassFrameworks[firstIndex].success = true;
-                    me.$store.commit('editor/framework', framework);
+                    useEditorStore().setFramework(framework);
                     me.spitEvent("importFinished", framework.shortId(), "importPage");
                     me.importCassFrameworks();
                 }, function() {
@@ -825,8 +834,8 @@ export default {
             if (failure === 401) {
                 error.details += " A CASE framework cannot be imported if it uses API Key authentication.";
             }
-            this.$store.commit('app/importTransition', 'upload');
-            this.$store.commit('app/addImportError', error.details);
+            useAppStore().setImportTransition('upload');
+            useAppStore().addImportError(error.details);
             this.showModal('error', error);
         },
         caseGetDocsBatch: function(serverUrl, limit, offset) {
@@ -865,8 +874,8 @@ export default {
                     let error;
                     if (result.CFDocuments == null) {
                         error = "No frameworks found. Please check the URL and try again.";
-                        this.$store.commit('app/addImportError', error);
-                        this.$store.commit('app/importTransition', 'process');
+                        useAppStore().addImportError(error);
+                        useAppStore().setImportTransition('process');
                         resolve(false);
                     } else {
                         if (result.CFDocuments.length === 0 || done) {
@@ -874,8 +883,9 @@ export default {
                                 this.parseCaseDocs(result);
                             }
                             let message = this.caseDocs.length + " frameworks detected.";
-                            this.$store.commit('app/importStatus', message);
-                            this.$store.commit('app/importTransition', 'serverFrameworksDetected');
+                            const appStore2 = useAppStore();
+                            appStore2.setImportStatus(message);
+                            appStore2.setImportTransition('serverFrameworksDetected');
                             this.caseCancel = false;
                             resolve(false);
                         } else {
@@ -942,25 +952,27 @@ export default {
                     }
                 }
                 if (lis === 0) {
-                    this.$store.commit('app/importFramework', this.$store.getters['editor/framework']);
+                    const appStoreLocal = useAppStore();
+                    appStoreLocal.setImportFramework(useEditorStore().framework);
                     this.importSuccess();
-                    this.$store.commit('app/importStatus', "Import finished.");
+                    appStoreLocal.setImportStatus("Import finished.");
                 } else {
                     var me = this;
                     var id = this.caseDocs[firstIndex].id;
                     me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
                         appLog(frameworks);
                         if (frameworks.length > 0) {
-                            me.$store.commit('app/importStatus', 'framework found...');
+                            useAppStore().setImportStatus('framework found...');
                             me.showModal('duplicateOverwriteOnly', [[me.caseDocs[firstIndex], firstIndex], frameworks[0]]);
                         } else {
-                            me.$store.commit('app/importStatus', 'no match, saving new framework...');
+                            useAppStore().setImportStatus('no match, saving new framework...');
                             me.continueCaseImport([me.caseDocs[firstIndex], firstIndex]);
                         } /* TO DO - ERROR HANDLING HERE */
                     }, function(error) {
-                        me.$store.commit('app/importStatus', error);
-                        me.$store.commit('app/importTransition', 'process');
-                        me.$store.commit('app/addImportError', error);
+                        const appStore3 = useAppStore();
+                        appStore3.setImportStatus(error);
+                        appStore3.setImportTransition('process');
+                        appStore3.addImportError(error);
                     });
                 }
             }// if not canceled
@@ -979,9 +991,9 @@ export default {
                 me.caseDocs[firstIndex].success = true;
                 appLog(id);
                 var onFrameworkLoaded = function(f) {
-                    // me.$store.commit('app/importFramework', f);
+                    // useAppStore().setImportFramework(f);
                     // Preserve the framework so we can set it as importFramework when they're all done
-                    me.$store.commit('editor/framework', f);
+                    useEditorStore().setFramework(f);
                     me.spitEvent("importFinished", f.shortId(), "importPage");
                     me.importCase();
                 };
@@ -1028,7 +1040,7 @@ export default {
                 }
             }
             this.clearImport();
-            this.$store.commit('app/importTransition', 'upload');
+            useAppStore().setImportTransition('upload');
         },
         goBack: function() {
             let me = this;

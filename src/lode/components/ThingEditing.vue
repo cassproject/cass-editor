@@ -292,7 +292,7 @@
                         <span>done</span>
                     </div>
                     <div
-                        v-if="!showAddPropertyContent && $store.state.editor.newCompetency"
+                        v-if="!showAddPropertyContent && newCompetencyState"
                         @click="saveAndAddAnother"
                         :disabled="saving"
                         title="Done editing"
@@ -321,12 +321,15 @@
     </div>
 </template>
 <script>
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
 import Property from './Property.vue';
 import AddProperty from './AddProperty.vue';
 import Search from '@/components/framework/Search.vue';
 // import SearchModal from '@/components/modalContent/SearchModal.vue';
 import common from '@/mixins/common.js';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useLodeStore} from '@/stores/lode';
 export default {
     // Thing represents a JSON-LD object. Does not have to be based on http://schema.org/Thing.
     name: 'ThingEditing',
@@ -410,38 +413,34 @@ export default {
         if (this.clickToLoad === false) { this.load(); }
     },
     mounted: function() {
-        if (this.uri && this.$store.state.editor) {
+        if (this.uri) {
             this.resolveNameFromUrl(this.uri);
         }
         this.load();
         if (this.obj && this.obj.shortId() === this.changedObject) {
-            this.$store.commit('editor/changedObject', null);
+            useEditorStore().setChangedObject(null);
         }
     },
-    beforeDestroy: function() {
-        this.$store.commit('editor/selectedCompetency', null);
-        this.$store.commit('lode/setAddingProperty', '');
-        this.$store.commit('lode/setAddingValues', []);
-        this.$store.commit('lode/setIsAddingProperty', false);
+    beforeUnmount: function() {
+        const editorStore = useEditorStore();
+        const lodeStore = useLodeStore();
+        editorStore.setSelectedCompetency(null);
+        lodeStore.setAddingProperty('');
+        lodeStore.setAddingValues([]);
+        lodeStore.setIsAddingProperty(false);
     },
     computed: {
-        ...mapState({
-            selectedCompetency: state => state.editor.selectedCompetency,
-            framework: state => state.editor.framework,
-            queryParams: state => state.editor.queryParams,
-            addingProperty: state => state.lode.addingProperty,
-            isSavingProperty: state => state.lode.isSavingProperty,
-            isSavingThing: state => state.lode.isSavingThing,
-            addingValues: state => state.lode.addingValues,
-            addingRange: state => state.lode.addingRange,
-            addingChecked: state => state.lode.addingChecked
-        }),
+        ...mapState(useEditorStore, ['selectedCompetency', 'framework', 'queryParams']),
+        ...mapState(useLodeStore, ['addingProperty', 'isSavingProperty', 'isSavingThing', 'addingValues', 'addingRange', 'addingChecked']),
+        newCompetencyState() {
+            return useEditorStore().newCompetency;
+        },
         refreshProperties: {
             get: function() {
-                return this.$store.getters['editor/refreshProperties'];
+                return useEditorStore().refreshProperties;
             },
             set: function(val) {
-                return this.$store.commit('editor/refreshProperties', val);
+                return useEditorStore().setRefreshProperties(val);
             }
         },
         addingPropertyLabel: function() {
@@ -579,9 +578,10 @@ export default {
         },
         // Fetches a map of fully qualified property identifiers to the full @graph property specifications.
         schema: function() {
-            var schema = this.$store.state.lode.schemata[this.type];
+            const lodeStore = useLodeStore();
+            var schema = lodeStore.schemata[this.type];
             if (schema == null) {
-                schema = this.$store.state.lode.schemata[this.context];
+                schema = lodeStore.schemata[this.context];
             }
             var result = {};
             if (schema !== null && schema !== undefined) {
@@ -683,7 +683,7 @@ export default {
                 if (result[""] == null || result[""] === undefined) {
                     result[""] = {};
                 }
-                result[""][key] = this.$store.state.lode.schemaFallback[key];
+                result[""][key] = useLodeStore().schemaFallback[key];
             }
             if (this.profile) {
                 for (var key in this.profile) {
@@ -766,7 +766,7 @@ export default {
                     if (result[""] == null || result[""] === undefined) {
                         result[""] = {};
                     }
-                    result[""][key] = this.$store.state.lode.schemaFallback[key];
+                    result[""][key] = useLodeStore().schemaFallback[key];
                 }
             }
             return result;
@@ -786,13 +786,10 @@ export default {
             return false;
         },
         changedObject: function() {
-            if (this.$store.state.editor) {
-                return this.$store.state.editor.changedObject;
-            }
-            return null;
+            return useEditorStore().changedObject;
         },
         isAddingProperty: function() {
-            return this.$store.getters['lode/isAddingProperty'];
+            return useLodeStore().isAddingProperty;
         },
         // Returns true if profile has at least one additional available property
         hasAdditionalProperty: function() {
@@ -829,15 +826,16 @@ export default {
     },
     methods: {
         onClickToAddProperty: function() {
+            const lodeStore = useLodeStore();
             this.showAddPropertyContent = true;
-            this.$store.commit('lode/setAddingProperty', '');
-            this.$store.commit('lode/setAddingValues', []);
-            this.$store.commit('lode/setIsAddingProperty', true);
+            lodeStore.setAddingProperty('');
+            lodeStore.setAddingValues([]);
+            lodeStore.setIsAddingProperty(true);
         },
         onCancelAddProperty: function() {
             this.showAddPropertyContent = false;
             this.isSearching = false;
-            this.$store.commit('lode/setIsAddingProperty', false);
+            useLodeStore().setIsAddingProperty(false);
             this.errorMessage = [];
             /* TO DO - clear property to add when cancel add property */
         },
@@ -854,13 +852,13 @@ export default {
                 isResource = true;
             }
             if (!property) {
-                this.$store.commit('lode/setAddingValues', []);
+                useLodeStore().setAddingValues([]);
                 return this.errorMessage.push("Property type is required.");
             }
             // Special handling for versionIdentifier - this is already a complete object
             if (property === "https://purl.org/ctdl/terms/versionIdentifier") {
                 if (!value) {
-                    this.$store.commit('lode/setAddingValues', []);
+                    useLodeStore().setAddingValues([]);
                     return this.errorMessage.push("Version Identifier information is required.");
                 }
             } else if ((!value || (value !== null && value !== undefined && value["@value"] !== null && value["@value"] !== undefined && value["@value"].trim().length === 0)) &&
@@ -870,11 +868,11 @@ export default {
             if (value && isResource) {
                 // Name and value both required for a resource
                 if (!value["@value"] || !value["name"]) {
-                    this.$store.commit('lode/setAddingValues', []);
+                    useLodeStore().setAddingValues([]);
                     return this.errorMessage.push("This property must have a URL and a name.");
                 }
                 if (!value["@value"].startsWith("http")) {
-                    this.$store.commit('lode/setAddingValues', []);
+                    useLodeStore().setAddingValues([]);
                     return this.errorMessage.push("This property must be a URL. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.");
                 }
             }
@@ -883,7 +881,7 @@ export default {
                    (range[0].indexOf("http://schema.org/URL") !== -1 || range[0].toLowerCase().indexOf("concept") !== -1 ||
                     range[0].toLowerCase().indexOf("competency") !== -1)) {
                     if (!value.startsWith("http")) {
-                        this.$store.commit('lode/setAddingValues', []);
+                        useLodeStore().setAddingValues([]);
                         return this.errorMessage.push("This property must be a URL. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.");
                     }
                 }
@@ -891,27 +889,27 @@ export default {
             if (value && range[0].toLowerCase().indexOf("level") !== -1 && !this.addingChecked) {
                 var level = await EcLevel.get(value);
                 if (!level) {
-                    this.$store.commit('lode/setAddingValues', []);
+                    useLodeStore().setAddingValues([]);
                     return this.errorMessage.push("This URL must be a Level that is already in the system.");
                 }
             }
             if (value && range.length === 1 && range[0].toLowerCase().indexOf("langstring") !== -1) {
                 if (value["@language"] == null || value["@language"] === undefined || value["@language"].trim().length === 0) {
-                    this.$store.commit('lode/setAddingValues', []);
+                    useLodeStore().setAddingValues([]);
                     return this.errorMessage.push("This field can only have one entry per language.");
                 }
                 if (this.profile && this.profile[property] && (this.profile[property]["onePerLanguage"] === 'true' || this.profile[property]["onePerLanguage"] === true) && this.expandedThing[property]) {
                     var languagesUsed = [];
                     for (var i = 0; i < this.expandedThing[property].length; i++) {
                         if (languagesUsed.includes(this.expandedThing[property][i]["@language"].toLowerCase())) {
-                            this.$store.commit('lode/setAddingValues', []);
+                            useLodeStore().setAddingValues([]);
                             return this.errorMessage.push("This field can only have one entry per language.");
                         }
                         languagesUsed.push(this.expandedThing[property][i]["@language"].toLowerCase());
                     }
                     // Check new value being added
                     if (languagesUsed.includes(value["@language"].toLowerCase())) {
-                        this.$store.commit('lode/setAddingValues', []);
+                        useLodeStore().setAddingValues([]);
                         return this.errorMessage.push("This field can only have one entry per language.");
                     }
                 }
@@ -941,16 +939,17 @@ export default {
             } else {
                 if (initialValue) {
                     // Undo for other ways of adding are handled in profile
-                    this.$store.commit('editor/addEditsToUndo',
+                    useEditorStore().addEditsToUndo(
                         {operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), fieldChanged: [property], initialValue: [initialValue], changedValue: [this.expandedThing[property]], expandedProperty: true}
                     );
                 }
                 await this.saveThing();
             }
             this.showAddPropertyContent = false;
-            this.$store.commit('lode/setIsAddingProperty', false);
-            this.$store.commit('lode/setAddingProperty', '');
-            this.$store.commit('lode/setAddingValues', []);
+            const lodeStore2 = useLodeStore();
+            lodeStore2.setIsAddingProperty(false);
+            lodeStore2.setAddingProperty('');
+            lodeStore2.setAddingValues([]);
         },
         handleMove: function(e) {
             appLog(e);
@@ -1000,32 +999,34 @@ export default {
         template based modals
         */
         showModal(val) {
+            const appStore = useAppStore();
+            const editorStore = useEditorStore();
             if (val === 'deleteObject') {
                 if (this.shortType === 'Competency') {
-                    this.$store.commit('app/showModal', {component: 'DeleteCompetencyConfirm'});
+                    appStore.openModal({component: 'DeleteCompetencyConfirm'});
                 } else if (this.shortType === "Level") {
-                    this.$store.commit('app/showModal', {component: 'DeleteLevelConfirm'});
+                    appStore.openModal({component: 'DeleteLevelConfirm'});
                 } else if (this.shortType === "Concept") {
-                    this.$store.commit('app/showModal', {component: 'DeleteConceptConfirm'});
+                    appStore.openModal({component: 'DeleteConceptConfirm'});
                 } else if (this.shortType === "ConceptScheme") {
-                    this.$store.commit('app/showModal', {component: 'DeleteConceptSchemeConfirm'});
+                    appStore.openModal({component: 'DeleteConceptSchemeConfirm'});
                 } else if (this.shortType === "ProgressionLevel") {
-                    this.$store.commit('app/showModal', {component: 'DeleteConceptConfirm'});
+                    appStore.openModal({component: 'DeleteConceptConfirm'});
                 } else if (this.shortType === "ProgressionModel") {
-                    this.$store.commit('app/showModal', {component: 'DeleteConceptSchemeConfirm'});
+                    appStore.openModal({component: 'DeleteConceptSchemeConfirm'});
                 } else if (this.shortType === "Framework" || this.shortType === "Collection") {
-                    this.$store.commit('app/showModal', {component: 'DeleteFrameworkConfirm'});
+                    appStore.openModal({component: 'DeleteFrameworkConfirm'});
                 } else if (this.shortType === "Directory") {
-                    this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});
+                    appStore.openModal({component: 'DeleteDirectoryConfirm'});
                 }
             } else {
                 if (val === 'removeObject') {
-                    this.$store.commit('editor/setItemToRemove', this.obj);
-                    this.$store.commit('app/showModal', {component: 'RemoveCompetencyConfirm'});
+                    editorStore.setItemToRemove(this.obj);
+                    appStore.openModal({component: 'RemoveCompetencyConfirm'});
                 }
                 if (val === 'export') {
-                    this.$store.commit('editor/setItemToExport', this.obj);
-                    this.$store.commit('app/showModal', {title: 'Export ' + this.shortType, component: 'ExportOptionsModal'});
+                    editorStore.setItemToExport(this.obj);
+                    appStore.openModal({title: 'Export ' + this.shortType, component: 'ExportOptionsModal'});
                 }
             }
         },
@@ -1069,8 +1070,9 @@ export default {
                         // If we don't have an expandedObj provided, expand whatever is in obj and continue loading.
                         this.loadSchema(function() {
                             me.expandedThing = me.expandedObj;
-                            if (me.$store.state.editor && (EcRemoteLinkedData.trimVersionFromUrl(me.expandedThing["@id"]) === me.$store.state.editor.newCompetency ||
-                            EcRemoteLinkedData.trimVersionFromUrl(me.expandedThing["@id"]) === me.$store.state.editor.newFramework)) {
+                            const editorSt = useEditorStore();
+                            if (EcRemoteLinkedData.trimVersionFromUrl(me.expandedThing["@id"]) === editorSt.newCompetency ||
+                            EcRemoteLinkedData.trimVersionFromUrl(me.expandedThing["@id"]) === editorSt.newFramework) {
                                 me.populateRequiredFields();
                             }
                         }, this.expandedObj["@type"][0]);
@@ -1095,17 +1097,19 @@ export default {
             }
         },
         reload: function() {
+            const editorStore = useEditorStore();
+            const lodeStore = useLodeStore();
             this.refreshProperties = false;
-            this.$store.commit('editor/selectedCompetency', null);
-            this.$store.commit('lode/setAddingProperty', '');
-            this.$store.commit('lode/setAddingValues', []);
-            this.$store.commit('lode/setIsAddingProperty', false);
-            if (this.uri && this.$store.state.editor) {
+            editorStore.setSelectedCompetency(null);
+            lodeStore.setAddingProperty('');
+            lodeStore.setAddingValues([]);
+            lodeStore.setIsAddingProperty(false);
+            if (this.uri) {
                 this.resolveNameFromUrl(this.uri);
             }
             this.load();
             if (this.obj && this.obj.shortId() === this.changedObject) {
-                this.$store.commit('editor/changedObject', null);
+                editorStore.setChangedObject(null);
             }
         },
         // Fleshes out the Thing object with empty containers for any possible field that can be edited, according to the schema. Permits reactivity of currently unused fields.
@@ -1124,7 +1128,7 @@ export default {
             var objectModel = null;
             var fullType = o["@type"];
             if (EcArray.isArray(fullType) && fullType.length > 0) fullType = fullType[0];
-            var objectModel = this.$store.state.lode.objectModel[fullType];
+            var objectModel = useLodeStore().objectModel[fullType];
             if (objectModel != null) {
                 for (let key in objectModel) {
                     if (o[key] == null) {
@@ -1173,14 +1177,15 @@ export default {
             } else if (type.indexOf("skos") !== -1) {
                 type = "https://schema.cassproject.org/0.4/skos";
             }
-            if (this.$store.state.lode.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
+            const lodeStore = useLodeStore();
+            if (lodeStore.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
                 var augmentedType = type;
                 augmentedType += (type.indexOf("schema.org") !== -1 ? ".jsonld" : "");
                 EcRemote.getExpectingObject("", augmentedType, async function(context) {
-                    me.$store.commit('lode/rawSchemata', {id: type, obj: context});
+                    lodeStore.setRawSchemata({id: type, obj: context});
                     try {
                         let expanded = await jsonld.expand(context);
-                        me.$store.dispatch('lode/schemata', {id: type, obj: expanded});
+                        lodeStore.processSchemata({id: type, obj: expanded});
                         if (after != null) after();
                     } catch (err) {
                         after();
@@ -1243,7 +1248,7 @@ export default {
                 this.expandedThing[property] = [this.expandedThing[property]];
             }
             this.expandedThing[property].splice(index, 1);
-            this.$store.commit('editor/addEditsToUndo',
+            useEditorStore().addEditsToUndo(
                 {operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), fieldChanged: [property], initialValue: initialValue, changedValue: this.expandedThing[property], expandedProperty: true}
             );
             await this.saveThing();
@@ -1259,7 +1264,7 @@ export default {
             let index = this.expandedThing[property].findIndex((obj) => (obj['@value'].contains(value['@value'])));
             if (index >= 0 && index < this.expandedThing[property].length) {
                 this.expandedThing[property].splice(index, 1);
-                this.$store.commit('editor/addEditsToUndo',
+                useEditorStore().addEditsToUndo(
                     {operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), fieldChanged: [property], initialValue: initialValue, changedValue: this.expandedThing[property], expandedProperty: true}
                 );
                 await this.saveThing();
@@ -1305,19 +1310,19 @@ export default {
             }
             // When we save, we need to remove all the extreneous arrays that we added to support reactivity.
             try {
-                let compacted = await jsonld.compact(this.stripEmptyArrays(this.expandedThing), this.$store.state.lode.rawSchemata[this.context]);
+                let compacted = await jsonld.compact(this.stripEmptyArrays(this.expandedThing), useLodeStore().rawSchemata[this.context]);
                 if (compacted) {
                     compacted = me.turnFieldsBackIntoArrays(compacted);
                     var rld = new EcRemoteLinkedData();
                     rld.copyFrom(compacted);
                     rld.context = me.context;
                     delete rld["@context"];
-                    if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
+                    if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                         rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     rld["schema:dateModified"] = new Date().toISOString();
                     try {
-                        me.$store.commit('editor/changedObject', null);
+                        useEditorStore().setChangedObject(null);
                         await repo.saveTo(rld);
                         // Check timing token to make sure another save didn't occur while the previous save was going on.
                         if (timingToken !== this.saveTimingToken) {
@@ -1325,19 +1330,19 @@ export default {
                         }
                         me.doneSaving = true;
                         me.saved = "last saved " + new Date(rld["schema:dateModified"]).toLocaleString();
-                        me.$store.commit('editor/changedObject', rld.shortId());
+                        useEditorStore().setChangedObject(rld.shortId());
                         if (me.doneValidating) {
                             if (me.addAnother) {
-                                me.$store.commit('editor/addAnother', true);
+                                useEditorStore().setAddAnother(true);
                                 me.addAnother = false;
                             }
                             me.$emit('done-editing-node-event');
                         }
                         if (rld.type === "Framework") {
-                            me.$store.commit('editor/framework', await EcFramework.get(rld.shortId()));
+                            useEditorStore().setFramework(await EcFramework.get(rld.shortId()));
                             me.spitEvent('viewChanged');
                         } else if (rld.type === "ConceptScheme") {
-                            me.$store.commit('editor/framework', await EcConceptScheme.get(rld.shortId()));
+                            useEditorStore().setFramework(await EcConceptScheme.get(rld.shortId()));
                             me.spitEvent('viewChanged');
                         }
                     } catch (ex) {
@@ -1576,13 +1581,13 @@ export default {
             return result;
         },
         closeWithoutSaving: function() {
-            if ((this.newFramework || this.$store.state.editor.newCompetency) && this.view !== "importPreview") {
+            if ((this.newFramework || useEditorStore().newCompetency) && this.view !== "importPreview") {
                 return this.clickToDelete();
             }
             this.$emit('done-editing-node-event');
         },
         saveOnce: function() {
-            this.$store.commit('editor/addAnother', false);
+            useEditorStore().setAddAnother(false);
             this.addAnother = false;
             this.doneEditing();
         },
@@ -1598,7 +1603,7 @@ export default {
             // If object needs to be saved, this will be set to false in saveThing
             // this.doneSaving = true;
             if (this.addAnother && this.doneValidating) {
-                this.$store.commit('editor/addAnother', true);
+                useEditorStore().setAddAnother(true);
                 this.addAnother = false;
             }
         },
@@ -1609,12 +1614,12 @@ export default {
         validated: function() {
             let me = this;
             this.validateCount++;
-            if (this.validateCount === this.$store.state.lode.numPropertyComponentsVisible[EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"])]) {
+            if (this.validateCount === useLodeStore().numPropertyComponentsVisible[EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"])]) {
                 this.doneValidating = true;
                 this.validateCount = 0;
                 if (this.doneSaving) {
                     if (this.addAnother) {
-                        this.$store.commit('editor/addAnother', true);
+                        useEditorStore().setAddAnother(true);
                         this.addAnother = false;
                     }
                     setTimeout(function() {
@@ -1634,7 +1639,7 @@ export default {
                 if ((this.profile[i]["isRequired"] === "true" || this.profile[i]["isRequired"] === true) && this.expandedThing[i].length < 1) {
                     var range = this.profile[i]["http://schema.org/rangeIncludes"][0]["@id"];
                     if (range.toLowerCase().indexOf("langstring") !== -1) {
-                        this.add(i, {"@language": this.$store.getters['editor/defaultLanguage'], "@value": ""});
+                        this.add(i, {"@language": useEditorStore().defaultLanguage, "@value": ""});
                     } else {
                         this.add(i, {"@value": ""});
                     }
@@ -1644,8 +1649,10 @@ export default {
         addSelected: async function() {
             this.loading = true;
             try {
-                var ids = this.$store.getters['editor/selectedCompetenciesAsProperties'];
-                var relationType = this.$store.state.editor.selectCompetencyRelation;
+                const editorStore = useEditorStore();
+                const lodeStore = useLodeStore();
+                var ids = editorStore.selectedCompetenciesAsProperties;
+                var relationType = editorStore.selectCompetencyRelation;
                 let urlProperties = [
                     "https://purl.org/ctdlasn/terms/knowledgeEmbodied",
                     "https://purl.org/ctdlasn/terms/skillEmbodied",
@@ -1659,13 +1666,13 @@ export default {
                     "https://purl.org/ctdlasn/terms/alignFrom",
                     "https://purl.org/ctdl/terms/facetedDescription"
                 ];
-                if (this.$store.state.lode.searchType === "Concept" || this.$store.state.lode.searchType === "ConceptScheme" || this.$store.state.lode.searchType === "DirectLink" || urlProperties.includes(relationType)) {
+                if (lodeStore.searchType === "Concept" || lodeStore.searchType === "ConceptScheme" || lodeStore.searchType === "DirectLink" || urlProperties.includes(relationType)) {
                     this.attachUrlProperties(ids);
-                } else if (this.$store.state.lode.searchType === "Competency") {
-                    await this.addAlignments(ids, this.$store.state.editor.selectedCompetency, relationType);
+                } else if (lodeStore.searchType === "Competency") {
+                    await this.addAlignments(ids, editorStore.selectedCompetency, relationType);
                 } else {
                     for (var i = 0; i < ids.length; i++) {
-                        this.addLevel(this.$store.getters['editor/selectedCompetency'].shortId(), [ids[i]]);
+                        this.addLevel(editorStore.selectedCompetency.shortId(), [ids[i]]);
                     }
                 }
                 this.isSearching = false;
@@ -1677,27 +1684,29 @@ export default {
             }
         },
         attachUrlProperties: async function(results) {
-            var resource = this.$store.state.editor.framework;
-            if (this.$store.state.editor.selectedCompetency != null) {
-                resource = this.$store.state.editor.selectedCompetency;
+            const editorStore = useEditorStore();
+            const lodeStore = useLodeStore();
+            var resource = editorStore.framework;
+            if (editorStore.selectedCompetency != null) {
+                resource = editorStore.selectedCompetency;
             }
             let addValueAndSave = false;
             for (var i = 0; i < results.length; i++) {
                 var thing = await EcRepository.get(results[i]);
                 if (thing.isAny(new EcConcept().getTypes()) || thing.isAny(new EcCompetency().getTypes()) || thing.isAny(new EcConceptScheme().getTypes())) {
-                    var relation = this.$store.state.editor.selectCompetencyRelation;
+                    var relation = editorStore.selectCompetencyRelation;
                     // Check if expanded version of property
                     if (relation.indexOf("http") !== -1) {
-                        this.$store.commit('lode/setAddingProperty', relation);
-                        this.$store.commit('lode/addToAddingValues', {"@value": results[i]});
+                        lodeStore.setAddingProperty(relation);
+                        lodeStore.addToAddingValues({"@value": results[i]});
                         addValueAndSave = true;
                     } else {
-                        if (!EcArray.isArray(resource[this.$store.state.editor.selectCompetencyRelation])) {
-                            resource[this.$store.state.editor.selectCompetencyRelation] = [];
+                        if (!EcArray.isArray(resource[editorStore.selectCompetencyRelation])) {
+                            resource[editorStore.selectCompetencyRelation] = [];
                         }
-                        EcArray.setAdd(resource[this.$store.state.editor.selectCompetencyRelation], thing.shortId());
+                        EcArray.setAdd(resource[editorStore.selectCompetencyRelation], thing.shortId());
                         resource["schema:dateModified"] = new Date().toISOString();
-                        if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
+                        if (editorStore.private === true && EcEncryptedValue.encryptOnSaveMap[resource.id] !== true) {
                             resource = await EcEncryptedValue.toEncryptedValue(resource);
                         }
                         await this.repo.saveTo(resource, function() {}, appError);
@@ -1711,11 +1720,13 @@ export default {
             }
         },
         clickToDelete: function() {
-            if (this.$store.getters['app/editDirectory']) {
-                this.$store.commit('app/editDirectory', false);
-                this.$store.commit('app/showModal', {component: 'DeleteDirectoryConfirm'});
+            const appStore = useAppStore();
+            const editorStore = useEditorStore();
+            if (appStore.editDirectory) {
+                appStore.setEditDirectory(false);
+                appStore.openModal({component: 'DeleteDirectoryConfirm'});
             } else {
-                this.$store.commit('editor/setItemToDelete', this.obj ? this.obj : this.originalThing);
+                editorStore.setItemToDelete(this.obj ? this.obj : this.originalThing);
                 this.showModal('deleteObject');
             }
         }
@@ -1753,7 +1764,7 @@ export default {
                     this.obj = thing;
                     if (this.clickToLoad === false) { await this.load(); }
                 }
-                this.$store.commit('editor/changedObject', null);
+                useEditorStore().setChangedObject(null);
             }
         },
         isAddingProperty: function() {
@@ -1764,21 +1775,21 @@ export default {
         originalThing: function() {
             if (this.originalThing) {
                 if (this.shortType === "Competency" || this.shortType === "Concept" || this.shortType === "ProgressionLevel" || this.shortType === "Level") {
-                    this.$store.commit('editor/selectedCompetency', this.originalThing);
+                    useEditorStore().setSelectedCompetency(this.originalThing);
                 }
             }
         },
         shortType() {
             if (this.originalThing && this.shortType) {
                 if (this.shortType === "Competency" || this.shortType === "Concept" || this.shortType === "ProgressionLevel" || this.shortType === "Level") {
-                    this.$store.commit('editor/selectedCompetency', this.originalThing);
+                    useEditorStore().setSelectedCompetency(this.originalThing);
                 }
             }
         },
         isSearching: function() {
             this.typesPermittedInSearch = [];
             if (this.isSearching) {
-                if (this.$store.state.lode.searchType === "DirectLink") {
+                if (useLodeStore().searchType === "DirectLink") {
                     if (this.addingProperty && this.profile && this.profile[this.addingProperty]['options']) {
                         const options = this.profile[this.addingProperty]['options'];
                         options.forEach((option) => {
@@ -1791,7 +1802,7 @@ export default {
                 } else {
                     let types = ["narrows", "broadens", "hasChild", "isChildOf"];
                     if (EcArray.has(types, this.addingProperty)) {
-                        let relations = this.$store.getters['editor/relations'];
+                        let relations = useEditorStore().relations;
                         for (let j = 0; j < types.length; j++) {
                             if (relations[types[j]] && relations[types[j]][this.obj.shortId()]) {
                                 let ids = relations[types[j]][this.obj.shortId()];

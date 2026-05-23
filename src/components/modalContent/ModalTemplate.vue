@@ -26,7 +26,7 @@ should be componentized and imported into the screen that needs it.
                 <button
                     v-if="canClose"
                     class="delete"
-                    @click="$store.commit('app/closeModal'); $emit('close')"
+                    @click="useAppStore().closeModal(); $emit('close')"
                     aria-label="close" />
             </header>
             <div class="modal-card-body has-text-dark">
@@ -40,6 +40,7 @@ should be componentized and imported into the screen that needs it.
 </template>
 
 <script>
+import { useAppStore } from '@/stores/app';
 import '@/scss/modal-template.scss';
 export default {
     name: 'ModalTemplate',

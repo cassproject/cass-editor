@@ -525,13 +525,13 @@
             size="small"
             @close="cancelLoseChanges"
             :active="showConfirmLoseChangesModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 Discard Unsaved Changes?
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 You have unsaved changes.  Cancel to return to group and save changes, or confirm to discard changes.
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <button
                     class="button is-primary is-outlined"
                     v-if="toRoute !== ''"
@@ -555,10 +555,10 @@
         <modal-template
             :header="false"
             :active="userGroupBusy">
-            <template slot="modal-header">
+            <template #modal-header>
                 Processing Request
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div class="modal-content has-text-centered">
                     <span class="icon is-large has-text-center has-text-link">
                         <i class="fas fa-2x fa-spinner is-info fa-pulse" />
@@ -570,12 +570,12 @@
         <modal-template
             @close="closeAddGroupMemberModal"
             :active="showAddMemberModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 <p class="is-size-3 modal-card-title has-text-white">
                     Add members to '{{ currentUserGroupName }}'
                 </p>
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div
                     v-if="!(filteredAvailablePersonsForMembership.length === 0 && addMemberPersonFilter === '')"
                     class="field">
@@ -642,7 +642,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     v-if="selectedNewMembers.length > 0 || selectedNewManagers.length > 0"
                     class="button is-outlined is-primary is-small"
@@ -672,10 +672,10 @@
         <modal-template
             :active="showConfirmDeleteUserGroupModal"
             @close="closeDeleteGroupConfirmModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 Delete User Group?
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 Are you sure you wish to delete the user group <b>'{{ currentUserGroupName }}'</b>?
                 <div
                     class="field has-text-danger pt-4"
@@ -686,7 +686,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     class="button is-outlined"
                     @click="closeDeleteGroupConfirmModal"
@@ -718,8 +718,9 @@ import CassPanel from '@/components/Panel';
 import CassPanelItem from '@/components/PanelItem';
 import CassDropdown from '@/components/Dropdown';
 import CassDropdownItem from '@/components/DropdownItem';
-import {cassUtil} from '@/mixins/cassUtil';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
+import {cassUtil} from '@/mixins/cassUtil';
+import { useUserStore } from '@/stores/user';
 
 export default {
     name: 'UserGroupEditor',
@@ -1090,7 +1091,8 @@ export default {
             newUserGroup.setName('New User Group');
             newUserGroup.setDescription('New group of users');
             newUserGroup.employee = [];
-            newUserGroup.addEmployee(this.$store.state.user.loggedOnPerson);
+            const userStore = useUserStore();
+            newUserGroup.addEmployee(userStore.loggedOnPerson);
             newUserGroup.addOwner(this.getPersonalIdentityPk());
             let parentGroupLineage = null;
             if (parentGroupId) {

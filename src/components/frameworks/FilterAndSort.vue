@@ -29,7 +29,7 @@
             </div>
             <div
                 class="filter-sort-section"
-                v-if="showQuickFilterHeading && !($store.getters['editor/conceptMode'] && !loggedIn) && !($store.getters['editor/progressionMode'] && !loggedIn)">
+                v-if="showQuickFilterHeading && !(conceptMode && !loggedIn) && !(progressionMode && !loggedIn)">
                 <h3 class="filter-sort-header">
                     Quick Filters
                 </h3>
@@ -53,7 +53,7 @@
             </div>
             <div
                 class="filter-sort-section"
-                v-if="!$store.getters['editor/conceptMode'] && !$store.getters['editor/progressionMode']">
+                v-if="!conceptMode && !progressionMode">
                 <h3 class="filter-sort-header">
                     Apply search term to
                 </h3>
@@ -83,6 +83,11 @@
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
 import {cassUtil} from '@/mixins/cassUtil.js';
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
+import {useLodeStore} from '@/stores/lode';
 
 export default {
     name: 'FilterAndSort',
@@ -137,40 +142,27 @@ export default {
     },
     mixins: [ctdlasnProfile, tlaProfile, cassUtil],
     computed: {
+        ...mapState(useEditorStore, ['queryParams', 'conceptMode', 'progressionMode', 'firstSearchProcessing']),
+        ...mapState(useFeaturesEnabledStore, ['searchByOwnerNameEnabled', 'configurationsEnabled']),
         sortBy: {
             get() {
-                return this.$store.getters['app/sortResults'];
+                return useAppStore().sortResults;
             },
             set(val) {
-                this.$store.commit('app/sortResults', val);
+                useAppStore().setSortResults(val);
             }
         },
         loggedIn: function() {
             return EcIdentityManager.default.ids && EcIdentityManager.default.ids.length;
         },
-        searchByOwnerNameEnabled: function() {
-            return this.$store.state.featuresEnabled.searchByOwnerNameEnabled;
-        },
         initialOwnedByMe: function() {
-            return this.$store.state.featuresEnabled.ownedByMe;
-        },
-        configurationsEnabled: function() {
-            return this.$store.state.featuresEnabled.configurationsEnabled;
-        },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return useFeaturesEnabledStore().ownedByMe;
         },
         applySearchTo: function() {
             return this.frameworkPropertiesApplySearchTo.concat(this.competencyPropertiesApplySearchTo).concat(this.otherPropertiesApplySearchTo);
         },
-        conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
-        },
-        progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
-        },
         isFirstSearchProcessing: function() {
-            return this.$store.getters['editor/firstSearchProcessing'];
+            return this.firstSearchProcessing;
         }
     },
     mounted: function() {
@@ -212,7 +204,7 @@ export default {
     watch: {
         applySearchTo: {
             handler() {
-                this.$store.commit('app/applySearchTo', this.applySearchTo);
+                useAppStore().setApplySearchTo(this.applySearchTo);
             },
             deep: true
 
@@ -220,7 +212,7 @@ export default {
         quickFilters: {
             handler() {
                 appLog('watched');
-                this.$store.commit('app/quickFilters', this.quickFilters);
+                useAppStore().setQuickFilters(this.quickFilters);
             },
             deep: true
         },
@@ -292,7 +284,7 @@ export default {
         },
         setSearchTermsFromRawSchemata: function() {
             // Used to figure out prefixes to use when searching from the full property URL in the configuration
-            let context = this.$store.state.lode.rawSchemata["https://schema.cassproject.org/0.4"]["@context"];
+            let context = useLodeStore().rawSchemata["https://schema.cassproject.org/0.4"]["@context"];
             let keys = EcObject.keys(context);
             for (let key of keys) {
                 if (EcObject.isObject(context[key])) {

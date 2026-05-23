@@ -1,10 +1,10 @@
 <template>
     <modal-template
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             {{ dynamicModalContent.objectType }}
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <div class="container">
                 <h3
                     v-if="numberOfParentFrameworks === 0 && inCassInstance"
@@ -112,7 +112,7 @@
                 </ul>
             </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-right is-fullwidth">
                 <!--to do, make sure level is updated in framework after
                     edit is made -->
@@ -124,13 +124,13 @@
                 </button>
                 <button
                     v-if="numberOfParentFrameworks !== 0"
-                    @click="$store.commit('app/closeModal')"
+                    @click="useAppStore().closeModal()"
                     class="button is-outlined is-primary">
                     return to framework editor
                 </button>
                 <button
                     v-else
-                    @click="$store.commit('app/closeModal')"
+                    @click="useAppStore().closeModal()"
                     class="button is-outlined is-primary">
                     done
                 </button>
@@ -149,11 +149,12 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
 import ModalTemplate from './ModalTemplate.vue';
 import common from '@/mixins/common.js';
 import Thing from '@/lode/components/Thing.vue';
 import ThingEditing from '@/lode/components/ThingEditing.vue';
+import { useAppStore } from '@/stores/app';
+import { useEditorStore } from '@/stores/editor';
 
 export default {
     name: 'Single',
@@ -219,18 +220,18 @@ export default {
             if (this.framework.shortId() === framework.url && this.dynamicModalContent.objectType !== "Level") {
                 return this.goToCompetencyWithinThisFramework();
             }
-            this.$store.commit('editor/framework', await EcRepository.get(framework.url));
+            useEditorStore().setFramework(await EcRepository.get(framework.url));
             if (this.dynamicModalContent.objectType === "Concept") {
                 // TODO: check for subType=Progression and route to progressionModel
-                this.$store.commit('editor/conceptMode', true);
+                useEditorStore().setConceptMode(true);
                 this.$router.push({name: "conceptScheme", params: {frameworkId: framework.url}});
             }
-            this.$store.commit('app/closeModal');
+            useAppStore().closeModal();
         },
         goToCompetencyWithinThisFramework: function() {
             // Scroll to competency
             this.$scrollTo("#scroll-" + this.dynamicModalContent.uri.split('/').pop());
-            this.$store.commit('app/closeModal');
+            useAppStore().closeModal();
         },
         findConceptTrail: async function(conceptId) {
             var concept = await EcRepository.get(conceptId);
@@ -263,8 +264,8 @@ export default {
             let me = this;
             if (this.obj) {
                 this.repo.deleteRegistered(this.obj, function() {
-                    me.$store.commit('app/refreshSearch', true);
-                    me.$store.commit('app/closeModal');
+                    useAppStore().setRefreshSearch(true);
+                    useAppStore().closeModal();
                 }, function(err) {
                     appError(err);
                     me.error = "Error deleting";

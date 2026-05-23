@@ -90,6 +90,8 @@
 
 <script>
 import common from '@/mixins/common.js';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
 
 export default {
     name: 'Comment',
@@ -117,25 +119,33 @@ export default {
             this.commentListDropDownActive = false;
         },
         handleClickReply: function() {
-            this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
-            this.$store.commit('editor/setAddCommentType', 'reply');
-            this.$store.commit('editor/setCommentToReply', this.comment.comment);
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
+            editorStore.setAddCommentAboutId(this.comment.aboutId);
+            editorStore.setAddCommentType('reply');
+            editorStore.setCommentToReply(this.comment.comment);
+            appStore.openModal({component: 'AddComment'});
         },
         handleClickEdit: function() {
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
             this.commentListDropDownActive = false;
-            this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
-            this.$store.commit('editor/setAddCommentType', 'edit');
-            this.$store.commit('editor/setCommentToEdit', this.comment.comment);
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            editorStore.setAddCommentAboutId(this.comment.aboutId);
+            editorStore.setAddCommentType('edit');
+            editorStore.setCommentToEdit(this.comment.comment);
+            appStore.openModal({component: 'AddComment'});
         },
         handleClickEditReply: function(replyIdx) {
-            this.$store.commit('editor/setAddCommentAboutId', this.comment.aboutId);
-            this.$store.commit('editor/setAddCommentType', 'edit');
-            this.$store.commit('editor/setCommentToEdit', this.comment.replies[replyIdx].comment);
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
+            editorStore.setAddCommentAboutId(this.comment.aboutId);
+            editorStore.setAddCommentType('edit');
+            editorStore.setCommentToEdit(this.comment.replies[replyIdx].comment);
+            appStore.openModal({component: 'AddComment'});
         },
         handleClickDelete: function() {
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
             let ctd = [];
             ctd.push(this.comment.comment);
             if (this.comment.replies && this.comment.replies.length > 0) {
@@ -143,14 +153,16 @@ export default {
                     ctd.push(r.comment);
                 }
             }
-            this.$store.commit('editor/setCommentsToDelete', ctd);
-            this.$store.commit('app/showModal', {component: 'DeleteCommentConfirm'});
+            editorStore.setCommentsToDelete(ctd);
+            appStore.openModal({component: 'DeleteCommentConfirm'});
         },
         handleClickDeleteReply: function(replyIdx) {
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
             let ctd = [];
             ctd.push(this.comment.replies[replyIdx].comment);
-            this.$store.commit('editor/setCommentsToDelete', ctd);
-            this.$store.commit('app/showModal', {component: 'DeleteCommentConfirm'});
+            editorStore.setCommentsToDelete(ctd);
+            appStore.openModal({component: 'DeleteCommentConfirm'});
         }
     },
     computed: {

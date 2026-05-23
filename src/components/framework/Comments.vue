@@ -58,6 +58,10 @@
 <script>
 import Comment from './Comment.vue';
 import common from '@/mixins/common.js';
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useUserStore} from '@/stores/user';
 
 export default {
     name: 'Comments',
@@ -78,14 +82,17 @@ export default {
     },
     methods: {
         setUpScroll: function(comment) {
+            const editorStore = useEditorStore();
             let scrollObj = {ts: Date.now(), scrollId: '#scroll-' + comment.aboutId.split('/').pop()};
-            this.$store.commit('editor/setCommentScrollTo', scrollObj);
+            editorStore.setCommentScrollTo(scrollObj);
         },
         handleClickReply: function(comment) {
-            this.$store.commit('editor/setAddCommentAboutId', comment.aboutId);
-            this.$store.commit('editor/setAddCommentType', 'reply');
-            this.$store.commit('editor/setCommentToReply', comment.comment);
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
+            editorStore.setAddCommentAboutId(comment.aboutId);
+            editorStore.setAddCommentType('reply');
+            editorStore.setCommentToReply(comment.comment);
+            appStore.openModal({component: 'AddComment'});
         },
         determineCanModifyComment: function(comment) {
             if (this.loggedOnPerson.shortId().equals(comment.creator)) return true;
@@ -187,13 +194,14 @@ export default {
             }
         },
         buildFrameworkCommentPersonMapSuccess: function(ecPersonList) {
+            const editorStore = useEditorStore();
             let commentPersonMap = {};
             for (let p of ecPersonList) {
                 commentPersonMap[p.shortId()] = p;
             }
-            this.$store.commit('editor/setFrameworkCommentDataLoaded', true);
-            this.$store.commit('editor/setFrameworkCommentPersonMap', commentPersonMap);
-            this.$store.commit('editor/setFrameworkCommentList', this.localFrameworkCommentList); // this SHOULD trigger parseComments
+            editorStore.setFrameworkCommentDataLoaded(true);
+            editorStore.setFrameworkCommentPersonMap(commentPersonMap);
+            editorStore.setFrameworkCommentList(this.localFrameworkCommentList); // this SHOULD trigger parseComments
         },
         buildFrameworkCommentPersonMapFailure: function(msg) {
             appLog('buildFrameworkCommentPersonMapFailure: ' + msg);
@@ -256,20 +264,14 @@ export default {
         }
     },
     computed: {
-        loggedOnPerson: function() {
-            return this.$store.getters['user/loggedOnPerson'];
-        },
-        currentFramework: function() {
-            return this.$store.getters['editor/framework'];
-        },
+        ...mapState(useUserStore, ['loggedOnPerson']),
+        ...mapState(useEditorStore, {
+            currentFramework: 'framework',
+            frameworkCommentList: 'frameworkCommentList',
+            frameworkCommentPersonMap: 'frameworkCommentPersonMap'
+        }),
         currentFrameworkCompetencies: function() {
-            return this.$store.getters['editor/framework'].competency;
-        },
-        frameworkCommentList: function() {
-            return this.$store.getters['editor/frameworkCommentList'];
-        },
-        frameworkCommentPersonMap: function() {
-            return this.$store.getters['editor/frameworkCommentPersonMap'];
+            return this.currentFramework ? this.currentFramework.competency : null;
         }
     },
     watch: {

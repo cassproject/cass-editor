@@ -30,6 +30,8 @@
 
 <script>
 
+import { useAppStore } from '@/stores/app';
+
 export default {
     props: {
         view: {
@@ -107,10 +109,12 @@ export default {
     },
     computed: {
         pluginToLaunch: function() {
-            return this.$store.getters['app/pluginToLaunch'];
+            const appStore = useAppStore();
+            return appStore.pluginToLaunch;
         },
         pluginToLaunchLastUpdate: function() {
-            return this.$store.getters['app/pluginToLaunchLastUpdate'];
+            const appStore = useAppStore();
+            return appStore.pluginToLaunchLastUpdate;
         }
     },
     watch: {
@@ -122,7 +126,7 @@ export default {
     mounted() {
         this.setIFrameSource();
     },
-    beforeDestroy() {
+    beforeUnmount() {
         window.removeEventListener('message', this.handlePluginFrameMessage);
     }
 };

@@ -4,11 +4,11 @@
         size="small"
         content="delete-configuration"
         type="danger"
-        @close="$store.commit('app/closeModal')">
-        <template slot="modal-header">
+        @close="useAppStore().closeModal()">
+        <template #modal-header>
             Delete Configuration
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <h3 class="title is-size-4 has-text-weight-semibold">
                 This action is permanent.
             </h3>
@@ -17,7 +17,7 @@
                 Once the configuration is deleted it will no longer be selectable to set as a browser or application default.
             </p>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-spaced">
                 <button
                     class="button is-outlined is-danger"
@@ -39,6 +39,7 @@ import ModalTemplate from './ModalTemplate.vue';
 
 import {cassUtil} from '../../mixins/cassUtil';
 import common from '@/mixins/common.js';
+import { useAppStore } from '@/stores/app';
 
 export default {
     mixins: [cassUtil, common],

@@ -4,17 +4,17 @@
         @close="closeModal"
         size="small"
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             Confirm Delete {{ type }}
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <section>
                 <b>
                     Warning! This action is permanent.
                 </b>
             </section>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <button
                 @click="deleteItem()"
                 class="is-danger is-outlined button">
@@ -31,6 +31,8 @@
 <script>
 import ModalTemplate from './ModalTemplate.vue';
 import common from '@/mixins/common.js';
+import { useAppStore } from '@/stores/app';
+import { useEditorStore } from '@/stores/editor';
 export default {
     name: 'DeleteConceptSchemeConfirm',
     components: {
@@ -44,10 +46,10 @@ export default {
     },
     computed: {
         obj() {
-            return this.$store.getters['editor/itemToDelete'];
+            return this.useEditorStore().itemToDelete;
         },
         type() {
-            if (this.$store.getters['queryParams/ceasnDataFields'] === 'true') {
+            if (this.useEditorStore().queryParams.ceasnDataFields === 'true') {
                 return "Concept Scheme";
             }
             return 'Taxonomy';
@@ -57,11 +59,11 @@ export default {
         deleteItem() {
             this.deleteObject(this.obj);
             this.closeModal();
-            this.$store.commit('editor/setItemToDelete', {});
+            useEditorStore().setItemToDelete({});
         },
         closeModal() {
-            this.$store.commit('app/closeModal');
-            this.$store.commit('editor/setItemToDelete', {});
+            useAppStore().closeModal();
+            useEditorStore().setItemToDelete({});
         },
         deleteObject: function(thing) {
             appLog("deleting " + thing.id);
@@ -76,7 +78,7 @@ export default {
                         me.repo.deleteRegistered(concepts[i], appLog, appError);
                     }
                 }, appError);
-                me.$store.commit('editor/framework', null);
+                useEditorStore().setFramework(null);
                 me.$router.push({name: "concepts"});
             }, appLog);
         }

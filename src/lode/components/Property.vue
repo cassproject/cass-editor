@@ -16,15 +16,15 @@ TO DO MAYBE: Separate out property by editing or not.
         <modal-template
             :active="removePropertyConfirmModal"
             @close="closeModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 Confirm Remove Property
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <section>
                     Are you sure you'd like to remove this property?
                 </section>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <button
                     @click="clickConfirmRemove"
                     class="is-danger is-outlined button">
@@ -477,6 +477,9 @@ TO DO MAYBE: Separate out property by editing or not.
 <script>
 import '@/scss/property.scss';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
+import { useLodeStore } from '@/stores/lode';
+import { useEditorStore } from '@/stores/editor';
+import { useAppStore } from '@/stores/app';
 
 export default {
     // Property represents one property of a Thing.
@@ -541,13 +544,13 @@ export default {
                 this.langString = true;
                 for (var i = 0; i < this.expandedValue.length; i++) {
                     if (!this.expandedValue[i]["@language"]) {
-                        this.$parent.update(this.expandedProperty, i, {"@language": this.$store.state.editor.defaultLanguage, "@value": this.expandedValue[i]["@value"]}, function() {
+                        this.$parent.update(this.expandedProperty, i, {"@language": useEditorStore().defaultLanguage, "@value": this.expandedValue[i]["@value"]}, function() {
                             me.stopEditing();
                         });
                     }
                 }
             }
-            this.$store.commit('lode/incrementNumPropertyComponents', EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
+            useLodeStore().incrementNumPropertyComponents(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
         }
     },
     mounted: async function() {
@@ -601,14 +604,14 @@ export default {
             }
         }
     },
-    destroyed: function() {
+    unmounted: function() {
         if (this.editingThing) {
-            this.$store.commit('lode/decrementNumPropertyComponents', EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
+            useLodeStore().decrementNumPropertyComponents(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
         }
     },
     computed: {
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return useEditorStore().queryParams;
         },
         customTitle: function() {
             if (this.profile && this.isCompetency && this.queryParams.ceasnDataFields === 'true') {
@@ -883,7 +886,7 @@ export default {
             });
         },
         get: function(server, service, headers, success, failure) {
-            this.$store.dispatch('editor/getThing', {
+            useEditorStore().getThing({
                 server: server,
                 service: service,
                 headers: headers,
@@ -962,7 +965,7 @@ export default {
                 this.langString = true;
                 for (var i = 0; i < this.expandedValue.length; i++) {
                     if (!this.expandedValue[i]["@language"]) {
-                        this.update({"@language": this.$store.state.editor.defaultLanguage, "@value": this.expandedValue[i]["@value"]}, i);
+                        this.update({"@language": useEditorStore().defaultLanguage, "@value": this.expandedValue[i]["@value"]}, i);
                     }
                 }
             }
@@ -979,7 +982,7 @@ export default {
                 if (this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
                     if (this.expandedValue.length === 1 || (this.expandedValue["@value"] && this.expandedValue["@value"].trim().length === 1)) {
                         this.showModal("required");
-                        this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
+                        useAppStore().showModal({component: 'RequiredPropertyModal'});
                         return;
                     }
                 }
@@ -1049,8 +1052,9 @@ export default {
             } else if (type.toLowerCase().indexOf("langstring") !== -1) {
                 this.addOrSearch = "add";
                 var lang = "";
-                if (this.$store.state.editor) {
-                    lang = this.$store.state.editor.defaultLanguage;
+                const editorStore = useEditorStore();
+                if (editorStore) {
+                    lang = editorStore.defaultLanguage;
                 }
                 this.$parent.add(this.expandedProperty, {"@language": lang, "@value": ""});
                 this.langString = true;
@@ -1170,7 +1174,7 @@ export default {
                         }
                     }
                     if (changed) {
-                        this.$store.commit('editor/addEditsToUndo',
+                        useEditorStore().addEditsToUndo(
                             {operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), fieldChanged: [this.expandedProperty], initialValue: this.initialValue, changedValue: this.expandedValue, expandedProperty: true}
                         );
                         this.$parent.saveThing();

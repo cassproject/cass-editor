@@ -261,6 +261,8 @@
 import ImportTabs from '@/components/import/ImportTabs';
 import DragAndDrop from '@/components/import/DragAndDrop';
 import imports from '@/mixins/import';
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
 
 export default {
     name: 'ImportFile',
@@ -288,13 +290,14 @@ export default {
         }
     },
     data() {
+        const appStore = useAppStore();
         return {
-            optionImportFrameworkName: this.$store.getters['app/importFrameworkName'],
-            optionImportFrameworkDescription: this.$store.getters['app/importFrameworkDescription'],
-            optionImportNameColumn: this.$store.getters['app/importNameColumn'],
-            optionImportDescriptionColumn: this.$store.getters['app/importDescriptionColumn'],
-            optionImportScopeColumn: this.$store.getters['app/importScopeColumn'],
-            optionImportIdColumn: this.$store.getters['app/importIdColumn'],
+            optionImportFrameworkName: appStore.importFrameworkName,
+            optionImportFrameworkDescription: appStore.importFrameworkDescription,
+            optionImportNameColumn: appStore.importNameColumn,
+            optionImportDescriptionColumn: appStore.importDescriptionColumn,
+            optionImportScopeColumn: appStore.importScopeColumn,
+            optionImportIdColumn: appStore.importIdColumn,
             selectedDuplicateOption: [],
             duplicateSets: []
         };
@@ -383,85 +386,46 @@ export default {
                 }
             };
         },
-        importAllowCancel: function() {
-            return this.$store.getters['app/importAllowCancel'];
-        },
+        ...mapState(useAppStore, [
+            'importAllowCancel', 'importErrors', 'importStatus', 'importFileType',
+            'importType', 'importFrameworkName', 'importFrameworkDescription',
+            'importNameColumn', 'importDescriptionColumn', 'importScopeColumn',
+            'importIdColumn', 'importDuplicates', 'csvColumns', 'csvRelationColumns', 'csvRelationFile'
+        ]),
         importInfoVisible: function() {
-            return this.$store.getters['app/showRightAside'];
-        },
-        importErrors: function() {
-            return this.$store.getters['app/importErrors'];
-        },
-        importStatus: function() {
-            return this.$store.getters['app/importStatus'];
-        },
-        importFileType: function() {
-            return this.$store.getters['app/importFileType'];
-        },
-        importType: function() {
-            return this.$store.getters['app/importType'];
-        },
-        importFrameworkName: function() {
-            return this.$store.getters['app/importFrameworkName'];
-        },
-        importFrameworkDescription: function() {
-            return this.$store.getters['app/importFrameworkDescription'];
-        },
-        importNameColumn: function() {
-            return this.$store.getters['app/importNameColumn'];
-        },
-        importDescriptionColumn: function() {
-            return this.$store.getters['app/importDescriptionColumn'];
-        },
-        importScopeColumn: function() {
-            return this.$store.getters['app/importScopeColumn'];
-        },
-        importIdColumn: function() {
-            return this.$store.getters['app/importIdColumn'];
-        },
-        importDuplicates: function() {
-            return this.$store.getters['app/importDuplicates'];
+            return useAppStore().showRightAsideGetter;
         },
         importSourceColumn: {
             get() {
-                return this.$store.getters['app/importSourceColumn'];
+                return useAppStore().importSourceColumn;
             },
             set(val) {
-                this.$store.commit('app/importSourceColumn', val);
+                useAppStore().setImportSourceColumn(val);
             }
         },
         importRelationColumn: {
             get() {
-                return this.$store.getters['app/importRelationColumn'];
+                return useAppStore().importRelationColumn;
             },
             set(val) {
-                this.$store.commit('app/importRelationColumn', val);
+                useAppStore().setImportRelationColumn(val);
             }
         },
         importTargetColumn: {
             get() {
-                return this.$store.getters['app/importTargetColumn'];
+                return useAppStore().importTargetColumn;
             },
             set(val) {
-                this.$store.commit('app/importTargetColumn', val);
+                useAppStore().setImportTargetColumn(val);
             }
-        },
-        csvColumns: function() {
-            return this.$store.getters['app/csvColumns'];
-        },
-        csvRelationColumns: function() {
-            return this.$store.getters['app/csvRelationColumns'];
-        },
-        csvRelationFile: function() {
-            return this.$store.getters['app/csvRelationFile'];
         }
     },
     methods: {
         cancelImport: function() {
-            this.$store.dispatch('app/clearImport');
+            useAppStore().clearImport();
         },
         clearFiles: function() {
-            this.$store.commit('app/clearImportFiles');
+            useAppStore().clearImportFiles();
         },
         prepareToImportNonPdf: function() {
             let scrollOptions = {
@@ -478,25 +442,27 @@ export default {
             };
             this.updateDuplicateSkips();
             if (this.importFileType === 'csv') {
+                const appStore = useAppStore();
                 // prepare csv
-                this.$store.commit('app/importFrameworkName', this.optionImportFrameworkName);
-                this.$store.commit('app/importFrameworkDescription', this.optionImportFrameworkDescription);
-                this.$store.commit('app/importNameColumn', this.optionImportNameColumn);
-                this.$store.commit('app/importDescriptionColumn', this.optionImportDescriptionColumn);
-                this.$store.commit('app/importScopeColumn', this.optionImportScopeColumn);
-                this.$store.commit('app/importIdColumn', this.optionImportIdColumn);
-                this.$store.commit('app/importSourceColumn', this.csvRelationDetails.sourceColumn.value);
-                this.$store.commit('app/importTargetColumn', this.csvRelationDetails.targetColumn.value);
-                this.$store.commit('app/importRelationColumn', this.csvRelationDetails.relationColumn.value);
-                this.$store.commit('app/importTransition', 'uploadCsv');
+                appStore.setImportFrameworkName(this.optionImportFrameworkName);
+                appStore.setImportFrameworkDescription(this.optionImportFrameworkDescription);
+                appStore.setImportNameColumn(this.optionImportNameColumn);
+                appStore.setImportDescriptionColumn(this.optionImportDescriptionColumn);
+                appStore.setImportScopeColumn(this.optionImportScopeColumn);
+                appStore.setImportIdColumn(this.optionImportIdColumn);
+                appStore.setImportSourceColumn(this.csvRelationDetails.sourceColumn.value);
+                appStore.setImportTargetColumn(this.csvRelationDetails.targetColumn.value);
+                appStore.setImportRelationColumn(this.csvRelationDetails.relationColumn.value);
+                appStore.setImportTransition('uploadCsv');
                 this.$scrollTo('#import-status', 500, scrollOptions);
             } else if (this.importFileType === 'medbiq') {
-                this.$store.commit('app/importFrameworkName', this.optionImportFrameworkName);
-                this.$store.commit('app/importFrameworkDescription', this.optionImportFrameworkDescription);
-                this.$store.commit('app/importTransition', 'uploadMedbiq');
+                const appStore = useAppStore();
+                appStore.setImportFrameworkName(this.optionImportFrameworkName);
+                appStore.setImportFrameworkDescription(this.optionImportFrameworkDescription);
+                appStore.setImportTransition('uploadMedbiq');
                 this.$scrollTo('#import-status', 500, scrollOptions);
             } else if (this.importFileType !== 'pdf') {
-                this.$store.commit('app/importTransition', 'uploadOtherNonPdf');
+                useAppStore().setImportTransition('uploadOtherNonPdf');
                 this.$scrollTo('#import-status', 500, scrollOptions);
             }
         },
@@ -520,7 +486,7 @@ export default {
         findDuplicateSets: function() {
             // Separate duplicates by competencyText and codedNotation
             this.duplicateSets = [];
-            const duplicates = this.$store.getters['app/importDuplicates'];
+            const duplicates = useAppStore().importDuplicates;
             duplicates.forEach((duplicate) => {
                 const foundIndex = this.duplicateSets.findIndex((set) => (set.competencyText === duplicate.competencyText) && (set.codedNotation === duplicate.codedNotation));
                 if (foundIndex >= 0) {
@@ -564,7 +530,7 @@ export default {
                 }
             });
             this.duplicateSets = [];
-            this.$store.commit('app/importSkip', skip);
+            useAppStore().setImportSkip(skip);
         }
     },
     watch: {

@@ -261,7 +261,7 @@
                     class="add-node__options">
                     <div class="buttons is-centered">
                         <div
-                            @click="$store.commit('lode/competencySearchModalOpen', false); addingNode = false;"
+                            @click="closeCompetencySearchModal"
                             class="button is-outlined is-small is-dark ">
                             <span class="icon">
                                 <i class="fa fa-times" />
@@ -363,7 +363,11 @@
     </li>
 </template>
 <script>
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useCrosswalkStore} from '@/stores/crosswalk';
+import {useLodeStore} from '@/stores/lode';
 import common from '@/mixins/common.js';
 
 export default {
@@ -469,37 +473,31 @@ export default {
         calcWidth() {
             return `calc(100% - ${(this.depth * 16 - 16)}px) !important`;
         },
-        ...mapState({
-            workingAlignmentsSource: state => state.crosswalk.workingAlignmentsMap.source,
-            workingAlignmentsTargets: state => state.crosswalk.workingAlignmentsMap.targets,
-            relevantExistingAlignmentsMap: state => state.crosswalk.relevantExistingAlignmentsMap,
-            relevantExistingAlignmentsMapLastUpdate: state => state.crosswalk.relevantExistingAlignmentsMapLastUpdate,
-            enabledRelationshipTypes: state => state.crosswalk.enabledRelationshipTypes,
-            enabledRelationshipTypesLastUpdate: state => state.crosswalk.enabledRelationshipTypesLastUpdate,
-            alignedCompetenciesList: state => state.crosswalk.alignedCompetenciesList,
-            targetState: state => state.crosswalk.targetState,
-            sourceState: state => state.crosswalk.sourceState,
-            targetNodesToHighlight: state => state.crosswalk.targetNodesToHighlight,
-            cutId: state => state.editor.cutId,
-            copyId: state => state.editor.copyId,
-            paste: state => state.editor.paste,
-            queryParams: state => state.editor.queryParams,
-            newCompetency: state => state.editor.newCompetency,
-            conceptMode: state => state.editor.conceptMode,
-            progressionMode: state => state.editor.progressionMode
-        }),
+        ...mapState(useCrosswalkStore, [
+            'workingAlignmentsSource',
+            'workingAlignmentsTargets',
+            'relevantExistingAlignmentsMap',
+            'relevantExistingAlignmentsMapLastUpdate',
+            'enabledRelationshipTypes',
+            'enabledRelationshipTypesLastUpdate',
+            'alignedCompetenciesList',
+            'targetState',
+            'sourceState',
+            'targetNodesToHighlight'
+        ]),
+        ...mapState(useEditorStore, ['cutId', 'copyId', 'paste', 'queryParams', 'newCompetency', 'conceptMode', 'progressionMode']),
         showAddComments() {
-            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
+            if (this.queryParams.concepts === "true" || this.conceptMode === true || this.progressionMode === true) {
                 return false;
             }
-            return this.$store.state.app.canAddComments;
+            return useAppStore().canAddComments;
         },
         workingAlignmentsType: {
             get: function() {
-                return this.$store.getters['crosswalk/workingAlignmentsType'];
+                return useCrosswalkStore().workingAlignmentsType;
             },
             set: function(value) {
-                this.$store.commit('crosswalk/workingAlignmentsType', value);
+                useCrosswalkStore().setWorkingAlignmentsType(value);
             }
         },
         isPotentialCrosswalkTarget: function() {
@@ -540,7 +538,7 @@ export default {
             }
         },
         newThingClass: function() {
-            if (this.$store.state.editor) {
+            if (this.newCompetency) {
                 if (this.obj.shortId() === this.newCompetency) {
                     return 'new-thing';
                 }
@@ -628,6 +626,10 @@ export default {
         }
     },
     methods: {
+        closeCompetencySearchModal: function() {
+            useLodeStore().setCompetencySearchModalOpen(false);
+            this.addingNode = false;
+        },
         setCheckbox: function() {
             if (this.view === 'framework' || this.view === 'concept') {
                 this.checked = !this.checked;
@@ -670,9 +672,9 @@ export default {
         },
         handleClickAddComment: function() {
             appLog("object is: ", this.obj.shortId());
-            this.$store.commit('editor/setAddCommentAboutId', this.obj.shortId());
-            this.$store.commit('editor/setAddCommentType', 'new');
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            useEditorStore().setAddCommentAboutId(this.obj.shortId());
+            useEditorStore().setAddCommentType('new');
+            useAppStore().openModal({component: 'AddComment'});
         },
         calculateSourceAlignmentCountByType: function() {
             if (!this.relevantExistingAlignmentsMap[this.obj.shortId()]) this.sourceAlignmentCountByType = [];
@@ -695,19 +697,19 @@ export default {
             }
         },
         removeSourceCompetency: function() {
-            this.$store.commit('crosswalk/sourceState', 'ready');
-            this.$store.commit('crosswalk/resetWorkingAlignmentsMap');
+            useCrosswalkStore().setSourceState('ready');
+            useCrosswalkStore().resetWorkingAlignmentsMap();
         },
         removeFromWorkingAlignmentsTargets: function(id) {
-            this.$store.commit('crosswalk/removeWorkingAlignmentsTarget', id);
+            useCrosswalkStore().removeWorkingAlignmentsTarget(id);
         },
         addToWorkingAlignmentsTargets: function(id) {
-            this.$store.commit('crosswalk/addWorkingAlignmentsTarget', id);
+            useCrosswalkStore().addWorkingAlignmentsTarget(id);
         },
         setWorkingAlignmentsSource: function() {
             if (this.sourceState === 'ready') {
-                this.$store.commit('crosswalk/workingAlignmentsSource', this.obj.shortId());
-                this.$store.commit('crosswalk/sourceState', 'selectType');
+                useCrosswalkStore().setWorkingAlignmentsSource(this.obj.shortId());
+                useCrosswalkStore().setSourceState('selectType');
                 // keep me, auto focuses on select so clicking off without interaction
                 // follows the $blur rule and removes the selection
                 this.$nextTick(() => {
@@ -716,9 +718,9 @@ export default {
             }
         },
         setRelationTypeByLinkClick: function(type) {
-            this.$store.commit('crosswalk/workingAlignmentsSource', this.obj.shortId());
-            this.$store.commit('crosswalk/workingAlignmentsType', type);
-            // this.$store.commit('crosswalk/sourceState', 'selectTargets');
+            useCrosswalkStore().setWorkingAlignmentsSource(this.obj.shortId());
+            useCrosswalkStore().setWorkingAlignmentsType(type);
+            // useCrosswalkStore().setSourceState('selectTargets');
         },
         buildCrosswalkOptions: function() {
             this.crosswalkOptions = {};
@@ -769,10 +771,9 @@ export default {
                     this.$scrollTo("#scroll-newCompetency");
                 }
             }
-            if (this.$store.state.editor) {
-                this.$store.commit('editor/newCompetency', null);
-                this.$store.commit('editor/recomputeHierarchy', true);
-            }
+            const editorStore = useEditorStore();
+            editorStore.setNewCompetency(null);
+            editorStore.setRecomputeHierarchy(true);
             // Update the obj prop passed to Thing/ThingEditing so edits are reflected
             this.changedObj = await EcRepository.get(this.obj.shortId());
         },
@@ -893,13 +894,12 @@ export default {
             this.$emit('create-new-node-event', parentId, previousSiblingId);
         },
         clickToSearch: function() {
-            this.$store.commit('lode/competencySearchModalOpen', true);
-            this.$store.commit('app/showModal', {component: 'SearchModal'});
-            this.$store.commit('lode/searchType', "Competency");
-            this.$store.commit('lode/copyOrLink', true);
-            if (this.$store.state.editor) {
-                this.$store.commit('editor/selectedCompetency', this.obj);
-            }
+            const lodeStore = useLodeStore();
+            lodeStore.setCompetencySearchModalOpen(true);
+            useAppStore().openModal({component: 'SearchModal'});
+            lodeStore.setSearchType("Competency");
+            lodeStore.setCopyOrLink(true);
+            useEditorStore().setSelectedCompetency(this.obj);
         },
         async getCanEditInCollection() {
             let frameworks = await EcFramework.search(repo, 'competency:"' + this.obj.shortId() + '" AND NOT subType:Collection');
@@ -967,9 +967,9 @@ export default {
         workingAlignmentsType: function(val) {
             // This was getting spammed a lot...added extra check
             if (val !== '' && (this.obj.shortId() === this.workingAlignmentsSource)) {
-                this.$store.commit('crosswalk/sourceState', 'selectTargets');
-                this.$store.commit('crosswalk/targetState', 'ready');
-                this.$store.commit('crosswalk/populateWorkingAlignmentMap');
+                useCrosswalkStore().setSourceState('selectTargets');
+                useCrosswalkStore().setTargetState('ready');
+                useCrosswalkStore().populateWorkingAlignmentMap();
             }
         },
         checked: function() {
@@ -1034,9 +1034,9 @@ export default {
                 // operation is permitted
                 if (this.obj.type === "Competency" || (this.obj.type === "Concept" && this.canEditThing)) {
                     this.isItemCut = true;
-                    this.$store.commit('editor/cutOrCopyContainerId', this.parent.shortId());
+                    useEditorStore().setCutOrCopyContainerId(this.parent.shortId());
                 } else {
-                    this.$store.commit('editor/cutId', null);
+                    useEditorStore().setCutId(null);
                 }
             } else {
                 this.isItemCut = false;
@@ -1046,9 +1046,9 @@ export default {
             if (this.copyId === this.obj.shortId()) {
                 if (this.obj.type === "Competency" || (this.obj.type === "Concept" && this.canEditThing)) {
                     this.isItemCopied = true;
-                    this.$store.commit('editor/cutOrCopyContainerId', this.parent.shortId());
+                    useEditorStore().setCutOrCopyContainerId(this.parent.shortId());
                 } else {
-                    this.$store.commit('editor/copyId', null);
+                    useEditorStore().setCopyId(null);
                 }
             } else {
                 this.isItemCopied = false;
@@ -1058,23 +1058,24 @@ export default {
             if (this.isItemFocused && ((this.copyId && this.copyId !== this.obj.shortId()) || (this.cutId && this.cutId !== this.obj.shortId())) &&
                 (this.obj.type === "Competency" || (this.obj.type === "Concept" && this.canEditThing))) {
                 this.canPaste = true;
-                this.$store.commit('editor/nodeInFocus', this.obj.shortId());
+                useEditorStore().setNodeInFocus(this.obj.shortId());
             } else {
                 this.canPaste = false;
-                if (this.$store.getters['editor/nodeInFocus'] === this.obj.shortId() && !this.copyId && !this.cutId) {
-                    this.$store.commit('editor/nodeInFocus', null);
+                if (useEditorStore().nodeInFocus === this.obj.shortId() && !this.copyId && !this.cutId) {
+                    useEditorStore().setNodeInFocus(null);
                 }
             }
         },
         paste: function() {
-            var nodeToPasteUnder = this.$store.getters['editor/nodeInFocus'];
+            var nodeToPasteUnder = useEditorStore().nodeInFocus;
             if (this.paste && nodeToPasteUnder === this.obj.shortId() && (this.obj.type === "Competency" || (this.obj.type === "Concept" && this.canEditThing))) {
-                this.move(this.cutId ? this.cutId : this.copyId, null, this.$store.getters['editor/cutOrCopyContainerId'], this.obj.shortId(), this.cutId !== null, 0);
-                this.$store.commit('editor/cutId', null);
-                this.$store.commit('editor/copyId', null);
-                this.$store.commit('editor/paste', false);
-                this.$store.commit('editor/cutOrCopyContainerId', null);
-                this.$store.commit('editor/nodeInFocus', null);
+                this.move(this.cutId ? this.cutId : this.copyId, null, useEditorStore().cutOrCopyContainerId, this.obj.shortId(), this.cutId !== null, 0);
+                const editorStore = useEditorStore();
+                editorStore.setCutId(null);
+                editorStore.setCopyId(null);
+                editorStore.setPaste(false);
+                editorStore.setCutOrCopyContainerId(null);
+                editorStore.setNodeInFocus(null);
             }
         },
         selectedArray: function() {

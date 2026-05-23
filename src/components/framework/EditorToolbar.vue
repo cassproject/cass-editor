@@ -71,7 +71,7 @@
                         <div
                             title="View all comments"
                             v-if="showViewComments"
-                            @click="$store.commit('app/showRightAside', 'Comments')"
+                            @click="useAppStore().openRightAside('Comments')"
                             class="button is-text  has-text-dark">
                             <span class="icon">
                                 <i class="fas fa-comments" />
@@ -98,7 +98,7 @@
                         </div>
                     <!-- <div
                             title="View history"
-                            @click="$store.commit('app/showRightAside', 'Versions')"
+                            @click="useAppStore().openRightAside('Versions')"
                             class="button is-text  has-text-dark">
                             <span class="icon">
                                 <i class="fas fa-history" />
@@ -224,7 +224,7 @@
                     class="column is-narrow"
                     @click="manageAssertions">
                     <div
-                        :class="{'is-loading': $store.getters['editor/searchingAssertions']}"
+                        :class="{'is-loading': useEditorStore().searchingAssertions}"
                         class="button is-text has-text-dark">
                         <template v-if="managingAssertions">
                             Stop Managing Assertions
@@ -267,6 +267,11 @@
 
 import common from '@/mixins/common.js';
 import {cassUtil} from '../../mixins/cassUtil';
+import { useAppStore } from '@/stores/app';
+import { useUserStore } from '@/stores/user';
+import { useLodeStore } from '@/stores/lode';
+import { useFeaturesEnabledStore } from '@/stores/featuresEnabled';
+import { useEditorStore } from '@/stores/editor';
 export default {
     name: 'EditorToolbar',
     mixins: [ common, cassUtil ],
@@ -305,18 +310,18 @@ export default {
             }
         },
         handleClickAddComment: function() {
-            this.$store.commit('editor/setAddCommentAboutId', this.$store.getters['editor/framework'].shortId());
-            this.$store.commit('editor/setAddCommentType', 'new');
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            useEditorStore().setAddCommentAboutId(this.useEditorStore().framework.shortId());
+            useEditorStore().setAddCommentType('new');
+            this.useAppStore().openModal({component: 'AddComment'});
         },
         showExportModal() {
-            this.$store.commit('app/showModal', 'Export');
+            this.useAppStore().openModal('Export');
         },
         showManageUsersModal() {
-            this.$store.commit('app/showModal', {component: 'Share'});
+            this.useAppStore().openModal({component: 'Share'});
         },
         showManageConfigurationModal() {
-            this.$store.commit('app/showModal', {component: 'FrameworkConfiguration'});
+            this.useAppStore().openModal({component: 'FrameworkConfiguration'});
         },
         changeProperties(type) {
             let properties = this.properties;
@@ -334,7 +339,7 @@ export default {
         },
         onClickUndo: function() {
             this.$Progress.start();
-            this.$store.dispatch('editor/lastEditToUndo').then(editToUndo => {
+            useEditorStore().lastEditToUndo().then(editToUndo => {
                 if (editToUndo) {
                     if (!EcArray.isArray(editToUndo)) {
                         editToUndo = [editToUndo];
@@ -351,7 +356,7 @@ export default {
                         }
                     }
                 }
-                this.$store.commit('editor/setLastEditToUndo', null);
+                useEditorStore().setLastEditToUndo(null);
             });
         },
         async undoAdd(id) {
@@ -400,7 +405,7 @@ export default {
                     me.editsFinishedCounter++;
                     me.$Progress.fail();
                 });
-                me.$store.commit('editor/changedObject', success.shortId());
+                useEditorStore().setChangedObject(success.shortId());
             }, function(error) {
                 appError(error);
                 me.editsFinishedCounter++;
@@ -441,7 +446,7 @@ export default {
                 context = "https://schema.cassproject.org/0.4/skos";
             }
             try {
-                let compacted = await jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context]);
+                let compacted = await jsonld.compact(expandedCompetency, this.useLodeStore().rawSchemata[context]);
                 if (compacted) {
                     var rld = new EcRemoteLinkedData();
                     rld.copyFrom(compacted);
@@ -449,7 +454,7 @@ export default {
                     delete rld["@context"];
                     rld = me.turnFieldsBackIntoArrays(rld);
                     rld["schema:dateModified"] = new Date().toISOString();
-                    if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
+                    if (me.$store.state.editor && me.useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                         rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     me.repo.saveTo(rld, function() {
@@ -480,7 +485,7 @@ export default {
         goToDirectory: function() {
             let me = this;
             EcDirectory.get(this.directoryId, function(success) {
-                me.$store.commit('app/selectDirectory', success);
+                useAppStore().setSelectDirectory(success);
                 me.$router.push({name: "directory"});
             }, appError);
         },
@@ -500,15 +505,15 @@ export default {
         },
         manageAssertions: async function() {
             if (this.managingAssertions) {
-                this.$store.commit('editor/setManageAssertions', false);
+                useEditorStore().setManageAssertions(false);
             } else {
                 EcPerson.search(window.repo, '*').then((people) => {
-                    this.$store.commit('editor/setPeople', people.map((x) => {
+                    useEditorStore().setPeople(people.map((x) => {
                         return {name: x.name, key: x.owner[0]};
                     }));
                 });
-                this.$store.dispatch('editor/searchForAssertions').then(() => {
-                    this.$store.commit('editor/setManageAssertions', true);
+                useEditorStore().searchForAssertions().then(() => {
+                    useEditorStore().setManageAssertions(true);
                 }).catch(() => {
                     // TODO: Handle assertion search error
                 });
@@ -517,8 +522,8 @@ export default {
     },
     asyncComputed: {
         getConfigurationName: async function() {
-            if (this.$store.getters['editor/framework'].configuration) {
-                let config = await EcRepository.get(this.$store.getters['editor/framework'].configuration);
+            if (this.useEditorStore().framework.configuration) {
+                let config = await EcRepository.get(this.useEditorStore().framework.configuration);
                 if (config) {
                     return config.name;
                 } else {
@@ -546,28 +551,28 @@ export default {
     },
     computed: {
         showAddComments() {
-            if (this.$store.getters['editor/conceptMode'] === true) {
+            if (this.useEditorStore().conceptMode === true) {
                 return false;
             }
-            if (this.$store.getters['editor/progressionMode'] === true) {
+            if (this.useEditorStore().progressionMode === true) {
                 return false;
             }
-            return this.$store.state.app.canAddComments;
+            return this.useAppStore().canAddComments;
         },
         showViewComments() {
-            if (this.$store.getters['editor/conceptMode'] === true) {
+            if (this.useEditorStore().conceptMode === true) {
                 return false;
             }
-            if (this.$store.getters['editor/progressionMode'] === true) {
+            if (this.useEditorStore().progressionMode === true) {
                 return false;
             }
-            return this.$store.state.app.canViewComments;
+            return this.useAppStore().canViewComments;
         },
         framework: function() {
-            return this.$store.state.editor.framework;
+            return this.useEditorStore().framework;
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return this.useEditorStore().queryParams;
         },
         ceasnDataFields: function() {
             return this.queryParams.ceasnDataFields === 'true';
@@ -587,19 +592,19 @@ export default {
             return false;
         },
         loggedInPerson: function() {
-            return this.$store.getters['user/loggedOnPerson'];
+            return this.useUserStore().loggedOnPerson;
         },
         configuration: function() {
-            return this.$store.getters['editor/framework'].configuration;
+            return this.useEditorStore().framework.configuration;
         },
         conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
+            return this.useEditorStore().conceptMode;
         },
         progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
+            return this.useEditorStore().progressionMode;
         },
         canExport: function() {
-            if (this.$store.state.editor.private) {
+            if (this.useEditorStore().private) {
                 return false;
             } else if (this.framework.reader && this.framework.reader.length > 0) {
                 return false;
@@ -610,16 +615,16 @@ export default {
             }
         },
         configurationsEnabled: function() {
-            return this.$store.state.featuresEnabled.configurationsEnabled;
+            return this.useFeaturesEnabledStore().configurationsEnabled;
         },
         shareEnabled: function() {
-            return this.$store.state.featuresEnabled.shareEnabled;
+            return this.useFeaturesEnabledStore().shareEnabled;
         },
         shareLink: function() {
-            return this.$store.state.featuresEnabled.shareLink;
+            return this.useFeaturesEnabledStore().shareLink;
         },
         userManagementEnabled: function() {
-            return this.$store.state.featuresEnabled.userManagementEnabled;
+            return this.useFeaturesEnabledStore().userManagementEnabled;
         },
         showUserManagementIcon: function() {
             if (!this.shareEnabled && !this.canEditFramework) {
@@ -640,7 +645,7 @@ export default {
             return false;
         },
         managingAssertions: function() {
-            return this.$store.getters['editor/manageAssertions'];
+            return this.useEditorStore().manageAssertions;
         }
     },
     watch: {
@@ -649,18 +654,18 @@ export default {
                 this.editsFinishedCounter = 0;
                 this.totalEditsCounter = 0;
                 // If changes were made to the framework, make sure they get into the store.
-                var framework = this.$store.getters['editor/framework'];
+                var framework = this.useEditorStore().framework;
                 let obj = await EcRepository.get(framework.shortId());
-                this.$store.commit('editor/framework', obj);
-                this.$store.commit('editor/recomputeHierarchy', true);
-                this.$store.commit('editor/refreshAlignments', true);
+                useEditorStore().setFramework(obj);
+                useEditorStore().setRecomputeHierarchy(true);
+                useEditorStore().setRefreshAlignments(true);
             }
         }
     },
     mounted: function() {
-        if (this.$store.getters['editor/setPropertyLevel']) {
-            this.changeProperties(this.$store.getters['editor/setPropertyLevel']);
-            this.$store.commit('editor/setPropertyLevel', null);
+        if (this.useEditorStore().setPropertyLevel) {
+            this.changeProperties(this.useEditorStore().setPropertyLevel);
+            useEditorStore().setPropertyLevel(null);
         }
         this.checkIsPrivate();
     }

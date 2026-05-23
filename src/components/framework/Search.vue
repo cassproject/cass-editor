@@ -20,7 +20,7 @@ placed anywhere in a structured html element such as a <section> or a <div>
             v-if="!selectedFramework"
             class="column is-12">
             <List
-                v-if="$store.state.lode.competencySearchModalOpen"
+                v-if="competencySearchModalOpen"
                 :type="searchTypeToPassToList"
                 view="search"
                 :parent="parent"
@@ -78,7 +78,11 @@ import List from '@/lode/components/List.vue';
 import Hierarchy from '@/lode/components/Hierarchy.vue';
 import Thing from '@/lode/components/Thing.vue';
 import common from '@/mixins/common.js';
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useLodeStore} from '@/stores/lode';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
 import SearchBar from '@/components/framework/SearchBar.vue';
 export default {
     name: 'CompetencySearch',
@@ -125,22 +129,19 @@ export default {
         if (this.addingRange.includes("https://schema.cassproject.org/0.4/Competency")) {
             this.sortBy = "name.keyword";
         } else {
-            this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true || this.searchType === "Concept" || this.searchType === "ConceptScheme") ? "skos:prefLabel.keyword" : "name.keyword";
+            const editorStore = useEditorStore();
+            this.sortBy = (editorStore.conceptMode === true || editorStore.progressionMode === true || this.searchType === "Concept" || this.searchType === "ConceptScheme") ? "skos:prefLabel.keyword" : "name.keyword";
         }
         
-        this.$store.commit('app/searchTerm', "");
+        useAppStore().setSearchTerm("");
     },
-    beforeDestroy: function() {
-        this.$store.commit('app/searchTerm', "");
+    beforeUnmount: function() {
+        useAppStore().setSearchTerm("");
     },
     computed: {
-        ...mapState({
-            selectedCompetency: state => state.editor.selectedCompetency,
-            framework: state => state.editor.framework,
-            queryParams: state => state.editor.queryParams,
-            addingProperty: state => state.lode.addingProperty,
-            addingRange: state => state.lode.addingRange
-        }),
+        ...mapState(useEditorStore, ['selectedCompetency', 'framework', 'queryParams']),
+        ...mapState(useLodeStore, ['addingProperty', 'addingRange', 'copyOrLink', 'competencySearchModalOpen']),
+        ...mapState(useAppStore, ['sortResults', 'filterByOwnedByMe', 'searchFrameworksInCompetencySearch']),
         nameOfSelectedCompetency: function() {
             if (this.selectedCompetency && this.selectedCompetency.name) {
                 return this.selectedCompetency.getName();
@@ -149,9 +150,6 @@ export default {
             } else {
                 return '';
             }
-        },
-        copyOrLink: function() {
-            return this.$store.state.lode.copyOrLink;
         },
         frameworkName: function() {
             if (this.framework) {
@@ -165,9 +163,9 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            /* var searchTerm = this.$store.getters['app/searchTerm'];
+            /* var searchTerm = useAppStore().searchTerm;
             if (!searchTerm || searchTerm.length === 0) {
-                if (this.$store.getters['editor/conceptMode'] !== true) {
+                if (useEditorStore().conceptMode !== true) {
                     search += " AND (name NOT \"\")";
                 }
             }*/
@@ -181,14 +179,15 @@ export default {
                     search += ")";
                 }
             }
-            if (this.$store.getters['editor/progressionMode'] === true) {
+            const editorStore = useEditorStore();
+            if (editorStore.progressionMode === true) {
                 // If searching for precedes or precededBy in a progression, restrict results to the progression model
                 if (this.addingProperty.includes('precede')) {
                     search += " AND (ceasn\\:inProgressionModel:\"" + this.selectedCompetency["ceasn:inProgressionModel"] + "\")";
                 }
             }
-            if ((this.showMine && this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true) ||
-                (this.queryParams && (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) && this.queryParams.conceptShow === "mine")) {
+            if ((this.showMine && editorStore.conceptMode !== true && editorStore.progressionMode !== true) ||
+                (this.queryParams && (editorStore.conceptMode === true || editorStore.progressionMode === true) && this.queryParams.conceptShow === "mine")) {
                 if (this.currentUser) {
                     search += " AND (";
                     this.currentUser.forEach((user, i) => {
@@ -211,35 +210,30 @@ export default {
             }
         },
         initialOwnedByMe: function() {
-            return this.$store.getters["featuresEnabled/ownedByMe"];
+            return useFeaturesEnabledStore().ownedByMe;
         },
         paramObj: function() {
             let obj = {};
             obj.size = 20;
-            var searchTerm = this.$store.getters['app/searchTerm'];
+            var searchTerm = useAppStore().searchTerm;
             // Sort is not included when there's no search term
             if (searchTerm && searchTerm.length > 0) {
                 var order = (this.sortBy === "name.keyword" || this.sortBy === "skos:prefLabel.keyword") ? "asc" : "desc";
                 let type = (this.sortBy === "name.keyword" || this.sortBy === "skos:prefLabel.keyword") ? "text" : "date";
                 obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
             }
-            if ((this.showMine && (this.$store.getters['editor/conceptMode'] !== true) && (this.$store.getters['editor/progressionMode'] !== true)) ||
-                ((this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) && this.queryParams.conceptShow === "mine")) {
+            const editorStore = useEditorStore();
+            if ((this.showMine && (editorStore.conceptMode !== true) && (editorStore.progressionMode !== true)) ||
+                ((editorStore.conceptMode === true || editorStore.progressionMode === true) && this.queryParams.conceptShow === "mine")) {
                 obj.ownership = 'me';
             }
             return obj;
         },
         searchType: function() {
-            return this.$store.state.lode.searchType;
-        },
-        sortResults: function() {
-            return this.$store.getters['app/sortResults'];
+            return useLodeStore().searchType;
         },
         showMine: function() {
-            return this.$store.getters['app/filterByOwnedByMe'];
-        },
-        searchFrameworksInCompetencySearch: function() {
-            return this.$store.getters['app/searchFrameworksInCompetencySearch'];
+            return useAppStore().filterByOwnedByMe;
         },
         searchTypeToPassToList: function() {
             if (this.searchType === "Competency" && this.searchFrameworksInCompetencySearch) {
@@ -253,7 +247,7 @@ export default {
     },
     mounted: async function() {
         this.displayFirst.splice(0, this.displayFirst.length);
-        this.$store.commit('app/searchTerm', "");
+        useAppStore().setSearchTerm("");
         if (!this.copyOrLink && this.searchType === "Competency" && this.framework.competency) {
             for (var i = 0; i < this.framework.competency.length; i++) {
                 if (this.framework.competency[i] !== this.selectedCompetency.shortId()) {
@@ -277,13 +271,13 @@ export default {
     },
     methods: {
         resetModal: function() {
-            this.$store.commit('app/closeModal');
+            useAppStore().closeModal();
             this.selectedIds = [];
         },
         selectedArrayEvent: async function(ary) {
             this.selectedIds = ary;
             if (!this.copyOrLink || this.searchType === "Level") {
-                this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
+                useEditorStore().setSelectedCompetenciesAsProperties(this.selectedIds);
             }
             if (this.queryParams.selectRelations === "true" && this.framework.relation) {
                 for (var i = 0; i < this.framework.relation.length; i++) {
@@ -308,7 +302,7 @@ export default {
                 EcArray.setRemove(this.selectedIds, competency.shortId());
             }
             if (!this.copyOrLink || this.searchType === "Level" || this.searchType === "DirectLink") {
-                this.$store.commit('editor/selectedCompetenciesAsProperties', this.selectedIds);
+                useEditorStore().setSelectedCompetenciesAsProperties(this.selectedIds);
             }
         },
         selectFramework: function(framework) {
@@ -339,7 +333,7 @@ export default {
                 this.sortBy = "name.keyword";
                 this.displayFirst.splice(0, this.displayFirst.length);
             } else {
-                this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true || this.searchType === "Concept" || this.searchType === "ConceptScheme") ? "skos:prefLabel.keyword" : "name.keyword";
+                this.sortBy = (useEditorStore().conceptMode === true || useEditorStore().progressionMode === true || this.searchType === "Concept" || this.searchType === "ConceptScheme") ? "skos:prefLabel.keyword" : "name.keyword";
                 this.displayFirst.splice(0, this.displayFirst.length);
             }
         },

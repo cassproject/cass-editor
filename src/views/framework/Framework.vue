@@ -6,13 +6,13 @@
             :rightActive="showRightAside"
             :simple="true">
             <!-- begin framework -->
-            <template slot="top">
+            <template #top>
                 <FrameworkEditorToolbar
                     :properties="properties"
                     @show-export-modal="onOpenExportModal"
                     @change-properties="changeProperties" />
             </template>
-            <template slot="body">
+            <template #body>
                 <div
                     class="framework-content"
                     id="framework-content">
@@ -140,7 +140,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="right">
+            <template #right>
                 <RightAside v-if="showRightAside" />
             </template>
             <div
@@ -158,6 +158,9 @@ import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
 import t3Profile from '@/mixins/t3Profile.js';
 import tlaProfile from '@/mixins/tlaProfile.js';
 import debounce from 'lodash/debounce';
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
 
 export default {
     name: "Framework",
@@ -215,11 +218,11 @@ export default {
         };
     },
     computed: {
+        ...mapState(useEditorStore, ['framework', 'queryParams', 'commentScrollTo']),
+        ...mapState(useAppStore, ['showRightAside']),
         newFramework: function() {
-            return this.$store.getters['editor/newFramework'] === this.framework.shortId();
-        },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            const editorStore = useEditorStore();
+            return editorStore.newFramework === this.framework.shortId();
         },
         isCeasn: function() {
             if (this.queryParams["ceasnDataFields"] && this.queryParams["ceasnDataFields"] === 'true') {
@@ -228,18 +231,13 @@ export default {
                 return false;
             }
         },
-        showRightAside: function() {
-            return this.$store.getters['app/showRightAside'];
-        },
         dynamicThingComponent: function() {
-            if (this.editingFramework || (this.framework && this.$store.getters['editor/newFramework'] === this.framework.shortId())) {
+            const editorStore = useEditorStore();
+            if (this.editingFramework || (this.framework && editorStore.newFramework === this.framework.shortId())) {
                 return 'ThingEditing';
             } else {
                 return 'Thing';
             }
-        },
-        framework: function() {
-            return this.$store.getters['editor/framework'];
         },
         timestamp: function() {
             if (this.framework.getTimestamp()) {
@@ -271,11 +269,8 @@ export default {
             }
             return false;
         },
-        commentScrollTo: function() {
-            return this.$store.getters['editor/commentScrollTo'];
-        },
         frameworkProfile: function() {
-            if (this.$store.state.editor.t3Profile === true) {
+            if (useEditorStore().t3Profile === true) {
                 return this.t3FrameworkProfile;
             }
             if (this.isCeasn && this.framework.subType === 'Collection') {
@@ -363,7 +358,7 @@ export default {
             };
         },
         competencyProfile: function() {
-            if (this.$store.state.editor.t3Profile === true) {
+            if (useEditorStore().t3Profile === true) {
                 return this.t3CompetencyProfile;
             }
             if (this.isCeasn && ((this.config && !this.configSetOnFramework) || !this.config)) {
@@ -702,7 +697,7 @@ export default {
             }
         },
         defaultFrameworkConfiguration: function() {
-            return this.$store.getters['editor/framework'] ? this.$store.getters['editor/framework'].configuration : null;
+            return this.framework ? this.framework.configuration : null;
         },
         canEdit: function() {
             if (this.queryParams.view === 'true') {
@@ -727,16 +722,18 @@ export default {
         if (!this.framework) {
             this.$router.push({name: "frameworks"});
         }
-        this.$store.commit('app/objForShareModal', this.object);
+        const appStore = useAppStore();
+        appStore.objForShareModal(this.object);
         let documentBody = document.getElementsByClassName('cass--main-layout--body')[0];
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
         if (!this.framework.competency || this.framework.competency.length === 0) {
             this.hierarchyIsdoneLoading = true;
         }
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.queryParams && this.queryParams.private !== 'true') {
-            this.$store.commit('editor/private', false);
+            const editorStore = useEditorStore();
+            editorStore.private(false);
         }
     },
     watch: {
@@ -744,7 +741,8 @@ export default {
             this.refreshPage();
         },
         config: function() {
-            this.$store.commit('editor/configuration', this.config);
+            const editorStore = useEditorStore();
+            editorStore.configuration(this.config);
         },
         commentScrollTo: function() {
             this.$scrollTo(this.commentScrollTo.scrollId);
@@ -783,7 +781,8 @@ export default {
             }
         },
         handleSearch: function(e) {
-            this.$store.commit('app/showModal', e);
+            const appStore = useAppStore();
+            appStore.showModal(e);
         },
         getConfiguration: async function() {
             var me = this;
@@ -822,13 +821,15 @@ export default {
                 selectedCompetencies: this.selectedArray,
                 component: 'MultiEdit'
             };
-            this.$store.commit('app/showModal', payload);
+            const appStore = useAppStore();
+            appStore.showModal(payload);
         },
         onEditNode: function() {
             this.editingFramework = true;
         },
         onDoneEditingNode: function() {
-            this.$store.commit('editor/newFramework', null);
+            const editorStore = useEditorStore();
+            editorStore.newFramework(null);
             this.editingFramework = false;
         },
         onOpenComments: function() {
@@ -862,8 +863,10 @@ export default {
             this.selectButton(ids);
         },
         onOpenExportModal() {
-            this.$store.commit('editor/setItemToExport', this.framework);
-            this.$store.commit('app/showModal', {title: 'Export Framework', component: 'ExportOptionsModal'});
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
+            editorStore.setItemToExport(this.framework);
+            appStore.showModal({title: 'Export Framework', component: 'ExportOptionsModal'});
         },
         // Speed up load of secondary properties
         preloadRelations: function() {
@@ -895,8 +898,9 @@ export default {
                 }
                 this.repo.saveTo(c, function() {
                     let edits = [{operation: "addNew", id: c.shortId()}];
-                    me.$store.commit('editor/addEditsToUndo', edits);
-                    me.$store.commit('editor/refreshAlignments', true);
+                    const editorStore = useEditorStore();
+                    editorStore.addEditsToUndo(edits);
+                    editorStore.refreshAlignments(true);
                 }, appError);
             }
         },
@@ -910,8 +914,9 @@ export default {
                 c.url = value["@value"];
                 this.repo.saveTo(c, function() {
                     let edits = [{operation: "update", id: c.shortId(), fieldChanged: ["name", "url"], initialValue: [initialName, initialUrl], changedValue: [c.name, c.url]}];
-                    me.$store.commit('editor/addEditsToUndo', edits);
-                    me.$store.commit('editor/refreshAlignments', true);
+                    const editorStore = useEditorStore();
+                    editorStore.addEditsToUndo(edits);
+                    editorStore.refreshAlignments(true);
                 }, appError);
             }
         },
@@ -919,8 +924,9 @@ export default {
             let c = await EcRepository.get(resourceId);
             let me = this;
             this.repo.deleteRegistered(c, function() {
-                me.$store.commit('editor/addEditsToUndo', [{operation: "delete", obj: c}]);
-                me.$store.commit('editor/refreshAlignments', true);
+                const editorStore = useEditorStore();
+                editorStore.addEditsToUndo([{operation: "delete", obj: c}]);
+                editorStore.refreshAlignments(true);
             }, appError);
         },
         moveToTopLevel: async function(id) {

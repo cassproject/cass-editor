@@ -279,6 +279,9 @@ async function checkFrameworkCtidCollisions(repo, competencyIds, frameworkArray,
     return errors;
 }
 
+import { useAppStore } from '@/stores/app';
+import { useEditorStore } from '@/stores/editor';
+
 export default {
     data() {
         return {
@@ -287,20 +290,20 @@ export default {
     },
     methods: {
         showRightAside: function() {
-            this.$store.commit('app/showRightAside', {});
+            useAppStore().openRightAside({});
         },
         selectedArrayEvent: function(ary) {
             this.selectedArray = ary;
         },
         clearFiles: function() {
-            this.$store.commit('app/clearImportFiles');
+            useAppStore().clearImportFiles();
         },
         cancelImport: function() {
             this.$emit("delete-object", this.importFramework);
             this.resetImport();
         },
         resetImport: function() {
-            this.$store.commit('app/resetImport');
+            useAppStore().resetImport();
         },
         onEditMultiple: function() {
             this.showEditMultiple = true;
@@ -309,10 +312,10 @@ export default {
                 selectedCompetencies: this.selectedArray,
                 component: 'MultiEdit'
             };
-            this.$store.commit('app/showModal', payload);
+            useAppStore().openModal(payload);
         },
         handleSearch: function(e) {
-            this.$store.commit('app/showModal', e);
+            useAppStore().openModal(e);
         },
         onEditNode: function() {
             this.editingNode = true;
@@ -327,6 +330,7 @@ export default {
         },
         showModal(val, data) {
             let params = {};
+            var appStore = useAppStore();
             if (val === 'duplicate') {
                 params = {
                     type: val,
@@ -409,75 +413,81 @@ export default {
                     text: data.message,
                     details: data.details
                 };
-                this.$store.commit('app/importModalParams', params);
-                this.$store.commit('app/showModal', {component: 'ImportError'});
+                appStore.setImportModalParams(params);
+                appStore.openModal({component: 'ImportError'});
                 return;
             }
             // reveal modal
-            this.$store.commit('app/importModalParams', params);
-            this.$store.commit('app/showModal', {component: 'DuplicateImport'});
+            appStore.setImportModalParams(params);
+            appStore.openModal({component: 'DuplicateImport'});
         },
         unsupportedFile: function(val) {
-            this.$store.commit('app/importFileType', val);
+            var appStore = useAppStore();
+            appStore.setImportFileType(val);
             let error = "File type " + fileType + " is unsupported in this workflow";
-            this.$store.commit('app/addImportError', error);
-            me.$store.commit('app/importTransition', 'process');
+            appStore.addImportError(error);
+            appStore.setImportTransition('process');
         },
         // Helper method to handle both single errors and arrays of errors
         handleImportErrors: function(errors) {
+            var appStore = useAppStore();
             if (Array.isArray(errors)) {
                 for (let error of errors) {
-                    this.$store.commit('app/addImportError', error);
+                    appStore.addImportError(error);
                 }
                 // Set status to show error count
-                this.$store.commit('app/importStatus', `${errors.length} error(s) found in import file`);
+                appStore.setImportStatus(`${errors.length} error(s) found in import file`);
             } else {
-                this.$store.commit('app/addImportError', errors);
-                this.$store.commit('app/importStatus', errors);
+                appStore.addImportError(errors);
+                appStore.setImportStatus(errors);
             }
-            this.$store.commit('app/importTransition', 'process');
+            appStore.setImportTransition('process');
         },
         /* When an import is "successful" */
         importSuccess: function() {
+            var appStore = useAppStore();
             if (!this.conceptMode && !this.progressionMode) {
                 let feedback = "Competency detected";
-                this.$store.commit('app/importStatus', feedback);
+                appStore.setImportStatus(feedback);
                 if (this.isT3Import) {
-                    this.$store.commit('app/importTransition', 'detail');
+                    appStore.setImportTransition('detail');
                 } else {
-                    this.$store.commit('app/importTransition', 'preview');
+                    appStore.setImportTransition('preview');
                 }
             } else if (this.progressionMode) {
                 let name = "Progression Model";
-                this.$store.commit('app/importStatus', name + " Imported.");
-                this.$store.commit('app/importTransition', 'preview');
+                appStore.setImportStatus(name + " Imported.");
+                appStore.setImportTransition('preview');
             } else {
                 let name = "Taxonomy";
                 if (this.queryParams.ceasnDataFields === 'true') {
                     name = "Concept Scheme";
                 }
-                this.$store.commit('app/importStatus', name + " Imported.");
-                this.$store.commit('app/importTransition', 'preview');
+                appStore.setImportStatus(name + " Imported.");
+                appStore.setImportTransition('preview');
             }
         },
         importDetailsAccept: function() {
-            this.$store.commit('app/importStatus', 'Edit and approve');
-            this.$store.commit('app/importTransition', 'preview');
+            var appStore = useAppStore();
+            appStore.setImportStatus('Edit and approve');
+            appStore.setImportTransition('preview');
         },
         importPreviewAccept: function() {
-            this.$store.commit('app/importStatus', 'Import Complete!');
-            this.$store.commit('app/importTransition', 'light');
+            var appStore = useAppStore();
+            appStore.setImportStatus('Import Complete!');
+            appStore.setImportTransition('light');
         },
         clearImport: function() {
-            this.$store.commit('app/importFramework', null);
-            this.$store.commit('app/clearImportFiles');
-            this.$store.commit('app/clearImportErrors');
-            this.$store.commit('app/importTransition', 'upload');
-            this.$store.commit('app/importStatus', '');
-            this.$store.commit('app/importFeedback', '');
-            this.$store.commit('app/importFileType', '');
-            this.$store.commit('app/importDuplicates', []);
-            this.$store.commit('app/importSkip', []);
+            var appStore = useAppStore();
+            appStore.setImportFramework(null);
+            appStore.clearImportFiles();
+            appStore.clearImportErrors();
+            appStore.setImportTransition('upload');
+            appStore.setImportStatus('');
+            appStore.setImportFeedback('');
+            appStore.setImportFileType('');
+            appStore.setImportDuplicates([]);
+            appStore.setImportSkip([]);
             if (this.caseDocs) {
                 this.caseDocs = [];
             }
@@ -487,9 +497,10 @@ export default {
         },
         fileChange: function(e) {
             appLog('file change', e);
-            this.$store.commit('app/clearImportErrors');
-            this.$store.commit('app/importTransition', 'process');
-            this.$store.commit('app/firstImport', true);
+            var appStore = useAppStore();
+            appStore.clearImportErrors();
+            appStore.setImportTransition('process');
+            appStore.setFirstImport(true);
             this.analyzeImportFile();
         },
         analyzeImportFile: function() {
@@ -500,47 +511,52 @@ export default {
             if (file.name.endsWith(".csv")) {
                 if (this.conceptMode || this.progressionMode) {
                     CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount, progressionCount) {
+                        var appStore = useAppStore();
                         if (progressionCount) {
-                            me.$store.commit('app/importFileType', 'progressioncsv');
+                            appStore.setImportFileType('progressioncsv');
                             let name = "progression models";
                             feedback = "Import " + progressionCount + " " + name + " and " + competencyCount + " levels.";
                         } else {
-                            me.$store.commit('app/importFileType', 'conceptcsv');
+                            appStore.setImportFileType('conceptcsv');
                             let name = "taxonomies";
                             if (me.queryParams.ceasnDataFields === 'true') {
                                 name = "concept schemes";
                             }
                             feedback = "Import " + frameworkCount + " " + name + " and " + competencyCount + " concepts.";
                         }
-                        me.$store.commit('app/importStatus', feedback);
-                        me.$store.commit('app/importTransition', 'info');
+                        appStore.setImportStatus(feedback);
+                        appStore.setImportTransition('info');
                     }, function(errorMsg) {
-                        me.$store.commit('app/addImportError', errorMsg);
-                        me.$store.commit('app/importTransition', 'process');
+                        var appStore = useAppStore();
+                        appStore.addImportError(errorMsg);
+                        appStore.setImportTransition('process');
                     });
                 } else {
                     CTDLASNCSVImport.analyzeFile(file, function(frameworkCount, competencyCount, collectionCount, duplicates) {
+                        var appStore = useAppStore();
                         if (frameworkCount) {
-                            me.$store.commit('app/importFileType', 'ctdlasncsv');
+                            appStore.setImportFileType('ctdlasncsv');
                             feedback = "Import " + frameworkCount + " frameworks and " + competencyCount + " competencies.";
                         } else if (collectionCount) {
-                            me.$store.commit('app/importFileType', 'collectioncsv');
+                            appStore.setImportFileType('collectioncsv');
                             feedback = "Import " + collectionCount + " collections and " + competencyCount + " competencies.";
                         }
                         if (duplicates && duplicates.length) {
-                            me.$store.commit('app/importDuplicates', duplicates);
+                            appStore.setImportDuplicates(duplicates);
                         } else {
-                            me.$store.commit('app/importDuplicates', []);
+                            appStore.setImportDuplicates([]);
                         }
-                        me.$store.commit('app/importStatus', feedback);
-                        me.$store.commit('app/importTransition', 'info');
+                        appStore.setImportStatus(feedback);
+                        appStore.setImportTransition('info');
                     }, function(errorMsg) {
                         if (errorMsg.indexOf('CTDLASN Parse Error') !== -1) {
-                            me.$store.commit('app/addImportError', errorMsg);
-                            me.$store.commit('app/importTransition', 'process');
+                            var appStore = useAppStore();
+                            appStore.addImportError(errorMsg);
+                            appStore.setImportTransition('process');
                         } else {
                             CSVImport.analyzeFile(file, function(data) {
-                                me.$store.commit('app/importFileType', 'csv');
+                                var appStore = useAppStore();
+                                appStore.setImportFileType('csv');
                                 me.importFrameworkName = file.name.replace(".csv", "");
                                 for (let i = 0; i < data.length; i++) {
                                     if (data[i][0] === "") {
@@ -565,11 +581,12 @@ export default {
                                         me.importCsvColumnId = column;
                                     }
                                 }
-                                me.$store.commit('app/importStatus', (me.competencyCount = (data.length - 1)) + " Competencies Detected.");
-                                me.$store.commit('app/importTransition', 'info');
+                                appStore.setImportStatus((me.competencyCount = (data.length - 1)) + " Competencies Detected.");
+                                appStore.setImportTransition('info');
                             }, function(error) {
-                                me.$store.commit('app/addImportError', error);
-                                me.$store.commit('app/importTransition', 'process');
+                                var appStore = useAppStore();
+                                appStore.addImportError(error);
+                                appStore.setImportTransition('process');
                             });
                         }
                     });
@@ -577,18 +594,19 @@ export default {
             } else if (file.name.endsWith(".json") || file.name.endsWith(".jsonld")) {
                 // Try JSON-LD first, checks for @graph
                 this.analyzeJsonLdFramework(file, function(data, ctdlasn) {
+                    var appStore = useAppStore();
                     var invalid = false;
                     var error;
                     var feedback;
                     if (ctdlasn === "ctdlasnConcept") {
                         if (me.conceptMode) {
                             if (me.queryParams.ceasnDataFields === 'true') {
-                                me.$store.commit('app/importStatus', "1 Concept Scheme Detected.");
+                                appStore.setImportStatus("1 Concept Scheme Detected.");
                             } else {
-                                me.$store.commit('app/importStatus', "1 Taxonomy Detected.");
+                                appStore.setImportStatus("1 Taxonomy Detected.");
                             }
-                            me.$store.commit('app/importFileType', 'ctdlasnjsonld');
-                            me.$store.commit('app/importTransition', 'info');
+                            appStore.setImportFileType('ctdlasnjsonld');
+                            appStore.setImportTransition('info');
                         } else {
                             if (me.queryParams.ceasnDataFields === 'true') {
                                 var message = "Concept Schemes must be imported in the concept scheme editor.";
@@ -596,36 +614,36 @@ export default {
                                 var message = "Taxonomies must be imported in the taxonomy editor.";
                             }
                             invalid = true;
-                            me.$store.commit('app/addImportError', message);
-                            me.$store.commit('app/importTransition', 'process');
+                            appStore.addImportError(message);
+                            appStore.setImportTransition('process');
                         }
                     } else if (ctdlasn === "ctdlasnProgression") {
                         if (me.conceptMode || me.progressionMode) {
-                            me.$store.commit('app/importStatus', "1 Progression Detected.");
-                            me.$store.commit('app/importFileType', 'ctdlasnjsonldprogression');
-                            me.$store.commit('app/importTransition', 'info');
+                            appStore.setImportStatus("1 Progression Detected.");
+                            appStore.setImportFileType('ctdlasnjsonldprogression');
+                            appStore.setImportTransition('info');
                         } else {
                             var message = "Progression Models must be imported in the concept scheme editor.";
                             invalid = true;
-                            me.$store.commit('app/addImportError', message);
-                            me.$store.commit('app/importTransition', 'process');
+                            appStore.addImportError(message);
+                            appStore.setImportTransition('process');
                         }
                     } else {
                         if (!me.conceptMode && !me.progressionMode) {
                             if (ctdlasn === 'ctdlasnCollection') {
-                                me.$store.commit('app/importFileType', 'ctdlasnjsonldcollection');
+                                appStore.setImportFileType('ctdlasnjsonldcollection');
                                 feedback = "1 Collection and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
                             } else {
-                                me.$store.commit('app/importFileType', 'ctdlasnjsonld');
+                                appStore.setImportFileType('ctdlasnjsonld');
                                 feedback = "1 Framework and " + (EcObject.keys(data).length - 1) + " Competencies Detected.";
                             }
-                            me.$store.commit('app/importStatus', feedback);
-                            me.$store.commit('app/importTransition', 'info');
+                            appStore.setImportStatus(feedback);
+                            appStore.setImportTransition('info');
                         } else {
                             error = "Frameworks must be imported in the competency editor.";
                             invalid = true;
-                            me.$store.commit('app/addImportError', error);
-                            me.$store.commit('app/importTransition', 'process');
+                            appStore.addImportError(error);
+                            appStore.setImportTransition('process');
                         }
                     }
                     me.competencyCount = EcObject.keys(data).length;
@@ -633,107 +651,124 @@ export default {
                         // Do nothing
                     } else if (!invalid) {
                         let error = "Context is not CTDL-ASN";
-                        me.$store.commit('app/addImportError', error);
-                        me.$store.commit('app/importTransition', 'process');
+                        appStore.addImportError(error);
+                        appStore.setImportTransition('process');
                     }
                 }, function(failure) {
                     if (file.name.endsWith(".json") && !me.conceptMode && !me.progressionMode) {
                         // If JSON-LD doesn't work, try JSON
                         ASNImport.analyzeFile(file, function(data) {
-                            me.$store.commit('app/importFileType', 'asn');
-                            me.$store.commit('app/importStatus', "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.");
-                            me.$store.commit('app/importTransition', 'info');
+                            var appStore = useAppStore();
+                            appStore.setImportFileType('asn');
+                            appStore.setImportStatus("1 Framework and " + EcObject.keys(data).length + " Competencies Detected.");
+                            appStore.setImportTransition('info');
                             me.competencyCount = EcObject.keys(data).length;
                         }, function(error) {
-                            me.$store.commit('app/addImportError', error);
-                            me.$store.commit('app/importTransition', 'process');
+                            var appStore = useAppStore();
+                            appStore.addImportError(error);
+                            appStore.setImportTransition('process');
                         });
                     } else {
-                        me.$store.commit('app/addImportError', failure);
-                        me.$store.commit('app/importTransition', 'process');
+                        var appStore = useAppStore();
+                        appStore.addImportError(failure);
+                        appStore.setImportTransition('process');
                     }
                 });
             } else if (file.name.endsWith(".xml")) {
                 if (this.conceptMode) {
-                    me.$store.commit('app/importTransition', 'process');
+                    var appStore = useAppStore();
+                    appStore.setImportTransition('process');
                     if (me.queryParams.ceasnDataFields === 'true') {
-                        me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                        appStore.addImportError("This is not a valid file format for concept schemes");
                     } else {
-                        me.$store.commit('app/addImportError', "This is not a valid file format for taxonomies");
+                        appStore.addImportError("This is not a valid file format for taxonomies");
                     }
                 } else if (this.progressionMode) {
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', "This is not a valid file format for progression models");
+                    var appStore = useAppStore();
+                    appStore.setImportTransition('process');
+                    appStore.addImportError("This is not a valid file format for progression models");
                 } else {
                     MedbiqImport.analyzeFile(file, function(data) {
-                        me.$store.commit('app/importFileType', 'medbiq');
+                        var appStore = useAppStore();
+                        appStore.setImportFileType('medbiq');
                         me.importFrameworkName = file.name.replace(".xml", "");
-                        me.$store.commit('app/importStatus', "1 Framework and " + EcObject.keys(data).length + " Competencies Detected.");
+                        appStore.setImportStatus("1 Framework and " + EcObject.keys(data).length + " Competencies Detected.");
                         me.competencyCount = EcObject.keys(data).length;
-                        me.$store.commit('app/importTransition', 'info');
+                        appStore.setImportTransition('info');
                     }, function(error) {
-                        me.$store.commit('app/importTransition', 'process');
-                        me.$store.commit('app/addImportError', error);
+                        var appStore = useAppStore();
+                        appStore.setImportTransition('process');
+                        appStore.addImportError(error);
                     });
                 }
             } else if (file.name.endsWith(".pdf")) {
                 if (this.conceptMode) {
-                    me.$store.commit('app/importTransition', 'process');
+                    var appStore = useAppStore();
+                    appStore.setImportTransition('process');
                     if (me.queryParams.ceasnDataFields === 'true') {
-                        me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                        appStore.addImportError("This is not a valid file format for concept schemes");
                     } else {
-                        me.$store.commit('app/addImportError', "This is not a valid file format for taxonomies");
+                        appStore.addImportError("This is not a valid file format for taxonomies");
                     }
                 } else if (this.progressionMode) {
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', "This is not a valid file format for progression models");
+                    var appStore = useAppStore();
+                    appStore.setImportTransition('process');
+                    appStore.addImportError("This is not a valid file format for progression models");
                 } else {
-                    me.$store.commit('app/importFileType', 'pdf');
+                    var appStore = useAppStore();
+                    appStore.setImportFileType('pdf');
                     me.firstImport = false;
                     me.detailsDetected.fileType = "pdf";
-                    me.$store.commit('app/importStatus', "File selected.");
-                    me.$store.commit('app/importTransition', 'info');
+                    appStore.setImportStatus("File selected.");
+                    appStore.setImportTransition('info');
                 }
             } else if (file.name.endsWith(".docx")) {
                 if (this.conceptMode) {
-                    me.$store.commit('app/importTransition', 'process');
+                    var appStore = useAppStore();
+                    appStore.setImportTransition('process');
                     if (me.queryParams.ceasnDataFields === 'true') {
-                        me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                        appStore.addImportError("This is not a valid file format for concept schemes");
                     } else {
-                        me.$store.commit('app/addImportError', "This is not a valid file format for taxonomies");
+                        appStore.addImportError("This is not a valid file format for taxonomies");
                     }
                 } else if (this.progressionMode) {
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', "This is not a valid file format for progression models");
+                    var appStore = useAppStore();
+                    appStore.setImportTransition('process');
+                    appStore.addImportError("This is not a valid file format for progression models");
                 } else {
-                    me.$store.commit('app/importFileType', "pdf");
+                    var appStore = useAppStore();
+                    appStore.setImportFileType("pdf");
                     me.firstImport = false;
-                    me.$store.commit('app/importStatus', "File selected.");
-                    me.$store.commit('app/importTransition', 'info');
+                    appStore.setImportStatus("File selected.");
+                    appStore.setImportTransition('info');
                 }
             } else if (file.name.endsWith(".html")) {
                 if (this.conceptMode) {
-                    me.$store.commit('app/importTransition', 'process');
+                    var appStore = useAppStore();
+                    appStore.setImportTransition('process');
                     if (me.queryParams.ceasnDataFields === 'true') {
-                        me.$store.commit('app/addImportError', "This is not a valid file format for concept schemes");
+                        appStore.addImportError("This is not a valid file format for concept schemes");
                     } else {
-                        me.$store.commit('app/addImportError', "This is not a valid file format for taxonomies");
+                        appStore.addImportError("This is not a valid file format for taxonomies");
                     }
                 } else if (this.progressionMode) {
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', "This is not a valid file format for progression models");
+                    var appStore = useAppStore();
+                    appStore.setImportTransition('process');
+                    appStore.addImportError("This is not a valid file format for progression models");
                 } else {
-                    me.$store.commit('app/importFileType', "pdf");
+                    var appStore = useAppStore();
+                    appStore.setImportFileType("pdf");
                     me.detailsDetected.fileType = "html";
                     me.firstImport = false;
-                    me.$store.commit('app/importStatus', "File selected.");
-                    me.$store.commit('app/importTransition', 'info');
+                    appStore.setImportStatus("File selected.");
+                    appStore.setImportTransition('info');
                 }
             } else {
-                me.$store.commit('app/importFileType', '');
+                var appStore = useAppStore();
+                appStore.setImportFileType('');
                 let error = ("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
-                me.$store.commit('app/addImportError', error);
-                me.$store.commit('app/importTransition', 'process');
+                appStore.addImportError(error);
+                appStore.setImportTransition('process');
                 return;
             }
             if (!me.firstImport) {
@@ -749,7 +784,7 @@ export default {
             } else {
                 relationFile = files[0];
             }
-            this.$store.commit('app/csvRelationFile', relationFile);
+            useAppStore().setCsvRelationFile(relationFile);
             let me = this;
             CSVImport.analyzeFile(relationFile, function(data) {
                 for (var i = 0; i < data[0].length; i++) {
@@ -775,9 +810,10 @@ export default {
                 }
                 me.relationCount = (data.length - 1);
             }, function(error) {
-                me.$store.commit('app/importStatus', error);
-                me.$store.commit('app/importTransition', 'process');
-                me.$store.commit('app/addImportError', error);
+                var appStore = useAppStore();
+                appStore.setImportStatus(error);
+                appStore.setImportTransition('process');
+                appStore.addImportError(error);
             });
         },
         analyzeJsonLdFramework: function(file, success, failure) {
@@ -828,9 +864,11 @@ export default {
             f.setName(this.importFrameworkName);
             f.setDescription(this.importFrameworkDescription);
             let me = this;
-            me.$store.commit('app/importAllowCancel', true);
+            var appStore = useAppStore();
+            appStore.setImportAllowCancel(true);
             MedbiqImport.importCompetencies(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint, identity, function(competencies) {
-                me.$store.commit('app/importAllowCancel', false);
+                var appStore = useAppStore();
+                appStore.setImportAllowCancel(false);
                 for (var i = 0; i < competencies.length; i++) {
                     f.addCompetency(competencies[i].shortId());
                 }
@@ -840,58 +878,65 @@ export default {
                         me.firstImport = false;
                         me.analyzeImportFile();
                     } else {
-                        me.$store.commit('app/importFramework', f);
-                        me.$store.commit('editor/framework', f);
+                        var appStore = useAppStore();
+                        appStore.setImportFramework(f);
+                        useEditorStore().setFramework(f);
                         me.importSuccess();
                         me.spitEvent("importFinished", f.shortId(), "importPage");
                     }
                 }, function(failure) {
-                    me.$store.commit('app/importStatus', failure);
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', failure);
+                    var appStore = useAppStore();
+                    appStore.setImportStatus(failure);
+                    appStore.setImportTransition('process');
+                    appStore.addImportError(failure);
                 });
             },
             function(failure) {
-                me.$store.commit('app/importStatus', failure);
-                me.$store.commit('app/importTransition', 'process');
-                me.$store.commit('app/addImportError', failure);
+                var appStore = useAppStore();
+                appStore.setImportStatus(failure);
+                appStore.setImportTransition('process');
+                appStore.addImportError(failure);
             },
             function(increment) {
-                me.$store.commit('app/importStatus', increment.competencies + "/" + me.competencyCount + " competencies imported.");
+                useAppStore().setImportStatus(increment.competencies + "/" + me.competencyCount + " competencies imported.");
             }, me.repo);
         },
         importAsn: function() {
             var identity = EcIdentityManager.default.ids[0];
             let me = this;
-            me.$store.commit('app/importTransition', 'process');
-            me.$store.commit('app/importAllowCancel', true);
+            var appStore = useAppStore();
+            appStore.setImportTransition('process');
+            appStore.setImportAllowCancel(true);
             ASNImport.importCompetencies(this.repo.selectedServer, identity, true, function(competencies, f) {
-                me.$store.commit('app/importAllowCancel', false);
+                var appStore = useAppStore();
+                appStore.setImportAllowCancel(false);
                 me.importFile.splice(0, 1);
                 if (me.importFile.length > 0) {
                     me.firstImport = false;
                     me.analyzeImportFile();
                 } else {
-                    me.$store.commit('app/importFramework', f);
-                    me.$store.commit('editor/framework', f);
+                    appStore.setImportFramework(f);
+                    useEditorStore().setFramework(f);
                     me.importSuccess();
                     me.spitEvent("importFinished", f.shortId(), "importPage");
                 }
             },
             function(failure) {
-                me.$store.commit('app/importTransition', 'process');
-                me.$store.commit('app/addImportError', failure);
+                var appStore = useAppStore();
+                appStore.setImportTransition('process');
+                appStore.addImportError(failure);
             },
             function(increment) {
-                me.$store.commit('app/importStatus', increment.competencies + "/" + me.competencyCount + " competencies imported.");
+                useAppStore().setImportStatus(increment.competencies + "/" + me.competencyCount + " competencies imported.");
             }, me.repo);
         },
         importCtdlAsnCsv: function() {
             let ceo = null;
             if (EcIdentityManager.default.ids.length > 0) { ceo = EcIdentityManager.default.ids[0]; }
             let me = this;
-            me.$store.commit('app/importAllowCancel', true);
-            let skip = this.$store.getters['app/importSkip'];
+            var appStore = useAppStore();
+            appStore.setImportAllowCancel(true);
+            let skip = appStore.importSkip;
 
             // Define validation rules based on import type
             var validationRules = null;
@@ -932,21 +977,24 @@ export default {
             }
 
             CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies, relations) {
-                me.$store.commit('app/importAllowCancel', false);
+                var appStore = useAppStore();
+                appStore.setImportAllowCancel(false);
                 for (var i = 0; i < frameworks.length; i++) {
                     if (me.queryParams.ceasnDataFields === true) {
                         if (frameworks[i]["schema:inLanguage"] == null || frameworks[i]["schema:inLanguage"] === undefined) {
                             me.setDefaultLanguage();
-                            frameworks[i]["schema:inLanguage"] = me.$store.state.editor.defaultLanguage;
+                            frameworks[i]["schema:inLanguage"] = useEditorStore().defaultLanguage;
                         }
                     }
                 }
                 var all = frameworks.concat(competencies).concat(relations);
-                me.$store.commit('app/importStatus', "Saving " + all.length + " objects.");
+                appStore.setImportStatus("Saving " + all.length + " objects.");
                 me.repo.multiput(all, function() {
+                    var appStore = useAppStore();
+                    var editorStore = useEditorStore();
                     for (var i = 0; i < frameworks.length; i++) {
-                        me.$store.commit('app/importFramework', frameworks[i]);
-                        me.$store.commit('editor/framework', frameworks[i]);
+                        appStore.setImportFramework(frameworks[i]);
+                        editorStore.setFramework(frameworks[i]);
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                     }
                     me.importFile.splice(0, 1);
@@ -958,7 +1006,7 @@ export default {
                             me.importSuccess();
                         } else {
                             // If multiple frameworks uploaded, go to list instead of the last framework in the spreadsheet
-                            me.$store.commit('app/sortResults', {
+                            appStore.setSortResults({
                                 id: 'dateCreated',
                                 label: 'created date'
                             });
@@ -984,10 +1032,11 @@ export default {
         },
         importPdf: function() {
             var me = this;
-            me.$store.commit('app/importStatus', 'importing framework...');
+            var appStore = useAppStore();
+            appStore.setImportStatus('importing framework...');
             var formData = new FormData();
             formData.append(me.importFile[0].name, me.importFile[0]);
-            me.$store.commit('app/importStatus', 'importing file...');
+            appStore.setImportStatus('importing file...');
             EcRemote.postExpectingString(
                 "https://t3.cassproject.org/service/parse/",
                 "docx",
@@ -995,14 +1044,16 @@ export default {
                 function(s) {
                     var d = s;
                     if (d == null) {
-                        me.$store.commit('app/importStatus', s);
-                        me.$store.commit('app/importTransition', 'process');
-                        me.$store.commit('app/addImportError', s);
+                        var appStore = useAppStore();
+                        appStore.setImportStatus(s);
+                        appStore.setImportTransition('process');
+                        appStore.addImportError(s);
                         return;
                     }
                     var uuid = new UUID(3, "nil", d.name).format();
                     var f = new EcFramework();
-                    me.$store.commit('app/importStatus', 'looking for existing framework...');
+                    var appStore = useAppStore();
+                    appStore.setImportStatus('looking for existing framework...');
                     if (me.queryParams && me.queryParams.newObjectEndpoint) {
                         f.id = me.queryParams.newObjectEndpoint + uuid;
                     } else {
@@ -1010,18 +1061,20 @@ export default {
                     }
                     me.repo.search("(@id:\"" + f.shortId() + "\") AND (@type:Framework)", function() {}, function(frameworks) {
                         appLog(frameworks);
-                        me.$store.commit('app/importStatus', 'looking for existing framwork...');
+                        var appStore = useAppStore();
+                        appStore.setImportStatus('looking for existing framwork...');
                         if (frameworks.length > 0) {
-                            me.$store.commit('app/importStatus', 'framework found...');
+                            appStore.setImportStatus('framework found...');
                             me.showModal('duplicate', d);
                         } else {
-                            me.$store.commit('app/importStatus', 'no match, saving new framework...');
+                            appStore.setImportStatus('no match, saving new framework...');
                             me.savePdfImport(d);
                         } /* TO DO - ERROR HANDLING HERE */
                     }, function(error) {
-                        me.$store.commit('app/importStatus', error);
-                        me.$store.commit('app/importTransition', 'process');
-                        me.$store.commit('app/addImportError', error);
+                        var appStore = useAppStore();
+                        appStore.setImportStatus(error);
+                        appStore.setImportTransition('process');
+                        appStore.addImportError(error);
                     });
                 },
                 /* TO DO - ERROR HANDLING HERE */
@@ -1030,17 +1083,19 @@ export default {
                     if (error === "") {
                         error = "Server unresponsive.";
                     }
-                    me.$store.commit('app/importStatus', error);
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', error);
+                    var appStore = useAppStore();
+                    appStore.setImportStatus(error);
+                    appStore.setImportTransition('process');
+                    appStore.addImportError(error);
                 }
             );
-            me.$store.commit('app/importTransition', 'process');
-            me.$store.commit('app/importStatus', 'processing file...');
+            appStore.setImportTransition('process');
+            appStore.setImportStatus('processing file...');
         },
         savePdfImport: function(d, newName) {
             var me = this;
-            me.$store.commit('app/importStatus', 'saving file...');
+            var appStore = useAppStore();
+            appStore.setImportStatus('saving file...');
             var toSave = [];
             var f = new EcFramework();
             var name = newName || d.name;
@@ -1067,9 +1122,9 @@ export default {
             appLog("message: ", JSON.parse(f.toJson()));
             var cs = {};
             if (!d.competencies) {
-                me.$store.commit('app/importStatus', "Error importing competencies.");
-                me.$store.commit('app/importTransition', 'process');
-                me.$store.commit('app/addImportError', "Error importing competencies, no competencies found in file.");
+                appStore.setImportStatus("Error importing competencies.");
+                appStore.setImportTransition('process');
+                appStore.addImportError("Error importing competencies, no competencies found in file.");
                 return;
             }
             me.detailsDetected.competencies = d.competencies.length;
@@ -1114,18 +1169,21 @@ export default {
                 }
             }
             me.repo.multiput(toSave, function() {
-                me.$store.commit('app/importFramework', f);
-                me.$store.commit('editor/framework', f);
-                me.$store.commit('editor/t3Profile', true);
-                me.$store.commit('app/importStatus', "");
+                var appStore = useAppStore();
+                var editorStore = useEditorStore();
+                appStore.setImportFramework(f);
+                editorStore.setFramework(f);
+                editorStore.setT3Profile(true);
+                appStore.setImportStatus("");
                 me.importSuccess();
             }, function(error) {
-                me.$store.commit('app/importStatus', error);
-                me.$store.commit('app/importTransition', 'process');
-                me.$store.commit('app/addImportError', error);
+                var appStore = useAppStore();
+                appStore.setImportStatus(error);
+                appStore.setImportTransition('process');
+                appStore.addImportError(error);
             });
-            me.$store.commit('app/importTransition', 'process');
-            me.$store.commit('app/importStatus', 'saving import...');
+            appStore.setImportTransition('process');
+            appStore.setImportStatus('saving import...');
         },
         importCsv: function() {
             var file = this.importFile[0];
@@ -1144,7 +1202,7 @@ export default {
             f.setName(this.importFrameworkName);
             f.setDescription(this.importFrameworkDescription);
             let me = this;
-            me.$store.commit('app/importAllowCancel', true);
+            useAppStore().setImportAllowCancel(true);
             CSVImport.importCompetencies(
                 file,
                 endpoint,
@@ -1158,7 +1216,8 @@ export default {
                 (this.importCsvColumnRelationType ? this.importCsvColumnRelationType.index : -1),
                 (this.importCsvColumnTarget ? this.importCsvColumnTarget.index : -1),
                 function(competencies, alignments) {
-                    me.$store.commit('app/importAllowCancel', false);
+                    var appStore = useAppStore();
+                    appStore.setImportAllowCancel(false);
                     f.competency = [];
                     f.relation = [];
                     for (var i = 0; i < competencies.length; i++) {
@@ -1173,34 +1232,38 @@ export default {
                             me.firstImport = false;
                             me.analyzeImportFile();
                         } else {
-                            me.$store.commit('app/importFramework', f);
-                            me.$store.commit('editor/framework', f);
+                            var appStore = useAppStore();
+                            appStore.setImportFramework(f);
+                            useEditorStore().setFramework(f);
                             me.importSuccess();
                             me.spitEvent("importFinished", f.shortId(), "importPage");
                         }
                     }, function(failure) {
-                        me.$store.commit('app/importTransition', 'process');
-                        me.$store.commit('app/addImportError', failure);
+                        var appStore = useAppStore();
+                        appStore.setImportTransition('process');
+                        appStore.addImportError(failure);
                     });
                 },
                 function(failure) {
-                    me.$store.commit('app/importStatus', failure);
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', failure);
+                    var appStore = useAppStore();
+                    appStore.setImportStatus(failure);
+                    appStore.setImportTransition('process');
+                    appStore.addImportError(failure);
                 },
                 function(increment) {
                     if (increment.relations != null && increment.relations !== undefined) {
-                        me.$store.commit('app/importStatus', (increment.relations + "/" + me.relationCount + " relations imported."));
+                        useAppStore().setImportStatus((increment.relations + "/" + me.relationCount + " relations imported."));
                     } else if (increment.competencies != null && increment.competencies !== undefined) {
-                        me.$store.commit('app/importStatus', (increment.competencies + "/" + me.competencyCount + " competencies imported."));
+                        useAppStore().setImportStatus((increment.competencies + "/" + me.competencyCount + " competencies imported."));
                     } else {
-                        me.$store.commit('app/importStatus', "Importing...");
+                        useAppStore().setImportStatus("Importing...");
                     }
                 }, false, me.repo);
         },
         importJsonLd: function(importData) {
             return new Promise((resolve, reject) => {
-                this.$store.commit('app/importTransition', 'process');
+                var appStore = useAppStore();
+                appStore.setImportTransition('process');
                 var formData = new FormData();
                 if (importData != null && importData !== undefined) {
                     formData.append('data', JSON.stringify(importData));
@@ -1211,10 +1274,11 @@ export default {
                 var identity = EcIdentityManager.default.ids[0];
                 if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
                 let me = this;
-                me.$store.commit('app/importAllowCancel', true);
-                me.$store.commit('app/importFramework', null);
+                appStore.setImportAllowCancel(true);
+                appStore.setImportFramework(null);
                 EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
-                    me.$store.commit('app/importAllowCancel', false);
+                    var appStore = useAppStore();
+                    appStore.setImportAllowCancel(false);
                     var framework;
                     if (EcRepository.cache) {
                         delete EcRepository.cache[data];
@@ -1223,10 +1287,10 @@ export default {
                         framework = await EcConceptScheme.get(data);
                     } else {
                         framework = await EcFramework.get(data);
-                        me.$store.commit('app/importFramework', framework);
+                        appStore.setImportFramework(framework);
                     }
-                    me.$store.commit('editor/framework', framework);
-                    me.$store.commit('app/importFramework', framework);
+                    useEditorStore().setFramework(framework);
+                    appStore.setImportFramework(framework);
                     me.spitEvent("importFinished", framework.shortId(), "importPage");
                     if (me.importFile != null) {
                         me.importFile.splice(0, 1);
@@ -1239,33 +1303,35 @@ export default {
                         resolve();
                     }
                 }, function(failure) {
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
+                    var appStore = useAppStore();
+                    appStore.setImportTransition('process');
+                    appStore.setImportStatus("Import failed. Check your import file for any errors.");
                     appLog(failure.statusText);
-                    me.$store.commit('app/addImportError', failure);
+                    appStore.addImportError(failure);
                     reject(failure.statusText);
                 }).catch((err) => {
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/importStatus', "Import failed. Check your import file for any errors.");
+                    var appStore = useAppStore();
+                    appStore.setImportTransition('process');
+                    appStore.setImportStatus("Import failed. Check your import file for any errors.");
                     appLog(err);
-                    me.$store.commit('app/addImportError', err);
+                    appStore.addImportError(err);
                     reject(err);
                 });
                 if (me.conceptMode || me.progressionMode) {
                     if (me.importFileType === 'ctdlasnjsonldprogression') {
-                        me.$store.commit('app/importStatus', "Importing Progression Model");
+                        appStore.setImportStatus("Importing Progression Model");
                     } else {
                         if (me.queryParams.ceasnDataFields === 'true') {
-                            me.$store.commit('app/importStatus', "Importing Concept Scheme");
+                            appStore.setImportStatus("Importing Concept Scheme");
                         } else {
-                            me.$store.commit('app/importStatus', "Importing Taxonomy");
+                            appStore.setImportStatus("Importing Taxonomy");
                         }
                     }
                 } else {
                     if (me.importFileType === 'ctdlasnjsonldcollection') {
-                        me.$store.commit('app/importStatus', 'Importing Collection');
+                        appStore.setImportStatus('Importing Collection');
                     } else {
-                        me.$store.commit('app/importStatus', 'Importing Framework');
+                        appStore.setImportStatus('Importing Framework');
                     }
                 }
             });
@@ -1276,8 +1342,9 @@ export default {
             if (EcIdentityManager.default.ids.length > 0) {
                 ceo = EcIdentityManager.default.ids[0];
             }
-            me.$store.commit('app/importStatus', 'process');
-            me.$store.commit('app/importAllowCancel', true);
+            var appStore = useAppStore();
+            appStore.setImportStatus('process');
+            appStore.setImportAllowCancel(true);
 
             // Define validation rules based on import type
             var validationRules = null;
@@ -1318,12 +1385,13 @@ export default {
             }
 
             CTDLASNCSVConceptImport.importFrameworksAndCompetencies(me.repo, me.importFile[0], function(frameworks, competencies) {
-                me.$store.commit('app/importAllowCancel', false);
+                var appStore = useAppStore();
+                appStore.setImportAllowCancel(false);
                 if (me.queryParams.ceasnDataFields === 'true') {
                     for (var i = 0; i < frameworks.length; i++) {
                         if (frameworks[i]["dcterms:language"] == null || frameworks[i]["dcterms:language"] === undefined) {
                             me.setDefaultLanguage();
-                            frameworks[i]["dcterms:language"] = me.$store.state.editor.defaultLanguage;
+                            frameworks[i]["dcterms:language"] = useEditorStore().defaultLanguage;
                         }
                     }
                 }
@@ -1336,17 +1404,20 @@ export default {
                     }
                 }
                 var all = frameworks.concat(competencies);
-                me.$store.commit('app/importStatus', "Saving " + all.length + " objects.");
+                appStore.setImportStatus("Saving " + all.length + " objects.");
                 me.repo.multiput(all, function() {
+                    var editorStore = useEditorStore();
+                    var appStore = useAppStore();
                     for (var i = 0; i < frameworks.length; i++) {
                         me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                     }
-                    me.$store.commit('editor/framework', frameworks[0]);
-                    me.$store.commit('app/importFramework', frameworks[0]);
+                    editorStore.setFramework(frameworks[0]);
+                    appStore.setImportFramework(frameworks[0]);
                     me.importSuccess();
                 }, function(failure) {
-                    me.$store.commit('app/importTransition', 'process');
-                    me.$store.commit('app/addImportError', "Failed to save: " + failure);
+                    var appStore = useAppStore();
+                    appStore.setImportTransition('process');
+                    appStore.addImportError("Failed to save: " + failure);
                     appError(failure);
                 });
             }, function(failure) {
@@ -1363,9 +1434,10 @@ export default {
         importFromFile: function() {
             let me = this;
             try {
-                const fileType = this.$store.getters['app/importFileType'];
+                const fileType = useAppStore().importFileType;
                 appLog(fileType);
-                me.$store.commit('app/importTransition', 'process');
+                var appStore = useAppStore();
+                appStore.setImportTransition('process');
                 if (fileType === "csv") {
                     me.importCsv();
                 } else if (fileType === "ctdlasncsv" || fileType === "collectioncsv") {
@@ -1383,13 +1455,14 @@ export default {
                 } else {
                     appLog("unsupported file type");
                     let error = "Unsupported file type" + fileType;
-                    me.$store.commit('app/addImportError', error);
-                    me.$store.commit('app/importTransition', 'process');
+                    appStore.addImportError(error);
+                    appStore.setImportTransition('process');
                 }
             } catch (error) {
                 appLog("error during importFromFile", error);
-                me.$store.commit('app/addImportError', error);
-                me.$store.commit('app/importTransition', 'process');
+                var appStore = useAppStore();
+                appStore.addImportError(error);
+                appStore.setImportTransition('process');
             }
         },
         parseText: function() {
@@ -1402,7 +1475,7 @@ export default {
             } else {
                 this.importFramework.generateId(this.repo.selectedServer);
             }
-            this.importFramework.name = this.$store.getters['app/importFrameworkName'];
+            this.importFramework.name = useAppStore().importFrameworkName;
             this.importFramework["schema:dateCreated"] = new Date().toISOString();
             this.importFramework["schema:dateModified"] = new Date().toISOString();
             var toSave = [this.importFramework];
@@ -1424,12 +1497,13 @@ export default {
             }
             this.repo.multiput(toSave, function() {
                 me.spitEvent("importFinished", me.importFramework.shortId(), "importPage");
-                me.$store.commit('editor/framework', me.importFramework);
+                useEditorStore().setFramework(me.importFramework);
                 me.$router.push({name: "framework", params: {frameworkId: me.importFramework.shortId()}});
             }, function(failure) {
                 appLog("failure", failure);
-                me.$store.commit('app/addImportError', failure);
-                me.$store.commit('app/importTransition', 'process');
+                var appStore = useAppStore();
+                appStore.addImportError(failure);
+                appStore.setImportTransition('process');
             });
         },
         showImportModal: function(type) {
@@ -1437,7 +1511,7 @@ export default {
                 component: 'SupportedImportDetails',
                 documentContent: type
             };
-            this.$store.commit('app/showModal', modalObject);
+            useAppStore().openModal(modalObject);
         },
         importFromUrl: function() {
             return new Promise((resolve, reject) => {
@@ -1448,8 +1522,9 @@ export default {
                 };
                 if (!this.isValidUrl(this.importUrl)) {
                     error.details = "The URL provided is not valid.";
-                    me.$store.commit('app/addImportError', error.details);
-                    me.$store.commit('app/importTransition', 'upload');
+                    var appStore = useAppStore();
+                    appStore.addImportError(error.details);
+                    appStore.setImportTransition('upload');
                     me.showModal('error', error);
                     reject(error.details);
                     return;
@@ -1462,20 +1537,21 @@ export default {
                             me.repo.search("(@id:\"" + id + "\") AND (@type:Framework)", function() {}, function(frameworks) {
                                 appLog(frameworks);
                                 if (frameworks.length > 0) {
-                                    me.$store.commit('app/importStatus', 'framework found...');
+                                    useAppStore().setImportStatus('framework found...');
                                     if (me.importType === 'url') {
                                         me.showModal('duplicateOverwriteOnly', [result, frameworks[0]]);
                                         resolve();
                                     }
                                 } else {
-                                    me.$store.commit('app/importStatus', 'no match, saving new framework...');
+                                    useAppStore().setImportStatus('no match, saving new framework...');
                                     me.importJsonLd(result).then(resolve).catch(reject);
                                 } /* TO DO - ERROR HANDLING HERE */
                             }, function(failure) {
                                 error.details = failure;
-                                me.$store.commit('app/importStatus', failure);
-                                me.$store.commit('app/importTransition', 'process');
-                                me.$store.commit('app/addImportError', failure);
+                                var appStore = useAppStore();
+                                appStore.setImportStatus(failure);
+                                appStore.setImportTransition('process');
+                                appStore.addImportError(failure);
                                 me.showModal('error', error);
                                 reject(error.details);
                             });
@@ -1484,8 +1560,9 @@ export default {
                         }
                     } else {
                         error.details = "URL must have an '@graph' field at the top level.";
-                        me.$store.commit('app/addImportError', error.details);
-                        me.$store.commit('app/importTransition', 'process');
+                        var appStore = useAppStore();
+                        appStore.addImportError(error.details);
+                        appStore.setImportTransition('process');
                         me.showModal('error', error);
                         reject(error.details);
                         return;
@@ -1496,20 +1573,23 @@ export default {
                         } else {
                             error.details = "Competency Editor cannot be used to import taxonomies.";
                         }
-                        me.$store.commit('app/addImportError', error.details);
-                        me.$store.commit('app/importTransition', 'process');
+                        var appStore = useAppStore();
+                        appStore.addImportError(error.details);
+                        appStore.setImportTransition('process');
                         me.showModal('error', error);
                         reject(error.details);
                     }
                 }, function(failure) {
                     if (!failure) {
-                        me.$store.commit('app/addImportError', error.message);
-                        me.$store.commit('app/importTransition', 'upload');
+                        var appStore = useAppStore();
+                        appStore.addImportError(error.message);
+                        appStore.setImportTransition('upload');
                         me.showModal('error', error);
                     } else {
                         error.details = failure;
-                        me.$store.commit('app/addImportError', failure);
-                        me.$store.commit('app/importTransition', 'upload');
+                        var appStore = useAppStore();
+                        appStore.addImportError(failure);
+                        appStore.setImportTransition('upload');
                         me.showModal('error', error);
                     }
                     reject(error.message || error.failure);
@@ -1555,11 +1635,12 @@ export default {
                 this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : this.repo.selectedServer,
                 EcIdentityManager.default.ids[0],
                 function(competencies, relations) {
-                    me.$store.commit('app/importTransition', 'light');
+                    var appStore = useAppStore();
+                    appStore.setImportTransition('light');
                     let feedback = competencies.length + " competencies and " + relations.length + " relations.";
-                    me.$store.commit('app/importStatus', feedback);
+                    appStore.setImportStatus(feedback);
                     var f = new EcFramework();
-                    me.$store.commit('app/importFramework', null);
+                    appStore.setImportFramework(null);
                     for (var i = 0; i < competencies.length; i++) {
                         EcRepository.cache[competencies[i].shortId()] = competencies[i];
                         f.addCompetency(competencies[i].shortId());
@@ -1572,11 +1653,12 @@ export default {
                         f.name = me.importFrameworkName;
                     }
                     me.$nextTick(function() {
-                        me.$store.commit('app/importFramework', f);
-                        me.$store.commit('editor/framework', f);
+                        var appStore = useAppStore();
+                        appStore.setImportFramework(f);
+                        useEditorStore().setFramework(f);
                     });
                 }, function(status) {
-                    me.$store.commit('app/importStatus', status);
+                    useAppStore().setImportStatus(status);
                 },
                 appError,
                 this.repo,
@@ -1586,8 +1668,8 @@ export default {
             if (this.importType === "text" && this.importFramework) {
                 let framework = this.importFramework;
                 framework.name = this.importFrameworkName;
-                this.$store.commit('editor/changedObject', "update");
-                this.$store.commit('app/importFramework', framework);
+                useEditorStore().setChangedObject("update");
+                useAppStore().setImportFramework(framework);
             }
         },
         importFramework: function() {

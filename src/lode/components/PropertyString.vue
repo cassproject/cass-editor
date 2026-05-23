@@ -4,15 +4,15 @@
         <modal-template
             :active="removePropertyConfirmModal"
             @close="closeModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 Confirm Remove Property
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <section>
                     Are you sure you'd like to remove this property?
                 </section>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <button
                     @click="clickConfirmRemove"
                     class="is-danger is-outlined button">
@@ -226,7 +226,9 @@
 
 <script>
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
-const languagesFile = require('../ietf-language-tags_json.json');
+import { useEditorStore } from '@/stores/editor';
+import { useAppStore } from '@/stores/app';
+import languagesFile from '../ietf-language-tags_json.json';
 export default {
     name: 'PropertyString',
     props: {
@@ -304,13 +306,14 @@ export default {
             }
             if (this.newProperty === true || (this.inLanguageField && this.computedText != null && this.computedText.length === 0)) {
                 this.text = {};
-                if (this.$store.state.editor) {
+                const editorStore = useEditorStore();
+                if (editorStore) {
                     if (this.inLanguageField) {
-                        this.computedText = this.$store.state.editor.defaultLanguage;
+                        this.computedText = editorStore.defaultLanguage;
                         this.search = this.computedText;
                         this.blur();
                     } else {
-                        this.computedLanguage = this.$store.state.editor.defaultLanguage;
+                        this.computedLanguage = editorStore.defaultLanguage;
                         this.search = this.computedLanguage;
                     }
                 }
@@ -335,7 +338,7 @@ export default {
     },
     computed: {
         ceasnUser: function() {
-            const queryParams = this.$store.getters['editor/queryParams'];
+            const queryParams = useEditorStore().queryParams;
             if (queryParams.ceasnDataFields === 'true') {
                 return true;
             } else {
@@ -394,7 +397,7 @@ export default {
             },
             set: function(value) {
                 if (EcObject.isObject(this.text)) {
-                    this.$set(this.text, "@value", value.trim());
+                    this.text["@value"] = value.trim();
                 } else {
                     this.text = value.trim();
                 }
@@ -412,7 +415,7 @@ export default {
             },
             set: function(value) {
                 if (EcObject.isObject(this.text)) {
-                    this.$set(this.text, "@language", value);
+                    this.text["@language"] = value;
                 }
             }
         },
@@ -428,7 +431,7 @@ export default {
             },
             set: function(value) {
                 if (EcObject.isObject(this.text)) {
-                    this.$set(this.text, "name", value);
+                    this.text["name"] = value;
                 }
             }
         },
@@ -488,7 +491,7 @@ export default {
             if (val === 'remove') {
                 if (expandedValue && this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
                     if (expandedValue.length === 1 || (expandedValue["@value"] && expandedValue["@value"].trim().length === 1)) {
-                        this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
+                        useAppStore().showModal({component: 'RequiredPropertyModal'});
                         return;
                     }
                 }
@@ -499,7 +502,7 @@ export default {
                 }
             }
             if (val === 'required') {
-                this.$store.commit('app/showModal', {component: 'RequiredPropertyModal'});
+                useAppStore().showModal({component: 'RequiredPropertyModal'});
             }
         },
         clickConfirmRemove: function() {

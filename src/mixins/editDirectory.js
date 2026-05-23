@@ -1,9 +1,13 @@
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+
 export default {
     methods: {
         deleteObject: async function(obj) {
             appLog("deleting " + obj.id);
             var me = this;
-            let children = await this.$store.dispatch('editor/getDirectoryChildren', obj);
+            const editorStore = useEditorStore();
+            let children = await editorStore.getDirectoryChildren(obj);
             window.repo.multiget(children, function(success) {
                 new EcAsyncHelper().each(success, function(obj, done) {
                     if (obj.type === 'Framework') {
@@ -16,7 +20,8 @@ export default {
                     done();
                 }, function(objs) {
                     me.repo.deleteRegistered(obj, function() {
-                        me.$store.dispatch('app/refreshDirectories');
+                        const appStore = useAppStore();
+                        appStore.refreshDirectories();
                     }, appError);
                     if (obj.shortId() === me.directory.shortId()) {
                         me.$router.push({name: "frameworks"});
@@ -48,17 +53,20 @@ export default {
         },
         onDoneEditingNode: function() {
             let me = this;
-            if (this.$store.getters['app/rightAsideObject']) {
-                EcRepository.get(this.$store.getters['app/rightAsideObject'].shortId(), function(success) {
-                    me.$store.commit('app/rightAsideObject', success);
+            const appStore = useAppStore();
+            if (appStore.rightAsideObject) {
+                EcRepository.get(appStore.rightAsideObject.shortId(), function(success) {
+                    const appStore = useAppStore();
+                    appStore.setRightAsideObject(success);
                 }, appError);
             }
-            this.$store.commit('app/editDirectory', false);
+            appStore.setEditDirectory(false);
         }
     },
     computed: {
         editDirectory: function() {
-            return this.$store.getters['app/editDirectory'];
+            const appStore = useAppStore();
+            return appStore.directories.editDirectory;
         },
         canEditDirectory: function() {
             if (!this.directory) {
@@ -72,7 +80,8 @@ export default {
             return true;
         },
         directory: function() {
-            return this.$store.getters['app/rightAsideObject'];
+            const appStore = useAppStore();
+            return appStore.rightAsideObject;
         },
         directoryProfile: function() {
             return {
@@ -119,26 +128,30 @@ export default {
             };
         },
         changedObject: function() {
-            return this.$store.getters['editor/changedObject'];
+            const editorStore = useEditorStore();
+            return editorStore.changedObject;
         }
     },
     watch: {
         changedObject: function() {
             if (this.changedObject && this.directory && this.changedObject === this.directory.shortId()) {
                 let me = this;
+                const appStore = useAppStore();
+                const editorStore = useEditorStore();
                 EcRepository.get(this.directory.shortId(), function(dir) {
-                    if (me.$store.getters['app/selectedDirectory'] && me.$store.getters['app/selectedDirectory'].shortId() === dir.shortId()) {
-                        me.$store.commit('app/selectDirectory', dir);
+                    const appStore = useAppStore();
+                    if (appStore.directories.selectedDirectory && appStore.directories.selectedDirectory.shortId() === dir.shortId()) {
+                        appStore.selectDirectory(dir);
                     } else {
-                        me.$store.commit('app/refreshSearch', true);
+                        appStore.setRefreshSearch(true);
                     }
-                    if (me.showRightAside && dir.shortId() === me.$store.getters['app/rightAsideObject'].shortId()) {
-                        me.$store.commit('app/rightAsideObject', dir);
+                    if (me.showRightAside && dir.shortId() === appStore.rightAsideObject.shortId()) {
+                        appStore.setRightAsideObject(dir);
                     }
-                    me.$store.dispatch('app/refreshDirectories');
+                    appStore.refreshDirectories();
                 }, appError);
-                this.$store.commit('editor/changedObject', null);
+                editorStore.setChangedObject(null);
             }
         }
     }
-};
+};

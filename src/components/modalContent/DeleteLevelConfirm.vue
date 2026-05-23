@@ -4,10 +4,10 @@
         @close="closeModal"
         size="small"
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             Confirm Delete Level
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <section>
                 <b>
                     Warning! This action deletes all instances of this level.
@@ -17,7 +17,7 @@
                 This action will remove the level from <b>{{ numFrameworks }}</b> frameworks.
             </p>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <button
                 @click="deleteItem()"
                 class="is-danger is-outlined button">
@@ -34,6 +34,8 @@
 <script>
 import ModalTemplate from './ModalTemplate.vue';
 import competencyEdits from '@/mixins/competencyEdits.js';
+import { useAppStore } from '@/stores/app';
+import { useEditorStore } from '@/stores/editor';
 export default {
     name: 'DeleteLevelConfirm',
     mixins: [competencyEdits],
@@ -47,7 +49,7 @@ export default {
     },
     computed: {
         obj() {
-            return this.$store.getters['editor/itemToDelete'];
+            return this.useEditorStore().itemToDelete;
         }
     },
     mounted() {
@@ -63,11 +65,11 @@ export default {
         deleteItem() {
             this.deleteObject(this.obj);
             this.closeModal();
-            this.$store.commit('editor/setItemToDelete', {});
+            useEditorStore().setItemToDelete({});
         },
         closeModal() {
-            this.$store.commit('app/closeModal');
-            this.$store.commit('editor/setItemToDelete', {});
+            useAppStore().closeModal();
+            useEditorStore().setItemToDelete({});
         }
     }
 };

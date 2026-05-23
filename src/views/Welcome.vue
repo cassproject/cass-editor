@@ -30,7 +30,7 @@
                                 Navigate to the <router-link
                                     :to="{path: '/login', query: queryParams}"
                                     class="custom-link local"
-                                    v-if="$store.getters['featuresEnabled/apiLoginEnabled']">
+                                    v-if="apiLoginEnabled">
                                     login screen
                                 </router-link>
                                 <router-link
@@ -230,7 +230,11 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import { mapState } from 'pinia';
+import { useUserStore } from '@/stores/user';
+import { useEditorStore } from '@/stores/editor';
+import { useAppStore } from '@/stores/app';
+import { useFeaturesEnabledStore } from '@/stores/featuresEnabled';
 import casslogo from '@/assets/cass-logo-white.svg';
 import common from '@/mixins/common.js';
 import harvard from 'file-loader!../../files/Harvard Emotional Intelligence.csv';
@@ -253,10 +257,9 @@ export default {
         this.baseRepoUrl = this.repo.selectedServer.slice(0, index);
     },
     computed: {
-        ...mapState({
-            loggedInPerson: state => state.user.loggedOnPerson,
-            queryParams: state => state.editor.queryParams
-        }),
+        ...mapState(useUserStore, { loggedInPerson: 'loggedOnPerson' }),
+        ...mapState(useEditorStore, ['queryParams']),
+        ...mapState(useFeaturesEnabledStore, ['apiLoginEnabled']),
         linkToLegacyDemos: function() {
             return (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0);
         }
@@ -292,7 +295,9 @@ export default {
             var identity = EcIdentityManager.default.ids[0];
             if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
             let me = this;
-            me.$store.commit('app/importFramework', null);
+            const appStore = useAppStore();
+            const editorStore = useEditorStore();
+            appStore.setImportFramework(null);
             EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
                 if (data.indexOf("ctdlasn") !== -1) {
                     var data1 = data.substring(0, data.indexOf("ctdlasn"));
@@ -300,8 +305,8 @@ export default {
                     data = data1 + "data" + data2;
                 }
                 var framework = await EcFramework.get(data);
-                me.$store.commit('app/importFramework', framework);
-                me.$store.commit('editor/framework', framework);
+                appStore.setImportFramework(framework);
+                editorStore.setFramework(framework);
                 me.spitEvent("importFinished", framework.shortId(), "importPage");
                 me.importSuccess(framework);
             }, function(failure) {
@@ -326,10 +331,12 @@ export default {
                         }
                     }
                     var all = frameworks.concat(competencies).concat(relations);
+                    const appStore = useAppStore();
+                    const editorStore = useEditorStore();
                     me.repo.multiput(all, function() {
                         for (var i = 0; i < frameworks.length; i++) {
-                            me.$store.commit('app/importFramework', frameworks[i]);
-                            me.$store.commit('editor/framework', frameworks[i]);
+                            appStore.setImportFramework(frameworks[i]);
+                            editorStore.setFramework(frameworks[i]);
                             me.spitEvent("importFinished", frameworks[i].shortId(), "importPage");
                         }
                         me.importSuccess(frameworks[0]);
@@ -354,10 +361,12 @@ export default {
             var formData = new FormData();
             if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
             EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + serverUrl + "&dId=" + uuid, formData, null, function(success) {
+                const editorStore = useEditorStore();
+                const appStore = useAppStore();
                 EcFramework.get(id, function(f) {
-                    me.$store.commit('editor/framework', f);
+                    editorStore.setFramework(f);
                     me.spitEvent("importFinished", f.shortId(), "importPage");
-                    me.$store.commit('app/importFramework', f);
+                    appStore.setImportFramework(f);
                     me.importSuccess(f);
                 }, function() {
                     me.error = "Import Error";

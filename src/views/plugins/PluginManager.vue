@@ -147,6 +147,7 @@ import PluginListItem from '../../components/plugins/PluginListItem';
 import PluginDetails from '../../components/plugins/PluginDetails';
 import {cassUtil} from '../../mixins/cassUtil';
 import {pluginUtil} from '../../mixins/pluginUtil';
+import { useAppStore } from '@/stores/app';
 
 export default {
     mixins: [cassUtil, pluginUtil],
@@ -175,7 +176,8 @@ export default {
             else return true;
         },
         curatedPlugins: function() {
-            return this.$store.getters['app/curatedPlugins'];
+            const appStore = useAppStore();
+            return appStore.curatedPlugins;
         }
     },
     methods: {
@@ -199,7 +201,8 @@ export default {
             this.currentPlugin = {};
             this.buildManagerPluginList();
             this.showListView();
-            this.$store.commit('app/pluginLastUpdate', Date.now());
+            const appStore = useAppStore();
+            appStore.setPluginLastUpdate(Date.now());
         },
         deletePlugin() {
             this.pluginManagerBusy = true;
@@ -208,7 +211,8 @@ export default {
             this.pluginToDelete = {};
             this.showConfirmDeletePluginModal = false;
             this.buildManagerPluginList();
-            this.$store.commit('app/pluginLastUpdate', Date.now());
+            const appStore = useAppStore();
+            appStore.setPluginLastUpdate(Date.now());
         },
         cancelPluginDelete() {
             this.pluginToDelete = {};
@@ -223,16 +227,19 @@ export default {
         },
         enablePlugin(pluginId) {
             this.setPluginAsEnabled(pluginId);
-            this.$store.commit('app/pluginLastUpdate', Date.now());
+            const appStore = useAppStore();
+            appStore.setPluginLastUpdate(Date.now());
         },
         disablePlugin(pluginId) {
             this.setPluginAsDisabled(pluginId);
-            this.$store.commit('app/pluginLastUpdate', Date.now());
+            const appStore = useAppStore();
+            appStore.setPluginLastUpdate(Date.now());
         },
         disableAllPlugins() {
             this.setAllPluginsAsDisabled();
             this.buildManagerPluginList();
-            this.$store.commit('app/pluginLastUpdate', Date.now());
+            const appStore = useAppStore();
+            appStore.setPluginLastUpdate(Date.now());
         },
         getPluginById(pluginId) {
             for (let p of this.pluginList) {

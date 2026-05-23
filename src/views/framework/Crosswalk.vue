@@ -14,7 +14,7 @@
         <main-layout
             :rightActive="showRightAside"
             :simple="true">
-            <template slot="top">
+            <template #top>
                 <div class="crosswalk-topbar">
                     <div
                         style="width: 100%;"
@@ -57,7 +57,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="body">
+            <template #body>
                 <div
                     id="crosswalk"
                     class="crosswalk">
@@ -358,7 +358,10 @@
 </template>
 
 <script>
-import {mapState, mapGetters} from 'vuex';
+import {mapState} from 'pinia';
+import {useCrosswalkStore} from '@/stores/crosswalk';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
 import MainLayout from '@/layouts/MainLayout.vue';
 import List from '@/lode/components/List.vue';
 import Hierarchy from '@/lode/components/Hierarchy.vue';
@@ -427,15 +430,19 @@ export default {
         MainLayout
     },
     mounted() {
-        this.$store.commit('crosswalk/resetCrosswalk');
-        this.$store.commit('crosswalk/resetCrosswalkFrameworks');
-        this.$store.commit('app/searchTerm', "");
+        const crosswalkStore = useCrosswalkStore();
+        const appStore = useAppStore();
+        crosswalkStore.resetCrosswalk();
+        crosswalkStore.resetCrosswalkFrameworks();
+        appStore.searchTerm("");
     },
-    beforeDestroy: function() {
-        this.$store.commit('crosswalk/resetCrosswalk');
-        this.$store.commit('crosswalk/resetCrosswalkFrameworks');
-        this.$store.commit('app/clearSearchFilters');
-        this.$store.commit('app/searchTerm', "");
+    beforeUnmount: function() {
+        const crosswalkStore = useCrosswalkStore();
+        const appStore = useAppStore();
+        crosswalkStore.resetCrosswalk();
+        crosswalkStore.resetCrosswalkFrameworks();
+        appStore.clearSearchFilters();
+        appStore.searchTerm("");
     },
     watch: {
         step: function(val) {
@@ -446,15 +453,17 @@ export default {
                 this.steps[1].complete = false;
                 this.steps[2].complete = false;
                 this.steps[3].complete = false;
-                this.$store.commit('crosswalk/resetFrameworkSourceRelationships');
-                this.$store.commit('crosswalk/resetCrosswalkAlignmentsAndState');
+                const crosswalkStore = useCrosswalkStore();
+                crosswalkStore.resetFrameworkSourceRelationships();
+                crosswalkStore.resetCrosswalkAlignmentsAndState();
             } else if (val === 1) {
                 this.steps[0].complete = true;
                 this.steps[1].complete = false;
                 this.steps[2].complete = false;
                 this.steps[3].complete = false;
-                this.$store.commit('crosswalk/resetFrameworkTargetRelationships');
-                this.$store.commit('crosswalk/resetCrosswalkAlignmentsAndState');
+                const crosswalkStore = useCrosswalkStore();
+                crosswalkStore.resetFrameworkTargetRelationships();
+                crosswalkStore.resetCrosswalkAlignmentsAndState();
             } else if (val === 2) {
                 this.steps[0].complete = true;
                 this.steps[1].complete = true;
@@ -491,12 +500,14 @@ export default {
             if (this.alignmentsSaved) {
                 if (this.saveToSourceFramework && !this.saveToTargetFramework) {
                     let id = this.sourceFrameworkSaving.shortId();
-                    this.$store.commit('editor/framework', this.sourceFrameworkSaving);
-                    this.$store.commit('editor/setPropertyLevel', "tertiary");
+                    const editorStore = useEditorStore();
+                    editorStore.framework(this.sourceFrameworkSaving);
+                    editorStore.setPropertyLevel("tertiary");
                     this.$router.push({name: 'framework', params: {frameworkId: id}});
                 } else {
                     // If saving to both frameworks, go to list sorted by last modified
-                    this.$store.commit('app/sortResults', {
+                    const appStore = useAppStore();
+                    appStore.sortResults({
                         id: 'lastEdited',
                         label: 'last modified'
                     });
@@ -506,8 +517,44 @@ export default {
         }
     },
     computed: {
-        queryParamsComputed: function() {
-            return this.$store.getters['editor/queryParams'];
+        ...mapState(useEditorStore, {
+            queryParamsComputed: 'queryParams'
+        }),
+        ...mapState(useAppStore, ['filterByOwnedByMe', 'sortResults', 'quickFilters']),
+        ...mapState(useCrosswalkStore, [
+            'step', 'frameworkSource', 'frameworkTarget',
+            'frameworkSourceRelationships', 'frameworkTargetRelationships',
+            'relevantExistingAlignmentsMap',
+            'alignmentsToSave', 'alignmentsToDelete',
+            'targetState', 'sourceState',
+            'targetNodesToHighlight', 'enabledRelationshipTypes'
+        ]),
+        workingAlignmentsSource: function() {
+            return useCrosswalkStore().workingAlignmentsMap.source;
+        },
+        workingAlignmentsTargets: function() {
+            return useCrosswalkStore().workingAlignmentsMap.targets;
+        },
+        workingAlignmentsInitialTargets: function() {
+            return useCrosswalkStore().workingAlignmentsMap.initialTargets;
+        },
+        workingAlignmentsRemovedTargets: function() {
+            return useCrosswalkStore().workingAlignmentsMap.removedTargets;
+        },
+        workingAlignmentsChanged: function() {
+            return useCrosswalkStore().workingAlignmentsMap.changed;
+        },
+        workingAlignmentsType: function() {
+            return useCrosswalkStore().workingAlignmentsMap.type;
+        },
+        workingAlignmentsMap: function() {
+            return useCrosswalkStore().workingAlignmentsMap;
+        },
+        frameworkSearchTerm: function() {
+            return useAppStore().frameworkSearchTerm;
+        },
+        showRightAside: function() {
+            return useAppStore().showRightAside;
         },
         type: function() {
             return "Framework";
@@ -522,9 +569,6 @@ export default {
                 obj.ownership = 'me';
             }
             return obj;
-        },
-        filterByOwnedByMe: function() {
-            return this.$store.getters['app/filterByOwnedByMe'];
         },
         searchOptions: function() {
             let search = "";
@@ -554,34 +598,7 @@ export default {
             } else {
                 return [];
             }
-        },
-        ...mapState({
-            step: state => state.crosswalk.step,
-            frameworkSearchTerm: state => state.app.frameworkSearchTerm,
-            showRightAside: state => state.app.showRightAside,
-            frameworkSource: state => state.crosswalk.frameworkSource,
-            frameworkTarget: state => state.crosswalk.frameworkTarget,
-            frameworkSourceRelationships: state => state.crosswalk.frameworkSourceRelationships,
-            frameworkTargetRelationships: state => state.crosswalk.frameworkTargetRelationships,
-            relevantExistingAlignmentsMap: state => state.crosswalk.relevantExistingAlignmentsMap,
-            workingAlignmentsSource: state => state.crosswalk.workingAlignmentsMap.source,
-            workingAlignmentsTargets: state => state.crosswalk.workingAlignmentsMap.targets,
-            workingAlignmentsInitialTargets: state => state.crosswalk.workingAlignmentsMap.initialTargets,
-            workingAlignmentsRemovedTargets: state => state.crosswalk.workingAlignmentsMap.removedTargets,
-            workingAlignmentsChanged: state => state.crosswalk.workingAlignmentsMap.changed,
-            workingAlignmentsType: state => state.crosswalk.workingAlignmentsMap.type,
-            workingAlignmentsMap: state => state.crosswalk.workingAlignmentsMap,
-            alignmentsToSave: state => state.crosswalk.alignmentsToSave,
-            alignmentsToDelete: state => state.crosswalk.alignmentsToDelete,
-            targetState: state => state.crosswalk.targetState,
-            sourceState: state => state.crosswalk.sourceState,
-            targetNodesToHighlight: state => state.crosswalk.targetNodesToHighlight,
-            enabledRelationshipTypes: state => state.crosswalk.enabledRelationshipTypes
-        }),
-        ...mapGetters({
-            sortResults: 'app/sortResults',
-            quickFilters: 'app/quickFilters'
-        })
+        }
     },
     methods: {
         determineAbilityToSaveToFrameworks: function() {
@@ -604,10 +621,12 @@ export default {
             this.alignmentsSaved = false;
             this.crosswalkSaveBusy = false;
             this.determineAbilityToSaveToFrameworks();
-            this.$store.commit('crosswalk/step', 3);
+            const crosswalkStore = useCrosswalkStore();
+            crosswalkStore.step(3);
         },
         returnToCrosswalkEditing: function() {
-            this.$store.commit('crosswalk/step', 2);
+            const crosswalkStore = useCrosswalkStore();
+            crosswalkStore.step(2);
         },
         addRelationshipsToFrameworks: function() {
             let ats = this.alignmentsToSave;
@@ -635,7 +654,8 @@ export default {
                 appLog("New crosswalk alignment: " + ata.shortId());
                 this.addAllIdentityPksAsOwners(ata);
             }
-            this.$store.commit('crosswalk/alignmentsToSave', ats);
+            const crosswalkStore = useCrosswalkStore();
+            crosswalkStore.alignmentsToSave(ats);
         },
         handleSaveTargetFrameworkSuccess: function() {
             this.alignmentsSaved = true;
@@ -740,13 +760,17 @@ export default {
         applyRemovedWorkingAlignmentChanges: function() {
             for (let wart of this.workingAlignmentsRemovedTargets) {
                 let ecaObj = this.getEcAlignmentObjectFromRelevantAlignmentsMap(this.workingAlignmentsSource, wart, this.workingAlignmentsType);
-                if (ecaObj && ecaObj.id && ecaObj.id.trim() !== '') this.$store.commit('crosswalk/appendAlignmentsToDelete', ecaObj);
+                if (ecaObj && ecaObj.id && ecaObj.id.trim() !== '') {
+                    const crosswalkStore = useCrosswalkStore();
+                    crosswalkStore.appendAlignmentsToDelete(ecaObj);
+                }
                 let alignProps = {};
                 alignProps.source = this.workingAlignmentsSource;
                 alignProps.target = wart;
                 alignProps.type = this.workingAlignmentsType;
-                this.$store.commit('crosswalk/removeAlignmentFromRelevantAlignmentsMap', alignProps);
-                this.$store.commit('crosswalk/removeAlignmentFromAlignmentsToSave', alignProps);
+                const crosswalkStore = useCrosswalkStore();
+                crosswalkStore.removeAlignmentFromRelevantAlignmentsMap(alignProps);
+                crosswalkStore.removeAlignmentFromAlignmentsToSave(alignProps);
             }
         },
         getAndRemoveEcAlignmentObjectFromAlignmentsToDelete(alignProps) {
@@ -756,7 +780,10 @@ export default {
                     ret = a;
                 }
             }
-            if (ret) this.$store.commit('crosswalk/removeAlignmentFromAlignmentsToDelete', alignProps);
+            if (ret) {
+                const crosswalkStore = useCrosswalkStore();
+                crosswalkStore.removeAlignmentFromAlignmentsToDelete(alignProps);
+            }
             return ret;
         },
         genPartialIdPiece(compId) {
@@ -782,19 +809,25 @@ export default {
                 alignProps.type = this.workingAlignmentsType;
                 let ecaObj = this.getAndRemoveEcAlignmentObjectFromAlignmentsToDelete(alignProps);
                 if (!ecaObj) ecaObj = this.generateAlignmentObjectFromAlignProps(alignProps);
-                if (!ecaObj.id || ecaObj.id.trim() === '') this.$store.commit('crosswalk/appendAlignmentsToSave', ecaObj);
-                this.$store.commit('crosswalk/addAlignmentToRelevantAlignmentsMap', ecaObj);
+                if (!ecaObj.id || ecaObj.id.trim() === '') {
+                    const crosswalkStore = useCrosswalkStore();
+                    crosswalkStore.appendAlignmentsToSave(ecaObj);
+                }
+                const crosswalkStore2 = useCrosswalkStore();
+                crosswalkStore2.addAlignmentToRelevantAlignmentsMap(ecaObj);
             }
         },
         applyWorkingAlignmentChanges: function() {
             if (this.workingAlignmentsChanged) {
                 this.applyRemovedWorkingAlignmentChanges();
                 this.applyAddedWorkingAlignmentChanges();
-                this.$store.commit('crosswalk/relevantExistingAlignmentsMapLastUpdate', Date.now());
-                this.$store.commit('crosswalk/populateAlignedCompetenciesList');
+                const crosswalkStore = useCrosswalkStore();
+                crosswalkStore.relevantExistingAlignmentsMapLastUpdate(Date.now());
+                crosswalkStore.populateAlignedCompetenciesList();
             }
-            this.$store.commit('crosswalk/sourceState', 'ready');
-            this.$store.commit('crosswalk/resetWorkingAlignmentsMap');
+            const crosswalkStore = useCrosswalkStore();
+            crosswalkStore.sourceState('ready');
+            crosswalkStore.resetWorkingAlignmentsMap();
         },
         addRelationshipListToRelevantAlignments(relArray, processedRelationshipIds, relAlignmentMap) {
             for (let r of relArray) {
@@ -815,14 +848,16 @@ export default {
                 this.addRelationshipListToRelevantAlignments(this.frameworkSourceRelationships, processedRelationshipIds, relAlignmentMap);
                 this.addRelationshipListToRelevantAlignments(this.frameworkTargetRelationships, processedRelationshipIds, relAlignmentMap);
             }
-            this.$store.commit('crosswalk/relevantExistingAlignmentsMap', relAlignmentMap);
-            this.$store.commit('crosswalk/populateAlignedCompetenciesList');
+            const crosswalkStore = useCrosswalkStore();
+            crosswalkStore.relevantExistingAlignmentsMap(relAlignmentMap);
+            crosswalkStore.populateAlignedCompetenciesList();
         },
         handleBuildFrameworkTargetRelationshipsSuccess(ecrlda) {
             appLog("Building framework target relationship list...");
-            this.$store.commit('crosswalk/frameworkTargetRelationships', this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
+            const crosswalkStore = useCrosswalkStore();
+            crosswalkStore.frameworkTargetRelationships(this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
             this.buildRelevantAlignmentsMap();
-            this.$store.commit('crosswalk/step', 2);
+            crosswalkStore.step(2);
         },
         buildFrameworkTargetRelationships() {
             let repo = window.repo;
@@ -838,10 +873,11 @@ export default {
         },
         handleBuildFrameworkSourceRelationshipsSuccess(ecrlda) {
             appLog("Building framework source relationship list...");
-            this.$store.commit('crosswalk/frameworkSourceRelationships', this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
+            const crosswalkStore = useCrosswalkStore();
+            crosswalkStore.frameworkSourceRelationships(this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
             this.buildRelevantAlignmentsMap();
-            if (this.frameworkTarget) this.$store.commit('crosswalk/step', 2);
-            else this.$store.commit('crosswalk/step', 1);
+            if (this.frameworkTarget) crosswalkStore.step(2);
+            else crosswalkStore.step(1);
         },
         buildFrameworkSourceRelationships() {
             let repo = window.repo;
@@ -907,30 +943,34 @@ export default {
         setEnabledRelationshipTypesFromT3ProfileConfig: function() {
             appLog('Using T3 configuration for enabled relationship types');
             let ert = this.getEnabledRelationshipTypesFromObject(this.t3CompetencyProfile);
-            this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
-            this.$store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
+            const crosswalkStore = useCrosswalkStore();
+            crosswalkStore.enabledRelationshipTypes(ert);
+            crosswalkStore.enabledRelationshipTypesLastUpdate(Date.now());
         },
         setEnabledRelationshipTypesFromCeasnProfileConfig: function() {
             appLog('Using CEASN configuration for enabled relationship types');
             let ert = this.getEnabledRelationshipTypesFromObject(this.ctdlAsnCompetencyProfile);
-            this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
-            this.$store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
+            const crosswalkStore = useCrosswalkStore();
+            crosswalkStore.enabledRelationshipTypes(ert);
+            crosswalkStore.enabledRelationshipTypesLastUpdate(Date.now());
         },
         setEnabledRelationshipTypesFromTlaProfileConfig: function() {
             appLog('Using TLA configuration for enabled relationship types');
             let ert = this.getEnabledRelationshipTypesFromObject(this.tlaCompetencyProfile);
-            this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
-            this.$store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
+            const crosswalkStore = useCrosswalkStore();
+            crosswalkStore.enabledRelationshipTypes(ert);
+            crosswalkStore.enabledRelationshipTypesLastUpdate(Date.now());
         },
         setEnabledRelationshipListFromCatConfigObj: function(configObj) {
+            const crosswalkStore = useCrosswalkStore();
             if (!configObj || !configObj.relationshipConfig) {
                 let ert = this.getFallbackEnabledRelationshipTypes();
-                this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
-                this.$store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
+                crosswalkStore.enabledRelationshipTypes(ert);
+                crosswalkStore.enabledRelationshipTypesLastUpdate(Date.now());
             } else {
                 let ert = this.getEnabledRelationshipTypesFromObject(configObj.relationshipConfig);
-                this.$store.commit('crosswalk/enabledRelationshipTypes', ert);
-                this.$store.commit('crosswalk/enabledRelationshipTypesLastUpdate', Date.now());
+                crosswalkStore.enabledRelationshipTypes(ert);
+                crosswalkStore.enabledRelationshipTypesLastUpdate(Date.now());
             }
         },
         setEnabledRelationshipTypesFromOtherConfig: async function() {
@@ -962,31 +1002,35 @@ export default {
             }
         },
         determineEnabledRelationshipTypesFromSourceConfiguration: async function() {
-            if (this.$store.state.editor.t3Profile === true) this.setEnabledRelationshipTypesFromT3ProfileConfig();
+            if (useEditorStore().t3Profile === true) this.setEnabledRelationshipTypesFromT3ProfileConfig();
             else if (this.queryParamsComputed.ceasnDataFields === "true") this.setEnabledRelationshipTypesFromCeasnProfileConfig();
             else if (this.queryParamsComputed.tlaProfile === "true") this.setEnabledRelationshipTypesFromTlaProfileConfig();
             else await this.setEnabledRelationshipTypesFromOtherConfig();
         },
         frameworkClickSource: async function(framework) {
             let me = this;
-            this.$store.commit('crosswalk/resetFrameworkSourceRelationships');
+            const crosswalkStore = useCrosswalkStore();
+            crosswalkStore.resetFrameworkSourceRelationships();
             /* Should we exclude framework A from framework B options */
             EcFramework.get(framework.id, async function(success) {
-                me.$store.commit('crosswalk/frameworkSource', success);
+                crosswalkStore.frameworkSource(success);
                 await me.determineEnabledRelationshipTypesFromSourceConfiguration();
                 me.buildFrameworkSourceRelationships();
             }, appError);
-            this.$store.commit('app/searchTerm', '');
+            const appStore = useAppStore();
+            appStore.searchTerm('');
         },
         frameworkClickTarget: function(framework) {
             var me = this;
-            this.$store.commit('crosswalk/resetFrameworkTargetRelationships');
+            const crosswalkStore = useCrosswalkStore();
+            crosswalkStore.resetFrameworkTargetRelationships();
             /* Should we exclude framework A from framework B options */
             EcFramework.get(framework.id, function(success) {
-                me.$store.commit('crosswalk/frameworkTarget', success);
+                crosswalkStore.frameworkTarget(success);
                 me.buildFrameworkTargetRelationships();
             }, appError);
-            this.$store.commit('app/searchTerm', '');
+            const appStore = useAppStore();
+            appStore.searchTerm('');
         }
     }
 };

@@ -109,6 +109,8 @@
 </template>
 <script>
 import common from '@/mixins/common.js';
+import { useEditorStore } from '@/stores/editor';
+import { useAppStore } from '@/stores/app';
 export default {
     name: 'TimelineElement',
     mixins: [common],
@@ -140,7 +142,7 @@ export default {
             return this.$moment(this.timestamp).fromNow();
         },
         assertions: function() {
-            return this.$store.getters['editor/assertions'];
+            return useEditorStore().sortedAssertions;
         },
         ok: function() {
             if (this.subject == null) {
@@ -231,11 +233,11 @@ export default {
             if (this.assertion == null) {
                 return false;
             }
-            return this.assertion.hasReader(this.$store.getters['editor/badgePk']);
+            return this.assertion.hasReader(useEditorStore().badgePk);
         },
         badgeUrl: function() {
             if (this.assertion != null) {
-                if (this.assertion.hasReader(this.$store.getters['editor/badgePk'])) {
+                if (this.assertion.hasReader(useEditorStore().badgePk)) {
                     return EcRemote.urlAppend(repo.selectedServer, "badge/assertion/") + this.assertion.getGuid();
                 }
             }
@@ -253,7 +255,7 @@ export default {
             }
         }
     },
-    destroyed: function() {
+    unmounted: function() {
         clearInterval(this.invl);
     },
     watch: {
@@ -262,7 +264,7 @@ export default {
             if (this.evidence != null) {
                 if (this.evidence.length > 0) {
                     var count = this.evidence.length;
-                    this.$store.dispatch('editor/computeBecause', this.evidence).then((because) => {
+                    useEditorStore().computeBecause(this.evidence).then((because) => {
                         this.$nextTick(() => {
                             if (count === this.evidence.length) {
                                 this.evidenceExplanation = because;
@@ -350,7 +352,7 @@ export default {
                 }, () => {
                     for (var i = 0; i < this.assertions.length; i++) {
                         while (this.assertions[i].id === assertion.id) {
-                            this.$store.commit('editor/removeAssertionAtIndex', i);
+                            useEditorStore().removeAssertionAtIndex(i);
                         }
                     }
                 });
@@ -359,10 +361,12 @@ export default {
         gotoCompetency: function() {
             EcFramework.search(window.repo, "competency:\"" + this.assertion.competency + "\"").then((success) => {
                 if (success.length > 0) {
-                    this.$store.commit('editor/framework', success[0]);
-                    this.$store.commit('editor/clearFrameworkCommentData');
-                    this.$store.commit('app/setCanViewComments', this.canViewCommentsCurrentFramework());
-                    this.$store.commit('app/setCanAddComments', this.canAddCommentsCurrentFramework());
+                    const editorStore = useEditorStore();
+                    const appStore = useAppStore();
+                    editorStore.setFramework(success[0]);
+                    editorStore.clearFrameworkCommentData();
+                    appStore.setCanViewComments(this.canViewCommentsCurrentFramework());
+                    appStore.setCanAddComments(this.canAddCommentsCurrentFramework());
                     this.$router.push({name: "framework", params: {frameworkId: success[0].id}});
                 }
             }).catch(appError);
@@ -433,7 +437,7 @@ export default {
             if (window.confirm('Are you sure you want to delete this assertion?')) {
                 EcRepository.get(this.uri, (resource) => {
                     EcRepository._delete(resource, () => {
-                        this.$store.commit('editor/removeAssertion', resource);
+                        useEditorStore().removeAssertion(resource);
                     }, appError);
                 });
             }

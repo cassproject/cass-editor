@@ -60,7 +60,7 @@
                     </span>
                 </div>
                 <div
-                    @click="$store.commit('app/importTransition', 'preview')"
+                    @click="acceptDetails"
                     v-if="importTransition === 'detail'"
                     class="button is-small is-primary is-outlined">
                     <span>
@@ -76,6 +76,9 @@
 </template>
 
 <script>
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
+
 export default {
     name: 'ImportDetails',
     props: {
@@ -85,32 +88,18 @@ export default {
 
     },
     computed: {
-        importErrors: function() {
-            return this.$store.getters['app/importErrors'];
-        },
-        importFile: function() {
-            return this.$store.getters['app/importFiles'];
-        },
-        importTransition: function() {
-            return this.$store.getters['app/importTransition'];
-        },
-        importType: function() {
-            return this.$store.getters['app/importType'];
-        },
-        importFileType: function() {
-            return this.$store.getters['app/importFileType'];
-        },
-        importFramework: function() {
-            return this.$store.getters['app/importFramework'];
-        },
-        importStatus: function() {
-            return this.$store.getters['app/importStatus'];
+        ...mapState(useAppStore, ['importErrors', 'importFiles', 'importTransition', 'importType', 'importFileType', 'importFramework', 'importStatus']),
+        importFile() {
+            return this.importFiles;
         }
     },
     methods: {
+        acceptDetails() {
+            useAppStore().setImportTransition('preview');
+        },
         cancelImport: function() {
             this.$emit("delete-object", this.importFramework);
-            this.$store.dispatch('app/clearImport');
+            useAppStore().clearImport();
         }
     }
 };

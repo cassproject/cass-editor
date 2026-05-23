@@ -95,6 +95,8 @@
 <script>
 
 import {cassApi} from '../../mixins/cassApi';
+import {useUserStore} from '@/stores/user';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
 
 export default {
     name: 'Login',
@@ -189,7 +191,8 @@ export default {
             p.addOwner(this.identityToLinkToPerson.ppk.toPk());
             p.name = this.loginCredentials.name;
             p.email = this.loginCredentials.email;
-            this.$store.commit('user/loggedOnPerson', p);
+            const userStore = useUserStore();
+            userStore.loggedOnPerson(p);
             this.linkedPerson = p;
             EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailureNoCreateAccountCheck);
         },
@@ -206,7 +209,8 @@ export default {
                 ep.copyFrom(ecrld);
                 if (ep.getGuid().equals(this.identityToLinkToPerson.ppk.toPk().fingerprint())) {
                     matchingPersonRecordFound = true;
-                    this.$store.commit('user/loggedOnPerson', ep);
+                    const userStore = useUserStore();
+                    userStore.loggedOnPerson(ep);
                     this.linkedPerson = ep;
                     appLog('Matching person record found: ');
                     appLog(ep);
@@ -327,10 +331,12 @@ export default {
     },
     computed: {
         legacyLoginEnabled: function() {
-            return this.$store.getters['featuresEnabled/legacyLoginEnabled'];
+            const featuresStore = useFeaturesEnabledStore();
+            return featuresStore.legacyLoginEnabled;
         },
         apiLoginEnabled: function() {
-            return this.$store.getters['featuresEnabled/apiLoginEnabled'];
+            const featuresStore = useFeaturesEnabledStore();
+            return featuresStore.apiLoginEnabled;
         }
     },
     mounted() {

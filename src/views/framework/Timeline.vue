@@ -2,7 +2,7 @@
     <div>
         <main-layout
             :simple="true">
-            <template slot="top">
+            <template #top>
                 <div class="assertion-timeline-topbar">
                     <div
                         style="width: 100%;"
@@ -15,7 +15,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="body">
+            <template #body>
                 <AssertionTimeline />
             </template>
         </main-layout>
@@ -25,6 +25,9 @@
 <script>
 import MainLayout from '@/layouts/MainLayout.vue';
 import AssertionTimeline from '@/lode/components/AssertionTimeline.vue';
+import {mapState, mapActions} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
 
 export default {
     name: 'Timeline',
@@ -41,23 +44,25 @@ export default {
         AssertionTimeline
     },
     computed: {
-        me: function() {
-            return this.$store.getters['editor/getMe'];
-        }
+        ...mapState(useEditorStore, {me: 'getMe'})
     },
     watch: {
         me: function() {
-            this.$store.dispatch('editor/searchForAssertions');
+            const editorStore = useEditorStore();
+            editorStore.searchForAssertions();
         }
     },
     created() {
-        this.$store.commit('editor/setSearchingAssertions', true);
-        this.$store.commit('app/searchTerm', "");
-        this.$store.dispatch('editor/searchForAssertions');
+        const editorStore = useEditorStore();
+        const appStore = useAppStore();
+        editorStore.setSearchingAssertions(true);
+        appStore.searchTerm("");
+        editorStore.searchForAssertions();
     },
-    beforeDestroy: function() {
-        this.$store.commit('app/clearSearchFilters');
-        this.$store.commit('app/searchTerm', "");
+    beforeUnmount: function() {
+        const appStore = useAppStore();
+        appStore.clearSearchFilters();
+        appStore.searchTerm("");
     },
     methods: {}
 };

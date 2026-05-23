@@ -16,7 +16,7 @@
                             <span
                                 class="button is-pulled-right is-large is-primary is-outlined mr-4"
                                 :disabled="!importFrameworkName || !importText || importFrameworkName.trim().length === 0"
-                                @click="$store.commit('app/importStatus', 'parseText')">
+                                @click="startTextImport">
                                 Import
                             </span>
                         </h3>
@@ -68,6 +68,9 @@
 import ImportTabs from '@/components/import/ImportTabs';
 import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
 
 export default {
     name: 'ImportText',
@@ -84,53 +87,31 @@ export default {
     },
     methods: {
         handleKeydown: function(e) {
+        },
+        startTextImport() {
+            useAppStore().setImportStatus('parseText');
         }
     },
     computed: {
+        ...mapState(useAppStore, ['importErrors', 'importFramework', 'importType', 'importTransition', 'importFrameworkDescription', 'importStatus']),
+        ...mapState(useEditorStore, ['queryParams', 'conceptMode', 'progressionMode']),
         importInfoVisible: function() {
-            return this.$store.getters['app/showRightAside'];
+            return useAppStore().showRightAsideGetter;
         },
         importText() {
             // remove characters first
             return this.rawImportText;
         },
         text: function() {
-            return this.$store.getters['app/importText'];
-        },
-        importStatus: function() {
-            return this.$store.getters['app/importStatus'];
+            return useAppStore().importText;
         },
         importFrameworkName: {
             get: function() {
-                return this.$store.getters['app/importFrameworkName'];
+                return useAppStore().importFrameworkName;
             },
             set: function(val) {
-                return this.$store.commit('app/importFrameworkName', val);
+                useAppStore().setImportFrameworkName(val);
             }
-        },
-        importFrameworkDescription: function() {
-            return this.$store.getters['app/importFrameworkDescription'];
-        },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
-        },
-        conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
-        },
-        progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
-        },
-        importErrors: function() {
-            return this.$store.getters['app/importErrors'];
-        },
-        importFramework: function() {
-            return this.$store.getters['app/importFramework'];
-        },
-        importType: function() {
-            return this.$store.getters['app/importType'];
-        },
-        importTransition: function() {
-            return this.$store.getters['app/importTransition'];
         }
     }
 };

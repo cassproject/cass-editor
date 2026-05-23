@@ -169,7 +169,7 @@
                         </div>
                         <!--  start over -->
                         <div
-                            @click="$store.dispatch('app/clearImport')"
+                            @click="clearImport"
                             class="button is-dark is-outlined is-pulled-right">
                             <span>
                                 import again
@@ -254,6 +254,9 @@
 
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
 var hierarchyTimeout;
 export default {
     name: 'ProgressionHierarchy',
@@ -324,18 +327,14 @@ export default {
                 return false;
             }
         },
+        ...mapState(useEditorStore, ['queryParams', 'addAnother', 'framework']),
         canPaste: function() {
-            if ((this.$store.getters['editor/copyId'] !== null || this.$store.getters['editor/cutId'] !== null) && this.$store.getters['editor/nodeInFocus'] !== null) {
+            const editorStore = useEditorStore();
+            if ((editorStore.copyId !== null || editorStore.cutId !== null) && editorStore.nodeInFocus !== null) {
                 return true;
             } else {
                 return false;
             }
-        },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
-        },
-        addAnother: function() {
-            return this.$store.getters['editor/addAnother'];
         },
         hierarchy: function() {
             var me = this;
@@ -361,10 +360,8 @@ export default {
             return this.canEditAny(this.container);
         },
         recomputeHierarchy: function() {
-            return this.$store.getters['editor/recomputeHierarchy'];
-        },
-        framework() {
-            return this.$store.getters['editor/framework'];
+            const editorStore = useEditorStore();
+            return editorStore.recomputeHierarchy;
         }
     },
     watch: {
@@ -390,7 +387,8 @@ export default {
         recomputeHierarchy: function() {
             if (this.recomputeHierarchy) {
                 this.once = true;
-                this.$store.commit('editor/recomputeHierarchy', false);
+                const editorStore = useEditorStore();
+                editorStore.recomputeHierarchy = false;
             }
         },
         doneDragging: function() {
@@ -401,7 +399,8 @@ export default {
         addAnother: function(val) {
             if (val) {
                 this.onClickCreateNew();
-                this.$store.commit('editor/addAnother', false);
+                const editorStore = useEditorStore();
+                editorStore.addAnother(false);
             }
         }
     },
@@ -419,30 +418,38 @@ export default {
         window.addEventListener("keydown", this.keydown);
         window.addEventListener("keyup", this.keyup);
     },
-    beforeDestroy: function() {
+    beforeUnmount: function() {
         window.removeEventListener('keyup', this.keyup);
         window.removeEventListener('keydown', this.keydown);
     },
     methods: {
+        clearImport: function() {
+            const appStore = useAppStore();
+            appStore.clearImport();
+        },
         cutClick: function() {
+            const editorStore = useEditorStore();
             if (this.selectedArray && this.selectedArray.length === 1) {
-                this.$store.commit('editor/cutId', this.selectedArray[0]);
+                editorStore.cutId(this.selectedArray[0]);
             }
-            this.$store.commit('editor/copyId', null);
-            this.$store.commit('editor/paste', false);
+            editorStore.copyId(null);
+            editorStore.paste(false);
         },
         copyClick: function() {
+            const editorStore = useEditorStore();
             if (this.selectedArray && this.selectedArray.length === 1) {
-                this.$store.commit('editor/copyId', this.selectedArray[0]);
+                editorStore.copyId(this.selectedArray[0]);
             }
-            this.$store.commit('editor/cutId', null);
-            this.$store.commit('editor/paste', false);
+            editorStore.cutId(null);
+            editorStore.paste(false);
         },
         pasteClick: function() {
-            this.$store.commit('editor/paste', true);
+            const editorStore = useEditorStore();
+            editorStore.paste(true);
         },
         keydown(e) {
             if (this.canEdit) {
+                const editorStore = useEditorStore();
                 if (e.shiftKey) {
                     this.shiftKey = true;
                 }
@@ -451,20 +458,20 @@ export default {
                 }
                 if (e.key === "x" && e.ctrlKey) {
                     if (this.selectedArray && this.selectedArray.length === 1) {
-                        this.$store.commit('editor/cutId', this.selectedArray[0]);
+                        editorStore.cutId(this.selectedArray[0]);
                     }
-                    this.$store.commit('editor/copyId', null);
-                    this.$store.commit('editor/paste', false);
+                    editorStore.copyId(null);
+                    editorStore.paste(false);
                 }
                 if (e.key === "c" && e.ctrlKey) {
                     if (this.selectedArray && this.selectedArray.length === 1) {
-                        this.$store.commit('editor/copyId', this.selectedArray[0]);
+                        editorStore.copyId(this.selectedArray[0]);
                     }
-                    this.$store.commit('editor/cutId', null);
-                    this.$store.commit('editor/paste', false);
+                    editorStore.cutId(null);
+                    editorStore.paste(false);
                 }
                 if (e.key === "v" && e.ctrlKey) {
-                    this.$store.commit('editor/paste', true);
+                    editorStore.paste(true);
                 }
             }
         },
@@ -1386,14 +1393,14 @@ export default {
                 objectsToSave[i]["schema:dateModified"] = new Date().toISOString();
                 
                 // Handle encryption if needed
-                if (me.$store.state.editor.private === true && 
+                if (useEditorStore().private === true && 
                     EcEncryptedValue.encryptOnSaveMap[objectsToSave[i].id] !== true) {
                     objectsToSave[i] = await EcEncryptedValue.toEncryptedValue(objectsToSave[i]);
                 }
             }
             
             // Track changes for undo
-            me.$store.commit('editor/addEditsToUndo', [
+            useEditorStore().addEditsToUndo([
                 {operation: "update", id: fromContainer.shortId(), fieldChanged: [fromProperty], initialValue: [fromPropInitialValue]},
                 {operation: "update", id: toContainer.shortId(), fieldChanged: [toProperty], initialValue: [toPropInitialValue]},
                 {
@@ -1446,7 +1453,7 @@ export default {
                 }
             }
             this.setDefaultLanguage();
-            c["skos:prefLabel"] = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New Progression Level"};
+            c["skos:prefLabel"] = {"@language": useEditorStore().defaultLanguage, "@value": "New Progression Level"};
             c["ceasn:inProgressionModel"] = this.container.shortId();
             if (containerId === this.container.shortId()) {
                 var initialValue = this.container["skos:hasTopConcept"] ? this.container["skos:hasTopConcept"].slice() : null;
@@ -1461,13 +1468,13 @@ export default {
                     this.container["skos:hasTopConcept"].splice(index + 1, 0, c.shortId());
                 }
                 c["skos:topConceptOf"] = this.container.shortId();
-                me.$store.commit('editor/addEditsToUndo', [
+                useEditorStore().addEditsToUndo([
                     {operation: "addNew", id: c.shortId()},
                     {operation: "update", id: this.container.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]}
                 ]);
                 this.container["schema:dateModified"] = new Date().toISOString();
                 c["schema:dateModified"] = new Date().toISOString();
-                if (this.$store.state.editor.private === true) {
+                if (useEditorStore().private === true) {
                     c = await EcEncryptedValue.toEncryptedValue(c);
                     if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
                         me.container = await EcEncryptedValue.toEncryptedValue(me.container);
@@ -1494,14 +1501,14 @@ export default {
                     var index = parent["skos:narrower"].indexOf(previousSibling);
                     parent["skos:narrower"].splice(index + 1, 0, c.shortId());
                 }
-                me.$store.commit('editor/addEditsToUndo', [
+                useEditorStore().addEditsToUndo([
                     {operation: "addNew", id: c.shortId()},
                     {operation: "update", id: parent.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]}
                 ]);
                 this.container["schema:dateModified"] = new Date().toISOString();
                 c["schema:dateModified"] = new Date().toISOString();
                 parent["schema:dateModified"] = new Date().toISOString();
-                if (this.$store.state.editor.private === true) {
+                if (useEditorStore().private === true) {
                     c = await EcEncryptedValue.toEncryptedValue(c);
                     if (EcEncryptedValue.encryptOnSaveMap[parent.id] !== true) {
                         parent = await EcEncryptedValue.toEncryptedValue(parent);
@@ -1517,7 +1524,7 @@ export default {
                     appError(e);
                 }
             }
-            this.$store.commit("editor/newCompetency", c.shortId());
+            useEditorStore().newCompetency(c.shortId());
             appLog("Added node: ", JSON.parse(c.toJson()));
         },
         select: function(objId, checked) {
@@ -1532,11 +1539,13 @@ export default {
         },
         cancelImport: function() {
             this.deleteObject(this.container);
-            this.$store.dispatch('app/clearImport');
+            const appStore = useAppStore();
+            appStore.clearImport();
         },
         openFramework: async function() {
             var f = await EcConceptScheme.get(this.container.shortId());
-            this.$store.commit('editor/framework', f);
+            const editorStore = useEditorStore();
+            editorStore.framework(f);
             this.$router.push({name: "progressionModel", params: {frameworkId: this.container.id}});
         },
         onClickCreateNew: async function() {
@@ -1564,7 +1573,8 @@ export default {
             appLog("deleting " + thing.id);
             this.deleteLevelInner(thing);
             this.framework["schema:dateModified"] = new Date().toISOString();
-            this.$store.commit('editor/selectedCompetency', null);
+            const editorStore = useEditorStore();
+            editorStore.selectedCompetency(null);
         },
         deleteLevelInner: async function(c) {
             var me = this;
@@ -1577,11 +1587,11 @@ export default {
                         EcArray.setRemove(level["skos:narrower"], c.shortId());
                         level["schema:dateModified"] = new Date().toISOString();
                         editsToUndo.push({operation: "update", id: level.shortId(), fieldChanged: ["skos:narrower"], initialValue: [initialValue]});
-                        if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
+                        if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
                             level = await EcEncryptedValue.toEncryptedValue(level);
                         }
                         await repo.saveTo(level);
-                        me.$store.commit('editor/framework', me.framework);
+                        useEditorStore().framework(me.framework);
                     } catch (e) {
                         appError(e);
                     }
@@ -1604,11 +1614,11 @@ export default {
                     editsToUndo.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["skos:hasTopConcept"], initialValue: [initialValue]});
                     var framework = this.framework;
                     framework["schema:dateModified"] = new Date().toISOString();
-                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                         framework = await EcEncryptedValue.toEncryptedValue(framework);
                     }
                     await repo.saveTo(framework);
-                    me.$store.commit('editor/framework', me.framework);
+                    useEditorStore().framework(me.framework);
                 } catch (e) {
                     appError(e);
                 }
@@ -1616,8 +1626,9 @@ export default {
             this.spitEvent("levelDeleted", c.shortId(), "editFrameworkPage");
             editsToUndo.push({operation: "delete", obj: c});
             repo.deleteRegistered(c, function() {
-                me.$store.commit('editor/framework', me.framework);
-                me.$store.commit('editor/addEditsToUndo', JSON.parse(JSON.stringify(editsToUndo)));
+                const editorStore = useEditorStore();
+                editorStore.framework(me.framework);
+                editorStore.addEditsToUndo(JSON.parse(JSON.stringify(editsToUndo)));
                 editsToUndo.splice(0, editsToUndo.length);
             }, appError);
         }

@@ -24,7 +24,7 @@
                                 :class="{ 'is-active-tab': importType === 'file'}">
                                 <button
 
-                                    @click="$store.commit('app/importType', 'file')">
+                                    @click="setImportTypeFile">
                                     <i
                                         class="fa fa-2x fa-file has-text-centered is-block"
                                         aria-hidden="true" />
@@ -43,7 +43,7 @@
                                 :class="{ 'is-active-tab': importType === 'server'}">
                                 <button
 
-                                    @click="$store.commit('app/importType', 'server')">
+                                    @click="setImportTypeServer">
                                     <i
                                         class="fa fa-2x fa-server is-block has-text-centered"
                                         aria-hidden="true" />
@@ -62,7 +62,7 @@
                                 :class="{ 'is-active-tab': importType === 'text'}">
                                 <button
 
-                                    @click="$store.commit('app/importType', 'text')">
+                                    @click="setImportTypeText">
                                     <i
                                         class="fa fa-2x fa-paste has-text-centered is-block"
                                         aria-hidden="true" />
@@ -81,7 +81,7 @@
                                 :class="{ 'is-active-tab': importType === 'url'}">
                                 <button
 
-                                    @click="$store.commit('app/importType', 'url')">
+                                    @click="setImportTypeUrl">
                                     <i
                                         class="fa fa-link has-text-centered is-block fa-2x"
                                         aria-hidden="true" />
@@ -217,54 +217,49 @@
 
 <script>
 import imports from '@/mixins/import.js';
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
 
 export default {
     name: 'ImportTabs',
     mixins: [ imports ],
     methods: {
+        setImportTypeFile() {
+            useAppStore().setImportType('file');
+        },
+        setImportTypeServer() {
+            useAppStore().setImportType('server');
+        },
+        setImportTypeText() {
+            useAppStore().setImportType('text');
+        },
+        setImportTypeUrl() {
+            useAppStore().setImportType('url');
+        },
         // delete these?
         importCaseDocs: function() {
             this.$emit('import-case', this.caseDocs);
-            this.$store.commit('app/importTransition', 'importingCaseFrameworks');
+            useAppStore().setImportTransition('importingCaseFrameworks');
         },
         importFromUrl: function() {
-            this.$store.commit('app/importStatus', 'importFromUrl');
-            this.$store.commit('app/importTransition', 'importingFromUrl');
+            const appStore = useAppStore();
+            appStore.setImportStatus('importFromUrl');
+            appStore.setImportTransition('importingFromUrl');
         },
         importFromFile: function() {
+            const appStore = useAppStore();
             // import.vue watches for framework and file to be defined
-            this.$store.commit('app/importType', 'file');
-            this.$store.commit('app/importFramework', null);
-            this.$store.commit('app/importTransition', 'upload');
+            appStore.setImportType('file');
+            appStore.setImportFramework(null);
+            appStore.setImportTransition('upload');
         }
     },
     computed: {
-        conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
-        },
-        progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
-        },
-        importErrors: function() {
-            return this.$store.getters['app/importErrors'];
-        },
-        importFile: function() {
-            return this.$store.getters['app/importFiles'];
-        },
-        importTransition: function() {
-            return this.$store.getters['app/importTransition'];
-        },
-        importType: function() {
-            return this.$store.getters['app/importType'];
-        },
-        importFileType: function() {
-            return this.$store.getters['app/importFileType'];
-        },
-        importFramework: function() {
-            return this.$store.getters['app/importFramework'];
-        },
-        importStatus: function() {
-            return this.$store.getters['app/importStatus'];
+        ...mapState(useAppStore, ['importErrors', 'importFiles', 'importTransition', 'importType', 'importFileType', 'importFramework', 'importStatus']),
+        ...mapState(useEditorStore, ['conceptMode', 'progressionMode', 'queryParams']),
+        importFile() {
+            return this.importFiles;
         },
         frameworkSize: function() {
             if (this.conceptMode || this.progressionMode) {
@@ -275,9 +270,6 @@ export default {
             } else {
                 return 0;
             }
-        },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
         }
     }
 };

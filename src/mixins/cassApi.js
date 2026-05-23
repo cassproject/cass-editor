@@ -1,3 +1,9 @@
+import {useUserStore} from '@/stores/user';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useEnvironmentStore} from '@/stores/environment';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
+
 export const cassApi = {
     name: 'cassApi',
     data: () => ({
@@ -85,20 +91,24 @@ export const cassApi = {
             EcIdentityManager.default.clearContacts();
             EcIdentityManager.default.clearIdentities();
             let clearPerson = {};
-            this.$store.commit('user/loggedOnPerson', clearPerson);
-            this.$store.commit('app/showModal', {component: 'LogoutSuccess'});
+            const userStore = useUserStore();
+            const appStore = useAppStore();
+            userStore.setLoggedOnPerson(clearPerson);
+            appStore.openModal({component: 'LogoutSuccess'});
         },
         performApplicationLogin: function() {
             appLog("Performing application login...");
             EcIdentityManager.default.clearContacts();
             EcIdentityManager.default.clearIdentities();
             let clearPerson = {};
-            this.$store.commit('user/loggedOnPerson', clearPerson);
+            const userStore = useUserStore();
+            userStore.setLoggedOnPerson(clearPerson);
             if (this.apiLoginEnabled) this.redirectToExternalLogin();
             else this.goToLogin();
         },
         addQueryParams: function() {
-            let paramObj = this.$store.getters['editor/queryParams'];
+            const editorStore = useEditorStore();
+            let paramObj = editorStore.queryParams;
             let keys = EcObject.keys(paramObj);
             if (paramObj && keys.length) {
                 let toAdd = '?';
@@ -127,13 +137,16 @@ export const cassApi = {
     },
     computed: {
         cassApiLocation: function() {
-            return this.$store.getters['environment/cassApiLocation'];
+            const environmentStore = useEnvironmentStore();
+            return environmentStore.cassApiLocation;
         },
         repositorySsoOptions: function() {
-            return this.$store.getters['user/repositorySsoOptions'];
+            const userStore = useUserStore();
+            return userStore.repositorySsoOptions;
         },
         apiLoginEnabled: function() {
-            return this.$store.getters['featuresEnabled/apiLoginEnabled'];
+            const featuresEnabledStore = useFeaturesEnabledStore();
+            return featuresEnabledStore.apiLoginEnabled;
         }
     }
 };

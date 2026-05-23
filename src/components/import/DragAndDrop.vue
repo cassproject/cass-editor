@@ -42,7 +42,7 @@
                             :key="file"
                             style="display: inline; vertical-align: middle;">
                             <span class="has-text-weight-medium">
-                                {{ file.name }} ({{ file.size | kb }} kb)
+                                {{ file.name }} ({{ kb(file.size) }} kb)
                                 <button
                                     title="Remove"
                                     @click="removeFile(file)"
@@ -73,6 +73,8 @@
 </template>
 
 <script>
+import {useAppStore} from '@/stores/app';
+
 export default {
     name: 'DragAndDrop',
     data() {
@@ -89,15 +91,15 @@ export default {
     },
     watch: {
     },
-    filters: {
-        kb: function(val) {
-            return Math.floor(val / 1024);
-        }
-    },
+
     mounted: function() {
-        this.$store.commit('app/clearImportFiles');
+        const appStore = useAppStore();
+        appStore.clearImportFiles();
     },
     methods: {
+        kb(val) {
+            return Math.floor(val / 1024);
+        },
         handleDragEnter(e) {
             this.counter++;
             if (e.target.id) {
@@ -148,8 +150,9 @@ export default {
             this.$emit('clear-files');
         },
         process() {
-            this.$store.commit('app/importFiles', this.files);
-            this.$store.commit('app/importTransition', 'processFiles');
+            const appStore = useAppStore();
+            appStore.setImportFiles(this.files);
+            appStore.setImportTransition('processFiles');
         }
     }
 };

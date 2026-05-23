@@ -147,12 +147,16 @@
                     spinner="circles"
                     v-if="results.length > 0"
                     :distance="10">
-                    <div slot="no-more">
-                        All results loaded
-                    </div>
-                    <div slot="no-results">
-                        All results loaded
-                    </div>
+                    <template #no-more>
+                        <div>
+                            All results loaded
+                        </div>
+                    </template>
+                    <template #no-results>
+                        <div>
+                            All results loaded
+                        </div>
+                    </template>
                 </infinite-loading>
             </div>
         </template>
@@ -165,6 +169,9 @@ import common from '@/mixins/common.js';
 import Breadcrumbs from './Breadcrumbs.vue';
 import {cassUtil} from '@/mixins/cassUtil.js';
 import debounce from 'lodash/debounce';
+import { useAppStore } from '@/stores/app';
+import { useCrosswalkStore } from '@/stores/crosswalk';
+import { useEditorStore } from '@/stores/editor';
 export default {
     name: 'List',
     props: {
@@ -276,7 +283,7 @@ export default {
         refreshSearch: function() {
             if (this.refreshSearch) {
                 this.searchRepo();
-                this.$store.commit('app/refreshSearch', false);
+                useAppStore().setRefreshSearch(false);
             }
         },
         timeOffset: function() {
@@ -288,24 +295,24 @@ export default {
     },
     computed: {
         crosswalkAlignmentSource: function() {
-            return this.$store.getters['crosswalk/frameworkSource'];
+            return this.useCrosswalkStore().frameworkSource;
         },
         searchTerm: function(val) {
-            return this.$store.getters['app/searchTerm'];
+            return this.useAppStore().searchTerm;
         },
         refreshSearch: function(val) {
-            return this.$store.getters['app/refreshSearch'];
+            return this.useAppStore().refreshSearch;
         },
         applySearchTo: function() {
-            let options = this.$store.getters['app/applySearchTo'];
+            let options = this.useAppStore().applySearchTo;
             if (!options) return null;
             let filterValues = options.filter(item => item.checked === true);
             if (filterValues.length <= 0) return null;
             return filterValues;
         },
         rightAsideObjectId: function() {
-            if (this.$store.getters['app/rightAsideObject']) {
-                return this.$store.getters['app/rightAsideObject'].shortId();
+            if (this.useAppStore().rightAsideObject) {
+                return this.useAppStore().rightAsideObject.shortId();
             }
             return null;
         },
@@ -316,7 +323,7 @@ export default {
             return EcIdentityManager.default.ids?.length;
         },
         firstSearchProcessing: function() {
-            return this.$store.getters['editor/firstSearchProcessing'];
+            return this.useEditorStore().firstSearchProcessing;
         }
     },
     methods: {
@@ -334,7 +341,7 @@ export default {
                     parentName: null,
                     canEdit: false
                 };
-                this.$store.commit('app/showModal', modalObject);
+                this.useAppStore().openModal(modalObject);
             }
         },
         buildSearch: function(type, callback) {
@@ -457,7 +464,7 @@ export default {
                             }
                         }
                     }
-                    me.$store.commit('editor/setFirstSearchProcessing', false);
+                    useEditorStore().setFirstSearchProcessing(false);
                     if (directories && directories.length > 0) {
                         me.results = me.results.concat(directories);
                         if ($state) {
@@ -475,7 +482,7 @@ export default {
                     }
                 }, function(err) {
                     appError(err);
-                    me.$store.commit('editor/setFirstSearchProcessing', false);
+                    useEditorStore().setFirstSearchProcessing(false);
                     if ($state) {
                         $state.complete();
                     }
@@ -486,7 +493,7 @@ export default {
             var me = this;
             this.start = 0;
             this.subStart = 0;
-            me.$store.commit('editor/setFirstSearchProcessing', true);
+            useEditorStore().setFirstSearchProcessing(true);
             this.results.splice(0, this.results.length);
             this.subResults.splice(0, this.subResults.length);
             this.resultIds.splice(0, this.resultIds.length);
@@ -540,7 +547,7 @@ export default {
                                 }
                             }
                         }
-                        me.$store.commit('editor/setFirstSearchProcessing', false);
+                        useEditorStore().setFirstSearchProcessing(false);
                         if (results.length < 10 && (me.type === "Framework" || me.type === "ConceptScheme")) {
                             if (me.searchCompetencies) {
                                 me.searchForSubObjects();
@@ -548,11 +555,11 @@ export default {
                         }
                     }, function(err) {
                         appError(err);
-                        me.$store.commit('editor/setFirstSearchProcessing', false);
+                        useEditorStore().setFirstSearchProcessing(false);
                     });
                 });
             } else {
-                me.$store.commit('editor/setFirstSearchProcessing', false);
+                useEditorStore().setFirstSearchProcessing(false);
             }
             if (!this.searchFrameworks && !this.searchDirectories && (this.searchTerm !== "" || !this.displayFirst || this.displayFirst.length === 0)) {
                 // Only competency fields were selected

@@ -23,6 +23,8 @@
     </div>
 </template>
 <script>
+import { mapState } from 'pinia';
+import { useEditorStore } from '@/stores/editor';
 
 export default {
     name: 'AssertionTimeline',
@@ -38,12 +40,10 @@ export default {
         };
     },
     computed: {
-        assertions: function() {
-            return this.$store.getters['editor/assertions'];
-        },
-        loading: function() {
-            return this.$store.getters['editor/searchingAssertions'];
-        }
+        ...mapState(useEditorStore, {
+            assertions: 'sortedAssertions',
+            loading: 'searchingAssertions'
+        })
     },
     watch: {},
     methods: {}

@@ -4,20 +4,20 @@
         size="small"
         content="deleteConfiguration"
         type="primary"
-        @close="$store.commit('app/closeModal')">
-        <template slot="modal-header">
+        @close="useAppStore().closeModal()">
+        <template #modal-header>
             Framework Configuration
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <div class="p-4">
                 <configuration-list view="modal" />
             </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-spaced">
                 <button
                     class="button is-primary"
-                    @click="$store.commit('app/closeModal')">
+                    @click="useAppStore().closeModal()">
                     Done
                 </button>
             </div>
@@ -31,6 +31,7 @@ import ConfigurationList from '@/components/configuration/ConfigurationList.vue'
 
 import {cassUtil} from '../../mixins/cassUtil';
 import common from '@/mixins/common.js';
+import { useAppStore } from '@/stores/app';
 
 export default {
     mixins: [cassUtil, common],

@@ -12,7 +12,7 @@
         <div class="cass--right-aside--top-bar">
             <button
                 class="delete has-text-white"
-                @click="$store.commit('app/closeRightAside')"
+                @click="closeRightAsideAction"
                 aria-label="close">
                 <span class="icon">
                     <i class="fa fa-times" />
@@ -42,6 +42,8 @@ import Comments from './Comments.vue';
 import Versions from './Versions.vue';
 import ListItemInfo from './ListItemInfo.vue';
 import FilterAndSort from './../frameworks/FilterAndSort.vue';
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
 
 export default {
     name: 'RightAside',
@@ -60,13 +62,17 @@ export default {
         FilterAndSort,
         ListItemInfo
     },
-    computed: {
-        showRightAside: function() {
-            return this.$store.getters['app/showRightAside'];
-        },
-        rightAsideContent: function() {
-            return this.$store.getters['app/rightAsideContent'];
+    methods: {
+        closeRightAsideAction() {
+            const appStore = useAppStore();
+            appStore.closeRightAside();
         }
+    },
+    computed: {
+        ...mapState(useAppStore, {
+            showRightAside: 'showRightAsideGetter',
+            rightAsideContent: 'rightAsideContentGetter'
+        })
     }
 };
 </script>

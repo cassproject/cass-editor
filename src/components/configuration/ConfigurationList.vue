@@ -48,8 +48,10 @@
 import ConfigurationListItem from '@/components/configuration/ConfigurationListItem';
 import {cassUtil} from '@/mixins/cassUtil';
 import {configuration} from '@/mixins/configuration';
-import {mapGetters} from 'vuex';
+import {mapState} from 'pinia';
 
+import { useConfigurationStore } from '@/stores/configuration';
+import { useEditorStore } from '@/stores/editor';
 export default {
     name: 'ConfigurationList',
     components: {
@@ -71,49 +73,49 @@ export default {
         }),
         defaultBrowserConfigName: {
             get() {
-                return this.$store.getters['configuration/defaultBrowserConfigName'];
+                return this.useConfigurationStore().defaultBrowserConfigName;
             },
             set(val) {
-                this.$store.commit('configuration/setDefaultBrowserConfigName', val);
+                useConfigurationStore().setSetDefaultBrowserConfigName(val);
             }
         },
         showConfirmDeleteConfigModal: {
             get() {
-                return this.$store.getters['configuration/showConfirmDeleteConfigModal'];
+                return this.useConfigurationStore().showConfirmDeleteConfigModal;
             },
             set(val) {
-                this.$store.commit('configuration/setShowConfirmDeleteConfigModal', val);
+                useConfigurationStore().setSetShowConfirmDeleteConfigModal(val);
             }
         },
         showBrowserConfigSetModal: {
             get() {
-                return this.$store.getters['configuration/showBrowserConfigSetModal'];
+                return this.useConfigurationStore().showBrowserConfigSetModal;
             },
             set(val) {
-                this.$store.commit('configuration/setShowBrowserConfigSetModal', val);
+                useConfigurationStore().setSetShowBrowserConfigSetModal(val);
             }
         },
         showMustBeLoggedInModal: {
             get() {
-                return this.$store.getters['configuration/showMustBeLoggedInModal'];
+                return this.useConfigurationStore().showMustBeLoggedInModal;
             },
             set(val) {
-                this.$store.commit('configuration/setShowMustBeLoggedInModal', val);
+                useConfigurationStore().setSetShowMustBeLoggedInModal(val);
             }
         },
         configToDelete: {
             get() {
-                return this.$store.getters['configuration/configToDelete'];
+                return this.useConfigurationStore().configToDelete;
             },
             set(val) {
-                this.$store.commit('configuration/setConfigToDelete', val);
+                useConfigurationStore().setSetConfigToDelete(val);
             }
         },
         configViewMode() {
-            return this.$store.getters['configuration/configView'];
+            return this.useConfigurationStore().configView;
         },
         localDefaultBrowserConfigId() {
-            return this.$store.getters['configuration/localDefaultBrowserConfig'];
+            return this.useConfigurationStore().localDefaultBrowserConfig;
         }
     },
     data: () => ({
@@ -131,11 +133,11 @@ export default {
             this.showConfirmDeleteConfigModal = true;
         },
         setConfigToDelete(configId) {
-            this.$store.commit('configuration/setConfigToDelete', this.getConfigById(configId));
+            useConfigurationStore().setSetConfigToDelete(this.getConfigById(configId));
         },
         async setConfigAsFrameworkDefault(configId) {
             let me = this;
-            let f = this.$store.getters['editor/framework'];
+            let f = this.useEditorStore().framework;
             let previousConfig = f.configuration;
             f.configuration = configId;
             if (!previousConfig) {
@@ -144,7 +146,7 @@ export default {
             if (f) {
                 this.frameworkConfigId = configId;
                 window.repo.saveTo(f, async function() {
-                    me.$store.commit('editor/framework', await EcRepository.get(f.shortId()));
+                    useEditorStore().setFramework(await EcRepository.get(f.shortId()));
                 }, function() {});
             }
         },
@@ -160,7 +162,7 @@ export default {
                 if (userIdentity) {
                     framework.addOwner(userIdentity);
                 } else {
-                    this.$store.commit('configuration/setShowMustBeLoggedInModal', true);
+                    useConfigurationStore().setSetShowMustBeLoggedInModal(true);
                     return false;
                 }
             }

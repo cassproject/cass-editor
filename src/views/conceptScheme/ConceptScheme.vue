@@ -83,6 +83,9 @@
 import debounce from 'lodash/debounce';
 import common from '@/mixins/common.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
 
 export default {
     name: "ConceptScheme",
@@ -119,8 +122,10 @@ export default {
         };
     },
     computed: {
+        ...mapState(useEditorStore, ['framework', 'queryParams']),
+        ...mapState(useAppStore, ['showRightAside']),
         defaultFrameworkConfiguration: function() {
-            return this.$store.getters['editor/framework'] ? this.$store.getters['editor/framework'].configuration : null;
+            return this.framework ? this.framework.configuration : null;
         },
         isCeasn: function() {
             if (this.queryParams["ceasnDataFields"] && this.queryParams["ceasnDataFields"] === 'true') {
@@ -130,23 +135,16 @@ export default {
             }
         },
         newFramework: function() {
-            return this.$store.getters['editor/newFramework'] === this.framework.shortId();
-        },
-        showRightAside: function() {
-            return this.$store.getters['app/showRightAside'];
+            const editorStore = useEditorStore();
+            return editorStore.newFramework === this.framework.shortId();
         },
         dynamicThingComponent: function() {
-            if (this.editingFramework || (this.$store.getters['editor/newFramework'] === this.framework.shortId())) {
+            const editorStore = useEditorStore();
+            if (this.editingFramework || (editorStore.newFramework === this.framework.shortId())) {
                 return 'ThingEditing';
             } else {
                 return 'Thing';
             }
-        },
-        framework: function() {
-            return this.$store.getters['editor/framework'];
-        },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
         },
         timestamp: function() {
             if (this.framework.getTimestamp()) {
@@ -719,11 +717,12 @@ export default {
             this.getConceptRegistryUrls();
         }
     },
-    beforeDestroy() {
+    beforeUnmount() {
     },
     watch: {
         config: function() {
-            this.$store.commit('editor/configuration', this.config);
+            const editorStore = useEditorStore();
+            editorStore.configuration(this.config);
         },
         defaultFrameworkConfiguration: function() {
             this.getConfiguration();
@@ -780,7 +779,8 @@ export default {
             }
         },
         handleSearch: function(e) {
-            this.$store.commit('app/showModal', e);
+            const appStore = useAppStore();
+            appStore.showModal(e);
         },
         onCancelEditMultiple: function() {
             this.showEditMultiple = false;
@@ -792,14 +792,16 @@ export default {
                 selectedCompetencies: this.selectedArray,
                 component: 'MultiEdit'
             };
-            this.$store.commit('app/showModal', payload);
+            const appStore = useAppStore();
+            appStore.showModal(payload);
         },
         onEditNode: function() {
             this.editingFramework = true;
         },
         onDoneEditingNode: async function() {
-            this.$store.commit('editor/framework', await EcRepository.get(this.framework.shortId()));
-            this.$store.commit('editor/newFramework', null);
+            const editorStore = useEditorStore();
+            editorStore.framework(await EcRepository.get(this.framework.shortId()));
+            editorStore.newFramework(null);
             this.editingFramework = false;
         },
         selectedArrayEvent: function(ary) {
@@ -832,8 +834,10 @@ export default {
             return n;
         },
         onOpenExportModal() {
-            this.$store.commit('editor/setItemToExport', this.framework);
-            this.$store.commit('app/showModal', {component: 'ExportOptionsModal', title: 'Export Concept Scheme'});
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
+            editorStore.setItemToExport(this.framework);
+            appStore.showModal({component: 'ExportOptionsModal', title: 'Export Concept Scheme'});
         },
         changeProperties: function(type) {
             this.properties = type;

@@ -6,7 +6,7 @@
         <template #top>
             <thing-editing
                 v-if="editDirectory && canEditDirectory"
-                :obj="$store.getters['app/rightAsideObject']"
+                :obj="rightAsideObject"
                 :repo="repo"
                 :parentNotEditable="queryParams.view==='true'"
                 :profile="directoryProfile"
@@ -35,7 +35,7 @@
                             :active="createDropDownActive" />
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                            @click.native="setConceptImportMode()"
                             class="button is-hidden-touch is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -43,7 +43,7 @@
                         </router-link>
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                            @click.native="setConceptImportMode()"
                             class="button is-hidden-desktop is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -85,7 +85,7 @@
                             :active="createDropDownActive" />
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', true); $store.dispatch('app/clearImport');"
+                            @click.native="setProgressionImportMode()"
                             class="button is-hidden-touch is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -93,7 +93,7 @@
                         </router-link>
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', true); $store.dispatch('app/clearImport');"
+                            @click.native="setProgressionImportMode()"
                             class="button is-hidden-desktop is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -132,14 +132,14 @@
                             :directoryEnabled="true"
                             @framework="$emit('create-new-framework')"
                             @collection="$emit('create-new-collection')"
-                            @directory="$store.commit('app/showModal', {component: 'AddDirectory'});"
+                            @directory="showAddDirectoryModal()"
                             @close="createDropDownActive = false"
                             @toggle="createDropDownActive = !createDropDownActive"
                             :active="createDropDownActive" />
                         <!-- upload -->
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                            @click.native="setFrameworkImportMode()"
                             class="button is-outlined is-hidden-desktop is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -147,7 +147,7 @@
                         </router-link>
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                            @click.native="setFrameworkImportMode()"
                             class="button is-outlined is-hidden-touch is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -349,6 +349,10 @@ import common from '@/mixins/common.js';
 import editDirectory from '@/mixins/editDirectory.js';
 import SearchBar from '@/components/framework/SearchBar.vue';
 import AddNewDropdown from '@/components/AddNewDropdown.vue';
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
 
 export default {
     name: "Frameworks",
@@ -366,12 +370,27 @@ export default {
     },
     created: function() {
         this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
-        this.$store.commit("editor/t3Profile", false);
-        this.$store.commit('editor/framework', null);
+        const editorStore = useEditorStore();
+        editorStore.t3Profile(false);
+        editorStore.framework(null);
         this.spitEvent('viewChanged');
         this.setDefaultConfig();
     },
     computed: {
+        ...mapState(useEditorStore, ['queryParams', 'conceptMode', 'progressionMode', 'collectionMode']),
+        ...mapState(useAppStore, {
+            showRightAside: 'showRightAside',
+            frameworkSearchTerm: 'searchTerm',
+            sortResults: 'sortResults',
+            quickFilters: 'quickFilters',
+            filterByOwnedByMe: 'filterByOwnedByMe',
+            filterByNotOwnedByMe: 'filterByNotOwnedByMe',
+            filterByConfigMatchDefault: 'filterByConfigMatchDefault',
+            rightAsideObject: 'rightAsideObject'
+        }),
+        ...mapState(useFeaturesEnabledStore, {
+            initialOwnedByMe: 'ownedByMe'
+        }),
         isCeasn: function() {
             if (this.queryParams["ceasnDataFields"] && this.queryParams["ceasnDataFields"] === 'true') {
                 return true;
@@ -392,15 +411,6 @@ export default {
             } else {
                 return "Taxonomy";
             }
-        },
-        showRightAside: function() {
-            return this.$store.getters['app/showRightAside'];
-        },
-        frameworkSearchTerm: function() {
-            return this.$store.getters['app/searchTerm'];
-        },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
         },
         type: function() {
             return this.conceptMode ? "ConceptScheme" : (this.progressionMode ? "ConceptScheme" : "Framework");
@@ -474,33 +484,6 @@ export default {
                 obj.ownership = 'me';
             }
             return obj;
-        },
-        sortResults: function() {
-            return this.$store.getters['app/sortResults'];
-        },
-        quickFilters: function() {
-            return this.$store.getters['app/quickFilters'];
-        },
-        filterByOwnedByMe: function() {
-            return this.$store.getters['app/filterByOwnedByMe'];
-        },
-        filterByNotOwnedByMe: function() {
-            return this.$store.getters['app/filterByNotOwnedByMe'];
-        },
-        filterByConfigMatchDefault: function() {
-            return this.$store.getters['app/filterByConfigMatchDefault'];
-        },
-        conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
-        },
-        progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
-        },
-        collectionMode: function() {
-            return this.$store.getters['editor/collectionMode'];
-        },
-        initialOwnedByMe: function() {
-            return this.$store.getters['featuresEnabled/ownedByMe'];
         }
     },
     components: {
@@ -515,14 +498,40 @@ export default {
         refocusSearch: function() {
             this.setFocus = !this.setFocus;
         },
+        setConceptImportMode: function() {
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
+            editorStore.conceptMode(true);
+            editorStore.progressionMode(false);
+            appStore.clearImport();
+        },
+        setProgressionImportMode: function() {
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
+            editorStore.conceptMode(false);
+            editorStore.progressionMode(true);
+            appStore.clearImport();
+        },
+        setFrameworkImportMode: function() {
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
+            editorStore.conceptMode(false);
+            editorStore.progressionMode(false);
+            appStore.clearImport();
+        },
+        showAddDirectoryModal: function() {
+            const appStore = useAppStore();
+            appStore.showModal({component: 'AddDirectory'});
+        },
         openItem: function(object) {
             var me = this;
             if (object.type === "Directory") {
-                this.$store.commit('app/selectDirectory', object);
+                const appStore = useAppStore();
+                appStore.selectDirectory(object);
                 if (this.$route.name !== "directory") {
                     this.$router.push({name: "directory"});
                 }
-                this.$store.commit('app/closeRightAside');
+                appStore.closeRightAside();
             } else if (object.type === "Competency") {
                 EcFramework.search(this.repo, "competency:\"" + object.shortId() + "\"", function(success) {
                     if (success && success[0]) {
@@ -533,26 +542,32 @@ export default {
                 this.findConceptTrail(object);
             } else if (this.conceptMode) {
                 EcConceptScheme.get(object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    const editorStore = useEditorStore();
+                    const appStore = useAppStore();
+                    editorStore.framework(success);
+                    editorStore.clearFrameworkCommentData();
+                    appStore.setCanViewComments(me.canViewCommentsCurrentFramework());
+                    appStore.setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: object.id}});
                 }, appError);
             } else if (this.progressionMode) {
                 EcConceptScheme.get(object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    const editorStore = useEditorStore();
+                    const appStore = useAppStore();
+                    editorStore.framework(success);
+                    editorStore.clearFrameworkCommentData();
+                    appStore.setCanViewComments(me.canViewCommentsCurrentFramework());
+                    appStore.setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "progressionModel", params: {frameworkId: object.id}});
                 }, appError);
             } else {
                 EcFramework.get(object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    const editorStore = useEditorStore();
+                    const appStore = useAppStore();
+                    editorStore.framework(success);
+                    editorStore.clearFrameworkCommentData();
+                    appStore.setCanViewComments(me.canViewCommentsCurrentFramework());
+                    appStore.setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: object.id}});
                 }, appError);
             }
@@ -573,8 +588,9 @@ export default {
             }
         },
         frameworkClick: function(framework) {
-            this.$store.commit('app/rightAsideObject', framework);
-            this.$store.commit('app/showRightAside', 'ListItemInfo');
+            const appStore = useAppStore();
+            appStore.rightAsideObject(framework);
+            appStore.showRightAside('ListItemInfo');
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];

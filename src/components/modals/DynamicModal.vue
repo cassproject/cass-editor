@@ -26,6 +26,9 @@ it should always be produced in its own modal as to not replace the existing mod
 </template>
 
 <script>
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
+
 export default {
     name: 'DynamicModal',
     props: {
@@ -69,12 +72,13 @@ export default {
         };
     },
     computed: {
-        showModal: function() {
-            return this.$store.getters['app/showModal'];
-        },
+        ...mapState(useAppStore, {
+            showModal: 'showModalGetter',
+            dynamicModalContentFromStore: 'dynamicModalContent'
+        }),
         dynamicModalContent: function() {
             if (this.showModal) {
-                return this.$store.getters['app/dynamicModalContent'];
+                return this.dynamicModalContentFromStore;
             } else {
                 return {};
             }

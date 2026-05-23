@@ -19,3 +19,4 @@ docs/.vuepress/dist/
 /public/docs/
 .env.local
 coverage/
+.vite/

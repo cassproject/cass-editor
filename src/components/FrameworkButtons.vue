@@ -190,7 +190,7 @@
                     <!--  start over -->
                     <div
                         v-if="view === 'importLight' && (importType !== 'text' || (importType === 'text' && importStatus === 'Competency detected'))"
-                        @click="$store.dispatch('app/clearImport')"
+                        @click="clearImport"
                         class="button is-small is-dark is-outlined is-pulled-right">
                         <span>
                             import again
@@ -211,7 +211,7 @@
                     </div>
                     <!--  accept preview -->
                     <div
-                        @click="$store.commit('app/importTransition', 'light')"
+                        @click="setImportTransition"
                         v-if="view === 'importPreview'"
                         class="button  is-small is-primary is-outlined is-pulled-right">
                         <span>
@@ -240,11 +240,22 @@
 </template>
 
 <script>
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
 export default {
     name: 'FrameworkButtons',
     computed: {
-        queryParams() {
-            return this.$store.getters['editor/queryParams'];
+        ...mapState(useEditorStore, ['queryParams'])
+    },
+    methods: {
+        clearImport() {
+            const appStore = useAppStore();
+            appStore.clearImport();
+        },
+        setImportTransition() {
+            const appStore = useAppStore();
+            appStore.setImportTransition('light');
         }
     }
 };

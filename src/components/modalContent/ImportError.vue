@@ -2,15 +2,15 @@
     <modal-template
         :active="true"
         @close="closeImportModal">
-        <template slot="modal-header">
+        <template #modal-header>
             {{ importModalParams.title }}
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <section>
                 {{ importModalParams.text }}
             </section>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <button
                 @click="closeModal"
                 class="is-dark button">
@@ -21,6 +21,7 @@
 </template>
 <script>
 import ModalTemplate from './ModalTemplate.vue';
+import { useAppStore } from '@/stores/app';
 export default {
     name: 'ImportError',
     components: {
@@ -29,25 +30,25 @@ export default {
     computed: {
         showImportInfoModal: {
             get() {
-                return this.$store.getters['app/showImportInfoModal'];
+                return this.useAppStore().showImportInfoModal;
             },
             set(val) {
-                this.$store.commit('app/showImportInfoModal', val);
+                useAppStore().setShowImportInfoModal(val);
             }
         },
         importModalParams: {
             get() {
-                return this.$store.getters['app/importModalParams'];
+                return this.useAppStore().importModalParams;
             },
             set(val) {
-                this.$store.commit('app/importModalParams', val);
+                useAppStore().setImportModalParams(val);
             }
         }
     },
     methods: {
         closeModal: function() {
             this.importModalParams = null;
-            this.$store.commit('app/closeModal');
+            useAppStore().closeModal();
         }
     }
 };

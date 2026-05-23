@@ -1,33 +1,57 @@
-import Vue from 'vue';
-import VueProgressBar from 'vue-progressbar';
+import { createApp } from 'vue';
+import { createPinia } from 'pinia';
 import App from './App.vue';
+import router from './router.js';
+
+// Styles
 import './scss/theme.scss';
 import './scss/styles.scss';
-import router from './router';
-import Vuex from 'vuex';
-import Clipboard from 'v-clipboard';
-import store from './store/index.js';
-import InfiniteLoading from 'vue-infinite-loading';
-import VueResource from 'vue-resource';
 
-import VueObserveVisibility from 'vue-observe-visibility';
-import AsyncComputed from 'vue-async-computed';
+// NProgress (replaces vue-progressbar)
+import NProgress from 'nprogress';
+import 'nprogress/nprogress.css';
 
-var VueScrollTo = require('vue-scrollto');
+NProgress.configure({
+    showSpinner: false,
+    trickleSpeed: 200,
+    minimum: 0.08
+});
 
-const {fetch: originalFetch} = global;
+// cassproject and globals
+import 'cassproject';
+import { v4 as uuidv4 } from 'uuid';
+import jsonld from 'jsonld';
+
+globalThis.jsonld = jsonld;
+
+// UUID compatibility shim for pure-uuid usage patterns
+// pure-uuid was used as: new UUID(4).format() or new UUID(4).toString()
+class UUIDCompat {
+    constructor() {
+        this.id = uuidv4();
+    }
+    format() {
+        return this.id;
+    }
+    toString() {
+        return this.id;
+    }
+}
+globalThis.UUID = UUIDCompat;
+
+// Global fetch interceptor (framework-agnostic, preserved from original)
+const { fetch: originalFetch } = globalThis;
 
 let PENDING_REQUESTS = 0;
 const MAX_REQUESTS_COUNT = 10;
 const INTERVAL_MS = 10;
 
-global.fetch = async(...args) => {
+globalThis.fetch = async (...args) => {
     let [resource, config] = args;
-    // request interceptor here
     if (PENDING_REQUESTS >= MAX_REQUESTS_COUNT) {
         return new Promise((resolve) => {
             setTimeout(() => {
-                resolve(global.fetch(...args));
+                resolve(globalThis.fetch(...args));
             }, INTERVAL_MS);
         });
     } else {
@@ -37,7 +61,6 @@ global.fetch = async(...args) => {
                 delete config.headers;
             }
             const response = await originalFetch(resource, config);
-            // response interceptor here
             return response;
         } finally {
             PENDING_REQUESTS = Math.max(0, PENDING_REQUESTS - 1);
@@ -45,93 +68,27 @@ global.fetch = async(...args) => {
     }
 };
 
+// EcRepository caching (cassproject globals, available after import)
+if (typeof EcRepository !== 'undefined') {
+    EcRepository.caching = true;
+    EcRepository.cachingL2 = true;
+}
 
-require("cassproject");
-global.UUID = require('pure-uuid');
-
-const options = {
-    color: '#68C8DB',
-    failedColor: '#D74C44',
-    thickness: '5px',
-    transition: {
-        speed: '0.2s',
-        opacity: '0.6s',
-        termination: 300
-    },
-    autoRevert: true,
-    location: 'top',
-    inverse: false
-};
-
-Vue.use(VueProgressBar, options);
-Vue.use(require('vue-moment'));
-Vue.use(Vuex);
-Vue.use(Clipboard);
-Vue.use(VueScrollTo, {
-    container: "#framework",
-    duration: 500,
-    easing: "ease",
-    offset: -150,
-    force: true,
-    cancelable: true,
-    onStart: false,
-    onDone: false,
-    onCancel: false,
-    x: false,
-    y: true
-});
-Vue.use(InfiniteLoading);
-Vue.use(VueResource);
-Vue.use(VueObserveVisibility);
-Vue.use(AsyncComputed);
-
-// directive for clicking outside elements and performing an action
-// add v-click-outside="method" to parent element to do something
-Vue.directive('click-outside', {
-    bind: function(element, binding, vnode) {
-        element.clickOutsideEvent = function(event) {
-            if (!(element === event.target || element.contains(event.target))) {
-                vnode.context[binding.expression](event);
-            }
-        };
-        document.body.addEventListener('click', element.clickOutsideEvent);
-    },
-    unbind: function(element) {
-        document.body.removeEventListener('click', element.clickOutsideEvent);
-    }
-});
-
-EcRepository.caching = true;
-EcRepository.cachingL2 = true;
-
-Vue.config.productionTip = false;
-// Vue.config.silent = true;
-Vue.config.warnHandler = function(msg, vm, trace) {
-    if (msg === 'Invalid prop: type check failed for prop "clickToLoad". Expected Boolean, got String with value "true".') return;
-    if (msg === 'Avoid using non-primitive value as key, use string/number value instead.') return;
-    if (msg === "Duplicate keys detected: '[object Object]'. This may cause an update error.") return;
-    appError(("[Vue warn]: " + msg + trace));
-    // `trace` is the component hierarchy trace
-};
-
-global.appLog = function(...args) {
-    /* eslint-disable no-console */
-    if (process.env.NODE_ENV !== 'production') {
-        // console.trace(x);
+// Logging utilities
+globalThis.appLog = function (...args) {
+    if (import.meta.env.DEV) {
         console.log(...args);
     }
-    /* eslint-enable no-console */
 };
 
-global.appError = function(x) {
-    /* eslint-disable no-console */
-    if (process.env.NODE_ENV !== 'production') {
+globalThis.appError = function (x) {
+    if (import.meta.env.DEV) {
         console.error(x);
     }
-    /* eslint-enable no-console */
 };
 
-var queryParams = function() {
+// Query params utility
+var queryParams = function () {
     if (window.document.location.search == null) { return {}; }
     var hashSplit = (window.document.location.search.split("?"));
     if (hashSplit.length > 1) {
@@ -153,8 +110,101 @@ var queryParams = function() {
 };
 window.queryParams = queryParams();
 
-window.app = new Vue({
-    router,
-    store,
-    render: h => h(App)
-}).$mount('#app');
+// Create Vue 3 app
+const app = createApp(App);
+
+// Pinia state management
+app.use(createPinia());
+
+// Vue Router
+app.use(router);
+
+// Global properties (replacing Vue.use() plugin patterns)
+// NProgress is available globally via import, but we add a convenience property
+// matching the old vue-progressbar API: this.$Progress.start/finish/fail
+app.config.globalProperties.$Progress = {
+    start() { NProgress.start(); },
+    finish() { NProgress.done(); },
+    fail() { NProgress.done(); },
+    set(n) { NProgress.set(n / 100); },
+    increase(n) { NProgress.inc(n / 100); },
+    hide() { NProgress.done(); }
+};
+
+// ScrollTo utility (replacing vue-scrollto plugin)
+// Provides this.$scrollTo(element, duration, options) compatibility
+app.config.globalProperties.$scrollTo = function (target, duration, options) {
+    let el;
+    if (typeof target === 'string') {
+        el = document.querySelector(target);
+    } else {
+        el = target;
+    }
+    if (el) {
+        el.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+            ...options
+        });
+    }
+};
+
+// Custom directive: v-click-outside
+// Updated from Vue 2 bind/unbind to Vue 3 mounted/unmounted hooks
+app.directive('click-outside', {
+    mounted(el, binding) {
+        el.clickOutsideEvent = function (event) {
+            if (!(el === event.target || el.contains(event.target))) {
+                binding.value(event);
+            }
+        };
+        document.body.addEventListener('click', el.clickOutsideEvent);
+    },
+    unmounted(el) {
+        document.body.removeEventListener('click', el.clickOutsideEvent);
+    }
+});
+
+// Custom directive: v-observe-visibility (replacing vue-observe-visibility)
+// Uses IntersectionObserver API
+app.directive('observe-visibility', {
+    mounted(el, binding) {
+        const options = typeof binding.value === 'function'
+            ? { callback: binding.value }
+            : binding.value || {};
+
+        const callback = options.callback || binding.value;
+        const observerOptions = {
+            root: options.root || null,
+            rootMargin: options.rootMargin || '0px',
+            threshold: options.threshold || 0
+        };
+
+        el._observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (typeof callback === 'function') {
+                    callback(entry.isIntersecting, entry);
+                }
+            });
+        }, observerOptions);
+
+        el._observer.observe(el);
+    },
+    unmounted(el) {
+        if (el._observer) {
+            el._observer.disconnect();
+            delete el._observer;
+        }
+    }
+});
+
+// Warn handler (ported from Vue 2 Vue.config.warnHandler)
+app.config.warnHandler = function (msg, vm, trace) {
+    if (msg === 'Invalid prop: type check failed for prop "clickToLoad". Expected Boolean, got String with value "true".') return;
+    if (msg === 'Avoid using non-primitive value as key, use string/number value instead.') return;
+    if (msg === "Duplicate keys detected: '[object Object]'. This may cause an update error.") return;
+    appError(("[Vue warn]: " + msg + trace));
+};
+
+// Mount the app
+window.app = app.mount('#app');

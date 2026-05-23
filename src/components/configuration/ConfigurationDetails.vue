@@ -8,10 +8,10 @@
             :header="false"
             @close="configDetailsBusy = false"
             :active="configDetailsBusy">
-            <template slot="modal-header">
+            <template #modal-header>
                 Processing
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div class="has-text-centered has-text-link">
                     <div class="icon is-large has-text-centered has-text-link">
                         <i class="fas fa-2x fa-spinner is-info fa-pulse" />
@@ -25,10 +25,10 @@
         <modal-template
             @close="showManageRelationshipsModal = false"
             :active="showManageRelationshipsModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 Manage relationship types
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div class="section">
                     <div class="columns is-multiline">
                         <div class="column is-12">
@@ -183,7 +183,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     class="button is-primary is-outlined"
                     @click="hideManageRelations">
@@ -195,10 +195,10 @@
         <modal-template
             @close="showSelectPermissionEntitiesModal = false"
             :active="showSelectPermissionEntitiesModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 {{ permissionEntitySelectionTitle }}
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div class="field">
                     <input
                         type="text"
@@ -247,7 +247,7 @@
                     </table>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     class="buttons is-spaced"
                     v-if="!readOnly">
@@ -278,10 +278,10 @@
         <modal-template
             @close="showSelectLevelModal = false"
             :active="showSelectLevelModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 {{ levelSelectionModalTitle }}
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div
                     ref="levelsModal">
                     <div class="field">
@@ -374,8 +374,8 @@
                     </div>
                 </div>
                 <template
-                    v-if="!showAddNewLevelSection"
-                    slot="modal-foot">
+                    #modal-foot
+                    v-if="!showAddNewLevelSection">
                     <div
                         class="buttons is-spaced"
                         v-if="!readOnly">
@@ -404,8 +404,7 @@
                         </button>
                     </div>
                 </template>
-                <template
-                    slot="modal-foot"
+                <template #modal-foot
                     v-if="showAddNewLevelSection">
                     <div
                         class="buttons is-spaced"
@@ -438,10 +437,10 @@
         <modal-template
             @close="showCustomPropertyDetailsModal = false"
             :active="showCustomPropertyDetailsModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 {{ customPropertyModalTitle }}
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div class="title">
                     {{ customPropertyPropertyName }}
                 </div>
@@ -1006,7 +1005,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     class="buttons is-spaced"
                     v-if="!readOnly">
@@ -3042,8 +3041,9 @@ import FrameworkCompetencyPropertyListItem from "./FrameworkCompetencyPropertyLi
 import RelationshipListItem from "./RelationshipListItem";
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import {cassUtil} from '../../mixins/cassUtil';
-import {mapGetters} from 'vuex';
+import {mapState} from 'pinia';
 
+import { useConfigurationStore } from '@/stores/configuration';
 export default {
     mixins: [cassUtil],
     name: 'ConfigurationDetails',
@@ -4331,30 +4331,30 @@ export default {
         }),
         currentConfig: {
             get() {
-                return this.$store.getters['configuration/currentConfig'];
+                return this.useConfigurationStore().currentConfig;
             },
             set(val) {
-                this.$store.commit('configuration/setCurrentConfig', val);
+                useConfigurationStore().setSetCurrentConfig(val);
             }
         },
         customPropertyAvailableConcepts: {
             get() {
-                return this.$store.getters['configuration/availableConcepts'];
+                return this.useConfigurationStore().availableConcepts;
             },
             set(val) {
-                this.$store.commit('configuration/availableConcepts', val);
+                useConfigurationStore().setAvailableConcepts(val);
             }
         },
         customPropertyAvailableTypes: {
             get() {
-                let types = this.$store.getters['configuration/availableTypes'];
+                let types = this.useConfigurationStore().availableTypes;
                 this.currentConfig.compEnforcedTypes.forEach((type) => {
                     types.push(type);
                 });
                 return types;
             },
             set(val) {
-                this.$store.commit('configuration/availableTypes', val);
+                useConfigurationStore().setAvailableTypes(val);
             }
         },
         isSetInstanceDisabled() {

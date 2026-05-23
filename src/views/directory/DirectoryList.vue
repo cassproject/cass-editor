@@ -194,12 +194,16 @@
                         spinner="circles"
                         v-if="(directory.length + framework.length + competency.length + creativework.length + conceptscheme.length + concept.length > 10)"
                         :distance="10">
-                        <div slot="no-more">
-                            All results loaded
-                        </div>
-                        <div slot="no-results">
-                            All results loaded
-                        </div>
+                        <template #no-more>
+                            <div>
+                                All results loaded
+                            </div>
+                        </template>
+                        <template #no-results>
+                            <div>
+                                All results loaded
+                            </div>
+                        </template>
                     </infinite-loading>
                 </div>
             </div>
@@ -211,6 +215,9 @@
 import Thing from '@/lode/components/Thing.vue';
 import Breadcrumbs from '@/lode/components/Breadcrumbs.vue';
 import {cassUtil} from '@/mixins/cassUtil.js';
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
 export default {
     name: 'DirectoryList',
     props: {
@@ -303,7 +310,8 @@ export default {
         refreshSearch: function() {
             if (this.refreshSearch) {
                 this.searchRepo();
-                this.$store.commit('app/refreshSearch', false);
+                const appStore = useAppStore();
+                appStore.refreshSearch(false);
             }
         },
         directoryId: function() {
@@ -314,25 +322,19 @@ export default {
         }
     },
     computed: {
-        searchTerm: function(val) {
-            return this.$store.getters['app/searchTerm'];
-        },
-        refreshSearch: function(val) {
-            return this.$store.getters['app/refreshSearch'];
-        },
+        ...mapState(useAppStore, ['searchTerm', 'refreshSearch', 'searchingInDirectory']),
         applySearchTo: function() {
-            let options = this.$store.getters['app/applySearchTo'];
+            const appStore = useAppStore();
+            let options = appStore.applySearchTo;
             if (!options) return null;
             let filterValues = options.filter(item => item.checked === true);
             if (filterValues.length <= 0) return null;
             return filterValues;
         },
-        searchingInDirectory: function() {
-            return this.$store.getters['app/searchingInDirectory'];
-        },
         rightAsideObjectId: function() {
-            if (this.$store.getters['app/rightAsideObject']) {
-                return this.$store.getters['app/rightAsideObject'].shortId();
+            const appStore = useAppStore();
+            if (appStore.rightAsideObject) {
+                return appStore.rightAsideObject.shortId();
             }
             return null;
         }
@@ -352,7 +354,8 @@ export default {
                     parentName: null,
                     canEdit: false
                 };
-                this.$store.commit('app/showModal', modalObject);
+                const appStore = useAppStore();
+                appStore.showModal(modalObject);
             }
         },
         buildIdList: function(success) {
@@ -449,7 +452,7 @@ export default {
             });
         },
         buildEncryptedSearch: async function(type, callback) {
-            let children = await this.$store.dispatch('editor/getDirectoryChildren', this.directoryObj);
+            let children = await useEditorStore().getDirectoryChildren(this.directoryObj);
             if (children.length === 0) {
                 callback(null);
             } else {

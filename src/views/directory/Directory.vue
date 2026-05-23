@@ -4,10 +4,10 @@
         <modal-template
             :active="createSubdirectory"
             @close="createSubdirectory = false">
-            <template slot="modal-header">
+            <template #modal-header>
                 Create directory
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div
                     class="field">
                     <div class="label">
@@ -23,7 +23,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     class="field">
                     <div class="buttons">
@@ -52,10 +52,10 @@
         </modal-template>
         <!-- name directory modal -->
         <modal-template :active="createResource || editResource">
-            <template slot="modal-header">
+            <template #modal-header>
                 {{ createResource ? "Create resource" : "Edit resource" }}
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div class="field">
                     <div class="label">
                         <label>Name of resource</label>
@@ -89,7 +89,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     class="field"
                     v-if="createResource">
@@ -130,13 +130,13 @@
         </modal-template>
         <thing-editing
             v-if="editDirectory && canEditDirectory"
-            :obj="$store.getters['app/rightAsideObject']"
+            :obj="rightAsideObject"
             :repo="repo"
             :parentNotEditable="queryParams.view==='true'"
             :profile="directoryProfile"
             @done-editing-node-event="onDoneEditingNode()" />
         <main-layout :rightActive="showRightAside">
-            <template slot="top">
+            <template #top>
                 <div
                     style="width: 100%;"
                     class="columns is-mobile is-spaced mt-0">
@@ -186,7 +186,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="secondary-top">
+            <template #secondary-top>
                 <nav
                     class="breadcrumb is-medium"
                     aria-label="breadcrumbs has-text-dark">
@@ -194,7 +194,7 @@
                         <li>
                             <a
                                 href="#"
-                                @click="$router.push({name: 'frameworks', query: queryParams}); $store.commit('app/selectDirectory', null)">
+                                @click="goToFrameworks()">
                                 CaSS
                             </a>
                         </li>
@@ -203,7 +203,7 @@
                             :key="each.id">
                             <a
                                 href="#"
-                                @click="$store.commit('app/selectDirectory', each); $store.commit('app/rightAsideObject', each);">{{ each.name }}</a>
+                                @click="selectTrailDirectory(each)">{{ each.name }}</a>
                         </li>
                         <li>
                             <a
@@ -216,7 +216,7 @@
                     </ul>
                 </nav>
             </template>
-            <template slot="body">
+            <template #body>
                 <DirectoryList
                     type="Framework"
                     :repo="repo"
@@ -229,7 +229,7 @@
                     :disallowEdits="true"
                     @dblclick="openObject" />
             </template>
-            <template slot="right">
+            <template #right>
                 <RightAside
                     @editResource="editResource = true; resource = $event"
                     v-if="showRightAside" />
@@ -274,6 +274,10 @@ import editDirectory from '@/mixins/editDirectory.js';
 import SearchBar from '@/components/framework/SearchBar.vue';
 import MainLayout from '@/layouts/MainLayout.vue';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
 import AddNewDropdown from '@/components/AddNewDropdown.vue';
 export default {
     name: "Directory",
@@ -310,18 +314,30 @@ export default {
     },
     created: function() {
         this.sortBy = "name.keyword";
-        this.$store.commit("editor/t3Profile", false);
-        this.$store.commit('editor/framework', null);
+        const editorStore = useEditorStore();
+        editorStore.t3Profile(false);
+        editorStore.framework(null);
         this.spitEvent('viewChanged');
         this.setDefaultConfig();
     },
     computed: {
-        showRightAside: function() {
-            return this.$store.getters['app/showRightAside'];
-        },
-        directory: function() {
-            return this.$store.getters['app/selectedDirectory'];
-        },
+        ...mapState(useAppStore, {
+            showRightAside: 'showRightAside',
+            directory: 'selectedDirectory',
+            sortResults: 'sortResults',
+            searchTerm: 'searchTerm',
+            quickFilters: 'quickFilters',
+            filterByOwnedByMe: 'filterByOwnedByMe',
+            filterByNotOwnedByMe: 'filterByNotOwnedByMe',
+            filterByConfigMatchDefault: 'filterByConfigMatchDefault',
+            rightAsideObject: 'rightAsideObject'
+        }),
+        ...mapState(useEditorStore, ['queryParams']),
+        ...mapState(useFeaturesEnabledStore, {
+            initialOwnedByMe: 'ownedByMe',
+            shareEnabled: 'shareEnabled',
+            userManagementEnabled: 'userManagementEnabled'
+        }),
         loggedIn: function() {
             if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                 return true;
@@ -330,14 +346,13 @@ export default {
         },
         searchingInDirectory: {
             get() {
-                return this.$store.getters['app/searchingInDirectory'];
+                const appStore = useAppStore();
+                return appStore.searchingInDirectory;
             },
             set(val) {
-                this.$store.commit('app/searchingInDirectory', val);
+                const appStore = useAppStore();
+                appStore.searchingInDirectory(val);
             }
-        },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
         },
         currentUser: function() {
             if (EcIdentityManager.default.ids.length > 0) {
@@ -345,15 +360,6 @@ export default {
             } else {
                 return undefined;
             }
-        },
-        filterByOwnedByMe: function() {
-            return this.$store.getters['app/filterByOwnedByMe'];
-        },
-        filterByNotOwnedByMe: function() {
-            return this.$store.getters['app/filterByNotOwnedByMe'];
-        },
-        filterByConfigMatchDefault: function() {
-            return this.$store.getters['app/filterByConfigMatchDefault'];
         },
         searchOptions: function() {
             let search = "";
@@ -392,9 +398,6 @@ export default {
             }
             return search;
         },
-        initialOwnedByMe: function() {
-            return this.$store.getters["featuresEnabled/ownedByMe"];
-        },
         paramObj: function() {
             let obj = {};
             obj.size = 20;
@@ -406,15 +409,6 @@ export default {
             }
             return obj;
         },
-        sortResults: function() {
-            return this.$store.getters['app/sortResults'];
-        },
-        searchTerm: function() {
-            return this.$store.getters['app/searchTerm'];
-        },
-        quickFilters: function() {
-            return this.$store.getters['app/quickFilters'];
-        },
         filteredQuickFilters: function() {
             let filterValues = this.quickFilters.filter(item => item.checked === true);
             appLog('filtered value', filterValues);
@@ -422,12 +416,6 @@ export default {
         },
         shareLink: function() {
             return window.location.href.replace('/directory', "?directoryId=" + this.directory.shortId());
-        },
-        shareEnabled: function() {
-            return this.$store.state.featuresEnabled.shareEnabled;
-        },
-        userManagementEnabled: function() {
-            return this.$store.state.featuresEnabled.userManagementEnabled;
         },
         showUserManagementIcon: function() {
             if (!this.shareEnabled && !this.canEditDirectory) {
@@ -453,7 +441,8 @@ export default {
                 id: 'ownedByMe',
                 checked: val
             };
-            this.$store.commit("app/singleQuickFilter", filter);
+            const appStore = useAppStore();
+            appStore.singleQuickFilter(filter);
         },
         closeCreateDropDown: function() {
             if (this.createDropDownActive) {
@@ -464,44 +453,52 @@ export default {
             return this.canEditAny(item);
         },
         frameworkClick: function(framework) {
-            this.$store.commit('app/rightAsideObject', framework);
-            this.$store.commit('app/showRightAside', 'ListItemInfo');
+            const appStore = useAppStore();
+            appStore.rightAsideObject(framework);
+            appStore.showRightAside('ListItemInfo');
         },
         openObject: function(object) {
             let me = this;
             if (object.type === "Directory") {
-                this.$store.commit('app/selectDirectory', object);
+                const appStore = useAppStore();
+                appStore.selectDirectory(object);
                 if (this.$route.name !== "directory") {
                     this.$router.push({name: "directory"});
                 }
-                this.$store.commit('app/closeRightAside');
+                appStore.closeRightAside();
             } else if (object.type === "CreativeWork") {
                 window.open(object.url, '_blank');
-            } else if (this.$store.getters['editor/conceptMode']) {
-                this.$store.commit('app/selectDirectory', null);
+            } else if (useEditorStore().conceptMode) {
+                useAppStore().selectDirectory(null);
                 EcConceptScheme.get(object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    const editorStore = useEditorStore();
+                    const appStore = useAppStore();
+                    editorStore.framework(success);
+                    editorStore.clearFrameworkCommentData();
+                    appStore.setCanViewComments(me.canViewCommentsCurrentFramework());
+                    appStore.setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: object.id}});
                 }, appError);
-            } else if (this.$store.getters['editor/progressionMode']) {
-                this.$store.commit('app/selectDirectory', null);
+            } else if (useEditorStore().progressionMode) {
+                useAppStore().selectDirectory(null);
                 EcConceptScheme.get(object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    const editorStore = useEditorStore();
+                    const appStore = useAppStore();
+                    editorStore.framework(success);
+                    editorStore.clearFrameworkCommentData();
+                    appStore.setCanViewComments(me.canViewCommentsCurrentFramework());
+                    appStore.setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "progressionModel", params: {frameworkId: object.id}});
                 }, appError);
             } else {
-                this.$store.commit('app/selectDirectory', null);
+                useAppStore().selectDirectory(null);
                 EcFramework.get(object.id, function(success) {
-                    me.$store.commit('editor/framework', success);
-                    me.$store.commit('editor/clearFrameworkCommentData');
-                    me.$store.commit('app/setCanViewComments', me.canViewCommentsCurrentFramework());
-                    me.$store.commit('app/setCanAddComments', me.canAddCommentsCurrentFramework());
+                    const editorStore = useEditorStore();
+                    const appStore = useAppStore();
+                    editorStore.framework(success);
+                    editorStore.clearFrameworkCommentData();
+                    appStore.setCanViewComments(me.canViewCommentsCurrentFramework());
+                    appStore.setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: object.id}});
                 }, appError);
             }
@@ -575,11 +572,13 @@ export default {
                 me.subdirectoryName = '';
                 if (me.addAnother) {
                     me.addAnother = false;
-                    me.$store.commit('app/refreshSearch', true);
+                    const appStore = useAppStore();
+                    appStore.refreshSearch(true);
                 } else {
                     me.createSubdirectory = false;
-                    me.$store.commit('app/selectDirectory', dir);
-                    me.$store.commit('app/rightAsideObject', dir);
+                    const appStore = useAppStore();
+                    appStore.selectDirectory(dir);
+                    appStore.rightAsideObject(dir);
                 }
             }, appError, this.repo);
         },
@@ -604,7 +603,8 @@ export default {
         goToParentDirectory: function() {
             let me = this;
             EcDirectory.get(this.directory.parentDirectory, function(success) {
-                me.$store.commit('app/selectDirectory', success);
+                const appStore = useAppStore();
+                appStore.selectDirectory(success);
             }, appError);
         },
         saveNewResource: function() {
@@ -628,8 +628,9 @@ export default {
                 me.resourceName = '';
                 me.resourceUrl = '';
                 me.createResource = false;
-                me.$store.commit('app/refreshSearch', true);
-                me.$store.commit('app/rightAsideObject', c);
+                const appStore = useAppStore();
+                appStore.refreshSearch(true);
+                appStore.rightAsideObject(c);
             }, appError);
         },
         saveEditedResource: function() {
@@ -638,17 +639,30 @@ export default {
             resource.name = this.resourceName;
             resource.url = this.resourceUrl;
             repo.saveTo(resource, function() {
-                me.$store.commit('app/rightAsideObject', resource);
+                const appStore = useAppStore();
+                appStore.rightAsideObject(resource);
                 me.editResource = false;
                 me.resource = null;
             }, appError);
         },
         showManageUsersModal() {
-            this.$store.commit('app/showModal', {component: 'Share'});
+            const appStore = useAppStore();
+            appStore.showModal({component: 'Share'});
         },
         showDirectoryInRightAside() {
-            this.$store.commit('app/rightAsideObject', this.directory);
-            this.$store.commit('app/showRightAside', 'ListItemInfo');
+            const appStore = useAppStore();
+            appStore.rightAsideObject(this.directory);
+            appStore.showRightAside('ListItemInfo');
+        },
+        goToFrameworks: function() {
+            this.$router.push({name: 'frameworks', query: this.queryParams});
+            const appStore = useAppStore();
+            appStore.selectDirectory(null);
+        },
+        selectTrailDirectory: function(each) {
+            const appStore = useAppStore();
+            appStore.selectDirectory(each);
+            appStore.rightAsideObject(each);
         },
         findDirectoryTrail: function(directory) {
             let me = this;
@@ -664,20 +678,23 @@ export default {
             }
         }
     },
-    beforeDestroy() {
+    beforeUnmount() {
         if (this.queryParams && this.queryParams.private !== 'true') {
-            this.$store.commit('editor/private', false);
+            const editorStore = useEditorStore();
+            editorStore.private(false);
         }
-        this.$store.commit('app/selectDirectory', null);
+        const appStore = useAppStore();
+        appStore.selectDirectory(null);
     },
     mounted: function() {
         this.showMine = this.filterByOwnedByMe;
         if (!this.directory || this.directory === '') {
             this.$router.push({name: "frameworks"});
         }
-        this.$store.commit('app/objForShareModal', null);
+        const appStore = useAppStore();
+        appStore.objForShareModal(null);
         this.showDirectoryInRightAside();
-        this.$store.commit('app/searchTerm', '');
+        appStore.searchTerm('');
         // Keep sorting/filtering in sync with the store on back button
         if (this.sortResults.id === "lastEdited") {
             this.sortBy = "schema:dateModified";

@@ -251,7 +251,7 @@
                             <!--  start over -->
                             <div
                                 v-if="view === 'importLight' && (importType !== 'text' || (importType === 'text' && importStatus === 'Competency detected'))"
-                                @click="$store.dispatch('app/clearImport')"
+                                @click="doClearImport"
                                 class="button is-small is-dark is-outlined is-pulled-right">
                                 <span>
                                     import again
@@ -272,7 +272,7 @@
                             </div>
                             <!--  accept preview -->
                             <div
-                                @click="$store.commit('app/importTransition', 'light')"
+                                @click="doImportTransitionLight"
                                 v-if="view === 'importPreview'"
                                 class="button  is-small is-primary is-outlined is-pulled-right">
                                 <span>
@@ -373,12 +373,12 @@
             </draggable>
         </template>
         <modal-template :active="showSelectSubjectModal">
-            <template slot="modal-header">
+            <template #modal-header>
                 <p class="is-size-3 modal-card-title has-text-white">
                     Select Subject
                 </p>
             </template>
-            <template slot="modal-body">
+            <template #modal-body>
                 <div
                     class="field">
                     <input
@@ -420,7 +420,7 @@
                     </div>
                 </div>
             </template>
-            <template slot="modal-foot">
+            <template #modal-foot>
                 <div
                     class="button is-outlined is-small"
                     @click="closeSelectSubjectModal"
@@ -441,6 +441,11 @@ import debounce from 'lodash/debounce';
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useCrosswalkStore} from '@/stores/crosswalk';
+import {useLodeStore} from '@/stores/lode';
 export default {
     name: 'Hierarchy',
     mixins: [ common, competencyEdits ],
@@ -545,7 +550,7 @@ export default {
         addAnother: function(val) {
             if (val) {
                 this.onClickCreateNew();
-                this.$store.commit('editor/addAnother', false);
+                useEditorStore().setAddAnother(false);
             }
         },
         once: function(val) {
@@ -558,8 +563,10 @@ export default {
         }
     },
     computed: {
+        ...mapState(useAppStore, ['importType', 'importStatus', 'importTransition', 'dynamicModalContent']),
+        ...mapState(useEditorStore, ['queryParams', 'addAnother', 'manageAssertions', 'copyId', 'cutId', 'nodeInFocus']),
         showSelectSubjectModal: function() {
-            return this.$store.getters['app/showModal'] && this.$store.getters['app/dynamicModalContent'] === 'Subject';
+            return useAppStore().showModalGetter && this.dynamicModalContent === 'Subject';
         },
         hierarchyEnabled: function() {
             if (this.container.subType === 'Collection') {
@@ -589,46 +596,33 @@ export default {
             }
         },
         clipboardContainsItem: function() {
-            if ((this.$store.getters['editor/copyId'] !== null || this.$store.getters['editor/cutId'] !== null)) {
+            if ((this.copyId !== null || this.cutId !== null)) {
                 return true;
             } else {
                 return false;
             }
         },
         canPaste: function() {
-            if ((this.$store.getters['editor/copyId'] !== null || this.$store.getters['editor/cutId'] !== null) && this.$store.getters['editor/nodeInFocus'] !== null) {
+            if ((this.copyId !== null || this.cutId !== null) && this.nodeInFocus !== null) {
                 return true;
             } else {
                 return false;
             }
         },
         alignmentsToSave() {
-            if (this.$store.getters['crosswalk/alignmentsToSave']) {
-                return this.$store.getters['crosswalk/alignmentsToSave'];
+            const crosswalkStore = useCrosswalkStore();
+            if (crosswalkStore.alignmentsToSave) {
+                return crosswalkStore.alignmentsToSave;
             } else {
                 return [];
             }
         },
         showAddComments() {
-            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
+            const editorStore = useEditorStore();
+            if (editorStore.queryParams.concepts === "true" || editorStore.conceptMode === true || editorStore.progressionMode === true) {
                 return false;
             }
-            return this.$store.state.app.canAddComments;
-        },
-        importType: function() {
-            return this.$store.getters['app/importType'];
-        },
-        importStatus: function() {
-            return this.$store.getters['app/importStatus'];
-        },
-        importTransition: function() {
-            return this.$store.getters['app/importTransition'];
-        },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
-        },
-        addAnother: function() {
-            return this.$store.getters['editor/addAnother'];
+            return useAppStore().canAddComments;
         },
         // True if the current client can edit this object.
         canEdit: function() {
@@ -644,13 +638,13 @@ export default {
             return (this.container.competency && this.container.competency.length >= this.LARGE_NUMBER_OF_ITEMS);
         },
         managingAssertions: function() {
-            return this.$store.getters['editor/manageAssertions'];
+            return this.manageAssertions;
         },
         currentSubject: function() {
-            return this.$store.getters['editor/getSubject'];
+            return useEditorStore().getSubject;
         },
         editingCompetency: function() {
-            return this.$store.getters['editor/selectedCompetency'] != null;
+            return useEditorStore().selectedCompetency != null;
         }
     },
     mounted: function() {
@@ -680,36 +674,45 @@ export default {
         }
         window.addEventListener("keydown", this.keydown);
         window.addEventListener("keyup", this.keyup);
-        if (this.$store.getters['editor/getSubject']) {
+        if (useEditorStore().getSubject) {
             this.getSubjectInfo();
         }
     },
-    beforeDestroy: function() {
+    beforeUnmount: function() {
         window.removeEventListener('keyup', this.keyup);
         window.removeEventListener('keydown', this.keydown);
     },
     methods: {
+        doClearImport: function() {
+            useAppStore().clearImport();
+        },
+        doImportTransitionLight: function() {
+            useAppStore().setImportTransition('light');
+        },
         clearClipboard: function() {
-            this.$store.commit('editor/copyId', null);
-            this.$store.commit('editor/cutId', null);
-            this.$store.commit('editor/paste', false);
+            const editorStore = useEditorStore();
+            editorStore.setCopyId(null);
+            editorStore.setCutId(null);
+            editorStore.setPaste(false);
         },
         cutClick: function() {
+            const editorStore = useEditorStore();
             if (this.selectedArray && this.selectedArray.length === 1) {
-                this.$store.commit('editor/cutId', this.selectedArray[0]);
+                editorStore.setCutId(this.selectedArray[0]);
             }
-            this.$store.commit('editor/copyId', null);
-            this.$store.commit('editor/paste', false);
+            editorStore.setCopyId(null);
+            editorStore.setPaste(false);
         },
         copyClick: function() {
+            const editorStore = useEditorStore();
             if (this.selectedArray && this.selectedArray.length === 1) {
-                this.$store.commit('editor/copyId', this.selectedArray[0]);
+                editorStore.setCopyId(this.selectedArray[0]);
             }
-            this.$store.commit('editor/cutId', null);
-            this.$store.commit('editor/paste', false);
+            editorStore.setCutId(null);
+            editorStore.setPaste(false);
         },
         pasteClick: function() {
-            this.$store.commit('editor/paste', true);
+            useEditorStore().setPaste(true);
         },
         keydown(e) {
             if (!this.editingCompetency) {
@@ -720,22 +723,23 @@ export default {
                     if (e.key.indexOf("Arrow") !== -1 && e.shiftKey) {
                         this.arrowKey = e.key;
                     }
+                    const editorStore = useEditorStore();
                     if (e.key === "x" && e.ctrlKey) {
                         if (this.selectedArray && this.selectedArray.length === 1) {
-                            this.$store.commit('editor/cutId', this.selectedArray[0]);
+                            editorStore.setCutId(this.selectedArray[0]);
                         }
-                        this.$store.commit('editor/copyId', null);
-                        this.$store.commit('editor/paste', false);
+                        editorStore.setCopyId(null);
+                        editorStore.setPaste(false);
                     }
                     if (e.key === "c" && e.ctrlKey) {
                         if (this.selectedArray && this.selectedArray.length === 1) {
-                            this.$store.commit('editor/copyId', this.selectedArray[0]);
+                            editorStore.setCopyId(this.selectedArray[0]);
                         }
-                        this.$store.commit('editor/cutId', null);
-                        this.$store.commit('editor/paste', false);
+                        editorStore.setCutId(null);
+                        editorStore.setPaste(false);
                     }
                     if (e.key === "v" && e.ctrlKey) {
-                        this.$store.commit('editor/paste', true);
+                        editorStore.setPaste(true);
                     }
                 }
                 if (e.key.indexOf("Arrow") !== -1 && !e.shiftKey && !e.ctrlKey) {
@@ -757,22 +761,22 @@ export default {
         },
         showModal(val, data) {
             if (val === 'export') {
-                this.$store.commit('editor/setItemToExport', this.container);
-                this.$store.commit('app/showModal', {title: 'Export Framework', component: 'ExportOptionsModal'});
+                useEditorStore().setItemToExport(this.container);
+                useAppStore().openModal({title: 'Export Framework', component: 'ExportOptionsModal'});
             } else if (val === 'subject') {
-                this.$store.commit('app/showModal', 'Subject');
+                useAppStore().openModal('Subject');
             }
         },
         openFramework: async function() {
             var f = await EcFramework.get(this.container.shortId());
-            this.$store.commit('editor/framework', f);
+            useEditorStore().setFramework(f);
             this.$router.push({name: "framework", params: {frameworkId: this.container.id}});
         },
         changeFrameworkTarget: function() {
-            this.$store.commit('crosswalk/step', 1);
+            useCrosswalkStore().setStep(1);
         },
         changeFrameworkSource: function() {
-            this.$store.commit('crosswalk/step', 0);
+            useCrosswalkStore().setStep(0);
         },
         filterHierarchy: function(typeOfFilter) {
             // mightnot need val if I can watch something else for css updates on buttons
@@ -961,7 +965,7 @@ export default {
                         if (a[this.edgeRelationProperty] === this.edgeRelationLiteral) {
                             if (a[this.edgeTargetProperty] == null) continue;
                             if (a[this.edgeSourceProperty] == null) continue;
-                            if (a[this.edgeSourceProperty] !== fromId && (this.$store.getters['editor/cutId'] ? (this.$store.getters['editor/cutId'] && a[this.edgeTargetProperty] !== fromId) : true)) continue;
+                            if (a[this.edgeSourceProperty] !== fromId && (this.cutId ? (this.cutId && a[this.edgeTargetProperty] !== fromId) : true)) continue;
                             appLog("Identified edge to remove: ", JSON.parse(a.toJson()));
                             this.container[this.containerEdgeProperty].splice(i--, 1);
                         }
@@ -996,7 +1000,7 @@ export default {
                         this.container[this.containerEdgeProperty].push(a.shortId());
                         addedEdges.push(a.shortId());
                         appLog("Added edge: ", JSON.parse(a.toJson()));
-                        if (this.$store.state.editor && this.$store.state.editor.private === true) {
+                        if (useEditorStore().private === true) {
                             a = await EcEncryptedValue.toEncryptedValue(a);
                         }
                         this.repo.saveTo(a, appLog, appError);
@@ -1011,9 +1015,9 @@ export default {
             edits.push(
                 {operation: "update", id: me.container.shortId(), fieldChanged: ["competency", "relation"], initialValue: [initialCompetencies, initialRelations], changedValue: [this.container.competency, this.container.relation]}
             );
-            me.$store.commit('editor/addEditsToUndo', edits);
+            useEditorStore().addEditsToUndo(edits);
             stripped["schema:dateModified"] = new Date().toISOString();
-            if (this.$store.state.editor && this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[stripped.id] !== true) {
+            if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[stripped.id] !== true) {
                 stripped = await EcEncryptedValue.toEncryptedValue(stripped);
             }
             this.repo.saveTo(stripped, appLog, appError);
@@ -1052,8 +1056,9 @@ export default {
             if (this.nodeType.indexOf("Ec") === 0) {
                 nodeType = this.nodeType.substring(2);
             }
-            if (this.$store.state.editor && this.$store.state.editor.defaultLanguage) {
-                c.name = {"@language": this.$store.state.editor.defaultLanguage, "@value": "New " + nodeType};
+            const editorStore = useEditorStore();
+            if (editorStore.defaultLanguage) {
+                c.name = {"@language": editorStore.defaultLanguage, "@value": "New " + nodeType};
             } else {
                 c.name = "New " + nodeType;
             }
@@ -1061,10 +1066,10 @@ export default {
             c["schema:dateModified"] = new Date().toISOString();
             this.container["schema:dateModified"] = new Date().toISOString();
             appLog("Added node: ", JSON.parse(c.toJson()));
-            if (this.$store.state.editor) {
-                this.$store.commit("editor/newCompetency", c.shortId());
+            if (true) {
+                useEditorStore().setNewCompetency(c.shortId());
             }
-            if (this.$store.state.editor && this.$store.state.editor.private === true) {
+            if (useEditorStore().private === true) {
                 c = await EcEncryptedValue.toEncryptedValue(c);
             }
             try {
@@ -1079,14 +1084,14 @@ export default {
                     var index = me.container[me.containerNodeProperty].indexOf(previousSibling);
                     me.container[me.containerNodeProperty].splice(index + 1, 0, c.shortId());
                 }
-                me.$store.commit('editor/addEditsToUndo', [
+                useEditorStore().addEditsToUndo([
                     {operation: "addNew", id: c.shortId()},
                     {operation: "update", id: me.container.shortId(), fieldChanged: ["competency"], initialValue: [initialCompetencies], changedValue: [me.container.competency]}
                 ]);
                 if (containerId === me.container.shortId()) {
                     var toSave = me.container;
                     toSave["schema:dateModified"] = new Date().toISOString();
-                    if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
+                    if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
                         toSave = await EcEncryptedValue.toEncryptedValue(me.container);
                     }
                     await me.repo.saveTo(me.stripEmptyArrays(toSave));
@@ -1122,13 +1127,13 @@ export default {
                         }
                         me.container[me.containerEdgeProperty].push(a.shortId());
                         appLog("Added edge: ", JSON.parse(a.toJson()));
-                        me.$store.commit('editor/addEditsToUndo', [
+                        useEditorStore().addEditsToUndo([
                             {operation: "addNew", id: c.shortId()},
                             {operation: "update", id: me.container.shortId(), fieldChanged: ["competency", "relation"], initialValue: [initialCompetencies, initialRelations], changedValue: [me.container.competency, me.container.relation]}
                         ]);
                         var toSave = me.container;
                         toSave["schema:dateModified"] = new Date().toISOString();
-                        if (me.$store.state.editor && me.$store.state.editor.private === true) {
+                        if (useEditorStore().private === true) {
                             a = await EcEncryptedValue.toEncryptedValue(a);
                             if (EcEncryptedValue.encryptOnSaveMap[me.container.id] !== true) {
                                 toSave = await EcEncryptedValue.toEncryptedValue(me.container);
@@ -1183,7 +1188,7 @@ export default {
             if (this.selectedArray && this.selectedArray.length === 1) {
                 selected = await EcRepository.get(this.selectedArray[0]);
             }
-            this.$store.commit('editor/selectedCompetency', selected);
+            useEditorStore().setSelectedCompetency(selected);
             var payload = {
                 selectedCompetency: selected,
                 searchType: 'Competency',
@@ -1191,14 +1196,15 @@ export default {
                 component: 'SearchModal'
             };
             this.$emit('search-things', payload);
-            this.$store.commit('lode/competencySearchModalOpen', true);
-            this.$store.commit('lode/searchType', "Competency");
-            this.$store.commit('lode/copyOrLink', true);
-            this.$store.commit('lode/includeRelations', this.container.subType !== "Collection");
+            const lodeStore = useLodeStore();
+            lodeStore.setCompetencySearchModalOpen(true);
+            lodeStore.setSearchType("Competency");
+            lodeStore.setCopyOrLink(true);
+            lodeStore.setIncludeRelations(this.container.subType !== "Collection");
         },
         cancelImport: function() {
             this.deleteObject(this.container);
-            this.$store.dispatch('app/clearImport');
+            useAppStore().clearImport();
         },
         onClickCreateNew: async function() {
             let parent = this.container.shortId();
@@ -1222,7 +1228,7 @@ export default {
             this.selectedArray.splice(0, this.selectedArray.length);
         },
         setSubject: function(subject) {
-            this.$store.commit('editor/setSubject', subject);
+            useEditorStore().setSubject(subject);
             this.closeSelectSubjectModal();
         },
         openSelectSubjectModal: async function() {
@@ -1231,10 +1237,10 @@ export default {
             this.showModal('subject');
         },
         closeSelectSubjectModal: function() {
-            this.$store.commit('app/closeModal');
+            useAppStore().closeModal();
         },
         getSubjectInfo: function() {
-            EcPerson.getByPk(window.repo, EcPk.fromPem(this.$store.getters['editor/getSubject'])).then((person) => {
+            EcPerson.getByPk(window.repo, EcPk.fromPem(useEditorStore().getSubject)).then((person) => {
                 let name = person.name;
                 if (EcIdentityManager.default.ids[0].ppk.toPk().toPem() === person.owner[0]) {
                     name = 'Myself';

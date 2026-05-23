@@ -1,4 +1,5 @@
 import pLimit from 'p-limit';
+import {useEditorStore} from '@/stores/editor';
 
 const limit = pLimit(50);
 
@@ -27,7 +28,8 @@ export default {
     },
     computed: {
         refreshLevels: function() {
-            return this.$store.getters['editor/refreshLevels'];
+            const editorStore = useEditorStore();
+            return editorStore.refreshLevels;
         },
         relationArray: function() {
             if (this.framework) {
@@ -37,15 +39,17 @@ export default {
             }
         },
         refreshAlignments: function() {
-            return this.$store.getters['editor/refreshAlignments'];
+            const editorStore = useEditorStore();
+            return editorStore.refreshAlignments;
         }
     },
     methods: {
         updateLevels: function() {
             var me = this;
             // Make reactive when the same level is applied to multiple competencies in the same framework
-            if (this.$store.getters['editor/refreshLevels'] === true) {
-                this.$store.commit('editor/refreshLevels', false);
+            const editorStore = useEditorStore();
+            if (editorStore.refreshLevels === true) {
+                editorStore.setRefreshLevels(false);
             }
             var levels = {};
             if (!this.framework) {
@@ -76,7 +80,8 @@ export default {
         updateRelations: function() {
             if (!this.framework?.relation && !this.importFramework?.relation) {
                 this.relations = {};
-                this.$store.commit('editor/relations', {});
+                const editorStore = useEditorStore();
+                editorStore.setRelations({});
                 return;
             }
             var me = this;
@@ -139,13 +144,15 @@ export default {
                     relationObject[each.type][each.source].push(each.target);
                 }
                 me.relations = relationObject;
-                me.$store.commit('editor/relations', me.relations);
+                const editorStore = useEditorStore();
+                editorStore.setRelations(me.relations);
             });
         },
         updateAlignments: async function() {
             var me = this;
-            if (this.$store.getters['editor/refreshAlignments'] === true) {
-                this.$store.commit('editor/refreshAlignments', false);
+            const editorStore = useEditorStore();
+            if (editorStore.refreshAlignments === true) {
+                editorStore.setRefreshAlignments(false);
             }
             if (!this.framework) {
                 return;
@@ -181,4 +188,4 @@ export default {
             me.alignments = alignments;
         }
     }
-};
+};

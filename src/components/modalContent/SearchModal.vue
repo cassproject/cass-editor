@@ -3,7 +3,7 @@
         @close="closeModal"
         content="search"
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             <p class="modal-card-title">
                 <span class="title has-text-white">Search for {{ searchType }}</span>
                 <br><span
@@ -13,7 +13,7 @@
                 </span>
             </p>
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <button
                 class="button is-dark is-outlined is-small is-pulled-right"
                 v-if="(selectedIds && selectedIds.length) || selectedFramework"
@@ -34,7 +34,7 @@
                 @selectFramework="selectFramework"
                 :idsNotPermittedInSearch="idsNotPermittedInSearch" />
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons">
                 <button
                     class="button is-outlined is-dark"
@@ -77,8 +77,9 @@
 import ModalTemplate from './ModalTemplate.vue';
 import Search from '@/components/framework/Search.vue';
 import common from '@/mixins/common.js';
-import {mapState} from 'vuex';
-
+import { useAppStore } from '@/stores/app';
+import { useEditorStore } from '@/stores/editor';
+import { useLodeStore } from '@/stores/lode';
 export default {
     name: 'SearchModal',
     data() {
@@ -103,10 +104,10 @@ export default {
             includeRelations: state => state.lode.includeRelations
         }),
         copyOrLink: function() {
-            return this.$store.state.lode.copyOrLink;
+            return useLodeStore().copyOrLink;
         },
         searchType: function() {
-            return this.$store.state.lode.searchType;
+            return useLodeStore().searchType;
         },
         frameworkName: function() {
             if (this.framework && this.framework.context) {
@@ -116,7 +117,7 @@ export default {
             }
         },
         searchFrameworksInCompetencySearch: function() {
-            return this.$store.getters['app/searchFrameworksInCompetencySearch'];
+            return this.useAppStore().searchFrameworksInCompetencySearch;
         },
         idsNotPermittedInSearch: function() {
             if (this.copyOrLink) {
@@ -138,7 +139,7 @@ export default {
     },
     methods: {
         closeModal: function() {
-            this.$store.commit('app/closeModal');
+            useAppStore().closeModal();
         },
         clickClearFramework: function() {
             this.selectedIds.splice(0, this.selectedIds.length);
@@ -166,7 +167,7 @@ export default {
                 await this.addRelations();
             }
             var copyDict = {};
-            var framework = this.$store.state.editor.framework;
+            var framework = useEditorStore().framework;
             var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
             var initialRelations = this.framework.relation ? this.framework.relation.slice() : null;
             var initialLevels = this.framework.level ? this.framework.level.slice() : null;
@@ -209,7 +210,7 @@ export default {
                     }
                     c['ceasn:derivedFrom'] = thing.id;
                     copyDict[thing.shortId()] = c;
-                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
+                    if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[c.id] !== true) {
                         c = await EcEncryptedValue.toEncryptedValue(c);
                     }
                     this.itemsSaving++;
@@ -217,7 +218,7 @@ export default {
                         Task.asyncImmediate(function(callback) {
                             me.repo.saveTo(c, function() {
                                 framework.addCompetency(c.shortId());
-                                me.$store.commit('editor/framework', framework);
+                                useEditorStore().setFramework(framework);
                                 me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             }, function(error) {
@@ -237,11 +238,11 @@ export default {
                     }
                     addedNew.push(level.shortId());
                     level["schema:dateCreated"] = new Date().toISOString();
-                    level.competency = this.$store.state.editor.selectedCompetency.shortId();
+                    level.competency = useEditorStore().selectedCompetency.shortId();
                     delete level.owner;
                     level['ceasn:derivedFrom'] = thing.id;
                     copyDict[thing.shortId()] = level;
-                    if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
+                    if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[level.id] !== true) {
                         level = await EcEncryptedValue.toEncryptedValue(level);
                     }
                     this.itemsSaving++;
@@ -249,7 +250,7 @@ export default {
                         Task.asyncImmediate(function(callback) {
                             me.repo.saveTo(level, function() {
                                 framework.addLevel(level.shortId());
-                                me.$store.commit('editor/framework', framework);
+                                useEditorStore().setFramework(framework);
                                 me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                 callback();
                             }, function(error) {
@@ -298,7 +299,7 @@ export default {
                         }
                         if (r.source !== r.target) {
                             framework["schema:dateModified"] = new Date().toISOString();
-                            if (this.$store.state.editor.private === true) {
+                            if (useEditorStore().private === true) {
                                 r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.itemsSaving++;
@@ -306,7 +307,7 @@ export default {
                                 Task.asyncImmediate(function(callback) {
                                     me.repo.saveTo(r, function() {
                                         framework.addRelation(r.id);
-                                        me.$store.commit('editor/framework', framework);
+                                        useEditorStore().setFramework(framework);
                                         me.afterCopy(initialCompetencies, initialRelations, initialLevels, addedNew);
                                         callback();
                                     },
@@ -321,7 +322,7 @@ export default {
                     }
                 }
             }
-            var selectedCompetency = this.$store.state.editor.selectedCompetency;
+            var selectedCompetency = useEditorStore().selectedCompetency;
             for (var i = 0; i < results.length; i++) {
                 var thing = await EcRepository.get(results[i]);
                 if (thing != null && thing.isAny(new EcCompetency().getTypes())) {
@@ -359,7 +360,7 @@ export default {
                             this.itemsSaving++;
                             framework.addRelation(r.id);
                             framework["schema:dateModified"] = new Date().toISOString();
-                            if (this.$store.state.editor.private === true) {
+                            if (useEditorStore().private === true) {
                                 r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             (function(r) {
@@ -384,14 +385,14 @@ export default {
             this.itemsSaving--;
             // loading(this.itemsSaving + " objects left to copy.");
             if (this.itemsSaving === 0) {
-                var framework = this.$store.state.editor.framework;
+                var framework = useEditorStore().framework;
                 var changes = [];
                 for (var i = 0; i < addedNew.length; i++) {
                     changes.push({operation: "addNew", id: addedNew[i]});
                 }
                 changes.push({operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level]});
-                this.$store.commit('editor/addEditsToUndo', changes);
-                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                useEditorStore().addEditsToUndo(changes);
+                if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
                 this.repo.saveTo(framework, function() {}, appError);
@@ -403,8 +404,8 @@ export default {
             if (this.includeRelations) {
                 await this.addRelations();
             }
-            var selectedCompetency = this.$store.state.editor.selectedCompetency;
-            var framework = this.$store.state.editor.framework;
+            var selectedCompetency = useEditorStore().selectedCompetency;
+            var framework = useEditorStore().framework;
             var initialCompetencies = this.framework.competency ? this.framework.competency.slice() : null;
             var initialRelations = this.framework.relation ? this.framework.relation.slice() : null;
             var initialLevels = this.framework.level ? this.framework.level.slice() : null;
@@ -479,7 +480,7 @@ export default {
 
                         if (r.source !== r.target) {
                             framework.addRelation(r.id);
-                            if (this.$store.state.editor.private === true) {
+                            if (useEditorStore().private === true) {
                                 r = await EcEncryptedValue.toEncryptedValue(r);
                             }
                             this.repo.saveTo(r, function() {}, appError);
@@ -497,12 +498,12 @@ export default {
                 }
             }
             changes.push({operation: "update", id: framework.shortId(), fieldChanged: ["competency", "relation", "level"], initialValue: [initialCompetencies, initialRelations, initialLevels], changedValue: [framework.competency, framework.relation, framework.level]});
-            this.$store.commit('editor/addEditsToUndo', changes);
-            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+            useEditorStore().addEditsToUndo(changes);
+            if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             this.repo.saveTo(framework, async function() {
-                me.$store.commit('editor/framework', await EcFramework.get(framework.id));
+                useEditorStore().setFramework(await EcFramework.get(framework.id));
                 me.closeModal();
             }, appError);
         }

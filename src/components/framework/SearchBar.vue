@@ -52,7 +52,7 @@
                 <div
                     class="button is-outlined is-dark"
                     title="Filters"
-                    @click="$store.commit('app/showRightAside', 'FilterAndSort')">
+                    @click="openFilterAndSort">
                     <span class="icon">
                         <i class="fa fa-filter" />
                     </span>
@@ -123,6 +123,10 @@
 </template>
 
 <script>
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+
 export default {
     name: 'SearchBar',
     props: {
@@ -167,7 +171,7 @@ export default {
         },
         basicSort: function(val) {
             appLog(val);
-            this.$store.commit("app/sortResults", {id: val});
+            useAppStore().setSortResults({id: val});
         },
         basicFilter: function(val) {
             this.setOwnedByMe(val);
@@ -175,57 +179,56 @@ export default {
     },
     mounted: function() {
         this.setOwnedByMe(this.ownedByMe);
-        let searchTerm = this.$store.getters['app/searchTerm'];
+        let searchTerm = useAppStore().searchTerm;
         if (searchTerm && searchTerm.length > 0) {
             this.searchTerm = searchTerm;
         }
     },
     methods: {
+        openFilterAndSort() {
+            useAppStore().openRightAside('FilterAndSort');
+        },
         clearAllFilters: function() {
-            this.$store.commit('app/clearSearchFilters');
+            useAppStore().clearSearchFilters();
             this.clearSortBy();
             this.showMine = false;
             this.showNotMine = false;
         },
         clearSortBy: function() {
-            this.$store.commit('app/sortResults', []);
-            this.sortBy = (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) ? "dcterms:title.keyword" : "name.keyword";
+            const appStore = useAppStore();
+            appStore.setSortResults([]);
+            const editorStore = useEditorStore();
+            this.sortBy = (editorStore.conceptMode === true || editorStore.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
         },
         removeFilter: function(filterType, val) {
-            let storeCaller = 'app/' + filterType;
-            let filterArray = this.$store.getters[storeCaller];
+            const appStore = useAppStore();
+            let filterArray = appStore[filterType];
             let objIndex = filterArray.findIndex(obj => obj.id === val.id);
             filterArray[objIndex].checked = false;
-            this.$store.commit(storeCaller, filterArray);
+            appStore['set' + filterType.charAt(0).toUpperCase() + filterType.slice(1)](filterArray);
         },
         setOwnedByMe(val) {
             const filter = {
                 id: 'ownedByMe',
                 checked: val
             };
-            this.$store.commit("app/singleQuickFilter", filter);
+            useAppStore().setSingleQuickFilter(filter);
         },
         updateSearchTerm: function(e) {
-            this.$store.commit('app/searchTerm', e);
+            useAppStore().setSearchTerm(e);
         }
     },
     computed: {
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
-        },
+        ...mapState(useAppStore, ['applySearchTo', 'sortResults', 'searchTerm']),
+        ...mapState(useEditorStore, ['queryParams', 'firstSearchProcessing']),
         type: function() {
-            return (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) ? "ConceptScheme" : "Framework";
-        },
-        applySearchTo: function() {
-            return this.$store.getters['app/applySearchTo'];
+            const editorStore = useEditorStore();
+            return (editorStore.conceptMode === true || editorStore.progressionMode === true) ? "ConceptScheme" : "Framework";
         },
         filteredSearchTo: function() {
             let filterValues = this.applySearchTo.filter(item => item.checked === true);
             appLog('filtered value', filterValues);
             return filterValues;
-        },
-        sortResults: function() {
-            return this.$store.getters['app/sortResults'];
         },
         loggedIn: function() {
             if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
@@ -234,18 +237,18 @@ export default {
             return false;
         },
         storeSearchTerm: function() {
-            return this.$store.getters['app/searchTerm'];
+            return useAppStore().searchTerm;
         },
         searchFrameworks: {
             get() {
-                return this.$store.getters['app/searchFrameworksInCompetencySearch'];
+                return useAppStore().searchFrameworksInCompetencySearch;
             },
             set(val) {
-                this.$store.commit("app/searchFrameworksInCompetencySearch", val);
+                useAppStore().setSearchFrameworksInCompetencySearch(val);
             }
         },
         isFirstSearchProcessing: function() {
-            return this.$store.getters['editor/firstSearchProcessing'];
+            return useEditorStore().firstSearchProcessing;
         }
     }
 };

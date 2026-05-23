@@ -58,7 +58,7 @@
                             :progressionMode="progressionMode"
                             :importTransition="importTransition"
                             v-if="importType === 'file'">
-                            <template slot="import-file-title">
+                            <template #import-file-title>
                                 <h1
                                     class="title is-size-1 has-text-black">
                                     <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
@@ -84,7 +84,7 @@
                                 </h1>
                             </template>
                             <!-- import from file gets three parts, details, preview, and light view -->
-                            <template slot="import-framework">
+                            <template #import-framework>
                                 <!-- import details -->
                                 <ImportDetails
                                     :detailsDetected="detailsDetected"
@@ -248,7 +248,7 @@
                             :importTransition="importTransition"
                             @import-case="handleImportFromTabs($event)"
                             v-if="importType === 'server'">
-                            <template slot="import-server-title">
+                            <template #import-server-title>
                                 <h1
                                     class="title is-size-1 has-text-black">
                                     <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
@@ -275,7 +275,7 @@
                                     </span>
                                 </h1>
                             </template>
-                            <template slot="import-framework">
+                            <template #import-framework>
                                 <!-- import preview -->
                                 <div
                                     v-if="importFramework && importTransition === 'preview'"
@@ -432,7 +432,7 @@
                             :progressionMode="progressionMode"
                             :importTransition="importTransition"
                             v-if="importType === 'url'">
-                            <template slot="import-url-title">
+                            <template #import-url-title>
                                 <h1
                                     class="title is-size-1 has-text-black">
                                     <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
@@ -457,7 +457,7 @@
                                     </span>
                                 </h1>
                             </template>
-                            <template slot="import-framework">
+                            <template #import-framework>
                                 <!-- import preview -->
                                 <div
                                     v-if="importFramework && importTransition === 'preview'"
@@ -614,7 +614,7 @@
                             :progressionMode="progressionMode"
                             :importTransition="importTransition"
                             v-if="importType === 'text'">
-                            <template slot="import-text-title">
+                            <template #import-text-title>
                                 <h1
                                     class="title is-size-1 has-text-black">
                                     <span v-if="conceptMode && queryParams.ceasnDataFields === 'true'">
@@ -641,7 +641,7 @@
                                     </span>
                                 </h1>
                             </template>
-                            <template slot="import-framework">
+                            <template #import-framework>
                                 <!-- import light view -->
                                 <div
                                     v-if="importFramework && importTransition === 'light'"
@@ -707,9 +707,9 @@
                 </div>
             </div>
         </template>
-        <template slot="right">
+        <template #right>
             <RightAside v-if="showRightAside && importType === 'file'">
-                <template slot="right-aside-content">
+                <template #right-aside-content>
                     <div class="cass--right-aside--content">
                         <div class="section">
                             <h2 class="title is-size-4">
@@ -852,7 +852,7 @@
             </RightAside>
             <!-- list description for right panel -->
             <RightAside v-if="showRightAside && importType === 'server'">
-                <template slot="right-aside-content">
+                <template #right-aside-content>
                     <div class="cass--right-aside--content">
                         <div class="section">
                             <h2 class="title is-size-4">
@@ -902,7 +902,7 @@
                 </template>
             </RightAside>
             <RightAside v-if="showRightAside && importType === 'text'">
-                <template slot="right-aside-content">
+                <template #right-aside-content>
                     <div class="cass--right-aside--content">
                         <div class="section">
                             <h2 class="title is-size-4">
@@ -948,7 +948,7 @@
                 </template>
             </RightAside>
             <RightAside v-if="showRightAside && importType === 'url'">
-                <template slot="right-aside-content">
+                <template #right-aside-content>
                     <div class="cass--right-aside--content">
                         <div class="section">
                             <h2 class="title is-size-4">
@@ -1001,6 +1001,9 @@ import ConceptHierarchy from '@/views/conceptScheme/ConceptHierarchy.vue';
 import ProgressionHierarchy from '@/views/progressionModel/ProgressionHierarchy.vue';
 import getLevelsAndRelations from '@/mixins/getLevelsAndRelations.js';
 import imports from '@/mixins/import.js';
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
 export default {
     name: "Import",
     mixins: [
@@ -1049,18 +1052,22 @@ export default {
         };
     },
     computed: {
-        importInfoVisible: function() {
-            return this.$store.getters['app/showRightAside'];
-        },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
-        },
-        conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
-        },
-        progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
-        },
+        ...mapState(useEditorStore, ['queryParams', 'conceptMode', 'progressionMode']),
+        ...mapState(useAppStore, {
+            importInfoVisible: 'showRightAside',
+            importServerUrl: 'importServerUrl',
+            importUrl: 'importUrl',
+            importErrors: 'importErrors',
+            importFile: 'importFiles',
+            importTransition: 'importTransition',
+            importType: 'importType',
+            importFileType: 'importFileType',
+            importFramework: 'importFramework',
+            importFrameworkDescription: 'importFrameworkDescription',
+            importStatus: 'importStatus',
+            csvRelationFile: 'csvRelationFile',
+            text: 'importText'
+        }),
         showImportActions: function() {
             if (this.importTransition === 'detail' ||
             this.importTransition === 'preview' ||
@@ -1070,40 +1077,15 @@ export default {
                 return false;
             }
         },
-        importServerUrl: function() {
-            return this.$store.getters['app/importServerUrl'];
-        },
-        importUrl: function() {
-            return this.$store.getters['app/importUrl'];
-        },
-        importErrors: function() {
-            return this.$store.getters['app/importErrors'];
-        },
-        importFile: function() {
-            return this.$store.getters['app/importFiles'];
-        },
-        importTransition: function() {
-            return this.$store.getters['app/importTransition'];
-        },
-        importType: function() {
-            return this.$store.getters['app/importType'];
-        },
-        importFileType: function() {
-            return this.$store.getters['app/importFileType'];
-        },
-        importFramework: function() {
-            return this.$store.getters['app/importFramework'];
-        },
         importFrameworkName: {
             get: function() {
-                return this.$store.getters['app/importFrameworkName'];
+                const appStore = useAppStore();
+                return appStore.importFrameworkName;
             },
             set: function(val) {
-                return this.$store.commit('app/importFrameworkName', val);
+                const appStore = useAppStore();
+                return appStore.importFrameworkName = val;
             }
-        },
-        importFrameworkDescription: function() {
-            return this.$store.getters['app/importFrameworkDescription'];
         },
         dynamicThing: function() {
             if (this.editingNode) {
@@ -1118,94 +1100,105 @@ export default {
             }
             return false;
         },
-        importStatus: function() {
-            return this.$store.getters['app/importStatus'];
-        },
         csvColumns: {
             get() {
-                return this.$store.getters['app/csvColumns'];
+                const appStore = useAppStore();
+                return appStore.csvColumns;
             },
             set(val) {
-                this.$store.commit('app/csvColumns', val);
+                const appStore = useAppStore();
+                appStore.csvColumns = val;
             }
         },
         csvRelationColumns: {
             get() {
-                return this.$store.getters['app/csvRelationColumns'];
+                const appStore = useAppStore();
+                return appStore.csvRelationColumns;
             },
             set(val) {
-                this.$store.commit('app/csvRelationColumns', val);
+                const appStore = useAppStore();
+                appStore.csvRelationColumns = val;
             }
-        },
-        csvRelationFile: function() {
-            return this.$store.getters['app/csvRelationFile'];
         },
         importCsvColumnName: {
             get() {
-                return this.$store.getters['app/importNameColumn'];
+                const appStore = useAppStore();
+                return appStore.importNameColumn;
             },
             set(val) {
-                this.$store.commit('app/importNameColumn', val);
+                const appStore = useAppStore();
+                appStore.importNameColumn = val;
             }
         },
         importCsvColumnDescription: {
             get() {
-                return this.$store.getters['app/importDescriptionColumn'];
+                const appStore = useAppStore();
+                return appStore.importDescriptionColumn;
             },
             set(val) {
-                this.$store.commit('app/importDescriptionColumn', val);
+                const appStore = useAppStore();
+                appStore.importDescriptionColumn = val;
             }
         },
         importCsvColumnScope: {
             get() {
-                return this.$store.getters['app/importScopeColumn'];
+                const appStore = useAppStore();
+                return appStore.importScopeColumn;
             },
             set(val) {
-                this.$store.commit('app/importScopeColumn', val);
+                const appStore = useAppStore();
+                appStore.importScopeColumn = val;
             }
         },
         importCsvColumnId: {
             get() {
-                return this.$store.getters['app/importIdColumn'];
+                const appStore = useAppStore();
+                return appStore.importIdColumn;
             },
             set(val) {
-                this.$store.commit('app/importIdColumn', val);
+                const appStore = useAppStore();
+                appStore.importIdColumn = val;
             }
         },
         importCsvColumnSource: {
             get() {
-                return this.$store.getters['app/importSourceColumn'];
+                const appStore = useAppStore();
+                return appStore.importSourceColumn;
             },
             set(val) {
-                this.$store.commit('app/importSourceColumn', val);
+                const appStore = useAppStore();
+                appStore.importSourceColumn = val;
             }
         },
         importCsvColumnRelationType: {
             get() {
-                return this.$store.getters['app/importRelationColumn'];
+                const appStore = useAppStore();
+                return appStore.importRelationColumn;
             },
             set(val) {
-                this.$store.commit('app/importRelationColumn', val);
+                const appStore = useAppStore();
+                appStore.importRelationColumn = val;
             }
         },
         importCsvColumnTarget: {
             get() {
-                return this.$store.getters['app/importTargetColumn'];
+                const appStore = useAppStore();
+                return appStore.importTargetColumn;
             },
             set(val) {
-                this.$store.commit('app/importTargetColumn', val);
+                const appStore = useAppStore();
+                appStore.importTargetColumn = val;
             }
         },
         firstImport: {
             get() {
-                return this.$store.getters['app/firstImport'];
+                const appStore = useAppStore();
+                return appStore.firstImport;
             },
             set(val) {
-                this.$store.commit('app/firstImport', val);
+                const appStore = useAppStore();
+                appStore.firstImport = val;
             }
-        },
-        text: function() {
-            return this.$store.getters['app/importText'];
         },
         containerProfile: function() {
             if (this.conceptMode) {
@@ -1236,7 +1229,7 @@ export default {
             return this.t3CompetencyProfile;
         },
         taxonomyTerminology: function() {
-            if (this.$store.getters['editor/queryParams'].ceasnDataFields === 'true') {
+            if (this.queryParams.ceasnDataFields === 'true') {
                 return 'concept scheme';
             } else {
                 return 'taxonomy';
@@ -1244,15 +1237,17 @@ export default {
         }
     },
     created: function() {
-        this.$store.commit('editor/framework', null);
+        const editorStore = useEditorStore();
+        editorStore.framework(null);
         this.spitEvent('viewChanged');
     },
-    beforeDestroy: function() {
+    beforeUnmount: function() {
         this.clearImport();
     },
     mounted: function() {
         this.clearImport();
-        this.$store.commit('app/showRightAside');
+        const appStore = useAppStore();
+        appStore.showRightAside();
         let documentBody = document.getElementById('import');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
     },

@@ -3,23 +3,23 @@
         @close="$emit('close')"
         :active="true"
         type="primary">
-        <template slot="modal-header">
+        <template #modal-header>
             <span class="title has-text-white">Logged Out</span>
         </template>
         <template
-            slot="modal-body">
+            #modal-body>
             <div class="section has-background-white has-text-centered">
                 <p>
                     <strong>You have been logged out.</strong>
                 </p>
             </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div
                 class="buttons is-spaced">
                 <button
                     class="button is-secondary is-outlined"
-                    @click="$store.commit('app/closeModal')">
+                    @click="useAppStore().closeModal()">
                     <span class="icon">
                         <i class="fa fa-times-circle" />
                     </span>
@@ -41,6 +41,8 @@
 <script>
 import ModalTemplate from './ModalTemplate.vue';
 import {cassApi} from '../../mixins/cassApi';
+import { useAppStore } from '@/stores/app';
+import { useFeaturesEnabledStore } from '@/stores/featuresEnabled';
 export default {
     name: 'LogoutSuccessModal',
     mixins: [cassApi],
@@ -52,8 +54,8 @@ export default {
     },
     methods: {
         close: function() {
-            this.$store.commit('app/closeModal');
-            if (this.$store.getters['featuresEnabled/apiLoginEnabled']) {
+            useAppStore().closeModal();
+            if (this.useFeaturesEnabledStore().apiLoginEnabled) {
                 this.redirectToExternalLogout();
             } else {
                 this.goToLogin();

@@ -186,7 +186,7 @@ export default {
             var me = this;
             for (let i = 0; i < this.frameworks.length; i++) {
                 let frameworkId = this.frameworks[i].id;
-                this.$set(this.parentCompetencies, frameworkId, []);
+                this.parentCompetencies[frameworkId] = [];
                 if (this.frameworks[i].competency && this.frameworks[i].competency.length > 500) {
                     me.parentCompetencies[frameworkId].push("...");
                 } else {

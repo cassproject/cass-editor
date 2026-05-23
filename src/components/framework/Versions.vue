@@ -11,7 +11,7 @@
         class="menu has-background-light">
         <p class="subtitle is-size-4">
             <span
-                @click="$store.commit('app/closeRightAside')"
+                @click="closeRightAside()"
                 class="icon">
                 <i class="fa fa-caret-right" />
             </span>
@@ -24,8 +24,15 @@
 </template>
 <script>
 
+import { useAppStore } from '@/stores/app';
+
 export default {
     name: 'Versions',
+    methods: {
+        closeRightAside() {
+            useAppStore().closeRightAside();
+        }
+    },
     data() {
         return {
             isCommenter: true,

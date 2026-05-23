@@ -21,12 +21,13 @@
 </template>
 
 <script>
+import { mapState } from 'pinia';
+import { useEditorStore } from '@/stores/editor';
+
 export default {
     name: 'Forbidden',
     computed: {
-        queryParams() {
-            return this.$store.getters['editor/queryParams'];
-        }
+        ...mapState(useEditorStore, ['queryParams'])
     }
 };
 </script>

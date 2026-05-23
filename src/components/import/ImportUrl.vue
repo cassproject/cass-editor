@@ -158,6 +158,8 @@
 import ImportTabs from '@/components/import/ImportTabs';
 import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
 
 export default {
     name: 'ImportUrl',
@@ -174,11 +176,9 @@ export default {
         };
     },
     computed: {
+        ...mapState(useAppStore, ['importErrors']),
         importInfoVisible: function() {
-            return this.$store.getters['app/showRightAside'];
-        },
-        importErrors: function() {
-            return this.$store.getters['app/importErrors'];
+            return useAppStore().showRightAsideGetter;
         }
     },
     props: {

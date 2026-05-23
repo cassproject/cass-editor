@@ -165,6 +165,10 @@
 <script>
 
 import common from '@/mixins/common.js';
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useLodeStore} from '@/stores/lode';
 export default {
     // Thing represents a JSON-LD object. Does not have to be based on http://schema.org/Thing.
     name: 'Thing',
@@ -250,7 +254,7 @@ export default {
     },
     mounted: function() {
         this.load();
-        if (this.uri && this.$store.state.editor) {
+        if (this.uri) {
             this.resolveNameFromUrl(this.uri);
         }
         if (this.properties === "secondary") {
@@ -277,9 +281,13 @@ export default {
             };
             return object;
         },
-        framework: function() {
-            return this.$store.getters['editor/framework'];
-        },
+        ...mapState(useEditorStore, {
+            framework: 'framework',
+            manageAssertionsState: 'manageAssertions'
+        }),
+        ...mapState(useAppStore, {
+            canAddCommentsState: 'canAddCommentsGetter'
+        }),
         thingAsPropertyIcon: function() {
             let type;
             if (this.competencyAsPropertyObjectType === "Level") {
@@ -316,10 +324,11 @@ export default {
             return icon;
         },
         showAddComments() {
-            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
+            const editorStore = useEditorStore();
+            if (editorStore.queryParams.concepts === "true" || editorStore.conceptMode === true || editorStore.progressionMode === true) {
                 return false;
             }
-            return this.$store.state.app.canAddComments;
+            return this.canAddCommentsState;
         },
         competencyAsPropertyClass: function() {
             if (this.competencyAsPropertyIsExternal) {
@@ -444,9 +453,10 @@ export default {
         },
         // Fetches a map of fully qualified property identifiers to the full @graph property specifications.
         schema: function() {
-            var schema = this.$store.state.lode.schemata[this.type];
+            const lodeStore = useLodeStore();
+            var schema = lodeStore.schemata[this.type];
             if (schema == null) {
-                schema = this.$store.state.lode.schemata[this.context];
+                schema = lodeStore.schemata[this.context];
             }
             var result = {};
             if (schema !== null && schema !== undefined) {
@@ -553,7 +563,7 @@ export default {
                 if (result[""] == null || result[""] === undefined) {
                     result[""] = {};
                 }
-                result[""][key] = this.$store.state.lode.schemaFallback[key];
+                result[""][key] = useLodeStore().schemaFallback[key];
             }
             if (this.profile) {
                 for (var key in this.profile) {
@@ -636,7 +646,7 @@ export default {
                     if (result[""] == null || result[""] === undefined) {
                         result[""] = {};
                     }
-                    result[""][key] = this.$store.state.lode.schemaFallback[key];
+                    result[""][key] = useLodeStore().schemaFallback[key];
                 }
             }
             return result;
@@ -656,27 +666,27 @@ export default {
             return false;
         },
         changedObject: function() {
-            if (this.$store.state.editor) {
-                return this.$store.state.editor.changedObject;
-            }
-            return null;
+            return useEditorStore().changedObject;
         },
         managingAssertions: function() {
-            return this.$store.getters['editor/manageAssertions'] && this.shortType === 'Competency' && this.$route.name === 'framework';
+            return this.manageAssertionsState && this.shortType === 'Competency' && this.$route.name === 'framework';
         }
     },
     methods: {
         clickShowDetails() {
-            this.$store.commit('app/showModal', this.thingAsPropertyModalObject);
+            const appStore = useAppStore();
+            appStore.openModal(this.thingAsPropertyModalObject);
         },
         goToCompetencyWithinThisFramework: function() {
             // Scroll to competency
             this.$scrollTo("#scroll-" + this.uri.split('/').pop());
         },
         handleClickAddComment: function() {
-            this.$store.commit('editor/setAddCommentAboutId', EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
-            this.$store.commit('editor/setAddCommentType', 'new');
-            this.$store.commit('app/showModal', {component: 'AddComment'});
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
+            editorStore.setAddCommentAboutId(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]));
+            editorStore.setAddCommentType('new');
+            appStore.openModal({component: 'AddComment'});
         },
         editNode: function() {
             this.$emit('edit-node-event', true);
@@ -788,7 +798,7 @@ export default {
             var objectModel = null;
             var fullType = o["@type"];
             if (EcArray.isArray(fullType) && fullType.length > 0) fullType = fullType[0];
-            var objectModel = this.$store.state.lode.objectModel[fullType];
+            var objectModel = useLodeStore().objectModel[fullType];
             if (objectModel != null) {
                 for (let key in objectModel) {
                     if (o[key] == null) {
@@ -836,14 +846,15 @@ export default {
             } else if (type.indexOf("skos") !== -1) {
                 type = "https://schema.cassproject.org/0.4/skos";
             }
-            if (this.$store.state.lode.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
+            const lodeStore = useLodeStore();
+            if (lodeStore.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
                 var augmentedType = type;
                 augmentedType += (type.indexOf("schema.org") !== -1 ? ".jsonld" : "");
                 EcRemote.getExpectingObject("", augmentedType, async function(context) {
-                    me.$store.commit('lode/rawSchemata', {id: type, obj: context});
+                    lodeStore.setRawSchemata({id: type, obj: context});
                     try {
                         let expanded = await jsonld.expand(context);
-                        me.$store.dispatch('lode/schemata', {id: type, obj: expanded});
+                        lodeStore.processSchemata({id: type, obj: expanded});
                         if (after != null) after();
                     } catch (err) {
                         after();
@@ -906,7 +917,7 @@ export default {
             }
             // When we save, we need to remove all the extreneous arrays that we added to support reactivity.
             try {
-                let compacted = await jsonld.compact(this.stripEmptyArrays(this.expandedThing), this.$store.state.lode.rawSchemata[this.context]);
+                let compacted = await jsonld.compact(this.stripEmptyArrays(this.expandedThing), useLodeStore().rawSchemata[this.context]);
                 if (compacted) {
                     var rld = new EcRemoteLinkedData();
                     rld.copyFrom(compacted);
@@ -918,7 +929,7 @@ export default {
                     if (rld.owner && !EcArray.isArray(rld.owner)) {
                         rld.owner = [rld.owner];
                     }
-                    if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
+                    if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                         rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     repo.saveTo(rld, appLog, appError);
@@ -1051,7 +1062,8 @@ export default {
             });
         },
         get: function(server, service, headers, success, failure) {
-            this.$store.dispatch('editor/getThing', {
+            const editorStore = useEditorStore();
+            editorStore.getThing({
                 server: server,
                 service: service,
                 headers: headers,
@@ -1108,13 +1120,13 @@ export default {
                 if (result[heading] == null && result[heading] === undefined) {
                     result[heading] = {};
                 }
-                if ((this.$store.getters['editor/conceptMode']) && (prop === "http://www.w3.org/2004/02/skos/core#broader" || prop === "http://www.w3.org/2004/02/skos/core#narrower")) {
+                if ((useEditorStore().conceptMode) && (prop === "http://www.w3.org/2004/02/skos/core#broader" || prop === "http://www.w3.org/2004/02/skos/core#narrower")) {
                     continue;
                 }
                 if (this.profile[prop] && this.profile[prop]["valuesIndexed"]) {
-                    if (this.$store.state.editor.queryParams.ceasnDataFields === "true" && (prop === "hasChild" || prop === "isChildOf")) {
+                    if (useEditorStore().queryParams.ceasnDataFields === "true" && (prop === "hasChild" || prop === "isChildOf")) {
                         continue;
-                    } else if (this.$store.state.editor.queryParams.ceasnDataFields !== "true" && (prop === "narrows" || prop === "broadens")) {
+                    } else if (useEditorStore().queryParams.ceasnDataFields !== "true" && (prop === "narrows" || prop === "broadens")) {
                         continue;
                     }
                     var f = this.profile[prop]["valuesIndexed"];
@@ -1140,7 +1152,7 @@ export default {
         changedObject: async function() {
             if (this.changedObject && this.view === "importLight") {
                 this.load();
-                this.$store.commit('editor/changedObject', null);
+                useEditorStore().setChangedObject(null);
             } else if (this.changedObject && (this.changedObject === this.uri || (this.originalThing && this.changedObject === this.originalThing.shortId()))) {
                 if (this.uri) {
                     this.resolveNameFromUrl(this.uri);
@@ -1160,7 +1172,7 @@ export default {
                 } else if (type && window[type]) {
                     appLog("Can't get type: " + type);
                 }
-                this.$store.commit('editor/changedObject', null);
+                useEditorStore().setChangedObject(null);
             }
         },
         properties: function() {

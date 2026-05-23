@@ -5,7 +5,7 @@
         aria-label="main navigation">
         <div class="navbar-brand">
             <div
-                @click="$store.commit('app/showSideNav')"
+                @click="openSideNav"
                 v-if="!showSideNav"
                 class="navbar-item">
                 <div class="icon has-text-white">
@@ -14,7 +14,7 @@
             </div>
             <div
                 v-else
-                @click="$store.commit('app/closeSideNav')"
+                @click="closeSideNav"
                 class="navbar-item">
                 <div class="icon has-text-white">
                     <i class="fa fa-chevron-down has-text-white" />
@@ -33,6 +33,9 @@
 </template>
 
 <script>
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
 export default {
     name: 'Topbar',
     props: {
@@ -48,8 +51,16 @@ export default {
         };
     },
     computed: {
-        queryParams() {
-            return this.$store.getters['editor/queryParams'];
+        ...mapState(useEditorStore, ['queryParams'])
+    },
+    methods: {
+        openSideNav() {
+            const appStore = useAppStore();
+            appStore.openSideNav();
+        },
+        closeSideNav() {
+            const appStore = useAppStore();
+            appStore.closeSideNav();
         }
     }
 };

@@ -28,6 +28,7 @@
     </span>
 </template>
 <script>
+import { useEditorStore } from '@/stores/editor';
 
 export default {
     name: 'Assertion',
@@ -125,11 +126,11 @@ export default {
             if (this.assertion == null) {
                 return false;
             }
-            return this.assertion.hasReader(this.$store.getters['editor/badgePk']);
+            return this.assertion.hasReader(useEditorStore().badgePk);
         },
         badgeUrl: function() {
             if (this.assertion != null) {
-                if (this.assertion.hasReader(this.$store.getters['editor/badgePk'])) {
+                if (this.assertion.hasReader(useEditorStore().badgePk)) {
                     return EcRemote.urlAppend(window.repo.selectedServer, "badge/assertion/") + this.assertion.getGuid();
                 }
             }
@@ -141,7 +142,7 @@ export default {
             this.evidenceExplanation = null;
             if (this.evidence != null) {
                 if (this.evidence.length > 0) {
-                    this.$store.dispatch('editor/computeBecause', this.evidence).then((because) => {
+                    useEditorStore().computeBecause(this.evidence).then((because) => {
                         this.$nextTick(() => {
                             this.evidenceExplanation = because;
                         });

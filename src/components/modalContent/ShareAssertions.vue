@@ -3,13 +3,13 @@
         @close="closeModal; $emit('close')"
         :active="true"
         type="primary">
-        <template slot="modal-header">
+        <template #modal-header>
             <span class="title has-text-white">Share Assertions</span>
         </template>
         <!-- processing -->
         <template
             v-if="isProcessing"
-            slot="modal-body">
+            #modal-body>
             <h2 class="header has-text-centered">
                 Processing request...
             </h2>
@@ -21,7 +21,7 @@
         </template>
         <template
             v-else-if="isDone"
-            slot="modal-body">
+            #modal-body>
             <div class="section has-background-white has-text-centered">
                 <p>
                     <strong>Success!</strong>
@@ -30,7 +30,7 @@
         </template>
         <template
             v-else
-            slot="modal-body">
+            #modal-body>
             <div class="assertion-share-container">
                 <div class="assertion-share-block">
                     <h4 class="header is-size-3">
@@ -155,13 +155,13 @@
                 </div>
             </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div
                 class="buttons is-spaced">
                 <button
                     :disabled="isProcessing"
                     class="button is-secondary is-outlined"
-                    @click="$store.commit('app/closeModal')">
+                    @click="useAppStore().closeModal()">
                     <span>Cancel</span>
                     <span class="icon">
                         <i class="fa fa-times-circle" />
@@ -192,6 +192,8 @@
 
 <script>
 import ModalTemplate from './ModalTemplate.vue';
+import { useAppStore } from '@/stores/app';
+import { useEditorStore } from '@/stores/editor';
 export default {
     name: 'ShareAssertionsModal',
     props: {
@@ -244,7 +246,7 @@ export default {
             let checked = evt.target.checked;
             if (checked) {
                 for (let prs of this.filteredAvailableSubjects) {
-                    this.$set(this.shareSubjects, prs.owner[0], 1);
+                    this.shareSubjects[prs.owner[0]] = 1;
                 }
             } else {
                 this.shareSubjects = {};
@@ -254,7 +256,7 @@ export default {
             let checked = evt.target.checked;
             if (checked) {
                 for (let prs of this.filteredAvailableTargets) {
-                    this.$set(this.shareTargets, prs.owner[0], 1);
+                    this.shareTargets[prs.owner[0]] = 1;
                 }
             } else {
                 this.shareTargets = {};
@@ -262,16 +264,16 @@ export default {
         },
         setSubject: function(subject) {
             if (this.shareSubjects[subject]) {
-                this.$delete(this.shareSubjects, subject);
+                delete this.shareSubjects[subject];
             } else {
-                this.$set(this.shareSubjects, subject, 1);
+                this.shareSubjects[subject] = 1;
             }
         },
         setTarget: function(target) {
             if (this.shareTargets[target]) {
-                this.$delete(this.shareTargets, target);
+                delete this.shareTargets[target];
             } else {
-                this.$set(this.shareTargets, target, 1);
+                this.shareTargets[target] = 1;
             }
         },
         shareAssertions: function() {
@@ -286,7 +288,7 @@ export default {
             }
             let doSearch = async function(start, count) {
                 return new Promise((resolve, reject) => {
-                    EcAssertion.search(window.repo, `\\*owner:"${this.$store.getters['editor/getMe']}" AND (${searchQuery})`, async(results) => {
+                    EcAssertion.search(window.repo, `\\*owner:"${this.useEditorStore().getMe}" AND (${searchQuery})`, async(results) => {
                         assertions.push(...results);
                         start += count;
                         if (results.length > 0) {
@@ -315,7 +317,7 @@ export default {
                         assertion.getSubjectAsync((subject) => {
                             if (subjects.includes(subject.toPem())) {
                                 assertion.getAgentAsync(async(agent) => {
-                                    if (this.$store.getters['editor/getMe'] === agent.toPem()) {
+                                    if (this.useEditorStore().getMe === agent.toPem()) {
                                         for (let target of Object.keys(this.shareTargets)) {
                                             await assertion.addReader(EcPk.fromPem(target));
                                         }

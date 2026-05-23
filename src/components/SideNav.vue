@@ -57,9 +57,9 @@
                     {{ loggedOnPerson.email }}
                 </p>
                 <p
-                    v-if="showSideNav && $store.getters['user/lastLogin']"
+                    v-if="showSideNav && lastLogin"
                     class="is-size-7">
-                    Last Login: {{ new Date($store.getters['user/lastLogin']).toLocaleString() }}
+                    Last Login: {{ new Date(lastLogin).toLocaleString() }}
                 </p>
                 <!-- <p
                     v-if="showSideNav"
@@ -130,7 +130,7 @@
                 @toggle="addFrameworkOrDirectory = !addFrameworkOrDirectory"
                 align="left"
                 color="light"
-                @directory="$store.commit('app/showModal', {component: 'AddDirectory'});"
+                @directory="openAddDirectoryModal();"
                 @concept="$emit('create-new-concept-scheme')"
                 @framework="$emit('create-new-framework')"
                 @collection="$emit('create-new-collection')"
@@ -151,7 +151,7 @@
                 <li class="has-text-white">
                     <router-link
                         :to="{path: '/frameworks', query: queryParams}"
-                        @click.native="$store.commit('editor/collectionMode', false)"
+                        @click.native="setCollectionModeOff"
                         :title="showSideNav ? '' : 'Frameworks'">
                         <span class="icon">
                             <i class="fa fa-th-list" />
@@ -164,7 +164,7 @@
                     v-if="queryParams.ceasnDataFields === 'true' && showSideNav">
                     <router-link
                         :to="{path: '/collections', query: queryParams}"
-                        @click.native="$store.commit('editor/collectionMode', true)"
+                        @click.native="setCollectionModeOn"
                         :title="showSideNav ? '' : 'Collections'">
                         <span class="icon">
                             <i class="fa fa-th-list" />
@@ -175,7 +175,7 @@
                 <li class="has-text-white">
                     <router-link
                         :to="{path: '/import', query: queryParams}"
-                        @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                        @click.native="setFrameworkImportMode"
                         :title="showSideNav ? '' : 'Import Framework'">
                         <span class="icon">
                             <i class="fa fa-upload" />
@@ -261,7 +261,7 @@
                     <router-link :to="{path: '/directory', query: queryParams}">
                         <span
                             class="icon"
-                            v-if="$store.getters['app/selectedDirectory'] && $store.getters['app/selectedDirectory'].id === directory.id">
+                            v-if="selectedDirectory && selectedDirectory.id === directory.id">
                             <i class="fa fa-folder-open" />
                         </span>
                         <span
@@ -303,7 +303,7 @@
                 <li class="has-text-white">
                     <router-link
                         :to="{path: '/import', query: queryParams}"
-                        @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false); $store.dispatch('app/clearImport');"
+                        @click.native="setConceptImportMode"
                         :title="showSideNav ? '' : queryParams.ceasnDataFields === 'true' ? 'Import Concept Schemes' : 'Import Taxonomies'">
                         <span class="icon">
                             <i class="fa fa-upload" />
@@ -351,7 +351,7 @@
                     v-if="showSideNav && queryParams.ceasnDataFields === 'true' && showConcepts">
                     <router-link
                         :to="{path: '/import', query: queryParams}"
-                        @click.native="$store.commit('editor/progressionMode', true); $store.commit('editor/conceptMode', false); $store.dispatch('app/clearImport');"
+                        @click.native="setProgressionImportMode"
                         :title="showSideNav ? '' : 'Import'">
                         <span class="icon">
                             <i class="fa fa-upload" />
@@ -459,7 +459,7 @@
                 <li
                     v-if="showSideNav"
                     class="has-text-white">
-                    <a @click="$store.commit('app/closeSideNav')">
+                    <a @click="closeSideNav">
                         <span class="icon">
                             <i class="fa-regular fa-square-caret-left" />
                         </span>
@@ -470,7 +470,7 @@
                     v-else
                     class="has-text-white">
                     <a
-                        @click="$store.commit('app/showSideNav')"
+                        @click="openSideNav"
                         title="Expand sidebar">
                         <span class="icon">
                             <i class="fa-regular fa-square-caret-right" />
@@ -483,7 +483,11 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {mapState} from 'pinia';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
+import {useUserStore} from '@/stores/user';
 import casslogo from '@/assets/cass-logo-white.svg';
 import casslogoSquare from '@/assets/cass-logo-square.png';
 import {cassUtil} from './../mixins/cassUtil';
@@ -535,12 +539,14 @@ export default {
             }
             this.identityDropdownActive = false;
             let person = await window.EcPerson.getByPk(window.repo, window.EcIdentityManager.default.ids[0].ppk.toPk());
-            this.$store.commit('user/loggedOnPerson', person);
+            const userStore = useUserStore();
+            userStore.setLoggedOnPerson(person);
             this.availableIdentities = window.EcIdentityManager.default.ids;
         },
         setLaunchPluginValues(pluginShortcut) {
-            this.$store.commit('app/pluginToLaunch', pluginShortcut);
-            this.$store.commit('app/pluginToLaunchLastUpdate', Date.now());
+            const appStore = useAppStore();
+            appStore.setPluginToLaunch(pluginShortcut);
+            appStore.setPluginToLaunchLastUpdate(Date.now());
             if (!this.$router.currentRoute.name.equals(this.PLUGIN_CONTAINER_ROUTE)) this.$router.push({path: '/pluginContainer'});
         },
         buildPluginLinkMap() {
@@ -580,8 +586,9 @@ export default {
             return pem;
         },
         selectDirectory: function(directory) {
-            this.$store.commit('app/selectDirectory', directory);
-            this.$store.commit('app/rightAsideObject', directory);
+            const appStore = useAppStore();
+            appStore.selectDirectory(directory);
+            appStore.setRightAsideObject(directory);
             if (this.$router.currentRoute.name !== "directory") {
                 this.$router.push({name: "directory"});
             }
@@ -601,12 +608,55 @@ export default {
             dir.save(function(success) {
                 appLog("Directory saved: " + dir.id);
                 me.directoryName = '';
-                me.$store.dispatch('app/refreshDirectories');
+                const appStore = useAppStore();
+                appStore.refreshDirectories();
                 me.selectDirectory(dir);
             }, appError, window.repo);
         },
         shareAssertions: function() {
-            this.$store.commit('app/showModal', {component: 'ShareAssertions'});
+            const appStore = useAppStore();
+            appStore.openModal({component: 'ShareAssertions'});
+        },
+        openAddDirectoryModal: function() {
+            const appStore = useAppStore();
+            appStore.openModal({component: 'AddDirectory'});
+        },
+        closeSideNav: function() {
+            const appStore = useAppStore();
+            appStore.closeSideNav();
+        },
+        openSideNav: function() {
+            const appStore = useAppStore();
+            appStore.openSideNav();
+        },
+        setCollectionModeOff: function() {
+            const editorStore = useEditorStore();
+            editorStore.setCollectionMode(false);
+        },
+        setCollectionModeOn: function() {
+            const editorStore = useEditorStore();
+            editorStore.setCollectionMode(true);
+        },
+        setFrameworkImportMode: function() {
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
+            editorStore.setConceptMode(false);
+            editorStore.setProgressionMode(false);
+            appStore.clearImport();
+        },
+        setConceptImportMode: function() {
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
+            editorStore.setConceptMode(true);
+            editorStore.setProgressionMode(false);
+            appStore.clearImport();
+        },
+        setProgressionImportMode: function() {
+            const editorStore = useEditorStore();
+            const appStore = useAppStore();
+            editorStore.setProgressionMode(true);
+            editorStore.setConceptMode(false);
+            appStore.clearImport();
         }
     },
     watch: {
@@ -618,18 +668,23 @@ export default {
         }
     },
     computed: {
-        ...mapState({
-            crosswalkEnabled: state => state.featuresEnabled.crosswalkEnabled,
-            userManagementEnabled: state => state.featuresEnabled.userManagementEnabled,
-            configurationsEnabled: state => state.featuresEnabled.configurationsEnabled,
-            pluginsEnabled: state => state.featuresEnabled.pluginsEnabled,
-            loginEnabled: state => state.featuresEnabled.loginEnabled,
-            queryParams: state => state.editor.queryParams,
-            pluginLastUpdate: state => state.app.pluginLastUpdate,
-            directoryList: state => state.app.directories.directoryList
+        ...mapState(useFeaturesEnabledStore, [
+            'crosswalkEnabled',
+            'userManagementEnabled',
+            'configurationsEnabled',
+            'pluginsEnabled',
+            'loginEnabled'
+        ]),
+        ...mapState(useEditorStore, {
+            queryParams: 'queryParams'
+        }),
+        ...mapState(useAppStore, {
+            pluginLastUpdate: 'pluginLastUpdate',
+            directoryList: store => store.directories.directoryList
         }),
         hideLogoutButton: function() {
-            let loginInfo = this.$store.getters['user/repositorySsoOptions'];
+            const userStore = useUserStore();
+            let loginInfo = userStore.repositorySsoOptions;
             if (loginInfo) {
                 if (loginInfo.ssoPublicKey && !loginInfo.ssoLogout) {
                     return true;
@@ -637,8 +692,9 @@ export default {
             }
             return false;
         },
-        queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+        lastLogin: function() {
+            const userStore = useUserStore();
+            return userStore.lastLogin;
         },
         isLoggedOn: function() {
             if (this.loggedOnPerson && this.loggedOnPerson.name) {
@@ -660,10 +716,12 @@ export default {
             return this.$route.path;
         },
         supportedFiles: function() {
-            return (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) ? this.supportedConceptFileTypes : this.supportedFileTypes;
+            const editorStore = useEditorStore();
+            return (editorStore.conceptMode === true || editorStore.progressionMode === true) ? this.supportedConceptFileTypes : this.supportedFileTypes;
         },
         loggedOnPerson: function() {
-            return this.$store.getters['user/loggedOnPerson'];
+            const userStore = useUserStore();
+            return userStore.loggedOnPerson;
         },
         getNonStandardNavCategoriesFromPlugins: function() {
             let nonStandardNavCats = [];
@@ -695,7 +753,8 @@ export default {
     },
     mounted() {
         this.buildPluginList(this.buildPluginListComplete);
-        this.$store.dispatch('app/refreshDirectories');
+        const appStore = useAppStore();
+        appStore.refreshDirectories();
         this.availableIdentities = window.EcIdentityManager.default.ids;
     }
 };

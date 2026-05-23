@@ -1,3 +1,5 @@
+import {useAppStore} from '@/stores/app';
+
 export const pluginUtil = {
     name: 'pluginUtil',
     data: () => ({
@@ -250,7 +252,8 @@ export const pluginUtil = {
             return p;
         },
         getPluginsFromCuratedList() {
-            for (let p of this.$store.getters['app/curatedPlugins']) {
+            const appStore = useAppStore();
+            for (let p of appStore.curatedPlugins) {
                 this.pluginList.push(this.buildPluginListItemFromCuratedPlugin(p));
             }
         },

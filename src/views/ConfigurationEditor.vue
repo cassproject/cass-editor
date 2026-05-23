@@ -89,56 +89,69 @@ import DeleteConfigurationConfirm from '@/components/modalContent/DeleteConfigur
 import ConfigurationNotPermitted from '@/components/modalContent/ConfigurationNotPermitted.vue';
 import ConfigurationSetSuccess from '@/components/modalContent/ConfigurationSetSuccess.vue';
 import ConfigurationList from '@/components/configuration/ConfigurationList.vue';
+import { useConfigurationStore } from '@/stores/configuration';
 
 export default {
     name: 'ConfigurationEditor',
     mixins: [cassUtil, configuration],
     computed: {
         configViewMode() {
-            return this.$store.getters['configuration/configView'];
+            const configStore = useConfigurationStore();
+            return configStore.configView;
         },
         defaultBrowserConfigName: {
             get() {
-                return this.$store.getters['configuration/defaultBrowserConfigName'];
+                const configStore = useConfigurationStore();
+                return configStore.defaultBrowserConfigName;
             },
             set(val) {
-                this.$store.commit('configuration/setDefaultBrowserConfigName', val);
+                const configStore = useConfigurationStore();
+                configStore.setDefaultBrowserConfigName(val);
             }
         },
         showConfirmDeleteConfigModal: {
             get() {
-                return this.$store.getters['configuration/showConfirmDeleteConfigModal'];
+                const configStore = useConfigurationStore();
+                return configStore.showConfirmDeleteConfigModal;
             },
             set(val) {
-                this.$store.commit('configuration/setShowConfirmDeleteConfigModal', val);
+                const configStore = useConfigurationStore();
+                configStore.setShowConfirmDeleteConfigModal(val);
             }
         },
         showBrowserConfigSetModal: {
             get() {
-                return this.$store.getters['configuration/showBrowserConfigSetModal'];
+                const configStore = useConfigurationStore();
+                return configStore.showBrowserConfigSetModal;
             },
             set(val) {
-                this.$store.commit('configuration/setShowBrowserConfigSetModal', val);
+                const configStore = useConfigurationStore();
+                configStore.setShowBrowserConfigSetModal(val);
             }
         },
         showMustBeLoggedInModal: {
             get() {
-                return this.$store.getters['configuration/showMustBeLoggedInModal'];
+                const configStore = useConfigurationStore();
+                return configStore.showMustBeLoggedInModal;
             },
             set(val) {
-                this.$store.commit('configuration/setShowMustBeLoggedInModal', val);
+                const configStore = useConfigurationStore();
+                configStore.setShowMustBeLoggedInModal(val);
             }
         },
         configToDelete: {
             get() {
-                return this.$store.getters['configuration/configToDelete'];
+                const configStore = useConfigurationStore();
+                return configStore.configToDelete;
             },
             set(val) {
-                this.$store.commit('configuration/setConfigToDelete', val);
+                const configStore = useConfigurationStore();
+                configStore.setConfigToDelete(val);
             }
         },
         localDefaultBrowserConfigId() {
-            return this.$store.getters['configuration/localDefaultBrowserConfig'];
+            const configStore = useConfigurationStore();
+            return configStore.localDefaultBrowserConfig;
         },
         currentConfigIsReadOnly: function() {
             if (!this.currentConfig || !this.currentConfig.isOwned) return true;
@@ -189,7 +202,8 @@ export default {
         },
         backFromEditCurrentConfig() {
             this.showListView();
-            this.$store.commit('configuration/setCurrentConfig', {});
+            const configStore = useConfigurationStore();
+            configStore.setCurrentConfig({});
         },
         generateCustomPropertyNameId(customProp) {
             return customProp.context + customProp.propertyName;
@@ -285,7 +299,8 @@ export default {
             this.showDetailView();
         },
         closeBrowserConfigSetModal() {
-            this.$store.commit('configuration/setShowConfirmDeleteConfigModal', false);
+            const configStore = useConfigurationStore();
+            configStore.setShowConfirmDeleteConfigModal(false);
         }
     }
 };

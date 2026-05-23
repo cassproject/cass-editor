@@ -1,10 +1,10 @@
 <template>
     <modal-template
         :active="true">
-        <template slot="modal-header">
+        <template #modal-header>
             Supported Import Files & Formats
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <div class="tabs">
                 <ul>
                     <li
@@ -456,9 +456,9 @@
                 </div>
             </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div
-                @click="$store.commit('app/closeModal')"
+                @click="useAppStore().closeModal()"
                 class="buttons is-right">
                 <button class="button is-primary is-large is-outlined">
                     Back to import screen
@@ -484,6 +484,8 @@ import ctdlAsnJsonldConcepts from 'file-loader!../../../files/ConnectingCredenti
 import ctdlAsnJsonld from 'file-loader!../../../files/DQP.jsonld';
 import asnRdfJson from 'file-loader!../../../files/D2695955';
 import medbiquitous from 'file-loader!../../../files/educational_achievement_sample_1June2012.xml';
+import { useAppStore } from '@/stores/app';
+import { useEditorStore } from '@/stores/editor';
 
 export default {
     name: 'SupportedImportDetails',
@@ -517,7 +519,7 @@ export default {
     },
     computed: {
         modal: function() {
-            return this.$store.getters['app/dynamicModalContent'];
+            return this.useAppStore().dynamicModalContent;
         },
         content: function() {
             return this.modal.documentContent;
@@ -530,13 +532,13 @@ export default {
             }
         },
         conceptMode: function() {
-            return this.$store.getters['editor/conceptMode'];
+            return this.useEditorStore().conceptMode;
         },
         progressionMode: function() {
-            return this.$store.getters['editor/progressionMode'];
+            return this.useEditorStore().progressionMode;
         },
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            return this.useEditorStore().queryParams;
         }
     }
 };

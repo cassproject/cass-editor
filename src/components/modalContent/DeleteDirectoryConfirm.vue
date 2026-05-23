@@ -3,12 +3,12 @@
         :active="true"
         type="danger"
         @close="closeModal">
-        <template slot="modal-header">
+        <template #modal-header>
             <span class="title has-text-white">
                 Are you sure?
             </span>
         </template>
-        <template slot="modal-body">
+        <template #modal-body>
             <h3 class="title is-size-4">
                 <span class="">Delete the following directory</span>
             </h3>
@@ -34,7 +34,7 @@
                 </div>
             </div>
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-spaced">
                 <button
                     class="button is-dark is-outlined"
@@ -57,6 +57,9 @@ import ModalTemplate from './ModalTemplate.vue';
 
 import {cassUtil} from '../../mixins/cassUtil';
 import common from '@/mixins/common.js';
+import { useAppStore } from '@/stores/app';
+import { useEditorStore } from '@/stores/editor';
+import { useUserStore } from '@/stores/user';
 
 export default {
     mixins: [cassUtil, common],
@@ -78,7 +81,7 @@ export default {
         deleteDirectory: async function(obj) {
             appLog("deleting " + obj.id);
             var me = this;
-            let children = await this.$store.dispatch('editor/getDirectoryChildren', obj);
+            let children = await useEditorStore().getDirectoryChildren(obj);
             window.repo.multiget(children, function(success) {
                 new EcAsyncHelper().each(success, async function(obj, done) {
                     if (obj.type === 'Framework') {
@@ -96,15 +99,15 @@ export default {
                         appLog(success);
                         me.numDirectories--;
                         if (me.numDirectories === 0) {
-                            me.$store.dispatch('app/refreshDirectories');
-                            me.$store.commit('app/refreshSearch', true);
+                            useAppStore().refreshDirectories();
+                            useAppStore().setRefreshSearch(true);
                             if (me.$route.name !== "frameworks") {
                                 me.$router.push({name: "frameworks"});
                             }
-                            me.$store.commit('app/rightAsideObject', null);
-                            me.$store.commit('app/closeRightAside');
-                            me.$store.commit('app/refreshSearch', true);
-                            me.$store.commit('app/closeModal');
+                            useAppStore().setRightAsideObject(null);
+                            me.useAppStore().closeRightAside();
+                            useAppStore().setRefreshSearch(true);
+                            useAppStore().closeModal();
                         }
                     }, function(error) {
                         appError(error);
@@ -113,10 +116,10 @@ export default {
                             if (me.$route.name !== "frameworks") {
                                 me.$router.push({name: "frameworks"});
                             }
-                            me.$store.commit('app/rightAsideObject', null);
-                            me.$store.commit('app/closeRightAside');
-                            me.$store.commit('app/refreshSearch', true);
-                            me.$store.commit('app/closeModal');
+                            useAppStore().setRightAsideObject(null);
+                            me.useAppStore().closeRightAside();
+                            useAppStore().setRefreshSearch(true);
+                            useAppStore().closeModal();
                         }
                     });
                 });
@@ -146,15 +149,15 @@ export default {
             }, appLog);
         },
         closeModal: function() {
-            this.$store.commit('app/closeModal');
+            useAppStore().closeModal();
         }
     },
     computed: {
         loggedInPerson: function() {
-            return this.$store.state.user.loggedOnPerson;
+            return useUserStore().loggedOnPerson;
         },
         directory: function() {
-            return this.$store.getters['app/rightAsideObject'];
+            return this.useAppStore().rightAsideObject;
         },
         deleteDirectoryDisabled() {
             return (this.typedInName.trim() !== this.directory.name.trim());

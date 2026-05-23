@@ -92,6 +92,7 @@
     </div>
 </template>
 <script>
+import { useEditorStore } from '@/stores/editor';
 
 export default {
     name: 'AssertionEditor',
@@ -129,16 +130,16 @@ export default {
             return this.canAssertion || this.cannotAssertion;
         },
         assertions: function() {
-            let assertions = this.$store.getters['editor/assertions'].filter((a) => {
+            let assertions = useEditorStore().sortedAssertions.filter((a) => {
                 return a.competency === EcRemoteLinkedData.trimVersionFromUrl(this.uri);
             });
             return assertions;
         },
         me: function() {
-            return this.$store.getters['editor/getMe'];
+            return useEditorStore().getMe;
         },
         subject: function() {
-            return this.$store.getters['editor/getSubject'];
+            return useEditorStore().getSubject;
         },
         otherClaimsPhrase: function() {
             return "Others have made claims about " + (this.subject === this.me ? "you" : (this.subjectPerson === null ? "them" : this.subjectPerson)) + ". Click to expand.";
@@ -179,7 +180,7 @@ export default {
             }
         },
         subjectPerson: function() {
-            return this.$store.getters['editor/getSubjectName'];
+            return useEditorStore().getSubjectName;
         }
     },
     methods: {
@@ -213,7 +214,7 @@ export default {
                                                     this.cannotAssertion = true;
                                                     this.badge = false;
                                                 } else {
-                                                    this.badge = assertion.hasReader(this.$store.getters['editor/badgePk']);
+                                                    this.badge = assertion.hasReader(useEditorStore().badgePk);
                                                     this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
                                                     this.canAssertion = true;
                                                     this.cannotAssertion = false;
@@ -223,7 +224,7 @@ export default {
                                         } else {
                                             this.canAssertion = true;
                                             this.cannotAssertion = false;
-                                            this.badge = assertion.hasReader(this.$store.getters['editor/badgePk']);
+                                            this.badge = assertion.hasReader(useEditorStore().badgePk);
                                             this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
                                             callback();
                                         }
@@ -231,7 +232,7 @@ export default {
                                     if (assertion.evidence != null) {
                                         assertion.getEvidencesAsync((evidences) => {
                                             this.evidence = evidences;
-                                            this.$store.dispatch('editor/computeBecause', this.evidence).then((because) => {
+                                            useEditorStore().computeBecause(this.evidence).then((because) => {
                                                 this.evidenceExplanation = because;
                                             });
                                             negativeCallback();
@@ -358,7 +359,7 @@ export default {
                                     assertion.getAgentAsync(async(agent) => {
                                         if (this.me === agent.toPem()) {
                                             if (assertion.negative == null) {
-                                                await assertion.addReader(this.$store.getters['editor/badgePk']);
+                                                await assertion.addReader(useEditorStore().badgePk);
                                                 EcRepository.save(assertion, () => {
                                                     // this.$store.commit('editor/addAssertion', assertion);
                                                     this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
@@ -368,7 +369,7 @@ export default {
                                             } else {
                                                 assertion.getNegativeAsync(async(negative) => {
                                                     if (!negative) {
-                                                        await assertion.addReader(this.$store.getters['editor/badgePk']);
+                                                        await assertion.addReader(useEditorStore().badgePk);
                                                         EcRepository.save(assertion, () => {
                                                             // this.$store.commit('editor/addAssertion', assertion);
                                                             this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
@@ -414,7 +415,7 @@ export default {
                                     assertion.getAgentAsync((agent) => {
                                         if (this.me === agent.toPem()) {
                                             if (assertion.negative == null) {
-                                                assertion.removeReader(this.$store.getters['editor/badgePk']);
+                                                assertion.removeReader(useEditorStore().badgePk);
                                                 EcRepository.save(assertion, () => {
                                                     // this.$store.commit('editor/addAssertion', assertion);
                                                     this.badgeLink = null;
@@ -424,7 +425,7 @@ export default {
                                             } else {
                                                 assertion.getNegativeAsync((negative) => {
                                                     if (!negative) {
-                                                        assertion.removeReader(this.$store.getters['editor/badgePk']);
+                                                        assertion.removeReader(useEditorStore().badgePk);
                                                         EcRepository.save(assertion, () => {
                                                             // this.$store.commit('editor/addAssertion', assertion);
                                                             this.badgeLink = null;
@@ -468,7 +469,7 @@ export default {
                                         if (this.me === agent.toPem()) {
                                             if (assertion.negative === null) {
                                                 EcRepository._delete(assertion, () => {
-                                                    this.$store.commit('editor/removeAssertion', assertion);
+                                                    useEditorStore().removeAssertion(assertion);
                                                     this.canAssertion = false;
                                                     callback();
                                                 }, callback);
@@ -476,7 +477,7 @@ export default {
                                                 assertion.getNegativeAsync((negative) => {
                                                     if (!negative) {
                                                         EcRepository._delete(assertion, () => {
-                                                            this.$store.commit('editor/removeAssertion', assertion);
+                                                            useEditorStore().removeAssertion(assertion);
                                                             this.canAssertion = false;
                                                             callback();
                                                         }, callback);
@@ -519,7 +520,7 @@ export default {
                                                 assertion.getNegativeAsync((negative) => {
                                                     if (negative) {
                                                         EcRepository._delete(assertion, () => {
-                                                            this.$store.commit('editor/removeAssertion', assertion);
+                                                            useEditorStore().removeAssertion(assertion);
                                                             this.cannotAssertion = false;
                                                             callback();
                                                         }, callback);
@@ -666,7 +667,7 @@ export default {
                                                 await assertion.setEvidence(evidences);
                                                 EcRepository.save(assertion, () => {
                                                     // this.$store.commit('editor/addAssertion', assertion);
-                                                    this.$store.dispatch('editor/computeBecause', evidences).then((because) => {
+                                                    useEditorStore().computeBecause(evidences).then((because) => {
                                                         this.evidenceExplanation = because;
                                                     });
                                                     callback();
@@ -707,7 +708,7 @@ export default {
                                                 await assertion.setEvidence(evidences);
                                                 EcRepository.save(assertion, () => {
                                                     // this.$store.commit('editor/addAssertion', assertion);
-                                                    this.$store.dispatch('editor/computeBecause', evidences).then((because) => {
+                                                    useEditorStore().computeBecause(evidences).then((because) => {
                                                         this.evidenceExplanation = because;
                                                     });
                                                     callback();

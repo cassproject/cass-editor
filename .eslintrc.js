@@ -1,9 +1,8 @@
 module.exports = {
     'extends': [
-        'plugin:vue/essential', // where applicable
+        'plugin:vue/vue3-essential', // where applicable
         'eslint:recommended',
-        '@vue/standard', // where applicable
-        'plugin:vue/strongly-recommended'
+        'plugin:vue/vue3-strongly-recommended'
     ],
     rules: {
         'vue/html-closing-bracket-newline': [
@@ -367,8 +366,5 @@ module.exports = {
          */,
          'vue/multi-word-component-names': 1
 
-    },
-    parserOptions: {
-        parser: 'babel-eslint'
     }
 };

@@ -70,7 +70,7 @@
             <li class="has-text-white">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', false); $store.commit('editor/progressionMode', false)">
+                    @click.native="setFrameworkImportMode">
                     Import
                 </router-link>
             </li>
@@ -95,7 +95,7 @@
             <li class="has-text-white">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/conceptMode', true); $store.commit('editor/progressionMode', false)">
+                    @click.native="setConceptImportMode">
                     Import
                 </router-link>
             </li>
@@ -120,7 +120,7 @@
             <li class="has-text-white">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="$store.commit('editor/progressionMode', true); $store.commit('editor/conceptMode', false)">
+                    @click.native="setProgressionImportMode">
                     Import
                 </router-link>
             </li>
@@ -152,7 +152,8 @@
 </template>
 
 <script>
-import {mapState} from 'vuex';
+import {useEditorStore} from '@/stores/editor';
+import {useUserStore} from '@/stores/user';
 import {cassUtil} from './../mixins/cassUtil';
 export default {
     name: 'NarrowSideNav',
@@ -172,7 +173,8 @@ export default {
 
     computed: {
         queryParams: function() {
-            return this.$store.getters['editor/queryParams'];
+            const editorStore = useEditorStore();
+            return editorStore.queryParams;
         },
         isLoggedOn: function() {
             if (this.loggedOnPerson && this.loggedOnPerson.name) {
@@ -192,10 +194,29 @@ export default {
             return this.$route.path;
         },
         supportedFiles: function() {
-            return (this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) ? this.supportedConceptFileTypes : this.supportedFileTypes;
+            const editorStore = useEditorStore();
+            return (editorStore.conceptMode === true || editorStore.progressionMode === true) ? this.supportedConceptFileTypes : this.supportedFileTypes;
         },
         loggedOnPerson: function() {
-            return this.$store.getters['user/loggedOnPerson'];
+            const userStore = useUserStore();
+            return userStore.loggedOnPerson;
+        }
+    },
+    methods: {
+        setFrameworkImportMode() {
+            const editorStore = useEditorStore();
+            editorStore.setConceptMode(false);
+            editorStore.setProgressionMode(false);
+        },
+        setConceptImportMode() {
+            const editorStore = useEditorStore();
+            editorStore.setConceptMode(true);
+            editorStore.setProgressionMode(false);
+        },
+        setProgressionImportMode() {
+            const editorStore = useEditorStore();
+            editorStore.setProgressionMode(true);
+            editorStore.setConceptMode(false);
         }
     }
 };

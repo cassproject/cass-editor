@@ -1,32 +1,41 @@
-import {mapGetters} from 'vuex';
+import {mapState} from 'pinia';
+import {useConfigurationStore} from '@/stores/configuration';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+
 export const configuration = {
     name: 'configuration',
     computed: {
-        ...mapGetters({
-            CONFIG_SEARCH_SIZE: 'configuration/CONFIG_SEARCH_SIZE',
-            DEFAULT_CONFIGURATION_TYPE: 'configuration/DEFAULT_CONFIGURATION_TYPE',
-            DEFAULT_CONFIGURATION_CONTEXT: 'configuration/DEFAULT_CONFIGURATION_CONTEXT',
-            LANG_STRING_RANGE: 'configuration/LANG_STRING_RANGE',
-            DEFAULT_HEADING: 'configuration/DEFAULT_HEADING'
-        }),
+        ...mapState(useConfigurationStore, [
+            'CONFIG_SEARCH_SIZE',
+            'DEFAULT_CONFIGURATION_TYPE',
+            'DEFAULT_CONFIGURATION_CONTEXT',
+            'LANG_STRING_RANGE',
+            'DEFAULT_HEADING'
+        ]),
         currentConfig: {
             get() {
-                return this.$store.getters['configuration/currentConfig'];
+                const configurationStore = useConfigurationStore();
+                return configurationStore.currentConfig;
             },
             set(val) {
-                this.$store.commit('configuration/setCurrentConfig', val);
+                const configurationStore = useConfigurationStore();
+                configurationStore.setCurrentConfig(val);
             }
         }
     },
     methods: {
         closeModal: function() {
-            this.$store.commit('app/closeModal');
+            const appStore = useAppStore();
+            appStore.closeModal();
         },
         showListView() {
-            this.$store.commit('configuration/setConfigView', "list");
+            const configurationStore = useConfigurationStore();
+            configurationStore.setConfigView("list");
         },
         showDetailView() {
-            this.$store.commit('configuration/setConfigView', "detail");
+            const configurationStore = useConfigurationStore();
+            configurationStore.setConfigView("detail");
         },
         showConfigDetails(configId) {
             this.setCurrentConfig(configId);
@@ -48,7 +57,8 @@ export const configuration = {
         },
         setCurrentConfig(configId) {
             let currentConfig = this.getConfigById(configId);
-            this.$store.commit('configuration/setCurrentConfig', currentConfig);
+            const configurationStore = useConfigurationStore();
+            configurationStore.setCurrentConfig(currentConfig);
         },
         sortConfigList() {
             this.configList.sort(function(c1, c2) {
@@ -579,7 +589,8 @@ export const configuration = {
                         value: results[concept].id
                     });
                 }
-                this.$store.commit('configuration/setAvailableConcepts', concepts);
+                const configurationStore = useConfigurationStore();
+                configurationStore.setAvailableConcepts(concepts);
             }).catch((err) => {
                 appLog("failed to retrieve concepts: " + err);
             });
@@ -591,7 +602,8 @@ export const configuration = {
                     types.push(...config.compEnforcedTypes);
                 }
             });
-            this.$store.commit('configuration/setAvailableTypes', types);
+            const configurationStore = useConfigurationStore();
+            configurationStore.setAvailableTypes(types);
         },
         searchRepositoryForConfigsSuccess(ecRemoteLda) {
             appLog("Config search success: ");
@@ -625,14 +637,16 @@ export const configuration = {
             let bdc = this.getConfigById(configId);
             this.setDefaultBrowserConfigId(configId);
             this.defaultBrowserConfigName = bdc.name;
-            this.$store.commit('configuration/setLocalDefaultBrowserConfig', configId);
-            this.$store.commit('configuration/setShowBrowserConfigSetModal', true);
+            const configurationStore = useConfigurationStore();
+            configurationStore.setLocalDefaultBrowserConfig(configId);
+            configurationStore.setShowBrowserConfigSetModal(true);
         },
         removeConfigAsBrowserDefault(configId) {
             this.removeDefaultBrowserConfig();
-            this.$store.commit('configuration/setDefaultBrowserConfigName', '');
-            this.$store.commit('configuration/setLocalDefaultBrowserConfig', '');
-            this.$store.commit('configuration/setShowBrowserConfigSetModal', false);
+            const configurationStore = useConfigurationStore();
+            configurationStore.setDefaultBrowserConfigName('');
+            configurationStore.setLocalDefaultBrowserConfig('');
+            configurationStore.setShowBrowserConfigSetModal(false);
         },
         generateNewConfigObject() {
             let newConfigObj = {};
@@ -1933,13 +1947,16 @@ export const configuration = {
         }
     },
     updated() {
-        this.$store.commit('configuration/setLocalDefaultBrowserConfig', this.getDefaultBrowserConfigId());
+        const configurationStore = useConfigurationStore();
+        configurationStore.setLocalDefaultBrowserConfig(this.getDefaultBrowserConfigId());
     },
     mounted() {
         this.buildConfigList();
-        this.$store.commit('configuration/setLocalDefaultBrowserConfig', this.getDefaultBrowserConfigId());
-        if (this.$store.getters['editor/framework'] && this.$store.getters['editor/framework'].configuration) {
-            this.frameworkConfigId = this.$store.getters['editor/framework'].configuration;
+        const configurationStore = useConfigurationStore();
+        const editorStore = useEditorStore();
+        configurationStore.setLocalDefaultBrowserConfig(this.getDefaultBrowserConfigId());
+        if (editorStore.framework && editorStore.framework.configuration) {
+            this.frameworkConfigId = editorStore.framework.configuration;
         }
     }
 };

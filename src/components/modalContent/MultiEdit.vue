@@ -2,13 +2,13 @@
     <modal-template
         :active="true"
         type="info"
-        @close="$store.commit('app/closeModal')">
-        <template slot="modal-header">
+        @close="useAppStore().closeModal()">
+        <template #modal-header>
             Edit Multiple Competencies
         </template>
         <template
             v-if="isProcessing"
-            slot="modal-body">
+            #modal-body>
             <div class="section has-text-centered">
                 <span class="icon is-large">
                     <i class="fa fa-spinner fa-2x fa-pulse" />
@@ -16,7 +16,7 @@
             </div>
         </template>
         <template
-            slot="modal-body"
+            #modal-body
             v-else-if="!isSearching">
             <div
                 v-for="(item,idx) in addedPropertiesAndValues"
@@ -39,11 +39,11 @@
             </p>
         </template>
         <template
-            slot="modal-body"
+            #modal-body
             v-if="isSearching">
             <Search view="multi-edit" />
         </template>
-        <template slot="modal-foot">
+        <template #modal-foot>
             <div class="buttons is-spaced">
                 <button
                     @click="onCancel"
@@ -82,6 +82,9 @@
 import AddProperty from '@/lode/components/AddProperty.vue';
 import Search from '../framework/Search.vue';
 import ModalTemplate from './ModalTemplate.vue';
+import { useAppStore } from '@/stores/app';
+import { useEditorStore } from '@/stores/editor';
+import { useLodeStore } from '@/stores/lode';
 export default {
     name: 'MultiEdit',
     components: {
@@ -129,10 +132,10 @@ export default {
             return false;
         },
         removeAddingValueAtIndex: function() {
-            return this.$store.getters['lode/removeAddingValueAtIndex'];
+            return useLodeStore().removeAddingValueAtIndex;
         },
         addingChecked: function() {
-            return this.$store.getters['lode/addingChecked'];
+            return useLodeStore().addingChecked;
         }
     },
     methods: {
@@ -140,7 +143,7 @@ export default {
             if (this.isSearching) {
                 this.isSearching = false;
             } else {
-                this.$store.commit('app/closeModal');
+                useAppStore().closeModal();
             }
         },
         addErrorMessage: function(msg) {
@@ -150,7 +153,7 @@ export default {
             this.addedPropertiesAndValues[index].property = property;
             this.addedPropertiesAndValues[index].value = value;
             this.addedPropertiesAndValues[index].range = range;
-            this.$set(this.addedPropertiesAndValues[index], "error", null);
+            this.addedPropertiesAndValues[index]["error"] = null;
             // Validate input
             if (range.length === 1 && (range[0] === "http://schema.org/URL" ||
             range[0].toLowerCase().indexOf("concept") !== -1 || range[0].toLowerCase().indexOf("competency") !== -1 ||
@@ -338,11 +341,11 @@ export default {
         save: async function(expandedCompetency) {
             var me = this;
             var context = "https://schema.cassproject.org/0.4";
-            if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
+            if (this.useEditorStore().queryParams.concepts === "true" || this.useEditorStore().conceptMode === true || this.useEditorStore().progressionMode === true) {
                 context += "/skos";
             }
             try {
-                let compacted = await jsonld.compact(expandedCompetency, this.$store.state.lode.rawSchemata[context]);
+                let compacted = await jsonld.compact(expandedCompetency, useLodeStore().rawSchemata[context]);
                 if (compacted) {
                     compacted = me.turnFieldsBackIntoArrays(compacted);
                     var rld = new EcRemoteLinkedData();
@@ -350,7 +353,7 @@ export default {
                     rld.context = context;
                     delete rld["@context"];
                     rld["schema:dateModified"] = new Date().toISOString();
-                    if (me.$store.state.editor && me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
+                    if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                         rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     me.repo.saveTo(rld, appLog, appError);
@@ -374,15 +377,15 @@ export default {
             return rld;
         },
         addSelected: function() {
-            var ids = this.$store.getters['editor/selectedCompetenciesAsProperties'];
+            var ids = this.useEditorStore().selectedCompetenciesAsProperties;
             for (var i = 0; i < ids.length; i++) {
                 if (this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].property.length !== 0) {
                     this.addAnotherProperty();
                 }
-                var property = this.$store.getters['editor/selectCompetencyRelation'];
+                var property = this.useEditorStore().selectCompetencyRelation;
                 this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].value = ids[i];
                 this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].property = {value: property, label: this.profile[property]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"]};
-                this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].range = this.$store.getters['lode/addingRange'];
+                this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].range = useLodeStore().addingRange;
             }
             this.isSearching = false;
         }
@@ -393,17 +396,17 @@ export default {
                 // Done saving, close modal
                 this.isProcessing = false;
                 if (this.changedItemsForUndo) {
-                    this.$store.commit('editor/addEditsToUndo', this.changedItemsForUndo);
+                    useEditorStore().addEditsToUndo(this.changedItemsForUndo);
                 }
                 if (!this.errorMessage || this.errorMessage.length === 0) {
-                    this.$store.commit('app/closeModal');
+                    useAppStore().closeModal();
                 }
             }
         },
         removeAddingValueAtIndex: function() {
             if (this.removeAddingValueAtIndex) {
                 this.removeValueAtIndex(this.removeAddingValueAtIndex);
-                this.$store.commit('lode/removeAddingValueAtIndex', null);
+                useLodeStore().removeAddingValueAtIndex(null);
             }
         },
         addingChecked: function() {

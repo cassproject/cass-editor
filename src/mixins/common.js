@@ -1,4 +1,7 @@
 import dateFormat from 'dateformat';
+import { useEditorStore } from '@/stores/editor';
+import { useLodeStore } from '@/stores/lode';
+import { useUserStore } from '@/stores/user';
 
 export default {
     data() {
@@ -11,12 +14,12 @@ export default {
         ctids: function() {
             let framework = this.framework;
             if (!framework) {
-                framework = this.$store.getters['editor/framework'];
+                framework = useEditorStore().framework;
             }
             if (!framework || !framework.id) {
                 return null;
             }
-            if (this.$store.getters['editor/queryParams'] && (this.$store.getters['editor/queryParams'].ceasnDataFields !== "true")) {
+            if (useEditorStore().queryParams && (useEditorStore().queryParams.ceasnDataFields !== "true")) {
                 return null;
             }
             var obj = {};
@@ -31,12 +34,12 @@ export default {
         registryURLs: function() {
             let framework = this.framework;
             if (!framework) {
-                framework = this.$store.getters['editor/framework'];
+                framework = useEditorStore().framework;
             }
             if (!framework || !framework.id) {
                 return null;
             }
-            if (this.$store.getters['editor/queryParams'] && (this.$store.getters['editor/queryParams'].ceasnDataFields !== "true")) {
+            if (useEditorStore().queryParams && (useEditorStore().queryParams.ceasnDataFields !== "true")) {
                 return null;
             }
             var obj = {};
@@ -74,7 +77,7 @@ export default {
             this.conceptCtids = null;
             let framework = this.framework;
             if (!framework) {
-                framework = this.$store.getters['editor/framework'];
+                framework = useEditorStore().framework;
             }
             if (!framework || !framework.id) {
                 return;
@@ -106,7 +109,7 @@ export default {
             this.conceptRegistryUrls = null;
             let framework = this.framework;
             if (!framework) {
-                framework = this.$store.getters['editor/framework'];
+                framework = useEditorStore().framework;
             }
             if (!framework || !framework.id) {
                 return;
@@ -132,8 +135,9 @@ export default {
             this.conceptRegistryUrls = obj;
         },
         spitEvent: function(message, id, page) {
-            var framework = this.framework ? this.framework : this.$store.state.editor.framework;
-            var selectedCompetency = this.$store.state.editor.selectedCompetency;
+            var editorStore = useEditorStore();
+            var framework = this.framework ? this.framework : editorStore.framework;
+            var selectedCompetency = editorStore.selectedCompetency;
             let frameworkName = null;
             if (framework) {
                 if (framework["dcterms:title"]) {
@@ -195,7 +199,7 @@ export default {
         setDefaultLanguage: function() {
             let framework = this.framework;
             if (!framework) {
-                framework = this.$store.getters['editor/framework'];
+                framework = useEditorStore().framework;
             }
             var defaultLanguage;
             if (framework && framework["schema:inLanguage"]) {
@@ -209,7 +213,7 @@ export default {
             } else {
                 defaultLanguage = "en";
             }
-            this.$store.commit('editor/defaultLanguage', defaultLanguage);
+            useEditorStore().setDefaultLanguage(defaultLanguage);
         },
         get: function(server, service, headers, success, failure) {
             var url = EcRemote.urlAppend(server, service);
@@ -319,7 +323,7 @@ export default {
                                 let obj = await EcRepository.get(id);
                                 window.repo.deleteRegistered(obj, function(success) {
                                     if (obj.type === "Level") {
-                                        me.$store.commit('editor/refreshLevels', true);
+                                        useEditorStore().setRefreshLevels(true);
                                     }
                                     callback();
                                 }, function(failure) {
@@ -345,8 +349,9 @@ export default {
             if (!selectedArray) {
                 selectedArray = this.selectedArray;
             }
+            var editorStore = useEditorStore();
             for (var i = 0; i < selectedArray.length; i++) {
-                if (this.queryParams.selectVerbose === "true" && this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true) {
+                if (this.queryParams.selectVerbose === "true" && editorStore.conceptMode !== true && editorStore.progressionMode !== true) {
                     if (this.queryParams.selectExport === "ctdlasn") {
                         var link;
                         if (EcRepository.shouldTryUrl(selectedArray[i]) === false && selectedArray[i].indexOf(window.repo.selectedServer) === -1) {
@@ -380,7 +385,7 @@ export default {
                 }
             }
             var currentFramework = this.framework;
-            if (this.queryParams.selectExport === "ctdlasn" && this.$store.getters['editor/conceptMode'] !== true && this.$store.getters['editor/progressionMode'] !== true) {
+            if (this.queryParams.selectExport === "ctdlasn" && editorStore.conceptMode !== true && editorStore.progressionMode !== true) {
                 if (this.framework != null) {
                     var link;
                     if (EcRepository.shouldTryUrl(this.framework.id) === false && this.framework.id.indexOf(window.repo.selectedServer) === -1) {
@@ -400,7 +405,7 @@ export default {
             var message = {
                 message: "selected",
                 selected: ary,
-                type: ((this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) ? 'Concept' : 'Competency'),
+                type: ((editorStore.conceptMode === true || editorStore.progressionMode === true) ? 'Concept' : 'Competency'),
                 selectedFramework: currentFramework
             };
             message = JSON.parse(JSON.stringify(message));
@@ -410,7 +415,7 @@ export default {
         addLevel: async function(selectedCompetency, optionalLevelUrlOrName) {
             var c;
             var me = this;
-            var framework = this.framework ? this.framework : this.$store.getters['editor/framework'];
+            var framework = this.framework ? this.framework : useEditorStore().framework;
             var initialLevels = framework.level ? framework.level.slice() : null;
             if (!optionalLevelUrlOrName || !optionalLevelUrlOrName.includes('http')) {
                 c = new EcLevel();
@@ -440,16 +445,17 @@ export default {
                     edits.push({operation: "addNew", id: c.shortId()});
                 }
                 edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["level"], initialValue: [initialLevels], changedValue: [framework.level]});
-                me.$store.commit('editor/addEditsToUndo', edits);
-                me.$store.commit('editor/framework', framework);
-                if (me.$store.state.editor.private === true) {
+                var editorStore = useEditorStore();
+                editorStore.addEditsToUndo(edits);
+                editorStore.setFramework(framework);
+                if (editorStore.private === true) {
                     if (EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                         framework = await EcEncryptedValue.toEncryptedValue(framework);
                     }
                 }
                 window.repo.saveTo(framework, function() {
-                    me.$store.commit('lode/setIsAddingProperty', false);
-                    me.$store.commit('editor/refreshLevels', true);
+                    useLodeStore().setIsAddingProperty(false);
+                    useEditorStore().setRefreshLevels(true);
                 }, appError);
             }, appError);
         },
@@ -485,7 +491,7 @@ export default {
                     if (levelChanged) {
                         edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
                         window.repo.saveTo(level, function() {
-                            me.$store.commit('editor/refreshLevels', true);
+                            useEditorStore().setRefreshLevels(true);
                         }, appError);
                     }
                     if (this.framework.level.indexOf(level.shortId()) === -1) {
@@ -506,7 +512,7 @@ export default {
                     if (levelChanged) {
                         edits.push({operation: "update", id: level.shortId(), fieldChanged: ["competency"], initialValue: [initialComp], changedValue: [level.competency]});
                         window.repo.saveTo(level, function() {
-                            me.$store.commit('editor/refreshLevels', true);
+                            useEditorStore().setRefreshLevels(true);
                         }, appError);
                     }
                     // If level doesn't have any competencies attached, remove it from the framework.
@@ -520,15 +526,17 @@ export default {
                 edits.push({operation: "update", id: this.framework.shortId(), fieldChanged: ["level"], initialValue: [initialLevels], changedValue: [this.framework.level]});
                 this.saveFramework();
             }
-            this.$store.commit('editor/addEditsToUndo', edits);
-            this.$store.commit('lode/setAddingChecked', []);
-            this.$store.commit('lode/setIsAddingProperty', false);
+            var editorStore = useEditorStore();
+            editorStore.addEditsToUndo(edits);
+            useLodeStore().setAddingChecked([]);
+            useLodeStore().setIsAddingProperty(false);
         },
         saveFramework: async function() {
             this.framework["schema:dateModified"] = new Date().toISOString();
             var framework = this.framework;
-            this.$store.commit('editor/framework', framework);
-            if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+            var editorStore = useEditorStore();
+            editorStore.setFramework(framework);
+            if (editorStore.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                 framework = await EcEncryptedValue.toEncryptedValue(framework);
             }
             window.repo.saveTo(framework, function() {}, appError);
@@ -537,13 +545,14 @@ export default {
             var initialLevels = this.framework.level ? this.framework.level.slice() : null;
             this.framework.removeLevel(levelId);
             var level = await EcRepository.get(levelId);
-            this.$store.commit('editor/addEditsToUndo', [
+            var editorStore = useEditorStore();
+            editorStore.addEditsToUndo([
                 {operation: "delete", obj: level},
                 {operation: "update", id: this.framework.shortId(), fieldChanged: [this.framework.level], initialValue: [initialLevels], changedValue: [this.framework.level]}
             ]);
             this.conditionalDelete(levelId);
             this.saveFramework();
-            this.$store.commit('editor/refreshLevels', true);
+            editorStore.setRefreshLevels(true);
         },
         addRelationsToFramework: async function(selectedCompetency, property, values) {
             if (values.length > 0) {
@@ -572,13 +581,14 @@ export default {
                 return this.addRelationAsCompetencyField(targets, thing, relationType, allowSave);
             }
             return new Promise(async(resolve, reject) => {
-                var framework = this.$store.state.editor.framework;
+                var editorStore = useEditorStore();
+                var framework = editorStore.framework;
                 var edits = [];
                 var initialRelations = framework.relation ? framework.relation.slice() : null;
                 for (var i = 0; i < targets.length; i++) {
                     var r = new EcAlignment();
-                    if (this.$store.getters['editor/queryParams'].newObjectEndpoint != null) {
-                        r.generateShortId(this.$store.getters['editor/queryParams'].newObjectEndpoint);
+                    if (editorStore.queryParams.newObjectEndpoint != null) {
+                        r.generateShortId(editorStore.queryParams.newObjectEndpoint);
                     } else {
                         r.generateId(window.repo.selectedServer);
                     }
@@ -621,7 +631,7 @@ export default {
                             r.addReader(EcPk.fromPem(reader));
                         }
                     }
-                    if (this.$store.state.editor.private === true) {
+                    if (editorStore.private === true) {
                         r = await EcEncryptedValue.toEncryptedValue(r);
                     }
                     await new Promise((res, rej) => {
@@ -647,9 +657,9 @@ export default {
                     }
                 }
                 edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation]});
-                this.$store.commit('editor/addEditsToUndo', edits);
-                this.$store.commit('editor/framework', framework);
-                if (this.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                editorStore.addEditsToUndo(edits);
+                editorStore.setFramework(framework);
+                if (editorStore.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                     framework = await EcEncryptedValue.toEncryptedValue(framework);
                 }
                 window.repo.saveTo(framework, resolve, reject);
@@ -657,6 +667,7 @@ export default {
         },
         addRelationAsCompetencyField: async function(targets, thing, relationType, allowSave) {
             return new Promise(async(resolve, reject) => {
+                var editorStore = useEditorStore();
                 var initialValue = thing[relationType] ? thing[relationType].slice() : null;
                 for (var i = 0; i < targets.length; i++) {
                     if (thing[relationType] == null) {
@@ -664,9 +675,9 @@ export default {
                     }
                     thing[relationType].push(targets[i]);
                 }
-                this.$store.commit('editor/addEditsToUndo', [{operation: "update", id: thing.shortId(), fieldChanged: [relationType], initialValue: [initialValue], changedValue: [thing[relationType]]}]);
+                editorStore.addEditsToUndo([{operation: "update", id: thing.shortId(), fieldChanged: [relationType], initialValue: [initialValue], changedValue: [thing[relationType]]}]);
                 thing["schema:dateModified"] = new Date().toISOString();
-                if (this.$store.state.editor.private === true) {
+                if (editorStore.private === true) {
                     if (EcEncryptedValue.encryptOnSaveMap[thing.id] !== true) {
                         thing = await EcEncryptedValue.toEncryptedValue(thing);
                     }
@@ -702,9 +713,10 @@ export default {
                 }, async function() {
                     var framework = me.framework;
                     edits.push({operation: "update", id: framework.shortId(), fieldChanged: ["relation"], initialValue: [initialRelations], changedValue: [framework.relation]});
-                    me.$store.commit('editor/framework', framework);
-                    me.$store.commit('editor/addEditsToUndo', edits);
-                    if (me.$store.state.editor.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
+                    var editorStore = useEditorStore();
+                    editorStore.setFramework(framework);
+                    editorStore.addEditsToUndo(edits);
+                    if (editorStore.private === true && EcEncryptedValue.encryptOnSaveMap[framework.id] !== true) {
                         framework = await EcEncryptedValue.toEncryptedValue(framework);
                     }
                     window.repo.saveTo(framework, resolve, reject);
@@ -713,7 +725,8 @@ export default {
         },
         ceasnRegistryUriTransform: function(uri) {
             var endpoint = null;
-            if (this.$store.getters['editor/queryParams'] && (this.$store.getters['editor/queryParams'].newObjectEndpoint)) {
+            var editorStore = useEditorStore();
+            if (editorStore.queryParams && (editorStore.queryParams.newObjectEndpoint)) {
                 endpoint = this.queryParams.newObjectEndpoint;
             }
             if (endpoint == null) {
@@ -743,13 +756,13 @@ export default {
         },
         canViewCommentsCurrentFramework: function() {
             // TODO expand on this
-            let lop = this.$store.state.user.loggedOnPerson;
+            let lop = useUserStore().loggedOnPerson;
             if (lop && lop.id && lop.id !== '') return true;
             else return false;
         },
         canAddCommentsCurrentFramework: function() {
             // TODO expand on this
-            let lop = this.$store.state.user.loggedOnPerson;
+            let lop = useUserStore().loggedOnPerson;
             if (lop && lop.id && lop.id !== '') return true;
             else return false;
         },
