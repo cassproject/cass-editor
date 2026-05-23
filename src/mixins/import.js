@@ -178,6 +178,107 @@ async function checkDuplicateCtidsInConceptSchemes(repo, competencyIds, framewor
     return errors;
 }
 
+/**
+ * Extracts creator/publisher identifiers from a framework or concept scheme object.
+ * Handles string, object (with @id), and array forms. Returns a Set of identifier strings.
+ * Checks ceasn:publisher, schema:creator, and dcterms:creator fields.
+ */
+function getCreatorIdentifiers(obj) {
+    const ids = new Set();
+    const fields = ["ceasn:publisher", "schema:creator", "dcterms:creator"];
+    for (const field of fields) {
+        const value = obj[field];
+        if (!value) continue;
+        const values = Array.isArray(value) ? value : [value];
+        for (const v of values) {
+            if (typeof v === "string") ids.add(v);
+            else if (v && typeof v === "object" && v["@id"]) ids.add(v["@id"]);
+        }
+    }
+    return ids;
+}
+
+/**
+ * Checks if any framework/scheme being imported has a CTID that already belongs to
+ * an existing framework or concept scheme on the server with a *different* creator.
+ * If the existing object shares a creator (ceasn:publisher / schema:creator / dcterms:creator)
+ * with the one being imported, it is treated as an update and allowed.
+ * Extracts CTIDs directly from the frameworkArray objects via ceterms:ctid.
+ *
+ * @param {EcRepository} repo - Repository to search against
+ * @param {string[]} competencyIds - Unused, accepted for consistent check function signature
+ * @param {EcFramework[]} frameworkArray - Frameworks/schemes being imported
+ * @param {Object} competencyCtids - Unused, accepted for consistent check function signature
+ * @returns {Promise<string[]>} Array of error messages for any CTID collisions found
+ */
+async function checkFrameworkCtidCollisions(repo, competencyIds, frameworkArray, competencyCtids) {
+    const errors = [];
+    // Collect CTIDs and owning framework refs from the frameworks/schemes being imported
+    const ctidsToCheck = [];
+    const ctidToImportedFw = {};
+    for (const fw of frameworkArray) {
+        const ctid = fw["ceterms:ctid"];
+        if (ctid) {
+            ctidsToCheck.push({ctid, fw});
+            ctidToImportedFw[ctid] = fw;
+        }
+    }
+    if (ctidsToCheck.length === 0) return errors;
+    const BATCH_SIZE = 50;
+    for (let batch = 0; batch < ctidsToCheck.length; batch += BATCH_SIZE) {
+        const chunk = ctidsToCheck.slice(batch, batch + BATCH_SIZE);
+        const chunkCtids = new Set(chunk.map(c => c.ctid));
+        const queryParts = chunk.map(c => 'ceterms\\:ctid:"' + c.ctid + '"');
+        const query = '(' + queryParts.join(' OR ') + ')';
+        // Compares creators between the imported framework and an existing object.
+        // If creators overlap, the import is treated as an update (allowed).
+        // If creators differ (or are missing on either side), it's flagged as a collision.
+        const reportCollisionIfDifferentCreator = (existing, kind) => {
+            const existingCtid = existing["ceterms:ctid"];
+            if (!existingCtid || !chunkCtids.has(existingCtid)) return;
+            const importedFw = ctidToImportedFw[existingCtid];
+            if (!importedFw) return;
+            // Same object being re-imported (matching shortId) — always an update
+            if (importedFw.shortId() === existing.shortId()) return;
+            const importedCreators = getCreatorIdentifiers(importedFw);
+            const existingCreators = getCreatorIdentifiers(existing);
+            const sharesCreator = importedCreators.size > 0 && existingCreators.size > 0 &&
+                [...importedCreators].some(c => existingCreators.has(c));
+            if (sharesCreator) return;
+            errors.push(
+                `Framework/scheme with CTID ${existingCtid} has the same CTID as existing ${kind} "${existing.name || existing.shortId()}" with a different creator`
+            );
+        };
+        // Search for existing frameworks with matching CTIDs
+        try {
+            const existingFrameworks = await new Promise((resolve, reject) => {
+                EcFramework.search(repo, query, resolve, reject, {size: 10000});
+            });
+            if (existingFrameworks) {
+                for (const existingFw of existingFrameworks) {
+                    reportCollisionIfDifferentCreator(existingFw, "framework");
+                }
+            }
+        } catch (e) {
+            console.error('Error checking for framework CTID collisions with frameworks', e);
+        }
+        // Search for existing concept schemes with matching CTIDs
+        try {
+            const existingSchemes = await new Promise((resolve, reject) => {
+                EcConceptScheme.search(repo, query, resolve, reject, {size: 10000});
+            });
+            if (existingSchemes) {
+                for (const existingCs of existingSchemes) {
+                    reportCollisionIfDifferentCreator(existingCs, "concept scheme");
+                }
+            }
+        } catch (e) {
+            console.error('Error checking for framework CTID collisions with concept schemes', e);
+        }
+    }
+    return errors;
+}
+
 export default {
     data() {
         return {
@@ -877,7 +978,8 @@ export default {
             this.queryParams.ceasnDataFields === 'true' ? [
                 checkDuplicateCtidsInFrameworks,
                 checkDuplicateCtidsInConceptSchemes,
-                checkCtidCollisionsWithFrameworksAndConceptSchemes
+                checkCtidCollisionsWithFrameworksAndConceptSchemes,
+                checkFrameworkCtidCollisions
             ] : null);
         },
         importPdf: function() {
@@ -1254,7 +1356,8 @@ export default {
             this.queryParams.ceasnDataFields === 'true' ? [
                 checkDuplicateCtidsInFrameworks,
                 checkDuplicateCtidsInConceptSchemes,
-                checkCtidCollisionsWithFrameworksAndConceptSchemes
+                checkCtidCollisionsWithFrameworksAndConceptSchemes,
+                checkFrameworkCtidCollisions
             ] : null);
         },
         importFromFile: function() {

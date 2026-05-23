@@ -138,6 +138,7 @@ export default {
                 }
             }, appError, async(loginInfo) => {
                 r.fetchServerAdminKeys(() => {}, appError);
+                this.appVersion = loginInfo.version || this.appVersion;
                 this.$store.commit('user/repositorySsoOptions', loginInfo);
                 if (loginInfo.ssoPublicKey != null && loginInfo.ssoLogin == null && loginInfo.ssoViaP1 == null) {
                     this.$store.commit('featuresEnabled/loginEnabled', false);
