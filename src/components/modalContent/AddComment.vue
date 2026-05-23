@@ -112,13 +112,13 @@ export default {
             else return this.buildNewCommentObject();
         },
         updateStoredFrameworkCommentPersonMap() {
-            let cpm = this.useEditorStore().frameworkCommentPersonMap;
+            let cpm = useEditorStore().frameworkCommentPersonMap;
             cpm[this.loggedInPerson.shortId()] = this.loggedInPerson;
             useEditorStore().setFrameworkCommentPersonMap(cpm);
         },
         insertEditedCommentObjectIntoStoreFrameworkCommentList() {
             let newFcl = [];
-            let fcl = this.useEditorStore().frameworkCommentList;
+            let fcl = useEditorStore().frameworkCommentList;
             for (let c of fcl) {
                 if (c.shortId().equals(this.commentToSave.shortId())) newFcl.push(this.commentToSave);
                 else newFcl.push(c);
@@ -129,7 +129,7 @@ export default {
             if (this.isCommentEdit) {
                 this.insertEditedCommentObjectIntoStoreFrameworkCommentList();
             } else {
-                let fcl = this.useEditorStore().frameworkCommentList;
+                let fcl = useEditorStore().frameworkCommentList;
                 fcl.push(this.commentToSave);
                 useEditorStore().setFrameworkCommentList(fcl);
             }
@@ -170,32 +170,32 @@ export default {
     },
     computed: {
         commentFramework: function() {
-            return this.useEditorStore().framework;
+            return useEditorStore().framework;
         },
         commentFrameworkName: function() {
-            let fw = this.useEditorStore().framework;
+            let fw = useEditorStore().framework;
             if (fw) return fw.getName();
             else return 'Unknown';
         },
         commentFrameworkId: function() {
-            let fw = this.useEditorStore().framework;
+            let fw = useEditorStore().framework;
             if (fw) return fw.shortId();
             else return 'Unknown';
         },
         commentAboutId: function() {
-            return this.useEditorStore().addCommentAboutId;
+            return useEditorStore().addCommentAboutId;
         },
         commentType: function() {
-            return this.useEditorStore().addCommentType;
+            return useEditorStore().addCommentType;
         },
         commentToEdit: function() {
-            return this.useEditorStore().commentToEdit;
+            return useEditorStore().commentToEdit;
         },
         commentToReply: function() {
-            return this.useEditorStore().commentToReply;
+            return useEditorStore().commentToReply;
         },
         frameworkCommentDataAlreadyLoaded: function() {
-            return this.useEditorStore().frameworkCommentDataLoaded;
+            return useEditorStore().frameworkCommentDataLoaded;
         },
         isCommentReply: function() {
             return this.commentType.equalsIgnoreCase('reply');

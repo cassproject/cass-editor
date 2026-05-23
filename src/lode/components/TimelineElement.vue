@@ -108,6 +108,7 @@
     </div>
 </template>
 <script>
+import dayjs from 'dayjs';
 import common from '@/mixins/common.js';
 import { useEditorStore } from '@/stores/editor';
 import { useAppStore } from '@/stores/app';
@@ -139,7 +140,7 @@ export default {
             if (this.timestamp === null) {
                 return null;
             }
-            return this.$moment(this.timestamp).fromNow();
+            return dayjs(this.timestamp).fromNow();
         },
         assertions: function() {
             return useEditorStore().sortedAssertions;

@@ -982,7 +982,7 @@ export default {
                 if (this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
                     if (this.expandedValue.length === 1 || (this.expandedValue["@value"] && this.expandedValue["@value"].trim().length === 1)) {
                         this.showModal("required");
-                        useAppStore().showModal({component: 'RequiredPropertyModal'});
+                        useAppStore().openModal({component: 'RequiredPropertyModal'});
                         return;
                     }
                 }

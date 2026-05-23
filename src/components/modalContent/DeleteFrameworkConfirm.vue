@@ -48,7 +48,7 @@ export default {
     },
     computed: {
         obj() {
-            return this.useEditorStore().itemToDelete;
+            return useEditorStore().itemToDelete;
         },
         name() {
             return this.obj.getName();

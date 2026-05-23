@@ -341,7 +341,7 @@ export default {
         save: async function(expandedCompetency) {
             var me = this;
             var context = "https://schema.cassproject.org/0.4";
-            if (this.useEditorStore().queryParams.concepts === "true" || this.useEditorStore().conceptMode === true || this.useEditorStore().progressionMode === true) {
+            if (useEditorStore().queryParams.concepts === "true" || useEditorStore().conceptMode === true || useEditorStore().progressionMode === true) {
                 context += "/skos";
             }
             try {
@@ -377,12 +377,12 @@ export default {
             return rld;
         },
         addSelected: function() {
-            var ids = this.useEditorStore().selectedCompetenciesAsProperties;
+            var ids = useEditorStore().selectedCompetenciesAsProperties;
             for (var i = 0; i < ids.length; i++) {
                 if (this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].property.length !== 0) {
                     this.addAnotherProperty();
                 }
-                var property = this.useEditorStore().selectCompetencyRelation;
+                var property = useEditorStore().selectCompetencyRelation;
                 this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].value = ids[i];
                 this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].property = {value: property, label: this.profile[property]["http://www.w3.org/2000/01/rdf-schema#label"][0]["@value"]};
                 this.addedPropertiesAndValues[this.addedPropertiesAndValues.length - 1].range = useLodeStore().addingRange;

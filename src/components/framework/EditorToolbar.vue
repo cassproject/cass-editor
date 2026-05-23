@@ -289,7 +289,8 @@ export default {
             repo: window.repo,
             editsFinishedCounter: 0,
             totalEditsCounter: 0,
-            privateFramework: false
+            privateFramework: false,
+            getConfigurationName: 'No Configuration'
         };
     },
     methods: {
@@ -310,18 +311,18 @@ export default {
             }
         },
         handleClickAddComment: function() {
-            useEditorStore().setAddCommentAboutId(this.useEditorStore().framework.shortId());
+            useEditorStore().setAddCommentAboutId(useEditorStore().framework.shortId());
             useEditorStore().setAddCommentType('new');
-            this.useAppStore().openModal({component: 'AddComment'});
+            useAppStore().openModal({component: 'AddComment'});
         },
         showExportModal() {
-            this.useAppStore().openModal('Export');
+            useAppStore().openModal('Export');
         },
         showManageUsersModal() {
-            this.useAppStore().openModal({component: 'Share'});
+            useAppStore().openModal({component: 'Share'});
         },
         showManageConfigurationModal() {
-            this.useAppStore().openModal({component: 'FrameworkConfiguration'});
+            useAppStore().openModal({component: 'FrameworkConfiguration'});
         },
         changeProperties(type) {
             let properties = this.properties;
@@ -446,7 +447,7 @@ export default {
                 context = "https://schema.cassproject.org/0.4/skos";
             }
             try {
-                let compacted = await jsonld.compact(expandedCompetency, this.useLodeStore().rawSchemata[context]);
+                let compacted = await jsonld.compact(expandedCompetency, useLodeStore().rawSchemata[context]);
                 if (compacted) {
                     var rld = new EcRemoteLinkedData();
                     rld.copyFrom(compacted);
@@ -454,7 +455,7 @@ export default {
                     delete rld["@context"];
                     rld = me.turnFieldsBackIntoArrays(rld);
                     rld["schema:dateModified"] = new Date().toISOString();
-                    if (me.$store.state.editor && me.useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
+                    if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                         rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     me.repo.saveTo(rld, function() {
@@ -518,61 +519,66 @@ export default {
                     // TODO: Handle assertion search error
                 });
             }
-        }
-    },
-    asyncComputed: {
-        getConfigurationName: async function() {
-            if (this.useEditorStore().framework.configuration) {
-                let config = await EcRepository.get(this.useEditorStore().framework.configuration);
-                if (config) {
-                    return config.name;
-                } else {
-                    return "No configuration";
-                }
-            } else {
-                if (localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
-                    let config = await EcRepository.get(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
+        },
+        fetchConfigurationName: async function() {
+            try {
+                if (useEditorStore().framework && useEditorStore().framework.configuration) {
+                    let config = await EcRepository.get(useEditorStore().framework.configuration);
                     if (config) {
-                        return config.name;
+                        this.getConfigurationName = config.name;
                     } else {
-                        return "No configuration";
+                        this.getConfigurationName = "No configuration";
                     }
                 } else {
-                    let ca = await window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null);
-                    for (let c of ca) {
-                        if (c.isDefault === true || c.isDefault === "true") {
-                            return c.name;
+                    if (localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId")) {
+                        let config = await EcRepository.get(localStorage.getItem("cassAuthoringToolDefaultBrowserConfigId"));
+                        if (config) {
+                            this.getConfigurationName = config.name;
+                        } else {
+                            this.getConfigurationName = "No configuration";
                         }
+                    } else if (window.repo) {
+                        let ca = await window.repo.searchWithParams("@type:Configuration", {'size': 10000}, null);
+                        for (let c of ca) {
+                            if (c.isDefault === true || c.isDefault === "true") {
+                                this.getConfigurationName = c.name;
+                                return;
+                            }
+                        }
+                        this.getConfigurationName = "No Configuration";
                     }
-                    return "No Configuration";
                 }
+            } catch (e) {
+                appError(e);
+                this.getConfigurationName = "No Configuration";
             }
         }
     },
+
     computed: {
         showAddComments() {
-            if (this.useEditorStore().conceptMode === true) {
+            if (useEditorStore().conceptMode === true) {
                 return false;
             }
-            if (this.useEditorStore().progressionMode === true) {
+            if (useEditorStore().progressionMode === true) {
                 return false;
             }
-            return this.useAppStore().canAddComments;
+            return useAppStore().canAddComments;
         },
         showViewComments() {
-            if (this.useEditorStore().conceptMode === true) {
+            if (useEditorStore().conceptMode === true) {
                 return false;
             }
-            if (this.useEditorStore().progressionMode === true) {
+            if (useEditorStore().progressionMode === true) {
                 return false;
             }
-            return this.useAppStore().canViewComments;
+            return useAppStore().canViewComments;
         },
         framework: function() {
-            return this.useEditorStore().framework;
+            return useEditorStore().framework;
         },
         queryParams: function() {
-            return this.useEditorStore().queryParams;
+            return useEditorStore().queryParams;
         },
         ceasnDataFields: function() {
             return this.queryParams.ceasnDataFields === 'true';
@@ -592,19 +598,19 @@ export default {
             return false;
         },
         loggedInPerson: function() {
-            return this.useUserStore().loggedOnPerson;
+            return useUserStore().loggedOnPerson;
         },
         configuration: function() {
-            return this.useEditorStore().framework.configuration;
+            return useEditorStore().framework.configuration;
         },
         conceptMode: function() {
-            return this.useEditorStore().conceptMode;
+            return useEditorStore().conceptMode;
         },
         progressionMode: function() {
-            return this.useEditorStore().progressionMode;
+            return useEditorStore().progressionMode;
         },
         canExport: function() {
-            if (this.useEditorStore().private) {
+            if (useEditorStore().private) {
                 return false;
             } else if (this.framework.reader && this.framework.reader.length > 0) {
                 return false;
@@ -615,16 +621,16 @@ export default {
             }
         },
         configurationsEnabled: function() {
-            return this.useFeaturesEnabledStore().configurationsEnabled;
+            return useFeaturesEnabledStore().configurationsEnabled;
         },
         shareEnabled: function() {
-            return this.useFeaturesEnabledStore().shareEnabled;
+            return useFeaturesEnabledStore().shareEnabled;
         },
         shareLink: function() {
-            return this.useFeaturesEnabledStore().shareLink;
+            return useFeaturesEnabledStore().shareLink;
         },
         userManagementEnabled: function() {
-            return this.useFeaturesEnabledStore().userManagementEnabled;
+            return useFeaturesEnabledStore().userManagementEnabled;
         },
         showUserManagementIcon: function() {
             if (!this.shareEnabled && !this.canEditFramework) {
@@ -645,16 +651,22 @@ export default {
             return false;
         },
         managingAssertions: function() {
-            return this.useEditorStore().manageAssertions;
+            return useEditorStore().manageAssertions;
         }
     },
     watch: {
+        configuration: {
+            async handler() {
+                await this.fetchConfigurationName();
+            },
+            immediate: true
+        },
         editsFinishedCounter: async function() {
             if (this.editsFinishedCounter && this.editsFinishedCounter === this.totalEditsCounter) {
                 this.editsFinishedCounter = 0;
                 this.totalEditsCounter = 0;
                 // If changes were made to the framework, make sure they get into the store.
-                var framework = this.useEditorStore().framework;
+                var framework = useEditorStore().framework;
                 let obj = await EcRepository.get(framework.shortId());
                 useEditorStore().setFramework(obj);
                 useEditorStore().setRecomputeHierarchy(true);
@@ -663,11 +675,12 @@ export default {
         }
     },
     mounted: function() {
-        if (this.useEditorStore().setPropertyLevel) {
-            this.changeProperties(this.useEditorStore().setPropertyLevel);
+        if (useEditorStore().setPropertyLevel) {
+            this.changeProperties(useEditorStore().setPropertyLevel);
             useEditorStore().setPropertyLevel(null);
         }
         this.checkIsPrivate();
+        this.fetchConfigurationName();
     }
 };
 </script>

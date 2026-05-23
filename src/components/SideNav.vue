@@ -151,7 +151,7 @@
                 <li class="has-text-white">
                     <router-link
                         :to="{path: '/frameworks', query: queryParams}"
-                        @click.native="setCollectionModeOff"
+                        @click="setCollectionModeOff"
                         :title="showSideNav ? '' : 'Frameworks'">
                         <span class="icon">
                             <i class="fa fa-th-list" />
@@ -164,7 +164,7 @@
                     v-if="queryParams.ceasnDataFields === 'true' && showSideNav">
                     <router-link
                         :to="{path: '/collections', query: queryParams}"
-                        @click.native="setCollectionModeOn"
+                        @click="setCollectionModeOn"
                         :title="showSideNav ? '' : 'Collections'">
                         <span class="icon">
                             <i class="fa fa-th-list" />
@@ -175,7 +175,7 @@
                 <li class="has-text-white">
                     <router-link
                         :to="{path: '/import', query: queryParams}"
-                        @click.native="setFrameworkImportMode"
+                        @click="setFrameworkImportMode"
                         :title="showSideNav ? '' : 'Import Framework'">
                         <span class="icon">
                             <i class="fa fa-upload" />
@@ -303,7 +303,7 @@
                 <li class="has-text-white">
                     <router-link
                         :to="{path: '/import', query: queryParams}"
-                        @click.native="setConceptImportMode"
+                        @click="setConceptImportMode"
                         :title="showSideNav ? '' : queryParams.ceasnDataFields === 'true' ? 'Import Concept Schemes' : 'Import Taxonomies'">
                         <span class="icon">
                             <i class="fa fa-upload" />
@@ -351,7 +351,7 @@
                     v-if="showSideNav && queryParams.ceasnDataFields === 'true' && showConcepts">
                     <router-link
                         :to="{path: '/import', query: queryParams}"
-                        @click.native="setProgressionImportMode"
+                        @click="setProgressionImportMode"
                         :title="showSideNav ? '' : 'Import'">
                         <span class="icon">
                             <i class="fa fa-upload" />

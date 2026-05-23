@@ -55,7 +55,7 @@ export default {
     methods: {
         close: function() {
             useAppStore().closeModal();
-            if (this.useFeaturesEnabledStore().apiLoginEnabled) {
+            if (useFeaturesEnabledStore().apiLoginEnabled) {
                 this.redirectToExternalLogout();
             } else {
                 this.goToLogin();

@@ -150,6 +150,7 @@
     </div>
 </template>
 <script>
+import dayjs from 'dayjs';
 import MainLayout from '@/layouts/MainLayout.vue';
 import common from '@/mixins/common.js';
 import getLevelsAndRelations from '@/mixins/getLevelsAndRelations.js';
@@ -251,7 +252,7 @@ export default {
         lastModified: function() {
             if (this.framework == null) return "Unknown.";
             if (this.timestamp) {
-                return this.$moment(this.timestamp).format("MMM D YYYY");
+                return dayjs(this.timestamp).format("MMM D YYYY");
             } else {
                 return null;
             }
@@ -733,7 +734,7 @@ export default {
     beforeUnmount() {
         if (this.queryParams && this.queryParams.private !== 'true') {
             const editorStore = useEditorStore();
-            editorStore.private(false);
+            editorStore.setPrivate(false);
         }
     },
     watch: {
@@ -742,7 +743,7 @@ export default {
         },
         config: function() {
             const editorStore = useEditorStore();
-            editorStore.configuration(this.config);
+            editorStore.setConfiguration(this.config);
         },
         commentScrollTo: function() {
             this.$scrollTo(this.commentScrollTo.scrollId);
@@ -782,7 +783,7 @@ export default {
         },
         handleSearch: function(e) {
             const appStore = useAppStore();
-            appStore.showModal(e);
+            appStore.openModal(e);
         },
         getConfiguration: async function() {
             var me = this;
@@ -822,14 +823,14 @@ export default {
                 component: 'MultiEdit'
             };
             const appStore = useAppStore();
-            appStore.showModal(payload);
+            appStore.openModal(payload);
         },
         onEditNode: function() {
             this.editingFramework = true;
         },
         onDoneEditingNode: function() {
             const editorStore = useEditorStore();
-            editorStore.newFramework(null);
+            editorStore.setNewFramework(null);
             this.editingFramework = false;
         },
         onOpenComments: function() {
@@ -866,7 +867,7 @@ export default {
             const editorStore = useEditorStore();
             const appStore = useAppStore();
             editorStore.setItemToExport(this.framework);
-            appStore.showModal({title: 'Export Framework', component: 'ExportOptionsModal'});
+            appStore.openModal({title: 'Export Framework', component: 'ExportOptionsModal'});
         },
         // Speed up load of secondary properties
         preloadRelations: function() {
@@ -900,7 +901,7 @@ export default {
                     let edits = [{operation: "addNew", id: c.shortId()}];
                     const editorStore = useEditorStore();
                     editorStore.addEditsToUndo(edits);
-                    editorStore.refreshAlignments(true);
+                    editorStore.setRefreshAlignments(true);
                 }, appError);
             }
         },
@@ -916,7 +917,7 @@ export default {
                     let edits = [{operation: "update", id: c.shortId(), fieldChanged: ["name", "url"], initialValue: [initialName, initialUrl], changedValue: [c.name, c.url]}];
                     const editorStore = useEditorStore();
                     editorStore.addEditsToUndo(edits);
-                    editorStore.refreshAlignments(true);
+                    editorStore.setRefreshAlignments(true);
                 }, appError);
             }
         },
@@ -926,7 +927,7 @@ export default {
             this.repo.deleteRegistered(c, function() {
                 const editorStore = useEditorStore();
                 editorStore.addEditsToUndo([{operation: "delete", obj: c}]);
-                editorStore.refreshAlignments(true);
+                editorStore.setRefreshAlignments(true);
             }, appError);
         },
         moveToTopLevel: async function(id) {

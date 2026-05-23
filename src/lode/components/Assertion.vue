@@ -28,6 +28,7 @@
     </span>
 </template>
 <script>
+import dayjs from 'dayjs';
 import { useEditorStore } from '@/stores/editor';
 
 export default {
@@ -84,7 +85,7 @@ export default {
 
             var statement = "";
             if (this.timestamp != null) {
-                statement += this.$moment(this.timestamp).fromNow() + ", ";
+                statement += dayjs(this.timestamp).fromNow() + ", ";
             }
 
             statement += this.agent + " claimed " + this.subject;
@@ -102,7 +103,7 @@ export default {
             if (this.timestamp == null) {
                 return null;
             }
-            return this.$moment(this.timestamp).fromNow();
+            return dayjs(this.timestamp).fromNow();
         },
         competencyText: function() {
             if (this.competency == null) {

@@ -66,7 +66,7 @@ export default {
         },
         removeCommentsFromStoreFrameworkCommentList: function() {
             let ctdIds = this.generateCommentsToDeleteIds();
-            let fcl = this.useEditorStore().frameworkCommentList;
+            let fcl = useEditorStore().frameworkCommentList;
             let nfcl = [];
             for (let fc of fcl) {
                 if (!ctdIds.includes(fc.shortId())) nfcl.push(fc);
@@ -94,7 +94,7 @@ export default {
             else return 'Delete comment?';
         },
         commentsToDelete: function() {
-            return this.useEditorStore().commentsToDelete;
+            return useEditorStore().commentsToDelete;
         }
     },
     mounted: function() {

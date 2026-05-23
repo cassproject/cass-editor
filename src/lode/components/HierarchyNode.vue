@@ -308,7 +308,7 @@
                 v-if="!collapse && hierarchyEnabled"
                 :id="obj.shortId()"
                 v-bind="dragOptions"
-                v-model="hasChild"
+                v-model="localHasChild"
                 :group="{ name: 'test' }"
                 handle=".handle"
                 tag="ul"
@@ -463,7 +463,8 @@ export default {
             canPaste: false, // needs trigger that something has been copied or cut
             canEditInCollection: false,
             checkBoxDblClick: 0,
-            propagateChecked: 'parent'
+            propagateChecked: 'parent',
+            localHasChild: []
         };
     },
     computed: {
@@ -930,6 +931,12 @@ export default {
         }
     },
     watch: {
+        hasChild: {
+            handler(val) {
+                this.localHasChild = val;
+            },
+            immediate: true
+        },
         propagateChecked: function() {
             setTimeout(() => {
                 this.propagateChecked = 'parent';

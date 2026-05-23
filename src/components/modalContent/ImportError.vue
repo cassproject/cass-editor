@@ -30,7 +30,7 @@ export default {
     computed: {
         showImportInfoModal: {
             get() {
-                return this.useAppStore().showImportInfoModal;
+                return useAppStore().showImportInfoModal;
             },
             set(val) {
                 useAppStore().setShowImportInfoModal(val);
@@ -38,7 +38,7 @@ export default {
         },
         importModalParams: {
             get() {
-                return this.useAppStore().importModalParams;
+                return useAppStore().importModalParams;
             },
             set(val) {
                 useAppStore().setImportModalParams(val);

@@ -105,7 +105,7 @@ export default {
                                 me.$router.push({name: "frameworks"});
                             }
                             useAppStore().setRightAsideObject(null);
-                            me.useAppStore().closeRightAside();
+                            useAppStore().closeRightAside();
                             useAppStore().setRefreshSearch(true);
                             useAppStore().closeModal();
                         }
@@ -117,7 +117,7 @@ export default {
                                 me.$router.push({name: "frameworks"});
                             }
                             useAppStore().setRightAsideObject(null);
-                            me.useAppStore().closeRightAside();
+                            useAppStore().closeRightAside();
                             useAppStore().setRefreshSearch(true);
                             useAppStore().closeModal();
                         }
@@ -157,7 +157,7 @@ export default {
             return useUserStore().loggedOnPerson;
         },
         directory: function() {
-            return this.useAppStore().rightAsideObject;
+            return useAppStore().rightAsideObject;
         },
         deleteDirectoryDisabled() {
             return (this.typedInName.trim() !== this.directory.name.trim());

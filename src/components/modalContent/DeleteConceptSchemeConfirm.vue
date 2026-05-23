@@ -46,10 +46,10 @@ export default {
     },
     computed: {
         obj() {
-            return this.useEditorStore().itemToDelete;
+            return useEditorStore().itemToDelete;
         },
         type() {
-            if (this.useEditorStore().queryParams.ceasnDataFields === 'true') {
+            if (useEditorStore().queryParams.ceasnDataFields === 'true') {
                 return "Concept Scheme";
             }
             return 'Taxonomy';

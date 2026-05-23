@@ -1238,7 +1238,7 @@ export default {
     },
     created: function() {
         const editorStore = useEditorStore();
-        editorStore.framework(null);
+        editorStore.setFramework(null);
         this.spitEvent('viewChanged');
     },
     beforeUnmount: function() {
@@ -1247,7 +1247,7 @@ export default {
     mounted: function() {
         this.clearImport();
         const appStore = useAppStore();
-        appStore.showRightAside();
+        appStore.openRightAside();
         let documentBody = document.getElementById('import');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
     },

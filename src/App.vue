@@ -24,7 +24,7 @@
             @create-new-progression-model="createNewProgressionModel"
             @create-new-collection="createNewCollection"
             name="sidebar" />
-        <vue-progress-bar />
+        <!-- NProgress handles its own DOM, no component needed -->
         <div
             v-if="bannerMessage"
             :style="bannerStyle"
@@ -80,6 +80,9 @@ export default {
             }
             var server = window.origin + "/api/";
             if (window.location.origin === "https://cassproject.github.io") {
+                server = "https://dev.cassproject.org/api/";
+            }
+            else if (window.location.origin === "http://localhost:8080" || window.location.origin === "http://localhost:8082") {
                 server = "https://dev.cassproject.org/api/";
             } else if (import.meta.env.VITE_SELECTEDSERVER) {
                 server = import.meta.env.VITE_SELECTEDSERVER;

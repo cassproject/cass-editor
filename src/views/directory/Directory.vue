@@ -315,8 +315,8 @@ export default {
     created: function() {
         this.sortBy = "name.keyword";
         const editorStore = useEditorStore();
-        editorStore.t3Profile(false);
-        editorStore.framework(null);
+        editorStore.setT3Profile(false);
+        editorStore.setFramework(null);
         this.spitEvent('viewChanged');
         this.setDefaultConfig();
     },
@@ -351,7 +351,7 @@ export default {
             },
             set(val) {
                 const appStore = useAppStore();
-                appStore.searchingInDirectory(val);
+                appStore.setSearchingInDirectory(val);
             }
         },
         currentUser: function() {
@@ -454,8 +454,8 @@ export default {
         },
         frameworkClick: function(framework) {
             const appStore = useAppStore();
-            appStore.rightAsideObject(framework);
-            appStore.showRightAside('ListItemInfo');
+            appStore.setRightAsideObject(framework);
+            appStore.openRightAside('ListItemInfo');
         },
         openObject: function(object) {
             let me = this;
@@ -473,7 +473,7 @@ export default {
                 EcConceptScheme.get(object.id, function(success) {
                     const editorStore = useEditorStore();
                     const appStore = useAppStore();
-                    editorStore.framework(success);
+                    editorStore.setFramework(success);
                     editorStore.clearFrameworkCommentData();
                     appStore.setCanViewComments(me.canViewCommentsCurrentFramework());
                     appStore.setCanAddComments(me.canAddCommentsCurrentFramework());
@@ -484,7 +484,7 @@ export default {
                 EcConceptScheme.get(object.id, function(success) {
                     const editorStore = useEditorStore();
                     const appStore = useAppStore();
-                    editorStore.framework(success);
+                    editorStore.setFramework(success);
                     editorStore.clearFrameworkCommentData();
                     appStore.setCanViewComments(me.canViewCommentsCurrentFramework());
                     appStore.setCanAddComments(me.canAddCommentsCurrentFramework());
@@ -495,7 +495,7 @@ export default {
                 EcFramework.get(object.id, function(success) {
                     const editorStore = useEditorStore();
                     const appStore = useAppStore();
-                    editorStore.framework(success);
+                    editorStore.setFramework(success);
                     editorStore.clearFrameworkCommentData();
                     appStore.setCanViewComments(me.canViewCommentsCurrentFramework());
                     appStore.setCanAddComments(me.canAddCommentsCurrentFramework());
@@ -578,7 +578,7 @@ export default {
                     me.createSubdirectory = false;
                     const appStore = useAppStore();
                     appStore.selectDirectory(dir);
-                    appStore.rightAsideObject(dir);
+                    appStore.setRightAsideObject(dir);
                 }
             }, appError, this.repo);
         },
@@ -630,7 +630,7 @@ export default {
                 me.createResource = false;
                 const appStore = useAppStore();
                 appStore.refreshSearch(true);
-                appStore.rightAsideObject(c);
+                appStore.setRightAsideObject(c);
             }, appError);
         },
         saveEditedResource: function() {
@@ -640,19 +640,19 @@ export default {
             resource.url = this.resourceUrl;
             repo.saveTo(resource, function() {
                 const appStore = useAppStore();
-                appStore.rightAsideObject(resource);
+                appStore.setRightAsideObject(resource);
                 me.editResource = false;
                 me.resource = null;
             }, appError);
         },
         showManageUsersModal() {
             const appStore = useAppStore();
-            appStore.showModal({component: 'Share'});
+            appStore.openModal({component: 'Share'});
         },
         showDirectoryInRightAside() {
             const appStore = useAppStore();
-            appStore.rightAsideObject(this.directory);
-            appStore.showRightAside('ListItemInfo');
+            appStore.setRightAsideObject(this.directory);
+            appStore.openRightAside('ListItemInfo');
         },
         goToFrameworks: function() {
             this.$router.push({name: 'frameworks', query: this.queryParams});
@@ -662,7 +662,7 @@ export default {
         selectTrailDirectory: function(each) {
             const appStore = useAppStore();
             appStore.selectDirectory(each);
-            appStore.rightAsideObject(each);
+            appStore.setRightAsideObject(each);
         },
         findDirectoryTrail: function(directory) {
             let me = this;
@@ -681,7 +681,7 @@ export default {
     beforeUnmount() {
         if (this.queryParams && this.queryParams.private !== 'true') {
             const editorStore = useEditorStore();
-            editorStore.private(false);
+            editorStore.setPrivate(false);
         }
         const appStore = useAppStore();
         appStore.selectDirectory(null);
@@ -692,9 +692,9 @@ export default {
             this.$router.push({name: "frameworks"});
         }
         const appStore = useAppStore();
-        appStore.objForShareModal(null);
+        appStore.setObjForShareModal(null);
         this.showDirectoryInRightAside();
-        appStore.searchTerm('');
+        appStore.setSearchTerm('');
         // Keep sorting/filtering in sync with the store on back button
         if (this.sortResults.id === "lastEdited") {
             this.sortBy = "schema:dateModified";

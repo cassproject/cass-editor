@@ -237,7 +237,7 @@ import { useAppStore } from '@/stores/app';
 import { useFeaturesEnabledStore } from '@/stores/featuresEnabled';
 import casslogo from '@/assets/cass-logo-white.svg';
 import common from '@/mixins/common.js';
-import harvard from 'file-loader!../../files/Harvard Emotional Intelligence.csv';
+import harvard from '../../files/Harvard Emotional Intelligence.csv?url';
 
 export default {
     name: 'Welcome',

@@ -41,10 +41,10 @@ export default {
     mixins: [common],
     computed: {
         obj() {
-            return this.useEditorStore().itemToDelete;
+            return useEditorStore().itemToDelete;
         },
         framework() {
-            return this.useEditorStore().framework;
+            return useEditorStore().framework;
         }
     },
     data() {

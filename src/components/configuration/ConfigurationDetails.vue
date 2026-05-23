@@ -373,12 +373,11 @@
                         </div>
                     </div>
                 </div>
-                <template
-                    #modal-foot
-                    v-if="!showAddNewLevelSection">
+            </template>
+                <template #modal-foot>
                     <div
                         class="buttons is-spaced"
-                        v-if="!readOnly">
+                        v-if="!readOnly && !showAddNewLevelSection">
                         <button
                             class="button is-outlined is-dark"
                             @click="closeSelectLevelModal">
@@ -403,12 +402,9 @@
                             </span>
                         </button>
                     </div>
-                </template>
-                <template #modal-foot
-                    v-if="showAddNewLevelSection">
                     <div
                         class="buttons is-spaced"
-                        v-if="!readOnly && !savingLevelBusy">
+                        v-if="!readOnly && !savingLevelBusy && showAddNewLevelSection">
                         <button
                             class="button is-outlined"
                             @click="cancelAddNewLevel">
@@ -431,7 +427,6 @@
                         </button>
                     </div>
                 </template>
-            </template>
         </modal-template>
         <!-- custom property details modal -->
         <modal-template
@@ -4331,7 +4326,7 @@ export default {
         }),
         currentConfig: {
             get() {
-                return this.useConfigurationStore().currentConfig;
+                return useConfigurationStore().currentConfig;
             },
             set(val) {
                 useConfigurationStore().setSetCurrentConfig(val);
@@ -4339,7 +4334,7 @@ export default {
         },
         customPropertyAvailableConcepts: {
             get() {
-                return this.useConfigurationStore().availableConcepts;
+                return useConfigurationStore().availableConcepts;
             },
             set(val) {
                 useConfigurationStore().setAvailableConcepts(val);
@@ -4347,7 +4342,7 @@ export default {
         },
         customPropertyAvailableTypes: {
             get() {
-                let types = this.useConfigurationStore().availableTypes;
+                let types = useConfigurationStore().availableTypes;
                 this.currentConfig.compEnforcedTypes.forEach((type) => {
                     types.push(type);
                 });

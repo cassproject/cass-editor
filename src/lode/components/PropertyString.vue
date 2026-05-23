@@ -491,7 +491,7 @@ export default {
             if (val === 'remove') {
                 if (expandedValue && this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
                     if (expandedValue.length === 1 || (expandedValue["@value"] && expandedValue["@value"].trim().length === 1)) {
-                        useAppStore().showModal({component: 'RequiredPropertyModal'});
+                        useAppStore().openModal({component: 'RequiredPropertyModal'});
                         return;
                     }
                 }
@@ -502,7 +502,7 @@ export default {
                 }
             }
             if (val === 'required') {
-                useAppStore().showModal({component: 'RequiredPropertyModal'});
+                useAppStore().openModal({component: 'RequiredPropertyModal'});
             }
         },
         clickConfirmRemove: function() {

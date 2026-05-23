@@ -117,7 +117,7 @@ export default {
             }
         },
         searchFrameworksInCompetencySearch: function() {
-            return this.useAppStore().searchFrameworksInCompetencySearch;
+            return useAppStore().searchFrameworksInCompetencySearch;
         },
         idsNotPermittedInSearch: function() {
             if (this.copyOrLink) {

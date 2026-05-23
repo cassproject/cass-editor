@@ -28,8 +28,9 @@ export default defineConfig(({ command, mode }) => {
         css: {
             preprocessorOptions: {
                 scss: {
-                    // Allow SCSS to find variables etc.
-                    api: 'modern-compiler'
+                    api: 'legacy',
+                    silenceDeprecations: ['import'],
+                    loadPaths: ['.']
                 }
             }
         },
@@ -37,6 +38,7 @@ export default defineConfig(({ command, mode }) => {
             minify: true
         },
         resolve: {
+            extensions: ['.mjs', '.js', '.ts', '.jsx', '.tsx', '.json', '.vue'],
             alias: [
                 {
                     find: '@',

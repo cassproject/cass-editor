@@ -358,7 +358,7 @@ export default {
                     label: 'View',
                     value: 'view',
                     disabled: true,
-                    title: 'Make the ' + (this.useEditorStore().conceptMode ? 'concept scheme' : (this.useEditorStore().progressionMode ? 'progression model' : 'framework')) + ' private to add users/groups with view access'
+                    title: 'Make the ' + (useEditorStore().conceptMode ? 'concept scheme' : (useEditorStore().progressionMode ? 'progression model' : 'framework')) + ' private to add users/groups with view access'
                 }
             ],
             groups: [],
@@ -398,7 +398,7 @@ export default {
             link = link.replace('/frameworks', '').replace('/directory', '');
             if (this.directory) {
                 return (link + "?directoryId=" + this.directory.shortId());
-            } else if (this.useEditorStore().conceptMode === true || this.useEditorStore().progressionMode === true) {
+            } else if (useEditorStore().conceptMode === true || useEditorStore().progressionMode === true) {
                 return (link + "?concepts=true&frameworkId=" + this.frameworkId);
             }
             return (link + "?frameworkId=" + this.frameworkId);
@@ -421,7 +421,7 @@ export default {
             } else if (this.objFromListItemInfo || this.$route.name === "framework" || this.$route.name === "conceptScheme") {
                 return null;
             }
-            return this.useAppStore().selectedDirectory;
+            return useAppStore().selectedDirectory;
         },
         resource: function() {
             if (this.objFromListItemInfo && this.objFromListItemInfo.type === "CreativeWork") {
@@ -443,7 +443,7 @@ export default {
             }
         },
         queryParams: function() {
-            return this.useEditorStore().queryParams;
+            return useEditorStore().queryParams;
         },
         canEditFramework: function() {
             if (!this.loggedIn) {
@@ -461,7 +461,7 @@ export default {
             return true;
         },
         loggedOnPerson: function() {
-            return this.useUserStore().loggedOnPerson;
+            return useUserStore().loggedOnPerson;
         },
         objectType: function() {
             if (this.resource) {
@@ -470,7 +470,7 @@ export default {
             if (this.directory) {
                 return 'directory';
             }
-            return this.useEditorStore().conceptMode ? 'concept scheme' : (this.useEditorStore().progressionMode ? 'progression model' : 'framework');
+            return useEditorStore().conceptMode ? 'concept scheme' : (useEditorStore().progressionMode ? 'progression model' : 'framework');
         },
         shareEnabled: function() {
             if (this.resource) {
@@ -488,7 +488,7 @@ export default {
             return useFeaturesEnabledStore().userManagementEnabled;
         },
         objFromListItemInfo: function() {
-            return this.useAppStore().objForShareModal;
+            return useAppStore().objForShareModal;
         }
     },
     mounted: async function() {
@@ -743,7 +743,7 @@ export default {
             if (this.directory) {
                 return this.addAndRemoveFromAllDirectoryObjects(this.directory);
             }
-            if (this.useEditorStore().conceptMode === true || this.useEditorStore().progressionMode === true) {
+            if (useEditorStore().conceptMode === true || useEditorStore().progressionMode === true) {
                 return this.addAndRemoveFromAllConceptObjects();
             }
             return this.addAndRemoveFromAllFrameworkObjects(this.framework);
@@ -949,7 +949,7 @@ export default {
             if (this.directory) {
                 return this.handleMakePrivateDirectory(this.directory);
             }
-            if (this.useEditorStore().conceptMode === true || this.useEditorStore().progressionMode === true) {
+            if (useEditorStore().conceptMode === true || useEditorStore().progressionMode === true) {
                 this.handleMakePrivateConceptScheme();
             } else {
                 this.handleMakePrivateFramework(framework);
@@ -1059,7 +1059,7 @@ export default {
             if (this.directory) {
                 return this.handleMakePublicDirectory(this.directory);
             }
-            if (this.useEditorStore().conceptMode === true || this.useEditorStore().progressionMode === true) {
+            if (useEditorStore().conceptMode === true || useEditorStore().progressionMode === true) {
                 this.handleMakePublicConceptScheme();
             } else {
                 this.handleMakePublicFramework(framework);
@@ -1289,7 +1289,7 @@ export default {
             if (this.directory) {
                 return this.makeCurrentUserDirectoryOwner(this.directory);
             }
-            if (this.useEditorStore().conceptMode === true || this.useEditorStore().progressionMode === true) {
+            if (useEditorStore().conceptMode === true || useEditorStore().progressionMode === true) {
                 return this.makeCurrentUserAnOwnerForConceptObjects();
             }
             this.makeCurrentUserFrameworkAndSubObjectOwner(this.framework);

@@ -73,7 +73,7 @@ export default {
         }),
         defaultBrowserConfigName: {
             get() {
-                return this.useConfigurationStore().defaultBrowserConfigName;
+                return useConfigurationStore().defaultBrowserConfigName;
             },
             set(val) {
                 useConfigurationStore().setSetDefaultBrowserConfigName(val);
@@ -81,7 +81,7 @@ export default {
         },
         showConfirmDeleteConfigModal: {
             get() {
-                return this.useConfigurationStore().showConfirmDeleteConfigModal;
+                return useConfigurationStore().showConfirmDeleteConfigModal;
             },
             set(val) {
                 useConfigurationStore().setSetShowConfirmDeleteConfigModal(val);
@@ -89,7 +89,7 @@ export default {
         },
         showBrowserConfigSetModal: {
             get() {
-                return this.useConfigurationStore().showBrowserConfigSetModal;
+                return useConfigurationStore().showBrowserConfigSetModal;
             },
             set(val) {
                 useConfigurationStore().setSetShowBrowserConfigSetModal(val);
@@ -97,7 +97,7 @@ export default {
         },
         showMustBeLoggedInModal: {
             get() {
-                return this.useConfigurationStore().showMustBeLoggedInModal;
+                return useConfigurationStore().showMustBeLoggedInModal;
             },
             set(val) {
                 useConfigurationStore().setSetShowMustBeLoggedInModal(val);
@@ -105,17 +105,17 @@ export default {
         },
         configToDelete: {
             get() {
-                return this.useConfigurationStore().configToDelete;
+                return useConfigurationStore().configToDelete;
             },
             set(val) {
                 useConfigurationStore().setSetConfigToDelete(val);
             }
         },
         configViewMode() {
-            return this.useConfigurationStore().configView;
+            return useConfigurationStore().configView;
         },
         localDefaultBrowserConfigId() {
-            return this.useConfigurationStore().localDefaultBrowserConfig;
+            return useConfigurationStore().localDefaultBrowserConfig;
         }
     },
     data: () => ({
@@ -137,7 +137,7 @@ export default {
         },
         async setConfigAsFrameworkDefault(configId) {
             let me = this;
-            let f = this.useEditorStore().framework;
+            let f = useEditorStore().framework;
             let previousConfig = f.configuration;
             f.configuration = configId;
             if (!previousConfig) {

@@ -25,6 +25,7 @@
     </div>
 </template>
 <script>
+import dayjs from 'dayjs';
 import Thing from '@/lode/components/Thing.vue';
 import saveAs from 'file-saver';
 import common from '@/mixins/common.js';
@@ -55,7 +56,7 @@ export default {
         lastModified: function() {
             if (this.organization == null) return "Unknown.";
             if (this.timestamp) {
-                return this.$moment(this.timestamp).fromNow();
+                return dayjs(this.timestamp).fromNow();
             } else {
                 return null;
             }

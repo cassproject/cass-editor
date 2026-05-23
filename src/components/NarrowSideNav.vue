@@ -70,7 +70,7 @@
             <li class="has-text-white">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="setFrameworkImportMode">
+                    @click="setFrameworkImportMode">
                     Import
                 </router-link>
             </li>
@@ -95,7 +95,7 @@
             <li class="has-text-white">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="setConceptImportMode">
+                    @click="setConceptImportMode">
                     Import
                 </router-link>
             </li>
@@ -120,7 +120,7 @@
             <li class="has-text-white">
                 <router-link
                     :to="{path: '/import', query: queryParams}"
-                    @click.native="setProgressionImportMode">
+                    @click="setProgressionImportMode">
                     Import
                 </router-link>
             </li>

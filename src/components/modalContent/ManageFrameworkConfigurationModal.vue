@@ -48,7 +48,7 @@ export default {
     },
     computed: {
         queryParams() {
-            return this.useEditorStore().queryParams;
+            return useEditorStore().queryParams;
         }
     }
 };

@@ -16,7 +16,7 @@
                         id="selectAllCheckbox"
                         type="checkbox"
                         name="selectAllCheckbox"
-                        v-model="selectAll">
+                        v-model="localSelectAll">
                     <label for="selectAllCheckbox" />
                 </div>
             </div>
@@ -306,7 +306,8 @@ export default {
             shiftKey: false,
             arrowKey: null,
             addConceptOrChildText: "Add Concept",
-            loading: false
+            loading: false,
+            localSelectAll: false
         };
     },
     components: {
@@ -314,6 +315,7 @@ export default {
         draggable: () => import('vuedraggable')
     },
     mixins: [common, competencyEdits],
+
     computed: {
         ...mapState(useEditorStore, ['queryParams', 'addAnother', 'recomputeHierarchy', 'framework']),
         processedContainer: function() {
@@ -383,6 +385,12 @@ export default {
         }
     },
     watch: {
+        selectAll(val) {
+            this.localSelectAll = val;
+        },
+        localSelectAll(val) {
+            this.$emit('update:selectAll', val);
+        },
         container: {
             handler() {
                 this.once = true;
@@ -407,7 +415,7 @@ export default {
             if (this.recomputeHierarchy) {
                 this.once = true;
                 const editorStore = useEditorStore();
-                editorStore.recomputeHierarchy(false);
+                editorStore.setRecomputeHierarchy(false);
             }
         },
         doneDragging: function() {
@@ -419,7 +427,7 @@ export default {
             if (val) {
                 this.onClickCreateNew();
                 const editorStore = useEditorStore();
-                editorStore.addAnother(false);
+                editorStore.setAddAnother(false);
             }
         }
     },
@@ -445,22 +453,22 @@ export default {
         cutClick: function() {
             const editorStore = useEditorStore();
             if (this.selectedArray && this.selectedArray.length === 1) {
-                editorStore.cutId(this.selectedArray[0]);
+                editorStore.setCutId(this.selectedArray[0]);
             }
-            editorStore.copyId(null);
-            editorStore.paste(false);
+            editorStore.setCopyId(null);
+            editorStore.setPaste(false);
         },
         copyClick: function() {
             const editorStore = useEditorStore();
             if (this.selectedArray && this.selectedArray.length === 1) {
-                editorStore.copyId(this.selectedArray[0]);
+                editorStore.setCopyId(this.selectedArray[0]);
             }
-            editorStore.cutId(null);
-            editorStore.paste(false);
+            editorStore.setCutId(null);
+            editorStore.setPaste(false);
         },
         pasteClick: function() {
             const editorStore = useEditorStore();
-            editorStore.paste(true);
+            editorStore.setPaste(true);
         },
         keydown(e) {
             if (this.canEdit) {
@@ -473,22 +481,22 @@ export default {
                 if (e.key === "x" && e.ctrlKey) {
                     const editorStore = useEditorStore();
                     if (this.selectedArray && this.selectedArray.length === 1) {
-                        editorStore.cutId(this.selectedArray[0]);
+                        editorStore.setCutId(this.selectedArray[0]);
                     }
-                    editorStore.copyId(null);
-                    editorStore.paste(false);
+                    editorStore.setCopyId(null);
+                    editorStore.setPaste(false);
                 }
                 if (e.key === "c" && e.ctrlKey) {
                     const editorStore = useEditorStore();
                     if (this.selectedArray && this.selectedArray.length === 1) {
-                        editorStore.copyId(this.selectedArray[0]);
+                        editorStore.setCopyId(this.selectedArray[0]);
                     }
-                    editorStore.cutId(null);
-                    editorStore.paste(false);
+                    editorStore.setCutId(null);
+                    editorStore.setPaste(false);
                 }
                 if (e.key === "v" && e.ctrlKey) {
                     const editorStore = useEditorStore();
-                    editorStore.paste(true);
+                    editorStore.setPaste(true);
                 }
             }
         },
@@ -1011,7 +1019,7 @@ export default {
 
             this.framework["schema:dateModified"] = new Date().toISOString();
             const editorStore = useEditorStore();
-            editorStore.selectedCompetency(null);
+            editorStore.setSelectedCompetency(null);
         },
         deleteConceptInner: async function(c) {
             var me = this;

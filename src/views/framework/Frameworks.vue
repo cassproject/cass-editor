@@ -35,7 +35,7 @@
                             :active="createDropDownActive" />
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="setConceptImportMode()"
+                            @click="setConceptImportMode()"
                             class="button is-hidden-touch is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -43,7 +43,7 @@
                         </router-link>
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="setConceptImportMode()"
+                            @click="setConceptImportMode()"
                             class="button is-hidden-desktop is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -85,7 +85,7 @@
                             :active="createDropDownActive" />
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="setProgressionImportMode()"
+                            @click="setProgressionImportMode()"
                             class="button is-hidden-touch is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -93,7 +93,7 @@
                         </router-link>
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="setProgressionImportMode()"
+                            @click="setProgressionImportMode()"
                             class="button is-hidden-desktop is-outlined is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -139,7 +139,7 @@
                         <!-- upload -->
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="setFrameworkImportMode()"
+                            @click="setFrameworkImportMode()"
                             class="button is-outlined is-hidden-desktop is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -147,7 +147,7 @@
                         </router-link>
                         <router-link
                             :to="{path: '/import', query: queryParams}"
-                            @click.native="setFrameworkImportMode()"
+                            @click="setFrameworkImportMode()"
                             class="button is-outlined is-hidden-touch is-primary">
                             <span class="icon">
                                 <i class="fa fa-upload" />
@@ -371,8 +371,8 @@ export default {
     created: function() {
         this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
         const editorStore = useEditorStore();
-        editorStore.t3Profile(false);
-        editorStore.framework(null);
+        editorStore.setT3Profile(false);
+        editorStore.setFramework(null);
         this.spitEvent('viewChanged');
         this.setDefaultConfig();
     },
@@ -501,27 +501,27 @@ export default {
         setConceptImportMode: function() {
             const editorStore = useEditorStore();
             const appStore = useAppStore();
-            editorStore.conceptMode(true);
-            editorStore.progressionMode(false);
+            editorStore.setConceptMode(true);
+            editorStore.setProgressionMode(false);
             appStore.clearImport();
         },
         setProgressionImportMode: function() {
             const editorStore = useEditorStore();
             const appStore = useAppStore();
-            editorStore.conceptMode(false);
-            editorStore.progressionMode(true);
+            editorStore.setConceptMode(false);
+            editorStore.setProgressionMode(true);
             appStore.clearImport();
         },
         setFrameworkImportMode: function() {
             const editorStore = useEditorStore();
             const appStore = useAppStore();
-            editorStore.conceptMode(false);
-            editorStore.progressionMode(false);
+            editorStore.setConceptMode(false);
+            editorStore.setProgressionMode(false);
             appStore.clearImport();
         },
         showAddDirectoryModal: function() {
             const appStore = useAppStore();
-            appStore.showModal({component: 'AddDirectory'});
+            appStore.openModal({component: 'AddDirectory'});
         },
         openItem: function(object) {
             var me = this;
@@ -544,7 +544,7 @@ export default {
                 EcConceptScheme.get(object.id, function(success) {
                     const editorStore = useEditorStore();
                     const appStore = useAppStore();
-                    editorStore.framework(success);
+                    editorStore.setFramework(success);
                     editorStore.clearFrameworkCommentData();
                     appStore.setCanViewComments(me.canViewCommentsCurrentFramework());
                     appStore.setCanAddComments(me.canAddCommentsCurrentFramework());
@@ -554,7 +554,7 @@ export default {
                 EcConceptScheme.get(object.id, function(success) {
                     const editorStore = useEditorStore();
                     const appStore = useAppStore();
-                    editorStore.framework(success);
+                    editorStore.setFramework(success);
                     editorStore.clearFrameworkCommentData();
                     appStore.setCanViewComments(me.canViewCommentsCurrentFramework());
                     appStore.setCanAddComments(me.canAddCommentsCurrentFramework());
@@ -564,7 +564,7 @@ export default {
                 EcFramework.get(object.id, function(success) {
                     const editorStore = useEditorStore();
                     const appStore = useAppStore();
-                    editorStore.framework(success);
+                    editorStore.setFramework(success);
                     editorStore.clearFrameworkCommentData();
                     appStore.setCanViewComments(me.canViewCommentsCurrentFramework());
                     appStore.setCanAddComments(me.canAddCommentsCurrentFramework());
@@ -589,8 +589,8 @@ export default {
         },
         frameworkClick: function(framework) {
             const appStore = useAppStore();
-            appStore.rightAsideObject(framework);
-            appStore.showRightAside('ListItemInfo');
+            appStore.setRightAsideObject(framework);
+            appStore.openRightAside('ListItemInfo');
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];

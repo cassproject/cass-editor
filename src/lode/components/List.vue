@@ -53,7 +53,7 @@
                             <Thing
                                 :parent="parent"
                                 :obj="item"
-                                @dblclick.native="$emit('dblclick', item)"
+                                @dblclick="$emit('dblclick', item)"
                                 :view="view"
                                 :profile="profile"
                                 class="cass--list--thing"
@@ -127,7 +127,7 @@
                                 :ref="item.id" />
                             <Thing
                                 :obj="item"
-                                @dblclick.native="$emit('dblclick', item)"
+                                @dblclick="$emit('dblclick', item)"
                                 :view="view"
                                 :profile="profile"
                                 class="list-thing"
@@ -142,22 +142,15 @@
                         </div>
                     </li>
                 </ul>
-                <infinite-loading
-                    @infinite="loadMore"
-                    spinner="circles"
-                    v-if="results.length > 0"
-                    :distance="10">
-                    <template #no-more>
-                        <div>
-                            All results loaded
-                        </div>
-                    </template>
-                    <template #no-results>
-                        <div>
-                            All results loaded
-                        </div>
-                    </template>
-                </infinite-loading>
+                <div
+                    v-if="hasMore && results.length > 0"
+                    v-observe-visibility="{
+                        callback: onInfiniteScroll,
+                        once: false
+                    }"
+                    class="infinite-loading-sentinel">
+                    <span class="icon"><i class="fas fa-spinner fa-spin"></i></span>
+                </div>
             </div>
         </template>
     </div>
@@ -221,7 +214,9 @@ export default {
             applySearchToOwner: false,
             // To avoid duplicates
             resultIds: [],
-            nonDirectoryResults: false
+            nonDirectoryResults: false,
+            hasMore: true,
+            isLoadingMore: false
         };
     },
     watch: {
@@ -295,24 +290,24 @@ export default {
     },
     computed: {
         crosswalkAlignmentSource: function() {
-            return this.useCrosswalkStore().frameworkSource;
+            return useCrosswalkStore().frameworkSource;
         },
         searchTerm: function(val) {
-            return this.useAppStore().searchTerm;
+            return useAppStore().searchTerm;
         },
         refreshSearch: function(val) {
-            return this.useAppStore().refreshSearch;
+            return useAppStore().refreshSearch;
         },
         applySearchTo: function() {
-            let options = this.useAppStore().applySearchTo;
+            let options = useAppStore().applySearchTo;
             if (!options) return null;
             let filterValues = options.filter(item => item.checked === true);
             if (filterValues.length <= 0) return null;
             return filterValues;
         },
         rightAsideObjectId: function() {
-            if (this.useAppStore().rightAsideObject) {
-                return this.useAppStore().rightAsideObject.shortId();
+            if (useAppStore().rightAsideObject) {
+                return useAppStore().rightAsideObject.shortId();
             }
             return null;
         },
@@ -323,10 +318,20 @@ export default {
             return EcIdentityManager.default.ids?.length;
         },
         firstSearchProcessing: function() {
-            return this.useEditorStore().firstSearchProcessing;
+            return useEditorStore().firstSearchProcessing;
         }
     },
     methods: {
+        onInfiniteScroll(isVisible) {
+            if (isVisible && !this.isLoadingMore) {
+                this.isLoadingMore = true;
+                const $state = {
+                    loaded: () => { this.isLoadingMore = false; },
+                    complete: () => { this.hasMore = false; this.isLoadingMore = false; }
+                };
+                this.loadMore($state);
+            }
+        },
         subObjectClick: function(item) {
             // Access framework from breadcrumbs instead of re-searching
             var frameworks = this.$refs[item.id][0].frameworks;
@@ -341,7 +346,7 @@ export default {
                     parentName: null,
                     canEdit: false
                 };
-                this.useAppStore().openModal(modalObject);
+                useAppStore().openModal(modalObject);
             }
         },
         buildSearch: function(type, callback) {
@@ -499,6 +504,8 @@ export default {
             this.resultIds.splice(0, this.resultIds.length);
             this.searchingForCompetencies = false;
             this.nonDirectoryResults = false;
+            this.hasMore = true;
+            this.isLoadingMore = false;
             if (!this.applySearchTo) {
                 if (this.view === 'frameworks' && this.type === "Framework") {
                     this.searchDirectories = true;

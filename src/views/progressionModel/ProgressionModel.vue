@@ -80,6 +80,7 @@
     </div>
 </template>
 <script>
+import dayjs from 'dayjs';
 import debounce from 'lodash/debounce';
 import common from '@/mixins/common.js';
 import ctdlasnProfile from '@/mixins/ctdlasnProfile.js';
@@ -155,7 +156,7 @@ export default {
         lastModified: function() {
             if (this.framework == null) return "Unknown.";
             if (this.timestamp) {
-                return this.$moment(this.timestamp).format("MMM D YYYY");
+                return dayjs(this.timestamp).format("MMM D YYYY");
             } else {
                 return null;
             }
@@ -240,7 +241,7 @@ export default {
         },
         handleSearch: function(e) {
             const appStore = useAppStore();
-            appStore.showModal(e);
+            appStore.openModal(e);
         },
         onCancelEditMultiple: function() {
             this.showEditMultiple = false;
@@ -253,15 +254,15 @@ export default {
                 component: 'MultiEdit'
             };
             const appStore = useAppStore();
-            appStore.showModal(payload);
+            appStore.openModal(payload);
         },
         onEditNode: function() {
             this.editingFramework = true;
         },
         onDoneEditingNode: async function() {
             const editorStore = useEditorStore();
-            editorStore.framework(await EcRepository.get(this.framework.shortId()));
-            editorStore.newFramework(null);
+            editorStore.setFramework(await EcRepository.get(this.framework.shortId()));
+            editorStore.setNewFramework(null);
             this.editingFramework = false;
         },
         selectedArrayEvent: function(ary) {
@@ -297,7 +298,7 @@ export default {
             const editorStore = useEditorStore();
             const appStore = useAppStore();
             editorStore.setItemToExport(this.framework);
-            appStore.showModal({component: 'ExportOptionsModal', title: 'Export Concept Scheme'});
+            appStore.openModal({component: 'ExportOptionsModal', title: 'Export Concept Scheme'});
         },
         changeProperties: function(type) {
             this.properties = type;

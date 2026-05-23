@@ -38,7 +38,7 @@
                                     :ref="item.id" />
                                 <Thing
                                     :obj="item"
-                                    @dblclick.native="$emit('dblclick', item)"
+                                    @dblclick="$emit('dblclick', item)"
                                     :view="view"
                                     class="list-thing list-ul__item--directory"
                                     :parentNotEditable="true" />
@@ -75,7 +75,7 @@
                                     :ref="item.id" />
                                 <Thing
                                     :obj="item"
-                                    @dblclick.native="$emit('dblclick', item)"
+                                    @dblclick="$emit('dblclick', item)"
                                     :view="view"
                                     class="list-thing list-ul__item--framework"
                                     :parentNotEditable="true" />
@@ -111,7 +111,7 @@
                                     :ref="item.id" />
                                 <Thing
                                     :obj="item"
-                                    @dblclick.native="$emit('dblclick', item)"
+                                    @dblclick="$emit('dblclick', item)"
                                     :view="view"
                                     class="list-thing list-ul__item--framework"
                                     :parentNotEditable="true" />
@@ -147,7 +147,7 @@
                                     :ref="item.id" />
                                 <Thing
                                     :obj="item"
-                                    @dblclick.native="$emit('dblclick', item)"
+                                    @dblclick="$emit('dblclick', item)"
                                     :view="view"
                                     class="list-thing list-ul__item--object"
                                     :parentNotEditable="true" />
@@ -189,22 +189,15 @@
                             </div>
                         </li>
                     </ul>
-                    <infinite-loading
-                        @infinite="loadResults"
-                        spinner="circles"
-                        v-if="(directory.length + framework.length + competency.length + creativework.length + conceptscheme.length + concept.length > 10)"
-                        :distance="10">
-                        <template #no-more>
-                            <div>
-                                All results loaded
-                            </div>
-                        </template>
-                        <template #no-results>
-                            <div>
-                                All results loaded
-                            </div>
-                        </template>
-                    </infinite-loading>
+                    <div
+                        v-if="hasMore && (directory.length + framework.length + competency.length + creativework.length + conceptscheme.length + concept.length > 10)"
+                        v-observe-visibility="{
+                            callback: onInfiniteScroll,
+                            once: false
+                        }"
+                        class="infinite-loading-sentinel">
+                        <span class="icon"><i class="fas fa-spinner fa-spin"></i></span>
+                    </div>
                 </div>
             </div>
         </template>
@@ -260,7 +253,9 @@ export default {
             resourcesStart: 0,
             directoriesStart: 0,
             start: 0,
-            directoryIdList: []
+            directoryIdList: [],
+            hasMore: true,
+            isLoadingMore: false
         };
     },
     watch: {
@@ -340,6 +335,16 @@ export default {
         }
     },
     methods: {
+        onInfiniteScroll(isVisible) {
+            if (isVisible && !this.isLoadingMore) {
+                this.isLoadingMore = true;
+                const $state = {
+                    loaded: () => { this.isLoadingMore = false; },
+                    complete: () => { this.hasMore = false; this.isLoadingMore = false; }
+                };
+                this.loadResults($state);
+            }
+        },
         competencyClick: function(item) {
             // Access framework from breadcrumbs instead of re-searching
             var frameworks = this.$refs[item.id][0].frameworks;
@@ -355,7 +360,7 @@ export default {
                     canEdit: false
                 };
                 const appStore = useAppStore();
-                appStore.showModal(modalObject);
+                appStore.openModal(modalObject);
             }
         },
         buildIdList: function(success) {
@@ -570,6 +575,8 @@ export default {
             this.concept.splice(0, this.concept.length);
             this.resultIds.splice(0, this.resultIds.length);
             this.searchingFor = 'Directory';
+            this.hasMore = true;
+            this.isLoadingMore = false;
             this.loadResults();
         },
         loadResults: function($state) {

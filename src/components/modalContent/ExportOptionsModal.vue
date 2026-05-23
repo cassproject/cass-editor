@@ -81,7 +81,7 @@ export default {
     },
     computed: {
         obj() {
-            return this.useEditorStore().itemToExport;
+            return useEditorStore().itemToExport;
         },
         exportOptions() {
             if (this.objType.indexOf("conceptscheme") !== -1) {

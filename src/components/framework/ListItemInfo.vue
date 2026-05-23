@@ -457,6 +457,7 @@
     </div>
 </template>
 <script>
+import dayjs from 'dayjs';
 import common from '@/mixins/common.js';
 import { useAppStore } from '@/stores/app';
 import { useUserStore } from '@/stores/user';
@@ -485,7 +486,7 @@ export default {
     },
     methods: {
         deleteDirectory() {
-            this.useAppStore().openModal({component: 'DeleteDirectoryConfirm'});
+            useAppStore().openModal({component: 'DeleteDirectoryConfirm'});
         },
         clickAccordion(item) {
             if (this.accordion === item) {
@@ -532,10 +533,10 @@ export default {
                 if (this.$route.name !== "directory") {
                     this.$router.push({name: "directory"});
                 }
-                this.useAppStore().closeRightAside();
+                useAppStore().closeRightAside();
             } else if (this.object.type === "CreativeWork") {
                 window.open(this.object.url, '_blank');
-            } else if (this.useEditorStore().conceptMode) {
+            } else if (useEditorStore().conceptMode) {
                 useAppStore().setSelectDirectory(null);
                 EcConceptScheme.get(this.object.id, function(success) {
                     useEditorStore().setFramework(success);
@@ -544,7 +545,7 @@ export default {
                     useAppStore().setSetCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: me.object.id}});
                 }, appError);
-            } else if (this.useEditorStore().progressionMode) {
+            } else if (useEditorStore().progressionMode) {
                 useAppStore().setSelectDirectory(null);
                 EcConceptScheme.get(this.object.id, function(success) {
                     useEditorStore().setFramework(success);
@@ -590,7 +591,7 @@ export default {
                 if (me.$route.name !== "directory") {
                     me.$router.push({name: "directory"});
                 }
-                me.useAppStore().closeRightAside();
+                useAppStore().closeRightAside();
             }, appError);
         },
         copyOrMove: async function(directory, copyOrMove) {
@@ -647,7 +648,7 @@ export default {
                     if (this.movingToDirectory) {
                         // Remove the moved item from the right panel
                         useAppStore().setRightAsideObject(null);
-                        this.useAppStore().closeRightAside();
+                        useAppStore().closeRightAside();
                     }
                     if (shouldRefresh) {
                         // If removing or moving, need to refresh search results
@@ -1491,7 +1492,7 @@ export default {
         },
         manageUsers: function() {
             useAppStore().setObjForShareModal(this.object);
-            this.useAppStore().openModal({component: 'Share'});
+            useAppStore().openModal({component: 'Share'});
         },
         editDirectory: function() {
             useAppStore().setEditDirectory(true);
@@ -1539,7 +1540,7 @@ export default {
             return this.object.shortId();
         },
         object: function() {
-            return this.useAppStore().rightAsideObject;
+            return useAppStore().rightAsideObject;
         },
         objectType: function() {
             return this.object.type;
@@ -1565,16 +1566,16 @@ export default {
         },
         lastModified: function() {
             if (this.object.getTimestamp()) {
-                return this.$moment(new Date(this.object.getTimestamp())).format("MMM D YYYY");
+                return dayjs(new Date(this.object.getTimestamp())).format("MMM D YYYY");
             }
             if (this.object["schema:dateModified"]) {
-                return this.$moment(new Date(this.object['schema:dateModified'])).format("MMM D YYYY");
+                return dayjs(new Date(this.object['schema:dateModified'])).format("MMM D YYYY");
             }
             return "unknown";
         },
         dateCreated: function() {
             if (this.object["schema:dateCreated"]) {
-                return this.$moment(new Date(this.object['schema:dateCreated'])).format("MMM D YYYY");
+                return dayjs(new Date(this.object['schema:dateCreated'])).format("MMM D YYYY");
             }
             return "unknown";
         },
@@ -1608,7 +1609,7 @@ export default {
                 } else {
                     return (link + "?directoryId=" + this.objectShortId);
                 }
-            } else if ((this.useEditorStore().conceptMode === true) || (this.useEditorStore().progressionMode === true)) {
+            } else if ((useEditorStore().conceptMode === true) || (useEditorStore().progressionMode === true)) {
                 if (link.contains('?')) {
                     return (link + "&concepts=true&frameworkId=" + this.objectShortId);
                 } else {
@@ -1623,7 +1624,7 @@ export default {
         },
         copyDirectoryOptions: function() {
             let me = this;
-            return this.useAppStore().directoryList.filter(directory => {
+            return useAppStore().directoryList.filter(directory => {
                 return (directory.shortId() !== me.object.shortId() &&
                     (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
                     (me.object.directory ? (directory.shortId() !== me.object.directory) : true));
@@ -1632,14 +1633,14 @@ export default {
         moveDirectoryOptions: function() {
             let me = this;
             if (this.objectType === "Directory") {
-                return this.useAppStore().directoryList.filter(directory => {
+                return useAppStore().directoryList.filter(directory => {
                     return (directory.shortId() !== me.object.shortId() &&
                         (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
                         (me.object.directory ? (directory.shortId() !== me.object.directory) : true) &&
                         !EcArray.has(me.ineligibleDirectoriesForMove, directory.shortId()));
                 });
             } else {
-                return this.useAppStore().directoryList.filter(directory => {
+                return useAppStore().directoryList.filter(directory => {
                     return (directory.shortId() !== me.object.shortId() &&
                         (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
                         (me.object.directory ? (directory.shortId() !== me.object.directory) : true));
@@ -1650,14 +1651,14 @@ export default {
             return this.canEditAny(this.object);
         },
         queryParams: function() {
-            return this.useEditorStore().queryParams;
+            return useEditorStore().queryParams;
         },
         loggedInPerson: function() {
-            return this.useUserStore().loggedOnPerson;
+            return useUserStore().loggedOnPerson;
         },
         selectedDirectoryId: function() {
-            if (this.useAppStore().selectedDirectory) {
-                return this.useAppStore().selectedDirectory.shortId();
+            if (useAppStore().selectedDirectory) {
+                return useAppStore().selectedDirectory.shortId();
             }
             return null;
         }

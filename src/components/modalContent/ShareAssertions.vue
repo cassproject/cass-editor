@@ -288,7 +288,7 @@ export default {
             }
             let doSearch = async function(start, count) {
                 return new Promise((resolve, reject) => {
-                    EcAssertion.search(window.repo, `\\*owner:"${this.useEditorStore().getMe}" AND (${searchQuery})`, async(results) => {
+                    EcAssertion.search(window.repo, `\\*owner:"${useEditorStore().getMe}" AND (${searchQuery})`, async(results) => {
                         assertions.push(...results);
                         start += count;
                         if (results.length > 0) {
@@ -317,7 +317,7 @@ export default {
                         assertion.getSubjectAsync((subject) => {
                             if (subjects.includes(subject.toPem())) {
                                 assertion.getAgentAsync(async(agent) => {
-                                    if (this.useEditorStore().getMe === agent.toPem()) {
+                                    if (useEditorStore().getMe === agent.toPem()) {
                                         for (let target of Object.keys(this.shareTargets)) {
                                             await assertion.addReader(EcPk.fromPem(target));
                                         }

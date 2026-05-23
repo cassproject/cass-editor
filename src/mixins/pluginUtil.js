@@ -110,11 +110,17 @@ export const pluginUtil = {
             if (pluginUrl.endsWith("/")) manifestUrl = pluginUrl + "manifest.json";
             else manifestUrl = pluginUrl + "/manifest.json";
             this.mdPluginCurrentUrl = pluginUrl;
-            this.$http.get(manifestUrl).then(
-                function(response) {
-                    this.getManifestDataForPluginSuccess(response.data);
-                },
-                function(error) {
+            fetch(manifestUrl).then(
+                response => {
+                    if (!response.ok) throw new Error('HTTP ' + response.status);
+                    return response.json();
+                }
+            ).then(
+                data => {
+                    this.getManifestDataForPluginSuccess(data);
+                }
+            ).catch(
+                error => {
                     this.getManifestDataForPluginFailure(error);
                 }
             );

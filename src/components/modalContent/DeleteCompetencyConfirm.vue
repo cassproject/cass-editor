@@ -55,7 +55,7 @@ export default {
     },
     computed: {
         obj() {
-            return this.useEditorStore().itemToDelete;
+            return useEditorStore().itemToDelete;
         }
     },
     mounted() {

@@ -198,6 +198,56 @@ app.directive('observe-visibility', {
     }
 });
 
+// Custom directive: v-clipboard (replacing vue-clipboard2)
+// Usage: v-clipboard="textOrFunction" v-clipboard:success="onSuccess" v-clipboard:error="onError"
+app.directive('clipboard', {
+    mounted(el, binding) {
+        if (binding.arg === 'success') {
+            el._clipboardSuccess = binding.value;
+        } else if (binding.arg === 'error') {
+            el._clipboardError = binding.value;
+        } else {
+            el._clipboardValue = binding.value;
+            el.addEventListener('click', el._clipboardHandler = async function () {
+                try {
+                    let text = typeof el._clipboardValue === 'function' ? el._clipboardValue() : el._clipboardValue;
+                    await navigator.clipboard.writeText(text);
+                    if (el._clipboardSuccess) {
+                        el._clipboardSuccess({ text, trigger: el });
+                    }
+                } catch (err) {
+                    if (el._clipboardError) {
+                        el._clipboardError(err);
+                    }
+                }
+            });
+        }
+    },
+    updated(el, binding) {
+        if (binding.arg === 'success') {
+            el._clipboardSuccess = binding.value;
+        } else if (binding.arg === 'error') {
+            el._clipboardError = binding.value;
+        } else {
+            el._clipboardValue = binding.value;
+        }
+    },
+    unmounted(el) {
+        if (el._clipboardHandler) {
+            el.removeEventListener('click', el._clipboardHandler);
+            delete el._clipboardHandler;
+        }
+        delete el._clipboardValue;
+        delete el._clipboardSuccess;
+        delete el._clipboardError;
+    }
+});
+
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+dayjs.extend(relativeTime);
+app.config.globalProperties.$moment = dayjs;
+
 // Warn handler (ported from Vue 2 Vue.config.warnHandler)
 app.config.warnHandler = function (msg, vm, trace) {
     if (msg === 'Invalid prop: type check failed for prop "clickToLoad". Expected Boolean, got String with value "true".') return;

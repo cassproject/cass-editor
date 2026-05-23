@@ -90,7 +90,7 @@ export default {
         },
         importModalParams: {
             get() {
-                return this.useAppStore().importModalParams;
+                return useAppStore().importModalParams;
             },
             set(val) {
                 useAppStore().setImportModalParams(val);

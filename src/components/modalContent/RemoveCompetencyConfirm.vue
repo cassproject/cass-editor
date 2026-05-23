@@ -47,10 +47,10 @@ export default {
     },
     computed: {
         obj() {
-            return this.useEditorStore().itemToRemove;
+            return useEditorStore().itemToRemove;
         },
         framework() {
-            return this.useEditorStore().framework;
+            return useEditorStore().framework;
         }
     },
     mounted() {

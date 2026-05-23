@@ -219,7 +219,7 @@ export default {
         }
     },
     computed: {
-        ...mapState(useAppStore, ['applySearchTo', 'sortResults', 'searchTerm']),
+        ...mapState(useAppStore, ['applySearchTo', 'sortResults']),
         ...mapState(useEditorStore, ['queryParams', 'firstSearchProcessing']),
         type: function() {
             const editorStore = useEditorStore();
