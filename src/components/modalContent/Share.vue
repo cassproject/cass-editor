@@ -502,6 +502,7 @@ export default {
         this.checkIsPrivate();
     },
     methods: {
+        useAppStore,
         handlePrivateClick: function() {
             if (!this.privateFramework) {
                 this.confirmMakePrivate = true;

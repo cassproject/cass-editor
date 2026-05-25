@@ -56,13 +56,13 @@ export default {
         const editorStore = useEditorStore();
         const appStore = useAppStore();
         editorStore.setSearchingAssertions(true);
-        appStore.searchTerm("");
+        appStore.setSearchTerm("");
         editorStore.searchForAssertions();
     },
     beforeUnmount: function() {
         const appStore = useAppStore();
         appStore.clearSearchFilters();
-        appStore.searchTerm("");
+        appStore.setSearchTerm("");
     },
     methods: {}
 };

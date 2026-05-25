@@ -8,6 +8,7 @@ export const useConfigurationStore = defineStore('configuration', {
         LANG_STRING_RANGE: 'http://www.w3.org/2000/01/rdf-schema#langString',
         DEFAULT_HEADING: "General",
         LEVEL_SEARCH_SIZE: 10000,
+        GROUP_SEARCH_SIZE: 10000,
         PERSON_SEARCH_SIZE: 10000,
         DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'https://schema.cassproject.org/0.4/',
         DEFAULT_CUSTOM_PROPERTY_RANGE: 'http://schema.org/Text',

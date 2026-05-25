@@ -61,6 +61,9 @@ export default {
     },
     components: {
         ModalTemplate
+    },
+    methods: {
+        useAppStore
     }
 };
 </script>

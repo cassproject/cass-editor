@@ -283,7 +283,6 @@
                     <div
                         v-if="!showAddPropertyContent"
                         @click="saveOnce"
-                        :disabled="disableDoneEditingButton || saving"
                         title="Done editing"
                         class="button is-outlined is-dark">
                         <span class="export icon">
@@ -294,7 +293,6 @@
                     <div
                         v-if="!showAddPropertyContent && newCompetencyState"
                         @click="saveAndAddAnother"
-                        :disabled="saving"
                         title="Done editing"
                         class="button is-outlined is-dark">
                         <span class="export icon">
@@ -379,7 +377,7 @@ export default {
             isSearching: false,
             selectedMove: '',
             saving: false,
-            saved: "saved",
+            saved: false,
             errorSaving: false,
             editingThing: true,
             editingClass: 'thing-editing',
@@ -406,11 +404,12 @@ export default {
             addAnother: false,
             disableDoneEditingButton: false,
             errorValidating: null,
-            loading: false
+            loading: false,
+            localClickToLoad: this.clickToLoad
         };
     },
     created: function() {
-        if (this.clickToLoad === false) { this.load(); }
+        if (this.localClickToLoad === false) { this.load(); }
     },
     mounted: function() {
         if (this.uri) {
@@ -1032,7 +1031,7 @@ export default {
         },
         load: async function() {
             var me = this;
-            me.clickToLoad = false;
+            me.localClickToLoad = false;
             if (this.uri != null) {
                 // If we have a uri, go get the data from the uri and continue loading.
                 await EcRepository.get(
@@ -1636,8 +1635,10 @@ export default {
                 if (this.profile[i].valuesIndexed) {
                     continue;
                 }
-                if ((this.profile[i]["isRequired"] === "true" || this.profile[i]["isRequired"] === true) && this.expandedThing[i].length < 1) {
-                    var range = this.profile[i]["http://schema.org/rangeIncludes"][0]["@id"];
+                if ((this.profile[i]["isRequired"] === "true" || this.profile[i]["isRequired"] === true) && this.expandedThing[i] && this.expandedThing[i].length < 1) {
+                    var rangeIncludes = this.profile[i]["http://schema.org/rangeIncludes"];
+                    if (!rangeIncludes || !rangeIncludes[0]) continue;
+                    var range = rangeIncludes[0]["@id"];
                     if (range.toLowerCase().indexOf("langstring") !== -1) {
                         this.add(i, {"@language": useEditorStore().defaultLanguage, "@value": ""});
                     } else {
@@ -1762,7 +1763,7 @@ export default {
                 if (type) {
                     var thing = await window[type].get(this.changedObject);
                     this.obj = thing;
-                    if (this.clickToLoad === false) { await this.load(); }
+                    if (this.localClickToLoad === false) { await this.load(); }
                 }
                 useEditorStore().setChangedObject(null);
             }

@@ -174,6 +174,7 @@ app.directive('observe-visibility', {
             : binding.value || {};
 
         const callback = options.callback || binding.value;
+        const once = options.once || false;
         const observerOptions = {
             root: options.root || null,
             rootMargin: options.rootMargin || '0px',
@@ -184,6 +185,10 @@ app.directive('observe-visibility', {
             entries.forEach(entry => {
                 if (typeof callback === 'function') {
                     callback(entry.isIntersecting, entry);
+                    if (once && entry.isIntersecting && el._observer) {
+                        el._observer.disconnect();
+                        delete el._observer;
+                    }
                 }
             });
         }, observerOptions);

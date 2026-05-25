@@ -267,6 +267,7 @@
     </div>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
 import debounce from 'lodash/debounce';
 import DirectoryList from './DirectoryList.vue';
 import common from '@/mixins/common.js';
@@ -288,8 +289,8 @@ export default {
         AddNewDropdown,
         ModalTemplate,
         SearchBar,
-        RightAside: () => import('@/components/framework/RightAside.vue'),
-        ThingEditing: () => import('@/lode/components/ThingEditing.vue')
+        RightAside: defineAsyncComponent(() => import('@/components/framework/RightAside.vue')),
+        ThingEditing: defineAsyncComponent(() => import('@/lode/components/ThingEditing.vue'))
     },
     data: function() {
         return {

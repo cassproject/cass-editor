@@ -80,6 +80,7 @@ import common from '@/mixins/common.js';
 import { useAppStore } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
 import { useLodeStore } from '@/stores/lode';
+import {mapState} from 'pinia';
 export default {
     name: 'SearchModal',
     data() {
@@ -97,12 +98,8 @@ export default {
     },
     mixins: [common],
     computed: {
-        ...mapState({
-            selectedCompetency: state => state.editor.selectedCompetency,
-            framework: state => state.editor.framework,
-            queryParams: state => state.editor.queryParams,
-            includeRelations: state => state.lode.includeRelations
-        }),
+        ...mapState(useEditorStore, ['selectedCompetency', 'framework', 'queryParams']),
+        ...mapState(useLodeStore, ['includeRelations']),
         copyOrLink: function() {
             return useLodeStore().copyOrLink;
         },

@@ -341,6 +341,7 @@
     </main-layout>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
 import MainLayout from './../../layouts/MainLayout.vue';
 import debounce from 'lodash/debounce';
 import List from '@/lode/components/List.vue';
@@ -492,7 +493,7 @@ export default {
         AddNewDropdown,
         SearchBar,
         MainLayout,
-        ThingEditing: () => import('@/lode/components/ThingEditing.vue')
+        ThingEditing: defineAsyncComponent(() => import('@/lode/components/ThingEditing.vue'))
     },
     methods: {
         refocusSearch: function() {

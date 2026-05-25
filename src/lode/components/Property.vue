@@ -475,11 +475,13 @@ TO DO MAYBE: Separate out property by editing or not.
     </div>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
 import '@/scss/property.scss';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import { useLodeStore } from '@/stores/lode';
 import { useEditorStore } from '@/stores/editor';
 import { useAppStore } from '@/stores/app';
+import PropertyString from './PropertyString.vue';
 
 export default {
     // Property represents one property of a Thing.
@@ -530,10 +532,10 @@ export default {
     },
     components: {
         // Circular references require this trick.
-        Thing: () => import('./Thing.vue'),
-        ThingEditing: () => import('./ThingEditing.vue'),
+        Thing: defineAsyncComponent(() => import('./Thing.vue')),
+        ThingEditing: defineAsyncComponent(() => import('./ThingEditing.vue')),
         // Property editing box for String type things. Should be one of these for each value type.
-        PropertyString: () => import('./PropertyString.vue'),
+        PropertyString,
         ModalTemplate
     },
     created: function() {

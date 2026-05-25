@@ -293,31 +293,36 @@ export default {
                 ss.href = this.queryParams.css;
                 document.getElementsByTagName("head")[0].appendChild(ss);
             }
-            // Preload schema so large frameworks are faster
+            // Preload schema so large frameworks are faster — fetch all in parallel
             let types = [
                 "https://schema.cassproject.org/0.4", "https://schema.cassproject.org/0.4/Directory", "https://schema.cassproject.org/0.4/", "https://schema.cassproject.org/0.4/Directory/", "https://schema.cassproject.org/0.4/skos/ConceptScheme/", "https://schema.cassproject.org/0.4/skos/", "https://schema.cassproject.org/0.4/Framework/",
                 "https://schema.cassproject.org/0.4/skos/ConceptScheme", "https://schema.cassproject.org/0.4/skos/Concept", "https://schema.cassproject.org/0.4/skos", "https://schema.cassproject.org/0.4/Framework", "https://schema.cassproject.org/0.4/Competency", "https://schema.cassproject.org/0.4/skos/Concept/", "https://schema.cassproject.org/0.4/Competency/"
             ];
-            for (let type of types) {
-                if (useLodeStore().schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
+            const lodeStore = useLodeStore();
+            const schemaPromises = types
+                .filter(type => lodeStore.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1)
+                .map(type => {
                     let index = type.indexOf('schema.cassproject.org');
                     let url = type;
                     if (index !== -1) {
                         url = url.substring(index);
                         url = window.location.origin + window.location.pathname + url + "/index.json-ld";
                     }
-                    EcRemote.getExpectingObject("", url, async function(context) {
-                        useLodeStore().setRawSchemata({id: type, obj: context});
-                        let expanded;
-                        try {
-                            expanded = await jsonld.expand(context);
-                        } catch (err) {
-                            appError(err);
-                        }
-                        useLodeStore().processSchemata({id: type, obj: expanded});
-                    }, function() {});
-                }
-            }
+                    return fetch(url, { headers: { "Accept": "application/json" } })
+                        .then(resp => resp.ok ? resp.json() : null)
+                        .then(async (context) => {
+                            if (!context) return;
+                            lodeStore.setRawSchemata({id: type, obj: context});
+                            try {
+                                let expanded = await jsonld.expand(context);
+                                lodeStore.processSchemata({id: type, obj: expanded});
+                            } catch (err) {
+                                appError(err);
+                            }
+                        })
+                        .catch(() => {});
+                });
+            Promise.all(schemaPromises);
             EcRemote.getExpectingString(window.repo.selectedServer, "badge/pk", (badgePk) => {
                 useEditorStore().setBadgePk(EcPk.fromPem(badgePk));
             }, appError);
@@ -654,7 +659,7 @@ export default {
             this.repo.saveTo(saveFramework, function() {
                 useEditorStore().setFramework(framework);
                 if (me.$route.name !== 'framework') {
-                    me.$router.push({name: "framework"});
+                    me.$router.push({name: "framework", params: {frameworkId: framework.shortId()}});
                 }
             }, appError);
         },
@@ -686,7 +691,7 @@ export default {
             this.repo.saveTo(saveFramework, function() {
                 useEditorStore().setFramework(framework);
                 if (me.$route.name !== 'framework') {
-                    me.$router.push({name: "framework"});
+                    me.$router.push({name: "framework", params: {frameworkId: framework.shortId()}});
                 }
             }, appError);
         },
@@ -720,7 +725,7 @@ export default {
             this.repo.saveTo(saveFramework, function() {
                 useEditorStore().setFramework(framework);
                 if (me.$route.name !== 'conceptScheme') {
-                    me.$router.push({name: "conceptScheme"});
+                    me.$router.push({name: "conceptScheme", params: {frameworkId: framework.shortId()}});
                 }
             }, appError);
         },
@@ -752,7 +757,7 @@ export default {
             this.repo.saveTo(saveFramework, function() {
                 useEditorStore().setFramework(framework);
                 if (me.$route.name !== 'progressionModel') {
-                    me.$router.push({name: "progressionModel"});
+                    me.$router.push({name: "progressionModel", params: {frameworkId: framework.shortId()}});
                 }
             }, appError);
         },

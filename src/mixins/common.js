@@ -561,9 +561,7 @@ export default {
             }
         },
         addAlignments: async function(targets, thing, relationType, allowSave) {
-            // if (this.$store.getters['editor/queryParams'].concepts === "true" || this.$store.getters['editor/conceptMode'] === true || this.$store.getters['editor/progressionMode'] === true) {
-            //     return this.addConceptAlignments(targets, thing, relationType);
-            // }
+
             let urlProperties = [
                 "ceasn:knowledgeEmbodied",
                 "ceasn:skillEmbodied",

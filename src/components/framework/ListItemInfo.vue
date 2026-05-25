@@ -529,7 +529,7 @@ export default {
         openObject: function() {
             let me = this;
             if (this.objectType === "Directory") {
-                useAppStore().setSelectDirectory(this.object);
+                useAppStore().selectDirectory(this.object);
                 if (this.$route.name !== "directory") {
                     this.$router.push({name: "directory"});
                 }
@@ -537,40 +537,40 @@ export default {
             } else if (this.object.type === "CreativeWork") {
                 window.open(this.object.url, '_blank');
             } else if (useEditorStore().conceptMode) {
-                useAppStore().setSelectDirectory(null);
+                useAppStore().selectDirectory(null);
                 EcConceptScheme.get(this.object.id, function(success) {
                     useEditorStore().setFramework(success);
                     useEditorStore().clearFrameworkCommentData();
-                    useAppStore().setSetCanViewComments(me.canViewCommentsCurrentFramework());
-                    useAppStore().setSetCanAddComments(me.canAddCommentsCurrentFramework());
+                    useAppStore().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    useAppStore().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: me.object.id}});
                 }, appError);
             } else if (useEditorStore().progressionMode) {
-                useAppStore().setSelectDirectory(null);
+                useAppStore().selectDirectory(null);
                 EcConceptScheme.get(this.object.id, function(success) {
                     useEditorStore().setFramework(success);
                     useEditorStore().clearFrameworkCommentData();
-                    useAppStore().setSetCanViewComments(me.canViewCommentsCurrentFramework());
-                    useAppStore().setSetCanAddComments(me.canAddCommentsCurrentFramework());
+                    useAppStore().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    useAppStore().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "progressionModel", params: {frameworkId: me.object.id}});
                 }, appError);
             } else if (this.objectType === "ConceptScheme") {
-                useAppStore().setSelectDirectory(null);
+                useAppStore().selectDirectory(null);
                 useEditorStore().setConceptMode(true);
                 EcConceptScheme.get(this.object.id, function(success) {
                     useEditorStore().setFramework(success);
                     useEditorStore().clearFrameworkCommentData();
-                    useAppStore().setSetCanViewComments(me.canViewCommentsCurrentFramework());
-                    useAppStore().setSetCanAddComments(me.canAddCommentsCurrentFramework());
+                    useAppStore().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    useAppStore().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "conceptScheme", params: {frameworkId: me.object.id}});
                 }, appError);
             } else {
-                useAppStore().setSelectDirectory(null);
+                useAppStore().selectDirectory(null);
                 EcFramework.get(this.object.id, function(success) {
                     useEditorStore().setFramework(success);
                     useEditorStore().clearFrameworkCommentData();
-                    useAppStore().setSetCanViewComments(me.canViewCommentsCurrentFramework());
-                    useAppStore().setSetCanAddComments(me.canAddCommentsCurrentFramework());
+                    useAppStore().setCanViewComments(me.canViewCommentsCurrentFramework());
+                    useAppStore().setCanAddComments(me.canAddCommentsCurrentFramework());
                     me.$router.push({name: "framework", params: {frameworkId: me.object.id}});
                 }, appError);
             }
@@ -587,7 +587,7 @@ export default {
             let me = this;
             let directoryId = this.object.directory ? this.object.directory : this.object.parentDirectory;
             EcDirectory.get(directoryId, function(result) {
-                useAppStore().setSelectDirectory(result);
+                useAppStore().selectDirectory(result);
                 if (me.$route.name !== "directory") {
                     me.$router.push({name: "directory"});
                 }

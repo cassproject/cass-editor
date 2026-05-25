@@ -242,6 +242,7 @@ export default {
         });
     },
     methods: {
+        useAppStore,
         selectAllSubjects: function(evt) {
             let checked = evt.target.checked;
             if (checked) {

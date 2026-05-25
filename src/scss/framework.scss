@@ -214,6 +214,11 @@ drag, drag, and chosen states
         color: $text;
     }
     background-color: transparent;
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
     .modal-card {
         .buttons {
             padding: .5rem 0rem;
@@ -479,7 +484,11 @@ ul.processing-list {
     }
 }
 .framework-content {
-    // margin-bottom: 240px;
+    min-height: calc(100vh - 48px);
+    background-color: white;
+    .framework-body {
+        min-height: calc(100vh - 48px);
+    }
     .lode__thing .lode__Framework,
     .lode__thing .lode__ConceptScheme {
         padding: .5rem;
@@ -582,7 +591,11 @@ ul.processing-list {
         }
 
         transform: translateX(0); // make room for add node
-        .edit-button, .comment-button, .handle-button {
+        .edit-button, .handle-button {
+            visibility: visible;
+            margin: 0rem .125rem;
+        }
+        .comment-button {
             visibility: hidden;
             margin: 0rem .125rem;
         }

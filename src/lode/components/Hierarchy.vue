@@ -324,50 +324,47 @@
                 :group="{ name: 'test' }"
                 @start="beginDrag"
                 handle=".handle"
-                @end="endDrag">
-                <!-- list complete item is required class
-                    transition groups don't play nice with nested  -->
-                <!--<transition-group
-                    type="transition"
-                    :name="!dragging ? 'flip-list' : null">-->
-                <HierarchyNode
-                    :depth="1"
-                    :view="view"
-                    @create-new-node-event="onCreateNewNode"
-                    :subview="subview"
-                    @mounting-node="handleMountingNode"
-                    v-for="(item, index) in hierarchy"
-                    :key="item.obj.id"
-                    :obj="item.obj"
-                    class="lode__hierarchy-li"
-                    :dragging="dragging"
-                    :canEdit="canEdit"
-                    :hasChild="item.children"
-                    :profile="profile"
-                    :highlightList="highlightList"
-                    :selectAll="selectAll"
-                    :newFramework="newFramework"
-                    :index="index"
-                    :parentStructure="hierarchy"
-                    :parent="container"
-                    :frameworkEditable="canEdit"
-                    :filter="filter"
-                    :selectedArray="selectedArray"
-                    @begin-drag="beginDrag"
-                    @move="move"
-                    @select="select"
-                    @add="add"
-                    @remove-object="removeObject"
-                    @draggable-check="onDraggableCheck"
-                    :properties="properties"
-                    :expandAll="expanded==true"
-                    :shiftKey="shiftKey"
-                    :arrowKey="arrowKey"
-                    :largeNumberOfItems="hasLargeNumberOfItems"
-                    :hierarchyEnabled="hierarchyEnabled"
-                    :containerSubType="container.subType"
-                    :canEditAssertions="canEditAssertions"
-                    propagateParentChecked="false" />
+                @end="endDrag"
+                item-key="obj.id">
+                <template #item="{ element, index }">
+                    <HierarchyNode
+                        :depth="1"
+                        :view="view"
+                        @create-new-node-event="onCreateNewNode"
+                        :subview="subview"
+                        @mounting-node="handleMountingNode"
+                        :key="element.obj.id"
+                        :obj="element.obj"
+                        class="lode__hierarchy-li"
+                        :dragging="dragging"
+                        :canEdit="canEdit"
+                        :hasChild="element.children"
+                        :profile="profile"
+                        :highlightList="highlightList"
+                        :selectAll="selectAll"
+                        :newFramework="newFramework"
+                        :index="index"
+                        :parentStructure="hierarchy"
+                        :parent="container"
+                        :frameworkEditable="canEdit"
+                        :filter="filter"
+                        :selectedArray="selectedArray"
+                        @begin-drag="beginDrag"
+                        @move="move"
+                        @select="select"
+                        @add="add"
+                        @remove-object="removeObject"
+                        @draggable-check="onDraggableCheck"
+                        :properties="properties"
+                        :expandAll="expanded==true"
+                        :shiftKey="shiftKey"
+                        :arrowKey="arrowKey"
+                        :largeNumberOfItems="hasLargeNumberOfItems"
+                        :hierarchyEnabled="hierarchyEnabled"
+                        :containerSubType="container.subType"
+                        :canEditAssertions="canEditAssertions"
+                        propagateParentChecked="false" />
+                </template>
 
             <!--</transition-group>-->
             </draggable>
@@ -437,6 +434,7 @@
     </div>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
 import debounce from 'lodash/debounce';
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
@@ -522,8 +520,8 @@ export default {
         };
     },
     components: {
-        HierarchyNode: () => import('./HierarchyNode.vue'),
-        draggable: () => import('vuedraggable'),
+        HierarchyNode: defineAsyncComponent(() => import('./HierarchyNode.vue')),
+        draggable: defineAsyncComponent(() => import('vuedraggable')),
         ModalTemplate
     },
     watch: {
@@ -805,11 +803,13 @@ export default {
             var r = {};
             var top = {};
             if (this.container == null) { return r; }
+            // Fetch all nodes in parallel
             if (this.container[this.containerNodeProperty] !== null && this.container[this.containerNodeProperty] !== undefined) {
-                for (var i = 0; i < this.container[this.containerNodeProperty].length; i++) {
-                    let c = await window[this.nodeType].get(this.container[this.containerNodeProperty][i]);
+                const nodeIds = this.container[this.containerNodeProperty];
+                const nodePromises = nodeIds.map(async (nodeId) => {
+                    let c = await window[this.nodeType].get(nodeId);
                     if (c == null) {
-                        c = await EcRepository.get(this.container[this.containerNodeProperty][i]);
+                        c = await EcRepository.get(nodeId);
                         if (c && c.encryptedType && c.encryptedType.toLowerCase() === this.containerNodeProperty) {
                             let encryptedType = "Ec" + c.encryptedType;
                             let comp = new window[encryptedType]();
@@ -817,15 +817,23 @@ export default {
                             c = comp;
                         }
                     }
+                    return { nodeId, c };
+                });
+                const results = await Promise.all(nodePromises);
+                for (const { nodeId, c } of results) {
                     if (c !== null) {
-                        r[this.container[this.containerNodeProperty][i]] = r[c.shortId()] = top[c.shortId()] = c;
+                        r[nodeId] = r[c.shortId()] = top[c.shortId()] = c;
                     }
                 }
             }
+            // Fetch all edges in parallel
             if (this.container[this.containerEdgeProperty] != null && this.container[this.containerEdgeProperty] !== undefined) {
-                for (var i = 0; i < this.container[this.containerEdgeProperty].length; i++) {
-                    var a = null;
-                    a = await window[this.edgeType].get(this.container[this.containerEdgeProperty][i]);
+                const edgeIds = this.container[this.containerEdgeProperty];
+                const edgePromises = edgeIds.map(async (edgeId) => {
+                    return window[this.edgeType].get(edgeId);
+                });
+                const edges = await Promise.all(edgePromises);
+                for (const a of edges) {
                     if (a != null) {
                         if (a[this.edgeRelationProperty] === this.edgeRelationLiteral) {
                             if (r[a[this.edgeTargetProperty]] == null) continue;
@@ -835,7 +843,7 @@ export default {
                             delete top[a[this.edgeSourceProperty]];
                         }
                     } else {
-                        appLog("Hierarchy: Could not find edge: " + this.container[this.containerEdgeProperty][i]);
+                        appLog("Hierarchy: Could not find edge: (unknown)");
                     }
                 }
             }
@@ -858,8 +866,9 @@ export default {
             this.once = false;
             this.hierarchy = this.structure;
         },
-        packChildren: function(item) {
+        packChildren: function(item, visited) {
             if (item == null) return;
+            if (!visited) visited = new Set();
             for (var i = 0; i < item.length; i++) {
                 if (!item[i].obj) {
                     item[i] = {
@@ -869,14 +878,24 @@ export default {
                 }
             }
             for (var i = 0; i < item.length; i++) {
-                this.packChildren(item[i].children);
+                var id = item[i].obj && item[i].obj.id ? item[i].obj.id : (item[i].obj && item[i].obj.shortId ? item[i].obj.shortId() : i);
+                if (visited.has(id)) {
+                    item[i].children = [];
+                    continue;
+                }
+                visited.add(id);
+                this.packChildren(item[i].children, visited);
             }
         },
-        deleteUnderscore: function(item) {
+        deleteUnderscore: function(item, visited) {
             if (item == null) return;
+            if (!visited) visited = new Set();
             for (var i = 0; i < item.length; i++) {
+                var id = item[i].obj && item[i].obj.id ? item[i].obj.id : i;
+                if (visited.has(id)) continue;
+                visited.add(id);
                 delete item[i].obj._children;
-                this.deleteUnderscore(item[i].children);
+                this.deleteUnderscore(item[i].children, visited);
             }
         },
         // WARNING: The Daemon of OBO lingers in these here drag and move methods. The library moves the objects, and OBO will then come get you!

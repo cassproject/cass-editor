@@ -294,6 +294,8 @@ export default {
         };
     },
     methods: {
+        useAppStore,
+        useEditorStore,
         closeViewDropDown: function() {
             if (this.showPropertyViewDropDown) {
                 this.showPropertyViewDropDown = false;
@@ -486,7 +488,7 @@ export default {
         goToDirectory: function() {
             let me = this;
             EcDirectory.get(this.directoryId, function(success) {
-                useAppStore().setSelectDirectory(success);
+                useAppStore().selectDirectory(success);
                 me.$router.push({name: "directory"});
             }, appError);
         },
@@ -675,8 +677,8 @@ export default {
         }
     },
     mounted: function() {
-        if (useEditorStore().setPropertyLevel) {
-            this.changeProperties(useEditorStore().setPropertyLevel);
+        if (useEditorStore().propertyLevel) {
+            this.changeProperties(useEditorStore().propertyLevel);
             useEditorStore().setPropertyLevel(null);
         }
         this.checkIsPrivate();

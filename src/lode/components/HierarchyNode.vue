@@ -303,9 +303,8 @@
                 </div>
             </div>
         </div>
-        <template>
+        <div v-if="!collapse && hierarchyEnabled">
             <draggable
-                v-if="!collapse && hierarchyEnabled"
                 :id="obj.shortId()"
                 v-bind="dragOptions"
                 v-model="localHasChild"
@@ -316,53 +315,52 @@
                 class="lode__hierarchy-sub-ul"
                 :disabled="canEdit != true || !isDraggable"
                 @start="beginDrag"
-                @end="endDrag">
-                <!--<transition-group
-                    type="transition"
-                    :name="!dragging ? 'flip-list' : null">-->
-                <HierarchyNode
-                    :depth="depth + 1"
-                    :view="view"
-                    :filter="filter"
-                    :subview="subview"
-                    v-for="(item, i) in hasChild"
-                    @create-new-node-event="onCreateNewNode"
-                    :key="item.obj.id"
-                    class="lode__hierarchy-sub-li"
-                    :obj="item.obj"
-                    :hasChild="item.children"
-                    :dragging="dragging"
-                    :canEdit="canEdit"
-                    :profile="profile"
-                    :highlightList="highlightList"
-                    :selectAll="selectAll"
-                    :newFramework="newFramework"
-                    :index="i"
-                    :parentStructure="hasChild"
-                    :parent="obj"
-                    :frameworkEditable="frameworkEditable"
-                    :selectedArray="selectedArray"
-                    @begin-drag="beginDrag"
-                    @move="move"
-                    @select="select"
-                    @add="add"
-                    @remove-object="removeObject"
-                    :properties="properties"
-                    :parentChecked="checked"
-                    :parentHighlighted="parentHighlighted ? parentHighlighted : checked"
-                    :propagateParentChecked="propagateChecked === 'parent' ? propagateParentChecked : (propagateChecked === 'true' ? 'true' : 'false')"
-                    :shiftKey="shiftKey"
-                    :arrowKey="arrowKey"
-                    :largeNumberOfItems="largeNumberOfItems"
-                    :expandAll="expandAll"
-                    :containerSubType="containerSubType"
-                    :canEditAssertions="canEditAssertions" />
-                <!--</transition-group>-->
+                @end="endDrag"
+                item-key="obj.id">
+                <template #item="{ element: item, index: i }">
+                    <HierarchyNode
+                        :depth="depth + 1"
+                        :view="view"
+                        :filter="filter"
+                        :subview="subview"
+                        @create-new-node-event="onCreateNewNode"
+                        :key="item.obj.id"
+                        class="lode__hierarchy-sub-li"
+                        :obj="item.obj"
+                        :hasChild="item.children"
+                        :dragging="dragging"
+                        :canEdit="canEdit"
+                        :profile="profile"
+                        :highlightList="highlightList"
+                        :selectAll="selectAll"
+                        :newFramework="newFramework"
+                        :index="i"
+                        :parentStructure="hasChild"
+                        :parent="obj"
+                        :frameworkEditable="frameworkEditable"
+                        :selectedArray="selectedArray"
+                        @begin-drag="beginDrag"
+                        @move="move"
+                        @select="select"
+                        @add="add"
+                        @remove-object="removeObject"
+                        :properties="properties"
+                        :parentChecked="checked"
+                        :parentHighlighted="parentHighlighted ? parentHighlighted : checked"
+                        :propagateParentChecked="propagateChecked === 'parent' ? propagateParentChecked : (propagateChecked === 'true' ? 'true' : 'false')"
+                        :shiftKey="shiftKey"
+                        :arrowKey="arrowKey"
+                        :largeNumberOfItems="largeNumberOfItems"
+                        :expandAll="expandAll"
+                        :containerSubType="containerSubType"
+                        :canEditAssertions="canEditAssertions" />
+                </template>
             </draggable>
-        </template>
+        </div>
     </li>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
 import {mapState} from 'pinia';
 import {useAppStore} from '@/stores/app';
 import {useEditorStore} from '@/stores/editor';
@@ -421,9 +419,9 @@ export default {
         canEditAssertions: Boolean
     },
     components: {
-        ThingEditing: () => import('./ThingEditing.vue'),
-        Thing: () => import('./Thing.vue'),
-        draggable: () => import('vuedraggable')
+        ThingEditing: defineAsyncComponent(() => import('./ThingEditing.vue')),
+        Thing: defineAsyncComponent(() => import('./Thing.vue')),
+        draggable: defineAsyncComponent(() => import('vuedraggable'))
     },
     data: function() {
         return {

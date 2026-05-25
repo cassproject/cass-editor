@@ -57,6 +57,7 @@ export default {
         }
     },
     methods: {
+        useAppStore
     },
     updated() {
     },

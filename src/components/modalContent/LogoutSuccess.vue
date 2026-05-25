@@ -53,6 +53,7 @@ export default {
         ModalTemplate
     },
     methods: {
+        useAppStore,
         close: function() {
             useAppStore().closeModal();
             if (useFeaturesEnabledStore().apiLoginEnabled) {

@@ -128,7 +128,7 @@ export default createRouter({
             }
         },
         {
-            path: '/framework',
+            path: '/framework/:frameworkId?',
             name: 'framework',
             components: {
                 default: () => import('./views/framework/Framework.vue'),
@@ -173,7 +173,7 @@ export default createRouter({
             }
         },
         {
-            path: '/conceptScheme',
+            path: '/conceptScheme/:frameworkId?',
             name: 'conceptScheme',
             components: {
                 default: () => import('./views/conceptScheme/ConceptScheme.vue'),
@@ -182,7 +182,7 @@ export default createRouter({
             }
         },
         {
-            path: '/progressionModel',
+            path: '/progressionModel/:frameworkId?',
             name: 'progressionModel',
             components: {
                 default: () => import('./views/progressionModel/ProgressionModel.vue'),

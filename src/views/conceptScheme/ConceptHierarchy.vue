@@ -206,45 +206,48 @@
                 :group="{ name: 'test' }"
                 @start="beginDrag"
                 handle=".handle"
-                @end="endDrag">
-                <HierarchyNode
-                    :depth="1"
-                    :view="view"
-                    @create-new-node-event="onCreateNewNode"
-                    :subview="subview"
-                    @mounting-node="handleMountingNode"
-                    v-for="(item, index) in hierarchy"
-                    :key="item.obj.id"
-                    :obj="item.obj"
-                    class="lode__hierarchy-li"
-                    :dragging="dragging"
-                    :canEdit="canEdit"
-                    :hasChild="item.children"
-                    :profile="profile"
-                    :highlightList="highlightList"
-                    :selectAll="selectAll"
-                    :newFramework="newFramework"
-                    :index="index"
-                    :frameworkEditable="canEdit"
-                    :selectedArray="selectedArray"
-                    @add="add"
-                    @begin-drag="beginDrag"
-                    @move="move"
-                    @select="select"
-                    :parentStructure="hierarchy"
-                    :parent="container"
-                    @draggable-check="onDraggableCheck"
-                    :properties="properties"
-                    :expandAll="expanded==true"
-                    propagateParentChecked="false"
-                    :shiftKey="shiftKey"
-                    :arrowKey="arrowKey"
-                    :largeNumberOfItems="hasLargeNumberOfItems" />
+                @end="endDrag"
+                item-key="obj.id">
+                <template #item="{ element, index }">
+                    <HierarchyNode
+                        :depth="1"
+                        :view="view"
+                        @create-new-node-event="onCreateNewNode"
+                        :subview="subview"
+                        @mounting-node="handleMountingNode"
+                        :key="element.obj.id"
+                        :obj="element.obj"
+                        class="lode__hierarchy-li"
+                        :dragging="dragging"
+                        :canEdit="canEdit"
+                        :hasChild="element.children"
+                        :profile="profile"
+                        :highlightList="highlightList"
+                        :selectAll="selectAll"
+                        :newFramework="newFramework"
+                        :index="index"
+                        :frameworkEditable="canEdit"
+                        :selectedArray="selectedArray"
+                        @add="add"
+                        @begin-drag="beginDrag"
+                        @move="move"
+                        @select="select"
+                        :parentStructure="hierarchy"
+                        :parent="container"
+                        @draggable-check="onDraggableCheck"
+                        :properties="properties"
+                        :expandAll="expanded==true"
+                        propagateParentChecked="false"
+                        :shiftKey="shiftKey"
+                        :arrowKey="arrowKey"
+                        :largeNumberOfItems="hasLargeNumberOfItems" />
+                </template>
             </draggable>
         </template>
     </div>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
 
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
@@ -311,8 +314,8 @@ export default {
         };
     },
     components: {
-        HierarchyNode: () => import('@/lode/components/HierarchyNode.vue'),
-        draggable: () => import('vuedraggable')
+        HierarchyNode: defineAsyncComponent(() => import('@/lode/components/HierarchyNode.vue')),
+        draggable: defineAsyncComponent(() => import('vuedraggable'))
     },
     mixins: [common, competencyEdits],
 
@@ -965,7 +968,7 @@ export default {
                 }
             }
             const editorStore = useEditorStore();
-            editorStore.newCompetency(c.shortId());
+            editorStore.setNewCompetency(c.shortId());
             appLog("Added node: ", JSON.parse(c.toJson()));
         },
         select: function(objId, checked) {
@@ -990,7 +993,7 @@ export default {
         openFramework: async function() {
             var f = await EcConceptScheme.get(this.processedContainer.shortId());
             const editorStore = useEditorStore();
-            editorStore.framework(f);
+            editorStore.setFramework(f);
             this.$router.push({name: "conceptScheme", params: {frameworkId: this.processedContainer.id}});
         },
         onClickCreateNew: async function() {
@@ -1037,7 +1040,7 @@ export default {
                         }
                         await repo.saveTo(concept);
                         const editorStore = useEditorStore();
-                        editorStore.framework(me.framework);
+                        editorStore.setFramework(me.framework);
                     } catch (e) {
                         appError(e);
                     }
@@ -1065,7 +1068,7 @@ export default {
                     }
                     await repo.saveTo(framework);
                     const editorStore = useEditorStore();
-                    editorStore.framework(me.framework);
+                    editorStore.setFramework(me.framework);
                 } catch (e) {
                     appError(e);
                 }
@@ -1074,7 +1077,7 @@ export default {
             editsToUndo.push({operation: "delete", obj: c});
             repo.deleteRegistered(c, function() {
                 const editorStore = useEditorStore();
-                editorStore.framework(me.framework);
+                editorStore.setFramework(me.framework);
                 editorStore.addEditsToUndo(JSON.parse(JSON.stringify(editsToUndo)));
                 editsToUndo.splice(0, editsToUndo.length);
             }, appError);

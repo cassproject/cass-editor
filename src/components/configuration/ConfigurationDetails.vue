@@ -4311,25 +4311,24 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            LANG_STRING_RANGE: 'configuration/LANG_STRING_RANGE',
-            CONFIG_SEARCH_SIZE: 'configuration/CONFIG_SEARCH_SIZE',
-            DEFAULT_CONFIGURATION_TYPE: 'configuration/DEFAULT_CONFIGURATION_TYPE',
-            DEFAULT_CONFIGURATION_CONTEXT: 'configuration/DEFAULT_CONFIGURATION_CONTEXT',
-            LANG_STRING_TYPE: 'configuration/LANG_STRING_TYPE',
-            DEFAULT_HEADING: 'configuration/DEFAULT_HEADING',
-            LEVEL_SEARCH_SIZE: 'configuration/LEVEL_SEARCH_SIZE',
-            GROUP_SEARCH_SIZE: 'configuration/GROUP_SEARCH_SIZE',
-            PERSON_SEARCH_SIZE: 'configuration/PERSON_SEARCH_SIZE',
-            DEFAULT_CUSTOM_PROPERTY_CONTEXT: 'configuration/DEFAULT_CUSTOM_PROPERTY_CONTEXT',
-            DEFAULT_CUSTOM_PROPERTY_RANGE: 'configuration/DEFAULT_CUSTOM_PROPERTY_RANGE'
-        }),
+        ...mapState(useConfigurationStore, [
+            'LANG_STRING_RANGE',
+            'CONFIG_SEARCH_SIZE',
+            'DEFAULT_CONFIGURATION_TYPE',
+            'DEFAULT_CONFIGURATION_CONTEXT',
+            'DEFAULT_HEADING',
+            'LEVEL_SEARCH_SIZE',
+            'GROUP_SEARCH_SIZE',
+            'PERSON_SEARCH_SIZE',
+            'DEFAULT_CUSTOM_PROPERTY_CONTEXT',
+            'DEFAULT_CUSTOM_PROPERTY_RANGE'
+        ]),
         currentConfig: {
             get() {
                 return useConfigurationStore().currentConfig;
             },
             set(val) {
-                useConfigurationStore().setSetCurrentConfig(val);
+                useConfigurationStore().setCurrentConfig(val);
             }
         },
         customPropertyAvailableConcepts: {

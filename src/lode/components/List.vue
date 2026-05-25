@@ -9,7 +9,7 @@
                 <i class="fa fa-spinner fa-2x fa-pulse" />
             </span>
         </div>
-        <template>
+        <div>
             <div class="container is-desktop">
                 <ul class="cass--list">
                     <li
@@ -152,7 +152,7 @@
                     <span class="icon"><i class="fas fa-spinner fa-spin"></i></span>
                 </div>
             </div>
-        </template>
+        </div>
     </div>
 </template>
 
@@ -216,7 +216,8 @@ export default {
             resultIds: [],
             nonDirectoryResults: false,
             hasMore: true,
-            isLoadingMore: false
+            isLoadingMore: false,
+            searchGeneration: 0
         };
     },
     watch: {
@@ -434,8 +435,9 @@ export default {
                 callback(search);
             }
         },
-        searchForDirectories: function($state) {
+        searchForDirectories: function($state, gen) {
             let me = this;
+            if (gen == null) gen = this.searchGeneration;
             this.searchingForDirectories = true;
             me.buildSearch("Directory", function(search) {
                 var paramObj = null;
@@ -449,6 +451,7 @@ export default {
                 paramObj.start = me.start;
                 let directories = [];
                 me.repo.searchWithParams(search, paramObj, null, async function(results) {
+                    if (gen !== me.searchGeneration) return; // Stale search, abandon
                     for (let result of results) {
                         if (!me.filterToEditable || (me.filterToEditable && me.canEditAny(result))) {
                             if (!EcArray.has(me.resultIds, result.id)) {
@@ -479,11 +482,12 @@ export default {
                         me.searchingForDirectories = false;
                         me.start = 0;
                         me.loadMore($state);
-                    } else if (results.length > 0 && $state) {
-                        // $state references are for vue-infinite-loading component
-                        me.loadMore($state);
-                    } else if ($state) {
-                        $state.complete();
+                    } else {
+                        // Results existed but were all filtered out (e.g., subdirectories).
+                        // Proceed directly to framework search instead of relying on loadMore.
+                        me.searchingForDirectories = false;
+                        me.start = 0;
+                        me.searchForFrameworks($state, gen);
                     }
                 }, function(err) {
                     appError(err);
@@ -494,8 +498,61 @@ export default {
                 });
             });
         },
+        searchForFrameworks: function($state, gen) {
+            var me = this;
+            if (gen == null) gen = this.searchGeneration;
+            me.buildSearch(this.type, function(search) {
+                var paramObj = null;
+                if (me.paramObj) {
+                    paramObj = Object.assign({}, me.paramObj);
+                    if (me.searchTerm != null && me.searchTerm !== "") { delete paramObj.sort; }
+                }
+                paramObj.start = me.start;
+                me.repo.searchWithParams(search, paramObj, function(result) {
+                }, async function(results) {
+                    if (gen !== me.searchGeneration) return; // Stale search, abandon
+                    for (let result of results) {
+                        if (!me.filterToEditable || (me.filterToEditable && me.canEditAny(result))) {
+                            if (!EcArray.has(me.resultIds, result.id)) {
+                                me.resultIds.push(result.id);
+                                if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
+                                    if (result.isAny(new EcEncryptedValue().getTypes())) {
+                                        var type = "Ec" + result.encryptedType;
+                                        let obj = new window[type]();
+                                        obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
+                                        result = obj;
+                                    }
+                                    if (result.name !== '' || result['dcterms:title'] !== '') {
+                                        me.results.push(result);
+                                        me.nonDirectoryResults = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (results.length > 0 && $state) {
+                        $state.loaded();
+                    } else if (results.length < 10 && (me.type === "Framework" || me.type === "ConceptScheme")) {
+                        if (me.searchCompetencies) {
+                            me.searchForSubObjects($state);
+                        } else if ($state) {
+                            $state.complete();
+                        }
+                    } else if ($state) {
+                        $state.complete();
+                    }
+                }, function(err) {
+                    appError(err);
+                    if ($state) {
+                        $state.complete();
+                    }
+                });
+            });
+        },
         searchRepo: debounce(function() {
             var me = this;
+            this.searchGeneration++;
+            var gen = this.searchGeneration;
             this.start = 0;
             this.subStart = 0;
             useEditorStore().setFirstSearchProcessing(true);
@@ -524,7 +581,7 @@ export default {
                 }
             }
             if (this.searchDirectories === true) {
-                this.searchForDirectories();
+                this.searchForDirectories(null, gen);
             } else if (this.searchFrameworks && (this.searchTerm !== "" || !this.displayFirst || this.displayFirst.length === 0)) {
                 me.buildSearch(this.type, function(search) {
                     var paramObj = null;

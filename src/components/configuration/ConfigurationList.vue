@@ -64,19 +64,19 @@ export default {
         }
     },
     computed: {
-        ...mapGetters({
-            CONFIG_SEARCH_SIZE: 'configuration/CONFIG_SEARCH_SIZE',
-            DEFAULT_CONFIGURATION_TYPE: 'configuration/DEFAULT_CONFIGURATION_TYPE',
-            DEFAULT_CONFIGURATION_CONTEXT: 'configuration/DEFAULT_CONFIGURATION_CONTEXT',
-            LANG_STRING_TYPE: 'configuration/LANG_STRING_TYPE',
-            DEFAULT_HEADING: 'configuration/DEFAULT_HEADING'
-        }),
+        ...mapState(useConfigurationStore, [
+            'CONFIG_SEARCH_SIZE',
+            'DEFAULT_CONFIGURATION_TYPE',
+            'DEFAULT_CONFIGURATION_CONTEXT',
+            'LANG_STRING_RANGE',
+            'DEFAULT_HEADING'
+        ]),
         defaultBrowserConfigName: {
             get() {
                 return useConfigurationStore().defaultBrowserConfigName;
             },
             set(val) {
-                useConfigurationStore().setSetDefaultBrowserConfigName(val);
+                useConfigurationStore().setDefaultBrowserConfigName(val);
             }
         },
         showConfirmDeleteConfigModal: {
@@ -84,7 +84,7 @@ export default {
                 return useConfigurationStore().showConfirmDeleteConfigModal;
             },
             set(val) {
-                useConfigurationStore().setSetShowConfirmDeleteConfigModal(val);
+                useConfigurationStore().setShowConfirmDeleteConfigModal(val);
             }
         },
         showBrowserConfigSetModal: {
@@ -92,7 +92,7 @@ export default {
                 return useConfigurationStore().showBrowserConfigSetModal;
             },
             set(val) {
-                useConfigurationStore().setSetShowBrowserConfigSetModal(val);
+                useConfigurationStore().setShowBrowserConfigSetModal(val);
             }
         },
         showMustBeLoggedInModal: {
@@ -100,7 +100,7 @@ export default {
                 return useConfigurationStore().showMustBeLoggedInModal;
             },
             set(val) {
-                useConfigurationStore().setSetShowMustBeLoggedInModal(val);
+                useConfigurationStore().setShowMustBeLoggedInModal(val);
             }
         },
         configToDelete: {
@@ -108,7 +108,7 @@ export default {
                 return useConfigurationStore().configToDelete;
             },
             set(val) {
-                useConfigurationStore().setSetConfigToDelete(val);
+                useConfigurationStore().setConfigToDelete(val);
             }
         },
         configViewMode() {
@@ -133,7 +133,7 @@ export default {
             this.showConfirmDeleteConfigModal = true;
         },
         setConfigToDelete(configId) {
-            useConfigurationStore().setSetConfigToDelete(this.getConfigById(configId));
+            useConfigurationStore().setConfigToDelete(this.getConfigById(configId));
         },
         async setConfigAsFrameworkDefault(configId) {
             let me = this;
@@ -162,7 +162,7 @@ export default {
                 if (userIdentity) {
                     framework.addOwner(userIdentity);
                 } else {
-                    useConfigurationStore().setSetShowMustBeLoggedInModal(true);
+                    useConfigurationStore().setShowMustBeLoggedInModal(true);
                     return false;
                 }
             }

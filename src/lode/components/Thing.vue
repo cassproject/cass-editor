@@ -163,7 +163,7 @@
     </div>
 </template>
 <script>
-
+import { defineAsyncComponent } from 'vue';
 import common from '@/mixins/common.js';
 import {mapState} from 'pinia';
 import {useEditorStore} from '@/stores/editor';
@@ -229,8 +229,8 @@ export default {
         canEditAssertions: Boolean
     },
     components: {
-        Property: () => import('./Property.vue'),
-        AssertionEditor: () => import('./AssertionEditor.vue')
+        Property: defineAsyncComponent(() => import('./Property.vue')),
+        AssertionEditor: defineAsyncComponent(() => import('./AssertionEditor.vue'))
     },
     data: function() {
         return {
@@ -1163,12 +1163,12 @@ export default {
                     let encryptedThing = await EcRepository.get(this.changedObject);
                     let returnObject = new window[encryptedType]();
                     returnObject.copyFrom(await EcEncryptedValue.fromEncryptedValue(encryptedThing));
-                    this.obj = returnObject;
-                    this.load();
+                    this.originalThing = returnObject;
+                    this.expand(returnObject, function() {});
                 } else if (type && window[type] && window[type].get) {
                     let thing = await window[type].get(this.changedObject);
-                    this.obj = thing;
-                    this.load();
+                    this.originalThing = thing;
+                    this.expand(thing, function() {});
                 } else if (type && window[type]) {
                     appLog("Can't get type: " + type);
                 }

@@ -3,6 +3,7 @@
         ref="framework"
         id="framework">
         <main-layout
+            v-if="framework"
             :rightActive="showRightAside"
             :simple="true">
             <!-- begin framework -->
@@ -28,58 +29,62 @@
                                     id="framework_drag"
                                     :disabled="canEdit !== true"
                                     :group="{ name: 'test' }"
-                                    handle=".handle">
-                                    <Component
-                                        :class="[dynamicThingComponent === 'Thing' ? parentObjectClass: '']"
-                                        :is="dynamicThingComponent"
-                                        :id="'scroll-' + framework.shortId().split('/').pop()"
-                                        :obj="framework"
-                                        :repo="repo"
-                                        :newFramework="newFramework"
-                                        :parentNotEditable="queryParams.view==='true'"
-                                        :profile="frameworkProfile"
-                                        @remove-object="removeObject"
-                                        @edit-node-event="onEditNode()"
-                                        @done-editing-node-event="onDoneEditingNode()"
-                                        :properties="properties">
-                                        <template #frameworkDetails>
-                                            <div class="lode__framework__info-bar">
-                                                <span
-                                                    class="tag is-medium-grey has-text-dark"
-                                                    v-if="framework.competency && framework.competency.length == 1">
-                                                    {{ framework.competency.length }} item
-                                                </span>
-                                                <span
-                                                    class="tag is-medium-grey has-text-dark"
-                                                    v-else-if="framework.competency && framework.competency.length > 1">
-                                                    {{ framework.competency.length }} items
-                                                </span>
-                                                <span
-                                                    class="tag is-medium-grey has-text-dark"
-                                                    v-if="timestamp"
-                                                    :title="new Date(timestamp)">
-                                                    Last modified {{ isCeasn ? "(in CaSS)" : "" }} {{ lastModified }}
-                                                </span>
-                                                <span
-                                                    class="tag is-medium-grey has-text-dark"
-                                                    v-if="framework['schema:dateCreated']"
-                                                    :title="new Date(framework['schema:dateCreated'])">
-                                                    Created  {{ isCeasn ? "(in CaSS)" : "" }} {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
-                                                </span>
-                                                <span
-                                                    class="tag is-medium-grey has-text-dark"
-                                                    v-if="framework['Approved']"
-                                                    :title="framework['Approved']">
-                                                    Approved
-                                                </span>
-                                                <span
-                                                    class="tag is-medium-grey has-text-dark"
-                                                    v-if="framework['Published']"
-                                                    :title="framework['Published']">Published</span>
-                                            </div>
-                                        </template>
-                                    </Component>
+                                    handle=".handle"
+                                    item-key="id">
+                                    <template #item="{ element }">
+                                        <div>{{ element }}</div>
+                                    </template>
                                 </draggable>
+                                <Component
+                                    :class="[dynamicThingComponent === 'Thing' ? parentObjectClass: '']"
+                                    :is="dynamicThingComponent"
+                                    :id="'scroll-' + framework.shortId().split('/').pop()"
+                                    :obj="framework"
+                                    :repo="repo"
+                                    :newFramework="newFramework"
+                                    :parentNotEditable="queryParams.view==='true'"
+                                    :profile="frameworkProfile"
+                                    @remove-object="removeObject"
+                                    @edit-node-event="onEditNode()"
+                                    @done-editing-node-event="onDoneEditingNode()"
+                                    :properties="properties">
+                                    <template #frameworkDetails>
+                                        <div class="lode__framework__info-bar">
+                                            <span
+                                                class="tag is-medium-grey has-text-dark"
+                                                v-if="framework.competency && framework.competency.length == 1">
+                                                {{ framework.competency.length }} item
+                                            </span>
+                                            <span
+                                                class="tag is-medium-grey has-text-dark"
+                                                v-else-if="framework.competency && framework.competency.length > 1">
+                                                {{ framework.competency.length }} items
+                                            </span>
+                                            <span
+                                                class="tag is-medium-grey has-text-dark"
+                                                v-if="timestamp"
+                                                :title="new Date(timestamp)">
+                                                Last modified {{ isCeasn ? "(in CaSS)" : "" }} {{ lastModified }}
+                                            </span>
+                                            <span
+                                                class="tag is-medium-grey has-text-dark"
+                                                v-if="framework['schema:dateCreated']"
+                                                :title="new Date(framework['schema:dateCreated'])">
+                                                Created  {{ isCeasn ? "(in CaSS)" : "" }} {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
+                                            </span>
+                                            <span
+                                                class="tag is-medium-grey has-text-dark"
+                                                v-if="framework['Approved']"
+                                                :title="framework['Approved']">
+                                                Approved
+                                            </span>
+                                            <span
+                                                class="tag is-medium-grey has-text-dark"
+                                                v-if="framework['Published']"
+                                                :title="framework['Published']">Published</span>
+                                        </div>
+                                    </template>
+                                </Component>
                                 <div
                                     class="section"
                                     v-if="!hierarchyIsdoneLoading">
@@ -150,6 +155,7 @@
     </div>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
 import dayjs from 'dayjs';
 import MainLayout from '@/layouts/MainLayout.vue';
 import common from '@/mixins/common.js';
@@ -170,13 +176,13 @@ export default {
     },
     components: {
         MainLayout,
-        FrameworkButtons: () => import('@/components/FrameworkButtons.vue'),
-        Hierarchy: () => import('@/lode/components/Hierarchy.vue'),
-        Thing: () => import('@/lode/components/Thing.vue'),
-        ThingEditing: () => import('@/lode/components/ThingEditing.vue'),
-        FrameworkEditorToolbar: () => import('@/components/framework/EditorToolbar.vue'),
-        RightAside: () => import('@/components/framework/RightAside.vue'),
-        draggable: () => import('vuedraggable')
+        FrameworkButtons: defineAsyncComponent(() => import('@/components/FrameworkButtons.vue')),
+        Hierarchy: defineAsyncComponent(() => import('@/lode/components/Hierarchy.vue')),
+        Thing: defineAsyncComponent(() => import('@/lode/components/Thing.vue')),
+        ThingEditing: defineAsyncComponent(() => import('@/lode/components/ThingEditing.vue')),
+        FrameworkEditorToolbar: defineAsyncComponent(() => import('@/components/framework/EditorToolbar.vue')),
+        RightAside: defineAsyncComponent(() => import('@/components/framework/RightAside.vue')),
+        draggable: defineAsyncComponent(() => import('vuedraggable'))
     },
     mixins: [common, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {
@@ -719,12 +725,42 @@ export default {
             this.spitEvent('viewChanged');
         }
     },
-    mounted: function() {
+    mounted: async function() {
         if (!this.framework) {
+            const frameworkId = this.$route.params.frameworkId;
+            if (frameworkId) {
+                try {
+                    const fw = await EcFramework.get(frameworkId);
+                    if (fw) {
+                        const editorStore = useEditorStore();
+                        const appStore = useAppStore();
+                        editorStore.setFramework(fw);
+                        editorStore.clearFrameworkCommentData();
+                        appStore.setCanViewComments(this.canViewCommentsCurrentFramework());
+                        appStore.setCanAddComments(this.canAddCommentsCurrentFramework());
+                        this.getConfiguration();
+                        this.refreshPage();
+                        this.spitEvent('viewChanged');
+                        appStore.setObjForShareModal(this.object);
+                        await this.$nextTick();
+                        let documentBody = document.getElementsByClassName('cass--main-layout--body')[0];
+                        if (documentBody) {
+                            documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
+                        }
+                        if (!this.framework.competency || this.framework.competency.length === 0) {
+                            this.hierarchyIsdoneLoading = true;
+                        }
+                        return;
+                    }
+                } catch (e) {
+                    appError(e);
+                }
+            }
             this.$router.push({name: "frameworks"});
+            return;
         }
         const appStore = useAppStore();
-        appStore.objForShareModal(this.object);
+        appStore.setObjForShareModal(this.object);
         let documentBody = document.getElementsByClassName('cass--main-layout--body')[0];
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
         if (!this.framework.competency || this.framework.competency.length === 0) {

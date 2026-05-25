@@ -75,6 +75,9 @@ export default {
         };
     },
     computed: {
+    },
+    methods: {
+        useAppStore
     }
 };
 </script>

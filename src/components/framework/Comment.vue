@@ -89,6 +89,7 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue';
 import common from '@/mixins/common.js';
 import {useEditorStore} from '@/stores/editor';
 import {useAppStore} from '@/stores/app';
@@ -97,7 +98,7 @@ export default {
     name: 'Comment',
     mixins: [common],
     components: {
-        comment: () => import('./Comment.vue')
+        comment: defineAsyncComponent(() => import('./Comment.vue'))
     },
     props: {
         comment: {

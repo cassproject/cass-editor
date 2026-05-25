@@ -2,7 +2,7 @@
     <div id="concept">
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
-        <div class="framework-content">
+        <div v-if="framework" class="framework-content">
             <FrameworkEditorToolbar
                 :properties="properties"
                 @change-properties="changeProperties"
@@ -15,48 +15,52 @@
                     id="framework_drag"
                     :disabled="canEdit !== true"
                     :group="{ name: 'test' }"
-                    handle=".handle">
-                    <Component
-                        :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
-                        :is="dynamicThingComponent"
-                        :id="'scroll-' + framework.shortId().split('/').pop()"
-                        :obj="framework"
-                        :repo="repo"
-                        view="concept"
-                        :newFramework="newFramework"
-                        :parentNotEditable="queryParams.view==='true'"
-                        :profile="progressionModelProfile"
-                        @edit-node-event="onEditNode()"
-                        @done-editing-node-event="onDoneEditingNode()"
-                        :properties="properties">
-                        <div class="lode__framework__info-bar">
-                            <span
-                                class="tag is-medium-grey has-text-dark"
-                                v-if="timestamp"
-                                :title="new Date(timestamp)">
-                                Last modified {{ isCeasn ? "(in CaSS)" : "" }} {{ lastModified }}
-                            </span>
-                            <span
-                                class="tag is-medium-grey has-text-dark"
-                                v-if="framework['schema:dateCreated']"
-                                :title="new Date(framework['schema:dateCreated'])">
-                                Created {{ isCeasn ? "(in CaSS)" : "" }} {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
-                            </span>
-                            <span
-                                class="tag is-medium-grey has-text-dark"
-                                v-if="framework['Approved']"
-                                :title="framework['Approved']">
-                                Approved
-                            </span>
-                            <span
-                                class="tag is-medium-grey has-text-dark"
-                                v-if="framework['Published']"
-                                :title="framework['Published']">
-                                Published
-                            </span>
-                        </div>
-                    </Component>
+                    handle=".handle"
+                    item-key="id">
+                    <template #item="{ element }">
+                        <div>{{ element }}</div>
+                    </template>
                 </draggable>
+                <Component
+                    :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
+                    :is="dynamicThingComponent"
+                    :id="'scroll-' + framework.shortId().split('/').pop()"
+                    :obj="framework"
+                    :repo="repo"
+                    view="concept"
+                    :newFramework="newFramework"
+                    :parentNotEditable="queryParams.view==='true'"
+                    :profile="progressionModelProfile"
+                    @edit-node-event="onEditNode()"
+                    @done-editing-node-event="onDoneEditingNode()"
+                    :properties="properties">
+                    <div class="lode__framework__info-bar">
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="timestamp"
+                            :title="new Date(timestamp)">
+                            Last modified {{ isCeasn ? "(in CaSS)" : "" }} {{ lastModified }}
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework['schema:dateCreated']"
+                            :title="new Date(framework['schema:dateCreated'])">
+                            Created {{ isCeasn ? "(in CaSS)" : "" }} {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework['Approved']"
+                            :title="framework['Approved']">
+                            Approved
+                        </span>
+                        <span
+                            class="tag is-medium-grey has-text-dark"
+                            v-if="framework['Published']"
+                            :title="framework['Published']">
+                            Published
+                        </span>
+                    </div>
+                </Component>
                 <ProgressionHierarchy
                     :container="framework"
                     containerType="ConceptScheme"
@@ -80,6 +84,7 @@
     </div>
 </template>
 <script>
+import { defineAsyncComponent } from 'vue';
 import dayjs from 'dayjs';
 import debounce from 'lodash/debounce';
 import common from '@/mixins/common.js';
@@ -188,12 +193,12 @@ export default {
         }
     },
     components: {
-        Thing: () => import('@/lode/components/Thing.vue'),
-        ThingEditing: () => import('@/lode/components/ThingEditing.vue'),
-        FrameworkEditorToolbar: () => import('@/components/framework/EditorToolbar.vue'),
-        RightAside: () => import('@/components/framework/RightAside.vue'),
-        ProgressionHierarchy: () => import('./ProgressionHierarchy.vue'),
-        draggable: () => import('vuedraggable')
+        Thing: defineAsyncComponent(() => import('@/lode/components/Thing.vue')),
+        ThingEditing: defineAsyncComponent(() => import('@/lode/components/ThingEditing.vue')),
+        FrameworkEditorToolbar: defineAsyncComponent(() => import('@/components/framework/EditorToolbar.vue')),
+        RightAside: defineAsyncComponent(() => import('@/components/framework/RightAside.vue')),
+        ProgressionHierarchy: defineAsyncComponent(() => import('./ProgressionHierarchy.vue')),
+        draggable: defineAsyncComponent(() => import('vuedraggable'))
     },
     created: function() {
         if (this.framework !== null) {
@@ -201,9 +206,36 @@ export default {
             this.spitEvent('viewChanged');
         }
     },
-    mounted: function() {
+    mounted: async function() {
         if (!this.framework) {
+            const frameworkId = this.$route.params.frameworkId;
+            if (frameworkId) {
+                try {
+                    const fw = await EcConceptScheme.get(frameworkId);
+                    if (fw) {
+                        const editorStore = useEditorStore();
+                        editorStore.setFramework(fw);
+                        editorStore.clearFrameworkCommentData();
+                        editorStore.setProgressionMode(true);
+                        this.refreshPage();
+                        this.spitEvent('viewChanged');
+                        await this.$nextTick();
+                        let documentBody = document.getElementById('concept');
+                        if (documentBody) {
+                            documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
+                        }
+                        if (this.isCeasn) {
+                            this.getConceptCtids();
+                            this.getConceptRegistryUrls();
+                        }
+                        return;
+                    }
+                } catch (e) {
+                    appError(e);
+                }
+            }
             this.$router.push({name: "frameworks"});
+            return;
         }
         let documentBody = document.getElementById('concept');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));

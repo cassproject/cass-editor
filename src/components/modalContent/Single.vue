@@ -155,6 +155,7 @@ import Thing from '@/lode/components/Thing.vue';
 import ThingEditing from '@/lode/components/ThingEditing.vue';
 import { useAppStore } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
+import {mapState} from 'pinia';
 
 export default {
     name: 'Single',
@@ -178,10 +179,9 @@ export default {
         }
     },
     computed: {
-        ...mapState({
-            framework: state => state.editor.framework,
-            dynamicModalContent: state => state.app.modal.dynamicModalContent,
-            queryParams: state => state.editor.queryParams
+        ...mapState(useEditorStore, ['framework', 'queryParams']),
+        ...mapState(useAppStore, {
+            dynamicModalContent: (state) => state.modal.dynamicModalContent
         }),
         dynamicThing: function() {
             if (this.edit) {
@@ -216,6 +216,7 @@ export default {
         }
     },
     methods: {
+        useAppStore,
         goToFramework: async function(framework) {
             if (this.framework.shortId() === framework.url && this.dynamicModalContent.objectType !== "Level") {
                 return this.goToCompetencyWithinThisFramework();

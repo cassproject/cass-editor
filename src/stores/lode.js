@@ -56,41 +56,54 @@ export const useLodeStore = defineStore('lode', {
         // Initialize the document loader - call this after store is created
         initDocumentLoader() {
             _storeInstance = this;
+            // In-flight request deduplication map
+            const _inflight = {};
             jsonld.documentLoader = async function(url) {
                 if (url in _storeInstance.rawSchemata) {
                     return {
-                        contextUrl: null, // this is for a context via a link header
-                        document: _storeInstance.rawSchemata[url], // this is the actual document that was loaded
-                        documentUrl: url // this is the actual context URL after redirects
-                    };
-                } else {
-                    var context;
-                    var xmlhttp = new XMLHttpRequest();
-                    xmlhttp.onreadystatechange = function() {
-                        if (this.readyState === 4 && this.status === 200) {
-                            context = JSON.parse(this.responseText);
-                            _storeInstance.rawSchemata[originalUrl] = context;
-                        }
-                    };
-                    let originalUrl = url;
-                    let index = url.indexOf('schema.cassproject.org');
-                    let ending = "";
-                    if (url.substring(url.lastIndexOf('/')).indexOf('2') === -1) {
-                        ending = "/index.json-ld";
-                    }
-                    if (index !== -1) {
-                        url = url.substring(index);
-                        url = window.location.origin + window.location.pathname + url + ending;
-                    }
-                    xmlhttp.open("GET", url, false);
-                    xmlhttp.setRequestHeader("Accept", "application/json");
-                    xmlhttp.send();
-                    return {
-                        contextUrl: null, // this is for a context via a link header
-                        document: context, // this is the actual document that was loaded
-                        documentUrl: originalUrl // this is the actual context URL after redirects
+                        contextUrl: null,
+                        document: _storeInstance.rawSchemata[url],
+                        documentUrl: url
                     };
                 }
+                // Deduplicate concurrent requests for the same URL
+                let originalUrl = url;
+                if (_inflight[originalUrl]) {
+                    let context = await _inflight[originalUrl];
+                    return {
+                        contextUrl: null,
+                        document: context,
+                        documentUrl: originalUrl
+                    };
+                }
+                let fetchUrl = url;
+                let index = fetchUrl.indexOf('schema.cassproject.org');
+                let ending = "";
+                if (fetchUrl.substring(fetchUrl.lastIndexOf('/')).indexOf('2') === -1) {
+                    ending = "/index.json-ld";
+                }
+                if (index !== -1) {
+                    fetchUrl = fetchUrl.substring(index);
+                    fetchUrl = window.location.origin + window.location.pathname + fetchUrl + ending;
+                }
+                _inflight[originalUrl] = fetch(fetchUrl, {
+                    headers: { "Accept": "application/json" }
+                }).then(async (resp) => {
+                    if (!resp.ok) throw new Error("Failed to fetch " + fetchUrl);
+                    let context = await resp.json();
+                    _storeInstance.rawSchemata[originalUrl] = context;
+                    delete _inflight[originalUrl];
+                    return context;
+                }).catch((err) => {
+                    delete _inflight[originalUrl];
+                    throw err;
+                });
+                let context = await _inflight[originalUrl];
+                return {
+                    contextUrl: null,
+                    document: context,
+                    documentUrl: originalUrl
+                };
             };
         },
         // --- Mutations converted to actions ---

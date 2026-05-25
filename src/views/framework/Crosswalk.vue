@@ -434,7 +434,7 @@ export default {
         const appStore = useAppStore();
         crosswalkStore.resetCrosswalk();
         crosswalkStore.resetCrosswalkFrameworks();
-        appStore.searchTerm("");
+        appStore.setSearchTerm("");
     },
     beforeUnmount: function() {
         const crosswalkStore = useCrosswalkStore();
@@ -442,7 +442,7 @@ export default {
         crosswalkStore.resetCrosswalk();
         crosswalkStore.resetCrosswalkFrameworks();
         appStore.clearSearchFilters();
-        appStore.searchTerm("");
+        appStore.setSearchTerm("");
     },
     watch: {
         step: function(val) {
@@ -501,13 +501,13 @@ export default {
                 if (this.saveToSourceFramework && !this.saveToTargetFramework) {
                     let id = this.sourceFrameworkSaving.shortId();
                     const editorStore = useEditorStore();
-                    editorStore.framework(this.sourceFrameworkSaving);
+                    editorStore.setFramework(this.sourceFrameworkSaving);
                     editorStore.setPropertyLevel("tertiary");
                     this.$router.push({name: 'framework', params: {frameworkId: id}});
                 } else {
                     // If saving to both frameworks, go to list sorted by last modified
                     const appStore = useAppStore();
-                    appStore.sortResults({
+                    appStore.setSortResults({
                         id: 'lastEdited',
                         label: 'last modified'
                     });
@@ -622,11 +622,11 @@ export default {
             this.crosswalkSaveBusy = false;
             this.determineAbilityToSaveToFrameworks();
             const crosswalkStore = useCrosswalkStore();
-            crosswalkStore.step(3);
+            crosswalkStore.setStep(3);
         },
         returnToCrosswalkEditing: function() {
             const crosswalkStore = useCrosswalkStore();
-            crosswalkStore.step(2);
+            crosswalkStore.setStep(2);
         },
         addRelationshipsToFrameworks: function() {
             let ats = this.alignmentsToSave;
@@ -655,7 +655,7 @@ export default {
                 this.addAllIdentityPksAsOwners(ata);
             }
             const crosswalkStore = useCrosswalkStore();
-            crosswalkStore.alignmentsToSave(ats);
+            crosswalkStore.setAlignmentsToSave(ats);
         },
         handleSaveTargetFrameworkSuccess: function() {
             this.alignmentsSaved = true;
@@ -822,11 +822,11 @@ export default {
                 this.applyRemovedWorkingAlignmentChanges();
                 this.applyAddedWorkingAlignmentChanges();
                 const crosswalkStore = useCrosswalkStore();
-                crosswalkStore.relevantExistingAlignmentsMapLastUpdate(Date.now());
+                crosswalkStore.setRelevantExistingAlignmentsMapLastUpdate(Date.now());
                 crosswalkStore.populateAlignedCompetenciesList();
             }
             const crosswalkStore = useCrosswalkStore();
-            crosswalkStore.sourceState('ready');
+            crosswalkStore.setSourceState('ready');
             crosswalkStore.resetWorkingAlignmentsMap();
         },
         addRelationshipListToRelevantAlignments(relArray, processedRelationshipIds, relAlignmentMap) {
@@ -849,15 +849,15 @@ export default {
                 this.addRelationshipListToRelevantAlignments(this.frameworkTargetRelationships, processedRelationshipIds, relAlignmentMap);
             }
             const crosswalkStore = useCrosswalkStore();
-            crosswalkStore.relevantExistingAlignmentsMap(relAlignmentMap);
+            crosswalkStore.setRelevantExistingAlignmentsMap(relAlignmentMap);
             crosswalkStore.populateAlignedCompetenciesList();
         },
         handleBuildFrameworkTargetRelationshipsSuccess(ecrlda) {
             appLog("Building framework target relationship list...");
             const crosswalkStore = useCrosswalkStore();
-            crosswalkStore.frameworkTargetRelationships(this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
+            crosswalkStore.setFrameworkTargetRelationships(this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
             this.buildRelevantAlignmentsMap();
-            crosswalkStore.step(2);
+            crosswalkStore.setStep(2);
         },
         buildFrameworkTargetRelationships() {
             let repo = window.repo;
@@ -874,10 +874,10 @@ export default {
         handleBuildFrameworkSourceRelationshipsSuccess(ecrlda) {
             appLog("Building framework source relationship list...");
             const crosswalkStore = useCrosswalkStore();
-            crosswalkStore.frameworkSourceRelationships(this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
+            crosswalkStore.setFrameworkSourceRelationships(this.buildEcAlignmentsFromRemoteLinkedData(ecrlda));
             this.buildRelevantAlignmentsMap();
-            if (this.frameworkTarget) crosswalkStore.step(2);
-            else crosswalkStore.step(1);
+            if (this.frameworkTarget) crosswalkStore.setStep(2);
+            else crosswalkStore.setStep(1);
         },
         buildFrameworkSourceRelationships() {
             let repo = window.repo;
@@ -1013,12 +1013,12 @@ export default {
             crosswalkStore.resetFrameworkSourceRelationships();
             /* Should we exclude framework A from framework B options */
             EcFramework.get(framework.id, async function(success) {
-                crosswalkStore.frameworkSource(success);
+                crosswalkStore.setFrameworkSource(success);
                 await me.determineEnabledRelationshipTypesFromSourceConfiguration();
                 me.buildFrameworkSourceRelationships();
             }, appError);
             const appStore = useAppStore();
-            appStore.searchTerm('');
+            appStore.setSearchTerm('');
         },
         frameworkClickTarget: function(framework) {
             var me = this;
@@ -1026,11 +1026,11 @@ export default {
             crosswalkStore.resetFrameworkTargetRelationships();
             /* Should we exclude framework A from framework B options */
             EcFramework.get(framework.id, function(success) {
-                crosswalkStore.frameworkTarget(success);
+                crosswalkStore.setFrameworkTarget(success);
                 me.buildFrameworkTargetRelationships();
             }, appError);
             const appStore = useAppStore();
-            appStore.searchTerm('');
+            appStore.setSearchTerm('');
         }
     }
 };

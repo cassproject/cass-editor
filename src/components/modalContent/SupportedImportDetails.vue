@@ -540,6 +540,9 @@ export default {
         queryParams: function() {
             return useEditorStore().queryParams;
         }
+    },
+    methods: {
+        useAppStore
     }
 };
 </script>
