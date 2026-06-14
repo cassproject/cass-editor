@@ -435,6 +435,7 @@
 </template>
 <script>
 import { defineAsyncComponent } from 'vue';
+import draggable from 'vuedraggable';
 import debounce from 'lodash/debounce';
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
@@ -521,7 +522,7 @@ export default {
     },
     components: {
         HierarchyNode: defineAsyncComponent(() => import('./HierarchyNode.vue')),
-        draggable: defineAsyncComponent(() => import('vuedraggable')),
+        draggable,
         ModalTemplate
     },
     watch: {

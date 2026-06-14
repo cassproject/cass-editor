@@ -254,6 +254,7 @@
 </template>
 <script>
 import { defineAsyncComponent } from 'vue';
+import draggable from 'vuedraggable';
 
 import common from '@/mixins/common.js';
 import competencyEdits from '@/mixins/competencyEdits.js';
@@ -320,7 +321,7 @@ export default {
     },
     components: {
         HierarchyNode: defineAsyncComponent(() => import('@/lode/components/HierarchyNode.vue')),
-        draggable: defineAsyncComponent(() => import('vuedraggable'))
+        draggable
     },
     mixins: [common, competencyEdits],
     computed: {

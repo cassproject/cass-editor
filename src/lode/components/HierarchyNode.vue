@@ -361,6 +361,7 @@
 </template>
 <script>
 import { defineAsyncComponent } from 'vue';
+import draggable from 'vuedraggable';
 import {mapState} from 'pinia';
 import {useAppStore} from '@/stores/app';
 import {useEditorStore} from '@/stores/editor';
@@ -421,7 +422,7 @@ export default {
     components: {
         ThingEditing: defineAsyncComponent(() => import('./ThingEditing.vue')),
         Thing: defineAsyncComponent(() => import('./Thing.vue')),
-        draggable: defineAsyncComponent(() => import('vuedraggable'))
+        draggable
     },
     data: function() {
         return {

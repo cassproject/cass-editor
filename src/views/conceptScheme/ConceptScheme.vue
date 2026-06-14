@@ -85,6 +85,7 @@
 </template>
 <script>
 import { defineAsyncComponent } from 'vue';
+import draggable from 'vuedraggable';
 import dayjs from 'dayjs';
 import debounce from 'lodash/debounce';
 import common from '@/mixins/common.js';
@@ -703,7 +704,7 @@ export default {
         FrameworkEditorToolbar: defineAsyncComponent(() => import('@/components/framework/EditorToolbar.vue')),
         RightAside: defineAsyncComponent(() => import('@/components/framework/RightAside.vue')),
         ConceptHierarchy: defineAsyncComponent(() => import('./ConceptHierarchy.vue')),
-        draggable: defineAsyncComponent(() => import('vuedraggable'))
+        draggable
     },
     created: function() {
         if (this.framework !== null) {

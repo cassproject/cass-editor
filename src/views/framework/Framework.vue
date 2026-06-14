@@ -156,6 +156,7 @@
 </template>
 <script>
 import { defineAsyncComponent } from 'vue';
+import draggable from 'vuedraggable';
 import dayjs from 'dayjs';
 import MainLayout from '@/layouts/MainLayout.vue';
 import common from '@/mixins/common.js';
@@ -182,7 +183,7 @@ export default {
         ThingEditing: defineAsyncComponent(() => import('@/lode/components/ThingEditing.vue')),
         FrameworkEditorToolbar: defineAsyncComponent(() => import('@/components/framework/EditorToolbar.vue')),
         RightAside: defineAsyncComponent(() => import('@/components/framework/RightAside.vue')),
-        draggable: defineAsyncComponent(() => import('vuedraggable'))
+        draggable
     },
     mixins: [common, competencyEdits, ctdlasnProfile, t3Profile, tlaProfile, getLevelsAndRelations],
     data: function() {

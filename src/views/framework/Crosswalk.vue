@@ -601,6 +601,10 @@ export default {
         }
     },
     methods: {
+        handleSearch: function(e) {
+            const appStore = useAppStore();
+            appStore.openModal(e);
+        },
         determineAbilityToSaveToFrameworks: function() {
             if (this.isObjectOwnerless(this.frameworkSource) || this.doesAnyIdentityOwnObject(this.frameworkSource)) {
                 this.canSaveToSourceFramework = true;
@@ -661,7 +665,7 @@ export default {
             this.alignmentsSaved = true;
             this.crosswalkSaveBusy = false;
         },
-        handleSaveTargetFrameworkFailed: function() {
+        handleSaveTargetFrameworkFailed: function(msg) {
             appLog("Failed to save target framework for crosswalk: " + msg);
             this.crosswalkSaveBusy = false;
         },
@@ -831,7 +835,7 @@ export default {
         },
         addRelationshipListToRelevantAlignments(relArray, processedRelationshipIds, relAlignmentMap) {
             for (let r of relArray) {
-                if (!processedRelationshipIds.includes(r.shortId)) {
+                if (!processedRelationshipIds.includes(r.shortId())) {
                     processedRelationshipIds.push(r.shortId());
                     if (this.frameworkSource.competency && this.frameworkSource.competency.includes(r.source) && this.frameworkTarget.competency && this.frameworkTarget.competency.includes(r.target)) {
                         if (!relAlignmentMap[r.source]) relAlignmentMap[r.source] = {};
@@ -944,33 +948,33 @@ export default {
             appLog('Using T3 configuration for enabled relationship types');
             let ert = this.getEnabledRelationshipTypesFromObject(this.t3CompetencyProfile);
             const crosswalkStore = useCrosswalkStore();
-            crosswalkStore.enabledRelationshipTypes(ert);
-            crosswalkStore.enabledRelationshipTypesLastUpdate(Date.now());
+            crosswalkStore.setEnabledRelationshipTypes(ert);
+            crosswalkStore.setEnabledRelationshipTypesLastUpdate(Date.now());
         },
         setEnabledRelationshipTypesFromCeasnProfileConfig: function() {
             appLog('Using CEASN configuration for enabled relationship types');
             let ert = this.getEnabledRelationshipTypesFromObject(this.ctdlAsnCompetencyProfile);
             const crosswalkStore = useCrosswalkStore();
-            crosswalkStore.enabledRelationshipTypes(ert);
-            crosswalkStore.enabledRelationshipTypesLastUpdate(Date.now());
+            crosswalkStore.setEnabledRelationshipTypes(ert);
+            crosswalkStore.setEnabledRelationshipTypesLastUpdate(Date.now());
         },
         setEnabledRelationshipTypesFromTlaProfileConfig: function() {
             appLog('Using TLA configuration for enabled relationship types');
             let ert = this.getEnabledRelationshipTypesFromObject(this.tlaCompetencyProfile);
             const crosswalkStore = useCrosswalkStore();
-            crosswalkStore.enabledRelationshipTypes(ert);
-            crosswalkStore.enabledRelationshipTypesLastUpdate(Date.now());
+            crosswalkStore.setEnabledRelationshipTypes(ert);
+            crosswalkStore.setEnabledRelationshipTypesLastUpdate(Date.now());
         },
         setEnabledRelationshipListFromCatConfigObj: function(configObj) {
             const crosswalkStore = useCrosswalkStore();
             if (!configObj || !configObj.relationshipConfig) {
                 let ert = this.getFallbackEnabledRelationshipTypes();
-                crosswalkStore.enabledRelationshipTypes(ert);
-                crosswalkStore.enabledRelationshipTypesLastUpdate(Date.now());
+                crosswalkStore.setEnabledRelationshipTypes(ert);
+                crosswalkStore.setEnabledRelationshipTypesLastUpdate(Date.now());
             } else {
                 let ert = this.getEnabledRelationshipTypesFromObject(configObj.relationshipConfig);
-                crosswalkStore.enabledRelationshipTypes(ert);
-                crosswalkStore.enabledRelationshipTypesLastUpdate(Date.now());
+                crosswalkStore.setEnabledRelationshipTypes(ert);
+                crosswalkStore.setEnabledRelationshipTypesLastUpdate(Date.now());
             }
         },
         setEnabledRelationshipTypesFromOtherConfig: async function() {
