@@ -1243,13 +1243,23 @@ export default {
     },
     beforeUnmount: function() {
         this.clearImport();
+        // Clean up scroll listener to prevent post-unmount DOM access
+        if (this._importScrollHandler) {
+            let documentBody = document.getElementById('import');
+            if (documentBody) {
+                documentBody.removeEventListener('scroll', this._importScrollHandler);
+            }
+        }
     },
     mounted: function() {
         this.clearImport();
         const appStore = useAppStore();
         appStore.openRightAside();
         let documentBody = document.getElementById('import');
-        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
+        if (documentBody) {
+            this._importScrollHandler = debounce(this.scrollFunction, 100, {'leading': true});
+            documentBody.addEventListener('scroll', this._importScrollHandler);
+        }
     },
     watch: {
         importStatus: function(val, oldVal) {

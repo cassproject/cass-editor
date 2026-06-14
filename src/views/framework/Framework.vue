@@ -221,7 +221,9 @@ export default {
             },
             frameworkDrag: [],
             configHasAlignments: false,
-            configHasLevels: false
+            configHasLevels: false,
+            _isUnmounted: false,
+            _scrollHandler: null
         };
     },
     computed: {
@@ -726,12 +728,14 @@ export default {
         }
     },
     mounted: async function() {
+        this._scrollHandler = debounce(this.scrollFunction, 20, {'immediate': true});
         if (!this.framework) {
             const rawFrameworkId = this.$route.params.frameworkId;
             const frameworkId = rawFrameworkId ? EcRemoteLinkedData.trimVersionFromUrl(rawFrameworkId) : rawFrameworkId;
             if (frameworkId) {
                 try {
                     const fw = await EcFramework.get(frameworkId);
+                    if (this._isUnmounted) return;
                     if (fw) {
                         const editorStore = useEditorStore();
                         const appStore = useAppStore();
@@ -744,9 +748,10 @@ export default {
                         this.spitEvent('viewChanged');
                         appStore.setObjForShareModal(this.object);
                         await this.$nextTick();
+                        if (this._isUnmounted) return;
                         let documentBody = document.getElementsByClassName('cass--main-layout--body')[0];
                         if (documentBody) {
-                            documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
+                            documentBody.addEventListener('scroll', this._scrollHandler);
                         }
                         if (!this.framework.competency || this.framework.competency.length === 0) {
                             this.hierarchyIsdoneLoading = true;
@@ -754,24 +759,37 @@ export default {
                         return;
                     }
                 } catch (e) {
+                    if (this._isUnmounted) return;
                     appError(e);
                 }
             }
-            this.$router.push({name: "frameworks"});
+            if (!this._isUnmounted) {
+                this.$router.push({name: "frameworks"});
+            }
             return;
         }
         const appStore = useAppStore();
         appStore.setObjForShareModal(this.object);
         let documentBody = document.getElementsByClassName('cass--main-layout--body')[0];
-        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
+        if (documentBody) {
+            documentBody.addEventListener('scroll', this._scrollHandler);
+        }
         if (!this.framework.competency || this.framework.competency.length === 0) {
             this.hierarchyIsdoneLoading = true;
         }
     },
     beforeUnmount() {
+        this._isUnmounted = true;
         if (this.queryParams && this.queryParams.private !== 'true') {
             const editorStore = useEditorStore();
             editorStore.setPrivate(false);
+        }
+        // Clean up scroll listener to prevent post-unmount DOM access
+        if (this._scrollHandler) {
+            let documentBody = document.getElementsByClassName('cass--main-layout--body')[0];
+            if (documentBody) {
+                documentBody.removeEventListener('scroll', this._scrollHandler);
+            }
         }
     },
     watch: {

@@ -1,7 +1,7 @@
 .cass-editor__modal--search {
     overflow-x: hidden;
     .modal-card {
-        min-height: 600px;
+        min-height: min(600px, 60vh);
         max-height: 60vh;
         overflow-x: hidden;
         .cass--list--container.search-modal {

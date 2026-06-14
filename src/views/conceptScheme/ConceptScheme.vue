@@ -713,12 +713,15 @@ export default {
         }
     },
     mounted: async function() {
+        this._scrollHandler = debounce(this.scrollFunction, 20, {'immediate': true});
+        this._isUnmounted = false;
         if (!this.framework) {
             const rawFrameworkId = this.$route.params.frameworkId;
             const frameworkId = rawFrameworkId ? EcRemoteLinkedData.trimVersionFromUrl(rawFrameworkId) : rawFrameworkId;
             if (frameworkId) {
                 try {
                     const fw = await EcConceptScheme.get(frameworkId);
+                    if (this._isUnmounted) return;
                     if (fw) {
                         const editorStore = useEditorStore();
                         editorStore.setFramework(fw);
@@ -728,9 +731,10 @@ export default {
                         this.refreshPage();
                         this.spitEvent('viewChanged');
                         await this.$nextTick();
+                        if (this._isUnmounted) return;
                         let documentBody = document.getElementById('concept');
                         if (documentBody) {
-                            documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
+                            documentBody.addEventListener('scroll', this._scrollHandler);
                         }
                         if (this.queryParams.ceasnDataFields === 'true') {
                             this.getConceptCtids();
@@ -739,20 +743,32 @@ export default {
                         return;
                     }
                 } catch (e) {
+                    if (this._isUnmounted) return;
                     appError(e);
                 }
             }
-            this.$router.push({name: "frameworks"});
+            if (!this._isUnmounted) {
+                this.$router.push({name: "frameworks"});
+            }
             return;
         }
         let documentBody = document.getElementById('concept');
-        documentBody.addEventListener('scroll', debounce(this.scrollFunction, 20, {'immediate': true}));
+        if (documentBody) {
+            documentBody.addEventListener('scroll', this._scrollHandler);
+        }
         if (this.queryParams.ceasnDataFields === 'true') {
             this.getConceptCtids();
             this.getConceptRegistryUrls();
         }
     },
     beforeUnmount() {
+        this._isUnmounted = true;
+        if (this._scrollHandler) {
+            let documentBody = document.getElementById('concept');
+            if (documentBody) {
+                documentBody.removeEventListener('scroll', this._scrollHandler);
+            }
+        }
     },
     watch: {
         config: function() {
