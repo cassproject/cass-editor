@@ -208,7 +208,8 @@ export default {
     },
     mounted: async function() {
         if (!this.framework) {
-            const frameworkId = this.$route.params.frameworkId;
+            const rawFrameworkId = this.$route.params.frameworkId;
+            const frameworkId = rawFrameworkId ? EcRemoteLinkedData.trimVersionFromUrl(rawFrameworkId) : rawFrameworkId;
             if (frameworkId) {
                 try {
                     const fw = await EcConceptScheme.get(frameworkId);
