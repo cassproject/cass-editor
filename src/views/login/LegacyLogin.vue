@@ -418,7 +418,7 @@ export default {
             p.email = this.createLinkPersonEmail;
             appLog(p);
             const userStore = useUserStore();
-            userStore.loggedOnPerson(p);
+            userStore.setLoggedOnPerson(p);
             this.linkedPerson = p;
             EcRepository.save(p, this.handleCreatePersonSuccess, this.handleAttemptLoginFetchIdentityFailure);
         },
@@ -581,7 +581,7 @@ export default {
                 if (ep.getGuid().equals(this.identityToLinkToPerson.ppk.toPk().fingerprint())) {
                     matchingPersonRecordFound = true;
                     const userStore = useUserStore();
-                    userStore.loggedOnPerson(ep);
+                    userStore.setLoggedOnPerson(ep);
                     this.linkedPerson = ep;
                     appLog('Matching person record found: ');
                     appLog(ep);
