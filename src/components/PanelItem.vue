@@ -30,14 +30,13 @@
     </div>
 </template>
 <script>
-import CassPanelItem from './PanelItem';
-
+import { defineAsyncComponent } from 'vue';
 export default {
     name: 'CassPanelItem',
-    props: [ 'nodes', 'label', 'depth', 'id' ],
     components: {
-        CassPanelItem
+        CassPanelItem: defineAsyncComponent(() => import('./PanelItem.vue'))
     },
+    props: [ 'nodes', 'label', 'depth', 'id' ],
     data() {
         return {
             showChildren: false

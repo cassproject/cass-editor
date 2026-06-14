@@ -17,12 +17,11 @@
 </template>
 
 <script>
-import CassDropdownItem from './DropdownItem';
-
+import { defineAsyncComponent } from 'vue';
 export default {
     name: 'CassDropdownItem',
     components: {
-        CassDropdownItem
+        CassDropdownItem: defineAsyncComponent(() => import('./DropdownItem.vue'))
     },
     props: [ 'nodes', 'label', 'depth', 'id' ],
     methods: {
