@@ -312,7 +312,7 @@ export default {
                 icon = 'fa fa-asterisk';
             } else if (type === 'implies') {
                 icon = 'fa fa-arrow-right';
-            } else if (type === 'Level' || type === 'level' || this.objectType === "Level" || this.objectType === 'level') {
+            } else if (type === 'Level' || type === 'level' || this.competencyAsPropertyObjectType === "Level" || this.competencyAsPropertyObjectType === 'level') {
                 icon = 'fa fa-layer-group';
             } else if (type === 'is related to') {
                 icon = 'fa fa-sync';
@@ -409,7 +409,7 @@ export default {
         competencyAsPropertyIsExternal: function() {
             let external = true;
             if (this.framework) {
-                if (this.objectType === 'Level' && this.framework.level) {
+                if (this.competencyAsPropertyObjectType === 'Level' && this.framework.level) {
                     for (let i = 0; i < this.framework.level.length; i++) {
                         if (this.framework.level[i] === this.uri) {
                             external = false;

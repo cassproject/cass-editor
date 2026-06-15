@@ -176,7 +176,7 @@ export default {
         };
     },
     computed: {
-        ...mapState(useAppStore, ['importErrors']),
+        ...mapState(useAppStore, ['importErrors', 'importStatus']),
         importInfoVisible: function() {
             return useAppStore().showRightAsideGetter;
         }

@@ -12,7 +12,7 @@ should be componentized and imported into the screen that needs it.
     <div
         class="modal cass-editor___modal"
         id="cass-modal"
-        :class="[{'is-active': active}, 'is-' + size, 'cass-editor__modal--' + content]">
+        :class="[{'is-active': active}, 'is-' + size, 'cass-editor__modal--' + (typeof content === 'string' ? content : (content && content.component ? content.component : 'default'))]">
         <div class="modal-background" />
         <div
             class="modal-card"
@@ -66,8 +66,8 @@ export default {
             default: 'medium'
         },
         content: {
-            defualt: 'default',
-            type: String
+            default: 'default',
+            type: [String, Object]
         }
     },
     data() {

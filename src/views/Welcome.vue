@@ -299,12 +299,39 @@ export default {
             const editorStore = useEditorStore();
             appStore.setImportFramework(null);
             EcRemote.postInner(this.repo.selectedServer, "ctdlasn", formData, null, async function(data) {
-                if (data.indexOf("ctdlasn") !== -1) {
-                    var data1 = data.substring(0, data.indexOf("ctdlasn"));
-                    var data2 = data.substring(data.indexOf("ctdlasn") + 7);
-                    data = data1 + "data" + data2;
+                var framework = null;
+                // The server may return either a local URL or a source URL.
+                // First, try using the response directly (if it's a local server URL).
+                if (typeof data === 'string' && data.indexOf(me.repo.selectedServer) !== -1) {
+                    // Response is a local URL, replace ctdlasn path segment with data
+                    if (data.indexOf("ctdlasn") !== -1) {
+                        var data1 = data.substring(0, data.indexOf("ctdlasn"));
+                        var data2 = data.substring(data.indexOf("ctdlasn") + 7);
+                        data = data1 + "data" + data2;
+                    }
+                    framework = await EcFramework.get(data);
                 }
-                var framework = await EcFramework.get(data);
+                // If still null, search for the framework by its source URL on our local server.
+                if (framework == null) {
+                    for (var attempt = 0; attempt < 5 && framework == null; attempt++) {
+                        if (attempt > 0) {
+                            await new Promise(function(resolve) { setTimeout(resolve, 2000); });
+                        }
+                        try {
+                            var results = await EcFramework.search(me.repo, '"' + data + '"', null, null, {size: 1});
+                            if (results && results.length > 0) {
+                                framework = results[0];
+                            }
+                        } catch (e) {
+                            appLog("Import search attempt " + (attempt + 1) + " failed:", e);
+                        }
+                    }
+                }
+                if (framework == null) {
+                    me.error = "Import Error: Could not retrieve imported framework.";
+                    me.importing = false;
+                    return;
+                }
                 appStore.setImportFramework(framework);
                 editorStore.setFramework(framework);
                 me.spitEvent("importFinished", framework.shortId(), "importPage");

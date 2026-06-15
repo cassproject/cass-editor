@@ -1,7 +1,7 @@
 <template>
     <modal-template
         :active="true"
-        @close="closeImportModal">
+        @close="closeModal">
         <template #modal-header>
             {{ importModalParams.title }}
         </template>

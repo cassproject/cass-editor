@@ -1084,7 +1084,7 @@ export default {
             },
             set: function(val) {
                 const appStore = useAppStore();
-                return appStore.importFrameworkName = val;
+                appStore.setImportFrameworkName(val);
             }
         },
         dynamicThing: function() {
@@ -1107,7 +1107,7 @@ export default {
             },
             set(val) {
                 const appStore = useAppStore();
-                appStore.csvColumns = val;
+                appStore.setCsvColumns(val);
             }
         },
         csvRelationColumns: {
@@ -1117,7 +1117,7 @@ export default {
             },
             set(val) {
                 const appStore = useAppStore();
-                appStore.csvRelationColumns = val;
+                appStore.setCsvRelationColumns(val);
             }
         },
         importCsvColumnName: {
@@ -1127,7 +1127,7 @@ export default {
             },
             set(val) {
                 const appStore = useAppStore();
-                appStore.importNameColumn = val;
+                appStore.setImportNameColumn(val);
             }
         },
         importCsvColumnDescription: {
@@ -1137,7 +1137,7 @@ export default {
             },
             set(val) {
                 const appStore = useAppStore();
-                appStore.importDescriptionColumn = val;
+                appStore.setImportDescriptionColumn(val);
             }
         },
         importCsvColumnScope: {
@@ -1147,7 +1147,7 @@ export default {
             },
             set(val) {
                 const appStore = useAppStore();
-                appStore.importScopeColumn = val;
+                appStore.setImportScopeColumn(val);
             }
         },
         importCsvColumnId: {
@@ -1157,7 +1157,7 @@ export default {
             },
             set(val) {
                 const appStore = useAppStore();
-                appStore.importIdColumn = val;
+                appStore.setImportIdColumn(val);
             }
         },
         importCsvColumnSource: {
@@ -1167,7 +1167,7 @@ export default {
             },
             set(val) {
                 const appStore = useAppStore();
-                appStore.importSourceColumn = val;
+                appStore.setImportSourceColumn(val);
             }
         },
         importCsvColumnRelationType: {
@@ -1177,7 +1177,7 @@ export default {
             },
             set(val) {
                 const appStore = useAppStore();
-                appStore.importRelationColumn = val;
+                appStore.setImportRelationColumn(val);
             }
         },
         importCsvColumnTarget: {
@@ -1187,7 +1187,7 @@ export default {
             },
             set(val) {
                 const appStore = useAppStore();
-                appStore.importTargetColumn = val;
+                appStore.setImportTargetColumn(val);
             }
         },
         firstImport: {
@@ -1197,7 +1197,7 @@ export default {
             },
             set(val) {
                 const appStore = useAppStore();
-                appStore.firstImport = val;
+                appStore.setFirstImport(val);
             }
         },
         containerProfile: function() {
@@ -1266,9 +1266,7 @@ export default {
             if (val === oldVal) {
                 return;
             }
-            if (val === 'connectToServer') {
-                this.connectToServer();
-            } else if (val === 'importFromUrl') {
+            if (val === 'importFromUrl') {
                 this.importFromUrl();
             } else if (val === 'parseText') {
                 this.parseText();

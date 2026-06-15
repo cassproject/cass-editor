@@ -281,6 +281,7 @@ async function checkFrameworkCtidCollisions(repo, competencyIds, frameworkArray,
 
 import { useAppStore } from '@/stores/app';
 import { useEditorStore } from '@/stores/editor';
+import { nextTick } from 'vue';
 
 export default {
     data() {
@@ -450,21 +451,21 @@ export default {
                 let feedback = "Competency detected";
                 appStore.setImportStatus(feedback);
                 if (this.isT3Import) {
-                    appStore.setImportTransition('detail');
+                    nextTick(() => { appStore.setImportTransition('detail'); });
                 } else {
-                    appStore.setImportTransition('preview');
+                    nextTick(() => { appStore.setImportTransition('preview'); });
                 }
             } else if (this.progressionMode) {
                 let name = "Progression Model";
                 appStore.setImportStatus(name + " Imported.");
-                appStore.setImportTransition('preview');
+                nextTick(() => { appStore.setImportTransition('preview'); });
             } else {
                 let name = "Taxonomy";
                 if (this.queryParams.ceasnDataFields === 'true') {
                     name = "Concept Scheme";
                 }
                 appStore.setImportStatus(name + " Imported.");
-                appStore.setImportTransition('preview');
+                nextTick(() => { appStore.setImportTransition('preview'); });
             }
         },
         importDetailsAccept: function() {
@@ -1624,8 +1625,6 @@ export default {
                 return this.uploadFiles(this.importFile);
             } else if (val === 'uploadCsv' || val === 'uploadMedbiq' || val === 'uploadOtherNonPdf') {
                 this.importFromFile();
-            } else if (val === 'connectToServer') {
-                this.connectToServer();
             }
         },
         importText: function(newText, oldText) {

@@ -116,6 +116,7 @@
                                 :properties="properties"
                                 :containerSubType="containerSubType"
                                 :canEditAssertions="canEditAssertions"
+                                @change-obj="onChangeObj"
                                 @set-checkbox="setCheckbox">
                                 <div class="hierarchy-item__buttons">
                                     <div
@@ -776,6 +777,9 @@ export default {
             editorStore.setRecomputeHierarchy(true);
             // Update the obj prop passed to Thing/ThingEditing so edits are reflected
             this.changedObj = await EcRepository.get(this.obj.shortId());
+        },
+        onChangeObj: function(newObj) {
+            this.changedObj = newObj;
         },
         onAddNodeEvent: function() {
             this.add(this.obj.shortId());

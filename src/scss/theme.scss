@@ -114,6 +114,32 @@ $divider-background-color: $dark;
 @import "./../../node_modules/bulma-checkradio/src/sass/index.sass";
 @import "./../../node_modules/bulma-switch/src/sass/index.sass";
 
+// Global fix: Bulma 0.9.4 sets border-color: transparent on a shared control
+// selector (.button, .input, .textarea, .select select, ...) and relies on
+// box-shadow to simulate borders. The duplicate Bulma imports cause the
+// transparent rule to win. Override to restore visible borders on form controls.
+.input,
+.textarea,
+.select select {
+    border-color: $grey-light !important;
+}
+
+.input:hover,
+.textarea:hover,
+.select select:hover {
+    border-color: $grey !important;
+}
+
+.input:focus,
+.input:active,
+.textarea:focus,
+.textarea:active,
+.select select:focus,
+.select select:active {
+    border-color: $link !important;
+    box-shadow: 0 0 0 0.125em rgba($link, 0.25);
+}
+
 @include desktop {
     .pagesRight {
         padding-left: calc(360px + 1.75rem) !important;

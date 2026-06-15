@@ -1762,7 +1762,8 @@ export default {
                 }
                 if (type) {
                     var thing = await window[type].get(this.changedObject);
-                    this.obj = thing;
+                    this.originalThing = thing;
+                    this.$emit('change-obj', thing);
                     if (this.localClickToLoad === false) { await this.load(); }
                 }
                 useEditorStore().setChangedObject(null);

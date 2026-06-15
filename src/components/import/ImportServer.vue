@@ -36,9 +36,9 @@
                                     <div class="field"
                                         v-if="!conceptMode">
                                         <div class="buttons is-right">
-                                            <div
+                                            <button
                                                 class="button is-large is-outlined is-primary"
-                                                :disabled="importServerUrl === ''"
+                                                :disabled="!importServerUrl"
                                                 @click="connectCaseEndpoint">
                                                 <span class="icon">
                                                     <i class="fas fa-network-wired" />
@@ -46,14 +46,14 @@
                                                 <span>
                                                     connect to CASE endpoint
                                                 </span>
-                                            </div>
+                                            </button>
                                         </div>
                                     </div>
                                     <div class="field">
                                         <div class="buttons is-right">
-                                            <div
+                                            <button
                                                 class="button is-large is-outlined is-primary"
-                                                :disabled="importServerUrl === ''"
+                                                :disabled="!importServerUrl"
                                                 @click="connectCassEndpoint">
                                                 <span class="icon">
                                                     <i class="fas fa-network-wired" />
@@ -61,7 +61,7 @@
                                                 <span>
                                                     connect to CaSS endpoint
                                                 </span>
-                                            </div>
+                                            </button>
                                         </div>
                                     </div>
                                 </div>
@@ -333,6 +333,7 @@ import imports from '@/mixins/import.js';
 import common from '@/mixins/common.js';
 import SearchBar from '../framework/SearchBar.vue';
 import debounce from 'lodash/debounce';
+import {markRaw} from 'vue';
 import {mapState} from 'pinia';
 import {useAppStore} from '@/stores/app';
 import {useEditorStore} from '@/stores/editor';
@@ -391,10 +392,12 @@ export default {
         connectCaseEndpoint() {
             useAppStore().setImportTransition('connectToServer');
             this.serverType = 'case';
+            this.connectToServer();
         },
         connectCassEndpoint() {
             useAppStore().setImportTransition('connectToServer');
             this.serverType = 'cass';
+            this.connectToServer();
         },
         importCaseDocs: function() {
             this.handleImportFromTabs(this.caseDocs);
@@ -449,7 +452,7 @@ export default {
             // Constructor adds repo to our repository list but we don't want it there in this case
             EcRepository.repos.pop();
             remoteRepo.selectedServer = remoteServer;
-            this.remoteRepo = remoteRepo;
+            this.remoteRepo = markRaw(remoteRepo);
             this.cassSearchEndpoint();
         },
         cassSearchEndpoint: debounce(function() {
