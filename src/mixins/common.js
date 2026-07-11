@@ -1,7 +1,7 @@
 import dateFormat from 'dateformat';
-import { useEditorStore } from '@/stores/editor';
-import { useLodeStore } from '@/stores/lode';
-import { useUserStore } from '@/stores/user';
+import {useEditorStore} from '@/stores/editor';
+import {useLodeStore} from '@/stores/lode';
+import {useUserStore} from '@/stores/user';
 
 export default {
     data() {
@@ -19,7 +19,7 @@ export default {
             if (!framework || !framework.id) {
                 return null;
             }
-            if (useEditorStore().queryParams && (useEditorStore().queryParams.ceasnDataFields !== "true")) {
+            if (useEditorStore().queryParams && useEditorStore().queryParams.ceasnDataFields !== "true") {
                 return null;
             }
             var obj = {};
@@ -39,7 +39,7 @@ export default {
             if (!framework || !framework.id) {
                 return null;
             }
-            if (useEditorStore().queryParams && (useEditorStore().queryParams.ceasnDataFields !== "true")) {
+            if (useEditorStore().queryParams && useEditorStore().queryParams.ceasnDataFields !== "true") {
                 return null;
             }
             var obj = {};
@@ -219,7 +219,7 @@ export default {
             var url = EcRemote.urlAppend(server, service);
             url = EcRemote.upgradeHttpToHttps(url);
             var xhr = null;
-            if ((typeof httpStatus) === "undefined") {
+            if (typeof httpStatus === "undefined") {
                 xhr = new XMLHttpRequest();
                 xhr.open("GET", url, true);
                 if (headers != null) {
@@ -250,9 +250,9 @@ export default {
                 };
             }
             if (xhr != null) {
-                (xhr)["timeout"] = EcRemote.timeout;
+                xhr["timeout"] = EcRemote.timeout;
             }
-            if ((typeof httpStatus) !== "undefined") {
+            if (typeof httpStatus !== "undefined") {
                 if (success != null) {
                     success(JSON.stringify(httpGet(url)));
                 }
@@ -280,8 +280,6 @@ export default {
                         name = data['title'];
                     } else if (data['skos:prefLabel']) {
                         name = data['skos:prefLabel'];
-                    } else if (data['title']) {
-                        name = data['title'];
                     } else if (data['@graph'] && data['@graph'][0]) {
                         if (data['@graph'][0]['ceterms:name']) {
                             name = data['@graph'][0]['ceterms:name'];
@@ -377,7 +375,7 @@ export default {
                     var relation = await EcAlignment.get(this.framework.relation[i]);
                     if (EcArray.has(selectedArray, relation.target)) {
                         if (this.queryParams.selectVerbose === "true") {
-                            ary.push(JSON.parse((relation).toJson()));
+                            ary.push(JSON.parse(relation.toJson()));
                         } else {
                             ary.push(relation.shortId());
                         }
@@ -405,7 +403,7 @@ export default {
             var message = {
                 message: "selected",
                 selected: ary,
-                type: ((editorStore.conceptMode === true || editorStore.progressionMode === true) ? 'Concept' : 'Competency'),
+                type: editorStore.conceptMode === true || editorStore.progressionMode === true ? 'Concept' : 'Competency',
                 selectedFramework: currentFramework
             };
             message = JSON.parse(JSON.stringify(message));
@@ -425,7 +423,7 @@ export default {
                     c.generateId(window.repo.selectedServer);
                 }
                 c["schema:dateCreated"] = new Date().toISOString();
-                c.name = (optionalLevelUrlOrName && optionalLevelUrlOrName !== "") ? optionalLevelUrlOrName : "New Level";
+                c.name = optionalLevelUrlOrName && optionalLevelUrlOrName !== "" ? optionalLevelUrlOrName : "New Level";
                 c.competency = selectedCompetency;
             } else {
                 optionalLevelUrlOrName = optionalLevelUrlOrName[0];
@@ -516,7 +514,7 @@ export default {
                         }, appError);
                     }
                     // If level doesn't have any competencies attached, remove it from the framework.
-                    if ((!level.competency || (level.competency && level.competency.length === 0)) && this.framework.level.indexOf(level.shortId()) !== -1) {
+                    if ((!level.competency || level.competency && level.competency.length === 0) && this.framework.level.indexOf(level.shortId()) !== -1) {
                         EcArray.setRemove(this.framework.level, level.shortId());
                         frameworkChanged = true;
                     }
@@ -561,7 +559,6 @@ export default {
             }
         },
         addAlignments: async function(targets, thing, relationType, allowSave) {
-
             let urlProperties = [
                 "ceasn:knowledgeEmbodied",
                 "ceasn:skillEmbodied",
@@ -724,7 +721,7 @@ export default {
         ceasnRegistryUriTransform: function(uri) {
             var endpoint = null;
             var editorStore = useEditorStore();
-            if (editorStore.queryParams && (editorStore.queryParams.newObjectEndpoint)) {
+            if (editorStore.queryParams && editorStore.queryParams.newObjectEndpoint) {
                 endpoint = this.queryParams.newObjectEndpoint;
             }
             if (endpoint == null) {

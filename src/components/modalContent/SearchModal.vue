@@ -27,11 +27,11 @@
             </button>
             <search
                 ref="search"
-                @setSelectedIds="selectedIds = $event"
+                @set-selected-ids="selectedIds = $event"
                 parent="search-modal"
                 :allowShowFrameworks="true"
                 :clearFramework="clearFramework"
-                @selectFramework="selectFramework"
+                @select-framework="selectFramework"
                 :idsNotPermittedInSearch="idsNotPermittedInSearch" />
         </template>
         <template #modal-foot>
@@ -77,9 +77,9 @@
 import ModalTemplate from './ModalTemplate.vue';
 import Search from '@/components/framework/Search.vue';
 import common from '@/mixins/common.js';
-import { useAppStore } from '@/stores/app';
-import { useEditorStore } from '@/stores/editor';
-import { useLodeStore } from '@/stores/lode';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useLodeStore} from '@/stores/lode';
 import {mapState} from 'pinia';
 export default {
     name: 'SearchModal',

@@ -21,7 +21,7 @@
 </template>
 <script>
 import ModalTemplate from './ModalTemplate.vue';
-import { useAppStore } from '@/stores/app';
+import {useAppStore} from '@/stores/app';
 export default {
     name: 'ImportError',
     components: {

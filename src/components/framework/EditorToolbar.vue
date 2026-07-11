@@ -267,11 +267,11 @@
 
 import common from '@/mixins/common.js';
 import {cassUtil} from '../../mixins/cassUtil';
-import { useAppStore } from '@/stores/app';
-import { useUserStore } from '@/stores/user';
-import { useLodeStore } from '@/stores/lode';
-import { useFeaturesEnabledStore } from '@/stores/featuresEnabled';
-import { useEditorStore } from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useUserStore} from '@/stores/user';
+import {useLodeStore} from '@/stores/lode';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
+import {useEditorStore} from '@/stores/editor';
 export default {
     name: 'EditorToolbar',
     mixins: [ common, cassUtil ],

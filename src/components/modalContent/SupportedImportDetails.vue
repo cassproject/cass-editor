@@ -484,8 +484,8 @@ import ctdlAsnJsonldConcepts from '../../../files/ConnectingCredentialsLevels.js
 import ctdlAsnJsonld from '../../../files/DQP.jsonld?url';
 import asnRdfJson from '../../../files/D2695955?url';
 import medbiquitous from '../../../files/educational_achievement_sample_1June2012.xml?url';
-import { useAppStore } from '@/stores/app';
-import { useEditorStore } from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
 
 export default {
     name: 'SupportedImportDetails',

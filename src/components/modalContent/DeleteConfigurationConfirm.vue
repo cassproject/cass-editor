@@ -39,7 +39,7 @@ import ModalTemplate from './ModalTemplate.vue';
 
 import {cassUtil} from '../../mixins/cassUtil';
 import common from '@/mixins/common.js';
-import { useAppStore } from '@/stores/app';
+import {useAppStore} from '@/stores/app';
 
 export default {
     mixins: [cassUtil, common],

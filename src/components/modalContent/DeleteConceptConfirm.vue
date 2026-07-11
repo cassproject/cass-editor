@@ -31,8 +31,8 @@
 <script>
 import ModalTemplate from './ModalTemplate.vue';
 import common from '@/mixins/common.js';
-import { useAppStore } from '@/stores/app';
-import { useEditorStore } from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
 export default {
     name: 'DeleteConceptConfirm',
     components: {

@@ -89,7 +89,7 @@
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 import common from '@/mixins/common.js';
 import {useEditorStore} from '@/stores/editor';
 import {useAppStore} from '@/stores/app';

@@ -230,11 +230,11 @@
 </template>
 
 <script>
-import { mapState } from 'pinia';
-import { useUserStore } from '@/stores/user';
-import { useEditorStore } from '@/stores/editor';
-import { useAppStore } from '@/stores/app';
-import { useFeaturesEnabledStore } from '@/stores/featuresEnabled';
+import {mapState} from 'pinia';
+import {useUserStore} from '@/stores/user';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
 import casslogo from '@/assets/cass-logo-white.svg';
 import common from '@/mixins/common.js';
 import harvard from '../../files/Harvard Emotional Intelligence.csv?url';
@@ -257,11 +257,11 @@ export default {
         this.baseRepoUrl = this.repo.selectedServer.slice(0, index);
     },
     computed: {
-        ...mapState(useUserStore, { loggedInPerson: 'loggedOnPerson' }),
+        ...mapState(useUserStore, {loggedInPerson: 'loggedOnPerson'}),
         ...mapState(useEditorStore, ['queryParams']),
         ...mapState(useFeaturesEnabledStore, ['apiLoginEnabled']),
         linkToLegacyDemos: function() {
-            return (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0);
+            return EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0;
         }
     },
     methods: {
@@ -293,7 +293,9 @@ export default {
                 formData.append('data', JSON.stringify(data));
             }
             var identity = EcIdentityManager.default.ids[0];
-            if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
+            if (identity != null) {
+                formData.append('owner', identity.ppk.toPk().toPem()); 
+            }
             let me = this;
             const appStore = useAppStore();
             const editorStore = useEditorStore();
@@ -315,7 +317,9 @@ export default {
                 if (framework == null) {
                     for (var attempt = 0; attempt < 5 && framework == null; attempt++) {
                         if (attempt > 0) {
-                            await new Promise(function(resolve) { setTimeout(resolve, 2000); });
+                            await new Promise(function(resolve) {
+                                setTimeout(resolve, 2000); 
+                            });
                         }
                         try {
                             var results = await EcFramework.search(me.repo, '"' + data + '"', null, null, {size: 1});
@@ -345,7 +349,9 @@ export default {
             this.importing = true;
             this.error = null;
             let ceo = null;
-            if (EcIdentityManager.default.ids.length > 0) { ceo = EcIdentityManager.default.ids[0]; }
+            if (EcIdentityManager.default.ids.length > 0) {
+                ceo = EcIdentityManager.default.ids[0]; 
+            }
             let me = this;
             EcRemote.getExpectingString(me.harvardFile, null, function(result) {
                 CTDLASNCSVImport.importFrameworksAndCompetencies(me.repo, result, function(frameworks, competencies, relations) {
@@ -386,7 +392,9 @@ export default {
             var uuid = "73a4ee28-ceeb-11e7-bfb5-b1077cd4fffe";
             var identity = EcIdentityManager.default.ids[0];
             var formData = new FormData();
-            if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
+            if (identity != null) {
+                formData.append('owner', identity.ppk.toPk().toPem()); 
+            }
             EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + serverUrl + "&dId=" + uuid, formData, null, function(success) {
                 const editorStore = useEditorStore();
                 const appStore = useAppStore();

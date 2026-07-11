@@ -8,6 +8,8 @@
     "build": "vite build",
     "preview": "vite preview",
     "serve": "vite --port=8082",
+    "test:unit": "vitest run",
+    "lint": "eslint --ext .js,.vue src",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs"
   },
@@ -30,11 +32,18 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
+    "@pinia/testing": "^1.0.3",
     "@vitejs/plugin-vue": "^6.0.5",
+    "@vue/test-utils": "^2.4.11",
+    "eslint": "^8.57.1",
+    "eslint-plugin-promise": "^7.3.0",
+    "eslint-plugin-vue": "^9.33.0",
+    "jsdom": "^29.1.1",
     "qs": "^6.15.2",
     "sass": "^1.97.3",
     "vite": "^7.3.2",
     "vite-plugin-node-polyfills": "^0.24.0",
-    "vitepress": "^1.6.3"
+    "vitepress": "^1.6.3",
+    "vitest": "^4.1.10"
   }
 }

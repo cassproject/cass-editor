@@ -279,9 +279,9 @@ async function checkFrameworkCtidCollisions(repo, competencyIds, frameworkArray,
     return errors;
 }
 
-import { useAppStore } from '@/stores/app';
-import { useEditorStore } from '@/stores/editor';
-import { nextTick } from 'vue';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {nextTick} from 'vue';
 
 export default {
     data() {
@@ -353,7 +353,7 @@ export default {
                     params = {
                         type: val,
                         title: "Duplicate " + type,
-                        text: (data[0].name ? ("The " + type + " " + data[0].name) : "This " + type) + " has already been imported. You can overwrite it but will not be able to edit it since you're not logged in. Do you want to overwrite it?",
+                        text: (data[0].name ? "The " + type + " " + data[0].name : "This " + type) + " has already been imported. You can overwrite it but will not be able to edit it since you're not logged in. Do you want to overwrite it?",
                         onConfirm: () => {
                             if (this.importType === "url") {
                                 return this.importJsonLd(data[0]);
@@ -383,7 +383,7 @@ export default {
                     params = {
                         type: val,
                         title: "Duplicate " + type,
-                        text: (data[0].name ? ("The " + type + " " + data[0].name) : "This " + type) + " has already been imported. If you're a " + type + " admin you can overwrite it. Do you want to overwrite it?",
+                        text: (data[0].name ? "The " + type + " " + data[0].name : "This " + type) + " has already been imported. If you're a " + type + " admin you can overwrite it. Do you want to overwrite it?",
                         onConfirm: () => {
                             if (this.importType === "url") {
                                 return this.importJsonLd(data[0]);
@@ -451,21 +451,29 @@ export default {
                 let feedback = "Competency detected";
                 appStore.setImportStatus(feedback);
                 if (this.isT3Import) {
-                    nextTick(() => { appStore.setImportTransition('detail'); });
+                    nextTick(() => {
+                        appStore.setImportTransition('detail'); 
+                    });
                 } else {
-                    nextTick(() => { appStore.setImportTransition('preview'); });
+                    nextTick(() => {
+                        appStore.setImportTransition('preview'); 
+                    });
                 }
             } else if (this.progressionMode) {
                 let name = "Progression Model";
                 appStore.setImportStatus(name + " Imported.");
-                nextTick(() => { appStore.setImportTransition('preview'); });
+                nextTick(() => {
+                    appStore.setImportTransition('preview'); 
+                });
             } else {
                 let name = "Taxonomy";
                 if (this.queryParams.ceasnDataFields === 'true') {
                     name = "Concept Scheme";
                 }
                 appStore.setImportStatus(name + " Imported.");
-                nextTick(() => { appStore.setImportTransition('preview'); });
+                nextTick(() => {
+                    appStore.setImportTransition('preview'); 
+                });
             }
         },
         importDetailsAccept: function() {
@@ -582,7 +590,7 @@ export default {
                                         me.importCsvColumnId = column;
                                     }
                                 }
-                                appStore.setImportStatus((me.competencyCount = (data.length - 1)) + " Competencies Detected.");
+                                appStore.setImportStatus((me.competencyCount = data.length - 1) + " Competencies Detected.");
                                 appStore.setImportTransition('info');
                             }, function(error) {
                                 var appStore = useAppStore();
@@ -767,7 +775,7 @@ export default {
             } else {
                 var appStore = useAppStore();
                 appStore.setImportFileType('');
-                let error = ("CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.");
+                let error = "CaSS cannot read the file " + file.name + ". Please check that the file has the correct file extension.";
                 appStore.addImportError(error);
                 appStore.setImportTransition('process');
                 return;
@@ -809,7 +817,7 @@ export default {
                         me.importTargetColumn = column;
                     }
                 }
-                me.relationCount = (data.length - 1);
+                me.relationCount = data.length - 1;
             }, function(error) {
                 var appStore = useAppStore();
                 appStore.setImportStatus(error);
@@ -822,13 +830,13 @@ export default {
                 failure("No file to analyze");
                 return;
             }
-            if ((file)["name"] == null) {
+            if (file["name"] == null) {
                 failure("Invalid file");
                 return;
             }
             var reader = new FileReader();
             reader.onload = function(e) {
-                var result = ((e)["target"])["result"];
+                var result = e["target"]["result"];
                 var jsonObj = JSON.parse(result);
                 if (jsonObj["@graph"]) {
                     if (jsonObj["@context"] === "http://credreg.net/ctdlasn/schema/context/json" || jsonObj["@context"] === "http://credreg.net/ctdl/schema/context/json" ||
@@ -854,7 +862,9 @@ export default {
         importMedbiq: function() {
             var identity = EcIdentityManager.default.ids[0];
             var f = new EcFramework();
-            if (identity != null) { f.addOwner(identity.ppk.toPk()); }
+            if (identity != null) {
+                f.addOwner(identity.ppk.toPk()); 
+            }
             if (this.queryParams.newObjectEndpoint != null && this.queryParams.newObjectEndpoint !== undefined) {
                 f.generateShortId(this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint);
             } else {
@@ -933,7 +943,9 @@ export default {
         },
         importCtdlAsnCsv: function() {
             let ceo = null;
-            if (EcIdentityManager.default.ids.length > 0) { ceo = EcIdentityManager.default.ids[0]; }
+            if (EcIdentityManager.default.ids.length > 0) {
+                ceo = EcIdentityManager.default.ids[0]; 
+            }
             let me = this;
             var appStore = useAppStore();
             appStore.setImportAllowCancel(true);
@@ -1023,7 +1035,7 @@ export default {
                 });
             }, function(failure) {
                 me.handleImportErrors(failure);
-            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'collectioncsv', skip, validationRules,
+            }, ceo, this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null, EcIdentityManager.default, me.importFileType === 'collectioncsv', skip, validationRules,
             this.queryParams.ceasnDataFields === 'true' ? [
                 checkDuplicateCtidsInFrameworks,
                 checkDuplicateCtidsInConceptSchemes,
@@ -1142,7 +1154,9 @@ export default {
                 } else {
                     c.setName("Unknown name");
                 }
-                if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) { c.setDescription(d.competencies[i].description.trim()); }
+                if (d.competencies[i].name !== d.competencies[i].description && d.competencies[i].description) {
+                    c.setDescription(d.competencies[i].description.trim()); 
+                }
                 if (d.competencies[i]["ceasn:codedNotation"] != null) {
                     c["ceasn:codedNotation"] = d.competencies[i]["ceasn:codedNotation"];
                 }
@@ -1193,7 +1207,9 @@ export default {
             var endpoint = this.queryParams.newObjectEndpoint == null ? this.repo.selectedServer : this.queryParams.newObjectEndpoint;
 
             var f = new EcFramework();
-            if (identity != null) { f.addOwner(identity.ppk.toPk()); }
+            if (identity != null) {
+                f.addOwner(identity.ppk.toPk()); 
+            }
             if (this.queryParams.newObjectEndpoint !== null && this.queryParams.newObjectEndpoint !== undefined) {
                 f.generateShortId(endpoint);
             } else {
@@ -1208,14 +1224,14 @@ export default {
                 file,
                 endpoint,
                 identity,
-                (this.importCsvColumnName ? this.importCsvColumnName.index : -1),
-                (this.importCsvColumnDescription ? this.importCsvColumnDescription.index : -1),
-                (this.importCsvColumnScope ? this.importCsvColumnScope.index : -1),
-                (this.importCsvColumnId ? this.importCsvColumnId.index : -1),
+                this.importCsvColumnName ? this.importCsvColumnName.index : -1,
+                this.importCsvColumnDescription ? this.importCsvColumnDescription.index : -1,
+                this.importCsvColumnScope ? this.importCsvColumnScope.index : -1,
+                this.importCsvColumnId ? this.importCsvColumnId.index : -1,
                 relations,
-                (this.importCsvColumnSource ? this.importCsvColumnSource.index : -1),
-                (this.importCsvColumnRelationType ? this.importCsvColumnRelationType.index : -1),
-                (this.importCsvColumnTarget ? this.importCsvColumnTarget.index : -1),
+                this.importCsvColumnSource ? this.importCsvColumnSource.index : -1,
+                this.importCsvColumnRelationType ? this.importCsvColumnRelationType.index : -1,
+                this.importCsvColumnTarget ? this.importCsvColumnTarget.index : -1,
                 function(competencies, alignments) {
                     var appStore = useAppStore();
                     appStore.setImportAllowCancel(false);
@@ -1253,9 +1269,9 @@ export default {
                 },
                 function(increment) {
                     if (increment.relations != null && increment.relations !== undefined) {
-                        useAppStore().setImportStatus((increment.relations + "/" + me.relationCount + " relations imported."));
+                        useAppStore().setImportStatus(increment.relations + "/" + me.relationCount + " relations imported.");
                     } else if (increment.competencies != null && increment.competencies !== undefined) {
-                        useAppStore().setImportStatus((increment.competencies + "/" + me.competencyCount + " competencies imported."));
+                        useAppStore().setImportStatus(increment.competencies + "/" + me.competencyCount + " competencies imported.");
                     } else {
                         useAppStore().setImportStatus("Importing...");
                     }
@@ -1273,7 +1289,9 @@ export default {
                     formData.append('file', file);
                 }
                 var identity = EcIdentityManager.default.ids[0];
-                if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
+                if (identity != null) {
+                    formData.append('owner', identity.ppk.toPk().toPem()); 
+                }
                 let me = this;
                 appStore.setImportAllowCancel(true);
                 appStore.setImportFramework(null);
@@ -1424,7 +1442,7 @@ export default {
             }, function(failure) {
                 me.handleImportErrors(failure);
                 appError(failure);
-            }, ceo, (this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null), EcIdentityManager.default, me.importFileType === 'progressioncsv', validationRules,
+            }, ceo, this.queryParams.newObjectEndpoint ? this.queryParams.newObjectEndpoint : null, EcIdentityManager.default, me.importFileType === 'progressioncsv', validationRules,
             this.queryParams.ceasnDataFields === 'true' ? [
                 checkDuplicateCtidsInFrameworks,
                 checkDuplicateCtidsInConceptSchemes,

@@ -27,12 +27,13 @@
             </div>
         </td>
         <td v-else>
-            <div
+            <button
+                type="button"
                 class="button is-outlined is-primary is-small"
                 :disabled="defaultFrameworkConfigId !== null && defaultFrameworkConfigId !== undefined && defaultFrameworkConfigId.equals(id)"
                 @click="$emit('set-framework-default', id)">
                 set as framework default
-            </div>
+            </button>
         </td>
         <td v-if="view !== 'modal'">
             <div

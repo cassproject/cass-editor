@@ -226,8 +226,8 @@
 
 <script>
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
-import { useEditorStore } from '@/stores/editor';
-import { useAppStore } from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
 import languagesFile from '../ietf-language-tags_json.json';
 export default {
     name: 'PropertyString',
@@ -246,7 +246,9 @@ export default {
         addSingle: Boolean,
         propertyValue: {
             type: Object,
-            default: function() { return undefined; }
+            default: function() {
+                return undefined; 
+            }
         },
         valueFromSearching: null,
         view: {
@@ -304,7 +306,7 @@ export default {
             if (this.inLanguageField && !this.newProperty) {
                 this.search = this.computedText;
             }
-            if (this.newProperty === true || (this.inLanguageField && this.computedText != null && this.computedText.length === 0)) {
+            if (this.newProperty === true || this.inLanguageField && this.computedText != null && this.computedText.length === 0) {
                 this.text = {};
                 const editorStore = useEditorStore();
                 if (editorStore) {
@@ -490,7 +492,7 @@ export default {
             }
             if (val === 'remove') {
                 if (expandedValue && this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
-                    if (expandedValue.length === 1 || (expandedValue["@value"] && expandedValue["@value"].trim().length === 1)) {
+                    if (expandedValue.length === 1 || expandedValue["@value"] && expandedValue["@value"].trim().length === 1) {
                         useAppStore().openModal({component: 'RequiredPropertyModal'});
                         return;
                     }

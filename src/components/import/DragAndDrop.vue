@@ -127,7 +127,7 @@ export default {
             appLog(e);
             let selectedFiles = e.target.files;
             if (selectedFiles) {
-                ([...selectedFiles]).forEach(f => {
+                [...selectedFiles].forEach(f => {
                     this.files.push(f);
                 });
             } else {
@@ -137,7 +137,7 @@ export default {
         addFile(e) {
             let droppedFiles = e.dataTransfer.files || e.target.files;
             if (!droppedFiles) return;
-            ([...droppedFiles]).forEach(f => {
+            [...droppedFiles].forEach(f => {
                 this.files.push(f);
             });
             this.isDraggedOver = false;

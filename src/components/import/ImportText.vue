@@ -13,7 +13,7 @@
                     </div>
                     <div class="column is-12">
                         <h3 class="title is-size-3 has-text-weight-medium">
-                        <button
+                            <button
                                 class="button is-pulled-right is-large is-primary is-outlined mr-4"
                                 :disabled="!importFrameworkName || !importText || importFrameworkName.trim().length === 0"
                                 @click="startTextImport">

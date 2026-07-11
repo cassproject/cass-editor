@@ -24,7 +24,7 @@
 </template>
 <script>
 
-import { useAppStore } from '@/stores/app';
+import {useAppStore} from '@/stores/app';
 
 export default {
     name: 'Versions',

@@ -40,7 +40,7 @@ should be componentized and imported into the screen that needs it.
 </template>
 
 <script>
-import { useAppStore } from '@/stores/app';
+import {useAppStore} from '@/stores/app';
 import '@/scss/modal-template.scss';
 export default {
     name: 'ModalTemplate',

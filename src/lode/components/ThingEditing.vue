@@ -301,7 +301,8 @@
                         <span>save and add another</span>
                     </div>
                     <template v-if="isSearching">
-                        <div
+                        <button
+                            type="button"
                             @click="addSelected"
                             title="Add Competency as Property"
                             :disabled="saving"
@@ -311,7 +312,7 @@
                                 <i class="fa fa-check" />
                             </span>
                             <span>Add Selected</span>
-                        </div>
+                        </button>
                     </template>
                 </div>
             </footer>
@@ -409,7 +410,9 @@ export default {
         };
     },
     created: function() {
-        if (this.localClickToLoad === false) { this.load(); }
+        if (this.localClickToLoad === false) {
+            this.load(); 
+        }
     },
     mounted: function() {
         if (this.uri) {
@@ -606,7 +609,7 @@ export default {
             for (var i = 0; i < props.length; i++) {
                 var prop = props[i];
 
-                if (this.profile == null || (this.profile != null && this.profile[prop] !== undefined)) {
+                if (this.profile == null || this.profile != null && this.profile[prop] !== undefined) {
                     if (this.schema[prop] != null) {
                         if (this.expandedThing[prop] != null && this.expandedThing[prop].length !== 0) {
                             var heading = "";
@@ -842,7 +845,7 @@ export default {
             // Validate input
             var property = this.addingProperty;
             // Revert fix for github #827 - caused major breaking change github #1360
-            var value = (this.addingValues.length > 0) ? this.addingValues[0] : undefined;
+            var value = this.addingValues.length > 0 ? this.addingValues[0] : undefined;
             var range = this.addingRange;
             this.errorMessage = [];
             this.errorMessage = [];
@@ -860,7 +863,7 @@ export default {
                     useLodeStore().setAddingValues([]);
                     return this.errorMessage.push("Version Identifier information is required.");
                 }
-            } else if ((!value || (value !== null && value !== undefined && value["@value"] !== null && value["@value"] !== undefined && value["@value"].trim().length === 0)) &&
+            } else if ((!value || value !== null && value !== undefined && value["@value"] !== null && value["@value"] !== undefined && value["@value"].trim().length === 0) &&
                 (!this.addingChecked || this.addingChecked.length === 0)) {
                 return this.errorMessage.push("Value is required to save.");
             }
@@ -876,7 +879,7 @@ export default {
                 }
             }
             if (value && !isResource && range.length === 1) {
-                if ((!this.addingChecked && range[0].toLowerCase().indexOf("level") !== -1) ||
+                if (!this.addingChecked && range[0].toLowerCase().indexOf("level") !== -1 ||
                    (range[0].indexOf("http://schema.org/URL") !== -1 || range[0].toLowerCase().indexOf("concept") !== -1 ||
                     range[0].toLowerCase().indexOf("competency") !== -1)) {
                     if (!value.startsWith("http")) {
@@ -1179,7 +1182,7 @@ export default {
             const lodeStore = useLodeStore();
             if (lodeStore.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
                 var augmentedType = type;
-                augmentedType += (type.indexOf("schema.org") !== -1 ? ".jsonld" : "");
+                augmentedType += type.indexOf("schema.org") !== -1 ? ".jsonld" : "";
                 EcRemote.getExpectingObject("", augmentedType, async function(context) {
                     lodeStore.setRawSchemata({id: type, obj: context});
                     try {
@@ -1260,7 +1263,7 @@ export default {
             if (!EcArray.isArray(this.expandedThing[property])) {
                 this.expandedThing[property] = [this.expandedThing[property]];
             }
-            let index = this.expandedThing[property].findIndex((obj) => (obj['@value'].contains(value['@value'])));
+            let index = this.expandedThing[property].findIndex((obj) => obj['@value'].contains(value['@value']));
             if (index >= 0 && index < this.expandedThing[property].length) {
                 this.expandedThing[property].splice(index, 1);
                 useEditorStore().addEditsToUndo(
@@ -1454,8 +1457,6 @@ export default {
                         name = data['title'];
                     } else if (data['skos:prefLabel']) {
                         name = data['skos:prefLabel'];
-                    } else if (data['title']) {
-                        name = data['title'];
                     } else if (data['@graph'] && data['@graph'][0]) {
                         if (data['@graph'][0]['ceterms:name']) {
                             name = data['@graph'][0]['ceterms:name'];
@@ -1486,7 +1487,7 @@ export default {
             var url = EcRemote.urlAppend(server, service);
             url = EcRemote.upgradeHttpToHttps(url);
             var xhr = null;
-            if ((typeof httpStatus) === "undefined") {
+            if (typeof httpStatus === "undefined") {
                 xhr = new XMLHttpRequest();
                 xhr.open("GET", url, true);
                 if (headers != null) {
@@ -1509,9 +1510,9 @@ export default {
                 };
             }
             if (xhr != null) {
-                (xhr)["timeout"] = EcRemote.timeout;
+                xhr["timeout"] = EcRemote.timeout;
             }
-            if ((typeof httpStatus) !== "undefined") {
+            if (typeof httpStatus !== "undefined") {
                 if (success != null) {
                     success(JSON.stringify(httpGet(url)));
                 }
@@ -1751,7 +1752,9 @@ export default {
             this.showPossible = false;
         },
         changedObject: async function() {
-            if (!this.originalThing) { return; }
+            if (!this.originalThing) {
+                return; 
+            }
             if (this.shortType && this.changedObject === this.originalThing.shortId()) {
                 let type = "Ec" + this.shortType;
                 if (type === "EcProgressionModel") {
@@ -1764,7 +1767,9 @@ export default {
                     var thing = await window[type].get(this.changedObject);
                     this.originalThing = thing;
                     this.$emit('change-obj', thing);
-                    if (this.localClickToLoad === false) { await this.load(); }
+                    if (this.localClickToLoad === false) {
+                        await this.load(); 
+                    }
                 }
                 useEditorStore().setChangedObject(null);
             }

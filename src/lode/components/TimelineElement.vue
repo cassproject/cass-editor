@@ -110,8 +110,8 @@
 <script>
 import dayjs from 'dayjs';
 import common from '@/mixins/common.js';
-import { useEditorStore } from '@/stores/editor';
-import { useAppStore } from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
 export default {
     name: 'TimelineElement',
     mixins: [common],

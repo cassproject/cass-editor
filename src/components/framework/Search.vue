@@ -130,7 +130,7 @@ export default {
             this.sortBy = "name.keyword";
         } else {
             const editorStore = useEditorStore();
-            this.sortBy = (editorStore.conceptMode === true || editorStore.progressionMode === true || this.searchType === "Concept" || this.searchType === "ConceptScheme") ? "skos:prefLabel.keyword" : "name.keyword";
+            this.sortBy = editorStore.conceptMode === true || editorStore.progressionMode === true || this.searchType === "Concept" || this.searchType === "ConceptScheme" ? "skos:prefLabel.keyword" : "name.keyword";
         }
         
         useAppStore().setSearchTerm("");
@@ -186,8 +186,8 @@ export default {
                     search += " AND (ceasn\\:inProgressionModel:\"" + this.selectedCompetency["ceasn:inProgressionModel"] + "\")";
                 }
             }
-            if ((this.showMine && editorStore.conceptMode !== true && editorStore.progressionMode !== true) ||
-                (this.queryParams && (editorStore.conceptMode === true || editorStore.progressionMode === true) && this.queryParams.conceptShow === "mine")) {
+            if (this.showMine && editorStore.conceptMode !== true && editorStore.progressionMode !== true ||
+                this.queryParams && (editorStore.conceptMode === true || editorStore.progressionMode === true) && this.queryParams.conceptShow === "mine") {
                 if (this.currentUser) {
                     search += " AND (";
                     this.currentUser.forEach((user, i) => {
@@ -218,13 +218,13 @@ export default {
             var searchTerm = useAppStore().searchTerm;
             // Sort is not included when there's no search term
             if (searchTerm && searchTerm.length > 0) {
-                var order = (this.sortBy === "name.keyword" || this.sortBy === "skos:prefLabel.keyword") ? "asc" : "desc";
-                let type = (this.sortBy === "name.keyword" || this.sortBy === "skos:prefLabel.keyword") ? "text" : "date";
+                var order = this.sortBy === "name.keyword" || this.sortBy === "skos:prefLabel.keyword" ? "asc" : "desc";
+                let type = this.sortBy === "name.keyword" || this.sortBy === "skos:prefLabel.keyword" ? "text" : "date";
                 obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
             }
             const editorStore = useEditorStore();
-            if ((this.showMine && (editorStore.conceptMode !== true) && (editorStore.progressionMode !== true)) ||
-                ((editorStore.conceptMode === true || editorStore.progressionMode === true) && this.queryParams.conceptShow === "mine")) {
+            if (this.showMine && editorStore.conceptMode !== true && editorStore.progressionMode !== true ||
+                (editorStore.conceptMode === true || editorStore.progressionMode === true) && this.queryParams.conceptShow === "mine") {
                 obj.ownership = 'me';
             }
             return obj;
@@ -284,7 +284,7 @@ export default {
                     var relation = await EcAlignment.get(this.framework.relation[i]);
                     if (EcArray.has(selectedArray, relation.target)) {
                         if (this.queryParams.selectVerbose === "true") {
-                            ary.push(JSON.parse((rld).toJson()));
+                            ary.push(JSON.parse(rld.toJson()));
                         } else {
                             ary.push(relation.shortId());
                         }
@@ -333,7 +333,7 @@ export default {
                 this.sortBy = "name.keyword";
                 this.displayFirst.splice(0, this.displayFirst.length);
             } else {
-                this.sortBy = (useEditorStore().conceptMode === true || useEditorStore().progressionMode === true || this.searchType === "Concept" || this.searchType === "ConceptScheme") ? "skos:prefLabel.keyword" : "name.keyword";
+                this.sortBy = useEditorStore().conceptMode === true || useEditorStore().progressionMode === true || this.searchType === "Concept" || this.searchType === "ConceptScheme" ? "skos:prefLabel.keyword" : "name.keyword";
                 this.displayFirst.splice(0, this.displayFirst.length);
             }
         },

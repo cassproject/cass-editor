@@ -341,7 +341,7 @@
     </main-layout>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 import MainLayout from './../../layouts/MainLayout.vue';
 import debounce from 'lodash/debounce';
 import List from '@/lode/components/List.vue';
@@ -370,7 +370,7 @@ export default {
         };
     },
     created: function() {
-        this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
+        this.sortBy = this.conceptMode === true || this.progressionMode === true ? "dcterms:title.keyword" : "name.keyword";
         const editorStore = useEditorStore();
         editorStore.setT3Profile(false);
         editorStore.setFramework(null);
@@ -414,7 +414,7 @@ export default {
             }
         },
         type: function() {
-            return this.conceptMode ? "ConceptScheme" : (this.progressionMode ? "ConceptScheme" : "Framework");
+            return this.conceptMode ? "ConceptScheme" : this.progressionMode ? "ConceptScheme" : "Framework";
         },
         currentUser: function() {
             if (EcIdentityManager.default.ids.length > 0) {
@@ -441,8 +441,8 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (((this.filterByOwnedByMe) && (!this.conceptMode && !this.progressionMode)) ||
-                ((this.conceptMode || this.progressionMode) && this.queryParams && this.queryParams.conceptShow === "mine")) {
+            if (this.filterByOwnedByMe && (!this.conceptMode && !this.progressionMode) ||
+                (this.conceptMode || this.progressionMode) && this.queryParams && this.queryParams.conceptShow === "mine") {
                 if (this.currentUser) {
                     search += " AND (";
                     this.currentUser.forEach((user, i) => {
@@ -477,11 +477,11 @@ export default {
         paramObj: function() {
             let obj = {};
             obj.size = 20;
-            var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
-            let type = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "text" : "date";
+            var order = this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword" ? "asc" : "desc";
+            let type = this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword" ? "text" : "date";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
-            if ((this.filterByOwnedByMe && !this.conceptMode && !this.progressionMode) ||
-                ((this.conceptMode || this.progressionMode) && this.queryParams.conceptShow === "mine")) {
+            if (this.filterByOwnedByMe && !this.conceptMode && !this.progressionMode ||
+                (this.conceptMode || this.progressionMode) && this.queryParams.conceptShow === "mine") {
                 obj.ownership = 'me';
             }
             return obj;
@@ -646,7 +646,7 @@ export default {
         } else if (this.sortResults.id === "dateCreated") {
             this.sortBy = "schema:dateCreated";
         } else {
-            this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
+            this.sortBy = this.conceptMode === true || this.progressionMode === true ? "dcterms:title.keyword" : "name.keyword";
         }
         let documentBody = document.getElementById('frameworks');
         documentBody.addEventListener('scroll', debounce(this.scrollFunction, 100, {'leading': true}));
@@ -658,14 +658,14 @@ export default {
             } else if (this.sortResults.id === "dateCreated") {
                 this.sortBy = "schema:dateCreated";
             } else {
-                this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
+                this.sortBy = this.conceptMode === true || this.progressionMode === true ? "dcterms:title.keyword" : "name.keyword";
             }
         },
         conceptMode: function() {
-            this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
+            this.sortBy = this.conceptMode === true || this.progressionMode === true ? "dcterms:title.keyword" : "name.keyword";
         },
         progressionMode: function() {
-            this.sortBy = (this.conceptMode === true || this.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
+            this.sortBy = this.conceptMode === true || this.progressionMode === true ? "dcterms:title.keyword" : "name.keyword";
         }
     }
 };

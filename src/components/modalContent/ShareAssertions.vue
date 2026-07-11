@@ -192,8 +192,8 @@
 
 <script>
 import ModalTemplate from './ModalTemplate.vue';
-import { useAppStore } from '@/stores/app';
-import { useEditorStore } from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
 export default {
     name: 'ShareAssertionsModal',
     props: {
@@ -216,9 +216,9 @@ export default {
     computed: {
         filteredAvailableSubjects: function() {
             return this.availablePersons.filter(person => {
-                return (((person.getName() && person.getName().toLowerCase().indexOf(this.subjectFilter.toLowerCase()) > -1) ||
-                        (person.email && person.email.toLowerCase().indexOf(this.subjectFilter.toLowerCase()) > -1))
-                );
+                return person.getName() && person.getName().toLowerCase().indexOf(this.subjectFilter.toLowerCase()) > -1 ||
+                        person.email && person.email.toLowerCase().indexOf(this.subjectFilter.toLowerCase()) > -1
+                ;
             });
         },
         filteredAvailableTargets: function() {
@@ -227,9 +227,9 @@ export default {
                 if (myKey === person.owner[0]) {
                     return false;
                 }
-                return (((person.getName() && person.getName().toLowerCase().indexOf(this.targetFilter.toLowerCase()) > -1) ||
-                        (person.email && person.email.toLowerCase().indexOf(this.targetFilter.toLowerCase()) > -1))
-                );
+                return person.getName() && person.getName().toLowerCase().indexOf(this.targetFilter.toLowerCase()) > -1 ||
+                        person.email && person.email.toLowerCase().indexOf(this.targetFilter.toLowerCase()) > -1
+                ;
             });
         },
         notSelected: function() {

@@ -30,61 +30,63 @@
                                     :disabled="canEdit !== true"
                                     :group="{ name: 'test' }"
                                     handle=".handle"
-                                    item-key="id">
-                                    <template #item="{ element }">
-                                        <div>{{ element }}</div>
+                                    :item-key="(el) => el.obj.id">
+                                    <template #item>
+                                        <div class="is-hidden" />
+                                    </template>
+                                    <template #header>
+                                        <Component
+                                            :class="[dynamicThingComponent === 'Thing' ? parentObjectClass: '']"
+                                            :is="dynamicThingComponent"
+                                            :id="'scroll-' + framework.shortId().split('/').pop()"
+                                            :obj="framework"
+                                            :repo="repo"
+                                            :newFramework="newFramework"
+                                            :parentNotEditable="queryParams.view==='true'"
+                                            :profile="frameworkProfile"
+                                            @remove-object="removeObject"
+                                            @edit-node-event="onEditNode()"
+                                            @done-editing-node-event="onDoneEditingNode()"
+                                            :properties="properties">
+                                            <template #frameworkDetails>
+                                                <div class="lode__framework__info-bar">
+                                                    <span
+                                                        class="tag is-medium-grey has-text-dark"
+                                                        v-if="framework.competency && framework.competency.length == 1">
+                                                        {{ framework.competency.length }} item
+                                                    </span>
+                                                    <span
+                                                        class="tag is-medium-grey has-text-dark"
+                                                        v-else-if="framework.competency && framework.competency.length > 1">
+                                                        {{ framework.competency.length }} items
+                                                    </span>
+                                                    <span
+                                                        class="tag is-medium-grey has-text-dark"
+                                                        v-if="timestamp"
+                                                        :title="new Date(timestamp)">
+                                                        Last modified {{ isCeasn ? "(in CaSS)" : "" }} {{ lastModified }}
+                                                    </span>
+                                                    <span
+                                                        class="tag is-medium-grey has-text-dark"
+                                                        v-if="framework['schema:dateCreated']"
+                                                        :title="new Date(framework['schema:dateCreated'])">
+                                                        Created  {{ isCeasn ? "(in CaSS)" : "" }} {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
+                                                    </span>
+                                                    <span
+                                                        class="tag is-medium-grey has-text-dark"
+                                                        v-if="framework['Approved']"
+                                                        :title="framework['Approved']">
+                                                        Approved
+                                                    </span>
+                                                    <span
+                                                        class="tag is-medium-grey has-text-dark"
+                                                        v-if="framework['Published']"
+                                                        :title="framework['Published']">Published</span>
+                                                </div>
+                                            </template>
+                                        </Component>
                                     </template>
                                 </draggable>
-                                <Component
-                                    :class="[dynamicThingComponent === 'Thing' ? parentObjectClass: '']"
-                                    :is="dynamicThingComponent"
-                                    :id="'scroll-' + framework.shortId().split('/').pop()"
-                                    :obj="framework"
-                                    :repo="repo"
-                                    :newFramework="newFramework"
-                                    :parentNotEditable="queryParams.view==='true'"
-                                    :profile="frameworkProfile"
-                                    @remove-object="removeObject"
-                                    @edit-node-event="onEditNode()"
-                                    @done-editing-node-event="onDoneEditingNode()"
-                                    :properties="properties">
-                                    <template #frameworkDetails>
-                                        <div class="lode__framework__info-bar">
-                                            <span
-                                                class="tag is-medium-grey has-text-dark"
-                                                v-if="framework.competency && framework.competency.length == 1">
-                                                {{ framework.competency.length }} item
-                                            </span>
-                                            <span
-                                                class="tag is-medium-grey has-text-dark"
-                                                v-else-if="framework.competency && framework.competency.length > 1">
-                                                {{ framework.competency.length }} items
-                                            </span>
-                                            <span
-                                                class="tag is-medium-grey has-text-dark"
-                                                v-if="timestamp"
-                                                :title="new Date(timestamp)">
-                                                Last modified {{ isCeasn ? "(in CaSS)" : "" }} {{ lastModified }}
-                                            </span>
-                                            <span
-                                                class="tag is-medium-grey has-text-dark"
-                                                v-if="framework['schema:dateCreated']"
-                                                :title="new Date(framework['schema:dateCreated'])">
-                                                Created  {{ isCeasn ? "(in CaSS)" : "" }} {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
-                                            </span>
-                                            <span
-                                                class="tag is-medium-grey has-text-dark"
-                                                v-if="framework['Approved']"
-                                                :title="framework['Approved']">
-                                                Approved
-                                            </span>
-                                            <span
-                                                class="tag is-medium-grey has-text-dark"
-                                                v-if="framework['Published']"
-                                                :title="framework['Published']">Published</span>
-                                        </div>
-                                    </template>
-                                </Component>
                                 <div
                                     class="section"
                                     v-if="!hierarchyIsdoneLoading">
@@ -155,7 +157,7 @@
     </div>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 import draggable from 'vuedraggable';
 import dayjs from 'dayjs';
 import MainLayout from '@/layouts/MainLayout.vue';
@@ -222,9 +224,7 @@ export default {
             },
             frameworkDrag: [],
             configHasAlignments: false,
-            configHasLevels: false,
-            _isUnmounted: false,
-            _scrollHandler: null
+            configHasLevels: false
         };
     },
     computed: {
@@ -243,7 +243,7 @@ export default {
         },
         dynamicThingComponent: function() {
             const editorStore = useEditorStore();
-            if (this.editingFramework || (this.framework && editorStore.newFramework === this.framework.shortId())) {
+            if (this.editingFramework || this.framework && editorStore.newFramework === this.framework.shortId()) {
                 return 'ThingEditing';
             } else {
                 return 'Thing';
@@ -286,10 +286,10 @@ export default {
             if (this.isCeasn && this.framework.subType === 'Collection') {
                 return this.ctdlAsnCollectionProfile;
             }
-            if (this.isCeasn && ((this.config && !this.configSetOnFramework) || !this.config)) {
+            if (this.isCeasn && (this.config && !this.configSetOnFramework || !this.config)) {
                 return this.ctdlAsnFrameworkProfile;
             }
-            if (this.queryParams.tlaProfile === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
+            if (this.queryParams.tlaProfile === "true" && (this.config && !this.configSetOnFramework || !this.config)) {
                 return this.tlaFrameworkProfile;
             }
             if (this.config) {
@@ -371,10 +371,10 @@ export default {
             if (useEditorStore().t3Profile === true) {
                 return this.t3CompetencyProfile;
             }
-            if (this.isCeasn && ((this.config && !this.configSetOnFramework) || !this.config)) {
+            if (this.isCeasn && (this.config && !this.configSetOnFramework || !this.config)) {
                 return this.ctdlAsnCompetencyProfile;
             }
-            if (this.queryParams.tlaProfile === "true" && ((this.config && !this.configSetOnFramework) || !this.config)) {
+            if (this.queryParams.tlaProfile === "true" && (this.config && !this.configSetOnFramework || !this.config)) {
                 return this.tlaCompetencyProfile;
             }
             if (this.config) {
@@ -395,15 +395,25 @@ export default {
                     profile.secondaryProperties.push(key);
                     profile[key] = JSON.parse(JSON.stringify(this.config.levelsConfig[key]));
                     profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Level"}];
-                    profile[key]["valuesIndexed"] = function() { return me.levels; };
+                    profile[key]["valuesIndexed"] = function() {
+                        return me.levels; 
+                    };
                     if (!profile[key]["options"]) {
                         profile[key]["noTextEditing"] = 'true';
-                        profile[key]["add"] = function(selectedCompetency, levelId) { me.addLevel(selectedCompetency, levelId); };
-                        profile[key]["save"] = function() { me.saveFramework(); };
-                        profile[key]["remove"] = function(competency, levelId) { me.removeLevelFromFramework(levelId); };
+                        profile[key]["add"] = function(selectedCompetency, levelId) {
+                            me.addLevel(selectedCompetency, levelId); 
+                        };
+                        profile[key]["save"] = function() {
+                            me.saveFramework(); 
+                        };
+                        profile[key]["remove"] = function(competency, levelId) {
+                            me.removeLevelFromFramework(levelId); 
+                        };
                     } else {
                         profile[key]["add"] = "checkedOptions";
-                        profile[key]["save"] = function(selectedCompetency, checkedOptions, allOptions) { me.saveCheckedLevels(selectedCompetency, checkedOptions, allOptions); };
+                        profile[key]["save"] = function(selectedCompetency, checkedOptions, allOptions) {
+                            me.saveCheckedLevels(selectedCompetency, checkedOptions, allOptions); 
+                        };
                     }
                 }
                 var relationshipsHeading = null;
@@ -427,10 +437,16 @@ export default {
                         profile[relationshipsPriority].push(key);
                         profile[key] = JSON.parse(JSON.stringify(this.config.relationshipConfig[key]));
                         profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "https://schema.cassproject.org/0.4/Competency"}];
-                        profile[key]["valuesIndexed"] = function() { return me.relations[key]; };
+                        profile[key]["valuesIndexed"] = function() {
+                            return me.relations[key]; 
+                        };
                         profile[key]["noTextEditing"] = 'true';
-                        profile[key]["remove"] = async function(source, target) { await me.removeRelationFromFramework(source, key, target); };
-                        profile[key]["add"] = async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, key, values); };
+                        profile[key]["remove"] = async function(source, target) {
+                            await me.removeRelationFromFramework(source, key, target); 
+                        };
+                        profile[key]["add"] = async function(selectedCompetency, values) {
+                            await me.addRelationsToFramework(selectedCompetency, key, values); 
+                        };
                         profile[key]["save"] = function() {};
                         if (relationshipsHeading) {
                             profile[key]["heading"] = relationshipsHeading;
@@ -451,11 +467,19 @@ export default {
                         profile[key]["http://schema.org/rangeIncludes"] = [{"@id": "http://schema.org/URL"}];
                         profile[key]["http://www.w3.org/2000/01/rdf-schema#label"] = [{"@language": "en", "@value": key}];
                         profile[key]["http://www.w3.org/2000/01/rdf-schema#comment"] = [{"@language": "en", "@value": key}];
-                        profile[key]["valuesIndexed"] = function() { return me.alignments[key]; };
-                        profile[key]["remove"] = function(competency, id) { return me.removeResourceAlignment(id); };
-                        profile[key]["add"] = function(selectedCompetencyId, values) { return me.addResourceAlignments(selectedCompetencyId, key, values); };
+                        profile[key]["valuesIndexed"] = function() {
+                            return me.alignments[key]; 
+                        };
+                        profile[key]["remove"] = function(competency, id) {
+                            return me.removeResourceAlignment(id); 
+                        };
+                        profile[key]["add"] = function(selectedCompetencyId, values) {
+                            return me.addResourceAlignments(selectedCompetencyId, key, values); 
+                        };
                         profile[key]["save"] = function() {};
-                        profile[key]["update"] = function(value) { return me.updateResourceAlignments(key, value); };
+                        profile[key]["update"] = function(value) {
+                            return me.updateResourceAlignments(key, value); 
+                        };
                         if (relationshipsHeading) {
                             profile[key]["heading"] = relationshipsHeading;
                         }
@@ -552,11 +576,19 @@ export default {
                         ],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Level"}],
                         "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
-                        "valuesIndexed": function() { return me.levels; },
+                        "valuesIndexed": function() {
+                            return me.levels; 
+                        },
                         "noTextEditing": "true",
-                        "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
-                        "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
-                        "save": function() { me.saveFramework(); },
+                        "add": function(selectedCompetency) {
+                            me.addLevel(selectedCompetency); 
+                        },
+                        "remove": function(competency, levelId) {
+                            me.removeLevelFromFramework(levelId); 
+                        },
+                        "save": function() {
+                            me.saveFramework(); 
+                        },
                         "heading": "Connections"
                     },
                     "narrows": {
@@ -564,11 +596,17 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A sub-competency relationship which has relevance to this competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrows"}],
-                        "valuesIndexed": function() { return me.relations["narrows"]; },
+                        "valuesIndexed": function() {
+                            return me.relations["narrows"]; 
+                        },
                         "noTextEditing": "true",
-                        "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "narrows", values); },
+                        "add": async function(selectedCompetency, values) {
+                            await me.addRelationsToFramework(selectedCompetency, "narrows", values); 
+                        },
                         "save": function() {},
-                        "remove": async function(source, target) { await me.removeRelationFromFramework(source, "narrows", target); },
+                        "remove": async function(source, target) {
+                            await me.removeRelationFromFramework(source, "narrows", target); 
+                        },
                         "heading": "Connections"
                     },
                     "broadens": {
@@ -576,11 +614,17 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Covers other relevant competencies not found in this competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broadens"}],
-                        "valuesIndexed": function() { return me.relations["broadens"]; },
+                        "valuesIndexed": function() {
+                            return me.relations["broadens"]; 
+                        },
                         "noTextEditing": "true",
-                        "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "broadens", values); },
+                        "add": async function(selectedCompetency, values) {
+                            await me.addRelationsToFramework(selectedCompetency, "broadens", values); 
+                        },
                         "save": function() {},
-                        "remove": async function(source, target) { await me.removeRelationFromFramework(source, "broadens", target); },
+                        "remove": async function(source, target) {
+                            await me.removeRelationFromFramework(source, "broadens", target); 
+                        },
                         "heading": "Connections"
                     },
                     "isEquivalentTo": {
@@ -588,11 +632,17 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Represents same capability in all aspects to another competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Equivalent To"}],
-                        "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
+                        "valuesIndexed": function() {
+                            return me.relations["isEquivalentTo"]; 
+                        },
                         "noTextEditing": "true",
-                        "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
+                        "add": async function(selectedCompetency, values) {
+                            await me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); 
+                        },
                         "save": function() {},
-                        "remove": async function(source, target) { await me.removeRelationFromFramework(source, "isEquivalentTo", target); },
+                        "remove": async function(source, target) {
+                            await me.removeRelationFromFramework(source, "isEquivalentTo", target); 
+                        },
                         "heading": "Connections"
                     },
                     "requires": {
@@ -600,11 +650,17 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Another competency is prerequisite for this."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Requires"}],
-                        "valuesIndexed": function() { return me.relations["requires"]; },
+                        "valuesIndexed": function() {
+                            return me.relations["requires"]; 
+                        },
                         "noTextEditing": "true",
-                        "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "requires", values); },
+                        "add": async function(selectedCompetency, values) {
+                            await me.addRelationsToFramework(selectedCompetency, "requires", values); 
+                        },
                         "save": function() {},
-                        "remove": async function(source, target) { await me.removeRelationFromFramework(source, "requires", target); },
+                        "remove": async function(source, target) {
+                            await me.removeRelationFromFramework(source, "requires", target); 
+                        },
                         "heading": "Connections"
                     },
                     "implies": {
@@ -612,11 +668,17 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Another competency is implied by this."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Implies"}],
-                        "valuesIndexed": function() { return me.relations["implies"]; },
+                        "valuesIndexed": function() {
+                            return me.relations["implies"]; 
+                        },
                         "noTextEditing": "true",
-                        "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "implies", values); },
+                        "add": async function(selectedCompetency, values) {
+                            await me.addRelationsToFramework(selectedCompetency, "implies", values); 
+                        },
                         "save": function() {},
-                        "remove": async function(source, target) { await me.removeRelationFromFramework(source, "implies", target); },
+                        "remove": async function(source, target) {
+                            await me.removeRelationFromFramework(source, "implies", target); 
+                        },
                         "heading": "Connections"
                     },
                     "isRequiredBy": {
@@ -624,11 +686,17 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "This is a prerequisite for another competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Required By"}],
-                        "valuesIndexed": function() { return me.relations["isRequiredBy"]; },
+                        "valuesIndexed": function() {
+                            return me.relations["isRequiredBy"]; 
+                        },
                         "noTextEditing": "true",
-                        "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "isRequiredBy", values); },
+                        "add": async function(selectedCompetency, values) {
+                            await me.addRelationsToFramework(selectedCompetency, "isRequiredBy", values); 
+                        },
                         "save": function() {},
-                        "remove": async function(source, target) { await me.removeRelationFromFramework(source, "isRequiredBy", target); },
+                        "remove": async function(source, target) {
+                            await me.removeRelationFromFramework(source, "isRequiredBy", target); 
+                        },
                         "heading": "Connections"
                     },
                     "isEnabledBy": {
@@ -636,11 +704,17 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "A recommended option that speeds up acquisition of this competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Enabled By"}],
-                        "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
+                        "valuesIndexed": function() {
+                            return me.relations["isEnabledBy"]; 
+                        },
                         "noTextEditing": "true",
-                        "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
+                        "add": async function(selectedCompetency, values) {
+                            await me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); 
+                        },
                         "save": function() {},
-                        "remove": async function(source, target) { await me.removeRelationFromFramework(source, "isEnabledBy", target); },
+                        "remove": async function(source, target) {
+                            await me.removeRelationFromFramework(source, "isEnabledBy", target); 
+                        },
                         "heading": "Connections"
                     },
                     "isRelatedTo": {
@@ -648,11 +722,17 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "This competency has some degree of overlap with another."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Related To"}],
-                        "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
+                        "valuesIndexed": function() {
+                            return me.relations["isRelatedTo"]; 
+                        },
                         "noTextEditing": "true",
-                        "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
+                        "add": async function(selectedCompetency, values) {
+                            await me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); 
+                        },
                         "save": function() {},
-                        "remove": async function(source, target) { await me.removeRelationFromFramework(source, "isRelatedTo", target); },
+                        "remove": async function(source, target) {
+                            await me.removeRelationFromFramework(source, "isRelatedTo", target); 
+                        },
                         "heading": "Connections"
                     },
                     "desires": {
@@ -660,11 +740,17 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Recommended, assumed, or expected competency not essential to acquisition of this competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Desires"}],
-                        "valuesIndexed": function() { return me.relations["desires"]; },
+                        "valuesIndexed": function() {
+                            return me.relations["desires"]; 
+                        },
                         "noTextEditing": "true",
-                        "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "desires", values); },
+                        "add": async function(selectedCompetency, values) {
+                            await me.addRelationsToFramework(selectedCompetency, "desires", values); 
+                        },
                         "save": function() {},
-                        "remove": async function(source, target) { await me.removeRelationFromFramework(source, "desires", target); },
+                        "remove": async function(source, target) {
+                            await me.removeRelationFromFramework(source, "desires", target); 
+                        },
                         "heading": "Connections"
                     },
                     "isDesiredBy": {
@@ -672,11 +758,17 @@ export default {
                         "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "This is recommended, assumed, or expected but not essential to acquisition of another competency."}],
                         "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Desired By"}],
-                        "valuesIndexed": function() { return me.relations["isDesiredBy"]; },
+                        "valuesIndexed": function() {
+                            return me.relations["isDesiredBy"]; 
+                        },
                         "noTextEditing": "true",
-                        "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "isDesiredBy", values); },
+                        "add": async function(selectedCompetency, values) {
+                            await me.addRelationsToFramework(selectedCompetency, "isDesiredBy", values); 
+                        },
                         "save": function() {},
-                        "remove": async function(source, target) { await me.removeRelationFromFramework(source, "isDesiredBy", target); },
+                        "remove": async function(source, target) {
+                            await me.removeRelationFromFramework(source, "isDesiredBy", target); 
+                        },
                         "heading": "Connections"
                     },
                     "headings": ["General", "Connections", "Keys"],
@@ -990,7 +1082,9 @@ export default {
             var me = this;
             for (var i = 0; i < this.framework.relation.length; i++) {
                 var a = await EcAlignment.get(this.framework.relation[i]);
-                if (a == null) { continue; }
+                if (a == null) {
+                    continue; 
+                }
                 if (a.relationType === "narrows") {
                     if (a.target == null) continue;
                     if (a.source == null) continue;

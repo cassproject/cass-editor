@@ -123,10 +123,10 @@ export const cassApi = {
                             if (i !== 0) {
                                 toAdd += "&";
                             }
-                            toAdd += (key + "=" + val[i]);
+                            toAdd += key + "=" + val[i];
                         }
                     } else {
-                        toAdd += (key + "=" + val);
+                        toAdd += key + "=" + val;
                     }
                 }
                 return toAdd;

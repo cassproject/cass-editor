@@ -1161,19 +1161,19 @@ export const configuration = {
             if (this.currentConfig.fwkIdPriorty.equalsIgnoreCase("primary")) fwkConf.primaryProperties.push("@id");
             if (this.currentConfig.fwkDescPriority.equalsIgnoreCase("primary")) fwkConf.primaryProperties.push("http://schema.org/description");
             if (this.currentConfig.fwkClassPriority.equalsIgnoreCase("primary")) fwkConf.primaryProperties.push("https://schema.cassproject.org/0.4/classification");
-            if (this.currentConfig.fwkMarkingsPriority.equalsIgnoreCase("primary")) fwkConf.primaryProperties.push(("https://schema.cassproject.org/0.4/markings"));
+            if (this.currentConfig.fwkMarkingsPriority.equalsIgnoreCase("primary")) fwkConf.primaryProperties.push("https://schema.cassproject.org/0.4/markings");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.fwkCustomProperties, fwkConf.primaryProperties, "primary");
             fwkConf.secondaryProperties = [];
             if (this.currentConfig.fwkIdPriorty.equalsIgnoreCase("secondary")) fwkConf.secondaryProperties.push("@id");
             if (this.currentConfig.fwkDescPriority.equalsIgnoreCase("secondary")) fwkConf.secondaryProperties.push("http://schema.org/description");
             if (this.currentConfig.fwkClassPriority.equalsIgnoreCase("secondary")) fwkConf.secondaryProperties.push("https://schema.cassproject.org/0.4/classification");
-            if (this.currentConfig.fwkMarkingsPriority.equalsIgnoreCase("secondary")) fwkConf.secondaryProperties.push(("https://schema.cassproject.org/0.4/markings"));
+            if (this.currentConfig.fwkMarkingsPriority.equalsIgnoreCase("secondary")) fwkConf.secondaryProperties.push("https://schema.cassproject.org/0.4/markings");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.fwkCustomProperties, fwkConf.secondaryProperties, "secondary");
             fwkConf.tertiaryProperties = [];
             if (this.currentConfig.fwkIdPriorty.equalsIgnoreCase("tertiary")) fwkConf.tertiaryProperties.push("@id");
             if (this.currentConfig.fwkDescPriority.equalsIgnoreCase("tertiary")) fwkConf.tertiaryProperties.push("http://schema.org/description");
             if (this.currentConfig.fwkClassPriority.equalsIgnoreCase("tertiary")) fwkConf.tertiaryProperties.push("https://schema.cassproject.org/0.4/classification");
-            if (this.currentConfig.fwkMarkingsPriority.equalsIgnoreCase("tertiary")) fwkConf.tertiaryProperties.push(("https://schema.cassproject.org/0.4/markings"));
+            if (this.currentConfig.fwkMarkingsPriority.equalsIgnoreCase("tertiary")) fwkConf.tertiaryProperties.push("https://schema.cassproject.org/0.4/markings");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.fwkCustomProperties, fwkConf.tertiaryProperties, "tertiary");
         },
         buildFrameworkIdConfigObject(fwkConf) {
@@ -1697,7 +1697,7 @@ export const configuration = {
             if (this.currentConfig.compDescPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("http://schema.org/description");
             if (this.currentConfig.compTypePriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("http://purl.org/dc/terms/type");
             if (this.currentConfig.compClassPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("https://schema.cassproject.org/0.4/classification");
-            if (this.currentConfig.compMarkingsPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push(("https://schema.cassproject.org/0.4/markings"));
+            if (this.currentConfig.compMarkingsPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("https://schema.cassproject.org/0.4/markings");
             if (this.currentConfig.compAllowLevels && this.currentConfig.levelPriority.equalsIgnoreCase("primary")) compConf.primaryProperties.push("https://schema.cassproject.org/0.4/Level");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.primaryProperties, "primary");
             compConf.secondaryProperties = [];
@@ -1705,7 +1705,7 @@ export const configuration = {
             if (this.currentConfig.compDescPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("http://schema.org/description");
             if (this.currentConfig.compTypePriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("http://purl.org/dc/terms/type");
             if (this.currentConfig.compClassPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("https://schema.cassproject.org/0.4/classification");
-            if (this.currentConfig.compMarkingsPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push(("https://schema.cassproject.org/0.4/markings"));
+            if (this.currentConfig.compMarkingsPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("https://schema.cassproject.org/0.4/markings");
             if (this.currentConfig.compAllowLevels && this.currentConfig.levelPriority.equalsIgnoreCase("secondary")) compConf.secondaryProperties.push("https://schema.cassproject.org/0.4/Level");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.secondaryProperties, "secondary");
             compConf.tertiaryProperties = [];
@@ -1713,7 +1713,7 @@ export const configuration = {
             if (this.currentConfig.compDescPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("http://schema.org/description");
             if (this.currentConfig.compTypePriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("http://purl.org/dc/terms/type");
             if (this.currentConfig.compClassPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("https://schema.cassproject.org/0.4/classification");
-            if (this.currentConfig.compMarkingsPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push(("https://schema.cassproject.org/0.4/markings"));
+            if (this.currentConfig.compMarkingsPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("https://schema.cassproject.org/0.4/markings");
             if (this.currentConfig.compAllowLevels && this.currentConfig.levelPriority.equalsIgnoreCase("tertiary")) compConf.tertiaryProperties.push("https://schema.cassproject.org/0.4/Level");
             this.addCustomPropertiesToPriorityArray(this.currentConfig.compCustomProperties, compConf.tertiaryProperties, "tertiary");
         },

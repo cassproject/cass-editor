@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 
 export const useConfigurationStore = defineStore('configuration', {
     state: () => ({
@@ -23,7 +23,8 @@ export const useConfigurationStore = defineStore('configuration', {
         showMustBeLoggedInModal: false,
         showBrowserConfigSetModal: false,
         configToDelete: {},
-        availableConcepts: []
+        availableConcepts: [],
+        availableTypes: []
     }),
     getters: {
     },

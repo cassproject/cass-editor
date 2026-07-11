@@ -203,14 +203,15 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div
+                                        <button
+                                            type="button"
                                             class="button is-text is-small has-text-danger"
                                             @click="removeOwnerOrReader(group, 'group')"
                                             :disabled="group.currentUser && numGroupsAsOwner === 1 && group.view == 'admin' && cantRemoveCurrentUserAsOwner && !userIsOwner">
                                             <div class="icon">
                                                 <i class="fa fa-trash" />
                                             </div>
-                                        </div>
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -254,14 +255,15 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div
+                                        <button
+                                            type="button"
                                             class="button is-text is-small has-text-danger"
                                             @click="removeOwnerOrReader(user, 'user')"
                                             :disabled="cantRemoveCurrentUserAsOwner && user.currentUser && !numGroupsAsOwner">
                                             <div class="icon">
                                                 <i class="fa fa-trash" />
                                             </div>
-                                        </div>
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
@@ -284,42 +286,46 @@
             <div
                 v-if="confirmMakePrivate"
                 class="buttons is-centered">
-                <div
+                <button
+                    type="button"
                     @click="confirmMakePrivate = false"
                     :disabled="isProcessing"
                     class="button is-dark is-outlined">
                     <span class="icon">
                         <i class="fa fa-times" />
                     </span><span>cancel</span>
-                </div>
-                <div
+                </button>
+                <button
+                    type="button"
                     class="button is-primary is-outlined"
                     :disabled="isProcessing"
                     @click="makePrivate">
                     <span class="icon">
                         <i class="fa fa-check" />
                     </span><span>confirm make private</span>
-                </div>
+                </button>
             </div>
             <div
                 v-if="confirmMakePublic"
                 class="buttons is-centered">
-                <div
+                <button
+                    type="button"
                     @click="confirmMakePublic = false"
                     :disabled="isProcessing"
                     class="button is-dark is-outlined">
                     <span class="icon">
                         <i class="fa fa-times" />
                     </span><span>cancel</span>
-                </div>
-                <div
+                </button>
+                <button
+                    type="button"
                     class="button is-primary is-outlined"
                     :disabled="isProcessing"
                     @click="makePublic">
                     <span class="icon">
                         <i class="fa fa-check" />
                     </span><span>confirm make public</span>
-                </div>
+                </button>
             </div>
         </template>
     </modal-template>
@@ -328,10 +334,10 @@
 <script>
 import {cassUtil} from '@/mixins/cassUtil.js';
 import ModalTemplate from './ModalTemplate.vue';
-import { useAppStore } from '@/stores/app';
-import { useEditorStore } from '@/stores/editor';
-import { useUserStore } from '@/stores/user';
-import { useFeaturesEnabledStore } from '@/stores/featuresEnabled';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useUserStore} from '@/stores/user';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
 export default {
     name: 'ShareModal',
     props: {
@@ -358,7 +364,7 @@ export default {
                     label: 'View',
                     value: 'view',
                     disabled: true,
-                    title: 'Make the ' + (useEditorStore().conceptMode ? 'concept scheme' : (useEditorStore().progressionMode ? 'progression model' : 'framework')) + ' private to add users/groups with view access'
+                    title: 'Make the ' + (useEditorStore().conceptMode ? 'concept scheme' : useEditorStore().progressionMode ? 'progression model' : 'framework') + ' private to add users/groups with view access'
                 }
             ],
             groups: [],
@@ -397,11 +403,11 @@ export default {
             let link = window.location.href;
             link = link.replace('/frameworks', '').replace('/directory', '');
             if (this.directory) {
-                return (link + "?directoryId=" + this.directory.shortId());
+                return link + "?directoryId=" + this.directory.shortId();
             } else if (useEditorStore().conceptMode === true || useEditorStore().progressionMode === true) {
-                return (link + "?concepts=true&frameworkId=" + this.frameworkId);
+                return link + "?concepts=true&frameworkId=" + this.frameworkId;
             }
-            return (link + "?frameworkId=" + this.frameworkId);
+            return link + "?frameworkId=" + this.frameworkId;
         },
         framework: function() {
             if (this.objFromListItemInfo && (this.objFromListItemInfo.type === "Framework" || this.objFromListItemInfo.type === "ConceptScheme")) {
@@ -470,7 +476,7 @@ export default {
             if (this.directory) {
                 return 'directory';
             }
-            return useEditorStore().conceptMode ? 'concept scheme' : (useEditorStore().progressionMode ? 'progression model' : 'framework');
+            return useEditorStore().conceptMode ? 'concept scheme' : useEditorStore().progressionMode ? 'progression model' : 'framework';
         },
         shareEnabled: function() {
             if (this.resource) {
@@ -514,7 +520,7 @@ export default {
             }
         },
         checkIsPrivate: function() {
-            let obj = this.directory ? this.directory : (this.resource ? this.resource : this.framework);
+            let obj = this.directory ? this.directory : this.resource ? this.resource : this.framework;
             delete EcRepository.cache[obj.shortId()];
             let me = this;
             EcRepository.get(obj.shortId(), function(success) {
@@ -565,7 +571,7 @@ export default {
                     }
                     var user = {header: success.name, email: success.email, view: "admin", id: success.shortId(), changed: false, pk: pk, currentUser: currentUser};
                     // don't add user if already in array
-                    if ((me.users.filter(each => each.id === user.id)).length === 0) {
+                    if (me.users.filter(each => each.id === user.id).length === 0) {
                         me.users.push(user);
                         me.ownerCount++;
                     }
@@ -585,7 +591,7 @@ export default {
                             }
                         }
                         var org = {header: success.name, view: "admin", id: success.shortId(), changed: false, pk: pk, currentUser: currentUser};
-                        if ((me.groups.filter(each => each.id === org.id)).length === 0) {
+                        if (me.groups.filter(each => each.id === org.id).length === 0) {
                             me.groups.push(org);
                             me.ownerCount++;
                         }
@@ -602,7 +608,7 @@ export default {
                 appLog(success);
                 if (success) {
                     var user = {header: success.name, email: success.email, view: "view", id: success.shortId(), changed: false, pk: pk};
-                    if ((me.users.filter(each => each.id === user.id)).length === 0) {
+                    if (me.users.filter(each => each.id === user.id).length === 0) {
                         me.users.push(user);
                     }
                 }
@@ -612,7 +618,7 @@ export default {
                     appLog(success);
                     if (success) {
                         var org = {header: success.name, view: "view", id: success.shortId(), changed: false, pk: pk};
-                        if ((me.groups.filter(each => each.id === org.id)).length === 0) {
+                        if (me.groups.filter(each => each.id === org.id).length === 0) {
                             me.groups.push(org);
                         }
                     }
@@ -625,8 +631,10 @@ export default {
             var me = this;
             me.numGroupsAsOwner = 0;
             me.userIsOwner = false;
-            let obj = this.directory ? this.directory : (this.resource ? this.resource : this.framework);
-            if (me.isAdmin()) { me.ownerCount++; me.userIsOwner = true; }
+            let obj = this.directory ? this.directory : this.resource ? this.resource : this.framework;
+            if (me.isAdmin()) {
+                me.ownerCount++; me.userIsOwner = true; 
+            }
             if (obj.owner) {
                 for (var i = 0; i < obj.owner.length; i++) {
                     this.getEachOwner(obj.owner[i]);

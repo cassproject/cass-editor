@@ -14,7 +14,8 @@
                                     My User Groups
                                 </h3>
                                 <div class="buttons">
-                                    <div
+                                    <button
+                                        type="button"
                                         class="button is-rounded is-primary is-small"
                                         @click="createNewUserGroup(null)"
                                         :disabled="!amLoggedIn"
@@ -25,7 +26,7 @@
                                         <span>
                                             create new group
                                         </span>
-                                    </div>
+                                    </button>
                                 </div>
                                 <cass-panel>
                                     <cass-panel-item
@@ -33,7 +34,7 @@
                                         label="Member List"
                                         :nodes="[]"
                                         id="all-members"
-                                        @showDetails="showMemberListView"
+                                        @show-details="showMemberListView"
                                         key="all-members" />
                                     <cass-panel-item
                                         :depth="0"
@@ -41,7 +42,7 @@
                                         :nodes="group.subGroups"
                                         :id="group.id"
                                         v-for="group in userGroupDisplayList"
-                                        @showDetails="showGroupDetailsById"
+                                        @show-details="showGroupDetailsById"
                                         :key="group" />
                                 </cass-panel>
                             </div>
@@ -50,17 +51,17 @@
                     <!-- mobile vs of navigation -->
                     <div class="column is-12 is-hidden-desktop">
                         <cass-dropdown
-                            @closeDropdown="groupsDropdownActive=false"
+                            @close-dropdown="groupsDropdownActive=false"
                             :label="currentUserGroupName"
                             :active="groupsDropdownActive"
                             @click="groupsDropdownActive = true"
-                            @showDropdown="groupsDropdownActive = true">
+                            @show-dropdown="groupsDropdownActive = true">
                             <cass-dropdown-item
                                 :depth="0"
                                 label="Member List"
                                 :nodes="[]"
                                 id="all-members"
-                                @showDetails="showMemberListView"
+                                @show-details="showMemberListView"
                                 key="all-members" />
                             <cass-dropdown-item
                                 :depth="0"
@@ -68,7 +69,7 @@
                                 :nodes="group.subGroups"
                                 :id="group.id"
                                 v-for="group in userGroupDisplayList"
-                                @showDetails="showGroupDetailsById"
+                                @show-details="showGroupDetailsById"
                                 :key="group" />
                         </cass-dropdown>
                     </div>
@@ -214,12 +215,13 @@
                                                     Group name length max is 60 characters.  Please choose a shorter name
                                                 </p>
                                             </div>
-                                            <span
+                                            <button
+                                                type="button"
                                                 :disabled="currentUserGroupName.length > 60"
                                                 @click="isEditingCurrentGroupName = false"
                                                 class="button is-primary is-rounded is-small is-outlined">
                                                 done editing
-                                            </span>
+                                            </button>
                                         </div>
                                         <div
                                             class="field has-text-danger"
@@ -292,13 +294,14 @@
                                                     </p>
                                                 </div>
                                                 <div class="buttons">
-                                                    <span
+                                                    <button
+                                                        type="button"
                                                         @click="isEditingCurrentGroupDescription = false"
                                                         class="button is-rounded is-primary is-small is-outlined"
                                                         :class="currentUserGroupChanged ? '' : 'is-disabled'"
                                                         :disabled="!currentUserGroupChanged">
                                                         done editing
-                                                    </span>
+                                                    </button>
                                                 </div>
                                             </div>
                                             <div
@@ -332,7 +335,8 @@
                                                         member
                                                     </span>
                                                 </div>
-                                                <div
+                                                <button
+                                                    type="button"
                                                     v-if="currentUserGroupIsManager && currentUserGroupChanged"
                                                     :disabled="!currentUserGroupChanged"
                                                     :class=" currentUserGroupIsManager && currentUserGroupChanged ? '' : 'is-disabled'"
@@ -345,12 +349,13 @@
                                                     <span>
                                                         save
                                                     </span>
-                                                </div>
-                                                <div
+                                                </button>
+                                                <button
+                                                    type="button"
                                                     v-if="currentUserGroupIsManager && currentUserGroupChanged"
                                                     :disabled="!currentUserGroupChanged"
                                                     class="button is-fullwidth my-1 is-outlined is-rounded is-small"
-                                                    :class="currentUserGroupIsManager && currentUserGroupChanged ? '' : 'is-disbaled'"
+                                                    :class="currentUserGroupIsManager && currentUserGroupChanged ? '' : 'is-disabled'"
                                                     @click="cancelCurrentUserGroupChanges"
                                                     title="Cancel group changes">
                                                     <span class="icon">
@@ -359,7 +364,7 @@
                                                     <span>
                                                         Discard
                                                     </span>
-                                                </div>
+                                                </button>
                                                 <div
                                                     v-if="currentUserGroupIsManager && !currentUserGroupIsNewGroup"
                                                     class="button my-1 is-fullwidth is-rounded is-primary is-small"
@@ -720,7 +725,7 @@ import CassDropdown from '@/components/Dropdown';
 import CassDropdownItem from '@/components/DropdownItem';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import {cassUtil} from '@/mixins/cassUtil';
-import { useUserStore } from '@/stores/user';
+import {useUserStore} from '@/stores/user';
 
 export default {
     name: 'UserGroupEditor',
@@ -789,10 +794,10 @@ export default {
         filteredAvailablePersonsForMembership: function() {
             return this.availablePersonsForMembership.filter(person => {
                 if (this.currentUserGroupHasManager(person.shortId()) || this.currentUserGroupHasMember(person.shortId())) return false;
-                return (((person.getName() && person.getName().toLowerCase().indexOf(this.addMemberPersonFilter.toLowerCase()) > -1) ||
-                        (person.email && person.email.toLowerCase().indexOf(this.addMemberPersonFilter.toLowerCase()) > -1))
+                return person.getName() && person.getName().toLowerCase().indexOf(this.addMemberPersonFilter.toLowerCase()) > -1 ||
+                        person.email && person.email.toLowerCase().indexOf(this.addMemberPersonFilter.toLowerCase()) > -1
 
-                );
+                ;
             });
         }
     },
@@ -1327,7 +1332,7 @@ export default {
             }
         },
         sortMembershipData(membershipData) {
-            membershipData.sort((mo1, mo2) => (mo1.name > mo2.name) ? 1 : -1);
+            membershipData.sort((mo1, mo2) => mo1.name > mo2.name ? 1 : -1);
         },
         sortGroupMemberListMembershipData() {
             for (let gm of this.allGroupMembersList) {

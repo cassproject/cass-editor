@@ -25,7 +25,9 @@ export default {
                     [{"@language": "en", "@value": "The Credential Registry URL of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.registryURLs; },
+                    "valuesIndexed": function() {
+                        return me.registryURLs; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -38,7 +40,9 @@ export default {
                     [{"@language": "en", "@value": "The CTID of the framework."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.ctids; },
+                    "valuesIndexed": function() {
+                        return me.ctids; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -596,7 +600,9 @@ export default {
                     [{"@language": "en", "@value": "The Credential Registry URL of the collection."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.registryURLs; },
+                    "valuesIndexed": function() {
+                        return me.registryURLs; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -609,7 +615,9 @@ export default {
                     [{"@language": "en", "@value": "The CTID of the collection."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.ctids; },
+                    "valuesIndexed": function() {
+                        return me.ctids; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -957,7 +965,9 @@ export default {
                     [{"@language": "en", "@value": "The Credential Registry URL of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.registryURLs; },
+                    "valuesIndexed": function() {
+                        return me.registryURLs; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -971,7 +981,9 @@ export default {
                     [{"@language": "en", "@value": "The CTID of the competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.ctids; },
+                    "valuesIndexed": function() {
+                        return me.ctids; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -1270,11 +1282,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Covers all of the relevant concepts in the referenced competency as well as relevant concepts not found in the referenced competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broad Alignment"}],
-                    "valuesIndexed": function() { return me.relations["narrows"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["narrows"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "narrows", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "narrows", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "narrows", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "narrows", target); 
+                    },
                     "heading": "Connections"
                 },
                 "broadens": {
@@ -1282,11 +1300,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Covers all of the relevant concepts in this competency as well as relevant concepts not found in this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrow Alignment"}],
-                    "valuesIndexed": function() { return me.relations["broadens"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["broadens"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "broadens", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "broadens", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "broadens", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "broadens", target); 
+                    },
                     "heading": "Connections"
                 },
                 "isEquivalentTo": {
@@ -1294,11 +1318,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Relevant concepts in this competency and the referenced competency are coextensive."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Exact Alignment"}],
-                    "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["isEquivalentTo"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "isEquivalentTo", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "isEquivalentTo", target); 
+                    },
                     "heading": "Connections"
                 },
                 "majorRelated": {
@@ -1306,11 +1336,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Major overlap of relevant concepts between this competency and the referenced competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Major Alignment"}],
-                    "valuesIndexed": function() { return me.relations["majorRelated"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["majorRelated"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "majorRelated", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "majorRelated", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "majorRelated", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "majorRelated", target); 
+                    },
                     "heading": "Connections"
                 },
                 "minorRelated": {
@@ -1318,11 +1354,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Minor overlap of relevant concepts between this competency and the referenced competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Minor Alignment"}],
-                    "valuesIndexed": function() { return me.relations["minorRelated"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["minorRelated"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "minorRelated", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "minorRelated", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "minorRelated", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "minorRelated", target); 
+                    },
                     "heading": "Connections"
                 },
                 "requires": {
@@ -1330,11 +1372,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "This competency is a prerequisite to the referenced competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Prerequisite Alignment"}],
-                    "valuesIndexed": function() { return me.relations["requires"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["requires"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "requires", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "requires", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "requires", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "requires", target); 
+                    },
                     "heading": "Connections"
                 },
                 "https://purl.org/ctdlasn/terms/abilityEmbodied": {
@@ -1815,7 +1863,9 @@ export default {
                     [{"@language": "en", "@value": "The Credential Registry URL of the concept scheme."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.registryURLs; },
+                    "valuesIndexed": function() {
+                        return me.registryURLs; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -1828,7 +1878,9 @@ export default {
                     [{"@language": "en", "@value": "The CTID of the concept scheme."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.ctids; },
+                    "valuesIndexed": function() {
+                        return me.ctids; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -2207,7 +2259,9 @@ export default {
                     [{"@language": "en", "@value": "The Credential Registry URL of the concept."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.conceptRegistryUrls; },
+                    "valuesIndexed": function() {
+                        return me.conceptRegistryUrls; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -2220,7 +2274,9 @@ export default {
                     [{"@language": "en", "@value": "The CTID of the concept."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.conceptCtids; },
+                    "valuesIndexed": function() {
+                        return me.conceptCtids; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -2546,7 +2602,9 @@ export default {
                     [{"@language": "en", "@value": "The Credential Registry URL of the progression model."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.registryURLs; },
+                    "valuesIndexed": function() {
+                        return me.registryURLs; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -2559,7 +2617,9 @@ export default {
                     [{"@language": "en", "@value": "The CTID of the progression model."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.ctids; },
+                    "valuesIndexed": function() {
+                        return me.ctids; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -2938,7 +2998,9 @@ export default {
                     [{"@language": "en", "@value": "The Credential Registry URL of the progression level."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Credential Registry URL"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.conceptRegistryUrls; },
+                    "valuesIndexed": function() {
+                        return me.conceptRegistryUrls; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },
@@ -2951,7 +3013,9 @@ export default {
                     [{"@language": "en", "@value": "The CTID of the progression level."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "CTID"}],
                     "readOnly": "true",
-                    "valuesIndexed": function() { return me.conceptCtids; },
+                    "valuesIndexed": function() {
+                        return me.conceptCtids; 
+                    },
                     "max": 1,
                     "heading": "Keys"
                 },

@@ -57,9 +57,9 @@ import ModalTemplate from './ModalTemplate.vue';
 
 import {cassUtil} from '../../mixins/cassUtil';
 import common from '@/mixins/common.js';
-import { useAppStore } from '@/stores/app';
-import { useEditorStore } from '@/stores/editor';
-import { useUserStore } from '@/stores/user';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useUserStore} from '@/stores/user';
 
 export default {
     mixins: [cassUtil, common],
@@ -160,7 +160,7 @@ export default {
             return useAppStore().rightAsideObject;
         },
         deleteDirectoryDisabled() {
-            return (this.typedInName.trim() !== this.directory.name.trim());
+            return this.typedInName.trim() !== this.directory.name.trim();
         }
     },
     mounted: function() {

@@ -41,8 +41,8 @@
 <script>
 import ModalTemplate from './ModalTemplate.vue';
 import {cassApi} from '../../mixins/cassApi';
-import { useAppStore } from '@/stores/app';
-import { useFeaturesEnabledStore } from '@/stores/featuresEnabled';
+import {useAppStore} from '@/stores/app';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
 export default {
     name: 'LogoutSuccessModal',
     mixins: [cassApi],

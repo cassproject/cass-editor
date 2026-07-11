@@ -86,7 +86,9 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Employees"}]
                 },
                 "http://schema.org/subOrganization": {
-                    profile: function() { return me.profile; },
+                    profile: function() {
+                        return me.profile; 
+                    },
                     ...lodeStore.schemataLookup["http://schema.org/Organization"]["http://schema.org/subOrganization"],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Department"}]
                 }

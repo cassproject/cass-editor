@@ -29,7 +29,7 @@
 </template>
 <script>
 import dayjs from 'dayjs';
-import { useEditorStore } from '@/stores/editor';
+import {useEditorStore} from '@/stores/editor';
 
 export default {
     name: 'Assertion',

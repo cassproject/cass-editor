@@ -195,7 +195,7 @@ export default {
         },
         supportedFiles: function() {
             const editorStore = useEditorStore();
-            return (editorStore.conceptMode === true || editorStore.progressionMode === true) ? this.supportedConceptFileTypes : this.supportedFileTypes;
+            return editorStore.conceptMode === true || editorStore.progressionMode === true ? this.supportedConceptFileTypes : this.supportedFileTypes;
         },
         loggedOnPerson: function() {
             const userStore = useUserStore();

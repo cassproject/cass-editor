@@ -167,9 +167,9 @@
                         </transition>
                         <!-- step framework list for selecting a & b -->
                         <transition
-                            v-if="step === 1"
                             name="slide-fade">
                             <div
+                                v-if="step === 1"
                                 class="column is-12 crosswalk__list">
                                 <div class="container">
                                     <List
@@ -265,9 +265,10 @@
                             </div>
                         </transition>
                         <transition
-                            v-if="step === 3"
                             name="slide-fade">
-                            <div class="is-12 crosswalk__summary">
+                            <div
+                                v-if="step === 3"
+                                class="is-12 crosswalk__summary">
                                 <div
                                     class="box mt-6"
                                     style="max-width: 600px; display:block; margin: auto;"
@@ -419,7 +420,9 @@ export default {
     props: {
         queryParams: {
             type: Object,
-            default: () => { return {}; }
+            default: () => {
+                return {}; 
+            }
         }
     },
     components: {
@@ -562,8 +565,8 @@ export default {
         paramObj: function() {
             let obj = {};
             obj.size = 20;
-            var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
-            let type = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "text" : "date";
+            var order = this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword" ? "asc" : "desc";
+            let type = this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword" ? "text" : "date";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
             if (this.filterByOwnedByMe) {
                 obj.ownership = 'me';
@@ -575,7 +578,7 @@ export default {
             if (this.queryParams && this.queryParams.filter != null) {
                 search += " AND (" + this.queryParams.filter + ")";
             }
-            if (this.showMine || (this.queryParams && this.queryParams.show === "mine")) {
+            if (this.showMine || this.queryParams && this.queryParams.show === "mine") {
                 if (EcIdentityManager.default.ids.length > 0) {
                     search += " AND (";
                     for (var i = 0; i < EcIdentityManager.default.ids.length; i++) {

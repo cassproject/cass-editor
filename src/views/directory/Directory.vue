@@ -32,20 +32,22 @@
                             @click="createSubdirectory = false">
                             Cancel
                         </div>
-                        <div
+                        <button
+                            type="button"
                             class="button is-primary"
                             :class="subdirectoryName.length === 0 ? 'is-disabled' : ''"
                             :disabled="subdirectoryName.length === 0"
                             @click="saveNewSubdirectory">
                             Create
-                        </div>
-                        <div
+                        </button>
+                        <button
+                            type="button"
                             class="button is-primary"
                             :class="subdirectoryName.length === 0 ? 'is-disabled' : ''"
                             :disabled="subdirectoryName.length === 0"
                             @click="saveNewSubdirectoryAndAddAnother">
                             Create and add another
-                        </div>
+                        </button>
                     </div>
                 </div>
             </template>
@@ -99,13 +101,14 @@
                             @click="createResource = false; resourceName = ''; resourceUrl = ''">
                             Cancel
                         </div>
-                        <div
+                        <button
+                            type="button"
                             class="button is-primary"
                             :class="(resourceName.length === 0 || resourceUrl.length === 0 || !validResourceUrl) ? 'is-disabled' : ''"
                             :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !validResourceUrl)"
                             @click="saveNewResource">
                             Create
-                        </div>
+                        </button>
                     </div>
                 </div>
                 <div
@@ -117,13 +120,14 @@
                             @click="editResource = false; resource = null;">
                             Cancel
                         </div>
-                        <div
+                        <button
+                            type="button"
                             class="button is-primary"
                             :class="(resourceName.length === 0 || resourceUrl.length === 0 || !validResourceUrl) ? 'is-disabled' : ''"
                             :disabled="(resourceName.length === 0 || resourceUrl.length === 0 || !validResourceUrl)"
                             @click="saveEditedResource">
                             Save
-                        </div>
+                        </button>
                     </div>
                 </div>
             </template>
@@ -231,7 +235,7 @@
             </template>
             <template #right>
                 <RightAside
-                    @editResource="editResource = true; resource = $event"
+                    @edit-resource="editResource = true; resource = $event"
                     v-if="showRightAside" />
             </template>
             <div class="section">
@@ -267,7 +271,7 @@
     </div>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 import debounce from 'lodash/debounce';
 import DirectoryList from './DirectoryList.vue';
 import common from '@/mixins/common.js';
@@ -402,8 +406,8 @@ export default {
         paramObj: function() {
             let obj = {};
             obj.size = 20;
-            var order = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "asc" : "desc";
-            let type = (this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword") ? "text" : "date";
+            var order = this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword" ? "asc" : "desc";
+            let type = this.sortBy === "name.keyword" || this.sortBy === "dcterms:title.keyword" ? "text" : "date";
             obj.sort = '[ { "' + this.sortBy + '": {"order" : "' + order + '" , "unmapped_type" : "' + type + '",  "missing" : "_last"}} ]';
             if (this.showMine) {
                 obj.ownership = 'me';
@@ -443,7 +447,7 @@ export default {
                 checked: val
             };
             const appStore = useAppStore();
-            appStore.singleQuickFilter(filter);
+            appStore.setSingleQuickFilter(filter);
         },
         closeCreateDropDown: function() {
             if (this.createDropDownActive) {

@@ -32,7 +32,7 @@ import ModalTemplate from './ModalTemplate.vue';
 
 import {cassUtil} from '../../mixins/cassUtil';
 import common from '@/mixins/common.js';
-import { useEditorStore } from '@/stores/editor';
+import {useEditorStore} from '@/stores/editor';
 
 export default {
     mixins: [cassUtil, common],

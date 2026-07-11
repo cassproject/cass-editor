@@ -91,7 +91,7 @@
                                 @expand-event="onExpandEvent()"
                                 @edit-node-event="onEditNode()"
                                 @done-editing-node-event="onDoneEditingNode()"
-                                @addNode="onAddNodeEvent()"
+                                @add-node="onAddNodeEvent()"
                                 :parentNotEditable="!canEdit"
                                 :profile="profile"
                                 :childrenExpanded="childrenExpanded"
@@ -170,7 +170,8 @@
             <div
                 v-if="view === 'crosswalk' && subview === 'crosswalkSource'"
                 class="crosswalk-buttons__source">
-                <div
+                <button
+                    type="button"
                     @click="setWorkingAlignmentsSource"
                     :disabled="sourceState !== 'ready'"
                     class="button is-outlined is-small is-primary crosswalk-buttons__source__create">
@@ -178,7 +179,7 @@
                         <i class="fa fa-plus" />
                     </span>
                     <span>add</span>
-                </div>
+                </button>
                 <div
                     v-show="sourceState === 'selectType' && isSelectedWorkingAlignmentsSource && workingAlignmentsType ===''"
                     class="field is-grouped has-background-primary crosswalk-select-field">
@@ -317,7 +318,7 @@
                 :disabled="canEdit != true || !isDraggable"
                 @start="beginDrag"
                 @end="endDrag"
-                item-key="obj.id">
+                :item-key="(el) => el.obj.id">
                 <template #item="{ element: item, index: i }">
                     <HierarchyNode
                         :depth="depth + 1"
@@ -361,7 +362,7 @@
     </li>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 import draggable from 'vuedraggable';
 import {mapState} from 'pinia';
 import {useAppStore} from '@/stores/app';
@@ -469,10 +470,10 @@ export default {
     },
     computed: {
         indent() {
-            return `translate(${(this.depth * 16 - 16)}px)`;
+            return `translate(${this.depth * 16 - 16}px)`;
         },
         calcWidth() {
-            return `calc(100% - ${(this.depth * 16 - 16)}px) !important`;
+            return `calc(100% - ${this.depth * 16 - 16}px) !important`;
         },
         ...mapState(useCrosswalkStore, [
             'workingAlignmentsSource',
@@ -502,7 +503,7 @@ export default {
             }
         },
         isPotentialCrosswalkTarget: function() {
-            return (this.view === 'crosswalk' && this.subview === 'crosswalkTarget');
+            return this.view === 'crosswalk' && this.subview === 'crosswalkTarget';
         },
         isSelectedWorkingAlignmentsSource: function() {
             if (this.workingAlignmentsSource === this.obj.shortId() && this.subview === 'crosswalkSource') return true;
@@ -617,7 +618,7 @@ export default {
         if (this.selectAll) {
             this.checked = this.selectAll;
         }
-        if ((this.propagateParentChecked === 'parent') && !this.newCompetency) {
+        if (this.propagateParentChecked === 'parent' && !this.newCompetency) {
             this.checked = this.parentChecked;
         }
         if (this.selectedArray && this.selectedArray.length) {
@@ -879,7 +880,7 @@ export default {
             var toId = null;
             var toContainerId = this.$parent.$parent.parent.shortId();
             // If attempting to move this to top level, then set toContainerId to null and toId equal to fromId to indicate top level
-            if (toContainerId.includes('Framework') || (this.parent["ceasn:isTopChildOf"] && this.parent["ceasn:isTopChildOf"].includes(toContainerId))) {
+            if (toContainerId.includes('Framework') || this.parent["ceasn:isTopChildOf"] && this.parent["ceasn:isTopChildOf"].includes(toContainerId)) {
                 toContainerId = '';
                 toId = fromId;
             }
@@ -976,7 +977,7 @@ export default {
         },
         workingAlignmentsType: function(val) {
             // This was getting spammed a lot...added extra check
-            if (val !== '' && (this.obj.shortId() === this.workingAlignmentsSource)) {
+            if (val !== '' && this.obj.shortId() === this.workingAlignmentsSource) {
                 useCrosswalkStore().setSourceState('selectTargets');
                 useCrosswalkStore().setTargetState('ready');
                 useCrosswalkStore().populateWorkingAlignmentMap();
@@ -1042,7 +1043,7 @@ export default {
         cutId: function() {
             if (this.cutId === this.obj.shortId()) {
                 // operation is permitted
-                if (this.obj.type === "Competency" || (this.obj.type === "Concept" && this.canEditThing)) {
+                if (this.obj.type === "Competency" || this.obj.type === "Concept" && this.canEditThing) {
                     this.isItemCut = true;
                     useEditorStore().setCutOrCopyContainerId(this.parent.shortId());
                 } else {
@@ -1054,7 +1055,7 @@ export default {
         },
         copyId: function() {
             if (this.copyId === this.obj.shortId()) {
-                if (this.obj.type === "Competency" || (this.obj.type === "Concept" && this.canEditThing)) {
+                if (this.obj.type === "Competency" || this.obj.type === "Concept" && this.canEditThing) {
                     this.isItemCopied = true;
                     useEditorStore().setCutOrCopyContainerId(this.parent.shortId());
                 } else {
@@ -1065,8 +1066,8 @@ export default {
             }
         },
         isItemFocused: function() {
-            if (this.isItemFocused && ((this.copyId && this.copyId !== this.obj.shortId()) || (this.cutId && this.cutId !== this.obj.shortId())) &&
-                (this.obj.type === "Competency" || (this.obj.type === "Concept" && this.canEditThing))) {
+            if (this.isItemFocused && (this.copyId && this.copyId !== this.obj.shortId() || this.cutId && this.cutId !== this.obj.shortId()) &&
+                (this.obj.type === "Competency" || this.obj.type === "Concept" && this.canEditThing)) {
                 this.canPaste = true;
                 useEditorStore().setNodeInFocus(this.obj.shortId());
             } else {
@@ -1078,7 +1079,7 @@ export default {
         },
         paste: function() {
             var nodeToPasteUnder = useEditorStore().nodeInFocus;
-            if (this.paste && nodeToPasteUnder === this.obj.shortId() && (this.obj.type === "Competency" || (this.obj.type === "Concept" && this.canEditThing))) {
+            if (this.paste && nodeToPasteUnder === this.obj.shortId() && (this.obj.type === "Competency" || this.obj.type === "Concept" && this.canEditThing)) {
                 this.move(this.cutId ? this.cutId : this.copyId, null, useEditorStore().cutOrCopyContainerId, this.obj.shortId(), this.cutId !== null, 0);
                 const editorStore = useEditorStore();
                 editorStore.setCutId(null);

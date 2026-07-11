@@ -31,7 +31,8 @@
             </div>
 
             <!-- User info -->
-            <div class="px-3 mb-3 pb-1 cass-editor__logged-in-user-info"
+            <div
+                class="px-3 mb-3 pb-1 cass-editor__logged-in-user-info"
                 v-if="showUserInfo && displayName !== 'No user'">
                 <h3
                     v-if="availableIdentities.length < 2"
@@ -78,10 +79,12 @@
                         <span v-if="showSideNav">logout</span>
                     </button>
                 </div>
-                <ul class="menu-list"
+                <ul
+                    class="menu-list"
                     v-else-if="!hideLogoutButton">
                     <li class="mt-1 has-text-white">
-                        <a @click="performApplicationLogout"
+                        <a
+                            @click="performApplicationLogout"
                             title="Logout">
                             <span class="icon">
                                 <i class="fa fa-sign-out-alt" />
@@ -202,7 +205,8 @@
                     class="has-text-white"
                     v-show="showSideNav && pluginsEnabled"
                     :key="navLink">
-                    <a @click="setLaunchPluginValues(navLink)"
+                    <a
+                        @click="setLaunchPluginValues(navLink)"
                         :title="showSideNav ? '' : '{{ navLink.launchName }}'">
                         <span class="icon">
                             <i class="fa fa-plug" />
@@ -336,7 +340,8 @@
                 class="menu-list"
                 v-if="queryParams.ceasnDataFields === 'true' && showConcepts">
                 <li class="has-text-white">
-                    <router-link :to="{path: '/progressionLevels', query: queryParams}"
+                    <router-link
+                        :to="{path: '/progressionLevels', query: queryParams}"
                         :title="showSideNav && queryParams.ceasnDataFields === 'true' ? '' : 'Progression Models'">
                         <span class="icon">
                             <i class="fa fa-layer-group" />
@@ -364,7 +369,8 @@
                     class="has-text-white"
                     v-show="showSideNav && pluginsEnabled"
                     :key="navLink">
-                    <a @click="setLaunchPluginValues(navLink)"
+                    <a
+                        @click="setLaunchPluginValues(navLink)"
                         :title="showSideNav ? '' : '{{ navLink.launchName }}'">
                         <span class="icon">
                             <i class="fa fa-plug" />
@@ -383,7 +389,8 @@
             <ul
                 class="menu-list">
                 <li v-if="configurationsEnabled">
-                    <router-link :to="{path: '/configuration', query: queryParams}"
+                    <router-link
+                        :to="{path: '/configuration', query: queryParams}"
                         :title="showSideNav ? '' : 'Configurations'">
                         <span class="icon">
                             <i class="fa fa-cog" />
@@ -717,7 +724,7 @@ export default {
         },
         supportedFiles: function() {
             const editorStore = useEditorStore();
-            return (editorStore.conceptMode === true || editorStore.progressionMode === true) ? this.supportedConceptFileTypes : this.supportedFileTypes;
+            return editorStore.conceptMode === true || editorStore.progressionMode === true ? this.supportedConceptFileTypes : this.supportedFileTypes;
         },
         loggedOnPerson: function() {
             const userStore = useUserStore();

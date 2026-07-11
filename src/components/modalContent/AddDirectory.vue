@@ -28,20 +28,22 @@
                         @click="useAppStore().closeModal()">
                         Cancel
                     </div>
-                    <div
+                    <button
+                        type="button"
                         class="button is-primary"
                         :class="directoryName.length === 0 ? 'is-disabled' : ''"
                         :disabled="directoryName.length === 0"
                         @click="$emit('create-directory', directoryName)">
                         Create
-                    </div>
-                    <div
+                    </button>
+                    <button
+                        type="button"
                         class="button is-primary"
                         :class="directoryName.length === 0 ? 'is-disabled' : ''"
                         :disabled="directoryName.length === 0"
                         @click="$emit('create-another-directory', directoryName)">
                         Create and add another
-                    </div>
+                    </button>
                 </div>
             </div>
         </template>
@@ -50,7 +52,7 @@
 
 <script>
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
-import { useAppStore } from '@/stores/app';
+import {useAppStore} from '@/stores/app';
 export default {
     name: 'AddDirectoryModal',
     data() {

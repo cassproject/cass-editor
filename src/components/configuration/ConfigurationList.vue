@@ -50,8 +50,8 @@ import {cassUtil} from '@/mixins/cassUtil';
 import {configuration} from '@/mixins/configuration';
 import {mapState} from 'pinia';
 
-import { useConfigurationStore } from '@/stores/configuration';
-import { useEditorStore } from '@/stores/editor';
+import {useConfigurationStore} from '@/stores/configuration';
+import {useEditorStore} from '@/stores/editor';
 export default {
     name: 'ConfigurationList',
     components: {

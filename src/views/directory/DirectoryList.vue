@@ -15,7 +15,9 @@
                         <!-- directories -->
                         <li
                             v-if="!firstSearchProcessing && (!directory || directory.length === 0)"
-                            class="cass--list--item no-results">No results found</li>
+                            class="cass--list--item no-results">
+                            No results found
+                        </li>
                         <li
                             class="cass--list--item "
                             :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
@@ -196,7 +198,7 @@
                             once: false
                         }"
                         class="infinite-loading-sentinel">
-                        <span class="icon"><i class="fas fa-spinner fa-spin"></i></span>
+                        <span class="icon"><i class="fas fa-spinner fa-spin" /></span>
                     </div>
                 </div>
             </div>
@@ -339,8 +341,12 @@ export default {
             if (isVisible && !this.isLoadingMore) {
                 this.isLoadingMore = true;
                 const $state = {
-                    loaded: () => { this.isLoadingMore = false; },
-                    complete: () => { this.hasMore = false; this.isLoadingMore = false; }
+                    loaded: () => {
+                        this.isLoadingMore = false; 
+                    },
+                    complete: () => {
+                        this.hasMore = false; this.isLoadingMore = false; 
+                    }
                 };
                 this.loadResults($state);
             }
@@ -375,7 +381,7 @@ export default {
                 this.getSubDirectoryIds(this.directoryId, function() {
                     if (me.directoryIdList.length > 0) {
                         for (let i in me.directoryIdList) {
-                            list += (" OR directory:\"" + me.directoryIdList[i] + "\" OR parentDirectory:\"" + me.directoryIdList[i] + "\"");
+                            list += " OR directory:\"" + me.directoryIdList[i] + "\" OR parentDirectory:\"" + me.directoryIdList[i] + "\"";
                         }
                         list += ")";
                         success(list);
@@ -394,7 +400,7 @@ export default {
                                 if (i != 0) {
                                     list += " OR ";
                                 }
-                                list += ("@id:\"" + competencies[i] + "\"");
+                                list += "@id:\"" + competencies[i] + "\"";
                             }
                             list += ")";
                             success(list);
@@ -410,7 +416,7 @@ export default {
                                     if (i != 0) {
                                         list += " OR ";
                                     }
-                                    list += ("@id:\"" + competencies[i] + "\"");
+                                    list += "@id:\"" + competencies[i] + "\"";
                                 }
                                 list += ")";
                                 success(list);
@@ -487,34 +493,34 @@ export default {
                 } else {
                     search = "(@type:" + type + " AND (";
                     for (let i = 0; i < me.applySearchTo.length; i++) {
-                        if ((type === "Framework" && me.applySearchTo[i].id === "frameworkName") ||
-                        (type === "Competency" && me.applySearchTo[i].id === "competencyName") ||
-                        (type === "Directory" && me.applySearchTo[i].id === "directoryName")) {
+                        if (type === "Framework" && me.applySearchTo[i].id === "frameworkName" ||
+                        type === "Competency" && me.applySearchTo[i].id === "competencyName" ||
+                        type === "Directory" && me.applySearchTo[i].id === "directoryName") {
                             if (termAdded) {
                                 search += " OR ";
                             }
-                            search += ("name:" + me.searchTerm);
+                            search += "name:" + me.searchTerm;
                             termAdded = true;
-                        } else if ((type === "Framework" && me.applySearchTo[i].id === "frameworkDescription") ||
-                        (type === "Competency" && me.applySearchTo[i].id === "competencyDescription") ||
-                        (type === "Directory" && me.applySearchTo[i].id === "directoryDescription")) {
+                        } else if (type === "Framework" && me.applySearchTo[i].id === "frameworkDescription" ||
+                        type === "Competency" && me.applySearchTo[i].id === "competencyDescription" ||
+                        type === "Directory" && me.applySearchTo[i].id === "directoryDescription") {
                             if (termAdded) {
                                 search += " OR ";
                             }
-                            search += ("description:" + me.searchTerm);
+                            search += "description:" + me.searchTerm;
                             termAdded = true;
                         } else if (type === "Framework") {
                             if (termAdded) {
                                 search += " OR ";
                             }
                             // Other framework property from config
-                            search += (this.applySearchTo[i].id + ":" + me.searchTerm);
+                            search += this.applySearchTo[i].id + ":" + me.searchTerm;
                             termAdded = true;
                         } else if (type === "Competency" && me.applySearchTo[i].id === "competencyLabel") {
                             if (termAdded) {
                                 search += " OR ";
                             }
-                            search += ("ceasn\\:competencyLabel:" + me.searchTerm);
+                            search += "ceasn\\:competencyLabel:" + me.searchTerm;
                             termAdded = true;
                         } else if (me.applySearchTo[i].id === "ownerName") {
                             let paramObj = {};
@@ -608,7 +614,7 @@ export default {
                                         var obj = new window[type]();
                                         obj.copyFrom(await EcEncryptedValue.fromEncryptedValue(result));
                                         if (!EcArray.has(me.resultIds, obj.id)) {
-                                            if (!me.searchTerm || (me.searchTerm && obj.getName().includes(me.searchTerm))) {
+                                            if (!me.searchTerm || me.searchTerm && obj.getName().includes(me.searchTerm)) {
                                                 me[arrayType].push(obj);
                                                 me.resultIds.push(obj.id);
                                             }

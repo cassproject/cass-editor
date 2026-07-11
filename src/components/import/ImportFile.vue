@@ -203,7 +203,7 @@
                                 <div>
                                     {{ set.lines }}
                                 </div>
-                                <br />
+                                <br>
                                 <div class="control">
                                     <label for="select-ctid">select CTID </label>
                                     <select
@@ -282,7 +282,9 @@ export default {
         },
         importFile: {
             type: Array,
-            default: () => { return []; }
+            default: () => {
+                return []; 
+            }
         },
         importTransition: {
             type: String,
@@ -488,7 +490,7 @@ export default {
             this.duplicateSets = [];
             const duplicates = useAppStore().importDuplicates;
             duplicates.forEach((duplicate) => {
-                const foundIndex = this.duplicateSets.findIndex((set) => (set.competencyText === duplicate.competencyText) && (set.codedNotation === duplicate.codedNotation));
+                const foundIndex = this.duplicateSets.findIndex((set) => set.competencyText === duplicate.competencyText && set.codedNotation === duplicate.codedNotation);
                 if (foundIndex >= 0) {
                     this.duplicateSets[foundIndex].lines += ', ' + duplicate.line;
                     this.duplicateSets[foundIndex].duplicates.push({

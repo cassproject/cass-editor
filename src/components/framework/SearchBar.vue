@@ -198,7 +198,7 @@ export default {
             const appStore = useAppStore();
             appStore.setSortResults([]);
             const editorStore = useEditorStore();
-            this.sortBy = (editorStore.conceptMode === true || editorStore.progressionMode === true) ? "dcterms:title.keyword" : "name.keyword";
+            this.sortBy = editorStore.conceptMode === true || editorStore.progressionMode === true ? "dcterms:title.keyword" : "name.keyword";
         },
         removeFilter: function(filterType, val) {
             const appStore = useAppStore();
@@ -223,7 +223,7 @@ export default {
         ...mapState(useEditorStore, ['queryParams', 'firstSearchProcessing']),
         type: function() {
             const editorStore = useEditorStore();
-            return (editorStore.conceptMode === true || editorStore.progressionMode === true) ? "ConceptScheme" : "Framework";
+            return editorStore.conceptMode === true || editorStore.progressionMode === true ? "ConceptScheme" : "Framework";
         },
         filteredSearchTo: function() {
             let filterValues = this.applySearchTo.filter(item => item.checked === true);

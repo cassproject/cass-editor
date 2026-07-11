@@ -86,7 +86,7 @@ export default {
             }
             var me = this;
             var relations = [];
-            new EcAsyncHelper().each((this.framework ? this.framework.relation : this.importFramework.relation), function(relationId, done) {
+            new EcAsyncHelper().each(this.framework ? this.framework.relation : this.importFramework.relation, function(relationId, done) {
                 EcAlignment.get(relationId, function(a) {
                     if (a && a.source && a.target) {
                         var relation = {};

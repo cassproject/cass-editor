@@ -59,8 +59,8 @@
 <script>
 import ModalTemplate from './ModalTemplate.vue';
 import saveAs from 'file-saver';
-import { useAppStore } from '@/stores/app';
-import { useEditorStore } from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
 export default {
     name: 'ExportOptionsModal',
     props: {

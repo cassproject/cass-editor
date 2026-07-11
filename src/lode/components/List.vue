@@ -14,7 +14,9 @@
                 <ul class="cass--list">
                     <li
                         v-if="!firstSearchProcessing && (!results || results.length === 0)"
-                        class="cass--list--item no-results">No results found</li>
+                        class="cass--list--item no-results">
+                        No results found
+                    </li>
                     <li
                         class="cass--list--item"
                         v-for="(item) in results"
@@ -149,7 +151,7 @@
                         once: false
                     }"
                     class="infinite-loading-sentinel">
-                    <span class="icon"><i class="fas fa-spinner fa-spin"></i></span>
+                    <span class="icon"><i class="fas fa-spinner fa-spin" /></span>
                 </div>
             </div>
         </div>
@@ -162,9 +164,9 @@ import common from '@/mixins/common.js';
 import Breadcrumbs from './Breadcrumbs.vue';
 import {cassUtil} from '@/mixins/cassUtil.js';
 import debounce from 'lodash/debounce';
-import { useAppStore } from '@/stores/app';
-import { useCrosswalkStore } from '@/stores/crosswalk';
-import { useEditorStore } from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useCrosswalkStore} from '@/stores/crosswalk';
+import {useEditorStore} from '@/stores/editor';
 export default {
     name: 'List',
     props: {
@@ -327,8 +329,12 @@ export default {
             if (isVisible && !this.isLoadingMore) {
                 this.isLoadingMore = true;
                 const $state = {
-                    loaded: () => { this.isLoadingMore = false; },
-                    complete: () => { this.hasMore = false; this.isLoadingMore = false; }
+                    loaded: () => {
+                        this.isLoadingMore = false; 
+                    },
+                    complete: () => {
+                        this.hasMore = false; this.isLoadingMore = false; 
+                    }
                 };
                 this.loadMore($state);
             }
@@ -359,21 +365,21 @@ export default {
             } else {
                 search = "((@type:" + type + " OR (EncryptedValue AND \\*encryptedType:" + type + "))" + " AND (";
                 for (let i = 0; i < this.applySearchTo.length; i++) {
-                    if ((type === "Framework" && this.applySearchTo[i].id === "frameworkName") ||
-                    (type === "Competency" && this.applySearchTo[i].id === "competencyName") ||
-                    (type === "Directory" && this.applySearchTo[i].id === "directoryName")) {
+                    if (type === "Framework" && this.applySearchTo[i].id === "frameworkName" ||
+                    type === "Competency" && this.applySearchTo[i].id === "competencyName" ||
+                    type === "Directory" && this.applySearchTo[i].id === "directoryName") {
                         if (termAdded) {
                             search += " OR ";
                         }
-                        search += ("name:" + this.searchTerm + '*');
+                        search += "name:" + this.searchTerm + '*';
                         termAdded = true;
-                    } else if ((type === "Framework" && this.applySearchTo[i].id === "frameworkDescription") ||
-                    (type === "Competency" && this.applySearchTo[i].id === "competencyDescription") ||
-                    (type === "Directory" && this.applySearchTo[i].id === "directoryDescription")) {
+                    } else if (type === "Framework" && this.applySearchTo[i].id === "frameworkDescription" ||
+                    type === "Competency" && this.applySearchTo[i].id === "competencyDescription" ||
+                    type === "Directory" && this.applySearchTo[i].id === "directoryDescription") {
                         if (termAdded) {
                             search += " OR ";
                         }
-                        search += ("description:" + this.searchTerm + '*');
+                        search += "description:" + this.searchTerm + '*';
                         termAdded = true;
                     } else if (this.applySearchTo[i].id === "ownerName") {
                         let paramObj = {};
@@ -417,13 +423,13 @@ export default {
                             search += " OR ";
                         }
                         // Other framework property from config
-                        search += (this.applySearchTo[i].id + ":" + this.searchTerm + '*');
+                        search += this.applySearchTo[i].id + ":" + this.searchTerm + '*';
                         termAdded = true;
                     } else if (type === "Competency" && this.applySearchTo[i].id === "competencyLabel") {
                         if (termAdded) {
                             search += " OR ";
                         }
-                        search += ("ceasn\\:competencyLabel:" + this.searchTerm + '*');
+                        search += "ceasn\\:competencyLabel:" + this.searchTerm + '*';
                         termAdded = true;
                     }
                 }
@@ -443,7 +449,9 @@ export default {
                 var paramObj = null;
                 if (me.paramObj) {
                     paramObj = Object.assign({}, me.paramObj);
-                    if (me.searchTerm != null && me.searchTerm !== "") { delete paramObj.sort; }
+                    if (me.searchTerm != null && me.searchTerm !== "") {
+                        delete paramObj.sort; 
+                    }
                 }
                 if (!me.firstSearchProcessing) {
                     me.start += me.paramObj.size;
@@ -453,7 +461,7 @@ export default {
                 me.repo.searchWithParams(search, paramObj, null, async function(results) {
                     if (gen !== me.searchGeneration) return; // Stale search, abandon
                     for (let result of results) {
-                        if (!me.filterToEditable || (me.filterToEditable && me.canEditAny(result))) {
+                        if (!me.filterToEditable || me.filterToEditable && me.canEditAny(result)) {
                             if (!EcArray.has(me.resultIds, result.id)) {
                                 me.resultIds.push(result.id);
                                 if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
@@ -505,14 +513,16 @@ export default {
                 var paramObj = null;
                 if (me.paramObj) {
                     paramObj = Object.assign({}, me.paramObj);
-                    if (me.searchTerm != null && me.searchTerm !== "") { delete paramObj.sort; }
+                    if (me.searchTerm != null && me.searchTerm !== "") {
+                        delete paramObj.sort; 
+                    }
                 }
                 paramObj.start = me.start;
                 me.repo.searchWithParams(search, paramObj, function(result) {
                 }, async function(results) {
                     if (gen !== me.searchGeneration) return; // Stale search, abandon
                     for (let result of results) {
-                        if (!me.filterToEditable || (me.filterToEditable && me.canEditAny(result))) {
+                        if (!me.filterToEditable || me.filterToEditable && me.canEditAny(result)) {
                             if (!EcArray.has(me.resultIds, result.id)) {
                                 me.resultIds.push(result.id);
                                 if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
@@ -587,12 +597,14 @@ export default {
                     var paramObj = null;
                     if (me.paramObj) {
                         paramObj = Object.assign({}, me.paramObj);
-                        if (me.searchTerm != null && me.searchTerm !== "") { delete paramObj.sort; }
+                        if (me.searchTerm != null && me.searchTerm !== "") {
+                            delete paramObj.sort; 
+                        }
                     }
                     me.repo.searchWithParams(search, paramObj, function(result) {
                     }, async function(results) {
                         for (let result of results) {
-                            if (!me.filterToEditable || (me.filterToEditable && me.canEditAny(result))) {
+                            if (!me.filterToEditable || me.filterToEditable && me.canEditAny(result)) {
                                 if (!EcArray.has(me.resultIds, result.id)) {
                                     me.resultIds.push(result.id);
                                     if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, result.shortId())) {
@@ -646,7 +658,9 @@ export default {
             } else if (this.paramObj && (this.searchTerm !== "" || !this.displayFirst || this.displayFirst.length === 0)) {
                 var me = this;
                 var localParamObj = Object.assign({}, this.paramObj);
-                if (me.searchTerm != null && me.searchTerm !== "") { delete localParamObj.sort; }
+                if (me.searchTerm != null && me.searchTerm !== "") {
+                    delete localParamObj.sort; 
+                }
                 if (me.nonDirectoryResults) {
                     this.start += this.paramObj.size;
                 }
@@ -666,7 +680,7 @@ export default {
                     me.repo.searchWithParams(search, localParamObj, function(result) {
                     }, async function(results) {
                         for (let result of results) {
-                            if (!me.filterToEditable || (me.filterToEditable && me.canEditAny(result))) {
+                            if (!me.filterToEditable || me.filterToEditable && me.canEditAny(result)) {
                                 if (me.searchingForCompetencies) {
                                     if (!EcArray.has(me.resultIds, result.id)) {
                                         me.resultIds.push(result.id);
@@ -726,7 +740,9 @@ export default {
             var me = this;
             this.searchingForCompetencies = true;
             var subLocalParamObj = Object.assign({}, me.paramObj);
-            if (me.searchTerm != null && me.searchTerm !== "") { delete subLocalParamObj.sort; }
+            if (me.searchTerm != null && me.searchTerm !== "") {
+                delete subLocalParamObj.sort; 
+            }
             subLocalParamObj.start = me.subStart;
             if (subLocalParamObj.sort && subLocalParamObj.sort.indexOf("dcterms:title") !== -1) {
                 subLocalParamObj.sort = subLocalParamObj.sort.replace('dcterms:title', 'skos:prefLabel');
@@ -736,7 +752,7 @@ export default {
                 me.repo.searchWithParams(subSearch, subLocalParamObj, function(subResult) {
                 }, async function(subResults) {
                     for (let subResult of subResults) {
-                        if (!me.filterToEditable || (me.filterToEditable && me.canEditAny(subResult))) {
+                        if (!me.filterToEditable || me.filterToEditable && me.canEditAny(subResult)) {
                             if (!EcArray.has(me.resultIds, subResult.id)) {
                                 me.resultIds.push(subResult.id);
                                 if (!me.idsNotPermittedInSearch || me.idsNotPermittedInSearch.length === 0 || !EcArray.has(me.idsNotPermittedInSearch, subResult.shortId())) {

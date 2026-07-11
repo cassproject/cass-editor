@@ -33,7 +33,8 @@
                                                 type="url">
                                         </div>
                                     </div>
-                                    <div class="field"
+                                    <div
+                                        class="field"
                                         v-if="!conceptMode">
                                         <div class="buttons is-right">
                                             <button
@@ -206,9 +207,11 @@
                                                 <label>Directories</label>
                                                 <option
                                                     value="all">
-                                                    <span v-if="!conceptMode"
+                                                    <span
+                                                        v-if="!conceptMode"
                                                         class="has-text-dark">All frameworks</span>
-                                                    <span v-else
+                                                    <span
+                                                        v-else
                                                         class="has-text-dark">All taxonomies</span>
                                                 </option>
                                                 <option
@@ -245,7 +248,8 @@
                                         </div>
                                     </div>
                                     <!-- multi select for frameworks -->
-                                    <div class="field"
+                                    <div
+                                        class="field"
                                         v-if="!conceptMode">
                                         <div
                                             class="select is-fullwidth is-primary is-multiple">
@@ -266,7 +270,8 @@
                                             Select the framework(s) to import.
                                         </p>
                                     </div>
-                                    <div class="field"
+                                    <div
+                                        class="field"
                                         v-else>
                                         <div
                                             class="select is-fullwidth is-primary is-multiple">
@@ -660,13 +665,13 @@ export default {
                             for (var j = 0; j < cacheUrls.length; j++) {
                                 var url = cacheUrls[j];
                                 if (url.indexOf(md5) !== -1) {
-                                    (EcRepository.cache)[url] = d;
+                                    EcRepository.cache[url] = d;
                                     break;
                                 }
                             }
                         }
-                        (EcRepository.cache)[d.shortId()] = d;
-                        (EcRepository.cache)[d.id] = d;
+                        EcRepository.cache[d.shortId()] = d;
+                        EcRepository.cache[d.id] = d;
                     }
                 }
                 if (success != null) {
@@ -988,7 +993,9 @@ export default {
             var uuid = data.identifier;
             var identity = EcIdentityManager.default.ids[0];
             var formData = new FormData();
-            if (identity != null) { formData.append('owner', identity.ppk.toPk().toPem()); }
+            if (identity != null) {
+                formData.append('owner', identity.ppk.toPk().toPem()); 
+            }
             EcRemote.postInner(this.repo.selectedServer, "ims/case/harvest?caseEndpoint=" + this.importServerUrl + "&dId=" + uuid, formData, null, function(success) {
                 me.caseDocs[firstIndex].loading = false;
                 me.caseDocs[firstIndex].success = true;
@@ -1008,7 +1015,11 @@ export default {
                     var fallbackId = null;
                     var report = success;
                     if (typeof report === 'string') {
-                        try { report = JSON.parse(report); } catch (e) { report = null; }
+                        try {
+                            report = JSON.parse(report); 
+                        } catch (e) {
+                            report = null; 
+                        }
                     }
                     if (report && report.results && report.results[0] && report.results[0].frameworkId) {
                         fallbackId = report.results[0].frameworkId;

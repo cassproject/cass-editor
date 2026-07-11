@@ -365,11 +365,19 @@ export default {
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Level"}],
                     "http://schema.org/rangeIncludes": [{"@id": "https://schema.cassproject.org/0.4/Level"}],
-                    "valuesIndexed": function() { return me.levels; },
+                    "valuesIndexed": function() {
+                        return me.levels; 
+                    },
                     "noTextEditing": "true",
-                    "add": function(selectedCompetency) { me.addLevel(selectedCompetency); },
-                    "remove": function(competency, levelId) { me.removeLevelFromFramework(levelId); },
-                    "save": function() { me.saveFramework(); },
+                    "add": function(selectedCompetency) {
+                        me.addLevel(selectedCompetency); 
+                    },
+                    "remove": function(competency, levelId) {
+                        me.removeLevelFromFramework(levelId); 
+                    },
+                    "save": function() {
+                        me.saveFramework(); 
+                    },
                     "heading": "General"
                 },
                 "http://purl.org/dc/terms/type": {
@@ -504,11 +512,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A sub-competency relationship which has relevance to this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Narrows"}],
-                    "valuesIndexed": function() { return me.relations["narrows"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["narrows"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "narrows", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "narrows", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "narrows", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "narrows", target); 
+                    },
                     "heading": "Relations"
                 },
                 "broadens": {
@@ -516,11 +530,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Covers other relevant competencies not found in this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Broadens"}],
-                    "valuesIndexed": function() { return me.relations["broadens"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["broadens"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "broadens", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "broadens", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "broadens", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "broadens", target); 
+                    },
                     "heading": "Relations"
                 },
                 "isEquivalentTo": {
@@ -528,11 +548,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Represents same capability in all aspects to another competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Equivalent To"}],
-                    "valuesIndexed": function() { return me.relations["isEquivalentTo"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["isEquivalentTo"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "isEquivalentTo", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "isEquivalentTo", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "isEquivalentTo", target); 
+                    },
                     "heading": "Relations"
                 },
                 "requires": {
@@ -540,11 +566,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Another competency is prerequisite for this."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Requires"}],
-                    "valuesIndexed": function() { return me.relations["requires"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["requires"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "requires", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "requires", values); 
+                    },
                     "save": function() { },
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "requires", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "requires", target); 
+                    },
                     "heading": "Relations"
                 },
                 "implies": {
@@ -552,11 +584,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "This competency implies another competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Implies"}],
-                    "valuesIndexed": function() { return me.relations["implies"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["implies"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "implies", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "implies", values); 
+                    },
                     "save": function() { },
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "implies", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "implies", target); 
+                    },
                     "heading": "Relations"
                 },
                 "isImpliedBy": {
@@ -564,11 +602,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                         [{"@language": "en", "@value": "Another competency is implied by this."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "isImpliedBy"}],
-                    "valuesIndexed": function() { return me.relations["isImpliedBy"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["isImpliedBy"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "isImpliedBy", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "isImpliedBy", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "isImpliedBy", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "isImpliedBy", target); 
+                    },
                     "heading": "Relations"
                 },
                 "isEnabledBy": {
@@ -576,11 +620,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "A recommended option that speeds up acquisition of this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Enabled By"}],
-                    "valuesIndexed": function() { return me.relations["isEnabledBy"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["isEnabledBy"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "isEnabledBy", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "isEnabledBy", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "isEnabledBy", target); 
+                    },
                     "heading": "Relations"
                 },
                 "isRelatedTo": {
@@ -588,11 +638,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "This competency has some degree of overlap with another."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Is Related To"}],
-                    "valuesIndexed": function() { return me.relations["isRelatedTo"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["isRelatedTo"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "isRelatedTo", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "isRelatedTo", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "isRelatedTo", target); 
+                    },
                     "heading": "Relations"
                 },
                 "desires": {
@@ -600,11 +656,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#comment":
                     [{"@language": "en", "@value": "Recommended, assumed, or expected competency not essential to acquisition of this competency."}],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Desires"}],
-                    "valuesIndexed": function() { return me.relations["desires"]; },
+                    "valuesIndexed": function() {
+                        return me.relations["desires"]; 
+                    },
                     "noTextEditing": "true",
-                    "add": async function(selectedCompetency, values) { await me.addRelationsToFramework(selectedCompetency, "desires", values); },
+                    "add": async function(selectedCompetency, values) {
+                        await me.addRelationsToFramework(selectedCompetency, "desires", values); 
+                    },
                     "save": function() {},
-                    "remove": async function(source, target) { await me.removeRelationFromFramework(source, "desires", target); },
+                    "remove": async function(source, target) {
+                        await me.removeRelationFromFramework(source, "desires", target); 
+                    },
                     "heading": "Relations"
                 },
                 "headings": ["Keys", "General", "Context", "Tagging", "Scales", "Relations"],

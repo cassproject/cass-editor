@@ -40,7 +40,7 @@
         </template>
         <template
             #modal-body
-            v-if="isSearching">
+            v-else>
             <Search view="multi-edit" />
         </template>
         <template #modal-foot>
@@ -82,9 +82,9 @@
 import AddProperty from '@/lode/components/AddProperty.vue';
 import Search from '../framework/Search.vue';
 import ModalTemplate from './ModalTemplate.vue';
-import { useAppStore } from '@/stores/app';
-import { useEditorStore } from '@/stores/editor';
-import { useLodeStore } from '@/stores/lode';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useLodeStore} from '@/stores/lode';
 export default {
     name: 'MultiEdit',
     components: {
@@ -157,7 +157,7 @@ export default {
             // Validate input
             if (range.length === 1 && (range[0] === "http://schema.org/URL" ||
             range[0].toLowerCase().indexOf("concept") !== -1 || range[0].toLowerCase().indexOf("competency") !== -1 ||
-            (range[0].toLowerCase().indexOf("level") !== -1 && !this.checkedOptions))) {
+            range[0].toLowerCase().indexOf("level") !== -1 && !this.checkedOptions)) {
                 if (value.indexOf("http") === -1) {
                     this.addedPropertiesAndValues[index].error = "This property must be a URL. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/.";
                     return;
@@ -227,7 +227,7 @@ export default {
         applyToMultiple: function() {
             var me = this;
             this.errorMessage = [];
-            if (me.addedPropertiesAndValues.length === 0 || (me.addedPropertiesAndValues[0].property === "")) {
+            if (me.addedPropertiesAndValues.length === 0 || me.addedPropertiesAndValues[0].property === "") {
                 return me.addErrorMessage("Saving to multiple requires a property and value.");
             }
             this.isProcessing = true;

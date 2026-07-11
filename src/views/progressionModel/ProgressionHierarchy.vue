@@ -106,7 +106,8 @@
                             create new
                         </span>
                     </div>
-                    <div
+                    <button
+                        type="button"
                         v-if="view === 'framework' || view === 'concept'"
                         title="Cut progression level"
                         :disabled="!canCopyOrCut"
@@ -116,8 +117,9 @@
                         <span class="icon">
                             <i class="fas handle fa-cut" />
                         </span>
-                    </div>
-                    <div
+                    </button>
+                    <button
+                        type="button"
                         v-if="view === 'framework' || view === 'concept'"
                         :disabled="!canPaste"
                         class="button is-outlined "
@@ -127,7 +129,7 @@
                         <span class="icon">
                             <i class="fa fa-paste" />
                         </span>
-                    </div>
+                    </button>
                     <div
                         v-if="view === 'concept'"
                         @click="computeHierarchy(true)"
@@ -214,7 +216,7 @@
                 @start="beginDrag"
                 handle=".handle"
                 @end="endDrag"
-                item-key="obj.id">
+                :item-key="(el) => el.obj.id">
                 <template #item="{ element, index }">
                     <HierarchyNode
                         :depth="1"
@@ -253,7 +255,7 @@
     </div>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 import draggable from 'vuedraggable';
 
 import common from '@/mixins/common.js';
@@ -347,7 +349,9 @@ export default {
             if (!this.once) return this.structure;
             appLog("Computing hierarchy.");
             var precache = [];
-            if (this.container["skos:hasTopConcept"] != null) { precache = precache.concat(this.container["skos:hasTopConcept"]); }
+            if (this.container["skos:hasTopConcept"] != null) {
+                precache = precache.concat(this.container["skos:hasTopConcept"]); 
+            }
             if (precache.length > 0) {
                 this.repo.multiget(precache, function(success) {
                     me.computeHierarchy(false);
@@ -517,7 +521,9 @@ export default {
         removePrecedence: async function() {
             return new Promise(async(resolve) => {
                 let structure = [];
-                if (this.container == null) { return r; }
+                if (this.container == null) {
+                    return r; 
+                }
                 if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
                     if (this.container["ceterms:precedes"] || this.container["ceterms:precededBy"]) {
                         if (this.container["ceterms:precedes"]) delete this.container["ceterms:precedes"];
@@ -555,7 +561,9 @@ export default {
         },
         computeHierarchy: async function(setOrder) {
             let structure = [];
-            if (this.container == null) { return r; }
+            if (this.container == null) {
+                return r; 
+            }
             if (this.container["skos:hasTopConcept"] !== null && this.container["skos:hasTopConcept"] !== undefined) {
                 for (var i = 0; i < this.container["skos:hasTopConcept"].length; i++) {
                     var c = await EcConcept.get(this.container["skos:hasTopConcept"][i]);
@@ -580,26 +588,26 @@ export default {
             let output = "[";
             for (let i = 0; i < structure.length; i++) {
                 if (structure[i].obj) {
-                    output += structure[i].obj["skos:prefLabel"]["@value"] + ((i === structure.length - 1) && !(structure[i].children && structure[i].children.length > 0) ? "" : ", ");
+                    output += structure[i].obj["skos:prefLabel"]["@value"] + (i === structure.length - 1 && !(structure[i].children && structure[i].children.length > 0) ? "" : ", ");
                 }
                 if (structure[i].children.length > 0) {
                     for (let j = 0; j < structure[i].children.length; j++) {
                         if (structure[i].children[j]) {
                             let children = structure[i].children;
                             output += (j === 0 ? "(" : "") + children[j].obj["skos:prefLabel"]["@value"] + (j === structure[i].children.length - 1 ? ")" : ", ");
-                            output += (j === structure[i].children.length - 1 ? (i === structure.length - 1 ? "]" : ", ") : "");
+                            output += j === structure[i].children.length - 1 ? i === structure.length - 1 ? "]" : ", " : "";
                             if (children[j].children.length > 0) {
                                 for (let k = 0; k < children[j].children.length; k++) {
                                     if (children[j].children[k]) {
                                         output += (k === 0 ? "(" : "") + children[j].children[k].obj["skos:prefLabel"]["@value"] + (k === children[j].children.length - 1 ? ")" : ", ");
-                                        output += (k === children[j].children.length - 1 ? (j === children.length - 1 ? "]" : ", ") : "");
+                                        output += k === children[j].children.length - 1 ? j === children.length - 1 ? "]" : ", " : "";
                                     }
                                 }
                             }
                         }
                     }
                 } else {
-                    output += (i === structure.length - 1 ? "]" : "");
+                    output += i === structure.length - 1 ? "]" : "";
                 }
             }
             return output;
@@ -660,7 +668,7 @@ export default {
                     return;
                 }
                 if (unorderedStructure !== null && unorderedStructure.length) {
-                    while (changesMade && (numChangesMade < 100)) {
+                    while (changesMade && numChangesMade < 100) {
                         changesMade = false;
                         let i;
                         if (property === "ceterms:precedes") {
@@ -712,7 +720,7 @@ export default {
                 let changesMade = false;
                 let childChangesMade = true;
                 let numChildChangesMade = 0; // Prevents endless loop when model properties are inconsistent
-                while (childChangesMade && (numChildChangesMade < 100)) {
+                while (childChangesMade && numChildChangesMade < 100) {
                     childChangesMade = false;
                     let j;
                     if (property === "ceterms:precedes") {
@@ -775,7 +783,7 @@ export default {
                 }
                 let node1Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(node1.id));
                 let node2Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(sibling.id));
-                node2 = ({"obj": parentStructure[node2Index].obj, "children": parentStructure[node2Index].children});
+                node2 = {"obj": parentStructure[node2Index].obj, "children": parentStructure[node2Index].children};
                 if (property === "ceterms:precedes") {
                     if (node1Index + 1 === node2Index) {
                         // Nodes are already in order
@@ -806,12 +814,12 @@ export default {
                     }
                     let node1Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(sibling.id));
                     let node2Index = await parentStructure.findIndex(item => EcRemoteLinkedData.trimVersionFromUrl(item.obj ? item.obj.id : item.id) === EcRemoteLinkedData.trimVersionFromUrl(node2.id));
-                    if ((node1Index < 0) || (node1Index >= parentStructure.length) ||
-                        (node2Index < 0) || (node2Index >= parentStructure.length)) {
+                    if (node1Index < 0 || node1Index >= parentStructure.length ||
+                        node2Index < 0 || node2Index >= parentStructure.length) {
                         appLog('Node index not found');
                         return false;
                     }
-                    node2 = ({"obj": parentStructure[node2Index].obj, "children": parentStructure[node2Index].children});
+                    node2 = {"obj": parentStructure[node2Index].obj, "children": parentStructure[node2Index].children};
                     if (property === "ceterms:precedes") {
                         if (node1Index + 1 === node2Index) {
                             // Nodes are already in order
@@ -835,7 +843,7 @@ export default {
                     //  Search again with the node parent.
                     if (node1["skos:broader"]) {
                         let nodeParent = await EcConcept.get(EcRemoteLinkedData.trimVersionFromUrl(node1["skos:broader"]).toString());
-                        return (this.setProrgressionOrder(structure, nodeParent, node2, property));
+                        return this.setProrgressionOrder(structure, nodeParent, node2, property);
                     } else {
                         // This condition should never be reached.
                         appLog('Error: No common ancestry found');
@@ -855,7 +863,7 @@ export default {
                 if (nibling["skos:broader"]) {
                     niblingParent = EcRemoteLinkedData.trimVersionFromUrl(nibling["skos:broader"]);
                 }
-                if (niblingParent && nodeParent && (niblingParent.toString() === nodeParent.toString())) {
+                if (niblingParent && nodeParent && niblingParent.toString() === nodeParent.toString()) {
                     // Nibling is a sibling of node
                     resolve(nibling);
                 } else if (!node["skos:broader"] && !nibling["skos:broader"]) {
@@ -1025,10 +1033,12 @@ export default {
                 // container received should be an array - each array element containing and array of children and EcConcept obj.
                 // Assumes sourceNodeId is a leaf node
                 let foundSourceNode = false;
-                if (container === null) { return null; }
+                if (container === null) {
+                    return null; 
+                }
                 // if (EcRemoteLinkedData.trimVersionFromUrl(container.obj.id) === sourceNodeId) { return null; }
                 for (let i = 0; i < container.length; i++) {
-                    if (!foundSourceNode && (EcRemoteLinkedData.trimVersionFromUrl(container[i].obj.id) === sourceNodeId)) {
+                    if (!foundSourceNode && EcRemoteLinkedData.trimVersionFromUrl(container[i].obj.id) === sourceNodeId) {
                         foundSourceNode = true;
                     } else {
                         if (container[i].children && container[i].children.length > 0) {
@@ -1055,9 +1065,11 @@ export default {
             return new Promise(async(resolve) => {
                 // subContainer received should be an array - each array element containing and array of children and EcConcept obj.
                 let foundChildSourceNode = foundSourceNode;
-                if (subContainer === null) { return null; }
+                if (subContainer === null) {
+                    return null; 
+                }
                 for (let j = 0; j < subContainer.length; j++) {
-                    if (!foundChildSourceNode && (EcRemoteLinkedData.trimVersionFromUrl(subContainer[j].obj.id) === sourceNodeId)) {
+                    if (!foundChildSourceNode && EcRemoteLinkedData.trimVersionFromUrl(subContainer[j].obj.id) === sourceNodeId) {
                         foundChildSourceNode = true;
                     } else {
                         if (subContainer[j].children && subContainer[j].children.length > 0) {
@@ -1168,9 +1180,11 @@ export default {
                 // container received should be an array - each array element containing and array of children and EcConcept obj.
                 // Assumes sourceNodeId is a leaf node
                 let foundSourceNode = false;
-                if (container === null) { return null; }
+                if (container === null) {
+                    return null; 
+                }
                 for (let i = container.length - 1; i >= 0; i--) {
-                    if (!foundSourceNode && (EcRemoteLinkedData.trimVersionFromUrl(container[i].obj.id) === sourceNodeId)) {
+                    if (!foundSourceNode && EcRemoteLinkedData.trimVersionFromUrl(container[i].obj.id) === sourceNodeId) {
                         foundSourceNode = true;
                     } else {
                         if (container[i].children && container[i].children.length > 0) {
@@ -1197,9 +1211,11 @@ export default {
             return new Promise(async(resolve) => {
                 // subContainer received should be an array - each array element containing and array of children and EcConcept obj.
                 let foundChildSourceNode = foundSourceNode;
-                if (subContainer === null) { return null; }
+                if (subContainer === null) {
+                    return null; 
+                }
                 for (let j = subContainer.length - 1; j >= 0; j--) {
-                    if (!foundChildSourceNode && (EcRemoteLinkedData.trimVersionFromUrl(subContainer[j].obj.id) === sourceNodeId)) {
+                    if (!foundChildSourceNode && EcRemoteLinkedData.trimVersionFromUrl(subContainer[j].obj.id) === sourceNodeId) {
                         foundChildSourceNode = true;
                     } else {
                         if (subContainer[j].children && subContainer[j].children.length > 0) {

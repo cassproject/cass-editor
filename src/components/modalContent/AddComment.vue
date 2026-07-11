@@ -63,9 +63,9 @@
 
 import {cassUtil} from '../../mixins/cassUtil';
 import ModalTemplate from './ModalTemplate.vue';
-import { useAppStore } from '@/stores/app';
-import { useEditorStore } from '@/stores/editor';
-import { useUserStore } from '@/stores/user';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
+import {useUserStore} from '@/stores/user';
 
 export default {
     mixins: [cassUtil],

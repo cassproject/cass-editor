@@ -49,7 +49,7 @@
             <!-- configuration list -->
             <configuration-list
                 view="editor"
-                @showDetails="showConfigDetails($event)"
+                @show-details="showConfigDetails($event)"
                 :configList="configList"
                 v-if="configViewMode.equals('list')" />
             <div
@@ -89,7 +89,7 @@ import DeleteConfigurationConfirm from '@/components/modalContent/DeleteConfigur
 import ConfigurationNotPermitted from '@/components/modalContent/ConfigurationNotPermitted.vue';
 import ConfigurationSetSuccess from '@/components/modalContent/ConfigurationSetSuccess.vue';
 import ConfigurationList from '@/components/configuration/ConfigurationList.vue';
-import { useConfigurationStore } from '@/stores/configuration';
+import {useConfigurationStore} from '@/stores/configuration';
 
 export default {
     name: 'ConfigurationEditor',

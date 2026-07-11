@@ -58,9 +58,11 @@ TO DO MAYBE: Separate out property by editing or not.
                     </label>
                 </template>
                 <!-- identifier values -->
-                <div v-if="isVersionIdentifier(item)"
+                <div
+                    v-if="isVersionIdentifier(item)"
                     :temp="realItem = getVersionIdentifier(item)">
-                    <div v-if="editingProperty && realItem"
+                    <div
+                        v-if="editingProperty && realItem"
                         class="columns">
                         <div class="column">
                             <div class="field">
@@ -93,10 +95,11 @@ TO DO MAYBE: Separate out property by editing or not.
                     </div>
                     <div v-else-if="realItem">
                         <div class="expanded-view-property">
-                            <div :title="getDisplayString(realItem['https://purl.org/ctdl/terms/identifierTypeName'])"
+                            <div
+                                :title="getDisplayString(realItem['https://purl.org/ctdl/terms/identifierTypeName'])"
                                 class="property">
                                 <span class="tag is-size-7 is-light">Version Identifier</span>
-                                {{ getDisplayString(realItem['https://purl.org/ctdl/terms/identifierTypeName'])}}
+                                {{ getDisplayString(realItem['https://purl.org/ctdl/terms/identifierTypeName']) }}
                             </div>
                         </div>
                     </div>
@@ -186,12 +189,13 @@ TO DO MAYBE: Separate out property by editing or not.
                         <div
                             class="control"
                             v-if="editingProperty">
-                            <div
+                            <button
+                                type="button"
                                 :disabled="shortType === 'id'"
                                 @click="showModal('remove', index)"
                                 class="button disabled is-text has-text-danger">
                                 <i class="fa fa-times" />
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -249,7 +253,7 @@ TO DO MAYBE: Separate out property by editing or not.
                             :view="view"
                             :options="limitedConcepts"
                             :profile="profile"
-                            @removeByValue="removeByValue($event)"
+                            @remove-by-value="removeByValue($event)"
                             @remove="remove(item)" />
                     </div>
                     <div
@@ -284,12 +288,13 @@ TO DO MAYBE: Separate out property by editing or not.
                             <div
                                 class="control"
                                 v-if="editingProperty">
-                                <div
+                                <button
+                                    type="button"
                                     :disabled="shortType === 'id'"
                                     @click="showModal('remove', index)"
                                     class="button disabled is-text has-text-danger">
                                     <i class="fa fa-times" />
-                                </div>
+                                </button>
                             </div>
                         </div>
                     </div>
@@ -327,12 +332,13 @@ TO DO MAYBE: Separate out property by editing or not.
                         <div
                             class="control"
                             v-if="editingProperty">
-                            <div
+                            <button
+                                type="button"
                                 :disabled="shortType === 'id'"
                                 @click="showModal('remove', index)"
                                 class="button disabled is-text has-text-danger">
                                 <i class="fa fa-times" />
-                            </div>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -352,7 +358,7 @@ TO DO MAYBE: Separate out property by editing or not.
                         :addSingle="isNotDeletable()"
                         :options="(profile && profile[expandedProperty] && profile[expandedProperty]['options']) ? profile[expandedProperty]['options'] : null"
                         :profile="profile"
-                        @removeByValue="removeByValue($event)"
+                        @remove-by-value="removeByValue($event)"
                         @remove="remove(item)" />
                 </div>
                 <!-- text view has language -->
@@ -475,12 +481,12 @@ TO DO MAYBE: Separate out property by editing or not.
     </div>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 import '@/scss/property.scss';
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
-import { useLodeStore } from '@/stores/lode';
-import { useEditorStore } from '@/stores/editor';
-import { useAppStore } from '@/stores/app';
+import {useLodeStore} from '@/stores/lode';
+import {useEditorStore} from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
 import PropertyString from './PropertyString.vue';
 
 export default {
@@ -501,7 +507,9 @@ export default {
         validate: Boolean,
         errorMessage: {
             type: Array,
-            default: function() { return []; }
+            default: function() {
+                return []; 
+            }
         },
         view: {
             type: String,
@@ -546,7 +554,7 @@ export default {
                 this.langString = true;
                 for (var i = 0; i < this.expandedValue.length; i++) {
                     if (!this.expandedValue[i]["@language"]) {
-                        this.$parent.update(this.expandedProperty, i, {"@language": useEditorStore().defaultLanguage, "@value": this.expandedValue[i]["@value"]}, function() {
+                        this.ancestorWith('update').update(this.expandedProperty, i, {"@language": useEditorStore().defaultLanguage, "@value": this.expandedValue[i]["@value"]}, function() {
                             me.stopEditing();
                         });
                     }
@@ -619,7 +627,7 @@ export default {
             if (this.profile && this.isCompetency && this.queryParams.ceasnDataFields === 'true') {
                 return true;
             }
-            return (this.expandedProperty !== 'http://schema.org/name' && this.expandedProperty !== 'dcterms:title' && this.expandedProperty !== 'skos:prefLabel');
+            return this.expandedProperty !== 'http://schema.org/name' && this.expandedProperty !== 'dcterms:title' && this.expandedProperty !== 'skos:prefLabel';
         },
         customDisplay: function() {
             if (this.isCompetency && this.queryParams.ceasnDataFields === 'true') {
@@ -786,6 +794,17 @@ export default {
         }
     },
     methods: {
+        // In Vue 3, defineAsyncComponent inserts AsyncComponentWrapper instances
+        // into the $parent chain, so a fixed number of hops no longer reaches the
+        // owning Thing/ThingEditing. Walk up to the nearest ancestor exposing the
+        // needed member instead.
+        ancestorWith(member) {
+            let p = this.$parent;
+            while (p && p[member] === undefined) {
+                p = p.$parent;
+            }
+            return p;
+        },
         getDisplayString(thing) {
             return EcRemoteLinkedData.getDisplayStringFrom(thing);
         },
@@ -858,8 +877,6 @@ export default {
                             name = data['title'];
                         } else if (data['skos:prefLabel']) {
                             name = data['skos:prefLabel'];
-                        } else if (data['title']) {
-                            name = data['title'];
                         } else if (data['@graph'] && data['@graph'][0]) {
                             if (data['@graph'][0]['ceterms:name']) {
                                 name = data['@graph'][0]['ceterms:name'];
@@ -909,7 +926,7 @@ export default {
         },
         stopEditing: function() {
             if (this.isRequired) {
-                if (this.expandedValue.length === 0 || (this.expandedValue[0]["@value"] != null && this.expandedValue[0]["@value"] !== undefined && this.expandedValue[0]["@value"].trim().length === 0)) {
+                if (this.expandedValue.length === 0 || this.expandedValue[0]["@value"] != null && this.expandedValue[0]["@value"] !== undefined && this.expandedValue[0]["@value"].trim().length === 0) {
                     this.showModal("required");
                     return;
                 }
@@ -948,7 +965,7 @@ export default {
                 }
             }
             for (var i = this.expandedValue.length - 1; i >= 0; i--) {
-                if (this.expandedValue[i] === null || (this.expandedValue[i]["@value"] !== null && this.expandedValue[i]["@value"] !== undefined && this.expandedValue[i]["@value"].length === 0) || this.expandedValue[i].length === 0) {
+                if (this.expandedValue[i] === null || this.expandedValue[i]["@value"] !== null && this.expandedValue[i]["@value"] !== undefined && this.expandedValue[i]["@value"].length === 0 || this.expandedValue[i].length === 0) {
                     this.expandedValue.splice(i, 1);
                 }
             }
@@ -982,7 +999,7 @@ export default {
             let params = {};
             if (val === 'remove') {
                 if (this.profile && this.profile[this.expandedProperty] && (this.profile[this.expandedProperty]["isRequired"] === 'true' || this.profile[this.expandedProperty]["isRequired"] === true)) {
-                    if (this.expandedValue.length === 1 || (this.expandedValue["@value"] && this.expandedValue["@value"].trim().length === 1)) {
+                    if (this.expandedValue.length === 1 || this.expandedValue["@value"] && this.expandedValue["@value"].trim().length === 1) {
                         this.showModal("required");
                         useAppStore().openModal({component: 'RequiredPropertyModal'});
                         return;
@@ -1058,22 +1075,22 @@ export default {
                 if (editorStore) {
                     lang = editorStore.defaultLanguage;
                 }
-                this.$parent.add(this.expandedProperty, {"@language": lang, "@value": ""});
+                this.ancestorWith('add').add(this.expandedProperty, {"@language": lang, "@value": ""});
                 this.langString = true;
             } else if (type.toLowerCase().indexOf("string") !== -1 || type.toLowerCase().indexOf("url") !== -1 || type.toLowerCase().indexOf("text") !== -1 ||
                 type.toLowerCase().indexOf("date") !== -1 || type.toLowerCase().indexOf("concept") !== -1) {
                 this.addOrSearch = "add";
-                this.$parent.add(this.expandedProperty, {"@value": ""});
+                this.ancestorWith('add').add(this.expandedProperty, {"@value": ""});
             } else {
                 this.addOrSearch = "add";
                 var rld = new EcRemoteLinkedData();
                 rld.context = this.context;
                 rld.type = type.split("/").pop();
-                this.$parent.add(this.expandedProperty, rld);
+                this.ancestorWith('add').add(this.expandedProperty, rld);
             }
         },
         removeByValue: async function(value) {
-            this.$parent.removeByValue(this.expandedProperty, value);
+            this.ancestorWith('removeByValue').removeByValue(this.expandedProperty, value);
         },
         remove: async function(index) {
             if (this.profile && this.profile[this.expandedProperty] && this.profile[this.expandedProperty]["remove"]) {
@@ -1087,7 +1104,7 @@ export default {
                 await f(EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), value);
                 this.getExpandedValue();
             } else {
-                this.$parent.remove(this.expandedProperty, index);
+                this.ancestorWith('remove').remove(this.expandedProperty, index);
             }
         },
         updatePropertyString(input, index) {
@@ -1103,7 +1120,7 @@ export default {
                     }
                 }
             }
-            this.$parent.update(this.expandedProperty, index, input, function() {
+            this.ancestorWith('update').update(this.expandedProperty, index, input, function() {
                 me.stopEditing();
             });
         },
@@ -1113,17 +1130,27 @@ export default {
                 return true;
             }
             if (type["@type"] !== undefined && type["@type"] !== null) {
-                if (type["@type"][0].toLowerCase().indexOf("text") !== -1) { return true; }
-                if (type["@type"][0].toLowerCase().indexOf("url") !== -1) { return true; }
-                if (type["@type"][0].toLowerCase().indexOf("concept") !== -1) { return true; }
-                if (type["@type"][0].toLowerCase().indexOf("string") !== -1) { return true; }
+                if (type["@type"][0].toLowerCase().indexOf("text") !== -1) {
+                    return true; 
+                }
+                if (type["@type"][0].toLowerCase().indexOf("url") !== -1) {
+                    return true; 
+                }
+                if (type["@type"][0].toLowerCase().indexOf("concept") !== -1) {
+                    return true; 
+                }
+                if (type["@type"][0].toLowerCase().indexOf("string") !== -1) {
+                    return true; 
+                }
             }
-            if (type["@id"] != null && type["@id"] !== undefined) { return true; }
+            if (type["@id"] != null && type["@id"] !== undefined) {
+                return true; 
+            }
             return false;
         },
         isVersionIdentifier: function(type) {
             appLog("isVersionIdentifier", type);
-            if (type && (type['https://purl.org/ctdl/terms/identifierTypeName'] || (Array.isArray(type) && type[0] && type[0]['https://purl.org/ctdl/terms/identifierTypeName']))) {
+            if (type && (type['https://purl.org/ctdl/terms/identifierTypeName'] || Array.isArray(type) && type[0] && type[0]['https://purl.org/ctdl/terms/identifierTypeName'])) {
                 return true;
             }
             return false;
@@ -1179,12 +1206,14 @@ export default {
                         useEditorStore().addEditsToUndo(
                             {operation: "update", id: EcRemoteLinkedData.trimVersionFromUrl(this.expandedThing["@id"]), fieldChanged: [this.expandedProperty], initialValue: this.initialValue, changedValue: this.expandedValue, expandedProperty: true}
                         );
-                        this.$parent.saveThing();
+                        this.ancestorWith('saveThing')?.saveThing();
                     }
                 }
             }
         },
-        isObject: function(k) { return EcObject.isObject(k); },
+        isObject: function(k) {
+            return EcObject.isObject(k); 
+        },
         getURL: function(item) {
             if (item['@value']) {
                 return item['@value'];

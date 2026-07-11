@@ -3,7 +3,8 @@
         class="assertions-group">
         <div class="assertions-buttons">
             <div class="left-buttons">
-                <div
+                <button
+                    type="button"
                     data-id="positiveAssertionButton"
                     class="button is-text"
                     :disabled="loading"
@@ -11,8 +12,9 @@
                     @click="handleCanClick">
                     <i :class="canButtonIcon" />
                     {{ canButtonText }}
-                </div>
-                <div
+                </button>
+                <button
+                    type="button"
                     data-id="negativeAssertionButton"
                     class="button is-text"
                     :disabled="loading"
@@ -20,10 +22,11 @@
                     @click="handleCannotClick">
                     <i :class="cantButtonIcon" />
                     {{ cantButtonText }}
-                </div>
+                </button>
             </div>
             <div class="right-button">
-                <div
+                <button
+                    type="button"
                     data-id="badgeButton"
                     class="button is-text"
                     :disabled="loading"
@@ -35,7 +38,7 @@
                     <template v-else>
                         <span class="text-icon">+</span> Add Badge
                     </template>
-                </div>
+                </button>
                 <div
                     data-id="viewBadgeButton"
                     class="button is-text"
@@ -92,8 +95,8 @@
     </div>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
-import { useEditorStore } from '@/stores/editor';
+import {defineAsyncComponent} from 'vue';
+import {useEditorStore} from '@/stores/editor';
 
 export default {
     name: 'AssertionEditor',
@@ -143,7 +146,7 @@ export default {
             return useEditorStore().getSubject;
         },
         otherClaimsPhrase: function() {
-            return "Others have made claims about " + (this.subject === this.me ? "you" : (this.subjectPerson === null ? "them" : this.subjectPerson)) + ". Click to expand.";
+            return "Others have made claims about " + (this.subject === this.me ? "you" : this.subjectPerson === null ? "them" : this.subjectPerson) + ". Click to expand.";
         },
         reasonPlaceholder: function() {
             if (this.me === this.subject) {
@@ -371,7 +374,7 @@ export default {
                                                     if (!negative) {
                                                         await assertion.addReader(useEditorStore().badgePk);
                                                         EcRepository.save(assertion, () => {
-                                                                    this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
+                                                            this.badgeLink = EcRemote.urlAppend(this.repo.selectedServer, "badge/assertion/") + assertion.getGuid();
                                                             this.badge = true;
                                                             callback();
                                                         }, callback);
@@ -425,7 +428,7 @@ export default {
                                                     if (!negative) {
                                                         assertion.removeReader(useEditorStore().badgePk);
                                                         EcRepository.save(assertion, () => {
-                                                                    this.badgeLink = null;
+                                                            this.badgeLink = null;
                                                             this.badge = false;
                                                             callback();
                                                         }, callback);

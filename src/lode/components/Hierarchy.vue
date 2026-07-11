@@ -171,7 +171,8 @@
                             </span>
                             <span>search</span>
                         </div>
-                        <div
+                        <button
+                            type="button"
                             v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             :disabled="!canCopyOrCut"
                             title="Copy competency"
@@ -181,8 +182,9 @@
                             <span class="icon">
                                 <i class="fa fa-copy" />
                             </span>
-                        </div>
-                        <div
+                        </button>
+                        <button
+                            type="button"
                             v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             title="Cut competency"
                             :disabled="!canCopyOrCut"
@@ -192,8 +194,9 @@
                             <span class="icon">
                                 <i class="fas handle fa-cut" />
                             </span>
-                        </div>
-                        <div
+                        </button>
+                        <button
+                            type="button"
                             v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             :disabled="!canPaste"
                             class="button is-outlined "
@@ -203,8 +206,9 @@
                             <span class="icon">
                                 <i class="fa fa-paste" />
                             </span>
-                        </div>
-                        <div
+                        </button>
+                        <button
+                            type="button"
                             v-if="(view === 'framework' || view === 'concept') && hierarchyEnabled"
                             :disabled="!clipboardContainsItem"
                             class="button is-outlined "
@@ -214,7 +218,7 @@
                             <span class="icon">
                                 <i class="fas fa-clipboard" />
                             </span>
-                        </div>
+                        </button>
                     </div>
                 </div>
                 <!-- IMPORT WORKFLOW BUTTONS -->
@@ -325,7 +329,7 @@
                 @start="beginDrag"
                 handle=".handle"
                 @end="endDrag"
-                item-key="obj.id">
+                :item-key="(el) => el.obj.id">
                 <template #item="{ element, index }">
                     <HierarchyNode
                         :depth="1"
@@ -434,7 +438,7 @@
     </div>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 import draggable from 'vuedraggable';
 import debounce from 'lodash/debounce';
 import common from '@/mixins/common.js';
@@ -576,9 +580,9 @@ export default {
         },
         filteredAvailablePersons: function() {
             return this.availablePersons.filter(person => {
-                return (((person.getName() && person.getName().toLowerCase().indexOf(this.personFilter.toLowerCase()) > -1) ||
-                        (person.email && person.email.toLowerCase().indexOf(this.personFilter.toLowerCase()) > -1))
-                );
+                return person.getName() && person.getName().toLowerCase().indexOf(this.personFilter.toLowerCase()) > -1 ||
+                        person.email && person.email.toLowerCase().indexOf(this.personFilter.toLowerCase()) > -1
+                ;
             });
         },
         relations: function() {
@@ -595,7 +599,7 @@ export default {
             }
         },
         clipboardContainsItem: function() {
-            if ((this.copyId !== null || this.cutId !== null)) {
+            if (this.copyId !== null || this.cutId !== null) {
                 return true;
             } else {
                 return false;
@@ -634,7 +638,7 @@ export default {
             if (this.container == null) {
                 return false;
             }
-            return (this.container.competency && this.container.competency.length >= this.LARGE_NUMBER_OF_ITEMS);
+            return this.container.competency && this.container.competency.length >= this.LARGE_NUMBER_OF_ITEMS;
         },
         managingAssertions: function() {
             return this.manageAssertions;
@@ -649,8 +653,12 @@ export default {
     mounted: function() {
         let me = this;
         var precache = [];
-        if (this.container[this.containerNodeProperty] != null) { precache = precache.concat(this.container[this.containerNodeProperty]); }
-        if (this.container[this.containerEdgeProperty] != null) { precache = precache.concat(this.container[this.containerEdgeProperty]); }
+        if (this.container[this.containerNodeProperty] != null) {
+            precache = precache.concat(this.container[this.containerNodeProperty]); 
+        }
+        if (this.container[this.containerEdgeProperty] != null) {
+            precache = precache.concat(this.container[this.containerEdgeProperty]); 
+        }
         if (precache.length > 0) {
             this.repo.multiget(precache, function(success) {
                 me.computeHierarchy();
@@ -803,11 +811,13 @@ export default {
             var me = this;
             var r = {};
             var top = {};
-            if (this.container == null) { return r; }
+            if (this.container == null) {
+                return r; 
+            }
             // Fetch all nodes in parallel
             if (this.container[this.containerNodeProperty] !== null && this.container[this.containerNodeProperty] !== undefined) {
                 const nodeIds = this.container[this.containerNodeProperty];
-                const nodePromises = nodeIds.map(async (nodeId) => {
+                const nodePromises = nodeIds.map(async(nodeId) => {
                     let c = await window[this.nodeType].get(nodeId);
                     if (c == null) {
                         c = await EcRepository.get(nodeId);
@@ -818,10 +828,10 @@ export default {
                             c = comp;
                         }
                     }
-                    return { nodeId, c };
+                    return {nodeId, c};
                 });
                 const results = await Promise.all(nodePromises);
-                for (const { nodeId, c } of results) {
+                for (const {nodeId, c} of results) {
                     if (c !== null) {
                         r[nodeId] = r[c.shortId()] = top[c.shortId()] = c;
                     }
@@ -830,7 +840,7 @@ export default {
             // Fetch all edges in parallel
             if (this.container[this.containerEdgeProperty] != null && this.container[this.containerEdgeProperty] !== undefined) {
                 const edgeIds = this.container[this.containerEdgeProperty];
-                const edgePromises = edgeIds.map(async (edgeId) => {
+                const edgePromises = edgeIds.map(async(edgeId) => {
                     return window[this.edgeType].get(edgeId);
                 });
                 const edges = await Promise.all(edgePromises);
@@ -839,7 +849,9 @@ export default {
                         if (a[this.edgeRelationProperty] === this.edgeRelationLiteral) {
                             if (r[a[this.edgeTargetProperty]] == null) continue;
                             if (r[a[this.edgeSourceProperty]] == null) continue;
-                            if (r[a[this.edgeTargetProperty]]._children == null) { r[a[this.edgeTargetProperty]]._children = []; }
+                            if (r[a[this.edgeTargetProperty]]._children == null) {
+                                r[a[this.edgeTargetProperty]]._children = []; 
+                            }
                             r[a[this.edgeTargetProperty]]._children.push(r[a[this.edgeSourceProperty]]);
                             delete top[a[this.edgeSourceProperty]];
                         }
@@ -858,7 +870,9 @@ export default {
             }
             this.structure.splice(0, this.structure.length);
             var keys = EcObject.keys(top);
-            for (var i = 0; i < keys.length; i++) { this.structure.push(top[keys[i]]); }
+            for (var i = 0; i < keys.length; i++) {
+                this.structure.push(top[keys[i]]); 
+            }
             this.structure.sort(function(a, b) {
                 return me.container[me.containerNodeProperty].indexOf(a.shortId()) - me.container[me.containerNodeProperty].indexOf(b.shortId());
             });
@@ -879,7 +893,7 @@ export default {
                 }
             }
             for (var i = 0; i < item.length; i++) {
-                var id = item[i].obj && item[i].obj.id ? item[i].obj.id : (item[i].obj && item[i].obj.shortId ? item[i].obj.shortId() : i);
+                var id = item[i].obj && item[i].obj.id ? item[i].obj.id : item[i].obj && item[i].obj.shortId ? item[i].obj.shortId() : i;
                 if (visited.has(id)) {
                     item[i].children = [];
                     continue;
@@ -953,7 +967,7 @@ export default {
             if (fromId !== toId) {
                 var fromIndex = this.container[this.containerNodeProperty].indexOf(fromId);
                 appLog(fromIndex);
-                if ((toId == null || toId === undefined) && (fromContainerId === toContainerId) && (fromIndex >= this.container[this.containerNodeProperty].length - 2)) {
+                if ((toId == null || toId === undefined) && fromContainerId === toContainerId && fromIndex >= this.container[this.containerNodeProperty].length - 2) {
                     last = true;
                 }
                 this.container[this.containerNodeProperty].splice(fromIndex, 1);
@@ -981,11 +995,13 @@ export default {
                 if (removeOldRelations === true && fromId !== toContainerId) {
                     for (var i = 0; i < this.container[this.containerEdgeProperty].length; i++) {
                         var a = await window[this.edgeType].get(this.container[this.containerEdgeProperty][i]);
-                        if (a == null) { continue; }
+                        if (a == null) {
+                            continue; 
+                        }
                         if (a[this.edgeRelationProperty] === this.edgeRelationLiteral) {
                             if (a[this.edgeTargetProperty] == null) continue;
                             if (a[this.edgeSourceProperty] == null) continue;
-                            if (a[this.edgeSourceProperty] !== fromId && (this.cutId ? (this.cutId && a[this.edgeTargetProperty] !== fromId) : true)) continue;
+                            if (a[this.edgeSourceProperty] !== fromId && (this.cutId ? this.cutId && a[this.edgeTargetProperty] !== fromId : true)) continue;
                             appLog("Identified edge to remove: ", JSON.parse(a.toJson()));
                             this.container[this.containerEdgeProperty].splice(i--, 1);
                         }
@@ -1086,9 +1102,7 @@ export default {
             c["schema:dateModified"] = new Date().toISOString();
             this.container["schema:dateModified"] = new Date().toISOString();
             appLog("Added node: ", JSON.parse(c.toJson()));
-            if (true) {
-                useEditorStore().setNewCompetency(c.shortId());
-            }
+            useEditorStore().setNewCompetency(c.shortId());
             if (useEditorStore().private === true) {
                 c = await EcEncryptedValue.toEncryptedValue(c);
             }

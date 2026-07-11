@@ -163,7 +163,7 @@
     </div>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 import common from '@/mixins/common.js';
 import {mapState} from 'pinia';
 import {useEditorStore} from '@/stores/editor';
@@ -250,7 +250,9 @@ export default {
         };
     },
     created: function() {
-        if (this.clickToLoad === false) { this.load(); }
+        if (this.clickToLoad === false) {
+            this.load(); 
+        }
     },
     mounted: function() {
         this.load();
@@ -267,9 +269,16 @@ export default {
     },
     computed: {
         thingAsPropertyModalObject: function() {
-            var name = this.$parent.$parent.obj.name;
-            if (!name) {
-                name = this.$parent.$parent.obj["skos:prefLabel"];
+            // Walk to the nearest ancestor exposing `obj` — in Vue 3,
+            // AsyncComponentWrapper instances sit in the $parent chain, so a
+            // fixed two-hop $parent.$parent no longer reaches the owning Thing.
+            var owner = this.$parent;
+            while (owner && owner.obj === undefined) {
+                owner = owner.$parent;
+            }
+            var name = owner && owner.obj ? owner.obj.name : undefined;
+            if (!name && owner && owner.obj) {
+                name = owner.obj["skos:prefLabel"];
             }
             let object = {
                 component: 'Single',
@@ -482,7 +491,7 @@ export default {
             for (var i = 0; i < props.length; i++) {
                 var prop = props[i];
 
-                if (this.profile == null || (this.profile != null && this.profile[prop] !== undefined)) {
+                if (this.profile == null || this.profile != null && this.profile[prop] !== undefined) {
                     if (this.schema[prop] != null) {
                         if (this.expandedThing[prop] != null && this.expandedThing[prop].length === 0) {
                             if (prop === "http://schema.org/name" || prop === "http://purl.org/dc/terms/title" || prop === "http://www.w3.org/2004/02/skos/core#prefLabel") {
@@ -849,7 +858,7 @@ export default {
             const lodeStore = useLodeStore();
             if (lodeStore.schemata[type] === undefined && type.indexOf("EncryptedValue") === -1) {
                 var augmentedType = type;
-                augmentedType += (type.indexOf("schema.org") !== -1 ? ".jsonld" : "");
+                augmentedType += type.indexOf("schema.org") !== -1 ? ".jsonld" : "";
                 EcRemote.getExpectingObject("", augmentedType, async function(context) {
                     lodeStore.setRawSchemata({id: type, obj: context});
                     try {
@@ -1011,8 +1020,6 @@ export default {
                         name = data['title'];
                     } else if (data['skos:prefLabel']) {
                         name = data['skos:prefLabel'];
-                    } else if (data['title']) {
-                        name = data['title'];
                     } else if (data['@graph'] && data['@graph'][0]) {
                         if (data['@graph'][0]['ceterms:name']) {
                             name = data['@graph'][0]['ceterms:name'];
@@ -1120,7 +1127,7 @@ export default {
                 if (result[heading] == null && result[heading] === undefined) {
                     result[heading] = {};
                 }
-                if ((useEditorStore().conceptMode) && (prop === "http://www.w3.org/2004/02/skos/core#broader" || prop === "http://www.w3.org/2004/02/skos/core#narrower")) {
+                if (useEditorStore().conceptMode && (prop === "http://www.w3.org/2004/02/skos/core#broader" || prop === "http://www.w3.org/2004/02/skos/core#narrower")) {
                     continue;
                 }
                 if (this.profile[prop] && this.profile[prop]["valuesIndexed"]) {
@@ -1153,7 +1160,7 @@ export default {
             if (this.changedObject && this.view === "importLight") {
                 this.load();
                 useEditorStore().setChangedObject(null);
-            } else if (this.changedObject && (this.changedObject === this.uri || (this.originalThing && this.changedObject === this.originalThing.shortId()))) {
+            } else if (this.changedObject && (this.changedObject === this.uri || this.originalThing && this.changedObject === this.originalThing.shortId())) {
                 if (this.uri) {
                     this.resolveNameFromUrl(this.uri);
                 }

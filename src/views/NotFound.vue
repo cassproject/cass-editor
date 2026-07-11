@@ -23,8 +23,8 @@
 </template>
 
 <script>
-import { mapState } from 'pinia';
-import { useEditorStore } from '@/stores/editor';
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
 
 export default {
     name: 'NotFound',

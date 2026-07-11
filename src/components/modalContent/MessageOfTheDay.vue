@@ -4,13 +4,13 @@
         :active="true"
         type="primary">
         <template #modal-header>
-            <span class="title has-text-white">{{useAppStore().motdTitle || "Message of the Day"}}</span>
+            <span class="title has-text-white">{{ useAppStore().motdTitle || "Message of the Day" }}</span>
         </template>
         <template
             #modal-body>
             <div class="section has-background-white has-text-centered">
                 <p>
-                    {{useAppStore().motdMessage}}
+                    {{ useAppStore().motdMessage }}
                 </p>
             </div>
         </template>
@@ -29,7 +29,7 @@
 
 <script>
 import ModalTemplate from './ModalTemplate.vue';
-import { useAppStore } from '@/stores/app';
+import {useAppStore} from '@/stores/app';
 export default {
     name: 'MessageOfTheDay',
     props: {

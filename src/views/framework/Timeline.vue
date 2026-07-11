@@ -36,7 +36,9 @@ export default {
     props: {
         queryParams: {
             type: Object,
-            default: () => { return {}; }
+            default: () => {
+                return {}; 
+            }
         }
     },
     components: {

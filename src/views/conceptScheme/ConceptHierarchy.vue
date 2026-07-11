@@ -106,7 +106,8 @@
                             create new
                         </span>
                     </div>
-                    <div
+                    <button
+                        type="button"
                         v-if="view === 'framework' || view === 'concept'"
                         :disabled="!canCopyOrCut"
                         title="Copy concept"
@@ -116,8 +117,9 @@
                         <span class="icon">
                             <i class="fa fa-copy" />
                         </span>
-                    </div>
-                    <div
+                    </button>
+                    <button
+                        type="button"
                         v-if="view === 'framework' || view === 'concept'"
                         title="Cut concept"
                         :disabled="!canCopyOrCut"
@@ -127,8 +129,9 @@
                         <span class="icon">
                             <i class="fas handle fa-cut" />
                         </span>
-                    </div>
-                    <div
+                    </button>
+                    <button
+                        type="button"
                         v-if="view === 'framework' || view === 'concept'"
                         :disabled="!canPaste"
                         class="button is-outlined "
@@ -138,7 +141,7 @@
                         <span class="icon">
                             <i class="fa fa-paste" />
                         </span>
-                    </div>
+                    </button>
                 </div>
             </div>
             <!-- IMPORT WORKFLOW BUTTONS -->
@@ -207,7 +210,7 @@
                 @start="beginDrag"
                 handle=".handle"
                 @end="endDrag"
-                item-key="obj.id">
+                :item-key="(el) => el.obj.id">
                 <template #item="{ element, index }">
                     <HierarchyNode
                         :depth="1"
@@ -247,7 +250,7 @@
     </div>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 import draggable from 'vuedraggable';
 
 import common from '@/mixins/common.js';
@@ -536,7 +539,9 @@ export default {
             let structure = [];
             let allChildrenIds = new Set(); // Track all nodes that are children
             
-            if (this.processedContainer == null) { return r; }
+            if (this.processedContainer == null) {
+                return r; 
+            }
             if (this.processedContainer["skos:hasTopConcept"] !== null && this.processedContainer["skos:hasTopConcept"] !== undefined) {
                 // First pass - collect all children IDs from both narrower and broader relationships
                 for (var i = 0; i < this.processedContainer["skos:hasTopConcept"].length; i++) {

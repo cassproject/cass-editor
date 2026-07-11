@@ -130,10 +130,12 @@
                                 </h3>
                                 
                                 <!-- Display existing version identifiers -->
-                                <div v-if="versionIdentifiers.length > 0"
+                                <div
+                                    v-if="versionIdentifiers.length > 0"
                                     class="field">
                                     <label class="label">Current Version Identifiers</label>
-                                    <div class="box"
+                                    <div
+                                        class="box"
                                         v-for="(identifier, index) in versionIdentifiers"
                                         :key="index"
                                         :class="{ 'has-background-info-light': editingVersionIdentifierIndex === index }">
@@ -189,7 +191,7 @@
                                         :overrideUpdate="true"
                                         :propertyValue="versionIdentifierData.identifierName"
                                         :customProperty="true"
-                                        @updatePropertyString="updateVersionIdentifierName" />
+                                        @update-property-string="updateVersionIdentifierName" />
                                 </div>
                                 
                                 <div class="field">
@@ -210,7 +212,8 @@
                                             {{ editingVersionIdentifierIndex >= 0 ? 'Save Changes' : 'Add Version Identifier' }}
                                         </button>
                                     </div>
-                                    <div class="control"
+                                    <div
+                                        class="control"
                                         v-if="editingVersionIdentifierIndex >= 0">
                                         <button 
                                             class="button" 
@@ -381,9 +384,9 @@
 <script>
 import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import PropertyString from './PropertyString.vue';
-import { useLodeStore } from '@/stores/lode';
-import { useEditorStore } from '@/stores/editor';
-import { useFeaturesEnabledStore } from '@/stores/featuresEnabled';
+import {useLodeStore} from '@/stores/lode';
+import {useEditorStore} from '@/stores/editor';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
 
 
 export default {
@@ -397,7 +400,9 @@ export default {
         addedPropertiesAndValuesFromSearching: Object,
         errorMessage: {
             type: Array,
-            default: function() { return []; }
+            default: function() {
+                return []; 
+            }
         }
     },
     components: {

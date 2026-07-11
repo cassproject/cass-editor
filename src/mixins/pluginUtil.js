@@ -34,7 +34,7 @@ export const pluginUtil = {
             let s = '';
             for (let i = 2; i < nameParts.length; i++) {
                 s += nameParts[i];
-                if ((i + 1) < nameParts.length) s += this.PLUGIN_NAME_PARTS_DELIMITER;
+                if (i + 1 < nameParts.length) s += this.PLUGIN_NAME_PARTS_DELIMITER;
             }
             return s;
         },

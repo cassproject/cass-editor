@@ -26,7 +26,7 @@ it should always be produced in its own modal as to not replace the existing mod
 </template>
 
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 import {mapState} from 'pinia';
 import {useAppStore} from '@/stores/app';
 

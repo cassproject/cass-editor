@@ -374,59 +374,59 @@
                     </div>
                 </div>
             </template>
-                <template #modal-foot>
-                    <div
-                        class="buttons is-spaced"
-                        v-if="!readOnly && !showAddNewLevelSection">
-                        <button
-                            class="button is-outlined is-dark"
-                            @click="closeSelectLevelModal">
+            <template #modal-foot>
+                <div
+                    class="buttons is-spaced"
+                    v-if="!readOnly && !showAddNewLevelSection">
+                    <button
+                        class="button is-outlined is-dark"
+                        @click="closeSelectLevelModal">
+                        cancel
+                    </button>
+                    <button
+                        class="button is-outlined is-primary"
+                        @click="showAddNewLevel">
+                        <span class="icon">
+                            <i class="fa fa-plus" />
+                        </span>
+                        <span>add level</span>
+                    </button>
+                    <button
+                        class="button is-outlined is-primary"
+                        @click="applySelectLevels">
+                        <span class="icon">
+                            <i class="fa fa-save" />
+                        </span>
+                        <span>
+                            apply selected
+                        </span>
+                    </button>
+                </div>
+                <div
+                    class="buttons is-spaced"
+                    v-if="!readOnly && !savingLevelBusy && showAddNewLevelSection">
+                    <button
+                        class="button is-outlined"
+                        @click="cancelAddNewLevel">
+                        <span class="icon">
+                            <i class="fa fa-save" />
+                        </span>
+                        <span>
                             cancel
-                        </button>
-                        <button
-                            class="button is-outlined is-primary"
-                            @click="showAddNewLevel">
-                            <span class="icon">
-                                <i class="fa fa-plus" />
-                            </span>
-                            <span>add level</span>
-                        </button>
-                        <button
-                            class="button is-outlined is-primary"
-                            @click="applySelectLevels">
-                            <span class="icon">
-                                <i class="fa fa-save" />
-                            </span>
-                            <span>
-                                apply selected
-                            </span>
-                        </button>
-                    </div>
-                    <div
-                        class="buttons is-spaced"
-                        v-if="!readOnly && !savingLevelBusy && showAddNewLevelSection">
-                        <button
-                            class="button is-outlined"
-                            @click="cancelAddNewLevel">
-                            <span class="icon">
-                                <i class="fa fa-save" />
-                            </span>
-                            <span>
-                                cancel
-                            </span>
-                        </button>
-                        <button
-                            class="button is-outlined"
-                            @click="saveAddNewLevel">
-                            <span class="icon">
-                                <i class="fa fa-save" />
-                            </span>
-                            <span>
-                                save new level
-                            </span>
-                        </button>
-                    </div>
-                </template>
+                        </span>
+                    </button>
+                    <button
+                        class="button is-outlined"
+                        @click="saveAddNewLevel">
+                        <span class="icon">
+                            <i class="fa fa-save" />
+                        </span>
+                        <span>
+                            save new level
+                        </span>
+                    </button>
+                </div>
+            </template>
         </modal-template>
         <!-- custom property details modal -->
         <modal-template
@@ -3038,7 +3038,7 @@ import ModalTemplate from '@/components/modalContent/ModalTemplate.vue';
 import {cassUtil} from '../../mixins/cassUtil';
 import {mapState} from 'pinia';
 
-import { useConfigurationStore } from '@/stores/configuration';
+import {useConfigurationStore} from '@/stores/configuration';
 export default {
     mixins: [cassUtil],
     name: 'ConfigurationDetails',
@@ -3621,7 +3621,7 @@ export default {
         trimCustomPropertyPermittedValues() {
             let trimmedPermittedValues = [];
             for (let pv of this.customPropertyPermittedValues) {
-                if ((pv.display && (pv.display.trim().length > 0)) && (pv.value && (pv.value.trim().length > 0))) {
+                if (pv.display && pv.display.trim().length > 0 && (pv.value && pv.value.trim().length > 0)) {
                     pv.display = pv.display.trim();
                     pv.value = pv.value.trim();
                     trimmedPermittedValues.push(pv);
@@ -4362,7 +4362,7 @@ export default {
         },
         isBrowserDefault: {
             get() {
-                if (this.config && (this.defaultBrowserConfigId === this.config.id)) {
+                if (this.config && this.defaultBrowserConfigId === this.config.id) {
                     return true;
                 } else {
                     return false;
@@ -4407,7 +4407,7 @@ export default {
             if (!this.levelList || this.levelList.length <= 0) return [];
             else {
                 return this.levelList.filter(level => {
-                    return ((level.getName() && level.getName().toLowerCase().indexOf(this.selectedLevelFilter.toLowerCase()) > -1));
+                    return level.getName() && level.getName().toLowerCase().indexOf(this.selectedLevelFilter.toLowerCase()) > -1;
                 });
             }
         },
@@ -4415,7 +4415,7 @@ export default {
             if (!this.permissionEntityList || this.permissionEntityList.length <= 0) return [];
             else {
                 return this.permissionEntityList.filter(pe => {
-                    return ((pe.name && pe.name.toLowerCase().indexOf(this.permissionEntitiesFilter.toLowerCase()) > -1));
+                    return pe.name && pe.name.toLowerCase().indexOf(this.permissionEntitiesFilter.toLowerCase()) > -1;
                 });
             }
         }

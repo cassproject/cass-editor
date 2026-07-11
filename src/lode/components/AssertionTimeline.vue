@@ -23,9 +23,9 @@
     </div>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
-import { mapState } from 'pinia';
-import { useEditorStore } from '@/stores/editor';
+import {defineAsyncComponent} from 'vue';
+import {mapState} from 'pinia';
+import {useEditorStore} from '@/stores/editor';
 
 export default {
     name: 'AssertionTimeline',

@@ -153,8 +153,8 @@ import ModalTemplate from './ModalTemplate.vue';
 import common from '@/mixins/common.js';
 import Thing from '@/lode/components/Thing.vue';
 import ThingEditing from '@/lode/components/ThingEditing.vue';
-import { useAppStore } from '@/stores/app';
-import { useEditorStore } from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useEditorStore} from '@/stores/editor';
 import {mapState} from 'pinia';
 
 export default {
@@ -175,7 +175,9 @@ export default {
     props: {
         content: {
             type: Object,
-            default: function() { return {}; }
+            default: function() {
+                return {}; 
+            }
         }
     },
     computed: {
@@ -249,12 +251,12 @@ export default {
         },
         getDisplayStringFrom: function(n) {
             if (n != null && EcArray.isArray(n)) {
-                if ((n).length > 0) {
-                    n = (n)[0];
+                if (n.length > 0) {
+                    n = n[0];
                 }
             }
-            if (n != null && EcObject.isObject(n) && (n)["@value"]) {
-                return (n)["@value"];
+            if (n != null && EcObject.isObject(n) && n["@value"]) {
+                return n["@value"];
             }
             return n;
         },

@@ -1,7 +1,8 @@
-import { createApp } from 'vue';
-import { createPinia } from 'pinia';
+import {createApp} from 'vue';
+import {createPinia} from 'pinia';
 import App from './App.vue';
 import router from './router.js';
+import {useLodeStore} from './stores/lode.js';
 
 // Styles
 import './scss/theme.scss';
@@ -19,7 +20,7 @@ NProgress.configure({
 
 // cassproject and globals
 import 'cassproject';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 import jsonld from 'jsonld';
 
 globalThis.jsonld = jsonld;
@@ -40,13 +41,13 @@ class UUIDCompat {
 globalThis.UUID = UUIDCompat;
 
 // Global fetch interceptor (framework-agnostic, preserved from original)
-const { fetch: originalFetch } = globalThis;
+const {fetch: originalFetch} = globalThis;
 
 let PENDING_REQUESTS = 0;
 const MAX_REQUESTS_COUNT = 10;
 const INTERVAL_MS = 10;
 
-globalThis.fetch = async (...args) => {
+globalThis.fetch = async(...args) => {
     let [resource, config] = args;
     if (PENDING_REQUESTS >= MAX_REQUESTS_COUNT) {
         return new Promise((resolve) => {
@@ -58,6 +59,11 @@ globalThis.fetch = async (...args) => {
         PENDING_REQUESTS++;
         try {
             if (config != null && config.headers != null && Object.values(config.headers).length === 0) {
+                delete config.headers;
+            }
+            // cassproject sometimes passes headers: null, which fetch rejects
+            // with a TypeError — drop it so the request goes out.
+            if (config != null && config.headers === null) {
                 delete config.headers;
             }
             const response = await originalFetch(resource, config);
@@ -75,26 +81,28 @@ if (typeof EcRepository !== 'undefined') {
 }
 
 // Logging utilities
-globalThis.appLog = function (...args) {
+globalThis.appLog = function(...args) {
     if (import.meta.env.DEV) {
         console.log(...args);
     }
 };
 
-globalThis.appError = function (x) {
+globalThis.appError = function(x) {
     if (import.meta.env.DEV) {
         console.error(x);
     }
 };
 
 // Query params utility
-var queryParams = function () {
-    if (window.document.location.search == null) { return {}; }
-    var hashSplit = (window.document.location.search.split("?"));
+var queryParams = function() {
+    if (window.document.location.search == null) {
+        return {}; 
+    }
+    var hashSplit = window.document.location.search.split("?");
     if (hashSplit.length > 1) {
         var o = {};
         var paramString = hashSplit[1];
-        var parts = (paramString).split("&");
+        var parts = paramString.split("&");
         for (var i = 0; i < parts.length; i++) {
             if (o[parts[i].split("=")[0]]) {
                 // Allow multiple values
@@ -116,6 +124,11 @@ const app = createApp(App);
 // Pinia state management
 app.use(createPinia());
 
+// Install the jsonld document loader that serves schema.cassproject.org
+// contexts from this app's own origin (public/schema.cassproject.org/).
+// Without it, jsonld falls back to remote fetches for every expand/compact.
+useLodeStore().initDocumentLoader();
+
 // Vue Router
 app.use(router);
 
@@ -123,17 +136,29 @@ app.use(router);
 // NProgress is available globally via import, but we add a convenience property
 // matching the old vue-progressbar API: this.$Progress.start/finish/fail
 app.config.globalProperties.$Progress = {
-    start() { NProgress.start(); },
-    finish() { NProgress.done(); },
-    fail() { NProgress.done(); },
-    set(n) { NProgress.set(n / 100); },
-    increase(n) { NProgress.inc(n / 100); },
-    hide() { NProgress.done(); }
+    start() {
+        NProgress.start(); 
+    },
+    finish() {
+        NProgress.done(); 
+    },
+    fail() {
+        NProgress.done(); 
+    },
+    set(n) {
+        NProgress.set(n / 100); 
+    },
+    increase(n) {
+        NProgress.inc(n / 100); 
+    },
+    hide() {
+        NProgress.done(); 
+    }
 };
 
 // ScrollTo utility (replacing vue-scrollto plugin)
 // Provides this.$scrollTo(element, duration, options) compatibility
-app.config.globalProperties.$scrollTo = function (target, duration, options) {
+app.config.globalProperties.$scrollTo = function(target, duration, options) {
     let el;
     if (typeof target === 'string') {
         el = document.querySelector(target);
@@ -153,7 +178,7 @@ app.config.globalProperties.$scrollTo = function (target, duration, options) {
 // Updated from Vue 2 bind/unbind to Vue 3 mounted/unmounted hooks
 app.directive('click-outside', {
     mounted(el, binding) {
-        el.clickOutsideEvent = function (event) {
+        el.clickOutsideEvent = function(event) {
             if (!(el === event.target || el.contains(event.target))) {
                 binding.value(event);
             }
@@ -170,7 +195,7 @@ app.directive('click-outside', {
 app.directive('observe-visibility', {
     mounted(el, binding) {
         const options = typeof binding.value === 'function'
-            ? { callback: binding.value }
+            ? {callback: binding.value}
             : binding.value || {};
 
         const callback = options.callback || binding.value;
@@ -213,12 +238,12 @@ app.directive('clipboard', {
             el._clipboardError = binding.value;
         } else {
             el._clipboardValue = binding.value;
-            el.addEventListener('click', el._clipboardHandler = async function () {
+            el.addEventListener('click', el._clipboardHandler = async function() {
                 try {
                     let text = typeof el._clipboardValue === 'function' ? el._clipboardValue() : el._clipboardValue;
                     await navigator.clipboard.writeText(text);
                     if (el._clipboardSuccess) {
-                        el._clipboardSuccess({ text, trigger: el });
+                        el._clipboardSuccess({text, trigger: el});
                     }
                 } catch (err) {
                     if (el._clipboardError) {
@@ -254,11 +279,9 @@ dayjs.extend(relativeTime);
 app.config.globalProperties.$moment = dayjs;
 
 // Warn handler (ported from Vue 2 Vue.config.warnHandler)
-app.config.warnHandler = function (msg, vm, trace) {
+app.config.warnHandler = function(msg, vm, trace) {
     if (msg === 'Invalid prop: type check failed for prop "clickToLoad". Expected Boolean, got String with value "true".') return;
-    if (msg === 'Avoid using non-primitive value as key, use string/number value instead.') return;
-    if (msg === "Duplicate keys detected: '[object Object]'. This may cause an update error.") return;
-    appError(("[Vue warn]: " + msg + trace));
+    appError("[Vue warn]: " + msg + trace);
 };
 
 // Mount the app

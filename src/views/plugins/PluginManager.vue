@@ -147,7 +147,7 @@ import PluginListItem from '../../components/plugins/PluginListItem';
 import PluginDetails from '../../components/plugins/PluginDetails';
 import {cassUtil} from '../../mixins/cassUtil';
 import {pluginUtil} from '../../mixins/pluginUtil';
-import { useAppStore } from '@/stores/app';
+import {useAppStore} from '@/stores/app';
 
 export default {
     mixins: [cassUtil, pluginUtil],

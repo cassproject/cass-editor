@@ -81,8 +81,7 @@ export default {
             var server = window.origin + "/api/";
             if (window.location.origin === "https://cassproject.github.io") {
                 server = "https://dev.cassproject.org/api/";
-            }
-            else if (window.location.origin === "http://localhost:8080" || window.location.origin === "http://localhost:8082") {
+            } else if (window.location.origin === "http://localhost:8080" || window.location.origin === "http://localhost:8082") {
                 server = "https://dev.cassproject.org/api/";
             } else if (import.meta.env.VITE_SELECTEDSERVER) {
                 server = import.meta.env.VITE_SELECTEDSERVER;
@@ -171,7 +170,7 @@ export default {
                 }
                 if (window.EcIdentityManager.default.ids.length > 0) {
                     try {
-                        let pers = (await window.EcPerson.getByPk(r, window.EcIdentityManager.default.ids[0].ppk.toPk()));
+                        let pers = await window.EcPerson.getByPk(r, window.EcIdentityManager.default.ids[0].ppk.toPk());
                         if (pers != null) {
                             window.EcIdentityManager.default.ids[0].displayName = pers.getName();
                         }
@@ -184,7 +183,7 @@ export default {
                         let ppk = window.EcPpkFacade.fromPem(loginInfo.ssoAdditionalPublicKeys[i]);
                         let ident = new window.EcIdentity();
                         try {
-                            let per = (await window.EcPerson.getByPk(r, ppk.toPk()));
+                            let per = await window.EcPerson.getByPk(r, ppk.toPk());
                             if (per != null) {
                                 ident.displayName = per.getName();
                             }
@@ -215,7 +214,7 @@ export default {
             this.loadIdentity(function() {
                 if (me.queryParams) {
                     if (me.queryParams.frameworkId) {
-                        if ((useEditorStore().conceptMode === true)) {
+                        if (useEditorStore().conceptMode === true) {
                             EcConceptScheme.get(me.queryParams.frameworkId, function(success) {
                                 var editorStore = useEditorStore();
                                 var appStore = useAppStore();
@@ -308,9 +307,9 @@ export default {
                         url = url.substring(index);
                         url = window.location.origin + window.location.pathname + url + "/index.json-ld";
                     }
-                    return fetch(url, { headers: { "Accept": "application/json" } })
+                    return fetch(url, {headers: {"Accept": "application/json"}})
                         .then(resp => resp.ok ? resp.json() : null)
-                        .then(async (context) => {
+                        .then(async(context) => {
                             if (!context) return;
                             lodeStore.setRawSchemata({id: type, obj: context});
                             try {
@@ -1422,7 +1421,7 @@ export default {
             return this.$route.path;
         },
         isLoggedIn: function() {
-            if (!this.loggedInPerson || (this.loggedInPerson && !this.loggedInPerson.name)) {
+            if (!this.loggedInPerson || this.loggedInPerson && !this.loggedInPerson.name) {
                 return false;
             } else {
                 return true;

@@ -1,4 +1,15 @@
 module.exports = {
+    root: true,
+    env: {
+        browser: true,
+        es2022: true,
+        node: true
+    },
+    parserOptions: {
+        ecmaVersion: 2022,
+        sourceType: 'module'
+    },
+    plugins: ['promise'],
     'extends': [
         'plugin:vue/vue3-essential', // where applicable
         'eslint:recommended',

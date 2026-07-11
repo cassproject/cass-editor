@@ -2,7 +2,9 @@
     <div id="concept">
         <RightAside v-if="showRightAside" />
         <!-- begin framework -->
-        <div v-if="framework" class="framework-content">
+        <div
+            v-if="framework"
+            class="framework-content">
             <FrameworkEditorToolbar
                 :properties="properties"
                 @change-properties="changeProperties"
@@ -16,51 +18,53 @@
                     :disabled="canEdit !== true"
                     :group="{ name: 'test' }"
                     handle=".handle"
-                    item-key="id">
-                    <template #item="{ element }">
-                        <div>{{ element }}</div>
+                    :item-key="(el) => el.obj.id">
+                    <template #item>
+                        <div class="is-hidden" />
+                    </template>
+                    <template #header>
+                        <Component
+                            :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
+                            :is="dynamicThingComponent"
+                            :id="'scroll-' + framework.shortId().split('/').pop()"
+                            :obj="framework"
+                            :repo="repo"
+                            view="concept"
+                            :newFramework="newFramework"
+                            :parentNotEditable="queryParams.view==='true'"
+                            :profile="progressionModelProfile"
+                            @edit-node-event="onEditNode()"
+                            @done-editing-node-event="onDoneEditingNode()"
+                            :properties="properties">
+                            <div class="lode__framework__info-bar">
+                                <span
+                                    class="tag is-medium-grey has-text-dark"
+                                    v-if="timestamp"
+                                    :title="new Date(timestamp)">
+                                    Last modified {{ isCeasn ? "(in CaSS)" : "" }} {{ lastModified }}
+                                </span>
+                                <span
+                                    class="tag is-medium-grey has-text-dark"
+                                    v-if="framework['schema:dateCreated']"
+                                    :title="new Date(framework['schema:dateCreated'])">
+                                    Created {{ isCeasn ? "(in CaSS)" : "" }} {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
+                                </span>
+                                <span
+                                    class="tag is-medium-grey has-text-dark"
+                                    v-if="framework['Approved']"
+                                    :title="framework['Approved']">
+                                    Approved
+                                </span>
+                                <span
+                                    class="tag is-medium-grey has-text-dark"
+                                    v-if="framework['Published']"
+                                    :title="framework['Published']">
+                                    Published
+                                </span>
+                            </div>
+                        </Component>
                     </template>
                 </draggable>
-                <Component
-                    :class="dynamicThingComponent === 'Thing' ? parentObjectClass: ''"
-                    :is="dynamicThingComponent"
-                    :id="'scroll-' + framework.shortId().split('/').pop()"
-                    :obj="framework"
-                    :repo="repo"
-                    view="concept"
-                    :newFramework="newFramework"
-                    :parentNotEditable="queryParams.view==='true'"
-                    :profile="progressionModelProfile"
-                    @edit-node-event="onEditNode()"
-                    @done-editing-node-event="onDoneEditingNode()"
-                    :properties="properties">
-                    <div class="lode__framework__info-bar">
-                        <span
-                            class="tag is-medium-grey has-text-dark"
-                            v-if="timestamp"
-                            :title="new Date(timestamp)">
-                            Last modified {{ isCeasn ? "(in CaSS)" : "" }} {{ lastModified }}
-                        </span>
-                        <span
-                            class="tag is-medium-grey has-text-dark"
-                            v-if="framework['schema:dateCreated']"
-                            :title="new Date(framework['schema:dateCreated'])">
-                            Created {{ isCeasn ? "(in CaSS)" : "" }} {{ $moment(framework['schema:dateCreated']).format("MMM D YYYY") }}
-                        </span>
-                        <span
-                            class="tag is-medium-grey has-text-dark"
-                            v-if="framework['Approved']"
-                            :title="framework['Approved']">
-                            Approved
-                        </span>
-                        <span
-                            class="tag is-medium-grey has-text-dark"
-                            v-if="framework['Published']"
-                            :title="framework['Published']">
-                            Published
-                        </span>
-                    </div>
-                </Component>
                 <ProgressionHierarchy
                     :container="framework"
                     containerType="ConceptScheme"
@@ -84,7 +88,7 @@
     </div>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 import draggable from 'vuedraggable';
 import dayjs from 'dayjs';
 import debounce from 'lodash/debounce';
@@ -144,7 +148,7 @@ export default {
         },
         dynamicThingComponent: function() {
             const editorStore = useEditorStore();
-            if (this.editingFramework || (editorStore.newFramework === this.framework.shortId())) {
+            if (this.editingFramework || editorStore.newFramework === this.framework.shortId()) {
                 return 'ThingEditing';
             } else {
                 return 'Thing';
@@ -335,12 +339,12 @@ export default {
         },
         getDisplayStringFrom: function(n) {
             if (n != null && EcArray.isArray(n)) {
-                if ((n).length > 0) {
-                    n = (n)[0];
+                if (n.length > 0) {
+                    n = n[0];
                 }
             }
-            if (n != null && EcObject.isObject(n) && (n)["@value"]) {
-                return (n)["@value"];
+            if (n != null && EcObject.isObject(n) && n["@value"]) {
+                return n["@value"];
             }
             return n;
         },

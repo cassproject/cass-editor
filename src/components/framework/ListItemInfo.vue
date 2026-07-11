@@ -369,8 +369,11 @@
                         <div
                             :class=" accordion === 'copy' ? 'active' : ''"
                             class="cass__right-side--accordion-panel">
-                            <p v-if="copyDirectoryOptions.length < 1"
-                                class="mx-2"><em>Please create a new directory to copy this {{ objectTypeForDisplay }} into.</em></p>
+                            <p
+                                v-if="copyDirectoryOptions.length < 1"
+                                class="mx-2">
+                                <em>Please create a new directory to copy this {{ objectTypeForDisplay }} into.</em>
+                            </p>
                             <li
                                 class="cass--list-item-info--search-result--li"
                                 v-for="directory in copyDirectoryOptions"
@@ -379,13 +382,14 @@
                                     class="cass--list-item-info--search-results--li-text">
                                     {{ directory.name }}
                                 </span>
-                                <span
+                                <button
+                                    type="button"
                                     @click="copyOrMove(directory, 'copy')"
                                     :class="{'is-loading': processingCopyOrMove}"
                                     :disabled="processingCopyOrMove"
                                     class="button is-primary is-outlined is-small is-pulled-right">
                                     copy here
-                                </span>
+                                </button>
                             </li>
                         </div>
                     </template>
@@ -459,10 +463,10 @@
 <script>
 import dayjs from 'dayjs';
 import common from '@/mixins/common.js';
-import { useAppStore } from '@/stores/app';
-import { useUserStore } from '@/stores/user';
-import { useFeaturesEnabledStore } from '@/stores/featuresEnabled';
-import { useEditorStore } from '@/stores/editor';
+import {useAppStore} from '@/stores/app';
+import {useUserStore} from '@/stores/user';
+import {useFeaturesEnabledStore} from '@/stores/featuresEnabled';
+import {useEditorStore} from '@/stores/editor';
 export default {
     name: 'ListItemInfo',
     mixins: [common],
@@ -1605,45 +1609,45 @@ export default {
             link = link.replace('/frameworks', '').replace('/directory', '');
             if (this.objectType === "Directory") {
                 if (link.contains('?')) {
-                    return (link + "&directoryId=" + this.objectShortId);
+                    return link + "&directoryId=" + this.objectShortId;
                 } else {
-                    return (link + "?directoryId=" + this.objectShortId);
+                    return link + "?directoryId=" + this.objectShortId;
                 }
-            } else if ((useEditorStore().conceptMode === true) || (useEditorStore().progressionMode === true)) {
+            } else if (useEditorStore().conceptMode === true || useEditorStore().progressionMode === true) {
                 if (link.contains('?')) {
-                    return (link + "&concepts=true&frameworkId=" + this.objectShortId);
+                    return link + "&concepts=true&frameworkId=" + this.objectShortId;
                 } else {
-                    return (link + "?concepts=true&frameworkId=" + this.objectShortId);
+                    return link + "?concepts=true&frameworkId=" + this.objectShortId;
                 }
             }
             if (link.contains('?')) {
-                return (link + "&frameworkId=" + this.objectShortId);
+                return link + "&frameworkId=" + this.objectShortId;
             } else {
-                return (link + "?frameworkId=" + this.objectShortId);
+                return link + "?frameworkId=" + this.objectShortId;
             }
         },
         copyDirectoryOptions: function() {
             let me = this;
             return useAppStore().directoryList.filter(directory => {
-                return (directory.shortId() !== me.object.shortId() &&
-                    (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
-                    (me.object.directory ? (directory.shortId() !== me.object.directory) : true));
+                return directory.shortId() !== me.object.shortId() &&
+                    (me.object.parentDirectory ? directory.shortId() !== me.object.parentDirectory : true) &&
+                    (me.object.directory ? directory.shortId() !== me.object.directory : true);
             });
         },
         moveDirectoryOptions: function() {
             let me = this;
             if (this.objectType === "Directory") {
                 return useAppStore().directoryList.filter(directory => {
-                    return (directory.shortId() !== me.object.shortId() &&
-                        (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
-                        (me.object.directory ? (directory.shortId() !== me.object.directory) : true) &&
-                        !EcArray.has(me.ineligibleDirectoriesForMove, directory.shortId()));
+                    return directory.shortId() !== me.object.shortId() &&
+                        (me.object.parentDirectory ? directory.shortId() !== me.object.parentDirectory : true) &&
+                        (me.object.directory ? directory.shortId() !== me.object.directory : true) &&
+                        !EcArray.has(me.ineligibleDirectoriesForMove, directory.shortId());
                 });
             } else {
                 return useAppStore().directoryList.filter(directory => {
-                    return (directory.shortId() !== me.object.shortId() &&
-                        (me.object.parentDirectory ? (directory.shortId() !== me.object.parentDirectory) : true) &&
-                        (me.object.directory ? (directory.shortId() !== me.object.directory) : true));
+                    return directory.shortId() !== me.object.shortId() &&
+                        (me.object.parentDirectory ? directory.shortId() !== me.object.parentDirectory : true) &&
+                        (me.object.directory ? directory.shortId() !== me.object.directory : true);
                 });
             }
         },

@@ -24,13 +24,13 @@
             v-for="node in nodes"
             :key="node"
             :id="node.id"
-            @showDetails="showDetailsChild"
+            @show-details="showDetailsChild"
             :nodes="node.subGroups"
             :label="node.name" />
     </div>
 </template>
 <script>
-import { defineAsyncComponent } from 'vue';
+import {defineAsyncComponent} from 'vue';
 export default {
     name: 'CassPanelItem',
     components: {

@@ -1,4 +1,4 @@
-import { defineStore } from 'pinia';
+import {defineStore} from 'pinia';
 import jsonld from 'jsonld';
 
 globalThis.jsonld = jsonld;
@@ -10,7 +10,7 @@ function trimUrl(url) {
     if (!url) {
         return undefined;
     }
-    if (url === "" || (url["@value"] && url["@value"] === "")) {
+    if (url === "" || url["@value"] && url["@value"] === "") {
         return undefined;
     }
     let trimmed = url;
@@ -87,8 +87,8 @@ export const useLodeStore = defineStore('lode', {
                     fetchUrl = window.location.origin + window.location.pathname + fetchUrl + ending;
                 }
                 _inflight[originalUrl] = fetch(fetchUrl, {
-                    headers: { "Accept": "application/json" }
-                }).then(async (resp) => {
+                    headers: {"Accept": "application/json"}
+                }).then(async(resp) => {
                     if (!resp.ok) throw new Error("Failed to fetch " + fetchUrl);
                     let context = await resp.json();
                     _storeInstance.rawSchemata[originalUrl] = context;
