@@ -402,12 +402,16 @@ export default {
                 }
                 me.repo.saveTo(success, function() {
                     me.editsFinishedCounter++;
+                    const editorStore = useEditorStore();
+                    editorStore.setChangedObject(null);
+                    setTimeout(function() {
+                        editorStore.setChangedObject(success.shortId());
+                    }, 0);
                     me.$Progress.finish();
                 }, function() {
                     me.editsFinishedCounter++;
                     me.$Progress.fail();
                 });
-                useEditorStore().setChangedObject(success.shortId());
             }, function(error) {
                 appError(error);
                 me.editsFinishedCounter++;
@@ -450,20 +454,30 @@ export default {
             try {
                 let compacted = await jsonld.compact(expandedCompetency, useLodeStore().rawSchemata[context]);
                 if (compacted) {
+                    // Re-arrayify owner/reader/etc BEFORE copyFrom — jsonld 9
+                    // compacts single-element arrays to scalars, and copyFrom's
+                    // handleForwarding throws on a bare owner string.
+                    compacted = me.turnFieldsBackIntoArrays(compacted);
                     var rld = new EcRemoteLinkedData();
                     rld.copyFrom(compacted);
                     rld.context = context;
                     delete rld["@context"];
-                    rld = me.turnFieldsBackIntoArrays(rld);
                     rld["schema:dateModified"] = new Date().toISOString();
                     if (useEditorStore().private === true && EcEncryptedValue.encryptOnSaveMap[rld.id] !== true) {
                         rld = await EcEncryptedValue.toEncryptedValue(rld);
                     }
                     me.repo.saveTo(rld, function() {
                         me.editsFinishedCounter++;
+                        const editorStore = useEditorStore();
+                        editorStore.setChangedObject(null);
+                        setTimeout(function() {
+                            editorStore.setChangedObject(rld.shortId());
+                        }, 0);
+                        me.$Progress.finish();
                     }, function(error) {
                         appError(error);
                         me.editsFinishedCounter++;
+                        me.$Progress.fail();
                     });
                 }
             } catch (err) {

@@ -1,5 +1,43 @@
 # Known Bugs
 
+## Undo (FW-08): TypeError fixed; revert behavior matches Vue 2 (2026-07-19)
+
+- **Undo button threw `TypeError: lastEditToUndo is not a function`** — the Vuex
+  action `lastEditToUndo` was renamed `popLastEditToUndo` in the Pinia migration
+  (it would collide with the state key of the same name), but EditorToolbar still
+  called the old name and hit the state property. Fixed; a systematic sweep for
+  this class (state/getter invoked as a function) found and fixed **5 more**:
+  - MultiEdit.vue — `removeAddingValueAtIndex(null)` → `setRemoveAddingValueAtIndex`
+    (broke removing a value in Edit Multiple)
+  - Directory.vue ×2, DirectoryList.vue — `refreshSearch(...)` → `setRefreshSearch`
+    (broke list refresh after creating a subdirectory/resource)
+  - Organizations.vue — `organization(...)` → `setOrganization`
+    (broke opening an organization)
+  The sweep script parses each Pinia store and flags any call site invoking a
+  state key or getter; it now reports zero mismatches.
+- **Undo did not revert / UI did not refresh (follow-up, fixed):** three more
+  layers under the TypeError, all invisible because `appError` is a no-op in
+  production builds:
+  1. `saveExpanded` ran `rld.copyFrom(compacted)` **before**
+     `turnFieldsBackIntoArrays` — jsonld 9 (up from 5) compacts single-element
+     arrays to scalars, and cassproject's `handleForwarding` throws
+     `Cannot read properties of null (reading 'toPem')` on a bare `owner`
+     string, killing the revert save inside a silent catch. Re-arrayify before
+     `copyFrom` (matching ThingEditing's working save path).
+  2. The revert signal `setChangedObject(shortId)` was a silent no-op: the
+     edit flow leaves `changedObject` already holding that id (nothing consumes
+     it while ThingEditing replaces Thing), and same-value writes don't fire
+     watchers. Undo callbacks now clear-then-set across ticks, and bust
+     `EcRepository.cache` so the watcher refetch gets the reverted object.
+  3. The expanded-property undo path never called `$Progress.finish()/fail()`.
+  Verified in-browser: rename → one undo click → hierarchy shows the old name
+  immediately (no reload), repeats correctly on subsequent edit/undo rounds,
+  server-side object confirmed reverted, zero console errors. (An earlier note
+  here blamed pre-existing upstream behavior based on the Vue 2 reference
+  showing the same visible failure — Vue 2 shares the same-value signal no-op,
+  but the save-killing `copyFrom` crash was a genuine jsonld-9 migration
+  regression.)
+
 ## Verified fixed 2026-07-19 (driven in-browser, AUTH-02 retested with `fray` on dev.cassproject.org)
 
 - **Logout button did nothing** — `performApplicationLogout` cleared identities and
