@@ -342,25 +342,24 @@ export default {
         },
         onClickUndo: function() {
             this.$Progress.start();
-            useEditorStore().lastEditToUndo().then(editToUndo => {
-                if (editToUndo) {
-                    if (!EcArray.isArray(editToUndo)) {
-                        editToUndo = [editToUndo];
-                    }
-                    this.totalEditsCounter += editToUndo.length;
-                    for (let i = 0; i < editToUndo.length; i++) {
-                        let editType = editToUndo[i].operation;
-                        if (editType === "addNew") {
-                            this.undoAdd(editToUndo[i].id);
-                        } else if (editType === "delete") {
-                            this.undoDelete(editToUndo[i].obj);
-                        } else if (editType === "update") {
-                            this.undoUpdate(editToUndo[i]);
-                        }
+            let editToUndo = useEditorStore().popLastEditToUndo();
+            if (editToUndo) {
+                if (!EcArray.isArray(editToUndo)) {
+                    editToUndo = [editToUndo];
+                }
+                this.totalEditsCounter += editToUndo.length;
+                for (let i = 0; i < editToUndo.length; i++) {
+                    let editType = editToUndo[i].operation;
+                    if (editType === "addNew") {
+                        this.undoAdd(editToUndo[i].id);
+                    } else if (editType === "delete") {
+                        this.undoDelete(editToUndo[i].obj);
+                    } else if (editType === "update") {
+                        this.undoUpdate(editToUndo[i]);
                     }
                 }
-                useEditorStore().setLastEditToUndo(null);
-            });
+            }
+            useEditorStore().setLastEditToUndo(null);
         },
         async undoAdd(id) {
             // Delete

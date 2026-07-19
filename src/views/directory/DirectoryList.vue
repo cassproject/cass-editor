@@ -308,7 +308,7 @@ export default {
             if (this.refreshSearch) {
                 this.searchRepo();
                 const appStore = useAppStore();
-                appStore.refreshSearch(false);
+                appStore.setRefreshSearch(false);
             }
         },
         directoryId: function() {

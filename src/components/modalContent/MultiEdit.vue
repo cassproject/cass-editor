@@ -406,7 +406,7 @@ export default {
         removeAddingValueAtIndex: function() {
             if (this.removeAddingValueAtIndex) {
                 this.removeValueAtIndex(this.removeAddingValueAtIndex);
-                useLodeStore().removeAddingValueAtIndex(null);
+                useLodeStore().setRemoveAddingValueAtIndex(null);
             }
         },
         addingChecked: function() {

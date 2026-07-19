@@ -108,7 +108,7 @@ export default {
             var me = this;
             EcOrganization.get(organization.id, function(success) {
                 const editorStore = useEditorStore();
-                editorStore.organization(success);
+                editorStore.setOrganization(success);
                 me.$router.push({name: "organization", params: {organizationId: organization.id}});
             }, appError);
         },

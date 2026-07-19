@@ -578,7 +578,7 @@ export default {
                 if (me.addAnother) {
                     me.addAnother = false;
                     const appStore = useAppStore();
-                    appStore.refreshSearch(true);
+                    appStore.setRefreshSearch(true);
                 } else {
                     me.createSubdirectory = false;
                     const appStore = useAppStore();
@@ -634,7 +634,7 @@ export default {
                 me.resourceUrl = '';
                 me.createResource = false;
                 const appStore = useAppStore();
-                appStore.refreshSearch(true);
+                appStore.setRefreshSearch(true);
                 appStore.setRightAsideObject(c);
             }, appError);
         },
