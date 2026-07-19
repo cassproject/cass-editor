@@ -119,7 +119,14 @@
     font-size: 1rem;
     font-weight: 700;
     text-transform: uppercase;
-    width: 2em;
+    // Fixed-size circle; zero out Bulma's button padding and flex-center the
+    // initials so they sit in the middle of the circle.
+    width: 2.5em;
+    height: 2.5em;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .cass-editor__logged-in-user-info {

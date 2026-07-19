@@ -595,7 +595,7 @@ export default {
         },
         getName: function(field) {
             let name = EcArray.isArray(field) ? field : [field];
-            if (schema.Thing.getDisplayStringFrom(name).toLowerCase().indexOf("http") !== -1) {
+            if (schema.Thing.getDisplayStringFrom(name).toLowerCase().indexOf("http") == 0) {
                 return this.resolveNameFromUrl(schema.Thing.getDisplayStringFrom(name));
             } else {
                 return schema.Thing.getDisplayStringFrom(name);

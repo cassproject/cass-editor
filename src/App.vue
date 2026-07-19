@@ -16,7 +16,7 @@
             @create-new-concept-scheme="createNewConceptScheme"
             @create-new-progression-model="createNewProgressionModel"
             @create-new-collection="createNewCollection"
-            :class="[{ 'clear-side-bar': showSideNav}, { 'clear-narrow-side-bar': !showSideNav}, {'clear-right-aside': showRightAside}]" />
+            :class="[{ 'clear-side-bar': routeHasSidebar && showSideNav}, { 'clear-narrow-side-bar': routeHasSidebar && !showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
             :showSideNav="showSideNav"
             @create-new-framework="createNewFramework"
@@ -1396,6 +1396,13 @@ export default {
         }
     },
     computed: {
+        // Only routes that define a named "sidebar" view should clear space
+        // for the sidebar; standalone routes (login, createAccount, …) must
+        // not be offset.
+        routeHasSidebar: function() {
+            const matched = this.$route.matched[0];
+            return !!(matched && matched.components && matched.components.sidebar);
+        },
         bannerMessage: function() {
             return useAppStore().bannerMessage;
         },
@@ -1469,8 +1476,16 @@ export default {
             }
         },
         loggedInPerson: function() {
-            useEditorStore().setMe(EcIdentityManager.default.ids[0].ppk.toPk().toPem());
-            useEditorStore().setSubject(EcIdentityManager.default.ids[0].ppk.toPk().toPem());
+            // Also fires on logout, after identities have been cleared — guard
+            // ids[0] or the watcher throws and aborts the UI update.
+            const ids = EcIdentityManager.default.ids;
+            if (ids && ids.length > 0) {
+                useEditorStore().setMe(ids[0].ppk.toPk().toPem());
+                useEditorStore().setSubject(ids[0].ppk.toPk().toPem());
+            } else {
+                useEditorStore().setMe(null);
+                useEditorStore().setSubject(null);
+            }
             useEditorStore().setManageAssertions(false); // Turn off managing assertions when logging in / switching users
         }
     }

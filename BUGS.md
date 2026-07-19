@@ -1,5 +1,28 @@
 # Known Bugs
 
+## Verified fixed 2026-07-19 (driven in-browser, AUTH-02 retested with `fray` on dev.cassproject.org)
+
+- **Logout button did nothing** — `performApplicationLogout` cleared identities and
+  the logged-on person, but App.vue's `loggedInPerson` watcher then read
+  `EcIdentityManager.default.ids[0].ppk` on the now-empty identity list. The
+  TypeError aborted Vue's update flush, freezing the UI in the logged-in state (no
+  LogoutSuccess modal, chip still visible, no login button). The unguarded read
+  existed at baseline too, but Vue 2's scheduler tolerated the throw. Fixed by
+  guarding the watcher and resetting `me`/`subject` to null on logout. Verified:
+  logout now shows the "Logged Out" modal, removes the avatar chip, and restores
+  the login button with zero console errors.
+- **"Signed in as" initials chip shown when logged out** — the SideNav avatar button
+  rendered unconditionally (showing "ME" placeholder initials). Now hidden until a
+  user or identity is present (`displayName !== 'No user'`).
+- **Initials not centered in the avatar chip** — the chip forced `width: 2em` onto a
+  padded Bulma button, squeezing the text off-center. Now a fixed 2.5em circle with
+  zeroed padding and flex centering; measured text offset 0.0/0.0 px.
+- **Login / create-account pages off-center** — App.vue applied the sidebar-clearing
+  classes (`clear-side-bar`, margin-left 250px) to every route, including standalone
+  routes with no sidebar; on the fixed full-viewport login overlay this shifted the
+  card 250px right. The classes now apply only when the matched route defines a
+  named `sidebar` view. Verified: login card margins measure 420/420.
+
 ## Verified fixed (driven in-browser against localhost CASS server, 2026-07-10, logged in as `claude-test`)
 
 - **Framework/competency names blank everywhere; 40+ jsonld errors on load** — the

@@ -21,6 +21,7 @@
                 </router-link>
                 <!-- User icon -->
                 <button
+                    v-if="displayName !== 'No user'"
                     class="button is-rounded is-light cass-editor__logged-in-user-icon"
                     @click="showUserInfo = !showUserInfo">
                     <span
