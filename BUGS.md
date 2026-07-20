@@ -1,5 +1,30 @@
 # Known Bugs
 
+## FW-10: "Edit multiple" never appeared — array watchers need deep:true (fixed 2026-07-19)
+
+- **Selecting competencies never revealed the "Edit multiple" button.** Node
+  checkboxes mutate `selectedArray` in place (`EcArray.setAdd`), and Vue 3
+  options watchers no longer fire on in-place array mutation without
+  `deep: true` (Vue 2's patched array methods notified plain watchers). The
+  `selectedArray` watcher that sets `multipleSelected` therefore never ran.
+  Fixed in Hierarchy.vue, ConceptHierarchy.vue, and ProgressionHierarchy.vue
+  (which also had a pre-existing botched property name,
+  `addProgressionMaddProgression…`, corrected to
+  `addProgressionModelOrLevelText`). Verified in-browser: checking two
+  competencies shows "Edit multiple", and the modal opens with the property
+  picker and apply button.
+- **Systematic sweep of the same class** (watcher on an array mutated in place
+  in the same file) found and fixed 8 more:
+  - ImportServer.vue — `selectedFrameworks`, `selectedTaxonomies`,
+    `cassFrameworks`, `cassTaxonomies` (remote-import checkbox sync and
+    selection reset)
+  - Assertion.vue / TimelineElement.vue — `evidence` (evidence explanations
+    never recomputed)
+  - Property.vue — `checkedOptions` (option-checkbox edits never saved)
+  - List.vue — `results` (the `search-updated` signal); watches
+    `results.length` instead of deep-watching a large result set.
+  The sweep script (`watch-array-audit.mjs`) reports zero remaining cases.
+
 ## Undo (FW-08): TypeError fixed; revert behavior matches Vue 2 (2026-07-19)
 
 - **Undo button threw `TypeError: lastEditToUndo is not a function`** — the Vuex

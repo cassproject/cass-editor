@@ -223,7 +223,9 @@ export default {
         };
     },
     watch: {
-        results: function() {
+        // Watch length, not the array: results is mutated in place during
+        // paging, and deep-watching hundreds of result objects is wasteful.
+        'results.length': function() {
             this.$emit('search-updated');
         },
         text: function(newValue, oldValue) {

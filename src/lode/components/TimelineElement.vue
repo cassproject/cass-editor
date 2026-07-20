@@ -260,18 +260,22 @@ export default {
         clearInterval(this.invl);
     },
     watch: {
-        evidence: function(oldEvidence, newEvidence) {
-            this.evidenceExplanation = null;
-            if (this.evidence != null) {
-                if (this.evidence.length > 0) {
-                    var count = this.evidence.length;
-                    useEditorStore().computeBecause(this.evidence).then((because) => {
-                        this.$nextTick(() => {
-                            if (count === this.evidence.length) {
-                                this.evidenceExplanation = because;
-                            }
+        evidence: {
+            // deep: mutated in place; Vue 3 non-deep watchers miss array mutations.
+            deep: true,
+            handler: function() {
+                this.evidenceExplanation = null;
+                if (this.evidence != null) {
+                    if (this.evidence.length > 0) {
+                        var count = this.evidence.length;
+                        useEditorStore().computeBecause(this.evidence).then((because) => {
+                            this.$nextTick(() => {
+                                if (count === this.evidence.length) {
+                                    this.evidenceExplanation = because;
+                                }
+                            });
                         });
-                    });
+                    }
                 }
             }
         }

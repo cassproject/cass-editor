@@ -1103,29 +1103,45 @@ export default {
                 this.findDirectoryTrail(this.selectDirectory);
             }
         },
-        selectedFrameworks: function() {
-            for (let each in this.cassFrameworks) {
+        selectedFrameworks: {
+            // deep: mutated in place; Vue 3 non-deep watchers miss array mutations.
+            deep: true,
+            handler: function() {
+                for (let each in this.cassFrameworks) {
                 if (EcArray.has(this.selectedFrameworks, this.cassFrameworks[each].id)) {
                     this.cassFrameworks[each].checked = true;
                 } else {
-                    this.cassFrameworks[each].checked = false;
+                        this.cassFrameworks[each].checked = false;
+                    }
                 }
             }
         },
-        selectedTaxonomies: function() {
-            for (let each in this.cassTaxonomies) {
+        selectedTaxonomies: {
+            // deep: mutated in place; Vue 3 non-deep watchers miss array mutations.
+            deep: true,
+            handler: function() {
+                for (let each in this.cassTaxonomies) {
                 if (EcArray.has(this.selectedTaxonomies, this.cassTaxonomies[each].id)) {
                     this.cassTaxonomies[each].checked = true;
                 } else {
-                    this.cassTaxonomies[each].checked = false;
+                        this.cassTaxonomies[each].checked = false;
+                    }
                 }
             }
         },
-        cassFrameworks: function() {
-            this.selectedFrameworks.splice(0, this.selectedFrameworks.length);
+        cassFrameworks: {
+            // deep: mutated in place; Vue 3 non-deep watchers miss array mutations.
+            deep: true,
+            handler: function() {
+                this.selectedFrameworks.splice(0, this.selectedFrameworks.length);
+            }
         },
-        cassTaxonomies: function() {
-            this.selectedTaxonomies.splice(0, 1);
+        cassTaxonomies: {
+            // deep: mutated in place; Vue 3 non-deep watchers miss array mutations.
+            deep: true,
+            handler: function() {
+                this.selectedTaxonomies.splice(0, 1);
+            }
         }
     }
 };

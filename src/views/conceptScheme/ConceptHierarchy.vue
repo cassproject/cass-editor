@@ -404,18 +404,23 @@ export default {
             },
             deep: true
         },
-        selectedArray: function() {
-            if (this.selectedArray.length > 1) {
-                this.multipleSelected = true;
-            } else {
-                this.multipleSelected = false;
+        selectedArray: {
+            // deep: selections mutate the array in place (EcArray.setAdd) and
+            // Vue 3 no longer fires non-deep watchers on in-place mutation.
+            deep: true,
+            handler: function() {
+                if (this.selectedArray.length > 1) {
+                    this.multipleSelected = true;
+                } else {
+                    this.multipleSelected = false;
+                }
+                if (this.selectedArray.length === 1) {
+                    this.addConceptOrChildText = "Add Child";
+                } else {
+                    this.addConceptOrChildText = "Add Concept";
+                }
+                this.$emit('selected-array', this.selectedArray);
             }
-            if (this.selectedArray.length === 1) {
-                this.addConceptOrChildText = "Add Child";
-            } else {
-                this.addConceptOrChildText = "Add Concept";
-            }
-            this.$emit('selected-array', this.selectedArray);
         },
         // Concepts can't just depend on fields on the container object like frameworks can for reactivity
         recomputeHierarchy: function() {

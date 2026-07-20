@@ -139,15 +139,19 @@ export default {
         }
     },
     watch: {
-        evidence: function(oldEvidence, newEvidence) {
-            this.evidenceExplanation = null;
-            if (this.evidence != null) {
-                if (this.evidence.length > 0) {
-                    useEditorStore().computeBecause(this.evidence).then((because) => {
-                        this.$nextTick(() => {
-                            this.evidenceExplanation = because;
+        evidence: {
+            // deep: mutated in place; Vue 3 non-deep watchers miss array mutations.
+            deep: true,
+            handler: function() {
+                this.evidenceExplanation = null;
+                if (this.evidence != null) {
+                    if (this.evidence.length > 0) {
+                        useEditorStore().computeBecause(this.evidence).then((because) => {
+                            this.$nextTick(() => {
+                                this.evidenceExplanation = because;
+                            });
                         });
-                    });
+                    }
                 }
             }
         }

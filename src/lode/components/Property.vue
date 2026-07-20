@@ -1263,8 +1263,12 @@ export default {
                 this.stopEditing();
             }
         },
-        checkedOptions: function() {
-            this.save();
+        checkedOptions: {
+            // deep: mutated in place; Vue 3 non-deep watchers miss array mutations.
+            deep: true,
+            handler: function() {
+                this.save();
+            }
         },
         expandedThing: function(newval, oldval) {
             if (newval['@id'] !== oldval['@id'] && this.isVisible) {

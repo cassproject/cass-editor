@@ -536,19 +536,24 @@ export default {
         competencies: function() {
             this.once = true;
         },
-        selectedArray: function() {
-            if (this.selectedArray.length > 1) {
-                this.multipleSelected = true;
-            } else {
-                this.multipleSelected = false;
-                this.addingNode = false;
+        selectedArray: {
+            // deep: selections mutate the array in place (EcArray.setAdd) and
+            // Vue 3 no longer fires non-deep watchers on in-place mutation.
+            deep: true,
+            handler: function() {
+                if (this.selectedArray.length > 1) {
+                    this.multipleSelected = true;
+                } else {
+                    this.multipleSelected = false;
+                    this.addingNode = false;
+                }
+                if (this.selectedArray.length === 1) {
+                    this.addCompetencyOrChildText = "Add Child";
+                } else {
+                    this.addCompetencyOrChildText = "Add";
+                }
+                this.$emit('selected-array', this.selectedArray);
             }
-            if (this.selectedArray.length === 1) {
-                this.addCompetencyOrChildText = "Add Child";
-            } else {
-                this.addCompetencyOrChildText = "Add";
-            }
-            this.$emit('selected-array', this.selectedArray);
         },
         addAnother: function(val) {
             if (val) {

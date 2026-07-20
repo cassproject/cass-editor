@@ -386,18 +386,23 @@ export default {
             },
             deep: true
         },
-        selectedArray: function() {
-            if (this.selectedArray.length > 1) {
-                this.multipleSelected = true;
-            } else {
-                this.multipleSelected = false;
+        selectedArray: {
+            // deep: selections mutate the array in place (EcArray.setAdd) and
+            // Vue 3 no longer fires non-deep watchers on in-place mutation.
+            deep: true,
+            handler: function() {
+                if (this.selectedArray.length > 1) {
+                    this.multipleSelected = true;
+                } else {
+                    this.multipleSelected = false;
+                }
+                if (this.selectedArray.length === 1) {
+                    this.addProgressionModelOrLevelText = "Add Level";
+                } else {
+                    this.addProgressionModelOrLevelText = "Add Progression Model";
+                }
+                this.$emit('selected-array', this.selectedArray);
             }
-            if (this.selectedArray.length === 1) {
-                this.addProgressionModelOrLevelText = "Add Level";
-            } else {
-                this.addProgressionMaddProgressionModelOrLevelTextodelOrChildText = "Add Progression Model";
-            }
-            this.$emit('selected-array', this.selectedArray);
         },
         recomputeHierarchy: function() {
             if (this.recomputeHierarchy) {
