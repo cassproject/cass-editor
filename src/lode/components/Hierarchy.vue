@@ -611,11 +611,17 @@ export default {
             }
         },
         canPaste: function() {
-            if ((this.copyId !== null || this.cutId !== null) && this.nodeInFocus !== null) {
-                return true;
-            } else {
+            // Enable paste when the clipboard holds an item and a different node is
+            // selected to paste under. Selection (selectedArray) is the reliable
+            // signal: the old gate required nodeInFocus, which was only ever set by
+            // an @focus handler on the node checkbox — but that checkbox is
+            // display:none (bulma is-checkradio) and can never receive focus, so
+            // nodeInFocus stayed null and paste never enabled (DND-05).
+            const clipboardId = this.copyId !== null ? this.copyId : this.cutId;
+            if (clipboardId === null || clipboardId === undefined) {
                 return false;
             }
+            return this.selectedArray.some((id) => id !== clipboardId);
         },
         alignmentsToSave() {
             const crosswalkStore = useCrosswalkStore();
@@ -724,7 +730,17 @@ export default {
             editorStore.setPaste(false);
         },
         pasteClick: function() {
-            useEditorStore().setPaste(true);
+            const editorStore = useEditorStore();
+            // Paste under the selected target node (the selected node that isn't the
+            // clipboard item). Set it as nodeInFocus so the matching HierarchyNode's
+            // `paste` watcher performs the move, then trigger the paste.
+            const clipboardId = this.copyId !== null ? this.copyId : this.cutId;
+            const targetId = this.selectedArray.find((id) => id !== clipboardId);
+            if (targetId === undefined) {
+                return;
+            }
+            editorStore.setNodeInFocus(targetId);
+            editorStore.setPaste(true);
         },
         keydown(e) {
             if (!this.editingCompetency) {
