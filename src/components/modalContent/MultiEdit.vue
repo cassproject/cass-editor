@@ -195,6 +195,30 @@ export default {
             }
             return true;
         },
+        // Remove existing value(s) that occupy the same "slot" as `value` so a
+        // subsequent add() replaces rather than appends. For a language-tagged
+        // (langstring) value the slot is its language, so only the same-language
+        // entry is dropped and other languages are preserved. For a plain value
+        // the whole property is cleared. This gives multi-edit "set" semantics
+        // for descriptive properties (name, description, classification, ...)
+        // instead of accumulating duplicates.
+        replaceExistingValue: function(expandedCompetency, property, value) {
+            if (!expandedCompetency[property]) {
+                return;
+            }
+            var lang = (value && value["@language"] != null) ? value["@language"].toLowerCase() : null;
+            if (lang == null) {
+                // Non-language value: clear the property so the new value replaces it.
+                delete expandedCompetency[property];
+                return;
+            }
+            if (!EcArray.isArray(expandedCompetency[property])) {
+                expandedCompetency[property] = [expandedCompetency[property]];
+            }
+            expandedCompetency[property] = expandedCompetency[property].filter(function(entry) {
+                return !(entry && entry["@language"] != null && entry["@language"].toLowerCase() === lang);
+            });
+        },
         validateMax: function(expandedCompetency, property, competencyId, competency) {
             if (this.profile[property]["valuesIndexed"]) {
                 var f = this.profile[property]["valuesIndexed"];
@@ -255,13 +279,25 @@ export default {
                                 initialValues.push([]);
                             }
 
-                            if (range.length === 1 && range[0].toLowerCase().indexOf("langstring") !== -1) {
-                                if (me.profile && me.profile[property] && (me.profile[property]["onePerLanguage"] === 'true' || me.profile[property]["onePerLanguage"] === true)) {
+                            var hasAddHandler = me.profile && me.profile[property] && me.profile[property]["add"];
+                            if (hasAddHandler) {
+                                // A custom add handler (relations, levels, ...) manages its own
+                                // storage; keep the one-per-language guard for it when configured.
+                                if (range.length === 1 && range[0].toLowerCase().indexOf("langstring") !== -1 &&
+                                    (me.profile[property]["onePerLanguage"] === 'true' || me.profile[property]["onePerLanguage"] === true)) {
                                     var okayToSave = me.validateOnePerLanguage(expandedCompetency, property, competency, value);
                                     if (!okayToSave) {
                                         continue;
                                     }
                                 }
+                            } else {
+                                // Plain path (descriptive properties: schema:name, schema:description,
+                                // classification, ...). Applying a value to multiple items means "set
+                                // the value" — replace what is there rather than appending a duplicate
+                                // (or, for one-per-language properties, aborting the save with "can only
+                                // have one entry per language"). Language-tagged values replace only the
+                                // matching language; plain values replace the property outright.
+                                me.replaceExistingValue(expandedCompetency, property, value);
                             }
 
                             // If one value is allowed for a property and it already exists, the user cannot add another

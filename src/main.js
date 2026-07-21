@@ -3,6 +3,13 @@ import {createPinia} from 'pinia';
 import App from './App.vue';
 import router from './router.js';
 import {useLodeStore} from './stores/lode.js';
+import {useAppStore} from './stores/app.js';
+import {useEditorStore} from './stores/editor.js';
+import {useUserStore} from './stores/user.js';
+import {useConfigurationStore} from './stores/configuration.js';
+import {useCrosswalkStore} from './stores/crosswalk.js';
+import {useEnvironmentStore} from './stores/environment.js';
+import {useFeaturesEnabledStore} from './stores/featuresEnabled.js';
 
 // Styles
 import './scss/theme.scss';
@@ -123,6 +130,23 @@ const app = createApp(App);
 
 // Pinia state management
 app.use(createPinia());
+
+// Expose the Pinia store hooks to template scope. Vue 2's Vuex injected a
+// global `$store` that every template could use (e.g. `$store.commit(...)`);
+// the migration rewrote those to `useXStore().action()` in templates, but a
+// plain `<script>` block does not put its imports in template scope, so those
+// calls resolved to `undefined` and threw "useXStore is not a function". These
+// globals restore the old always-available behavior.
+Object.assign(app.config.globalProperties, {
+    useAppStore,
+    useEditorStore,
+    useLodeStore,
+    useUserStore,
+    useConfigurationStore,
+    useCrosswalkStore,
+    useEnvironmentStore,
+    useFeaturesEnabledStore
+});
 
 // Install the jsonld document loader that serves schema.cassproject.org
 // contexts from this app's own origin (public/schema.cassproject.org/).
