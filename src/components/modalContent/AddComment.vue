@@ -129,7 +129,11 @@ export default {
             if (this.isCommentEdit) {
                 this.insertEditedCommentObjectIntoStoreFrameworkCommentList();
             } else {
-                let fcl = useEditorStore().frameworkCommentList;
+                // Build a NEW array reference. Pushing into the existing one and
+                // storing the same reference back does not fire Comments.vue's
+                // (shallow) frameworkCommentList watcher, so the panel never
+                // re-parses and the new comment does not appear until reload.
+                let fcl = useEditorStore().frameworkCommentList.slice();
                 fcl.push(this.commentToSave);
                 useEditorStore().setFrameworkCommentList(fcl);
             }
