@@ -1129,19 +1129,16 @@ export default {
                 }
             }
         },
-        cassFrameworks: {
-            // deep: mutated in place; Vue 3 non-deep watchers miss array mutations.
-            deep: true,
-            handler: function() {
-                this.selectedFrameworks.splice(0, this.selectedFrameworks.length);
-            }
+        // Reset the current selection only when the SET of results changes (a new
+        // search or directory load changes the count). This MUST watch `.length`,
+        // not be deep: a deep watcher also fires when the `selectedFrameworks`
+        // watcher toggles each item's `.checked`, which then clears the selection —
+        // a feedback loop that unchecked every box, so imports saved nothing.
+        'cassFrameworks.length': function() {
+            this.selectedFrameworks.splice(0, this.selectedFrameworks.length);
         },
-        cassTaxonomies: {
-            // deep: mutated in place; Vue 3 non-deep watchers miss array mutations.
-            deep: true,
-            handler: function() {
-                this.selectedTaxonomies.splice(0, 1);
-            }
+        'cassTaxonomies.length': function() {
+            this.selectedTaxonomies.splice(0, this.selectedTaxonomies.length);
         }
     }
 };
