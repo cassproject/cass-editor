@@ -58,11 +58,27 @@ export const useLodeStore = defineStore('lode', {
             _storeInstance = this;
             // In-flight request deduplication map
             const _inflight = {};
+            // Negative cache: URLs whose schema/context could not be fetched
+            // (e.g. schema.cassproject.org/0.4/reference, which does not exist).
+            // Some frameworks reference these on every object; without this we
+            // would re-fetch and 404 once per object. We try the network once,
+            // then suppress by resolving to an empty context thereafter.
+            const _failed = {};
+            const EMPTY_DOCUMENT = {"@context": {}};
             jsonld.documentLoader = async function(url) {
                 if (url in _storeInstance.rawSchemata) {
                     return {
                         contextUrl: null,
                         document: _storeInstance.rawSchemata[url],
+                        documentUrl: url
+                    };
+                }
+                // Already known to be unfetchable: return an empty context and
+                // do not hit the network again.
+                if (_failed[url]) {
+                    return {
+                        contextUrl: null,
+                        document: EMPTY_DOCUMENT,
                         documentUrl: url
                     };
                 }
@@ -98,12 +114,26 @@ export const useLodeStore = defineStore('lode', {
                     delete _inflight[originalUrl];
                     throw err;
                 });
-                let context = await _inflight[originalUrl];
-                return {
-                    contextUrl: null,
-                    document: context,
-                    documentUrl: originalUrl
-                };
+                try {
+                    let context = await _inflight[originalUrl];
+                    return {
+                        contextUrl: null,
+                        document: context,
+                        documentUrl: originalUrl
+                    };
+                } catch (err) {
+                    // Record the miss so subsequent loads are suppressed, and
+                    // degrade gracefully to an empty context so expand/compact
+                    // can still complete instead of failing on this object.
+                    // Logged once per URL (the negative cache prevents repeats).
+                    _failed[originalUrl] = true;
+                    console.warn("jsonld documentLoader: unable to load " + originalUrl + ", suppressing further attempts.", err);
+                    return {
+                        contextUrl: null,
+                        document: EMPTY_DOCUMENT,
+                        documentUrl: originalUrl
+                    };
+                }
             };
         },
         // --- Mutations converted to actions ---
