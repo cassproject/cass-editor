@@ -209,7 +209,7 @@
                                 href="#"
                                 @click="selectTrailDirectory(each)">{{ each.name }}</a>
                         </li>
-                        <li>
+                        <li v-if="directory">
                             <a
                                 href="#"
                                 @click="showDirectoryInRightAside">
@@ -222,6 +222,7 @@
             </template>
             <template #body>
                 <DirectoryList
+                    v-if="directory"
                     type="Framework"
                     :repo="repo"
                     :click="frameworkClick"
@@ -671,6 +672,9 @@ export default {
         },
         findDirectoryTrail: function(directory) {
             let me = this;
+            if (!directory) {
+                return;
+            }
             if (directory.parentDirectory) {
                 EcDirectory.get(directory.parentDirectory, function(parent) {
                     if (parent && !parent.parentDirectory) {
@@ -694,7 +698,11 @@ export default {
     mounted: function() {
         this.showMine = this.filterByOwnedByMe;
         if (!this.directory || this.directory === '') {
+            // No directory selected (e.g. a page refresh — selectedDirectory is not
+            // persisted across reloads). Redirect and STOP: the rest of mounted
+            // dereferences this.directory and would throw on null.
             this.$router.push({name: "frameworks"});
+            return;
         }
         const appStore = useAppStore();
         appStore.setObjForShareModal(null);

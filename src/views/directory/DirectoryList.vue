@@ -8,8 +8,7 @@
                 <i class="fa fa-spinner fa-2x fa-pulse" />
             </span>
         </div>
-        <template>
-            <div class="container is-fluid">
+        <div class="container is-fluid">
                 <div class="cass--list--container">
                     <ul class="cass--list">
                         <!-- directories -->
@@ -202,7 +201,6 @@
                     </div>
                 </div>
             </div>
-        </template>
     </div>
 </template>
 
