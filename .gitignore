@@ -20,3 +20,4 @@ docs/.vuepress/dist/
 .env.local
 coverage/
 .vite/
+.claude/

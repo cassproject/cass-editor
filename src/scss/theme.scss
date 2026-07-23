@@ -114,6 +114,15 @@ $divider-background-color: $dark;
 @import "./../../node_modules/bulma-checkradio/src/sass/index.sass";
 @import "./../../node_modules/bulma-switch/src/sass/index.sass";
 
+// Global fix: The duplicate Bulma imports re-emit the shared %overlay rule
+// (.modal, .modal-background, ... { position: absolute }) after Bulma's
+// .modal { position: fixed }, so modals get positioned against the document
+// and open off-screen when the page is scrolled. Restore viewport-fixed
+// positioning.
+.modal {
+    position: fixed !important;
+}
+
 // Global fix: Bulma 0.9.4 sets border-color: transparent on a shared control
 // selector (.button, .input, .textarea, .select select, ...) and relies on
 // box-shadow to simulate borders. The duplicate Bulma imports cause the
