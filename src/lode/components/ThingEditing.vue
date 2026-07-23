@@ -1629,6 +1629,17 @@ export default {
             }
         },
         populateRequiredFields: function() {
+            // The profile watcher can fire before expandedThing has finished
+            // loading (e.g. a default browser configuration resolves
+            // asynchronously after this component mounts, for a framework
+            // that hasn't finished loading/being created yet). Every
+            // profile also carries an "@id" key describing the ID property,
+            // so without this guard the loop below throws reading "@id"
+            // off a null expandedThing, aborting the reactive flush and
+            // leaving required-field population (and therefore saving) broken.
+            if (!this.expandedThing) {
+                return;
+            }
             for (var i in this.profile) {
                 if (EcArray.has(this.skipConfigProperties, this.profile[i])) {
                     continue;

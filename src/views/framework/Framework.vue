@@ -935,6 +935,9 @@ export default {
         },
         getConfiguration: async function() {
             var me = this;
+            if (!this.framework) {
+                return;
+            }
             if (this.framework.configuration) {
                 var c = await EcRepository.get(this.framework.configuration);
                 appLog("c is: ", c);
