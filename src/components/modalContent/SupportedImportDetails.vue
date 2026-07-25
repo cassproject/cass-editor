@@ -482,7 +482,7 @@ import csvConceptExample from '../../../files/Concept Scheme Example.csv?url';
 import csvConceptTemplate from '../../../files/Concept Scheme Template.csv?url';
 import ctdlAsnJsonldConcepts from '../../../files/ConnectingCredentialsLevels.jsonld?url';
 import ctdlAsnJsonld from '../../../files/DQP.jsonld?url';
-import asnRdfJson from '../../../files/D2695955?url';
+import asnRdfJson from '../../../files/D2695955.json?url';
 import medbiquitous from '../../../files/educational_achievement_sample_1June2012.xml?url';
 import {useAppStore} from '@/stores/app';
 import {useEditorStore} from '@/stores/editor';
