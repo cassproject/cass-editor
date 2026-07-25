@@ -5,32 +5,36 @@ on:
     branches:
       - master
 
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages-master
+  cancel-in-progress: true
+
 jobs:
   deploy:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3.5.0
-      
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v3.6.0
+      - uses: actions/checkout@v4
         with:
-          # Version Spec of the version to use.  Examples: 12.x, 10.15.1, >=10.15.0
-          node-version: '16.x'
-          
-      - name: Cache dependencies
-        uses: actions/cache@v4.2.3
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          submodules: recursive
 
-      - run: git pull --recurse-submodules
-      - run: git submodule update --init --remote
-      - run: export VUE_APP_API_LOGIN_ENABLED=false
-      - run: export DOCS_BASE=/cass-editor/docs/
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          # Vite 7 requires Node 20.19+ / 22.12+
+          node-version: '22.x'
+          cache: npm
+
       - run: npm ci
+
+      # docs build into public/docs, which the app build then copies to dist/docs.
+      # DOCS_BASE matches the GitHub Pages project path this site is served under.
       - run: npm run docs:build
+        env:
+          DOCS_BASE: /cass-editor/docs/
+
       - run: npm run build
 
       - name: deploy
