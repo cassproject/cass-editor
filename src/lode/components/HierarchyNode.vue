@@ -373,6 +373,10 @@ import common from '@/mixins/common.js';
 
 export default {
     name: "HierarchyNode",
+    // 'select' collides with the native DOM select event; without this
+    // declaration Vue 3 fallthrough also binds the parent's @select natively
+    // on the root element, calling handlers with a DOM Event payload.
+    emits: ['create-new-node-event', 'mounting-node', 'begin-drag', 'move', 'add', 'select', 'remove-object'],
     mixins: [ common ],
     props: {
         depth: Number,

@@ -125,6 +125,10 @@
 <script>
 export default {
     name: 'FrameworkCompetencyPropertyListItem',
+    // Without this, Vue 3 attribute fallthrough also binds the parent's
+    // @change as a native listener on the root <tr>, so bubbled input change
+    // events call the handler with a DOM Event instead of the emit payload.
+    emits: ['change', 'manage', 'delete'],
     props: {
         propertyParent: {
             type: String,

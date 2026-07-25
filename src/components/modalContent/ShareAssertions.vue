@@ -1,6 +1,6 @@
 <template>
     <modal-template
-        @close="closeModal; $emit('close')"
+        @close="$emit('close')"
         :active="true"
         type="primary">
         <template #modal-header>
@@ -196,6 +196,7 @@ import {useAppStore} from '@/stores/app';
 import {useEditorStore} from '@/stores/editor';
 export default {
     name: 'ShareAssertionsModal',
+    emits: ['close'],
     props: {
         isActive: Boolean
     },
@@ -287,6 +288,7 @@ export default {
                     searchQuery += ' OR ';
                 }
             }
+            let assertions = [];
             let doSearch = async function(start, count) {
                 return new Promise((resolve, reject) => {
                     EcAssertion.search(window.repo, `\\*owner:"${useEditorStore().getMe}" AND (${searchQuery})`, async(results) => {

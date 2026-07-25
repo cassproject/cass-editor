@@ -188,6 +188,13 @@ export default {
         }
     },
     methods: {
+        registerAssertion: function(a) {
+            // The store otherwise only learns about new assertions from the
+            // WebSocket feed; add eagerly so an immediate can/can't switch
+            // can find and revoke this assertion.
+            a.assertionDateDecrypted = Date.now();
+            useEditorStore().addAssertion(a);
+        },
         initAssertions: function() {
             this.canAssertion = false;
             this.cannotAssertion = false;
@@ -353,7 +360,9 @@ export default {
             return new Promise((resolve, reject) => {
                 EcCompetency.get(this.uri, (c) => {
                     if (this.assertions.length === 0) {
-                        return;
+                        // Nothing to operate on; settle the promise so
+                        // callers' awaits don't hang and lock the UI.
+                        return resolve();
                     }
                     var eah = new EcAsyncHelper();
                     eah.each(this.assertions, (assertion, callback) => {
@@ -407,7 +416,9 @@ export default {
             return new Promise((resolve, reject) => {
                 EcCompetency.get(this.uri, (c) => {
                     if (this.assertions.length === 0) {
-                        return;
+                        // Nothing to operate on; settle the promise so
+                        // callers' awaits don't hang and lock the UI.
+                        return resolve();
                     }
                     var eah = new EcAsyncHelper();
                     eah.each(this.assertions, (assertion, callback) => {
@@ -458,7 +469,9 @@ export default {
             return new Promise((resolve, reject) => {
                 EcCompetency.get(this.uri, (c) => {
                     if (this.assertions.length === 0) {
-                        return;
+                        // Nothing to operate on; settle the promise so
+                        // callers' awaits don't hang and lock the UI.
+                        return resolve();
                     }
                     var eah = new EcAsyncHelper();
                     eah.each(this.assertions, (assertion, callback) => {
@@ -507,7 +520,9 @@ export default {
             return new Promise((resolve, reject) => {
                 EcCompetency.get(this.uri, (c) => {
                     if (this.assertions.length === 0) {
-                        return;
+                        // Nothing to operate on; settle the promise so
+                        // callers' awaits don't hang and lock the UI.
+                        return resolve();
                     }
                     var eah = new EcAsyncHelper();
                     eah.each(this.assertions, (assertion, callback) => {
@@ -528,6 +543,10 @@ export default {
                                                         callback();
                                                     }
                                                 }, callback);
+                                            } else {
+                                                // Positive assertions still need the callback,
+                                                // or the async helper never completes.
+                                                callback();
                                             }
                                         } else callback();
                                     }, callback);
@@ -587,12 +606,14 @@ export default {
                                                         if (evidences.length > 0) {
                                                             a.setEvidenceAsync(evidences, () => {
                                                                 EcRepository.save(a, () => {
+                                                                    this.registerAssertion(a);
                                                                     this.canAssertion = true;
                                                                     resolve();
                                                                 }, reject);
                                                             }, reject);
                                                         } else {
                                                             EcRepository.save(a, () => {
+                                                                this.registerAssertion(a);
                                                                 this.canAssertion = true;
                                                                 resolve();
                                                             }, reject);
@@ -604,6 +625,7 @@ export default {
                                         );
                                     } else {
                                         EcRepository.save(a, () => {
+                                            this.registerAssertion(a);
                                             this.canAssertion = true;
                                             resolve();
                                         }, reject);
@@ -634,6 +656,7 @@ export default {
                                 a.setNegativeAsync(true, () => {
                                     a.setConfidence(1.0);
                                     EcRepository.save(a, () => {
+                                        this.registerAssertion(a);
                                         this.cannotAssertion = true;
                                         resolve();
                                     }, reject);
@@ -648,7 +671,9 @@ export default {
             return new Promise((resolve, reject) => {
                 EcCompetency.get(this.uri, (c) => {
                     if (this.assertions.length === 0) {
-                        return;
+                        // Nothing to operate on; settle the promise so
+                        // callers' awaits don't hang and lock the UI.
+                        return resolve();
                     }
                     var eah = new EcAsyncHelper();
                     eah.each(this.assertions, (assertion, callback) => {
@@ -689,7 +714,9 @@ export default {
             return new Promise((resolve, reject) => {
                 EcCompetency.get(this.uri, (c) => {
                     if (this.assertions.length === 0) {
-                        return;
+                        // Nothing to operate on; settle the promise so
+                        // callers' awaits don't hang and lock the UI.
+                        return resolve();
                     }
                     var eah = new EcAsyncHelper();
                     eah.each(this.assertions, (assertion, callback) => {

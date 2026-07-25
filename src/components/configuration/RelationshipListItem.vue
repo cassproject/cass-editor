@@ -41,6 +41,11 @@
 <script>
 export default {
     name: 'RelationshipListItem',
+    // Without this, Vue 3 attribute fallthrough also binds the parent's
+    // @change as a native listener on the root <tr>, so bubbled input/checkbox
+    // change events call the handler with a DOM Event instead of
+    // (relationship, field, value).
+    emits: ['change'],
     props: {
         relationship: {
             type: String,

@@ -172,6 +172,10 @@ import {useLodeStore} from '@/stores/lode';
 export default {
     // Thing represents a JSON-LD object. Does not have to be based on http://schema.org/Thing.
     name: 'Thing',
+    // 'select' collides with the native DOM select event; without this
+    // declaration Vue 3 fallthrough also binds the parent's @select natively
+    // on the root element, calling handlers with a DOM Event payload.
+    emits: ['set-checkbox', 'edit-node-event', 'editing-thing', 'expand-event', 'remove-object', 'move-up', 'move-down', 'move-right', 'move-left', 'select'],
     mixins: [common],
     props: {
         expandInModal: {

@@ -43,7 +43,7 @@
                             height="44"
                             :data-jdenticon-value="fingerprintSubject"
                             :title="fingerprintSubject" /> -->
-                        <strong class="subjectName">{{ subject }} </strong>
+                        <strong class="subjectName">{{ subject }}&nbsp;</strong>
                         <span
                             class="negativeClaim"
                             v-if="negative">could not</span>
