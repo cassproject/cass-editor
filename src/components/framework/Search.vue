@@ -113,6 +113,7 @@ export default {
             default: null
         }
     },
+    emits: ['setSelectedIds', 'selectFramework'],
     components: {List, SearchBar, Hierarchy, Thing},
     mixins: [common],
     data() {
@@ -282,9 +283,9 @@ export default {
             if (this.queryParams.selectRelations === "true" && this.framework.relation) {
                 for (var i = 0; i < this.framework.relation.length; i++) {
                     var relation = await EcAlignment.get(this.framework.relation[i]);
-                    if (EcArray.has(selectedArray, relation.target)) {
+                    if (EcArray.has(ary, relation.target)) {
                         if (this.queryParams.selectVerbose === "true") {
-                            ary.push(JSON.parse(rld.toJson()));
+                            ary.push(JSON.parse(relation.toJson()));
                         } else {
                             ary.push(relation.shortId());
                         }
@@ -342,9 +343,14 @@ export default {
                 this.displayFirst.splice(0, this.displayFirst.length);
             }
         },
-        selectedIds(newVal) {
-            if (this.parent === 'search-modal') {
-                this.$emit('setSelectedIds', newVal);
+        selectedIds: {
+            // Selection toggles mutate the array in place; without deep,
+            // Vue 3 only fires this watcher when the array is replaced.
+            deep: true,
+            handler(newVal) {
+                if (this.parent === 'search-modal') {
+                    this.$emit('setSelectedIds', newVal);
+                }
             }
         },
         clearFramework() {

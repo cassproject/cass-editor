@@ -1778,7 +1778,11 @@ export default {
                 if (type === "EcProgressionLevel") {
                     type = "EcConcept";
                 }
-                if (type) {
+                if (type === "EcCollection") {
+                    // Collections are EcFrameworks with subType 'Collection'.
+                    type = "EcFramework";
+                }
+                if (window[type]) {
                     var thing = await window[type].get(this.changedObject);
                     this.originalThing = thing;
                     this.$emit('change-obj', thing);
