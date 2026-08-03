@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CaSS High Priority Fixes — Before/After Demonstration</title>
+<style>
+  :root {
+    --bg: #ffffff; --fg: #1a1d21; --muted: #5b6570; --line: #e2e6ea;
+    --card: #f7f9fb; --before: #b3261e; --after: #1b7f4b;
+    --beforebg: #fdf2f1; --afterbg: #f0f9f4; --code: #0f1419; --codefg: #e6edf3;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#14171a; --fg:#e6edf3; --muted:#9aa4ae; --line:#2b3138;
+            --card:#1b1f24; --beforebg:#2a1a19; --afterbg:#152720;
+            --before:#f2857d; --after:#6edc9f; --code:#0b0e11; --codefg:#e6edf3; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; padding:2rem 1.25rem 4rem; background:var(--bg); color:var(--fg);
+         font:16px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif; }
+  .wrap { max-width: 1080px; margin: 0 auto; }
+  h1 { font-size:1.85rem; margin:0 0 .35rem; letter-spacing:-.02em; }
+  .sub { color:var(--muted); margin:0 0 2rem; }
+  h2 { font-size:1.3rem; margin:2.75rem 0 .25rem; letter-spacing:-.01em;
+       border-top:1px solid var(--line); padding-top:1.75rem; }
+  h2 .num { color:var(--muted); font-weight:600; }
+  .desc { color:var(--muted); margin:.25rem 0 1.25rem; }
+  h3 { font-size:.82rem; text-transform:uppercase; letter-spacing:.08em;
+       color:var(--muted); margin:1.5rem 0 .5rem; font-weight:700; }
+  table { border-collapse:collapse; width:100%; font-size:.9rem; margin:.5rem 0 1rem; }
+  th,td { text-align:left; padding:.55rem .7rem; border-bottom:1px solid var(--line);
+          vertical-align:top; }
+  th { font-size:.75rem; text-transform:uppercase; letter-spacing:.06em; color:var(--muted); }
+  .scroll { overflow-x:auto; }
+  code, pre { font-family:"SF Mono",Menlo,Consolas,monospace; }
+  code { font-size:.86em; background:var(--card); padding:.1em .38em; border-radius:4px; }
+  pre { background:var(--code); color:var(--codefg); padding:.9rem 1rem; border-radius:8px;
+        overflow-x:auto; font-size:.82rem; line-height:1.55; margin:0; }
+  .ba { display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin:.75rem 0 0; }
+  @media (max-width:820px) { .ba { grid-template-columns:1fr; } }
+  .panel { border:1px solid var(--line); border-radius:10px; overflow:hidden; }
+  .panel header { padding:.5rem .85rem; font-weight:700; font-size:.78rem;
+                  text-transform:uppercase; letter-spacing:.07em; }
+  .panel.b header { background:var(--beforebg); color:var(--before); }
+  .panel.a header { background:var(--afterbg); color:var(--after); }
+  .panel .body { padding:.85rem; background:var(--card); }
+  .panel .body pre { background:var(--code); }
+  .tag { display:inline-block; font-size:.7rem; font-weight:700; padding:.15em .5em;
+         border-radius:999px; letter-spacing:.04em; text-transform:uppercase; }
+  .tag.live { background:var(--afterbg); color:var(--after); border:1px solid currentColor; }
+  .tag.pend { background:var(--beforebg); color:var(--before); border:1px solid currentColor; }
+  .note { background:var(--card); border-left:3px solid var(--muted); padding:.75rem 1rem;
+          border-radius:0 8px 8px 0; font-size:.9rem; margin:1rem 0; }
+  ul { padding-left:1.2rem; } li { margin:.3rem 0; }
+  .mono-sm { font-family:"SF Mono",Menlo,Consolas,monospace; font-size:.8rem; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>CaSS — High Priority (Current Month) fixes</h1>
+<p class="sub">Before/after demonstration for the four issues on the Credential Engine Issue Tracking board.
+All evidence below was captured by running the real code paths locally — a live CASS server, the real
+CTDL-ASN CSV importer, and the same JSON-LD compaction call the export endpoint uses.</p>
+
+<div class="scroll">
+<table>
+  <thead><tr><th>Issue</th><th>Fix location</th><th>Branches</th><th>Evidence</th></tr></thead>
+  <tbody>
+    <tr><td><b>#1427</b> publisher not an array</td><td>CASS <code>ceasn.js</code></td>
+        <td class="mono-sm">issue-1427-1.7<br>issue-1427-1.6</td>
+        <td><span class="tag live">live end-to-end</span></td></tr>
+    <tr><td><b>#1421</b> w3 IRI for skos:notation</td><td>schema.cassproject.org context</td>
+        <td class="mono-sm">issue-1421</td>
+        <td><span class="tag live">live BEFORE</span> <span class="tag pend">AFTER needs deploy</span></td></tr>
+    <tr><td><b>#1425</b> publisher required</td><td>cass-editor import + profiles</td>
+        <td class="mono-sm">issue-1425-1.7<br>issue-1425-1.6</td>
+        <td><span class="tag live">import end-to-end</span> <span class="tag pend">editor UI pending</span></td></tr>
+    <tr><td><b>#1423</b> validate registry URLs</td><td>cass-npm + cass-editor</td>
+        <td class="mono-sm">issue-1423 (npm)<br>issue-1423-1.7 / -1.6</td>
+        <td><span class="tag live">end-to-end + 13 unit tests</span></td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ───────────────────────────── 1427 ───────────────────────────── -->
+<h2><span class="num">#1427</span> &nbsp;Progression model: <code>ceasn:publisher</code> should be an array</h2>
+<p class="desc"><b>Cause:</b> <code>conceptArrays()</code> excluded <code>ceasn:publisher</code> from
+scalar→array coercion, so progression models and concept schemes emitted a bare string when a single
+publisher was present. The framework export path (<code>stripNonCe</code>) had no such exclusion.</p>
+
+<h3>Test case</h3>
+<p>Save a Progression Model with exactly <b>one</b> publisher, then <code>GET /api/ceasn/&lt;guid&gt;</code>
+from a live local CASS server. Only the server branch differs between the two runs.</p>
+
+<div class="ba">
+  <div class="panel b"><header>Before — server on 1.7</header><div class="body">
+    <pre>ceasn:publisher = "https://credentialengineregistry.org
+                    /resources/ce-1111…"
+
+               ← bare string</pre>
+  </div></div>
+  <div class="panel a"><header>After — server on issue-1427-1.7</header><div class="body">
+    <pre>ceasn:publisher = ["https://credentialengineregistry.org
+                     /resources/ce-1111…"]
+
+               ← array, matches framework export</pre>
+  </div></div>
+</div>
+
+<h3>Automated regression test</h3>
+<p>New <code>src/test/8.ceasn.progression.test.js</code> asserts the array shape end-to-end.</p>
+<div class="ba">
+  <div class="panel b"><header>Before</header><div class="body"><pre>3 passing
+1 failing
+
+1) exports ceasn:publisher as an array
+   even with a single value (#1427):
+   AssertionError: expected
+   'https://credentialengineregistry.org/…'
+   to be an array</pre></div></div>
+  <div class="panel a"><header>After</header><div class="body"><pre>✔ Waiting for server to be ready
+✔ create progression model with a single publisher
+✔ exports ceasn:publisher as an array
+  even with a single value (#1427)
+
+4 passing (4s)</pre></div></div>
+</div>
+<div class="note"><b>Regression guard:</b> the pre-existing <code>8.ceasn.test.js</code> suite
+(framework CEASN export + O*NET import round-trips) — <b>5 passing</b>, unchanged.</div>
+
+<!-- ───────────────────────────── 1421 ───────────────────────────── -->
+<h2><span class="num">#1421</span> &nbsp;Progression Model export shows a w3 label for <code>skos:notation</code></h2>
+<p class="desc"><b>Cause:</b> <code>cass2ceasnProgressions.json</code> declared
+<code>skos:notation</code> without <code>@type</code>, so values expand as untyped literals. The credreg
+target context types the term <code>xsd:string</code>, so JSON-LD term selection can't match it — and
+JSON-LD 1.1 forbids the compact-IRI fallback when a term of that name exists. The full IRI is emitted
+verbatim. <code>cass2ceasnConcepts.json</code> already had the <code>@type</code>, which is why concepts
+were unaffected.</p>
+
+<h3>Test case A — live export (reproduces the bug)</h3>
+<p>Same live server and progression model as #1427, with <code>skos:notation = "TK"</code>:</p>
+<pre>notation key = "http://www.w3.org/2004/02/skos/core#notation"   ← the bug, reproduced live</pre>
+
+<h3>Test case B — compaction harness</h3>
+<p>Mirrors the server's <code>jsonLdCompact</code> call exactly: same <code>jsonld@9</code>, same live
+credreg target context; only the progression context differs between runs.</p>
+<div class="ba">
+  <div class="panel b"><header>Before — unpatched context</header><div class="body"><pre>notation key:
+  http://www.w3.org/2004/02/skos/core#notation
+    = "TK"
+
+@type:
+  http://purl.org/asn/schema/core/ProgressionModel</pre></div></div>
+  <div class="panel a"><header>After — patched context</header><div class="body"><pre>notation key:
+  skos:notation
+    = "TK"
+
+@type:
+  asn:ProgressionModel</pre></div></div>
+</div>
+<div class="note"><b>Bonus defect fixed in the same file:</b> the <code>asn</code> prefix was lowercase
+(<code>purl.org/asn/…</code>) while credreg and every other CaSS context use uppercase
+<code>purl.org/ASN/…</code>. That leaked full IRIs for <code>asn:*</code> terms through the identical
+mechanism — visible in the <code>@type</code> row above.</div>
+<div class="note"><b>Why the live AFTER is still pending:</b> the CASS server fetches this context over
+the network from <code>schema.cassproject.org</code> at export time. Until the schema site is deployed
+from <code>issue-1421</code>, a live export still shows the old key — which is exactly what the local
+server shows today. One deploy fixes 1.6 and 1.7 at once.</div>
+
+<!-- ───────────────────────────── 1425 ───────────────────────────── -->
+<h2><span class="num">#1425</span> &nbsp;Require a publisher for Concept Scheme and Progression Model</h2>
+<p class="desc">Two halves, per the issue comment ("for Manual editor and import").</p>
+
+<h3>Import half — driven through the real CTDL-ASN importer</h3>
+<p>A progression-model CSV with <b>no <code>ceasn:publisher</code> column</b>, run through
+<code>CTDLASNCSVConceptImport.importFrameworksAndCompetencies</code> with the exact
+<code>validationRules</code> object the editor builds.</p>
+<div class="ba">
+  <div class="panel b"><header>Before</header><div class="body"><pre>### BEFORE (publisher not required)
+    outcome: VALIDATION PASSED
+             (import proceeded)</pre></div></div>
+  <div class="panel a"><header>After</header><div class="body"><pre>### AFTER (publisher required)
+    outcome: IMPORT BLOCKED
+    error:   Row 2: Missing required
+             properties for
+             asn:ProgressionModel:
+             ceasn:publisher</pre></div></div>
+</div>
+<p><b>Control</b> — same CSV <i>with</i> a publisher column, fixed rules:
+<code>VALIDATION PASSED (import proceeded)</code>. Good data still imports.</p>
+
+<h3>Editor half</h3>
+<p><code>"isRequired": "true"</code> added to the Publisher descriptor in
+<code>ctdlAsnConceptSchemeProfile</code> and <code>ctdlAsnProgressionModelProfile</code>. This rides the
+same mechanism that already enforces <code>description</code> and <code>publicationStatusType</code> on
+those very profiles: Publisher renders with an asterisk, and <i>Done editing</i> refuses to close with
+"Publisher is required. Please enter a value." Creating a new object is unaffected — the creation flows
+never consult profiles.</p>
+<div class="note"><b>Not yet demonstrated in the UI.</b> This needs a click-through against a logged-in
+editor session; see "What's left" below.</div>
+
+<!-- ───────────────────────────── 1423 ───────────────────────────── -->
+<h2><span class="num">#1423</span> &nbsp;Validate URLs (registry URL vs CTID) on CSV import</h2>
+<p class="desc">Reference fields may hold a CTID or a URL. Previously any value starting with
+<code>http</code> passed through the importer completely unchecked. Now non-CTID values must be URLs
+whose origin matches the environment's <code>newObjectEndpoint</code>, and a mismatch
+<b>blocks the import</b>. Active only when <code>ceasnDataFields=true</code>.</p>
+
+<h3>Test case — real framework CSV through the real importer</h3>
+<p><code>ceasn:creator = https://example.com/not-the-registry</code>, environment endpoint
+<code>…/resources/</code>:</p>
+<div class="ba">
+  <div class="panel b"><header>Before — no urlRules</header><div class="body"><pre>### BEFORE
+    outcome: VALIDATION PASSED
+             (import proceeded)
+
+  ← bogus URL accepted and stored</pre></div></div>
+  <div class="panel a"><header>After — urlRules active</header><div class="body"><pre>### AFTER
+    outcome: IMPORT BLOCKED
+    error:   Row 2: ceasn:creator must be
+             a CTID or a credential registry
+             URL for this environment
+             (got: https://example.com/
+              not-the-registry)</pre></div></div>
+</div>
+<p><b>Control</b> — identical CSV with a registry-origin URL instead:
+<code>VALIDATION PASSED (import proceeded)</code>.</p>
+
+<h3>Unit tests — 13 passing</h3>
+<div class="scroll">
+<table>
+  <thead><tr><th>Case</th><th>Result</th></tr></thead>
+  <tbody>
+    <tr><td>CTID value (<code>ce-…</code>)</td><td>accepted</td></tr>
+    <tr><td>registry URL with allowed origin</td><td>accepted</td></tr>
+    <tr><td>URL from another origin (e.g. prod URL under a sandbox endpoint)</td><td>rejected, names row + field + value</td></tr>
+    <tr><td>arbitrary URL / plain text</td><td>rejected</td></tr>
+    <tr><td>pipe-delimited <code>a|b</code>, one bad</td><td>only the bad part reported</td></tr>
+    <tr><td>array values</td><td>validated per element</td></tr>
+    <tr><td>several bad fields in one row</td><td>one error per field</td></tr>
+    <tr><td>no urlRules / empty allowedOrigins / unconfigured type / empty values</td><td>inert — no behavior change</td></tr>
+  </tbody>
+</table>
+</div>
+
+<!-- ───────────────────────────── left ───────────────────────────── -->
+<h2>What's left</h2>
+<ul>
+  <li><b>Editor UI click-through</b> for #1425 (and a browser-driven CSV import for #1423). I have a
+      local CASS server and the editor dev server running; the blockers are that the browser pane isn't
+      displayed on your side, and the editor needs a logged-in identity.</li>
+  <li><b>Publish cassproject 5.0.18</b> from the <code>issue-1423</code> branch, then bump the dependency
+      in cass-editor on both 1.7 and 1.6. Deliberately not bumped yet — an unpublished version breaks
+      <code>npm ci</code>.</li>
+  <li><b>Deploy schema.cassproject.org</b> from <code>issue-1421</code>, then re-check the live export
+      URL quoted in that issue.</li>
+  <li><b>Push the 8 branches and open PRs.</b> Nothing has been pushed.</li>
+</ul>
+
+</div>
+</body>
+</html>
