@@ -1,0 +1,1 @@
+import{a as t,f as o,b as s,u as a}from"./index-CSFNa3l_.js";const n={},r={id:"about"};function c(i,e){return a(),o("div",r,[...e[0]||(e[0]=[s("h1",null,"This is an about page.",-1)])])}const _=t(n,[["render",c]]);export{_ as default};
