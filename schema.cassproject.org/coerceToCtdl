@@ -1,0 +1,1486 @@
+{
+"@context": {
+"dct": "http://dublincore.org/dc/terms/",
+"asn": "http://purl.org/ASN/schema/core/",
+"ceterms": "http://purl.org/ctdl/terms/",
+"dc": "http://purl.org/dc/elements/1.1/",
+"lrmi": "http://purl.org/dcx/lrmi-terms/",
+"vann": "http://purl.org/vocab/vann/",
+"schema": "http://schema.org/",
+"rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+"rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+"xsd": "http://www.w3.org/2001/XMLSchema#",
+"owl": "http://www.w3.org/2002/07/owl#",
+"skos": "http://www.w3.org/2004/02/skos/core#",
+"foaf": "http://xmlns.com/foaf/0.1/",
+"obi": "https://w3id.org/openbadges#",
+"vs": "https://www.w3.org/2003/06/sw-vocab-status/ns",
+"actionStat": "http://purl.org/ctdl/vocabs/actionStat/",
+"agentSector": "http://purl.org/ctdl/vocabs/agentSector/",
+"serviceType": "http://purl.org/ctdl/vocabs/serviceType/",
+"assessMethod": "http://purl.org/ctdl/vocabs/assessMethod/",
+"assessUse": "http://purl.org/ctdl/vocabs/assessUse/",
+"audience": "http://purl.org/ctdl/vocabs/audience/",
+"audLevel": "http://purl.org/ctdl/vocabs/audLevel/",
+"claimType": "http://purl.org/ctdl/vocabs/claimType/",
+"costType": "http://purl.org/ctdl/vocabs/costType/",
+"credentialStat": "http://purl.org/ctdl/vocabs/credentialStat/",
+"creditUnit": "http://purl.org/ctdl/vocabs/creditUnit/",
+"deliveryType": "http://purl.org/ctdl/vocabs/deliveryType/",
+"inputType": "http://purl.org/ctdl/vocabs/inputType/",
+"learnMethod": "http://purl.org/ctdl/vocabs/learnMethod/",
+"orgType": "http://purl.org/ctdl/vocabs/orgType/",
+"residency": "http://purl.org/ctdl/vocabs/residency/",
+"score": "http://purl.org/ctdl/vocabs/score/",
+"ceterms:AccreditAction": {
+"@id": "ceterms:AccreditAction"
+},
+"ceterms:AdvancedStandingAction": {
+"@id": "ceterms:AdvancedStandingAction"
+},
+"ceterms:Agent": {
+"@id": "ceterms:Agent"
+},
+"ceterms:ApprenticeshipCertificate": {
+"@id": "ceterms:ApprenticeshipCertificate"
+},
+"ceterms:ApproveAction": {
+"@id": "ceterms:ApproveAction"
+},
+"ceterms:Assessment": {
+"@id": "ceterms:Assessment"
+},
+"ceterms:AssessmentProfile": {
+"@id": "ceterms:AssessmentProfile"
+},
+"ceterms:AssociateDegree": {
+"@id": "ceterms:AssociateDegree"
+},
+"ceterms:BachelorDegree": {
+"@id": "ceterms:BachelorDegree"
+},
+"ceterms:Badge": {
+"@id": "ceterms:Badge"
+},
+"ceterms:CareerPathway": {
+"@id": "ceterms:CareerPathway"
+},
+"ceterms:Certificate": {
+"@id": "ceterms:Certificate"
+},
+"ceterms:Certification": {
+"@id": "ceterms:Certification"
+},
+"ceterms:Competency": {
+"@id": "ceterms:Competency"
+},
+"ceterms:CompetencyFramework": {
+"@id": "ceterms:CompetencyFramework"
+},
+"ceterms:ConditionManifest": {
+"@id": "ceterms:ConditionManifest"
+},
+"ceterms:ConditionProfile": {
+"@id": "ceterms:ConditionProfile"
+},
+"ceterms:ContactPoint": {
+"@id": "ceterms:ContactPoint"
+},
+"ceterms:CostProfile": {
+"@id": "ceterms:CostProfile"
+},
+"ceterms:Course": {
+"@id": "ceterms:Course"
+},
+"ceterms:Credential": {
+"@id": "ceterms:Credential"
+},
+"ceterms:CredentialAlignmentObject": {
+"@id": "ceterms:CredentialAlignmentObject"
+},
+"ceterms:CredentialAssertion": {
+"@id": "ceterms:CredentialAssertion"
+},
+"ceterms:CredentialFramework": {
+"@id": "ceterms:CredentialFramework"
+},
+"ceterms:CredentialingAction": {
+"@id": "ceterms:CredentialingAction"
+},
+"ceterms:CredentialOrganization": {
+"@id": "ceterms:CredentialOrganization"
+},
+"ceterms:CredentialPerson": {
+"@id": "ceterms:CredentialPerson"
+},
+"ceterms:Degree": {
+"@id": "ceterms:Degree"
+},
+"ceterms:DigitalBadge": {
+"@id": "ceterms:DigitalBadge"
+},
+"ceterms:Diploma": {
+"@id": "ceterms:Diploma"
+},
+"ceterms:DoctoralDegree": {
+"@id": "ceterms:DoctoralDegree"
+},
+"ceterms:DurationProfile": {
+"@id": "ceterms:DurationProfile"
+},
+"ceterms:EarningsProfile": {
+"@id": "ceterms:EarningsProfile"
+},
+"ceterms:EmploymentOutcomeProfile": {
+"@id": "ceterms:EmploymentOutcomeProfile"
+},
+"ceterms:FinancialAlignmentObject": {
+"@id": "ceterms:FinancialAlignmentObject"
+},
+"ceterms:GeneralEducationDevelopment": {
+"@id": "ceterms:GeneralEducationDevelopment"
+},
+"ceterms:GeoCoordinates": {
+"@id": "ceterms:GeoCoordinates"
+},
+"ceterms:HoldersProfile": {
+"@id": "ceterms:HoldersProfile"
+},
+"ceterms:IdentifierValue": {
+"@id": "ceterms:IdentifierValue"
+},
+"ceterms:IdentifierValueSet": {
+"@id": "ceterms:IdentifierValueSet"
+},
+"ceterms:IndustryClassification": {
+"@id": "ceterms:IndustryClassification"
+},
+"ceterms:InstructionalProgramClassification": {
+"@id": "ceterms:InstructionalProgramClassification"
+},
+"ceterms:JourneymanCertificate": {
+"@id": "ceterms:JourneymanCertificate"
+},
+"ceterms:JurisdictionProfile": {
+"@id": "ceterms:JurisdictionProfile"
+},
+"ceterms:LearningOpportunity": {
+"@id": "ceterms:LearningOpportunity"
+},
+"ceterms:LearningOpportunityProfile": {
+"@id": "ceterms:LearningOpportunityProfile"
+},
+"ceterms:LearningResource": {
+"@id": "ceterms:LearningResource"
+},
+"ceterms:License": {
+"@id": "ceterms:License"
+},
+"ceterms:MasterCertificate": {
+"@id": "ceterms:MasterCertificate"
+},
+"ceterms:MasterDegree": {
+"@id": "ceterms:MasterDegree"
+},
+"ceterms:MicroCredential": {
+"@id": "ceterms:MicroCredential"
+},
+"ceterms:OccupationClassification": {
+"@id": "ceterms:OccupationClassification"
+},
+"ceterms:OfferAction": {
+"@id": "ceterms:OfferAction"
+},
+"ceterms:OpenBadge": {
+"@id": "ceterms:OpenBadge"
+},
+"ceterms:PostalAddress": {
+"@id": "ceterms:PostalAddress"
+},
+"ceterms:ProcessProfile": {
+"@id": "ceterms:ProcessProfile"
+},
+"ceterms:ProfessionalDoctorate": {
+"@id": "ceterms:ProfessionalDoctorate"
+},
+"ceterms:QACredentialOrganization": {
+"@id": "ceterms:QACredentialOrganization"
+},
+"ceterms:QualityAssuranceCredential": {
+"@id": "ceterms:QualityAssuranceCredential"
+},
+"ceterms:RecognizeAction": {
+"@id": "ceterms:RecognizeAction"
+},
+"ceterms:RegulateAction": {
+"@id": "ceterms:RegulateAction"
+},
+"ceterms:RenewAction": {
+"@id": "ceterms:RenewAction"
+},
+"ceterms:ResearchDoctorate": {
+"@id": "ceterms:ResearchDoctorate"
+},
+"ceterms:RevocationProfile": {
+"@id": "ceterms:RevocationProfile"
+},
+"ceterms:RevokeAction": {
+"@id": "ceterms:RevokeAction"
+},
+"ceterms:RightsAction": {
+"@id": "ceterms:RightsAction"
+},
+"ceterms:SecondarySchoolDiploma": {
+"@id": "ceterms:SecondarySchoolDiploma"
+},
+"ceterms:TaskProfile": {
+"@id": "ceterms:TaskProfile"
+},
+"ceterms:VerificationServiceProfile": {
+"@id": "ceterms:VerificationServiceProfile"
+},
+"ceterms:accreditedBy": {
+"@id": "ceterms:accreditedBy",
+"@type": "@id"
+},
+"ceterms:accreditedIn": {
+"@id": "ceterms:accreditedIn"
+},
+"ceterms:accredits": {
+"@id": "ceterms:accredits"
+},
+"ceterms:actingAgent": {
+"@id": "ceterms:actingAgent"
+},
+"ceterms:actionStatusType": {
+"@id": "ceterms:actionStatusType"
+},
+"ceterms:additionalCondition": {
+"@id": "ceterms:additionalCondition"
+},
+"ceterms:address": {
+"@id": "ceterms:address"
+},
+"ceterms:addressCountry": {
+"@id": "ceterms:addressCountry"
+},
+"ceterms:addressLocality": {
+"@id": "ceterms:addressLocality"
+},
+"ceterms:addressRegion": {
+"@id": "ceterms:addressRegion"
+},
+"ceterms:administrationProcess": {
+"@id": "ceterms:administrationProcess"
+},
+"ceterms:advancedStandingFrom": {
+"@id": "ceterms:advancedStandingFrom",
+"@type": "@id"
+},
+"ceterms:affiliatedAgent": {
+"@id": "ceterms:affiliatedAgent",
+"@type": "@id"
+},
+"ceterms:affiliation": {
+"@id": "ceterms:affiliation",
+"@type": "@id"
+},
+"ceterms:agent": {
+"@id": "ceterms:agent",
+"@type": "@id"
+},
+"ceterms:agentPurpose": {
+"@id": "ceterms:agentPurpose",
+"@type": "@id"
+},
+"ceterms:agentPurposeDescription": {
+"@id": "ceterms:agentPurposeDescription"
+},
+"ceterms:agentSectorType": {
+"@id": "ceterms:agentSectorType"
+},
+"ceterms:agentType": {
+"@id": "ceterms:agentType"
+},
+"ceterms:alignmentDate": {
+"@id": "ceterms:alignmentDate",
+"@type": "xsd:date"
+},
+"ceterms:alignmentType": {
+"@id": "ceterms:alignmentType"
+},
+"ceterms:alternateName": {
+"@id": "ceterms:alternateName"
+},
+"ceterms:alternativeCondition": {
+"@id": "ceterms:alternativeCondition"
+},
+"ceterms:alternativeIdentifier": {
+"@id": "ceterms:alternativeIdentifier"
+},
+"ceterms:approvedBy": {
+"@id": "ceterms:approvedBy",
+"@type": "@id"
+},
+"ceterms:approvedIn": {
+"@id": "ceterms:approvedIn"
+},
+"ceterms:approves": {
+"@id": "ceterms:approves",
+"@type": "@id"
+},
+"ceterms:assertedBy": {
+"@id": "ceterms:assertedBy",
+"@type": "@id"
+},
+"ceterms:assessmentExample": {
+"@id": "ceterms:assessmentExample",
+"@type": "@id"
+},
+"ceterms:assessmentExampleDescription": {
+"@id": "ceterms:assessmentExampleDescription"
+},
+"ceterms:assessmentMethodType": {
+"@id": "ceterms:assessmentMethodType"
+},
+"ceterms:assessmentOutput": {
+"@id": "ceterms:assessmentOutput"
+},
+"ceterms:assessmentProfiled": {
+"@id": "ceterms:assessmentProfiled",
+"@type": "@id"
+},
+"ceterms:assessmentUseType": {
+"@id": "ceterms:assessmentUseType"
+},
+"ceterms:audienceLevelType": {
+"@id": "ceterms:audienceLevelType"
+},
+"ceterms:audienceType": {
+"@id": "ceterms:audienceType"
+},
+"ceterms:availabilityListing": {
+"@id": "ceterms:availabilityListing",
+"@type": "@id"
+},
+"ceterms:availableAt": {
+"@id": "ceterms:availableAt"
+},
+"ceterms:availableOnlineAt": {
+"@id": "ceterms:availableOnlineAt",
+"@type": "@id"
+},
+"ceterms:broadAlignment": {
+"@id": "ceterms:broadAlignment",
+"@type": "@id"
+},
+"ceterms:codedNotation": {
+"@id": "ceterms:codedNotation"
+},
+"ceterms:commonConditions": {
+"@id": "ceterms:commonConditions"
+},
+"ceterms:condition": {
+"@id": "ceterms:condition"
+},
+"ceterms:conditionProfiled": {
+"@id": "ceterms:conditionProfiled",
+"@type": "@id"
+},
+"ceterms:contactOption": {
+"@id": "ceterms:contactOption"
+},
+"ceterms:contactPoint": {
+"@id": "ceterms:contactPoint"
+},
+"ceterms:contactType": {
+"@id": "ceterms:contactType"
+},
+"ceterms:copyrightHolder": {
+"@id": "ceterms:copyrightHolder",
+"@type": "@id"
+},
+"ceterms:corequisite": {
+"@id": "ceterms:corequisite"
+},
+"ceterms:costDetails": {
+"@id": "ceterms:costDetails",
+"@type": "@id"
+},
+"ceterms:credentialAlignment": {
+"@id": "ceterms:credentialAlignment"
+},
+"ceterms:credentialId": {
+"@id": "ceterms:credentialId"
+},
+"ceterms:credentialingAction": {
+"@id": "ceterms:credentialingAction",
+"@type": "@id"
+},
+"ceterms:credentialProfiled": {
+"@id": "ceterms:credentialProfiled",
+"@type": "@id"
+},
+"ceterms:credentialStatusType": {
+"@id": "ceterms:credentialStatusType"
+},
+"ceterms:credentialType": {
+"@id": "ceterms:credentialType"
+},
+"ceterms:creditHourType": {
+"@id": "ceterms:creditHourType"
+},
+"ceterms:creditHourValue": {
+"@id": "ceterms:creditHourValue"
+},
+"ceterms:creditUnitType": {
+"@id": "ceterms:creditUnitType"
+},
+"ceterms:creditUnitTypeDescription": {
+"@id": "ceterms:creditUnitTypeDescription"
+},
+"ceterms:creditUnitValue": {
+"@id": "ceterms:creditUnitValue"
+},
+"ceterms:ctid": {
+"@id": "ceterms:ctid"
+},
+"ceterms:currency": {
+"@id": "ceterms:currency"
+},
+"ceterms:dateEffective": {
+"@id": "ceterms:dateEffective",
+"@type": "xsd:date"
+},
+"ceterms:degreeConcentration": {
+"@id": "ceterms:degreeConcentration"
+},
+"ceterms:degreeMajor": {
+"@id": "ceterms:degreeMajor"
+},
+"ceterms:degreeMinor": {
+"@id": "ceterms:degreeMinor"
+},
+"ceterms:deliveryType": {
+"@id": "ceterms:deliveryType"
+},
+"ceterms:deliveryTypeDescription": {
+"@id": "ceterms:deliveryTypeDescription"
+},
+"ceterms:demographicInformation": {
+"@id": "ceterms:demographicInformation"
+},
+"ceterms:department": {
+"@id": "ceterms:department"
+},
+"ceterms:description": {
+"@id": "schema:description"
+},
+"ceterms:developmentProcess": {
+"@id": "ceterms:developmentProcess"
+},
+"ceterms:directCostType": {
+"@id": "ceterms:directCostType"
+},
+"ceterms:duns": {
+"@id": "ceterms:duns"
+},
+"ceterms:earnings": {
+"@id": "ceterms:earnings"
+},
+"ceterms:email": {
+"@id": "ceterms:email"
+},
+"ceterms:employee": {
+"@id": "ceterms:employee",
+"@type": "@id"
+},
+"ceterms:employmentOutcome": {
+"@id": "ceterms:employmentOutcome"
+},
+"ceterms:endDate": {
+"@id": "ceterms:endDate",
+"@type": "xsd:date"
+},
+"ceterms:endTime": {
+"@id": "ceterms:endTime",
+"@type": "xsd:dateTime"
+},
+"ceterms:entryCondition": {
+"@id": "ceterms:entryCondition"
+},
+"ceterms:estimatedCost": {
+"@id": "ceterms:estimatedCost"
+},
+"ceterms:estimatedDuration": {
+"@id": "ceterms:estimatedDuration"
+},
+"ceterms:evidenceOfAction": {
+"@id": "ceterms:evidenceOfAction",
+"@type": "@id"
+},
+"ceterms:exactAlignment": {
+"@id": "ceterms:exactAlignment",
+"@type": "@id"
+},
+"ceterms:exactDuration": {
+"@id": "ceterms:exactDuration"
+},
+"ceterms:experience": {
+"@id": "ceterms:experience"
+},
+"ceterms:externalInputType": {
+"@id": "ceterms:externalInputType"
+},
+"ceterms:externalResearch": {
+"@id": "ceterms:externalResearch",
+"@type": "@id"
+},
+"ceterms:familyName": {
+"@id": "ceterms:familyName"
+},
+"ceterms:faxNumber": {
+"@id": "ceterms:faxNumber"
+},
+"ceterms:fein": {
+"@id": "ceterms:fein"
+},
+"ceterms:financialAssistance": {
+"@id": "ceterms:financialAssistance"
+},
+"ceterms:foundingDate": {
+"@id": "ceterms:foundingDate"
+},
+"ceterms:framework": {
+"@id": "ceterms:framework",
+"@type": "@id"
+},
+"ceterms:frameworkName": {
+"@id": "ceterms:frameworkName"
+},
+"ceterms:geoURI": {
+"@id": "ceterms:geoURI",
+"@type": "@id"
+},
+"ceterms:givenName": {
+"@id": "ceterms:givenName"
+},
+"ceterms:globalJurisdiction": {
+"@id": "ceterms:globalJurisdiction"
+},
+"ceterms:hasConditionManifest": {
+"@id": "ceterms:hasConditionManifest"
+},
+"ceterms:hasGroupEvaluation": {
+"@id": "ceterms:hasGroupEvaluation"
+},
+"ceterms:hasGroupParticipation": {
+"@id": "ceterms:hasGroupParticipation"
+},
+"ceterms:hasPart": {
+"@id": "ceterms:hasPart",
+"@type": "@id"
+},
+"ceterms:hasVerificationService": {
+"@id": "ceterms:hasVerificationService"
+},
+"ceterms:highEarnings": {
+"@id": "ceterms:highEarnings"
+},
+"ceterms:holderMustAuthorize": {
+"@id": "ceterms:holderMustAuthorize"
+},
+"ceterms:holders": {
+"@id": "ceterms:holders"
+},
+"ceterms:honorificSuffix": {
+"@id": "ceterms:honorificSuffix"
+},
+"ceterms:identifierType": {
+"@id": "ceterms:identifierType"
+},
+"ceterms:identifierValueCode": {
+"@id": "ceterms:identifierValueCode"
+},
+"ceterms:image": {
+"@id": "ceterms:image",
+"@type": "@id"
+},
+"ceterms:industryType": {
+"@id": "ceterms:industryType"
+},
+"ceterms:inLanguage": {
+"@id": "ceterms:inLanguage"
+},
+"ceterms:instructionalProgramType": {
+"@id": "ceterms:instructionalProgramType"
+},
+"ceterms:instrument": {
+"@id": "ceterms:instrument",
+"@type": "@id"
+},
+"ceterms:ipedsID": {
+"@id": "ceterms:ipedsID"
+},
+"ceterms:isAdvancedStandingFor": {
+"@id": "ceterms:isAdvancedStandingFor",
+"@type": "@id"
+},
+"ceterms:isPartOf": {
+"@id": "ceterms:isPartOf",
+"@type": "@id"
+},
+"ceterms:isPreparationFor": {
+"@id": "ceterms:isPreparationFor",
+"@type": "@id"
+},
+"ceterms:isProctored": {
+"@id": "ceterms:isProctored"
+},
+"ceterms:isRecommendedFor": {
+"@id": "ceterms:isRecommendedFor",
+"@type": "@id"
+},
+"ceterms:isRequiredFor": {
+"@id": "ceterms:isRequiredFor",
+"@type": "@id"
+},
+"ceterms:isSimilarTo": {
+"@id": "ceterms:isSimilarTo",
+"@type": "@id"
+},
+"ceterms:jobsObtained": {
+"@id": "ceterms:jobsObtained"
+},
+"ceterms:jurisdiction": {
+"@id": "ceterms:jurisdiction"
+},
+"ceterms:jurisdictionException": {
+"@id": "ceterms:jurisdictionException"
+},
+"ceterms:keyword": {
+"@id": "ceterms:keyword"
+},
+"ceterms:latestVersion": {
+"@id": "ceterms:latestVersion",
+"@type": "@id"
+},
+"ceterms:latitude": {
+"@id": "ceterms:latitude"
+},
+"ceterms:learningMethodType": {
+"@id": "ceterms:learningMethodType"
+},
+"ceterms:learningOpportunityOffered": {
+"@id": "ceterms:learningOpportunityOffered",
+"@type": "@id"
+},
+"ceterms:learningOpportunityProfiled": {
+"@id": "ceterms:learningOpportunityProfiled"
+},
+"ceterms:learningResource": {
+"@id": "ceterms:learningResource"
+},
+"ceterms:longititude": {
+"@id": "ceterms:longititude"
+},
+"ceterms:lowEarnings": {
+"@id": "ceterms:lowEarnings"
+},
+"ceterms:mainJurisdiction": {
+"@id": "ceterms:mainJurisdiction"
+},
+"ceterms:maintenanceProcess": {
+"@id": "ceterms:maintenanceProcess"
+},
+"ceterms:majorAlignment": {
+"@id": "ceterms:majorAlignment",
+"@type": "@id"
+},
+"ceterms:maximumDuration": {
+"@id": "ceterms:maximumDuration"
+},
+"ceterms:medianEarnings": {
+"@id": "ceterms:medianEarnings"
+},
+"ceterms:minimumAge": {
+"@id": "ceterms:minimumAge"
+},
+"ceterms:minimumDuration": {
+"@id": "ceterms:minimumDuration"
+},
+"ceterms:minorAlignment": {
+"@id": "ceterms:minorAlignment",
+"@type": "@id"
+},
+"ceterms:missionAndGoalsStatement": {
+"@id": "ceterms:missionAndGoalsStatement",
+"@type": "@id"
+},
+"ceterms:missionAndGoalsStatementDescription": {
+"@id": "ceterms:missionAndGoalsStatementDescription"
+},
+"ceterms:naics": {
+"@id": "ceterms:naics"
+},
+"dc:description": {
+"@id": "schema:name"
+},
+"ceterms:narrowAlignment": {
+"@id": "ceterms:narrowAlignment",
+"@type": "@id"
+},
+"ceterms:numberAwarded": {
+"@id": "ceterms:numberAwarded"
+},
+"ceterms:object": {
+"@id": "ceterms:object",
+"@type": "@id"
+},
+"ceterms:occupationType": {
+"@id": "ceterms:occupationType"
+},
+"ceterms:offeredBy": {
+"@id": "ceterms:offeredBy",
+"@type": "@id"
+},
+"ceterms:offeredIn": {
+"@id": "ceterms:offeredIn"
+},
+"ceterms:offers": {
+"@id": "ceterms:offers",
+"@type": "@id"
+},
+"ceterms:opeID": {
+"@id": "ceterms:opeID"
+},
+"ceterms:ownedBy": {
+"@id": "ceterms:ownedBy"
+},
+"ceterms:owns": {
+"@id": "ceterms:owns",
+"@type": "@id"
+},
+"ceterms:parentOrganization": {
+"@id": "ceterms:parentOrganization",
+"@type": "@id"
+},
+"ceterms:participant": {
+"@id": "ceterms:participant",
+"@type": "@id"
+},
+"ceterms:partOfIdentifierValueSet": {
+"@id": "ceterms:partOfIdentifierValueSet"
+},
+"ceterms:paymentPattern": {
+"@id": "ceterms:paymentPattern"
+},
+"ceterms:postalCode": {
+"@id": "ceterms:postalCode"
+},
+"ceterms:postOfficeBoxNumber": {
+"@id": "ceterms:postOfficeBoxNumber"
+},
+"ceterms:postReceiptMonths": {
+"@id": "ceterms:postReceiptMonths"
+},
+"ceterms:preparationFrom": {
+"@id": "ceterms:preparationFrom",
+"@type": "@id"
+},
+"ceterms:previousVersion": {
+"@id": "ceterms:previousVersion",
+"@type": "@id"
+},
+"ceterms:price": {
+"@id": "ceterms:price"
+},
+"ceterms:processFrequency": {
+"@id": "ceterms:processFrequency"
+},
+"ceterms:processingAgent": {
+"@id": "ceterms:processingAgent",
+"@type": "@id"
+},
+"ceterms:processMethod": {
+"@id": "ceterms:processMethod",
+"@type": "@id"
+},
+"ceterms:processMethodDescription": {
+"@id": "ceterms:processMethodDescription"
+},
+"ceterms:processMethodType": {
+"@id": "ceterms:processMethodType"
+},
+"ceterms:processStandards": {
+"@id": "ceterms:processStandards",
+"@type": "@id"
+},
+"ceterms:processStandardsDescription": {
+"@id": "ceterms:processStandardsDescription"
+},
+"ceterms:purposeType": {
+"@id": "ceterms:purposeType"
+},
+"ceterms:qualityAssuranceTargetType": {
+"@id": "ceterms:qualityAssuranceTargetType"
+},
+"ceterms:recognizedBy": {
+"@id": "ceterms:recognizedBy",
+"@type": "@id"
+},
+"ceterms:recognizedIn": {
+"@id": "ceterms:recognizedIn"
+},
+"ceterms:recognizes": {
+"@id": "ceterms:recognizes",
+"@type": "@id"
+},
+"ceterms:recommends": {
+"@id": "ceterms:recommends"
+},
+"ceterms:region": {
+"@id": "ceterms:region"
+},
+"ceterms:regulatedBy": {
+"@id": "ceterms:regulatedBy",
+"@type": "@id"
+},
+"ceterms:regulatedIn": {
+"@id": "ceterms:regulatedIn"
+},
+"ceterms:regulates": {
+"@id": "ceterms:regulates"
+},
+"ceterms:relatedAction": {
+"@id": "ceterms:relatedAction"
+},
+"ceterms:renewal": {
+"@id": "ceterms:renewal"
+},
+"ceterms:renewedBy": {
+"@id": "ceterms:renewedBy",
+"@type": "@id"
+},
+"ceterms:renewedIn": {
+"@id": "ceterms:renewedIn"
+},
+"ceterms:renews": {
+"@id": "ceterms:renews",
+"@type": "@id"
+},
+"ceterms:requires": {
+"@id": "ceterms:requires",
+"@type": "@id"
+},
+"ceterms:residencyType": {
+"@id": "ceterms:residencyType"
+},
+"ceterms:residentOf": {
+"@id": "ceterms:residentOf"
+},
+"ceterms:resultingAward": {
+"@id": "ceterms:resultingAward",
+"@type": "@id"
+},
+"ceterms:revocation": {
+"@id": "ceterms:revocation"
+},
+"ceterms:revocationCriteria": {
+"@id": "ceterms:revocationCriteria",
+"@type": "@id"
+},
+"ceterms:revocationCriteriaDescription": {
+"@id": "ceterms:revocationCriteriaDescription"
+},
+"ceterms:revokedBy": {
+"@id": "ceterms:revokedBy",
+"@type": "@id"
+},
+"ceterms:revokedIn": {
+"@id": "ceterms:revokedIn"
+},
+"ceterms:revokes": {
+"@id": "ceterms:revokes",
+"@type": "@id"
+},
+"ceterms:sameAs": {
+"@id": "ceterms:sameAs",
+"@type": "@id"
+},
+"ceterms:scoringMethodDescription": {
+"@id": "ceterms:scoringMethodDescription"
+},
+"ceterms:scoringMethodExample": {
+"@id": "ceterms:scoringMethodExample",
+"@type": "@id"
+},
+"ceterms:scoringMethodExampleDescription": {
+"@id": "ceterms:scoringMethodExampleDescription"
+},
+"ceterms:scoringMethodType": {
+"@id": "ceterms:scoringMethodType"
+},
+"ceterms:serviceType": {
+"@id": "ceterms:serviceType"
+},
+"ceterms:socialMedia": {
+"@id": "ceterms:socialMedia",
+"@type": "@id"
+},
+"ceterms:source": {
+"@id": "ceterms:source",
+"@type": "@id"
+},
+"ceterms:spatialCoverage": {
+"@id": "ceterms:spatialCoverage"
+},
+"ceterms:startDate": {
+"@id": "ceterms:startDate",
+"@type": "xsd:date"
+},
+"ceterms:startTime": {
+"@id": "ceterms:startTime",
+"@type": "xsd:dateTime"
+},
+"ceterms:streetAddress": {
+"@id": "ceterms:streetAddress"
+},
+"ceterms:subject": {
+"@id": "ceterms:subject"
+},
+"ceterms:subjectWebpage": {
+"@id": "ceterms:subjectWebpage",
+"@type": "@id"
+},
+"ceterms:submissionOf": {
+"@id": "ceterms:submissionOf"
+},
+"ceterms:subOrganization": {
+"@id": "ceterms:subOrganization",
+"@type": "@id"
+},
+"ceterms:targetAssessment": {
+"@id": "ceterms:targetAssessment",
+"@type": "@id"
+},
+"ceterms:targetCompetency": {
+"@id": "ceterms:targetCompetency"
+},
+"ceterms:targetCompetencyFramework": {
+"@id": "ceterms:targetCompetencyFramework",
+"@type": "@id"
+},
+"ceterms:targetContactPoint": {
+"@id": "ceterms:targetContactPoint"
+},
+"ceterms:targetCredential": {
+"@id": "ceterms:targetCredential",
+"@type": "@id"
+},
+"ceterms:targetLearningOpportunity": {
+"@id": "ceterms:targetLearningOpportunity",
+"@type": "@id"
+},
+"ceterms:targetLearningResource": {
+"@id": "ceterms:targetLearningResource"
+},
+"ceterms:targetNode": {
+"@id": "ceterms:targetNode",
+"@type": "@id"
+},
+"ceterms:targetNodeDescription": {
+"@id": "ceterms:targetNodeDescription"
+},
+"ceterms:targetNodeName": {
+"@id": "ceterms:targetNodeName"
+},
+"ceterms:targetPathway": {
+"@id": "ceterms:targetPathway",
+"@type": "@id"
+},
+"ceterms:targetTask": {
+"@id": "ceterms:targetTask"
+},
+"ceterms:taskDetails": {
+"@id": "ceterms:taskDetails",
+"@type": "@id"
+},
+"ceterms:taskProfiled": {
+"@id": "ceterms:taskProfiled"
+},
+"ceterms:telephone": {
+"@id": "ceterms:telephone"
+},
+"ceterms:temporalCoverage": {
+"@id": "ceterms:temporalCoverage",
+"@type": "xsd:date"
+},
+"ceterms:trainingOffered": {
+"@id": "ceterms:trainingOffered"
+},
+"ceterms:url": {
+"@id": "ceterms:url",
+"@type": "@id"
+},
+"ceterms:verificationDirectory": {
+"@id": "ceterms:verificationDirectory",
+"@type": "@id"
+},
+"ceterms:verificationMethodDescription": {
+"@id": "ceterms:verificationMethodDescription"
+},
+"ceterms:verificationService": {
+"@id": "ceterms:verificationService",
+"@type": "@id"
+},
+"ceterms:verifiedClaimType": {
+"@id": "ceterms:verifiedClaimType"
+},
+"ceterms:versionIdentifier": {
+"@id": "ceterms:versionIdentifier"
+},
+"ceterms:weight": {
+"@id": "ceterms:weight"
+},
+"ceterms:worksFor": {
+"@id": "ceterms:worksFor",
+"@type": "@id"
+},
+"ceterms:yearsOfExperience": {
+"@id": "ceterms:yearsOfExperience"
+},
+"ceterms:ActionStatus": {
+"@id": "ceterms:ActionStatus"
+},
+"ceterms:AgentSector": {
+"@id": "ceterms:AgentSector"
+},
+"ceterms:AgentServiceType": {
+"@id": "ceterms:AgentServiceType"
+},
+"ceterms:AssessmentMethod": {
+"@id": "ceterms:AssessmentMethod"
+},
+"ceterms:AssessmentUse": {
+"@id": "ceterms:AssessmentUse"
+},
+"ceterms:Audience": {
+"@id": "ceterms:Audience"
+},
+"ceterms:AudienceLevel": {
+"@id": "ceterms:AudienceLevel"
+},
+"ceterms:ClaimType": {
+"@id": "ceterms:ClaimType"
+},
+"ceterms:CostType": {
+"@id": "ceterms:CostType"
+},
+"ceterms:CredentialStatus": {
+"@id": "ceterms:CredentialStatus"
+},
+"ceterms:CreditUnit": {
+"@id": "ceterms:CreditUnit"
+},
+"ceterms:Delivery": {
+"@id": "ceterms:Delivery"
+},
+"ceterms:ExternalInput": {
+"@id": "ceterms:ExternalInput"
+},
+"ceterms:IntendedPurpose": {
+"@id": "ceterms:IntendedPurpose"
+},
+"ceterms:LearningMethod": {
+"@id": "ceterms:LearningMethod"
+},
+"ceterms:OrganizationType": {
+"@id": "ceterms:OrganizationType"
+},
+"ceterms:PersonType": {
+"@id": "ceterms:PersonType"
+},
+"ceterms:Residency": {
+"@id": "ceterms:Residency"
+},
+"ceterms:ScoringMethod": {
+"@id": "ceterms:ScoringMethod"
+},
+"actionStat:ActiveActionStatus": {
+"@id": "actionStat:ActiveActionStatus"
+},
+"actionStat:CompletedActionStatus": {
+"@id": "actionStat:CompletedActionStatus"
+},
+"actionStat:FailedActionStatus": {
+"@id": "actionStat:FailedActionStatus"
+},
+"actionStat:PotentialActionStatus": {
+"@id": "actionStat:PotentialActionStatus"
+},
+"agentSector:PrivateForProfit": {
+"@id": "agentSector:PrivateForProfit"
+},
+"agentSector:PrivateNonProfit": {
+"@id": "agentSector:PrivateNonProfit"
+},
+"agentSector:Public": {
+"@id": "agentSector:Public"
+},
+"assessMethod:Artifact": {
+"@id": "assessMethod:Artifact"
+},
+"assessMethod:Exam": {
+"@id": "assessMethod:Exam"
+},
+"assessMethod:Performance": {
+"@id": "assessMethod:Performance"
+},
+"assessUse:Formative": {
+"@id": "assessUse:Formative"
+},
+"assessUse:Summative": {
+"@id": "assessUse:Summative"
+},
+"audience:Citizen": {
+"@id": "audience:Citizen"
+},
+"audience:CurrentMilitary": {
+"@id": "audience:CurrentMilitary"
+},
+"audience:CurrentStudent": {
+"@id": "audience:CurrentStudent"
+},
+"audience:FormerMilitary": {
+"@id": "audience:FormerMilitary"
+},
+"audience:FormerStudent": {
+"@id": "audience:FormerStudent"
+},
+"audience:FullTime": {
+"@id": "audience:FullTime"
+},
+"audience:Member": {
+"@id": "audience:Member"
+},
+"audience:NonCitizen": {
+"@id": "audience:NonCitizen"
+},
+"audience:NonMember": {
+"@id": "audience:NonMember"
+},
+"audience:PartTime": {
+"@id": "audience:PartTime"
+},
+"audience:PrivateEmployee": {
+"@id": "audience:PrivateEmployee"
+},
+"audience:PublicEmployee": {
+"@id": "audience:PublicEmployee"
+},
+"audLevel:AdvancedLevel": {
+"@id": "audLevel:AdvancedLevel"
+},
+"audLevel:AssociatesDegreeLevel": {
+"@id": "audLevel:AssociatesDegreeLevel"
+},
+"audLevel:BachelorsDegreeLevel": {
+"@id": "audLevel:BachelorsDegreeLevel"
+},
+"audLevel:BeginnerLevel": {
+"@id": "audLevel:BeginnerLevel"
+},
+"audLevel:DoctoralDegreeLevel": {
+"@id": "audLevel:DoctoralDegreeLevel"
+},
+"audLevel:IntermediateLevel": {
+"@id": "audLevel:IntermediateLevel"
+},
+"audLevel:MastersDegreeLevel": {
+"@id": "audLevel:MastersDegreeLevel"
+},
+"audLevel:PostSecondaryLevel": {
+"@id": "audLevel:PostSecondaryLevel"
+},
+"audLevel:SecondaryLevel": {
+"@id": "audLevel:SecondaryLevel"
+},
+"claimType:BadgeClaim": {
+"@id": "claimType:BadgeClaim"
+},
+"claimType:QualityAssuranceClaim": {
+"@id": "claimType:QualityAssuranceClaim"
+},
+"claimType:TranscriptClaim": {
+"@id": "claimType:TranscriptClaim"
+},
+"claimType:Verifiedclaim": {
+"@id": "claimType:Verifiedclaim"
+},
+"claimType:VerifiedClaim": {
+"@id": "claimType:VerifiedClaim"
+},
+"costType:AggregateCost": {
+"@id": "costType:AggregateCost"
+},
+"costType:Application": {
+"@id": "costType:Application"
+},
+"costType:BackgroundCheck": {
+"@id": "costType:BackgroundCheck"
+},
+"costType:EnrollmentFee": {
+"@id": "costType:EnrollmentFee"
+},
+"costType:LearningResource": {
+"@id": "costType:LearningResource"
+},
+"costType:Meals": {
+"@id": "costType:Meals"
+},
+"costType:OptionalCharges": {
+"@id": "costType:OptionalCharges"
+},
+"costType:ProcessingFee": {
+"@id": "costType:ProcessingFee"
+},
+"costType:ProgramSpecificFee": {
+"@id": "costType:ProgramSpecificFee"
+},
+"costType:ReexaminationFee": {
+"@id": "costType:ReexaminationFee"
+},
+"costType:RenewalFee": {
+"@id": "costType:RenewalFee"
+},
+"costType:ReschedulingFee": {
+"@id": "costType:ReschedulingFee"
+},
+"costType:RoomOrResidency": {
+"@id": "costType:RoomOrResidency"
+},
+"costType:ScoringFee": {
+"@id": "costType:ScoringFee"
+},
+"costType:StandaloneAssessment": {
+"@id": "costType:StandaloneAssessment"
+},
+"costType:StudentServicesFee": {
+"@id": "costType:StudentServicesFee"
+},
+"costType:TechnologyFee": {
+"@id": "costType:TechnologyFee"
+},
+"costType:Tuition": {
+"@id": "costType:Tuition"
+},
+"credentialStat:Active": {
+"@id": "credentialStat:Active"
+},
+"credentialStat:Deprecated": {
+"@id": "credentialStat:Deprecated"
+},
+"credentialStat:Probationary": {
+"@id": "credentialStat:Probationary"
+},
+"credentialStat:Superseded": {
+"@id": "credentialStat:Superseded"
+},
+"creditUnit:CertificateCredit": {
+"@id": "creditUnit:CertificateCredit"
+},
+"creditUnit:ContinuingEducationUnit": {
+"@id": "creditUnit:ContinuingEducationUnit"
+},
+"creditUnit:DegreeCredit": {
+"@id": "creditUnit:DegreeCredit"
+},
+"creditUnit:SecondaryDiplomaCredit": {
+"@id": "creditUnit:SecondaryDiplomaCredit"
+},
+"deliveryType:BlendedDelivery": {
+"@id": "deliveryType:BlendedDelivery"
+},
+"deliveryType:InPerson": {
+"@id": "deliveryType:InPerson"
+},
+"deliveryType:OnlineOnly": {
+"@id": "deliveryType:OnlineOnly"
+},
+"inputType:Associations": {
+"@id": "inputType:Associations"
+},
+"inputType:Business": {
+"@id": "inputType:Business"
+},
+"inputType:BusinessAssociation": {
+"@id": "inputType:BusinessAssociation"
+},
+"inputType:Consumers": {
+"@id": "inputType:Consumers"
+},
+"inputType:EducationAdministrators": {
+"@id": "inputType:EducationAdministrators"
+},
+"inputType:Educators": {
+"@id": "inputType:Educators"
+},
+"inputType:Experts": {
+"@id": "inputType:Experts"
+},
+"inputType:Governments": {
+"@id": "inputType:Governments"
+},
+"inputType:Guardians": {
+"@id": "inputType:Guardians"
+},
+"inputType:InternationalBodies": {
+"@id": "inputType:InternationalBodies"
+},
+"inputType:Practitioners": {
+"@id": "inputType:Practitioners"
+},
+"inputType:Public": {
+"@id": "inputType:Public"
+},
+"inputType:Students": {
+"@id": "inputType:Students"
+},
+"learnMethod:Applied": {
+"@id": "learnMethod:Applied"
+},
+"learnMethod:ElectronicMediaBased": {
+"@id": "learnMethod:ElectronicMediaBased"
+},
+"learnMethod:Laboratory": {
+"@id": "learnMethod:Laboratory"
+},
+"learnMethod:Lecture": {
+"@id": "learnMethod:Lecture"
+},
+"learnMethod:SelfPaced": {
+"@id": "learnMethod:SelfPaced"
+},
+"learnMethod:Seminar": {
+"@id": "learnMethod:Seminar"
+},
+"learnMethod:WorkBased": {
+"@id": "learnMethod:WorkBased"
+},
+"orgType:AssessmentBody": {
+"@id": "orgType:AssessmentBody"
+},
+"orgType:Business": {
+"@id": "orgType:Business"
+},
+"orgType:BusinessAssociation": {
+"@id": "orgType:BusinessAssociation"
+},
+"orgType:CertificationBody": {
+"@id": "orgType:CertificationBody"
+},
+"orgType:FourYear": {
+"@id": "orgType:FourYear"
+},
+"orgType:Government": {
+"@id": "orgType:Government"
+},
+"orgType:HighSchool": {
+"@id": "orgType:HighSchool"
+},
+"orgType:LaborUnion": {
+"@id": "orgType:LaborUnion"
+},
+"orgType:Magnet": {
+"@id": "orgType:Magnet"
+},
+"orgType:Military": {
+"@id": "orgType:Military"
+},
+"orgType:NonTraditional": {
+"@id": "orgType:NonTraditional"
+},
+"orgType:Postsecondary": {
+"@id": "orgType:Postsecondary"
+},
+"orgType:PrimarilyOnline": {
+"@id": "orgType:PrimarilyOnline"
+},
+"orgType:ProfessionalAssociation": {
+"@id": "orgType:ProfessionalAssociation"
+},
+"orgType:QualityAssurance": {
+"@id": "orgType:QualityAssurance"
+},
+"orgType:SecondarySchool": {
+"@id": "orgType:SecondarySchool"
+},
+"orgType:Technical": {
+"@id": "orgType:Technical"
+},
+"orgType:TrainingProvider": {
+"@id": "orgType:TrainingProvider"
+},
+"orgType:TwoYear": {
+"@id": "orgType:TwoYear"
+},
+"orgType:Vendor": {
+"@id": "orgType:Vendor"
+},
+"purpose:GeneralEducation": {
+"@id": "purpose:GeneralEducation"
+},
+"purpose:JobOrCareerPreparation": {
+"@id": "purpose:JobOrCareerPreparation"
+},
+"purpose:MidCareer": {
+"@id": "purpose:MidCareer"
+},
+"purpose:PriorExperience": {
+"@id": "purpose:PriorExperience"
+},
+"residency:InState": {
+"@id": "residency:InState"
+},
+"residency:International": {
+"@id": "residency:International"
+},
+"residency:Local": {
+"@id": "residency:Local"
+},
+"residency:OutOfState": {
+"@id": "residency:OutOfState"
+},
+"residency:Regional": {
+"@id": "residency:Regional"
+},
+"score:CriterionReferenced": {
+"@id": "score:CriterionReferenced"
+},
+"score:NormReferenced": {
+"@id": "score:NormReferenced"
+},
+"serviceType:AccreditService": {
+"@id": "serviceType:AccreditService"
+},
+"serviceType:ApproveService": {
+"@id": "serviceType:ApproveService"
+},
+"serviceType:OfferService": {
+"@id": "serviceType:OfferService"
+},
+"serviceType:RecognizeService": {
+"@id": "serviceType:RecognizeService"
+},
+"serviceType:RegulateService": {
+"@id": "serviceType:RegulateService"
+},
+"serviceType:RenewService": {
+"@id": "serviceType:RenewService"
+},
+"serviceType:RevokeService": {
+"@id": "serviceType:RevokeService"
+}
+}
+}

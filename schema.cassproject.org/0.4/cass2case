@@ -1,0 +1,148 @@
+{
+  "@context": {
+    "@vocab": "https://purl.imsglobal.org/spec/case/v1p0/vocab#",
+    "cass": "https://schema.cassproject.org/0.4/",
+    "case": "https://purl.imsglobal.org/spec/case/v1p0/vocab#",
+    "oldcase": "https://purl.imsglobal.org/spec/case/v1p0/vocab#",
+    "ceasn": "https://purl.org/ctdlasn/terms/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "ebac": "https://schema.cassproject.org/kbac/0.4/",
+    "general": "http://schema.eduworks.com/general/0.3/",
+    "schema": "http://schema.org/",
+    "asn": "http://purl.org/ASN/schema/core/",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "gemq": "http://purl.org/gem/qualifiers/",
+    "loc": "http://www.loc.gov/loc.terms/relators/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "schema:identifier": {
+      "@id": "identifier"
+    },
+    "@owner": {
+      "@id": "cass:@owner"
+    },
+    "@signature": {
+      "@id": "cass:@signature"
+    },
+    "schema:dateModified": {
+      "@id": "case:lastChangeDateTime","@type":"xsd:dateTime"
+    },
+    "Framework":{
+      "@id":"case:CFDocument"
+    },
+    "Relation":{
+      "@id":"case:CFAssociation"
+    },
+    "cass:Competency":{
+      "@id":"case:CFItem"
+    },
+    "competency":{
+      "@id":"cass:competency",
+      "@type":"@id"
+    },
+    "relation":{
+      "@id":"cass:relation","@type":"@id"
+    },
+    "source":{
+      "@id":"case:originNodeURI","@type":"@id"
+    },
+    "target":{
+      "@id":"case:destinationNodeURI","@type":"@id"
+    },
+    "ceasn:codedNotation":{
+      "@id":"case:humanCodingScheme"
+    },
+    "schema:keywords": {
+      "@id": "case:subject","@type":"xsd:normalizedString"
+    },
+    "schema:educationalAlignment": {
+      "@id": "case:subjectURI"
+    },
+    "http://schema.eduworks.com/ims/case/v1p0/CFItemTypeURI": {
+      "@id": "case:CFItemTypeURI"
+    },
+    "http://schema.eduworks.com/ims/case/v1p0/CFItemType": {
+      "@id": "case:CFItemType"
+    },
+    "http://schema.eduworks.com/ims/case/v1p0/CFPackageURI": {
+      "@id": "case:CFPackageURI"
+    },
+    "http://schema.eduworks.com/ims/case/v1p0/CFItemTypeURI": {
+      "@id": "case:CFItemTypeURI"
+    },
+    "http://schema.eduworks.com/ims/case/v1p0/CFItemType": {
+      "@id": "case:CFItemType"
+    },
+    "schema:name": {
+      "@id": "case:title","@type":"xsd:normalizedString"
+    },
+    "name": {
+      "@id": "case:title","@type":"xsd:normalizedString"
+    },
+    "schema:creator": {
+      "@id": "case:creator","@type":"xsd:normalizedString"
+    },
+    "schema:description": {
+      "@id": "case:description","@type":"xsd:string"
+    },
+    "description": {
+      "@id": "case:description","@type":"xsd:string"
+    },
+    "refxxerence": {
+      "@id": "schema:AlignmentObject"
+    },
+    "adoptionStatus": {
+      "@id": "case:adoptionStatus","@type":"xsd:normalizedString"
+    },
+    "version": {
+      "@id": "schema:version","@type":"xsd:normalizedString"
+    },
+    "schema:inLanguage": {
+      "@id": "case:language"
+    },
+    "language": {
+      "@id": "schema:inLanguage"
+    },
+    "statusStartDate": {
+      "@id": "schema:datePublished"
+    },
+    "publisher": {
+      "@id": "schema:publisher"
+    },
+    "humanCodingScheme": {
+      "@id": "ceasn:codedNotation"
+    },
+    "fullStatement": {
+      "@id": "schema:name","@type":"xsd:normalizedString"
+    },
+    "CFItemType": {
+      "@id": "case:CFItemType","@type":"xsd:normalizedString"
+    },
+    "educationLevel": {
+      "@id": "schema:educationalAlignment"
+    },
+    "Preceeds": {
+      "@id": "cass:target"
+    },
+    "subject": {
+      "@id": "case:subject","@type":"xsd:normalizedString"
+    },
+    "notes": {
+      "@id": "schema:description","@type":"xsd:string"
+    },
+    "associationType": {
+      "@id": "cass:relationType"
+    },
+    "destinationNodeURI": {
+      "@id": "cass:target"
+    },
+    "sourceNodeURI": {
+      "@id": "cass:source"
+    },
+    "originNodeURI": {
+      "@id": "cass:source"
+    }
+  }
+}
