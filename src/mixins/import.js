@@ -429,6 +429,23 @@ export default {
             appStore.addImportError(error);
             appStore.setImportTransition('process');
         },
+        // cass-editor#1423: CSV reference fields must contain CTIDs or
+        // credential registry URLs for the environment defined by
+        // newObjectEndpoint. Returns undefined (validation skipped) when no
+        // endpoint is configured.
+        getRegistryUrlRules: function(fields) {
+            if (!this.queryParams || !this.queryParams.newObjectEndpoint) {
+                return undefined;
+            }
+            try {
+                return {
+                    fields: fields,
+                    allowedOrigins: [new URL(this.queryParams.newObjectEndpoint).origin]
+                };
+            } catch (e) {
+                return undefined;
+            }
+        },
         // Helper method to handle both single errors and arrays of errors
         handleImportErrors: function(errors) {
             var appStore = useAppStore();
@@ -968,7 +985,11 @@ export default {
                                 errorMessage: "CSV must contain at least one of: ceterms:hasMember (for collection level) or ceterms:isMemberOf (for competency level)"
                             }
                         },
-                        validateHierarchy: true
+                        validateHierarchy: true,
+                        urlRules: this.getRegistryUrlRules({
+                            "ceterms:Collection": ["ceasn:creator", "ceasn:publisher", "ceterms:hasMember"],
+                            "ceasn:Competency": ["asn:hasProgressionLevel", "ceasn:creator", "ceasn:hasChild", "ceasn:isChildOf", "ceasn:isPartOf", "ceasn:isTopChildOf", "ceterms:hasTask"]
+                        })
                     };
                 } else {
                     // Validation rules for Frameworks
@@ -984,7 +1005,11 @@ export default {
                                 errorMessage: "CSV must contain at least one of: ceasn:hasTopChild (for framework level) or ceasn:isPartOf/ceasn:isTopChildOf (for competency level)"
                             }
                         },
-                        validateHierarchy: true
+                        validateHierarchy: true,
+                        urlRules: this.getRegistryUrlRules({
+                            "ceasn:CompetencyFramework": ["ceasn:creator", "ceasn:publisher", "asn:hasProgressionModel", "ceasn:hasTopChild"],
+                            "ceasn:Competency": ["asn:hasProgressionLevel", "ceasn:creator", "ceasn:hasChild", "ceasn:isChildOf", "ceasn:isPartOf", "ceasn:isTopChildOf", "ceterms:hasTask"]
+                        })
                     };
                 }
             }
@@ -1382,7 +1407,11 @@ export default {
                                 errorMessage: "CSV must contain at least one of: skos:hasTopConcept (for Progression Model level) or ceasn:inProgressionModel (for progression level)"
                             }
                         },
-                        validateHierarchy: true
+                        validateHierarchy: true,
+                        urlRules: this.getRegistryUrlRules({
+                            "asn:ProgressionModel": ["ceasn:creator", "ceasn:publisher", "skos:hasTopConcept", "skos:topConceptOf"],
+                            "asn:ProgressionLevel": ["ceasn:inProgressionModel", "skos:topConceptOf", "ceterms:precededBy", "ceterms:precedes"]
+                        })
                     };
                 } else {
                     // Validation rules for Concept Schemes
@@ -1398,7 +1427,11 @@ export default {
                                 errorMessage: "CSV must contain at least one of: skos:hasTopConcept (for Concept Scheme level) or skos:inScheme (for concept level)"
                             }
                         },
-                        validateHierarchy: true
+                        validateHierarchy: true,
+                        urlRules: this.getRegistryUrlRules({
+                            "skos:ConceptScheme": ["ceasn:creator", "ceasn:publisher", "skos:hasTopConcept"],
+                            "skos:Concept": ["ceterms:precededBy", "ceterms:precedes", "skos:inScheme", "skos:topConceptOf"]
+                        })
                     };
                 }
             }
