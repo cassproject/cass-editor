@@ -1,6 +1,6 @@
 {
 	"@context": {
-		"asn": "http://purl.org/asn/schema/core/",
+		"asn": "http://purl.org/ASN/schema/core/",
 		"asnPublicationStatus": "http://purl.org/asn/scheme/ASNPublicationStatus/",
 		"asnscheme": "http://purl.org/asn/scheme/",
 		"case": "http://schema.imsglobal.org/ims/case/v1p0/",
@@ -46,7 +46,8 @@
 			"@language": "en-us"
 		},
 		"skos:notation": {
-			"@id": "skos:notation"
+			"@id": "skos:notation",
+			"@type": "xsd:string"
 		},
 		"skos:narrower": {
 			"@id": "skos:narrower",
