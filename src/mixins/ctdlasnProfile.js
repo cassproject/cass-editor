@@ -1972,7 +1972,8 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher"}],
-                    "heading": "General"
+                    "heading": "General",
+                    "isRequired": "true"
                 },
                 "https://purl.org/ctdlasn/terms/publisherName": {
                     "@id": "https://purl.org/ctdlasn/terms/publisherName",
@@ -2711,7 +2712,8 @@ export default {
                         }
                     ],
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Publisher"}],
-                    "heading": "General"
+                    "heading": "General",
+                    "isRequired": "true"
                 },
                 "https://purl.org/ctdlasn/terms/publisherName": {
                     "@id": "https://purl.org/ctdlasn/terms/publisherName",

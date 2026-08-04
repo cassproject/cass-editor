@@ -1372,7 +1372,7 @@ export default {
                     // Validation rules for Progression Models
                     validationRules = {
                         requiredProps: {
-                            "asn:ProgressionModel": ["@id", "ceasn:name", "ceasn:description", "ceasn:inLanguage", "ceasn:publicationStatusType"],
+                            "asn:ProgressionModel": ["@id", "ceasn:name", "ceasn:description", "ceasn:inLanguage", "ceasn:publicationStatusType", "ceasn:publisher"],
                             "asn:ProgressionLevel": ["@id", "skos:prefLabel"]
                         },
                         hierarchyRules: {
@@ -1388,7 +1388,7 @@ export default {
                     // Validation rules for Concept Schemes
                     validationRules = {
                         requiredProps: {
-                            "skos:ConceptScheme": ["@id", "ceasn:name", "ceasn:description", "ceasn:inLanguage", "ceasn:publicationStatusType"],
+                            "skos:ConceptScheme": ["@id", "ceasn:name", "ceasn:description", "ceasn:inLanguage", "ceasn:publicationStatusType", "ceasn:publisher"],
                             "skos:Concept": ["@id", "skos:prefLabel"]
                         },
                         hierarchyRules: {
