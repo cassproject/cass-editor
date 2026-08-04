@@ -1,0 +1,44 @@
+name: branch build
+
+on:
+  push:
+    branches-ignore:
+      - master
+      - 'gh-pages-*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# One publish per branch at a time; a newer push supersedes an in-flight build.
+concurrency:
+  group: gh-pages-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v4
+        with:
+          # Vite 7 requires Node 20.19+ / 22.12+
+          node-version: '22.x'
+          cache: npm
+
+      - run: npm ci
+      # docs build into public/docs, which the app build then copies to dist/docs
+      - run: npm run docs:build
+      - run: npm run build
+
+      - name: Publish dist to gh-pages-${{ github.ref_name }}
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          publish_branch: gh-pages-${{ github.ref_name }}
+          force_orphan: true
