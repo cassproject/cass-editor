@@ -1,0 +1,26 @@
+{
+	"@context":{
+		"@vocab":"https://schema.cassproject.org/kbac/0.4/",
+		"cass":"https://schema.cassproject.org/cass/0.4/",
+		"ebac":"https://schema.cassproject.org/kbac/0.4/",
+		"general":"http://schema.eduworks.com/general/0.2/",
+		"schema":"http://schema.org/",
+		"Competency":{"@id":"cass:Competency"},
+		"Level":{"@id":"cass:Level"},
+		"Framework":{"@id":"cass:Framework"},
+		"Relation":{"@id":"cass:Relation"},
+		"EncryptedValue":{"@id":"ebac:EncryptedValue"},
+		"@owner":{
+			"@id":"ebac:@owner",
+			"@type":"https://purl.org/signature#publicKeyPem"
+		},
+		"@reader":{
+			"@id":"ebac:@reader",
+			"@type":"https://purl.org/signature#publicKeyPem"
+		},
+		"@signature":{"@id":"ebac:@signature"},
+		"name":{"@id":"schema:name"},
+		"payload":{"@id":"ebac:payload"},
+		"secret":{"@id":"ebac:secret"}
+	}
+}

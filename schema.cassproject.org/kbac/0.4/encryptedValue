@@ -1,0 +1,43 @@
+{
+	"@context":{
+		"xsd":"http://www.w3.org/2001/XMLSchema#",
+		"rsa":"https://openssl.org/docs/manmaster/apps/rsa.html#",
+		"base64":"https://tools.ietf.org/html/rfc4648#",
+		"expiry":{
+			"@id":"https://schema.cassproject.org/kbac/0.4/encryptedValueExpiry",
+			"@type":"xsd:long"
+		},
+		"@encryptedType":{
+			"@id":"https://schema.cassproject.org/kbac/0.4/encryptedValueInternalType",
+			"@type":"xsd:uri"
+		},
+		"@protect":{
+			"@id":"https://schema.cassproject.org/kbac/0.4/encryptedValueProtect",
+			"@type":"xsd:boolean"
+		},
+		"@owner":{
+			"@id":"https://schema.cassproject.org/kbac/0.4/owner",
+			"@type":"rsa:pemPublicKey"
+		},
+		"@signature":{
+			"@id":"https://schema.cassproject.org/kbac/0.4/signature",
+			"@type":"base64:base64"
+		},
+		"payload":{
+			"@id":"https://schema.cassproject.org/kbac/0.4/payload",
+			"@type":"base64:base64"
+		},
+		"secret":{
+			"@id":"https://schema.cassproject.org/kbac/0.4/encryptedValueSecret",
+			"@type":"http://json.org/array",
+			"@contains":"https://schema.cassproject.org/kbac/0.4/encryptedSecret"
+		}
+	},
+	"@type":"https://schema.cassproject.org/kbac/0.4/encryptedValue",
+	"@encryptedType":"Optional Internal Type (to enable searching for encrypted data)",
+	"@signature":"SHA1 with RSA encrypted signature of the payload, Base64 encoded.",
+	"@owner":"RSA Public Key of the owner, may be used to verify the signature.",
+	"@protect":true,
+	"payload":"AES encrypted data payload.",
+	"secret":"AES key/iv, encrypted by one or more RSA public keys (in array form), used to share access to the data payload."
+}

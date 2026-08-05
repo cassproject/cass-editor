@@ -1,0 +1,11 @@
+@id,@type,ceasn:description,ceasn:inLanguage,ceasn:name,ceasn:publisherName,ceasn:competencyText,ceasn:isTopChildOf
+ce-8503cde5-7f91-46a2-b225-9b453d1e0afd,ceasn:CompetencyFramework,"HIST 101, SURVEY OF AMERICAN HISTORY I",en,"HIST 101, SURVEY OF AMERICAN HISTORY I",Ivy Tech Community College of Indiana,,
+ce-4b520d3d-1d57-42d8-b740-a1a7a20731b5,ceasn:Competency,,,,,Identify the principal features of the periods of United States History and determine their significance.,ce-8503cde5-7f91-46a2-b225-9b453d1e0afd
+ce-92759ae8-3c67-4949-a849-ca5f85ec77dd,ceasn:Competency,,,,,Analyze the effect of the geography and ecology of the continent on the roots of American Civilization.,ce-8503cde5-7f91-46a2-b225-9b453d1e0afd
+ce-a5402d41-7028-4e26-9089-f03c73f931e7,ceasn:Competency,,,,,"Examine the on-going encounters among European, African, Asian and American Indian cultures.",ce-8503cde5-7f91-46a2-b225-9b453d1e0afd
+ce-f3f542e8-1dc4-49ae-9c59-b23198b2c197,ceasn:Competency,,,,,"Describe the role of religion in American life in relation to spiritual awakenings, denominational diversity, reform movements, and family life from earliest time through the Civil War.",ce-8503cde5-7f91-46a2-b225-9b453d1e0afd
+ce-711e5ab7-a67e-4f22-9a15-f1516abe26b8,ceasn:Competency,,,,,Describe the forging of American nationalism from the Revolutionary Era through Reconstruction.,ce-8503cde5-7f91-46a2-b225-9b453d1e0afd
+ce-c4ed2fc7-b965-400d-a2f1-599b897bb8b8,ceasn:Competency,,,,,Trace the rise of democratic politics and the emergence of a mass party system from the Federalist Period through the Jacksonian Era.,ce-8503cde5-7f91-46a2-b225-9b453d1e0afd
+ce-0452a6b0-1778-46a5-b065-741144c211f7,ceasn:Competency,,,,,Examine the transformation of American society from rural agriculture to urban industrial culture.,ce-8503cde5-7f91-46a2-b225-9b453d1e0afd
+ce-ed5ec46d-d604-4e65-bdfa-6c00d04ce3cd,ceasn:Competency,,,,,Analyze the emerging crises of slavery and sectionalism culminating in the Civil War and Reconstruction.,ce-8503cde5-7f91-46a2-b225-9b453d1e0afd
+ce-cde16384-f98f-4401-b5d0-933d64ed111e,ceasn:Competency,,,,,"Reflect on American historical issues and themes and form coherent, defensible interpretations about their domestic and global impact.",ce-8503cde5-7f91-46a2-b225-9b453d1e0afd

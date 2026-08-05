@@ -1,0 +1,103 @@
+{
+  "@context": {
+    "@vocab": "http://schema.eduworks.com/ims/case/v1p0/",
+    "ims": "http://schema.eduworks.com/ims/case/v1p0/",
+    "ceasn": "https://purl.org/ctdlasn/terms/",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "cass": "https://schema.cassproject.org/0.4/",
+    "ebac": "https://schema.cassproject.org/kbac/0.4/",
+    "general": "http://schema.eduworks.com/general/0.3/",
+    "schema": "http://schema.org/",
+    "asn": "http://purl.org/ASN/schema/core/",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "gemq": "http://purl.org/gem/qualifiers/",
+    "loc": "http://www.loc.gov/loc.terms/relators/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "skos": "http://www.w3.org/2004/02/skos/core#",
+    "identifier": {
+      "@id": "schema:identifier"
+    },
+    "lastChangeDateTime": {
+      "@id": "schema:dateModified"
+    },
+    "CFDocument":{
+      "@id":"cass:Framework"
+    },
+    "CFAssociation":{
+      "@id":"cass:Relation"
+    },
+    "CFItem":{
+      "@id":"cass:Competency"
+    },
+    "subject": {
+      "@id": "schema:keywords"
+    },
+    "subjectURI": {
+      "@id": "schema:educationalAlignment"
+    },
+    "title": {
+      "@id": "schema:name"
+    },
+    "uri": {
+      "@id": "@id"
+    },
+    "creator": {
+      "@id": "schema:creator"
+    },
+    "description": {
+      "@id": "schema:description"
+    },
+    "reference": {
+      "@id": "schema:AlignmentObject"
+    },
+    "adoptionStatus": {
+      "@id": "ims:adoptionStatus"
+    },
+    "version": {
+      "@id": "schema:version"
+    },
+    "language": {
+      "@id": "schema:inLanguage"
+    },
+    "statusStartDate": {
+      "@id": "schema:datePublished"
+    },
+    "publisher": {
+      "@id": "schema:publisher"
+    },
+    "humanCodingScheme": {
+      "@id": "ceasn:codedNotation"
+    },
+    "fullStatement": {
+      "@id": "schema:name"
+    },
+    "CFItemType": {
+      "@id": "ims:CFItemType"
+    },
+    "educationLevel": {
+      "@id": "schema:educationalAlignment"
+    },
+    "Preceeds": {
+      "@id": "cass:target"
+    },
+    "conceptKeywords": {
+      "@id": "schema:keywords"
+    },
+    "notes": {
+      "@id": "schema:description"
+    },
+    "associationType": {
+      "@id": "cass:relationType"
+    },
+    "destinationNodeURI": {
+      "@id": "cass:target"
+    },
+    "sourceNodeURI": {
+      "@id": "cass:source"
+    },
+    "originNodeURI": {
+      "@id": "cass:source"
+    }
+  }
+}
