@@ -1,0 +1,1 @@
+import{_ as o,a as t,b as s,o as a}from"./index-DpVM_2jb.js";const n={},r={id:"about"};function c(_,e){return a(),t("div",r,[...e[0]||(e[0]=[s("h1",null,"This is an about page.",-1)])])}const d=o(n,[["render",c]]);export{d as default};
