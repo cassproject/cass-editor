@@ -1,6 +1,6 @@
 {
 	"@context": {
-		"asn": "http://purl.org/ASN/schema/core/",
+		"asn": "http://purl.org/asn/schema/core/",
 		"asnPublicationStatus": "http://purl.org/asn/scheme/ASNPublicationStatus/",
 		"asnscheme": "http://purl.org/asn/scheme/",
 		"case": "http://schema.imsglobal.org/ims/case/v1p0/",
