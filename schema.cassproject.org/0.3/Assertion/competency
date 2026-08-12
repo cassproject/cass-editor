@@ -1,0 +1,37 @@
+{
+    "@context": {
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    "@graph": [
+        {
+            "@id": "http://schema.cassproject.org/0.3/Assertion/competency",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.3/Assertion"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.cassproject.org/0.3/Competency"
+                },
+                {
+                    "@id": "http://schema.org/URL"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Specifies the URL of the competency the assertion is made about."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "competency"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/",
+            "http://www.w3.org/ns/rdfa#usesVocabulary": {
+                "@id": "http://schema.org/"
+            }
+        }
+    ]
+}
