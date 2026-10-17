@@ -1,0 +1,3 @@
+@id,@type,ceterms:ctid,ceasn:name,ceasn:description,ceasn:competencyText,ceasn:isPartOf
+https://example.org/ce-{{fw}},ceasn:CompetencyFramework,ce-{{fw}},{{name}},A broken CTDL-ASN CSV,,
+,ceasn:Competency,ce-{{c1}},,,Competency without an id,https://example.org/ce-{{fw}}

@@ -1,0 +1,46 @@
+{
+  "@context": "https://credreg.net/ctdlasn/schema/context/json",
+  "@id": "https://example.org/ctdlasn/graph/{{frameworkCtid}}",
+  "@graph": [
+    {
+      "@id": "https://example.org/resources/{{frameworkCtid}}",
+      "@type": "ceasn:CompetencyFramework",
+      "ceterms:ctid": "{{frameworkCtid}}",
+      "ceasn:name": { "en-us": "{{name}}" },
+      "ceasn:description": { "en-us": "Exported after import" },
+      "ceasn:inLanguage": ["en-US"],
+      "ceasn:hasTopChild": [
+        "https://example.org/resources/{{parentCtid}}",
+        "https://example.org/resources/{{siblingCtid}}"
+      ]
+    },
+    {
+      "@id": "https://example.org/resources/{{parentCtid}}",
+      "@type": "ceasn:Competency",
+      "ceterms:ctid": "{{parentCtid}}",
+      "ceasn:competencyText": { "en-us": "{{prefix}} Parent" },
+      "ceasn:isPartOf": "https://example.org/resources/{{frameworkCtid}}",
+      "ceasn:isTopChildOf": "https://example.org/resources/{{frameworkCtid}}",
+      "ceasn:hasChild": ["https://example.org/resources/{{childCtid}}"],
+      "ceasn:inLanguage": ["en-US"]
+    },
+    {
+      "@id": "https://example.org/resources/{{childCtid}}",
+      "@type": "ceasn:Competency",
+      "ceterms:ctid": "{{childCtid}}",
+      "ceasn:competencyText": { "en-us": "{{prefix}} Child" },
+      "ceasn:isPartOf": "https://example.org/resources/{{frameworkCtid}}",
+      "ceasn:isChildOf": "https://example.org/resources/{{parentCtid}}",
+      "ceasn:inLanguage": ["en-US"]
+    },
+    {
+      "@id": "https://example.org/resources/{{siblingCtid}}",
+      "@type": "ceasn:Competency",
+      "ceterms:ctid": "{{siblingCtid}}",
+      "ceasn:competencyText": { "en-us": "{{prefix}} Sibling" },
+      "ceasn:isPartOf": "https://example.org/resources/{{frameworkCtid}}",
+      "ceasn:isTopChildOf": "https://example.org/resources/{{frameworkCtid}}",
+      "ceasn:inLanguage": ["en-US"]
+    }
+  ]
+}

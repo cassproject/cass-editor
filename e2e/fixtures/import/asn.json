@@ -1,0 +1,31 @@
+{
+    "https://example.org/asn/{{id}}/Doc": {
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [{ "type": "uri", "value": "http://purl.org/ASN/schema/core/StandardDocument" }],
+        "http://purl.org/dc/elements/1.1/title": [{ "type": "literal", "value": "{{name}}" }],
+        "http://purl.org/dc/terms/description": [{ "type": "literal", "value": "A framework from an ASN JSON file" }],
+        "http://purl.org/gem/qualifiers/hasChild": [
+            { "type": "uri", "value": "https://example.org/asn/{{id}}/Parent" },
+            { "type": "uri", "value": "https://example.org/asn/{{id}}/Sibling" }
+        ]
+    },
+    "https://example.org/asn/{{id}}/Parent": {
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [{ "type": "uri", "value": "http://purl.org/ASN/schema/core/Statement" }],
+        "http://purl.org/dc/terms/description": [{ "type": "literal", "value": "{{prefix}} Parent" }],
+        "http://purl.org/gem/qualifiers/hasChild": [
+            { "type": "uri", "value": "https://example.org/asn/{{id}}/ChildOne" },
+            { "type": "uri", "value": "https://example.org/asn/{{id}}/ChildTwo" }
+        ]
+    },
+    "https://example.org/asn/{{id}}/ChildOne": {
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [{ "type": "uri", "value": "http://purl.org/ASN/schema/core/Statement" }],
+        "http://purl.org/dc/terms/description": [{ "type": "literal", "value": "{{prefix}} Child one" }]
+    },
+    "https://example.org/asn/{{id}}/ChildTwo": {
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [{ "type": "uri", "value": "http://purl.org/ASN/schema/core/Statement" }],
+        "http://purl.org/dc/terms/description": [{ "type": "literal", "value": "{{prefix}} Child two" }]
+    },
+    "https://example.org/asn/{{id}}/Sibling": {
+        "http://www.w3.org/1999/02/22-rdf-syntax-ns#type": [{ "type": "uri", "value": "http://purl.org/ASN/schema/core/Statement" }],
+        "http://purl.org/dc/terms/description": [{ "type": "literal", "value": "{{prefix}} Sibling" }]
+    }
+}

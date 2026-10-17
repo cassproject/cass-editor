@@ -1,0 +1,5 @@
+@id,@type,ceterms:ctid,ceasn:name,ceasn:description,ceasn:competencyText,ceasn:isPartOf,ceasn:isTopChildOf,ceasn:isChildOf,ceasn:inLanguage
+https://example.org/ce-{{fw}},ceasn:CompetencyFramework,ce-{{fw}},{{name}},A framework from a CTDL-ASN CSV,,,,,en
+https://example.org/ce-{{c1}},ceasn:Competency,ce-{{c1}},,,{{prefix}} Parent,https://example.org/ce-{{fw}},https://example.org/ce-{{fw}},,en
+https://example.org/ce-{{c2}},ceasn:Competency,ce-{{c2}},,,{{prefix}} Child,https://example.org/ce-{{fw}},,https://example.org/ce-{{c1}},en
+https://example.org/ce-{{c3}},ceasn:Competency,ce-{{c3}},,,{{prefix}} Sibling,https://example.org/ce-{{fw}},https://example.org/ce-{{fw}},,en
