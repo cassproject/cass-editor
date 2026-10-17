@@ -1,0 +1,37 @@
+{
+    "@context": {
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    "@graph": [
+        {
+            "@id": "http://schema.cassproject.org/",
+            "http://www.w3.org/ns/rdfa#usesVocabulary": {
+                "@id": "http://schema.org/"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/0.2/Assertion/agent",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.2/Assertion"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.eduworks.com/ebac/0.2/EncryptedValue"
+                },
+                {
+                    "@id": "https://purl.org/signature#publicKeyPem"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "An encrypted identifier of the individual who is making the assertion."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "agent"
+            }
+        }
+    ]
+}
