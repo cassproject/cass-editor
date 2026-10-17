@@ -282,6 +282,7 @@ async function checkFrameworkCtidCollisions(repo, competencyIds, frameworkArray,
 import {useAppStore} from '@/stores/app';
 import {useEditorStore} from '@/stores/editor';
 import {nextTick} from 'vue';
+import {withoutEmptyCsvRows} from '@/utils/csv.js';
 
 export default {
     data() {
@@ -529,12 +530,16 @@ export default {
             appStore.setFirstImport(true);
             this.analyzeImportFile();
         },
-        analyzeImportFile: function() {
+        analyzeImportFile: async function() {
             var me = this;
             var file = this.importFile[0];
             appLog("file is", file);
             var feedback;
             if (file.name.endsWith(".csv")) {
+                // Empty rows (e.g. a line break at the end of the file) are not data; the importers
+                // would report them as rows missing required fields.
+                file = await withoutEmptyCsvRows(file);
+                this.importFile.splice(0, 1, file);
                 if (this.conceptMode || this.progressionMode) {
                     CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount, progressionCount) {
                         var appStore = useAppStore();
@@ -801,14 +806,14 @@ export default {
                 me.importFromFile();
             }
         },
-        analyzeCsvRelation: function(e) {
+        analyzeCsvRelation: async function(e) {
             appLog(e);
             var files = e.target.files || e.dataTransfer.files;
             var relationFile;
             if (!files.length) {
                 relationFile = null;
             } else {
-                relationFile = files[0];
+                relationFile = await withoutEmptyCsvRows(files[0]);
             }
             useAppStore().setCsvRelationFile(relationFile);
             let me = this;
