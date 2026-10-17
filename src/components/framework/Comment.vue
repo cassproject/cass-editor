@@ -35,7 +35,7 @@
                     role="menu">
                     <div class="dropdown-content">
                         <a
-                            @click="handleClickEdit"
+                            @click.prevent="handleClickEdit"
                             href="#"
                             class="dropdown-item">
                             edit

@@ -145,9 +145,6 @@ export default {
         subject: function() {
             return useEditorStore().getSubject;
         },
-        otherClaimsPhrase: function() {
-            return "Others have made claims about " + (this.subject === this.me ? "you" : this.subjectPerson === null ? "them" : this.subjectPerson) + ". Click to expand.";
-        },
         reasonPlaceholder: function() {
             if (this.me === this.subject) {
                 return 'do this because I...';
@@ -182,9 +179,6 @@ export default {
             } else {
                 return 'far fa-square';
             }
-        },
-        subjectPerson: function() {
-            return useEditorStore().getSubjectName;
         }
     },
     methods: {
@@ -428,20 +422,22 @@ export default {
                                     assertion.getAgentAsync((agent) => {
                                         if (this.me === agent.toPem()) {
                                             if (assertion.negative == null) {
-                                                assertion.removeReader(useEditorStore().badgePk);
-                                                EcRepository.save(assertion, () => {
-                                                    this.badgeLink = null;
-                                                    this.badge = false;
-                                                    callback();
+                                                assertion.removeReader(useEditorStore().badgePk).then(() => {
+                                                    EcRepository.save(assertion, () => {
+                                                        this.badgeLink = null;
+                                                        this.badge = false;
+                                                        callback();
+                                                    }, callback);
                                                 }, callback);
                                             } else {
                                                 assertion.getNegativeAsync((negative) => {
                                                     if (!negative) {
-                                                        assertion.removeReader(useEditorStore().badgePk);
-                                                        EcRepository.save(assertion, () => {
-                                                            this.badgeLink = null;
-                                                            this.badge = false;
-                                                            callback();
+                                                        assertion.removeReader(useEditorStore().badgePk).then(() => {
+                                                            EcRepository.save(assertion, () => {
+                                                                this.badgeLink = null;
+                                                                this.badge = false;
+                                                                callback();
+                                                            }, callback);
                                                         }, callback);
                                                     } else {
                                                         callback();

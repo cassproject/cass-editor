@@ -871,7 +871,7 @@ export default {
             this.setDefaultLanguage();
             this.highlightCompetency = [];
             if (this.queryParams.highlightCompetency) {
-                if (!EcArray.isArray(highlightCompetency)) {
+                if (!EcArray.isArray(this.queryParams.highlightCompetency)) {
                     this.highlightCompetency = [this.queryParams.highlightCompetency];
                 } else {
                     this.highlightCompetency = this.queryParams.highlightCompetency;

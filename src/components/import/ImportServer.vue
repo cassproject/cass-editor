@@ -1108,9 +1108,9 @@ export default {
             deep: true,
             handler: function() {
                 for (let each in this.cassFrameworks) {
-                if (EcArray.has(this.selectedFrameworks, this.cassFrameworks[each].id)) {
-                    this.cassFrameworks[each].checked = true;
-                } else {
+                    if (EcArray.has(this.selectedFrameworks, this.cassFrameworks[each].id)) {
+                        this.cassFrameworks[each].checked = true;
+                    } else {
                         this.cassFrameworks[each].checked = false;
                     }
                 }
@@ -1121,9 +1121,9 @@ export default {
             deep: true,
             handler: function() {
                 for (let each in this.cassTaxonomies) {
-                if (EcArray.has(this.selectedTaxonomies, this.cassTaxonomies[each].id)) {
-                    this.cassTaxonomies[each].checked = true;
-                } else {
+                    if (EcArray.has(this.selectedTaxonomies, this.cassTaxonomies[each].id)) {
+                        this.cassTaxonomies[each].checked = true;
+                    } else {
                         this.cassTaxonomies[each].checked = false;
                     }
                 }

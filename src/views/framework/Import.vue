@@ -38,7 +38,7 @@
                             </router-link>
                         </li>
                         <li>
-                            <a href="#">Import</a>
+                            <a aria-current="page">Import</a>
                         </li>
                     </ul>
                 </div>

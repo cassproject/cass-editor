@@ -553,9 +553,6 @@ export default {
         workingAlignmentsMap: function() {
             return useCrosswalkStore().workingAlignmentsMap;
         },
-        frameworkSearchTerm: function() {
-            return useAppStore().frameworkSearchTerm;
-        },
         showRightAside: function() {
             return useAppStore().showRightAside;
         },

@@ -169,6 +169,8 @@ import {useCrosswalkStore} from '@/stores/crosswalk';
 import {useEditorStore} from '@/stores/editor';
 export default {
     name: 'List',
+    // Declared so a parent's @dblclick only receives the item, not also the native event.
+    emits: ['dblclick', 'search-updated'],
     props: {
         parent: {
             type: String,

@@ -9,198 +9,198 @@
             </span>
         </div>
         <div class="container is-fluid">
-                <div class="cass--list--container">
-                    <ul class="cass--list">
-                        <!-- directories -->
-                        <li
-                            v-if="!firstSearchProcessing && (!directory || directory.length === 0)"
-                            class="cass--list--item no-results">
-                            No results found
-                        </li>
-                        <li
-                            class="cass--list--item "
-                            :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
-                            v-for="(item) in directory"
-                            :key="item.id"
-                            @click="click(item)">
-                            <div class="cass--list-item--icon">
-                                <div class="cass--list-item--icon-wrap has-background-dark">
-                                    <span class="icon">
-                                        <i
-                                            class="fa fa-folder" />
-                                    </span>
-                                </div>
+            <div class="cass--list--container">
+                <ul class="cass--list">
+                    <!-- directories -->
+                    <li
+                        v-if="!firstSearchProcessing && (!directory || directory.length === 0)"
+                        class="cass--list--item no-results">
+                        No results found
+                    </li>
+                    <li
+                        class="cass--list--item "
+                        :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
+                        v-for="(item) in directory"
+                        :key="item.id"
+                        @click="click(item)">
+                        <div class="cass--list-item--icon">
+                            <div class="cass--list-item--icon-wrap has-background-dark">
+                                <span class="icon">
+                                    <i
+                                        class="fa fa-folder" />
+                                </span>
                             </div>
+                        </div>
+                        <div
+                            class="cass--list-item--content">
+                            <Breadcrumbs
+                                v-if="searchTerm"
+                                :competency="item"
+                                :ref="item.id" />
+                            <Thing
+                                :obj="item"
+                                @dblclick="$emit('dblclick', item)"
+                                :view="view"
+                                class="list-thing list-ul__item--directory"
+                                :parentNotEditable="true" />
+                        </div>
+                        <div class="cass--list-item--hover">
                             <div
-                                class="cass--list-item--content">
-                                <Breadcrumbs
-                                    v-if="searchTerm"
-                                    :competency="item"
-                                    :ref="item.id" />
-                                <Thing
-                                    :obj="item"
-                                    @dblclick="$emit('dblclick', item)"
-                                    :view="view"
-                                    class="list-thing list-ul__item--directory"
-                                    :parentNotEditable="true" />
+                                v-if="view !== 'search'"
+                                class="icon has-text-primary arrow-icon">
+                                <i class="fa fa-arrow-right" />
                             </div>
-                            <div class="cass--list-item--hover">
-                                <div
-                                    v-if="view !== 'search'"
-                                    class="icon has-text-primary arrow-icon">
-                                    <i class="fa fa-arrow-right" />
-                                </div>
+                        </div>
+                    </li>
+                    <!-- frameworks -->
+                    <li
+                        class="cass--list--item "
+                        :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
+                        v-for="(item) in framework"
+                        :key="item.id"
+                        @click="click(item)">
+                        <div class="cass--list-item--icon">
+                            <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
+                                <span class="icon">
+                                    <i
+                                        title="Framework"
+                                        class="fa fa-file-alt" />
+                                </span>
                             </div>
-                        </li>
-                        <!-- frameworks -->
-                        <li
-                            class="cass--list--item "
-                            :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
-                            v-for="(item) in framework"
-                            :key="item.id"
-                            @click="click(item)">
-                            <div class="cass--list-item--icon">
-                                <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
-                                    <span class="icon">
-                                        <i
-                                            title="Framework"
-                                            class="fa fa-file-alt" />
-                                    </span>
-                                </div>
-                            </div>
+                        </div>
+                        <div
+                            class="cass--list-item--content">
+                            <Breadcrumbs
+                                v-if="searchTerm"
+                                :competency="item"
+                                :ref="item.id" />
+                            <Thing
+                                :obj="item"
+                                @dblclick="$emit('dblclick', item)"
+                                :view="view"
+                                class="list-thing list-ul__item--framework"
+                                :parentNotEditable="true" />
+                        </div>
+                        <div class="cass--list-item--hover">
                             <div
-                                class="cass--list-item--content">
-                                <Breadcrumbs
-                                    v-if="searchTerm"
-                                    :competency="item"
-                                    :ref="item.id" />
-                                <Thing
-                                    :obj="item"
-                                    @dblclick="$emit('dblclick', item)"
-                                    :view="view"
-                                    class="list-thing list-ul__item--framework"
-                                    :parentNotEditable="true" />
+                                v-if="view !== 'search'"
+                                class="icon has-text-primary arrow-icon">
+                                <i class="fa fa-arrow-right" />
                             </div>
-                            <div class="cass--list-item--hover">
-                                <div
-                                    v-if="view !== 'search'"
-                                    class="icon has-text-primary arrow-icon">
-                                    <i class="fa fa-arrow-right" />
-                                </div>
+                        </div>
+                    </li>
+                    <li
+                        class="cass--list--item "
+                        :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
+                        v-for="(item) in conceptscheme"
+                        :key="item.id"
+                        @click="click(item)">
+                        <div class="cass--list-item--icon">
+                            <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
+                                <span class="icon">
+                                    <i
+                                        title="Taxonomy"
+                                        class="fa fa-book" />
+                                </span>
                             </div>
-                        </li>
-                        <li
-                            class="cass--list--item "
-                            :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
-                            v-for="(item) in conceptscheme"
-                            :key="item.id"
-                            @click="click(item)">
-                            <div class="cass--list-item--icon">
-                                <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
-                                    <span class="icon">
-                                        <i
-                                            title="Taxonomy"
-                                            class="fa fa-book" />
-                                    </span>
-                                </div>
-                            </div>
+                        </div>
+                        <div
+                            class="cass--list-item--content">
+                            <Breadcrumbs
+                                v-if="searchTerm"
+                                :competency="item"
+                                :ref="item.id" />
+                            <Thing
+                                :obj="item"
+                                @dblclick="$emit('dblclick', item)"
+                                :view="view"
+                                class="list-thing list-ul__item--framework"
+                                :parentNotEditable="true" />
+                        </div>
+                        <div class="cass--list-item--hover">
                             <div
-                                class="cass--list-item--content">
-                                <Breadcrumbs
-                                    v-if="searchTerm"
-                                    :competency="item"
-                                    :ref="item.id" />
-                                <Thing
-                                    :obj="item"
-                                    @dblclick="$emit('dblclick', item)"
-                                    :view="view"
-                                    class="list-thing list-ul__item--framework"
-                                    :parentNotEditable="true" />
+                                v-if="view !== 'search'"
+                                class="icon has-text-primary arrow-icon">
+                                <i class="fa fa-arrow-right" />
                             </div>
-                            <div class="cass--list-item--hover">
-                                <div
-                                    v-if="view !== 'search'"
-                                    class="icon has-text-primary arrow-icon">
-                                    <i class="fa fa-arrow-right" />
-                                </div>
+                        </div>
+                    </li>
+                    <!-- After the framework/concept scheme search results, show competencies/concepts -->
+                    <li
+                        class="cass--list--item "
+                        :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
+                        v-for="(item) in competency"
+                        :key="item.id"
+                        @click="competencyClick(item)">
+                        <div class="cass--list-item--icon">
+                            <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
+                                <span class="icon">
+                                    <i
+                                        title="Competency"
+                                        class="fa fa-list-alt" />
+                                </span>
                             </div>
-                        </li>
-                        <!-- After the framework/concept scheme search results, show competencies/concepts -->
-                        <li
-                            class="cass--list--item "
-                            :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
-                            v-for="(item) in competency"
-                            :key="item.id"
-                            @click="competencyClick(item)">
-                            <div class="cass--list-item--icon">
-                                <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
-                                    <span class="icon">
-                                        <i
-                                            title="Competency"
-                                            class="fa fa-list-alt" />
-                                    </span>
-                                </div>
-                            </div>
+                        </div>
+                        <div
+                            class="cass--list-item--content">
+                            <Breadcrumbs
+                                :competency="item"
+                                :ref="item.id" />
+                            <Thing
+                                :obj="item"
+                                @dblclick="$emit('dblclick', item)"
+                                :view="view"
+                                class="list-thing list-ul__item--object"
+                                :parentNotEditable="true" />
+                        </div>
+                        <div class="cass--list-item--hover">
                             <div
-                                class="cass--list-item--content">
-                                <Breadcrumbs
-                                    :competency="item"
-                                    :ref="item.id" />
-                                <Thing
-                                    :obj="item"
-                                    @dblclick="$emit('dblclick', item)"
-                                    :view="view"
-                                    class="list-thing list-ul__item--object"
-                                    :parentNotEditable="true" />
+                                v-if="view !== 'search'"
+                                class="icon has-text-primary arrow-icon">
+                                <i class="fa fa-arrow-right" />
                             </div>
-                            <div class="cass--list-item--hover">
-                                <div
-                                    v-if="view !== 'search'"
-                                    class="icon has-text-primary arrow-icon">
-                                    <i class="fa fa-arrow-right" />
-                                </div>
+                        </div>
+                    </li>
+                    <!-- Resources -->
+                    <li
+                        v-for="item in creativework"
+                        @dblclick="$emit('dblclick', item)"
+                        :key="item.id"
+                        @click="click(item)"
+                        class="cass--list--item">
+                        <div class="cass--list-item--icon">
+                            <div class="cass--list-item--icon-wrap has-background-dark">
+                                <i class="fa fa-paperclip" />
                             </div>
-                        </li>
-                        <!-- Resources -->
-                        <li
-                            v-for="item in creativework"
-                            @dblclick="$emit('dblclick', item)"
-                            :key="item.id"
-                            @click="click(item)"
-                            class="cass--list--item">
-                            <div class="cass--list-item--icon">
-                                <div class="cass--list-item--icon-wrap has-background-dark">
-                                    <i class="fa fa-paperclip" />
-                                </div>
-                            </div>
+                        </div>
+                        <div
+                            class="cass--list-item--content"
+                            :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass-list-item--selected' : ''">
                             <div
-                                class="cass--list-item--content"
-                                :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass-list-item--selected' : ''">
-                                <div
-                                    class="list-ul__item--resource">
-                                    {{ item.name }}
-                                </div>
+                                class="list-ul__item--resource">
+                                {{ item.name }}
                             </div>
-                            <div class="cass--list-item--hover">
-                                <div
-                                    v-if="view !== 'search'"
-                                    class="icon has-text-primary arrow-icon">
-                                    <i class="fa fa-arrow-right" />
-                                </div>
+                        </div>
+                        <div class="cass--list-item--hover">
+                            <div
+                                v-if="view !== 'search'"
+                                class="icon has-text-primary arrow-icon">
+                                <i class="fa fa-arrow-right" />
                             </div>
-                        </li>
-                    </ul>
-                    <div
-                        v-if="hasMore && (directory.length + framework.length + competency.length + creativework.length + conceptscheme.length + concept.length > 10)"
-                        v-observe-visibility="{
-                            callback: onInfiniteScroll,
-                            once: false
-                        }"
-                        class="infinite-loading-sentinel">
-                        <span class="icon"><i class="fas fa-spinner fa-spin" /></span>
-                    </div>
+                        </div>
+                    </li>
+                </ul>
+                <div
+                    v-if="hasMore && (directory.length + framework.length + competency.length + creativework.length + conceptscheme.length + concept.length > 10)"
+                    v-observe-visibility="{
+                        callback: onInfiniteScroll,
+                        once: false
+                    }"
+                    class="infinite-loading-sentinel">
+                    <span class="icon"><i class="fas fa-spinner fa-spin" /></span>
                 </div>
             </div>
+        </div>
     </div>
 </template>
 

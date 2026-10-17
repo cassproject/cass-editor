@@ -206,7 +206,7 @@ export default {
             if (!expandedCompetency[property]) {
                 return;
             }
-            var lang = (value && value["@language"] != null) ? value["@language"].toLowerCase() : null;
+            var lang = value && value["@language"] != null ? value["@language"].toLowerCase() : null;
             if (lang == null) {
                 // Non-language value: clear the property so the new value replaces it.
                 delete expandedCompetency[property];

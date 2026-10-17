@@ -441,7 +441,7 @@ export default {
         selectDirectory: function(directory) {
             useAppStore().selectDirectory(directory);
             useAppStore().setRightAsideObject(directory);
-            if (this.$router.currentRoute.name !== "directory") {
+            if (this.$route.name !== "directory") {
                 this.$router.push({name: "directory"});
             }
         },
@@ -500,6 +500,9 @@ export default {
             };
 
             connection.changedObject = async function(wut) {
+                // A change notice for an object that has since been deleted (or that this user
+                // cannot read) fetches nothing; there is nothing to refresh.
+                if (wut == null) return;
                 useEditorStore().setChangedObject(wut.shortId());
                 // Add new assertions as they come in
                 if (wut.type === 'Assertion') {
