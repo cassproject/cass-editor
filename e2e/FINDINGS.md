@@ -43,6 +43,7 @@ passed" — at which point remove the `test.fail()` line.
 | Opening Filter & sort before the schema loaded threw | `FilterAndSort.vue` |
 | Deleting a directory threw | `stores/app.js` `setRightAsideObject` |
 | Confirming a competency delete before its usage counts loaded threw | `DeleteCompetencyConfirm.vue` |
+| A CSV ending with a line break (as spreadsheet programs save them) failed to import: its empty last row was reported as missing required fields (#1428) | `utils/csv.js`, `mixins/import.js` |
 | The configuration list showed only the first page (~50) | `mixins/configuration.js` |
 | A concept-scheme highlight deep link referenced an undefined variable | `ConceptScheme.vue` |
 | `npm run lint` reported 199 errors | autofixed (mostly `DirectoryList.vue` indentation) |
@@ -76,7 +77,7 @@ pass unencoded base64 values that contain a literal `+`.
 
 ## cassproject library and CaSS server (filed)
 
-- [cassproject/cass-npm#542](https://github.com/cassproject/cass-npm/issues/542) — `CTDLASNCSVImport` fails on a CSV ending with a newline (known-bug test in IMP-05).
+- [cassproject/cass-npm#542](https://github.com/cassproject/cass-npm/issues/542) — `CTDLASNCSVImport` fails on a CSV ending with a newline. The editor removes empty rows before importing (#1428), so IMP-05 passes regardless.
 - [cassproject/cass-npm#543](https://github.com/cassproject/cass-npm/issues/543) — `CSVExport.exportFramework` throws for a framework without relations (known-bug test in EXP-01).
 - [cassproject/cass-npm#541](https://github.com/cassproject/cass-npm/issues/541) — `EcRepository.multiget` refetches every id when caching is off.
 - [cassproject/CASS#644](https://github.com/cassproject/CASS/issues/644) — configurations with custom properties vanish from search (index at its 1000-field limit; known-bug test in CFG-04). Likely the same cause: a `multiput` of such a configuration returns `[]` and stores nothing.
