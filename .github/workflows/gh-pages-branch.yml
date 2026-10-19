@@ -16,7 +16,12 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  e2e:
+    uses: ./.github/workflows/e2e.yml
+
+  # Published only when the end-to-end suite passes: CaSS releases ship these branch builds.
   build-and-publish:
+    needs: [e2e]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
