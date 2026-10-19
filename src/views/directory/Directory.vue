@@ -27,11 +27,11 @@
                 <div
                     class="field">
                     <div class="buttons">
-                        <div
+                        <button type="button"
                             class="button is-dark is-outlined"
                             @click="createSubdirectory = false">
                             Cancel
-                        </div>
+                        </button>
                         <button
                             type="button"
                             class="button is-primary"
@@ -96,11 +96,11 @@
                     class="field"
                     v-if="createResource">
                     <div class="buttons">
-                        <div
+                        <button type="button"
                             class="button is-dark is-outlined"
                             @click="createResource = false; resourceName = ''; resourceUrl = ''">
                             Cancel
-                        </div>
+                        </button>
                         <button
                             type="button"
                             class="button is-primary"
@@ -115,11 +115,11 @@
                     class="field"
                     v-if="editResource">
                     <div class="buttons">
-                        <div
+                        <button type="button"
                             class="button is-dark is-outlined"
                             @click="editResource = false; resource = null;">
                             Cancel
-                        </div>
+                        </button>
                         <button
                             type="button"
                             class="button is-primary"
@@ -198,7 +198,7 @@
                         <li>
                             <a
                                 href="#"
-                                @click="goToFrameworks()">
+                                @click.prevent="goToFrameworks()">
                                 CaSS
                             </a>
                         </li>
@@ -207,12 +207,12 @@
                             :key="each.id">
                             <a
                                 href="#"
-                                @click="selectTrailDirectory(each)">{{ each.name }}</a>
+                                @click.prevent="selectTrailDirectory(each)">{{ each.name }}</a>
                         </li>
                         <li v-if="directory">
                             <a
                                 href="#"
-                                @click="showDirectoryInRightAside">
+                                @click.prevent="showDirectoryInRightAside">
                                 <!-- to do account for -->
                                 {{ directory.name }}
                             </a>
@@ -397,7 +397,7 @@ export default {
                 }
                 search += ")";
             }
-            if (this.filterByConfig && this.defaultConfig) {
+            if (this.filterByConfigMatchDefault && this.defaultConfig) {
                 search += " AND (configuration:\"";
                 search += this.defaultConfig;
                 search += "\")";

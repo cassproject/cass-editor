@@ -401,6 +401,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Industry Type"}],
                     "heading": "General"
                 },
+                "https://purl.org/ctdl/terms/recognizedForIndustry": {
+                    "@id": "https://purl.org/ctdl/terms/recognizedForIndustry",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Framework"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Industry for which this resource is recognized, given as the URI of the industry (for example, a NAICS code's URI)."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Recognized For Industry"}],
+                    "heading": "General"
+                },
                 "https://schema.cassproject.org/0.4/cipList": {
                     "@id": "https://schema.cassproject.org/0.4/cipList",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -547,6 +558,7 @@ export default {
                     "https://purl.org/ctdlasn/terms/educationLevelType",
                     "https://schema.cassproject.org/0.4/socList",
                     "https://schema.cassproject.org/0.4/naicsList",
+                    "https://purl.org/ctdl/terms/recognizedForIndustry",
                     "http://purl.org/ASN/schema/core/hasProgressionModel",
                     "https://purl.org/ctdl/terms/versionIdentifier",
                     "https://purl.org/ctdl/terms/latestVersion",
@@ -1451,6 +1463,17 @@ export default {
                     "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Industry Type"}],
                     "heading": "General"
                 },
+                "https://purl.org/ctdl/terms/recognizedForIndustry": {
+                    "@id": "https://purl.org/ctdl/terms/recognizedForIndustry",
+                    "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
+                    "http://schema.org/domainIncludes":
+                    [{"@id": "https://schema.cassproject.org/0.4/Competency"}],
+                    "http://schema.org/rangeIncludes": [{"@id": "http://schema.org/URL"}],
+                    "http://www.w3.org/2000/01/rdf-schema#comment":
+                    [{"@language": "en", "@value": "Industry for which this resource is recognized, given as the URI of the industry (for example, a NAICS code's URI)."}],
+                    "http://www.w3.org/2000/01/rdf-schema#label": [{"@language": "en", "@value": "Recognized For Industry"}],
+                    "heading": "General"
+                },
                 "https://schema.cassproject.org/0.4/cipList": {
                     "@id": "https://schema.cassproject.org/0.4/cipList",
                     "@type": ["http://www.w3.org/2000/01/rdf-schema#Property"],
@@ -1787,6 +1810,7 @@ export default {
                     "https://purl.org/ctdlasn/terms/weight",
                     "https://schema.cassproject.org/0.4/socList",
                     "https://schema.cassproject.org/0.4/naicsList",
+                    "https://purl.org/ctdl/terms/recognizedForIndustry",
                     "https://purl.org/ctdlasn/terms/localSubject",
                     "https://purl.org/ctdlasn/terms/crossSubjectReference",
                     "https://schema.cassproject.org/0.4/cipList",

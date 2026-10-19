@@ -555,7 +555,7 @@ export default {
             const appStore = useAppStore();
             appStore.setPluginToLaunch(pluginShortcut);
             appStore.setPluginToLaunchLastUpdate(Date.now());
-            if (!this.$router.currentRoute.name.equals(this.PLUGIN_CONTAINER_ROUTE)) this.$router.push({path: '/pluginContainer'});
+            if (this.$route.name !== this.PLUGIN_CONTAINER_ROUTE) this.$router.push({path: '/pluginContainer'});
         },
         buildPluginLinkMap() {
             // TODO handle screen type plugins at some point...this would be the place to do it...stash them on the VUEX store
@@ -597,7 +597,7 @@ export default {
             const appStore = useAppStore();
             appStore.selectDirectory(directory);
             appStore.setRightAsideObject(directory);
-            if (this.$router.currentRoute.name !== "directory") {
+            if (this.$route.name !== "directory") {
                 this.$router.push({name: "directory"});
             }
         },

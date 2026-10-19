@@ -64,9 +64,11 @@ export default {
     methods: {
         getNums() {
             let me = this;
-            repo.search("@type:Framework AND competency:\"" + this.obj.shortId() + "\"", function(f) {}, function(fs) {
+            // Captured now: confirming before the searches return resets itemToDelete to {}.
+            const id = this.obj.shortId();
+            repo.search("@type:Framework AND competency:\"" + id + "\"", function(f) {}, function(fs) {
                 me.numFrameworks = fs.length;
-                repo.search("@type:Relation AND (source:\"" + me.obj.shortId() + "\" OR target:\"" + me.obj.shortId() + "\")", function(r) {}, function(rs) {
+                repo.search("@type:Relation AND (source:\"" + id + "\" OR target:\"" + id + "\")", function(r) {}, function(rs) {
                     me.numRelationships = rs.length;
                 }, function() {});
             }, function() {});

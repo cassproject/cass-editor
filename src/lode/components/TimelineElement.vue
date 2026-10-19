@@ -54,7 +54,7 @@
                         <a
                             href="#"
                             class="competencyLink"
-                            @click="gotoCompetency"
+                            @click.prevent="gotoCompetency"
                             :title="assertion.competency">
                             {{ competencyName }}
                             <span
@@ -83,13 +83,13 @@
                         </span>.
                     </div>
                     <div>
-                        <div
+                        <button type="button"
                             :style="invisible"
                             @click="deleteMe"
                             class="button is-text"
                             title="Delete this claim.">
                             <i class="fas fa-times" />
-                        </div>
+                        </button>
                     </div>
                 </div>
                 <div>
@@ -128,6 +128,7 @@ export default {
             timestamp: null,
             expiry: null,
             competency: null,
+            framework: null,
             negative: null,
             agentPerson: null,
             subjectPerson: null,

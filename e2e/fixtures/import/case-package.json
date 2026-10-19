@@ -1,0 +1,36 @@
+{
+    "CFDocument": {
+        "identifier": "{{doc}}",
+        "uri": "https://case.example.test/uri/{{doc}}",
+        "creator": "E2E tests",
+        "title": "{{name}}",
+        "lastChangeDateTime": "2026-01-01T00:00:00+00:00",
+        "CFPackageURI": { "title": "{{name}}", "identifier": "{{doc}}", "uri": "https://case.example.test/ims/case/v1p0/CFPackages/{{doc}}" }
+    },
+    "CFItems": [
+        {
+            "identifier": "{{item1}}",
+            "uri": "https://case.example.test/uri/{{item1}}",
+            "fullStatement": "{{prefix}} Parent",
+            "CFDocumentURI": { "title": "{{name}}", "identifier": "{{doc}}", "uri": "https://case.example.test/uri/{{doc}}" },
+            "lastChangeDateTime": "2026-01-01T00:00:00+00:00"
+        },
+        {
+            "identifier": "{{item2}}",
+            "uri": "https://case.example.test/uri/{{item2}}",
+            "fullStatement": "{{prefix}} Child",
+            "CFDocumentURI": { "title": "{{name}}", "identifier": "{{doc}}", "uri": "https://case.example.test/uri/{{doc}}" },
+            "lastChangeDateTime": "2026-01-01T00:00:00+00:00"
+        }
+    ],
+    "CFAssociations": [
+        {
+            "identifier": "{{assoc}}",
+            "uri": "https://case.example.test/uri/{{assoc}}",
+            "associationType": "isChildOf",
+            "originNodeURI": { "title": "{{prefix}} Child", "identifier": "{{item2}}", "uri": "https://case.example.test/uri/{{item2}}" },
+            "destinationNodeURI": { "title": "{{prefix}} Parent", "identifier": "{{item1}}", "uri": "https://case.example.test/uri/{{item1}}" },
+            "lastChangeDateTime": "2026-01-01T00:00:00+00:00"
+        }
+    ]
+}

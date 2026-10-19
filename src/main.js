@@ -190,11 +190,10 @@ app.config.globalProperties.$scrollTo = function(target, duration, options) {
         el = target;
     }
     if (el) {
-        el.scrollIntoView({
-            behavior: 'smooth',
-            block: 'start',
-            ...options
-        });
+        // Only scrollIntoView's own options: callers still pass vue-scrollto ones (container,
+        // easing, offset...), which browsers reject ("'container' is not a valid enum value").
+        const {behavior = 'smooth', block = 'start', inline} = options || {};
+        el.scrollIntoView(inline ? {behavior, block, inline} : {behavior, block});
     }
 };
 

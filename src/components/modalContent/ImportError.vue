@@ -28,14 +28,6 @@ export default {
         ModalTemplate
     },
     computed: {
-        showImportInfoModal: {
-            get() {
-                return useAppStore().showImportInfoModal;
-            },
-            set(val) {
-                useAppStore().setShowImportInfoModal(val);
-            }
-        },
         importModalParams: {
             get() {
                 return useAppStore().importModalParams;

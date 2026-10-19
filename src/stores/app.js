@@ -213,6 +213,10 @@ export const useAppStore = defineStore('app', {
             this.rightAsideObject = null;
         },
         async setRightAsideObject(payload) {
+            if (payload == null) {
+                this.rightAsideObject = null;
+                return;
+            }
             if (payload.encryptedType) {
                 let type = "Ec" + payload.encryptedType;
                 let obj = new window[type]();
@@ -479,6 +483,10 @@ export const useAppStore = defineStore('app', {
             this.setImportFileType('');
             this.setImportDuplicates([]);
             this.setImportSkip([]);
+            // A cancelled CSV's columns must not linger in the next file's column mapping.
+            this.setCsvColumns([]);
+            this.setCsvRelationColumns([]);
+            this.setCsvRelationFile(null);
         },
         refreshDirectories() {
             let directories = [];

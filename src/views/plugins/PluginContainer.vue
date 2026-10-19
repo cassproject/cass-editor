@@ -2,11 +2,9 @@
     <div :class="[{'modal-card': view === 'dynamic-modal'}, {'section': view !== 'dynamic-modal'}]">
         <section :class="[{ 'container': view !== 'dynamic-modal'}, { 'modal-card-body': view === 'dynamic-modal'}]">
             <div class="section">
-                <template>
-                    <h3 class="title">
-                        <i class="fa fa-plug" /> {{ pluginName }}
-                    </h3>
-                </template>
+                <h3 class="title">
+                    <i class="fa fa-plug" /> {{ pluginName }}
+                </h3>
             </div>
             <div
                 class="modal"

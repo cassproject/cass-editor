@@ -1,0 +1,101 @@
+name: End-to-end tests
+
+on:
+  pull_request:
+  push:
+    branches: [ master, '1.*' ]
+  workflow_dispatch:
+    inputs:
+      cass_image:
+        description: CaSS image to test against
+        default: cassproject/cass:node-1.7-alpine
+
+concurrency:
+  group: e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  e2e:
+    name: E2E (shard ${{ matrix.shard }}/4)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    env:
+      CASS_IMAGE: ${{ inputs.cass_image || 'cassproject/cass:node-1.7-alpine' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: actions/setup-node@v4
+        with:
+          # Vite 7 requires Node 20.19+ / 22.12+
+          node-version: '22.x'
+          cache: npm
+
+      # No lifecycle scripts: the dependencies the tests use ship prebuilt binaries.
+      - run: npm ci --ignore-scripts
+
+      - name: Start CaSS and Elasticsearch
+        run: docker compose -f e2e/docker-compose.yml up -d --wait
+
+      # The Playwright version locked in package-lock.json (npx could fetch another one).
+      - run: ./node_modules/.bin/playwright install --with-deps chromium
+
+      - name: Run tests
+        run: ./node_modules/.bin/playwright test --shard=${{ matrix.shard }}/4 --reporter=blob,list
+
+      - name: CaSS logs
+        if: failure()
+        run: docker compose -f e2e/docker-compose.yml logs --tail=300 cass
+
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: blob-report-${{ matrix.shard }}
+          path: blob-report
+          retention-days: 7
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: results-${{ matrix.shard }}
+          path: e2e/results
+          retention-days: 7
+
+  report:
+    name: E2E report
+    if: ${{ !cancelled() }}
+    needs: [e2e]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: npm
+
+      # No lifecycle scripts: the dependencies the tests use ship prebuilt binaries.
+      - run: npm ci --ignore-scripts
+
+      - uses: actions/download-artifact@v4
+        with:
+          path: all-blob-reports
+          pattern: blob-report-*
+          merge-multiple: true
+
+      - name: Merge shard reports
+        run: ./node_modules/.bin/playwright merge-reports --reporter=html,github ./all-blob-reports
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: e2e-html-report
+          path: playwright-report
+          retention-days: 14

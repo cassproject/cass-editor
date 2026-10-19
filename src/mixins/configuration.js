@@ -625,7 +625,8 @@ export const configuration = {
         },
         buildConfigListFromRepository() {
             let paramObj = {};
-            paramObj.size = this.buildConfigListFromRepository_SIZE;
+            // Every configuration, not just the server's default first page.
+            paramObj.size = 10000;
             window.repo.searchWithParams("@type:Configuration", paramObj, null, this.searchRepositoryForConfigsSuccess, this.searchRepositoryForConfigsFailure);
         },
         buildConfigList() {
