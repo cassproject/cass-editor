@@ -1,0 +1,13 @@
+.reveal .row {
+    margin-top: .25rem;
+    margin-bottom: .25rem;
+    font-family: monospace, monospace;
+    font-size: 1em;
+}
+div[property="rdfs:label"] {
+    font-weight: bold;
+}
+p[property="rdfs:comment"]{
+    text-align: justify;
+    text-justify: inter-word;
+}
