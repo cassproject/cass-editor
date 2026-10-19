@@ -122,14 +122,14 @@
                                     <li />
                                 </ul>
                                 <div class="buttons is-centered">
-                                    <div
+                                    <button type="button"
                                         @click="cancelImport()"
                                         class="button is-primary">
                                         <span class="icon">
                                             <i class="fa fa-redo" />
                                         </span>
                                         <span>start over</span>
-                                    </div>
+                                    </button>
                                 </div>
                             </div>
                             <!-- HANDLE CASE DOCS -->
@@ -172,17 +172,17 @@
                                     </span>
                                 </div>
                                 <div class="buttons is-right">
-                                    <div
+                                    <button type="button"
                                         class="button is-outlined is-dark"
                                         @click="cancelImport">
                                         Cancel
-                                    </div>
-                                    <div
+                                    </button>
+                                    <button type="button"
                                         v-if="importTransition !== 'importingCaseFrameworks'"
                                         class="button is-outlined is-primary"
                                         @click="importCaseDocs()">
                                         Import
-                                    </div>
+                                    </button>
                                 </div>
                             </div>
                             <!-- HANDLE CASS DOCS -->
@@ -240,11 +240,11 @@
                                     </div>
                                     <div class="field">
                                         <div class="buttons is-right">
-                                            <div
+                                            <button type="button"
                                                 class="button is-primary"
                                                 @click="selectAllFrameworks">
                                                 Select all
-                                            </div>
+                                            </button>
                                         </div>
                                     </div>
                                     <!-- multi select for frameworks -->
@@ -295,23 +295,23 @@
                                 </div>
                                 <div class="is-12">
                                     <div class="buttons is-right">
-                                        <div
+                                        <button type="button"
                                             class="button is-outlined is-dark"
                                             @click="cancelImport">
                                             Cancel
-                                        </div>
-                                        <div
+                                        </button>
+                                        <button type="button"
                                             class="button is-outlined is-dark"
                                             v-if="directoryThatsOpen"
                                             @click="goBack">
                                             Back
-                                        </div>
-                                        <div
+                                        </button>
+                                        <button type="button"
                                             v-if="importTransition !== 'importingCassFrameworks'"
                                             class="button is-outlined is-primary"
                                             @click="conceptMode ? importCassTaxonomies() : importCassFrameworks()">
                                             Import
-                                        </div>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

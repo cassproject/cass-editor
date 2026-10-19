@@ -1,9 +1,10 @@
 // Helpers for the frameworks list (TEST-CASES.md §2) and search (§14) specs.
 import { expect } from '@playwright/test';
+import { randomId } from './app.js';
 import { seedConfiguration as seedFullConfiguration } from './configurations.js';
 
 /** A short alphanumeric token no other test uses; safe to search for as a single word. */
-export const token = (prefix = 'tok') => `${prefix}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
+export const token = (prefix = 'tok') => `${prefix}${Date.now().toString(36)}${randomId(6)}`;
 
 /**
  * Creates a framework with extra top-level properties (e.g. schema:dateModified, configuration,

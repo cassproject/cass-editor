@@ -83,13 +83,13 @@
                         </span>.
                     </div>
                     <div>
-                        <div
+                        <button type="button"
                             :style="invisible"
                             @click="deleteMe"
                             class="button is-text"
                             title="Delete this claim.">
                             <i class="fas fa-times" />
-                        </div>
+                        </button>
                     </div>
                 </div>
                 <div>

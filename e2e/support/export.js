@@ -43,7 +43,7 @@ export async function exportAs(page, format, { count } = {}) {
     await expect(modal).toBeVisible();
     await modal.locator('select').selectOption(format.value);
     if (format.popup) {
-        const service = new RegExp(`^${CASS_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}${format.popup.replace(/\//g, '\\/')}[^/?#]+$`);
+        const service = new RegExp(`^${CASS_URL.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`)}${format.popup.replaceAll('/', String.raw`\/`)}[^/?#]+$`);
         const responseP = page.context().waitForEvent('response', (r) => service.test(r.url()));
         const popupP = page.waitForEvent('popup');
         await modal.locator('.export-confirm').click();

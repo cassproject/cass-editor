@@ -1,5 +1,6 @@
 // TEST-CASES.md §11 Assertions (ASSN-01 … ASSN-05).
 import { test, expect, unique, problems } from '../support/fixtures.js';
+import { randomId } from '../support/app.js';
 import { asUser, assertionEditor, assertionsAbout, publicKeyOf, readAssertion, seedAssertion, startManagingAssertions } from '../support/assertions.js';
 import { openSeededFramework } from '../support/sharing.js';
 
@@ -182,7 +183,7 @@ test.describe('Assertions', () => {
         // Creates an account, then three assertions (each several RSA operations) and the timeline.
         test.slow();
         // A user of its own, so the timeline holds only this test's claims.
-        const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        const id = Date.now().toString(36) + randomId(4);
         await app.createAccount({ name: `E2E timeline ${id}`, email: `e2e-timeline-${id}@example.com`, username: `e2etimeline${id}`, password: `Pw-${id}-timeline!` });
         const account = { name: `E2E timeline ${id}` };
         const fw = await openManagedFramework(app, page, ['Oldest claim', 'Older claim', 'Newer claim']);
@@ -228,7 +229,7 @@ test.describe('Assertions', () => {
 
     test('ASSN-03 assertion timeline shows "None." without assertions @P1', async ({ app, page }) => {
         // A brand-new user has no assertions.
-        const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+        const id = Date.now().toString(36) + randomId(4);
         const fresh = { name: `E2E fresh ${id}`, email: `e2e-fresh-${id}@example.com`, username: `e2efresh${id}`, password: `Pw-${id}-fresh!` };
         await app.createAccount(fresh);
         await app.go('/timeline');

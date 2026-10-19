@@ -39,15 +39,17 @@ jobs:
           node-version: '22.x'
           cache: npm
 
-      - run: npm ci
+      # No lifecycle scripts: the dependencies the tests use ship prebuilt binaries.
+      - run: npm ci --ignore-scripts
 
       - name: Start CaSS and Elasticsearch
         run: docker compose -f e2e/docker-compose.yml up -d --wait
 
-      - run: npx playwright install --with-deps chromium
+      # The Playwright version locked in package-lock.json (npx could fetch another one).
+      - run: ./node_modules/.bin/playwright install --with-deps chromium
 
       - name: Run tests
-        run: npx playwright test --shard=${{ matrix.shard }}/4 --reporter=blob,list
+        run: ./node_modules/.bin/playwright test --shard=${{ matrix.shard }}/4 --reporter=blob,list
 
       - name: CaSS logs
         if: failure()
@@ -80,7 +82,8 @@ jobs:
           node-version: '22.x'
           cache: npm
 
-      - run: npm ci
+      # No lifecycle scripts: the dependencies the tests use ship prebuilt binaries.
+      - run: npm ci --ignore-scripts
 
       - uses: actions/download-artifact@v4
         with:
@@ -89,7 +92,7 @@ jobs:
           merge-multiple: true
 
       - name: Merge shard reports
-        run: npx playwright merge-reports --reporter=html,github ./all-blob-reports
+        run: ./node_modules/.bin/playwright merge-reports --reporter=html,github ./all-blob-reports
 
       - uses: actions/upload-artifact@v4
         with:

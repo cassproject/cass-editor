@@ -108,7 +108,7 @@
                                 class="crosswalk__buttons">
                                 <div class="container">
                                     <h2 class="title is-size-1">
-                                        <span
+                                        <button type="button"
                                             v-if="workingAlignmentsChanged"
                                             @click="applyWorkingAlignmentChanges"
                                             class="button is-pulled-right is-outlined is-primary">
@@ -118,8 +118,8 @@
                                             <span>
                                                 apply alignments
                                             </span>
-                                        </span>
-                                        <span
+                                        </button>
+                                        <button type="button"
                                             v-if="(alignmentsToSave.length > 0 || alignmentsToDelete.length > 0) && sourceState === 'ready'"
                                             @click="goToSummaryAndSave"
                                             class="button  is-pulled-right is-outlined is-primary">
@@ -129,7 +129,7 @@
                                             <span>
                                                 save & review
                                             </span>
-                                        </span>
+                                        </button>
                                     </h2>
                                 </div>
                             </div>
@@ -327,7 +327,7 @@
                                         style="margin-top: 3rem"
                                         class="buttons is-spaced"
                                         v-if="saveToSourceFramework || saveToTargetFramework">
-                                        <div
+                                        <button type="button"
                                             class="button is-outlined is-dark"
                                             @click="returnToCrosswalkEditing">
                                             <span class="icon">
@@ -336,8 +336,8 @@
                                             <span>
                                                 continue editing
                                             </span>
-                                        </div>
-                                        <div
+                                        </button>
+                                        <button type="button"
                                             class="button is-outlined is-primary"
                                             @click="saveAlignments">
                                             <span class="icon">
@@ -346,7 +346,7 @@
                                             <span>
                                                 save alignments
                                             </span>
-                                        </div>
+                                        </button>
                                     </div>
                                 </div>
                             </div>

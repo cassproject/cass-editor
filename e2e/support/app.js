@@ -1,11 +1,15 @@
 // Page-level helpers for driving the editor. Tests reach the editor through App rather than
 // building URLs or logging in by hand, so the conventions live in one place.
 import { expect } from '@playwright/test';
+import { randomBytes } from 'node:crypto';
 import { CASS_URL } from './env.js';
+
+/** Random lowercase letters and digits, to keep generated names and tokens apart. */
+export const randomId = (length = 6) => randomBytes(length).toString('hex').slice(0, length);
 
 let counter = 0;
 /** A name no other test (or earlier run) uses. */
-export const unique = (prefix = 'e2e') => `${prefix} ${Date.now().toString(36)}${(counter++).toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+export const unique = (prefix = 'e2e') => `${prefix} ${Date.now().toString(36)}${(counter++).toString(36)}${randomId(4)}`;
 
 export class App {
     constructor(page) {
@@ -80,7 +84,7 @@ export class App {
      * so a later call wins and a page needs no visit to the editor's origin beforehand.
      */
     async setSavedIdentities(identities) {
-        const token = `e2e-identities-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
+        const token = `e2e-identities-${Date.now().toString(36)}-${randomId(12)}`;
         await this.page.addInitScript(({ token, identities }) => {
             if (window.top !== window || sessionStorage.getItem(token)) return;
             sessionStorage.setItem(token, '1');

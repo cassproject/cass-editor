@@ -39,13 +39,13 @@
                         <span class="text-icon">+</span> Add Badge
                     </template>
                 </button>
-                <div
+                <button type="button"
                     data-id="viewBadgeButton"
                     class="button is-text"
                     @click="viewBadge"
                     v-if="badgeExists">
                     View Badge
-                </div>
+                </button>
             </div>
         </div>
         <div class="assertions-input">
@@ -74,12 +74,12 @@
                         {{ evidenceThing.text }}
                     </a>
                     <span v-else>{{ evidenceThing.text }}</span>
-                    <div
+                    <button type="button"
                         data-id="removeEvidenceButton"
                         class="button is-text"
                         @click="handleUnevidenceAssertion(evidenceThing.original)">
                         <i class="fas fa-times" />
-                    </div>
+                    </button>
                 </li>
             </ul>
         </small>

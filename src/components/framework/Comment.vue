@@ -56,18 +56,18 @@
             <div
                 v-if="comment.commentText.length > 90"
                 class="buttons is-right">
-                <div
+                <button type="button"
                     v-if="showMore"
                     @click="showMore=false"
                     class="button is-text has-text-primary">
                     show less
-                </div>
-                <div
+                </button>
+                <button type="button"
                     v-else
                     @click="showMore=true"
                     class="button is-text has-text-primary">
                     show more
-                </div>
+                </button>
             </div>
         </li>
         <li

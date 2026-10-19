@@ -22,7 +22,9 @@
                         :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
                         v-for="(item) in directory"
                         :key="item.id"
-                        @click="click(item)">
+                        @click="click(item)"
+                        tabindex="0"
+                        @keydown.enter="click(item)">
                         <div class="cass--list-item--icon">
                             <div class="cass--list-item--icon-wrap has-background-dark">
                                 <span class="icon">
@@ -58,7 +60,9 @@
                         :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
                         v-for="(item) in framework"
                         :key="item.id"
-                        @click="click(item)">
+                        @click="click(item)"
+                        tabindex="0"
+                        @keydown.enter="click(item)">
                         <div class="cass--list-item--icon">
                             <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
                                 <span class="icon">
@@ -94,7 +98,9 @@
                         :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
                         v-for="(item) in conceptscheme"
                         :key="item.id"
-                        @click="click(item)">
+                        @click="click(item)"
+                        tabindex="0"
+                        @keydown.enter="click(item)">
                         <div class="cass--list-item--icon">
                             <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
                                 <span class="icon">
@@ -131,7 +137,9 @@
                         :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : ''"
                         v-for="(item) in competency"
                         :key="item.id"
-                        @click="competencyClick(item)">
+                        @click="competencyClick(item)"
+                        tabindex="0"
+                        @keydown.enter="competencyClick(item)">
                         <div class="cass--list-item--icon">
                             <div class="cass--list-item--icon-wrap has-background-dark has-text-white">
                                 <span class="icon">
@@ -167,7 +175,9 @@
                         @dblclick="$emit('dblclick', item)"
                         :key="item.id"
                         @click="click(item)"
-                        class="cass--list--item">
+                        class="cass--list--item"
+                        tabindex="0"
+                        @keydown.enter="click(item)">
                         <div class="cass--list-item--icon">
                             <div class="cass--list-item--icon-wrap has-background-dark">
                                 <i class="fa fa-paperclip" />

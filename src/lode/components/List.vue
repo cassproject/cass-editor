@@ -24,7 +24,9 @@
                         :class="[
                             {'source-framework': crosswalkAlignmentSource && item.id === crosswalkAlignmentSource.id},
                             rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass--list--item--selected' : '']"
-                        @click="click(item)">
+                        @click="click(item)"
+                        tabindex="0"
+                        @keydown.enter="click(item)">
                         <div class="cass--list-item--icon">
                             <div class="cass--list-item--icon-wrap has-background-dark">
                                 <span class="icon">
@@ -99,7 +101,9 @@
                         :class="rightAsideObjectId && rightAsideObjectId === item.shortId() ? 'cass-list-item--selected' : ''"
                         v-for="(item) in subResults"
                         :key="item.id"
-                        @click="subObjectClick(item)">
+                        @click="subObjectClick(item)"
+                        tabindex="0"
+                        @keydown.enter="subObjectClick(item)">
                         <div class="cass--list-item--icon">
                             <div class="cass--list-item--icon-wrap has-background-dark">
                                 <span class="icon">

@@ -11,7 +11,7 @@
 //   depends on the internet (the editor still fetches it directly; see REG-02 in FINDINGS.md).
 //   Routes a test adds itself take precedence.
 import { test as base, expect } from '@playwright/test';
-import { App, unique } from './app.js';
+import { App, randomId, unique } from './app.js';
 import { serveSchemasLocally } from './schemas.js';
 
 // Console noise that is not an editor problem.
@@ -28,7 +28,7 @@ export const IGNORED_CONSOLE = [
 ];
 
 const newAccount = (label) => {
-    const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+    const id = Date.now().toString(36) + randomId(5);
     return {
         name: `E2E ${label} ${id}`,
         email: `e2e-${label}-${id}@example.com`,

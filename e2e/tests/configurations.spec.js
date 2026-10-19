@@ -1,5 +1,6 @@
 // TEST-CASES.md §10 Configurations (CFG-01 … CFG-06).
 import { test, expect, unique, problems } from '../support/fixtures.js';
+import { randomId } from '../support/app.js';
 import {
     seedConfiguration, seedFramework, configurationIdsNamed, configRow, openConfigurations,
     browserDefaultId, configurationData, addConfigurationToSearches,
@@ -14,7 +15,7 @@ const descriptionInput = (page) => page.locator('#configuration-details input.in
 const saveConfiguration = (page) => page.getByText('save configuration', { exact: true });
 
 // Alphanumeric property names (the editor strips anything else).
-const propertyName = (prefix) => `${prefix}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
+const propertyName = (prefix) => `${prefix}${Date.now().toString(36)}${randomId(4)}`;
 const CONTEXT = 'https://schema.cassproject.org/0.4/';
 const label = (prop) => prop?.['http://www.w3.org/2000/01/rdf-schema#label']?.[0]?.['@value'];
 const range = (prop) => prop?.['http://schema.org/rangeIncludes']?.[0]?.['@id'];
