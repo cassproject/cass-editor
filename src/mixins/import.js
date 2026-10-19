@@ -530,7 +530,17 @@ export default {
             appStore.setFirstImport(true);
             this.analyzeImportFile();
         },
-        analyzeImportFile: async function() {
+        analyzeImportFile: function() {
+            this.analyzeImportFileAsync().catch((error) => this.reportFileReadError(error));
+        },
+        /** Reading a selected file failed (e.g. it was deleted or moved meanwhile): show it as an import error. */
+        reportFileReadError: function(error) {
+            appError(error);
+            const appStore = useAppStore();
+            appStore.addImportError(`Could not read the file: ${error?.message || error}`);
+            appStore.setImportTransition('process');
+        },
+        analyzeImportFileAsync: async function() {
             var me = this;
             var file = this.importFile[0];
             appLog("file is", file);
@@ -806,7 +816,10 @@ export default {
                 me.importFromFile();
             }
         },
-        analyzeCsvRelation: async function(e) {
+        analyzeCsvRelation: function(e) {
+            this.analyzeCsvRelationAsync(e).catch((error) => this.reportFileReadError(error));
+        },
+        analyzeCsvRelationAsync: async function(e) {
             appLog(e);
             var files = e.target.files || e.dataTransfer.files;
             var relationFile;
@@ -1502,7 +1515,8 @@ export default {
                 } else if (fileType === "conceptcsv" || fileType === "progressioncsv") {
                     me.importCtdlAsnConceptCsv();
                 } else if (fileType === "ctdlasnjsonld" || fileType === "ctdlasnjsonldprogression" || fileType === "ctdlasnjsonldcollection") {
-                    me.importJsonLd();
+                    // Failures are already shown as import errors by importJsonLd.
+                    me.importJsonLd().catch(appLog);
                 } else if (fileType === "asn") {
                     me.importAsn();
                 } else if (fileType === "pdf") {

@@ -13,11 +13,10 @@ export function removeEmptyCsvRows(text) {
         const c = text[i];
         if (c === '"') {
             inQuotes = !inQuotes;
-        } else if (!inQuotes && (c === '\n' || c === '\r')) {
-            const end = c === '\r' && text[i + 1] === '\n' ? i + 2 : i + 1;
-            rows.push(text.slice(start, end));
-            start = end;
-            i = end - 1;
+        } else if (!inQuotes && (c === '\n' || c === '\r' && text[i + 1] !== '\n')) {
+            // A row ends at \n, \r\n (at its \n) or a lone \r.
+            rows.push(text.slice(start, i + 1));
+            start = i + 1;
         }
     }
     if (start < text.length) rows.push(text.slice(start));
@@ -27,7 +26,7 @@ export function removeEmptyCsvRows(text) {
     if (!rows.some(isEmpty)) return text;
     const kept = rows.filter((row) => !isEmpty(row));
     // The file now ends with the last row of data, without a line break after it.
-    if (kept.length > 0) kept[kept.length - 1] = kept[kept.length - 1].replace(/(\r\n|\r|\n)$/, '');
+    if (kept.length > 0) kept[kept.length - 1] = kept.at(-1).replace(/(\r\n|\r|\n)$/, '');
     return kept.join('');
 }
 

@@ -10,6 +10,10 @@ describe('removeEmptyCsvRows', () => {
         expect(removeEmptyCsvRows('a,b\r\n1,2\r\n,\r\n\r\n')).toBe('a,b\r\n1,2');
     });
 
+    it('handles lone \\r line breaks', () => {
+        expect(removeEmptyCsvRows('a,b\r\r1,2\r')).toBe('a,b\r1,2');
+    });
+
     it('drops empty rows in the middle', () => {
         expect(removeEmptyCsvRows('a,b\n\n1,2\n, ,\n3,4')).toBe('a,b\n1,2\n3,4');
     });
