@@ -294,16 +294,33 @@ export const useEditorStore = defineStore('editor', {
                 url = EcRemote.upgradeHttpToHttps(url);
                 fetch(url, {
                     headers: payload.headers
-                }).then((resp) => {
-                    if (payload.success) {
-                        payload.success(resp.data);
+                }).then(async(resp) => {
+                    if (!resp.ok) {
+                        throw new Error("HTTP " + resp.status + " from " + url);
                     }
-                    resolve(resp.data);
+                    // As axios did: parsed JSON for JSON responses, text otherwise (RDF, HTML...).
+                    const text = await resp.text();
+                    let data = text;
+                    if ((resp.headers.get("content-type") || "").includes("json")) {
+                        try {
+                            data = JSON.parse(text);
+                        } catch (e) {
+                            data = text;
+                        }
+                    }
+                    if (payload.success) {
+                        payload.success(data);
+                    }
+                    resolve(data);
                 }).catch((err) => {
+                    // Callers that pass a failure callback ignore the promise, so only reject
+                    // when nobody else handles the error (otherwise it is an unhandled rejection).
                     if (payload.failure) {
                         payload.failure(err);
+                        resolve(null);
+                    } else {
+                        reject(err);
                     }
-                    reject(err);
                 });
             });
         },

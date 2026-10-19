@@ -1,0 +1,41 @@
+# Backend for the editor's end-to-end tests: Elasticsearch and a CaSS server.
+#
+#   docker compose -f e2e/docker-compose.yml up -d --wait
+#
+# CASS_IMAGE picks the CaSS build (default: the latest 1.7 release); E2E_CASS_PORT and
+# E2E_ES_PORT move the host ports if they are taken.
+name: cass-editor-e2e
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:9.5.3
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    ports:
+      - "${E2E_ES_PORT:-19200}:9200"
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fs http://localhost:9200/_cluster/health?wait_for_status=yellow || exit 1"]
+      interval: 5s
+      timeout: 10s
+      retries: 60
+  cass:
+    image: ${CASS_IMAGE:-cassproject/cass:node-1.7-alpine}
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    environment:
+      - ELASTICSEARCH_ENDPOINT=http://elasticsearch:9200
+      - PORT=80
+      - CASS_LOOPBACK=http://localhost/api/
+      - DISABLED_EDITOR=true
+    ports:
+      - "${E2E_CASS_PORT:-18080}:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost/api/ping | grep -q pong || exit 1"]
+      interval: 5s
+      timeout: 10s
+      retries: 60

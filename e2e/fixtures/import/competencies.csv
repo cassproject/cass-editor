@@ -1,0 +1,4 @@
+Skill,Summary,Code
+{{prefix}} Listening,Hears what others say,{{code}}-listening
+{{prefix}} Speaking,Says things clearly,{{code}}-speaking
+{{prefix}} Writing,Writes things down,{{code}}-writing

@@ -44,7 +44,7 @@
                 <a
                     v-if="frameworkEnabled"
                     href="#"
-                    @click="$emit('framework')"
+                    @click.prevent="$emit('framework')"
                     class="dropdown-item">
                     Framework
                 </a>
@@ -86,7 +86,7 @@
                 </a>
                 <a
                     v-if="resourceEnabled"
-                    @click="$emit('resource')"
+                    @click.prevent="$emit('resource')"
                     href="#"
                     class="dropdown-item">
                     Resource

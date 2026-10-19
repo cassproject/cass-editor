@@ -27,15 +27,16 @@ Priorities: **P0** = must pass before release, **P1** = core functionality,
 2. Click "create account". Fill name, email, username, password, retype.
 3. Click "create".
 - **Expected:** Account is created, the user is logged in automatically, and the
-  app redirects to `#/frameworks`. Avatar chip in the sidebar shows the user's
-  initials.
+  app redirects to `#/frameworks`. Avatar chip in the sidebar shows the first
+  two characters of the user's email.
 
 ### AUTH-02 — Login / logout (P0)
 1. From `#/legacyLogin`, enter valid credentials, click "login".
 2. Verify redirect to `#/frameworks` and avatar chip.
 3. Log out via the avatar menu.
-- **Expected:** Login succeeds; after logout the "login" button reappears and
-  owned-only UI (new/edit buttons) disappears. The logout-success modal renders.
+- **Expected:** Login succeeds; after logout the "login" button reappears, the
+  avatar chip disappears, and the logout-success modal renders. "New" stays
+  available: logged-out users can create frameworks owned by nobody.
 
 ### AUTH-03 — Login with bad credentials (P1)
 1. Enter a valid username with a wrong password.
@@ -49,10 +50,13 @@ Priorities: **P0** = must pass before release, **P1** = core functionality,
   match", "That username is unavailable"); no account created.
 
 ### AUTH-05 — Anonymous (not logged in) restrictions (P1)
-1. Without logging in, browse `#/frameworks` and open a framework.
-- **Expected:** Frameworks render read-only: no "new" button, no edit pencil,
-  no add/copy/cut/paste toolbar. Import is allowed but warns that imported
-  content will not be editable.
+1. Without logging in, browse `#/frameworks` and open a framework someone owns.
+2. Still logged out, create a new framework; then log in as any user and open it.
+- **Expected:** Owned frameworks render read-only: no edit pencil, no
+  add/copy/cut/paste toolbar. "New" is available: a framework created while
+  logged out is owned by nobody, appears for everybody, and is editable by
+  everybody. Import is allowed but warns that imported content will not be
+  editable.
 
 ---
 
@@ -172,16 +176,18 @@ Priorities: **P0** = must pass before release, **P1** = core functionality,
 - **Expected:** The competency becomes top-level. No raw JSON is rendered in
   the drop zone. *(Regression: `#header` slot drop-target restoration.)*
 
-### DND-04 — Move via arrows (P2)
-1. Use the up/down/left/right move affordances on a competency.
-- **Expected:** Same structural results as dragging; blocked moves (e.g. move
-  left at top level) are disabled and do nothing.
+### DND-04 — Move via arrow keys (P2)
+1. Select a single competency and press Shift+Arrow Up / Down / Right / Left.
+- **Expected:** Same structural results as dragging (up/down reorder, right
+  nests under the previous sibling, left un-nests); blocked moves (e.g.
+  Shift+Left at top level) do nothing.
 
 ### DND-05 — Copy / cut / paste (P1)
 1. Select a competency, use the copy button, select another node, paste.
 2. Repeat with cut.
 3. Clear the clipboard with the clear button.
-- **Expected:** Copy duplicates (link or copy per prompt), cut moves, buttons
+- **Expected:** Copy then paste links the competency under the selected node
+  (adds a relation; no duplicate competency is created); cut moves; buttons
   enable/disable correctly (they are native buttons; disabled state follows
   clipboard/selection state).
 
@@ -212,13 +218,15 @@ Priorities: **P0** = must pass before release, **P1** = core functionality,
 1. "File Import" → drag a CSV of competencies onto the drop zone (or browse).
 2. Map the name/description/ID columns when prompted; import.
 - **Expected:** Column-mapping UI appears; preview renders; framework saves.
-  A malformed CSV produces a readable error via the ImportError modal, not a
-  silent failure.
+  A malformed CSV produces a readable error listed on the import page (e.g.
+  "1 error(s) found: Row 3: is missing an @id"), not a silent failure.
 
-### IMP-05 — Import CTDL-ASN / ASN / CASE JSON file (P1)
-1. "File Import" with a `.json` CTDL-ASN graph export.
+### IMP-05 — Import CTDL-ASN / ASN JSON file (P1)
+1. "File Import" with a `.json` CTDL-ASN graph export, then with an ASN export.
+2. "File Import" with a CASE JSON file.
 - **Expected:** Detected format is shown; import completes; hierarchy matches
-  the source.
+  the source. CASE frameworks import from a CASE server (Remote Server, IMP-07),
+  not from a file: a CASE JSON file is rejected with a clear message.
 
 ### IMP-06 — Paste Text import (P2)
 1. "Paste Text" → paste a competency list / tabbed hierarchy → adjust as
@@ -257,13 +265,13 @@ Priorities: **P0** = must pass before release, **P1** = core functionality,
 ### XW-01 — Full alignment flow (P0)
 1. `#/crosswalk` → step A: select a source framework (note "Owned By Me" filter
    defaults on) → step B: select a target framework.
-2. In the double hierarchy, click the source competency's "create" button.
+2. In the double hierarchy, click the source competency's "add" button (shown on hover).
 3. Choose a relation type (e.g. "is enabled by").
 4. Click "+" on one or more target competencies.
 5. Click "apply alignments", then save & review.
 - **Expected:** Source shows the relation tag; chosen targets show ✓; "+"
   buttons appear on all other targets; alignments save and appear in review.
-  *(Regression: the source "create" button was an unclickable pseudo-button.)*
+  *(Regression: the source "add" button was an unclickable pseudo-button.)*
 
 ### XW-02 — Step transitions (P1)
 1. Move through steps A → B → align, and back via "change source/target".
@@ -295,7 +303,9 @@ Priorities: **P0** = must pass before release, **P1** = core functionality,
 - **Expected:** Scheme renders; version-trimmed route param tolerated.
 
 ### PROG-01 — Progression model create/edit (P1)
-1. `#/progressionLevels` → create a progression model, add levels, reorder.
+1. `#/progressionLevels?ceasnDataFields=true` → create a progression model,
+   add levels, reorder. (Progression models are only offered with
+   `ceasnDataFields=true`.)
 - **Expected:** Same editing semantics; drop-to-top-level works on the title
   header (DND-03 regression applies here too).
 
@@ -311,8 +321,8 @@ Priorities: **P0** = must pass before release, **P1** = core functionality,
 
 ### DIR-02 — Add framework and resource to a directory (P1)
 1. Inside a directory: create a framework; add a resource (name + URL).
-- **Expected:** Resource URL validation ("must start with http:// or
-  https://"); items appear in the directory listing.
+- **Expected:** Resource URL validation (must be a valid URL; any scheme is
+  accepted); items appear in the directory listing.
 
 ### DIR-03 — Owned-by-me filter in directory (P1)
 1. Toggle the "owned by me" switch in a directory view.
@@ -358,9 +368,9 @@ Priorities: **P0** = must pass before release, **P1** = core functionality,
   set.
 
 ### CFG-06 — Delete configuration / permission guard (P2)
-1. Delete an owned config; attempt to edit a config owned by someone else.
-- **Expected:** Delete confirm modal works; non-permitted edit shows the
-  ConfigurationNotPermitted modal.
+1. Delete an owned config; open a config owned by someone else.
+- **Expected:** Delete confirm modal works; a config owned by someone else only
+  offers a read-only view (eye button), with no edit or delete.
 
 ---
 
@@ -405,9 +415,12 @@ Priorities: **P0** = must pass before release, **P1** = core functionality,
   the framework (read-only for reader, editable for owner).
 
 ### SHARE-02 — Remove owner guard (P1)
-1. As the sole owner, try to remove yourself as owner.
-- **Expected:** The remove button for the current sole owner is disabled;
-  removing other owners/readers works.
+1. As the sole owner of a private framework, try to remove yourself as owner.
+2. As the sole owner of a public framework, remove yourself.
+- **Expected:** On a private framework (or one with readers) the sole owner's
+  remove button is disabled. On a public framework the sole owner may remove
+  themselves, leaving it owned by nobody (and editable by everybody).
+  Removing other owners/readers works.
 
 ### SHARE-03 — Make public / make private (P1)
 1. In Share, toggle public → confirm modal ("make public"); then back to
@@ -420,9 +433,10 @@ Priorities: **P0** = must pass before release, **P1** = core functionality,
 ## 13. Users & groups
 
 ### GRP-01 — Create group (P1)
-1. `#/users` (Groups in sidebar) → "create new user group" (requires login) →
+1. `#/users` (Groups in sidebar) → "create new group" (requires login) →
    name it → save.
-- **Expected:** Create button disabled when logged out; group saves and lists.
+- **Expected:** Logged-out visitors to `#/users` are redirected to the Welcome
+  page (and see no Groups link); group saves and lists.
 
 ### GRP-02 — Edit group: name length, membership, save/cancel (P1)
 1. Rename a group beyond 60 chars; add/remove members; save; cancel changes.
@@ -474,7 +488,8 @@ Priorities: **P0** = must pass before release, **P1** = core functionality,
 
 ### URL-05 — `highlightCompetency` / `frameworkId` deep links (P2)
 1. Open `#/framework/<id>?highlightCompetency=<competencyId>`.
-- **Expected:** The target competency is scrolled to and highlighted.
+- **Expected:** The target competency is highlighted (the view does not scroll
+  to it).
 
 ### URL-06 — Unknown route (P2)
 1. Navigate to `#/no-such-page`.

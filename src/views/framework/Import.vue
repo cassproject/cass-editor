@@ -38,7 +38,7 @@
                             </router-link>
                         </li>
                         <li>
-                            <a href="#">Import</a>
+                            <a aria-current="page">Import</a>
                         </li>
                     </ul>
                 </div>
@@ -71,7 +71,7 @@
                                         Import a Progression Model
                                     </span>
                                     <span v-if="!conceptMode && !progressionMode">Import a framework</span>
-                                    <span
+                                    <button type="button"
 
                                         @click="showRightAside"
                                         class="button is-outlined is-primary is-pulled-right">
@@ -80,7 +80,7 @@
                                         </span>
                                         <button>
                                             info
-                                        </button></span>
+                                        </button></button>
                                 </h1>
                             </template>
                             <!-- import from file gets three parts, details, preview, and light view -->
@@ -263,7 +263,7 @@
                                     <span v-if="!conceptMode && !progressionMode">
                                         Import a framework
                                     </span>
-                                    <span
+                                    <button type="button"
                                         @click="showRightAside"
                                         class="button is-outlined is-primary is-pulled-right">
                                         <span class="icon">
@@ -272,7 +272,7 @@
                                         <span>
                                             info
                                         </span>
-                                    </span>
+                                    </button>
                                 </h1>
                             </template>
                             <template #import-framework>
@@ -445,7 +445,7 @@
                                         Import a Progression Model
                                     </span>
                                     <span v-if="!conceptMode && !progressionMode">Import a framework</span>
-                                    <span
+                                    <button type="button"
                                         @click="showRightAside"
                                         class="button is-outlined is-primary is-pulled-right">
                                         <span class="icon">
@@ -454,7 +454,7 @@
                                         <span>
                                             info
                                         </span>
-                                    </span>
+                                    </button>
                                 </h1>
                             </template>
                             <template #import-framework>
@@ -629,7 +629,7 @@
                                     <span v-if="!conceptMode && !progressionMode">
                                         Import a framework
                                     </span>
-                                    <span
+                                    <button type="button"
                                         @click="showRightAside"
                                         class="button is-outlined is-primary is-pulled-right">
                                         <span class="icon">
@@ -638,7 +638,7 @@
                                         <span>
                                             info
                                         </span>
-                                    </span>
+                                    </button>
                                 </h1>
                             </template>
                             <template #import-framework>

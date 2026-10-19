@@ -163,6 +163,9 @@ export default {
         },
         isFirstSearchProcessing: function() {
             return this.firstSearchProcessing;
+        },
+        cassSchemaContext: function() {
+            return useLodeStore().rawSchemata["https://schema.cassproject.org/0.4"]?.["@context"];
         }
     },
     mounted: function() {
@@ -202,6 +205,11 @@ export default {
         this.showQuickFilterHeading = showFilters;
     },
     watch: {
+        cassSchemaContext: function(context) {
+            if (context != null && !this.conceptMode && !this.progressionMode) {
+                this.setSearchTermsFromRawSchemata();
+            }
+        },
         applySearchTo: {
             handler() {
                 useAppStore().setApplySearchTo(this.applySearchTo);
@@ -284,7 +292,10 @@ export default {
         },
         setSearchTermsFromRawSchemata: function() {
             // Used to figure out prefixes to use when searching from the full property URL in the configuration
-            let context = useLodeStore().rawSchemata["https://schema.cassproject.org/0.4"]["@context"];
+            // The schema loads with the first rendered item; until then there is nothing to set up
+            // (the cassSchemaContext watcher calls this again once it arrives).
+            let context = this.cassSchemaContext;
+            if (context == null) return;
             let keys = EcObject.keys(context);
             for (let key of keys) {
                 if (EcObject.isObject(context[key])) {

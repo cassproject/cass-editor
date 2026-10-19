@@ -11,7 +11,10 @@
     "test:unit": "vitest run",
     "lint": "eslint --ext .js,.vue src",
     "docs:dev": "vitepress dev docs",
-    "docs:build": "vitepress build docs"
+    "docs:build": "vitepress build docs",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:report": "playwright show-report e2e/report"
   },
   "dependencies": {
     "bulma": "^0.9.4",
@@ -33,6 +36,7 @@
   },
   "devDependencies": {
     "@pinia/testing": "^1.0.3",
+    "@playwright/test": "^1.64.1",
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/test-utils": "^2.4.11",
     "eslint": "^8.57.1",

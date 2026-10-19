@@ -39,13 +39,13 @@
                         <span class="text-icon">+</span> Add Badge
                     </template>
                 </button>
-                <div
+                <button type="button"
                     data-id="viewBadgeButton"
                     class="button is-text"
                     @click="viewBadge"
                     v-if="badgeExists">
                     View Badge
-                </div>
+                </button>
             </div>
         </div>
         <div class="assertions-input">
@@ -74,12 +74,12 @@
                         {{ evidenceThing.text }}
                     </a>
                     <span v-else>{{ evidenceThing.text }}</span>
-                    <div
+                    <button type="button"
                         data-id="removeEvidenceButton"
                         class="button is-text"
                         @click="handleUnevidenceAssertion(evidenceThing.original)">
                         <i class="fas fa-times" />
-                    </div>
+                    </button>
                 </li>
             </ul>
         </small>
@@ -145,9 +145,6 @@ export default {
         subject: function() {
             return useEditorStore().getSubject;
         },
-        otherClaimsPhrase: function() {
-            return "Others have made claims about " + (this.subject === this.me ? "you" : this.subjectPerson === null ? "them" : this.subjectPerson) + ". Click to expand.";
-        },
         reasonPlaceholder: function() {
             if (this.me === this.subject) {
                 return 'do this because I...';
@@ -182,9 +179,6 @@ export default {
             } else {
                 return 'far fa-square';
             }
-        },
-        subjectPerson: function() {
-            return useEditorStore().getSubjectName;
         }
     },
     methods: {
@@ -428,20 +422,22 @@ export default {
                                     assertion.getAgentAsync((agent) => {
                                         if (this.me === agent.toPem()) {
                                             if (assertion.negative == null) {
-                                                assertion.removeReader(useEditorStore().badgePk);
-                                                EcRepository.save(assertion, () => {
-                                                    this.badgeLink = null;
-                                                    this.badge = false;
-                                                    callback();
+                                                assertion.removeReader(useEditorStore().badgePk).then(() => {
+                                                    EcRepository.save(assertion, () => {
+                                                        this.badgeLink = null;
+                                                        this.badge = false;
+                                                        callback();
+                                                    }, callback);
                                                 }, callback);
                                             } else {
                                                 assertion.getNegativeAsync((negative) => {
                                                     if (!negative) {
-                                                        assertion.removeReader(useEditorStore().badgePk);
-                                                        EcRepository.save(assertion, () => {
-                                                            this.badgeLink = null;
-                                                            this.badge = false;
-                                                            callback();
+                                                        assertion.removeReader(useEditorStore().badgePk).then(() => {
+                                                            EcRepository.save(assertion, () => {
+                                                                this.badgeLink = null;
+                                                                this.badge = false;
+                                                                callback();
+                                                            }, callback);
                                                         }, callback);
                                                     } else {
                                                         callback();

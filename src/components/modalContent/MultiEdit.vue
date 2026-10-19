@@ -65,7 +65,7 @@
                 </button>
             </div>
             <template v-if="isSearching">
-                <div
+                <button type="button"
                     @click="addSelected"
                     title="Add Competency as Property"
                     class="button is-outlined is-primary">
@@ -73,7 +73,7 @@
                         <i class="fa fa-check" />
                     </span>
                     <span>Add Selected</span>
-                </div>
+                </button>
             </template>
         </template>
     </modal-template>
@@ -206,7 +206,7 @@ export default {
             if (!expandedCompetency[property]) {
                 return;
             }
-            var lang = (value && value["@language"] != null) ? value["@language"].toLowerCase() : null;
+            var lang = value && value["@language"] != null ? value["@language"].toLowerCase() : null;
             if (lang == null) {
                 // Non-language value: clear the property so the new value replaces it.
                 delete expandedCompetency[property];
