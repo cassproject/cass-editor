@@ -282,6 +282,7 @@ async function checkFrameworkCtidCollisions(repo, competencyIds, frameworkArray,
 import {useAppStore} from '@/stores/app';
 import {useEditorStore} from '@/stores/editor';
 import {nextTick} from 'vue';
+import {withoutEmptyCsvRows} from '@/utils/csv.js';
 
 export default {
     data() {
@@ -530,11 +531,25 @@ export default {
             this.analyzeImportFile();
         },
         analyzeImportFile: function() {
+            this.analyzeImportFileAsync().catch((error) => this.reportFileReadError(error));
+        },
+        /** Reading a selected file failed (e.g. it was deleted or moved meanwhile): show it as an import error. */
+        reportFileReadError: function(error) {
+            appError(error);
+            const appStore = useAppStore();
+            appStore.addImportError(`Could not read the file: ${error?.message || error}`);
+            appStore.setImportTransition('process');
+        },
+        analyzeImportFileAsync: async function() {
             var me = this;
             var file = this.importFile[0];
             appLog("file is", file);
             var feedback;
             if (file.name.endsWith(".csv")) {
+                // Empty rows (e.g. a line break at the end of the file) are not data; the importers
+                // would report them as rows missing required fields.
+                file = await withoutEmptyCsvRows(file);
+                this.importFile.splice(0, 1, file);
                 if (this.conceptMode || this.progressionMode) {
                     CTDLASNCSVConceptImport.analyzeFile(file, function(frameworkCount, competencyCount, progressionCount) {
                         var appStore = useAppStore();
@@ -802,13 +817,16 @@ export default {
             }
         },
         analyzeCsvRelation: function(e) {
+            this.analyzeCsvRelationAsync(e).catch((error) => this.reportFileReadError(error));
+        },
+        analyzeCsvRelationAsync: async function(e) {
             appLog(e);
             var files = e.target.files || e.dataTransfer.files;
             var relationFile;
             if (!files.length) {
                 relationFile = null;
             } else {
-                relationFile = files[0];
+                relationFile = await withoutEmptyCsvRows(files[0]);
             }
             useAppStore().setCsvRelationFile(relationFile);
             let me = this;
@@ -1497,7 +1515,8 @@ export default {
                 } else if (fileType === "conceptcsv" || fileType === "progressioncsv") {
                     me.importCtdlAsnConceptCsv();
                 } else if (fileType === "ctdlasnjsonld" || fileType === "ctdlasnjsonldprogression" || fileType === "ctdlasnjsonldcollection") {
-                    me.importJsonLd();
+                    // Failures are already shown as import errors by importJsonLd.
+                    me.importJsonLd().catch(appLog);
                 } else if (fileType === "asn") {
                     me.importAsn();
                 } else if (fileType === "pdf") {

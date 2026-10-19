@@ -256,7 +256,7 @@ test.describe('IMP-04 import CSV @P1', () => {
     });
 
     test('IMP-04 a malformed CSV produces a readable error @P1', async ({ app, page, account }, testInfo) => {
-        // Without a trailing newline: that would add errors for an empty last row (known bug, see the IMP-05 trailing-newline test).
+        // Without a trailing newline (the IMP-05 trailing-newline test covers that case).
         const file = writeFixture(testInfo, 'broken.csv', fromTemplate('ctdlasn-malformed.csv', { fw: newUuid(), c1: newUuid(), name: unique('Broken CSV') }).trimEnd());
         await openImport(app, page, account, 'File Import');
         await uploadFile(page, file);
@@ -279,7 +279,7 @@ test.describe('IMP-05 import CTDL-ASN / ASN / CASE files @P1', () => {
         const prefix = unique('Row');
         const ids = { fw: newUuid(), c1: newUuid(), c2: newUuid(), c3: newUuid() };
         const url = (key) => `https://example.org/ce-${ids[key]}`;
-        // Written without a trailing newline: see the known-bug test 'IMP-05 a CTDL-ASN CSV ending with a newline imports'.
+        // Written without a trailing newline: 'IMP-05 a CTDL-ASN CSV ending with a newline imports' covers that case.
         const file = writeFixture(testInfo, 'ctdlasn.csv', fromTemplate('ctdlasn.csv', { ...ids, name, prefix }).trimEnd());
         await openImport(app, page, account, 'File Import');
         await uploadFile(page, file);
@@ -299,8 +299,9 @@ test.describe('IMP-05 import CTDL-ASN / ASN / CASE files @P1', () => {
         expect(textOf((await app.fetchObject(url('c2'))).name)).toBe(`${prefix} Child`);
     });
 
-    test('IMP-05 a CTDL-ASN CSV ending with a newline imports (known bug: the empty last line is reported as a row without @id/@type) @P1', async ({ app, page, account }, testInfo) => {
-        test.fail(true, 'cassproject CTDLASNCSVImport parses without skipEmptyLines, so the empty line after the last row fails the import; see e2e/FINDINGS.md');
+    test('IMP-05 a CTDL-ASN CSV ending with a newline imports @P1', async ({ app, page, account }, testInfo) => {
+        // cassproject's CTDLASNCSVImport reports the empty last line as a row without @id/@type
+        // (cass-npm#542); the editor removes empty rows before importing (#1428).
         const name = unique('CTDL-ASN CSV newline');
         const ids = { fw: newUuid(), c1: newUuid(), c2: newUuid(), c3: newUuid() };
         // As spreadsheet tools write them: the last row ends with a newline.
