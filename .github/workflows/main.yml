@@ -5,8 +5,9 @@ on:
     branches:
       - master
 
+# Read-only by default (the called E2E workflow inherits this); only the publish job writes.
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: gh-pages-master
@@ -19,6 +20,8 @@ jobs:
   # Published only when the end-to-end suite passes: CaSS releases ship this build.
   deploy:
     needs: [e2e]
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4

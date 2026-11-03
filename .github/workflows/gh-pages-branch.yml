@@ -7,8 +7,9 @@ on:
       - 'gh-pages-*'
   workflow_dispatch:
 
+# Read-only by default (the called E2E workflow inherits this); only the publish job writes.
 permissions:
-  contents: write
+  contents: read
 
 # One publish per branch at a time; a newer push supersedes an in-flight build.
 concurrency:
@@ -22,6 +23,8 @@ jobs:
   # Published only when the end-to-end suite passes: CaSS releases ship these branch builds.
   build-and-publish:
     needs: [e2e]
+    permissions:
+      contents: write
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
