@@ -1,0 +1,121 @@
+{
+    "@context": {
+	"asn":"http://purl.org/ASN/schema/core/",
+	"cc":"http://creativecommons.org/ns#",
+	"dc":"http://purl.org/dc/elements/1.1/",
+	"dcterms":"http://purl.org/dc/terms/",
+	"foaf":"http://xmlns.com/foaf/0.1/",
+	"gemq":"http://purl.org/gem/qualifiers/",
+	"loc":"http://www.loc.gov/loc.terms/relators/",
+	"owl":"http://www.w3.org/20.3/07/owl#",
+	"rdf":"http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+	"rdfs":"http://www.w3.org/2000/01/rdf-schema#",
+	"skos":"http://www.w3.org/2004/02/skos/core#",
+        "cass": "http://schema.cassproject.org/0.3/",
+        "ebac": "http://schema.cassproject.org/kbac/0.2/",
+        "general": "http://schema.eduworks.com/general/0.3/",
+        "schema": "http://schema.org/",
+        "EncryptedValue": {
+            "@id": "ebac:EncryptedValue"
+        },
+        "Framework": {
+            "@id": "asn:StandardDocument"
+        },
+        "Competency": {
+            "@id": "asn:Statement"
+        },
+        "@owner": {
+            "@id": "ebac:@owner",
+            "@type": "https://purl.org/signature#publicKeyPem"
+        },
+        "@reader": {
+            "@id": "ebac:@reader",
+            "@type": "https://purl.org/signature#publicKeyPem"
+        },
+        "@signature": {
+            "@id": "ebac:@signature"
+        },
+        "privateEncrypted": {
+            "@id": "ebac:privateEncrypted"
+        },
+        "name": {
+            "@id": "dc:title"
+        },
+        "title": {
+            "@id": "schema:title"
+        },
+        "description": {
+            "@id": "dcterms:description"
+        },
+        "validFrom": {
+            "@id": "schema:validFrom"
+        },
+        "validThrough": {
+            "@id": "schema:validThrough"
+        },
+	"gemq:isChildOf": {
+	    "@id": "gemq:isChildOf",
+	    "@type": "@id"
+	},
+	"gemq:hasChild": {
+	    "@id": "gemq:hasChild",
+	    "@type": "@id"
+	},
+	"asn:narrowsAlignment": {
+	    "@id": "asn:narrowsAlignment",
+	    "@type": "@id"
+	},
+	"asn:prerequisiteAlignment":{
+	    "@id": "asn:prerequisiteAlignment",
+	    "@type": "@id"
+	},
+	"skos:relatedMatch": {
+	    "@id": "skos:relatedMatch",
+	    "@type": "@id"
+	},
+        "url": {
+            "@id": "skos:exactMatch",
+            "@type": "@id"
+        },
+        "sameAs": {
+            "@id": "skos:exactMatch",
+            "@type": "@id"
+        },
+        "source": {
+            "@id": "cass:source",
+            "@type": "cass:Competency"
+        },
+        "target": {
+            "@id": "cass:target",
+            "@type": "cass:Competency"
+        },
+        "competency": {
+            "@id": "gemq:hasChild",
+            "@type": "@id"
+        },
+        "framework": {
+            "@id": "cass:framework",
+            "@type": "@id"
+        },
+        "level": {
+            "@id": "cass:level",
+            "@type": "@id"
+        },
+        "relation": {
+            "@id": "cass:relation",
+            "@type": "@id"
+        },
+        "rollupRule": {
+            "@id": "cass:rollupRule",
+            "@type": "@id"
+        },
+        "confidence": {
+            "@id": "cass:confidence",
+	    "@type": "schema:Float"
+        },
+        "evidence": {
+            "@id": "cass:evidence",
+            "@type": "schema:Thing"
+        }
+    }
+}
