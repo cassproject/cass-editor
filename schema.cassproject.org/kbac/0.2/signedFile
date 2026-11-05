@@ -1,0 +1,7 @@
+{
+	"@type":[
+		"http://schema.cassproject.org/kbac/0.2/signedFile",
+		"http://schema.eduworks.com/general/0.2/file",
+		"http://schema.cassproject.org/kbac/0.2/signed"
+	]
+}
