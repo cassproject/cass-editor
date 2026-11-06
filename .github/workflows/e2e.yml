@@ -2,16 +2,23 @@ name: End-to-end tests
 
 on:
   pull_request:
-  push:
-    branches: [ master, '1.*' ]
   workflow_dispatch:
     inputs:
       cass_image:
         description: CaSS image to test against
         default: cassproject/cass:node-1.7-alpine
+  # Pushes are tested by the GitHub Pages workflows (main.yml, gh-pages-branch.yml), which call this
+  # workflow and publish only when it passes.
+  workflow_call:
+    inputs:
+      cass_image:
+        description: CaSS image to test against
+        type: string
+        default: cassproject/cass:node-1.7-alpine
 
 concurrency:
-  group: e2e-${{ github.ref }}
+  # github.workflow is the caller's name when called, so this never collides with the caller's group.
+  group: e2e-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 permissions:
