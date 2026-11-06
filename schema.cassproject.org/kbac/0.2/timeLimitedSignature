@@ -1,0 +1,23 @@
+{
+	"@context":{
+		"xsd":"http://www.w3.org/2001/XMLSchema#",
+		"rsa":"https://openssl.org/docs/manmaster/apps/rsa.html#",
+		"base64":"https://tools.ietf.org/html/rfc4648#",
+		"expiry":{
+			"@id":"http://schema.cassproject.org/kbac/0.2/signatureExpiration",
+			"@type":"xsd:long"
+		},
+		"@owner":{
+			"@id":"http://schema.cassproject.org/kbac/0.2/owner",
+			"@type":"rsa:pemPublicKey"
+		},
+		"@signature":{
+			"@id":"http://schema.cassproject.org/kbac/0.2/signature",
+			"@type":"base64:base64"
+		}
+	},
+	"@type":"http://schema.cassproject.org/kbac/0.2/timeLimitedSignature",
+	"@signature":"SHA1 with RSA encrypted signature of the alphabetical JSON encoding of @owner and expiry, Base64 encoded.",
+	"@owner":"RSA Public Key used to verify the signature.",
+	"expiry":"Long-encoded millisecond based UNIX timestamp, see https://en.wikipedia.org/wiki/System_time"
+}

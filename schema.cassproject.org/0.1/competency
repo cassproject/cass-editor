@@ -1,0 +1,68 @@
+{
+	"@context":{
+		"@vocab":"http://schema.org/",
+		"xsd":"http://www.w3.org/2001/XMLSchema#",
+		"type":{
+			"@id":"http://schema.eduworks.com/cass/0.1/competencyType",
+			"@type":"xsd:string"
+		},
+		"level":{
+			"@id":"http://schema.eduworks.com/cass/0.1/competencyLevel",
+			"@type":"xsd:string"
+		},
+		"relatedCompetency":{
+			"@id":"http://schema.eduworks.com/cass/0.1/competencyRelatedCompetency",
+			"@type":"http://json.org/array",
+			"@contains":[
+				"http://schema.org/Action",
+				"http://schema.eduworks.com/cass/0.1/evidence"
+			]
+		}
+	},
+	"@type":[
+		"http://schema.org/CreativeWork",
+		"http://schema.eduworks.com/cass/0.1/competency"
+	],
+	"type":"Suggested values: skill, knowledge, ability, attitude",
+	"level":"Level at which competency can be held (e.g. 'novice,' 'journeyman,' 'master.') Could also be a discrete numeric or continuous numeric scale (e.g. between 0 and 1)",
+	"relatedCompetency":[
+		{
+			"@type":"http://schema.org/Action",
+			"actionStatus":"Indicates the current disposition of the Action.",
+			"agent":"Agent responsible for defining the relationship (if identified).",
+			"endTime":"May be used to indicate that the relationship is time limited",
+			"error":"For failed actions, more information on the cause of the failure. Generally N/A",
+			"instrument":"May be used  to reference materials that influenced the decision to define the relationship",
+			"location":"May be used to indicate the location of the agent when defining the relationship, but generally N/A",
+			"object":"If Competency A relates to Competency B, then the object is Competency B, or more precisely, the properties the Thing that is competency B. Note that the Thing portion of the Competency datatype is where the competency is uniquely identified and the relatedCompetency property is in Competency A.",
+			"participant":"Other co-agents that participated in defining the relationship indirectly.",
+			"result":"The relationship defined. The name of the relationship (e.g. 'enables' or is 'equivalent' to or 'broadens') should go into the name in Thing. However, and this is an advantage, additional information about the relationship itself can be specified using the Thing construct.",
+			"startTime":"Suggest using this as the timestamp for when the relationship was defined."			
+		},
+		{
+			"@type":"http://schema.eduworks.com/cass/0.1/evidence"
+		}
+	],
+	"author":"Individual source of the competency",
+	"accountablePerson":"Person legally responsible for the competency (not likely to be used much)",
+	"contributor":"Secondary contributor to the competency",
+	"copyrightHolder":"The party holding legal copyright",
+	"copyrightYear":"The year during which the claimed copyright was first asserted",
+	"dateCreated":"Date the competency was created",
+	"dateModified":"Date most recently modified",
+	"datePublished":"Date of first publication",
+	"inLanguage":"Language in which the competency is written using codes from IETF BCP 47",
+	"isPartOf":"Use this to specify a competency model.",
+	"license":"Use if there are restrictive terms concerning the use of this competency",
+	"publisher":"Publisher of the competency",
+	"sourceOrganization":"The Organization on whose behalf the creator was working",
+	"text":"The text of the competency (i.e. the actual competency itself)",
+	"translator":"The organization responsible for translating the competency",
+	"version":"Version of the competency",
+	"alternateName":"Use this field for an ID such as the Army Task Number (081-833-0210)",
+	"description":"Description of the competency, (e.g. Understanding the implications of new information for both current and future problem-solving and decision-making.) This may be used equivalently to the text of the competency, but if the competency is structured this should be used for the general description and _text_ should be used for the full description.",
+	"name":"Name of the competency, e.g. Active Learning",
+	"potentialAction":"Use this field to describe actions such as web services, APIs, etc. that can be used to interact with the competency and related information (e.g. sub-competencies) Example: https://services.onetcenter.org/ws/",
+	"sameAs":"Use this to designate a persistent URL that uniquely identifies the competency, e.g. http://www.eduworks.com/competencies/model-d4c50cc3-3c6c-4326-9ff1-fd8d7a6ac5ef#19310aa3-6e8c-4c46-b559-7a15c77cf26a",
+	"url":"Use this to point to a site such as O*Net that lists competencies, not necessarily in machine-readable formats."
+}
