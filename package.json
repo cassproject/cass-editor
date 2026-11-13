@@ -46,7 +46,7 @@
     "qs": "^6.17.1",
     "sass": "^1.108.2",
     "vite": "^8.3.8",
-    "vite-plugin-node-polyfills": "^0.24.0",
+    "vite-plugin-node-polyfills": "^0.28.0",
     "vitepress": "^1.6.4",
     "vitest": "^4.1.12"
   }
