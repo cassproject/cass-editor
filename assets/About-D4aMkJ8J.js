@@ -1,0 +1,1 @@
+import{D as e,h as t,j as n,t as r,v as i}from"./_plugin-vue_export-helper-BO7hJ-DY.js";e();var a={},o={id:`about`};function s(e,r){return n(),i(`div`,o,[...r[0]||=[t(`h1`,null,`This is an about page.`,-1)]])}var c=r(a,[[`render`,s]]);export{c as default};
