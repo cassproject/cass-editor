@@ -11,13 +11,23 @@
         <DynamicModal
             @create-directory="saveDirectory"
             @create-another-directory="saveDirectoryAndAddAnother" />
+        <!-- Pages wait for the repository handshake so that anything created on
+             them is owned by the signed-in user. -->
+        <div
+            v-if="!identityReady"
+            class="app-connecting"
+            role="status">
+            Connecting...
+        </div>
         <router-view
+            v-if="identityReady"
             @create-new-framework="createNewFramework"
             @create-new-concept-scheme="createNewConceptScheme"
             @create-new-progression-model="createNewProgressionModel"
             @create-new-collection="createNewCollection"
             :class="[{ 'clear-side-bar': routeHasSidebar && showSideNav}, { 'clear-narrow-side-bar': routeHasSidebar && !showSideNav}, {'clear-right-aside': showRightAside}]" />
         <router-view
+            v-if="identityReady"
             :showSideNav="showSideNav"
             @create-new-framework="createNewFramework"
             @create-new-concept-scheme="createNewConceptScheme"
@@ -125,12 +135,14 @@ export default {
             }
             var r = new EcRepository();
             r.selectedServer = server;
+            const markIdentityReady = () => useUserStore().setIdentityReady();
             r.init(server, function() {
                 appLog("Repository initialized");
                 if (EcIdentityManager.default.ids.length === 0) {
                     EcIdentityManager.default.readContacts();
                     EcIdentityManager.default.readIdentities();
                 }
+                markIdentityReady();
                 if (EcIdentityManager.default.ids && EcIdentityManager.default.ids.length > 0) {
                     me.findLinkedPersonForIdentity();
                 }
@@ -145,7 +157,10 @@ export default {
                     }
                     useAppStore().setCuratedPlugins(plugins);
                 }
-            }, appError, async(loginInfo) => {
+            }, (error) => {
+                markIdentityReady();
+                appError(error);
+            }, async(loginInfo) => {
                 r.fetchServerAdminKeys(() => {}, appError);
                 this.appVersion = loginInfo.version || this.appVersion;
                 useUserStore().setRepositorySsoOptions(loginInfo);
@@ -195,7 +210,7 @@ export default {
                     }
                 }
                 useAppStore().refreshDirectories();
-            });
+            }).finally(markIdentityReady); // Also when the server answers without completing the handshake.
             window.repo = r;
             this.repo = r;
 
@@ -1441,7 +1456,7 @@ export default {
             if (this.$route.name === 'login') return true;
             else return false;
         },
-        ...mapState(useUserStore, {loggedInPerson: 'loggedOnPerson'}),
+        ...mapState(useUserStore, {loggedInPerson: 'loggedOnPerson', identityReady: 'identityReady'}),
         ...mapState(useEditorStore, ['queryParams'])
     },
     mounted: function() {
@@ -1510,6 +1525,10 @@ export default {
  .banner-bot {
      position: fixed;
      bottom: 0;
+ }
+ .app-connecting {
+     padding: 2rem;
+     text-align: center;
  }
 .pagesFull {
     margin-top:40px;

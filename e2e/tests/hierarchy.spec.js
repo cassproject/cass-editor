@@ -119,8 +119,8 @@ test('DND-03 drop onto the framework title moves a competency to the top level @
     expect(problems(log)).toEqual([]);
 });
 
-test('DND-03 drop onto the framework title works after a deep link (known bug: title drop target disabled after reload) @P1', async ({ app, page, account, console: log }) => {
-    test.fail(true, 'After a deep link Framework.vue computes canEdit before the saved login loads, so the title ignores the drop; see e2e/FINDINGS.md');
+test('DND-03 drop onto the framework title works after a deep link @P1', async ({ app, page, account, console: log }) => {
+    // Pages wait for the saved login, so edit rights are known when the title becomes a drop target.
     await app.login(account);
     const fw = await app.seedFramework({ competencies: ['Alpha', { name: 'Delta', children: ['Echo'] }] });
     const c = fw.competencies;
@@ -131,9 +131,7 @@ test('DND-03 drop onto the framework title works after a deep link (known bug: t
     await waitForHierarchy(page, Object.values(c));
     await expectHierarchy(page, fw.id, names, tree('Alpha', { Delta: ['Echo'] }));
 
-    // The drag itself is not checked here (with the bug the placeholder never reaches the title);
-    // the outcome is.
-    await dragTo(page, c.Echo, { title: true }, { mustPlace: false });
+    await dragTo(page, c.Echo, { title: true });
     await expect.poll(async () => (await storedTree(page, fw.id)).narrows, { timeout: 10_000 }).toEqual([]);
     await expectHierarchy(page, fw.id, names, tree('Alpha', 'Delta', 'Echo'));
     expect(problems(log)).toEqual([]);
