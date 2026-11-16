@@ -1,0 +1,20 @@
+{
+    "@context": {
+	"@vocab": "http://schema.imsglobal.org/ims/case/v1p0/",
+        "case": "http://schema.imsglobal.org/ims/case/v1p0/",
+	"uri": {"@id":"@id"},
+	"xsd": "http://www.w3.org/2001/XMLSchema#",
+	"identifier":{"@id":"case:identifier"},
+	"lastChangeDateTime":{"@id":"case:lastChangeDateTime"},
+	"CFDocument":{"@id":"case:CFDocument"},
+	"Reference":{"@id":"case:Reference"},
+	"title":{"@id":"case:title"},
+	"identifier":{"@id":"case:identifier"},
+	"subjectURI":{"@id":"case:subjectURI"},
+	"officialSourceURL":{"@id":"case:officialSourceURL"},
+	"creator":{"@id":"case:creator"},
+	"subject":{"@id":"case:subject"},
+	"notes":{"@id":"case:notes"},
+	"language":{"@id":"case:language"}
+    }
+}

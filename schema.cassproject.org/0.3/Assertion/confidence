@@ -1,0 +1,32 @@
+{
+    "@context": {
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    "@graph": [
+        {
+            "@id": "http://schema.cassproject.org/0.3/Assertion/confidence",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.3/Assertion"
+            },
+            "http://schema.org/rangeIncludes": {
+                "@id": "http://schema.org/Float"
+            },
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "The agent's confidence in the assertion."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "confidence"
+            }
+        },
+        {
+            "@id": "http://schema.cassproject.org/",
+            "http://www.w3.org/ns/rdfa#usesVocabulary": {
+                "@id": "http://schema.org/"
+            }
+        }
+    ]
+}

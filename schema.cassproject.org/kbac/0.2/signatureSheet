@@ -1,0 +1,7 @@
+{
+	"@type":[
+		"http://schema.cassproject.org/kbac/0.2/signatureSheet",
+		"http://json.org/array"
+	],
+	"@contains":"http://schema.cassproject.org/kbac/0.2/timeLimitedSignature"
+}

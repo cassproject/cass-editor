@@ -1,0 +1,23 @@
+{
+	"@context":{
+		"@vocab":"http://schema.eduworks.com/cass/0.2/",
+		"cass":"http://schema.eduworks.com/cass/0.2/",
+		"ebac":"http://schema.eduworks.com/ebac/0.2/",
+		"general":"http://schema.eduworks.com/general/0.2/",
+		"schema":"http://schema.org/",
+		"Competency":{"@id":"cass:Competency"},
+		"Level":{"@id":"cass:Level"},
+		"Framework":{"@id":"cass:Framework"},
+		"Relation":{"@id":"cass:Relation"},
+		"@owner":{"@id":"ebac:@owner"},
+		"@signature":{"@id":"ebac:@signature"},
+		"privateEncrypted":{"@id":"ebac:privateEncrypted"},
+		"name":{"@id":"schema:name"},
+		"description":{"@id":"schema:description"},
+		"url":{"@id":"schema:url"},
+		"sameAs":{"@id":"schema:sameAs"},
+		"competency":{"@id":"cass:competency","@type":"@id"},
+		"level":{"@id":"cass:level","@type":"@id"},
+		"relation":{"@id":"cass:relation","@type":"@id"}
+	}
+}
