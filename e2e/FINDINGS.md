@@ -54,7 +54,7 @@ passed" — at which point remove the `test.fail()` line.
 |---|---|
 | AUTH-05 | Copy/cut/paste/clipboard toolbar shown on frameworks the user cannot edit |
 | SRCH-01 | In-framework search was removed in 2020 (commit 09abde0ad) and is to come back |
-| DND-03, SHARE-01 | After a deep link or reload, edit rights are computed before the saved login loads: title drop ignored, a reader of a private framework lands on the list; under load the owner sometimes gets no edit controls (not reproduced on demand) |
+| SHARE-01 | After a deep link or reload, a reader of a private framework lands on the list; under load the owner sometimes gets no edit controls (not reproduced on demand). Pages now wait for the saved login (which fixed DND-03's title drop), so this may be fixed too |
 | FWL-03 | "Show only mine" never renders in a directory |
 | FWL-03 | Filter & sort opened before the saved login loads never offers Owned by me / Not owned by me (same root cause as DND-03; the tests wait for the user chip) |
 | DND-04 | Shift+ArrowLeft un-nests to one place above the last item |

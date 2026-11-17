@@ -8,7 +8,10 @@ export const useUserStore = defineStore('user', {
             ssoLogout: null,
             ssoPublicKey: null
         },
-        lastLogin: null
+        lastLogin: null,
+        // True once the repository has answered (or failed to answer) the
+        // initial handshake, which is when the signed-in identity is known.
+        identityReady: false
     }),
     getters: {
         repositorySsoOptions: function(state) {
@@ -28,6 +31,9 @@ export const useUserStore = defineStore('user', {
             this.repoInit.ssoLogin = repoInit.ssoLogin;
             this.repoInit.ssoLogout = repoInit.ssoLogout;
             this.repoInit.ssoPublicKey = repoInit.ssoPublicKey;
+        },
+        setIdentityReady() {
+            this.identityReady = true;
         }
     }
 });

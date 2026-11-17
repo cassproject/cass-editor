@@ -1,4 +1,5 @@
 // TEST-CASES.md §3 Framework viewing & editing (FW-01 … FW-11).
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -175,6 +176,29 @@ test.describe('Framework viewing & editing', () => {
         // Leave a recognisable name on the shared server rather than another "New Framework".
         await setName(page, unique('FW-01 created'));
         await done(page);
+    });
+
+    test('FW-01 a framework created as soon as the page allows is owned by the single sign-on user, even with a slow server @P0', async ({ app, page }) => {
+        // A server behind single sign-on names the signed-in user's key in its answer to the editor's
+        // first request (ping). Stand in for one, and answer slowly.
+        const { publicKey } = crypto.generateKeyPairSync('rsa', { modulusLength: 2048, publicKeyEncoding: { type: 'spki', format: 'pem' } });
+        await page.route((url) => url.pathname.endsWith('/api/ping'), async (route) => {
+            const response = await route.fetch();
+            const body = { ...(await response.json()), ssoPublicKey: publicKey };
+            await new Promise((resolve) => setTimeout(resolve, 4_000));
+            await route.fulfill({ response, json: body });
+        });
+        await app.setSavedIdentities('');
+        await page.goto(app.url('/frameworks'));
+        await newButton(page).first().click({ timeout: 60_000 });
+        await page.locator('.dropdown-item', { hasText: /^\s*Framework\s*$/ }).click();
+        await expect(editor(page)).toContainText('Create framework', { timeout: CREATE_TIMEOUT });
+
+        const id = await page.evaluate(() => window.app.$pinia._s.get('editor').framework.shortId());
+        await expect.poll(() => app.fetchObject(id)).not.toBeNull();
+        const saved = await app.fetchObject(id);
+        const body = (pem) => pem.replace(/-----[^-]+-----|\s/g, '');
+        expect((saved.owner ?? []).map(body)).toContain(body(publicKey));
     });
 
     test.describe('FW-02 rename framework / edit description @P0', () => {
