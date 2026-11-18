@@ -1,0 +1,348 @@
+{
+    "@context": {
+        "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+        "rdfs": "http://www.w3.org/2000/01/rdf-schema#"
+    },
+    "@graph": [
+        {
+            "@id": "http://purl.org/dc/terms/title",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/Text"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "The name or title of this resource."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Title"
+            }
+        },
+        {
+            "@id": "http://purl.org/dc/terms/description",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/Text"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "A short description of this resource. One definition per language."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Description"
+            }
+        },
+        {
+        	"@id": "http://purl.org/dc/terms/creator",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/URL"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "An entity primarily responsible for making this resource. For example, https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/. One entity per line."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Creator"
+            }
+        },
+        {
+        	"@id": "http://purl.org/dc/terms/publisher",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/URL"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "An agent responsible for making this entity available. For example, https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Publisher"
+            }
+        },
+        {
+        	"@id": "https://purl.org/ctdlasn/terms/publisherName",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/Text"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Name of an agent responsible for making this resource available. One name per line."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Publisher Name"
+            }
+        },
+        {
+        	"@id": "http://purl.org/dc/terms/language",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/Text"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "The primary language used in or by this resource. One language per line."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Language"
+            }
+        },
+        {
+        	"@id": "http://purl.org/dc/elements/1.1/source",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/URL"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "A URI to the original resource which this resource is based on or derived from. For example: https://credentialengineregistry.org/, https://eduworks.com, https://case.georgiastandards.org/."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Source"
+            }
+        },
+        {
+        	"@id": "https://purl.org/ctdlasn/terms/conceptKeyword",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/Text"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "A word or phrase used by the promulgating agency to refine and differentiate individual resources contextually."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Concept Keyword"
+            }
+        },
+        {
+        	"@id": "https://purl.org/ctdlasn/terms/conceptTerm",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/URL"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "A term drawn from a controlled vocabulary used by the promulgating agency to refine and differentiate individual resources contextually."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Concept Term"
+            }
+        },
+        {
+        	"@id": "http://www.w3.org/2004/02/skos/core#changeNote",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/Text"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Documents fine-grained changes to a concept scheme, for the purposes of administration and maintenance. One note per line."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Change Note"
+            }
+        },
+        {
+        	"@id": "http://www.w3.org/2004/02/skos/core#historyNote",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/Text"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Describes significant changes to the meaning or the form of a scheme. One note per language."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "History Note"
+            }
+        },
+        {
+        	"@id": "https://purl.org/ctdlasn/terms/publicationStatusType",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://www.w3.org/2004/02/skos/core#Concept"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "The publication status of this resource."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Publication Status"
+            }
+        },
+        {
+        	"@id": "http://purl.org/dc/terms/dateCopyrighted",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://purl.org/dc/terms/date"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Year of a statement of copyright for this resource, such as 2017."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Year Copyrighted"
+            }
+        },
+        {
+        	"@id": "http://purl.org/dc/terms/license",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/URL"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "A legal document giving official permission to do something with this resource. For example, https://sandbox.credentialengineregistry.org/"
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "License"
+            }
+        },
+        {
+        	"@id": "http://purl.org/dc/terms/rights",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/Text"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Information about rights held in and over this resource."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Rights"
+            }
+        },
+        {
+        	"@id": "http://purl.org/dc/terms/rightsHolder",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/URL"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "An agent owning or managing rights over this resource. For example, https://credentialengineregistry.org/."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Rights Holder"
+            }
+        },
+        {
+        	"@id": "http://www.w3.org/2004/02/skos/core#hasTopConcept",
+            "@type": "rdfs:Property",
+            "http://schema.org/domainIncludes": {
+                "@id": "http://schema.cassproject.org/0.4/skos/ConceptScheme"
+            },
+            "http://schema.org/rangeIncludes": [
+                {
+                    "@id": "http://schema.org/URL"
+                }
+            ],
+            "rdfs:comment": {
+                "@language": "en",
+                "@value": "Concept of the scheme at the top of a hierarchy of narrower concepts."
+            },
+            "rdfs:label": {
+                "@language": "en",
+                "@value": "Has Top Concept"
+            }
+        }
+    ]
+}
