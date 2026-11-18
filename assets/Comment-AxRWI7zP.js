@@ -1,0 +1,1 @@
+export{t as default}from"./RightAside-Cof440E4.js";
